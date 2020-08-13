@@ -55,7 +55,9 @@
 enum
 {
 	GEANY_RESPONSE_FIND = 1,
+	GEANY_RESPONSE_FIND_BY_ENTER,
 	GEANY_RESPONSE_FIND_PREVIOUS,
+	GEANY_RESPONSE_FIND_PREVIOUS_BY_ENTER,
 	GEANY_RESPONSE_FIND_IN_FILE,
 	GEANY_RESPONSE_FIND_IN_SESSION,
 	GEANY_RESPONSE_MARK,
@@ -1263,7 +1265,7 @@ gint search_mark_all(GeanyDocument *doc, const gchar *search_text, GeanyFindFlag
 static void
 on_find_entry_activate(GtkEntry *entry, gpointer user_data)
 {
-	on_find_dialog_response(NULL, GEANY_RESPONSE_FIND, user_data);
+	on_find_dialog_response(NULL, GEANY_RESPONSE_FIND_BY_ENTER, user_data);
 }
 
 
@@ -1274,7 +1276,7 @@ on_find_entry_activate_backward(GtkEntry *entry, gpointer user_data)
 	if (search_data.flags & GEANY_FIND_REGEXP)
 		utils_beep();
 	else
-		on_find_dialog_response(NULL, GEANY_RESPONSE_FIND_PREVIOUS, user_data);
+		on_find_dialog_response(NULL, GEANY_RESPONSE_FIND_PREVIOUS_BY_ENTER, user_data);
 }
 
 
@@ -1343,12 +1345,17 @@ on_find_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		switch (response)
 		{
 			case GEANY_RESPONSE_FIND:
+			case GEANY_RESPONSE_FIND_BY_ENTER:
 			case GEANY_RESPONSE_FIND_PREVIOUS:
+			case GEANY_RESPONSE_FIND_PREVIOUS_BY_ENTER:
 			{
 				gint result = document_find_text(doc, search_data.text, search_data.original_text, search_data.flags,
-					(response == GEANY_RESPONSE_FIND_PREVIOUS), NULL, TRUE, GTK_WIDGET(find_dlg.dialog));
+					(response == GEANY_RESPONSE_FIND_PREVIOUS || response == GEANY_RESPONSE_FIND_PREVIOUS_BY_ENTER),
+					NULL, TRUE, GTK_WIDGET(find_dlg.dialog));
 				ui_set_search_entry_background(find_dlg.entry, (result > -1));
-				check_close = search_prefs.hide_find_dialog;
+				check_close = search_prefs.hide_find_dialog &&
+							  (response == GEANY_RESPONSE_FIND_BY_ENTER ||
+							   response == GEANY_RESPONSE_FIND_PREVIOUS_BY_ENTER);
 				break;
 			}
 			case GEANY_RESPONSE_FIND_IN_FILE:
