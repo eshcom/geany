@@ -26,6 +26,7 @@ bifs=keyword_2
 modules=default
 modules_att=preprocessor
 unknown=default
+atom_spec=default
 
 [keywords]
 # all items must be in one line
@@ -40,6 +41,8 @@ module=-behavior -behaviour -compile -created -created_by -export -file -import 
 doc=@author @clear @copyright @deprecated @doc @docfile @end @equiv @headerfile @hidden @private @reference @see @since @spec @throws @title @todo @TODO @type @version
 # Erlang documentation macros
 doc_macro=@date @docRoot @link @module @package @section @time @type @version
+# Erlang atom special
+atom_spec=true false null none undefined
 
 [settings]
 # default extension used when saving files
