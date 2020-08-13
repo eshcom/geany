@@ -84,6 +84,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 	WordList &erlangModulesAtt = *keywordlists[3];
 	WordList &erlangDoc = *keywordlists[4];
 	WordList &erlangDocMacro = *keywordlists[5];
+	WordList &erlangAtomSpec = *keywordlists[6];
 	int radix_digits = 0;
 	int exponent_digits = 0;
 	atom_parse_state_t parse_state = STATE_NULL;
@@ -208,6 +209,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 						} else if (erlangBIFs.InList(cur)
 									&& strcmp(cur,"erlang:")){
 							style = SCE_ERLANG_BIFS;
+						} else if (erlangAtomSpec.InList(cur)){
+							style = SCE_ERLANG_ATOM_SPEC;
 						} else if (sc.ch == '(' || '/' == sc.ch){
 							style = SCE_ERLANG_FUNCTION_NAME;
 						} else {
@@ -225,7 +228,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 					if ( '@' == sc.ch ){
 						parse_state = NODE_NAME_QUOTED;
 					} else if ('\'' == sc.ch && '\\' != sc.chPrev) {
-						sc.ChangeState(SCE_ERLANG_ATOM);
+						sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 						parse_state = STATE_NULL;
 					}
@@ -613,6 +616,7 @@ static const char * const erlangWordListDesc[] = {
 	"Erlang Module Attributes",
 	"Erlang Documentation",
 	"Erlang Documentation Macro",
+	"Erlang Atom Special",
 	0
 };
 

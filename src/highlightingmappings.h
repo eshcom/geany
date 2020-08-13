@@ -563,6 +563,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_BIFS,				"bifs",					FALSE },
 	{ SCE_ERLANG_MODULES,			"modules",				FALSE },
 	{ SCE_ERLANG_MODULES_ATT,		"modules_att",			FALSE },
+	{ SCE_ERLANG_ATOM_SPEC,			"atom_spec",			FALSE },
 	{ SCE_ERLANG_UNKNOWN,			"unknown",				FALSE }
 };
 static const HLKeyword highlighting_keywords_ERLANG[] =
@@ -572,7 +573,8 @@ static const HLKeyword highlighting_keywords_ERLANG[] =
 	{ 2, "preproc",		FALSE },
 	{ 3, "module",		FALSE },
 	{ 4, "doc",			FALSE },
-	{ 5, "doc_macro",	FALSE }
+	{ 5, "doc_macro",	FALSE },
+	{ 6, "atom_spec",	FALSE }
 };
 #define highlighting_properties_ERLANG	EMPTY_PROPERTIES
 
