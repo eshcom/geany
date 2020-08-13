@@ -1232,11 +1232,11 @@ static gboolean check_vte(GdkModifierType state, guint keyval)
 
 	if (gtk_window_get_focus(GTK_WINDOW(main_widgets.window)) != vc->vte)
 		return FALSE;
+	if (! vc->enable_bash_keys)
+		return FALSE;
 	/* let VTE copy/paste override any user keybinding */
 	if (state == (GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK) && (keyval == GDK_c || keyval == GDK_v))
 		return TRUE;
-	if (! vc->enable_bash_keys)
-		return FALSE;
 	/* prevent menubar flickering: */
 	if (state == GDK_SHIFT_MASK && (keyval >= GDK_a && keyval <= GDK_z))
 		return FALSE;
@@ -1296,6 +1296,118 @@ static guint key_kp_translate(guint key_in)
 	}
 }
 
+/* Map the cyrillic keys to their equivalent english keys */
+static guint key_cyr_translate(guint key_in)
+{
+	switch (key_in)
+	{
+		case GDK_Cyrillic_ef:
+		case GDK_Cyrillic_EF:
+			return GDK_a;
+		case GDK_Cyrillic_i:
+		case GDK_Cyrillic_I:
+			return GDK_b;
+		case GDK_Cyrillic_es:
+		case GDK_Cyrillic_ES:
+			return GDK_c;
+		case GDK_Cyrillic_ve:
+		case GDK_Cyrillic_VE:
+			return GDK_d;
+		case GDK_Cyrillic_u:
+		case GDK_Cyrillic_U:
+			return GDK_e;
+		case GDK_Cyrillic_a:
+		case GDK_Cyrillic_A:
+			return GDK_f;
+		case GDK_Cyrillic_pe:
+		case GDK_Cyrillic_PE:
+			return GDK_g;
+		case GDK_Cyrillic_er:
+		case GDK_Cyrillic_ER:
+			return GDK_h;
+		case GDK_Cyrillic_sha:
+		case GDK_Cyrillic_SHA:
+			return GDK_i;
+		case GDK_Cyrillic_o:
+		case GDK_Cyrillic_O:
+			return GDK_j;
+		case GDK_Cyrillic_el:
+		case GDK_Cyrillic_EL:
+			return GDK_k;
+		case GDK_Cyrillic_de:
+		case GDK_Cyrillic_DE:
+			return GDK_l;
+		case GDK_Cyrillic_softsign:
+		case GDK_Cyrillic_SOFTSIGN:
+			return GDK_m;
+		case GDK_Cyrillic_te:
+		case GDK_Cyrillic_TE:
+			return GDK_n;
+		case GDK_Cyrillic_shcha:
+		case GDK_Cyrillic_SHCHA:
+			return GDK_o;
+		case GDK_Cyrillic_ze:
+		case GDK_Cyrillic_ZE:
+			return GDK_p;
+		case GDK_Cyrillic_shorti:
+		case GDK_Cyrillic_SHORTI:
+			return GDK_q;
+		case GDK_Cyrillic_ka:
+		case GDK_Cyrillic_KA:
+			return GDK_r;
+		case GDK_Cyrillic_yeru:
+		case GDK_Cyrillic_YERU:
+			return GDK_s;
+		case GDK_Cyrillic_ie:
+		case GDK_Cyrillic_IE:
+			return GDK_t;
+		case GDK_Cyrillic_ghe:
+		case GDK_Cyrillic_GHE:
+			return GDK_u;
+		case GDK_Cyrillic_em:
+		case GDK_Cyrillic_EM:
+			return GDK_v;
+		case GDK_Cyrillic_tse:
+		case GDK_Cyrillic_TSE:
+			return GDK_w;
+		case GDK_Cyrillic_che:
+		case GDK_Cyrillic_CHE:
+			return GDK_x;
+		case GDK_Cyrillic_en:
+		case GDK_Cyrillic_EN:
+			return GDK_y;
+		case GDK_Cyrillic_ya:
+		case GDK_Cyrillic_YA:
+			return GDK_z;
+			
+		case GDK_Cyrillic_be:
+		case GDK_Cyrillic_BE:
+			return GDK_comma;
+		case GDK_Cyrillic_yu:
+		case GDK_Cyrillic_YU:
+			return GDK_period;
+			
+		case GDK_Cyrillic_ha:
+		case GDK_Cyrillic_HA:
+			return GDK_bracketleft;
+		case GDK_Cyrillic_hardsign:
+		case GDK_Cyrillic_HARDSIGN:
+			return GDK_bracketright;
+			
+		case GDK_Cyrillic_zhe:
+		case GDK_Cyrillic_ZHE:
+			return GDK_semicolon;
+		case GDK_Cyrillic_e:
+		case GDK_Cyrillic_E:
+			return GDK_apostrophe;
+			
+		case GDK_Cyrillic_io:
+		case GDK_Cyrillic_IO:
+			return GDK_grave;
+		default:
+			return key_in;
+	}
+}
 
 /* Check if event keypress matches keybinding combo */
 gboolean keybindings_check_event(GdkEventKey *ev, GeanyKeyBinding *kb)
@@ -1370,6 +1482,10 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *ev, gpointer 
 	if ((ev->state & GDK_SHIFT_MASK) || (ev->state & GDK_LOCK_MASK))
 		if (keyval >= GDK_A && keyval <= GDK_Z)
 			keyval += GDK_a - GDK_A;
+	// esh (correcting cyrillic hotkey combinations)
+	if ((ev->state & GEANY_PRIMARY_MOD_MASK) || (ev->state & GDK_MOD1_MASK))
+		if (keyval >= GDK_Cyrillic_je && keyval <= GDK_Cyrillic_HARDSIGN)
+			keyval = key_cyr_translate(keyval);
 
 	if (keyval >= GDK_KP_Space && keyval < GDK_KP_Equal)
 		keyval = key_kp_translate(keyval);

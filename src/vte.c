@@ -364,7 +364,7 @@ static void create_vte(void)
 	/* set the default widget size first to prevent VTE expanding too much,
 	 * sometimes causing the hscrollbar to be too big or out of view. */
 	gtk_widget_set_size_request(GTK_WIDGET(vte), 10, 10);
-	vf->vte_terminal_set_size(VTE_TERMINAL(vte), 30, 1);
+	vf->vte_terminal_set_size(VTE_TERMINAL(vte), 60, 1);
 
 	vf->vte_terminal_set_mouse_autohide(VTE_TERMINAL(vte), TRUE);
 	if (vf->vte_terminal_set_word_chars)
@@ -446,7 +446,9 @@ static void set_clean(gboolean value)
 static gboolean vte_keyrelease_cb(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (ui_is_keyval_enter_or_return(event->keyval) ||
-		((event->keyval == GDK_c) && (event->state & GDK_CONTROL_MASK)))
+		((event->keyval == GDK_c || event->keyval == GDK_Cyrillic_es) &&
+		 ((vc->enable_bash_keys && (event->state & GDK_CONTROL_MASK)) ||
+		  (!(vc->enable_bash_keys) && (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK))))))
 	{
 		/* assume any text on the prompt has been executed when pressing Enter/Return */
 		set_clean(TRUE);
@@ -463,14 +465,28 @@ static gboolean vte_keypress_cb(GtkWidget *widget, GdkEventKey *event, gpointer 
 	if (event->type != GDK_KEY_RELEASE)
 		return FALSE;
 
-	if ((event->keyval == GDK_c ||
-		event->keyval == GDK_d ||
-		event->keyval == GDK_C ||
-		event->keyval == GDK_D) &&
-		event->state & GDK_CONTROL_MASK &&
-		! (event->state & GDK_SHIFT_MASK) && ! (event->state & GDK_MOD1_MASK))
+	if ((event->state & GDK_CONTROL_MASK) && (event->state & GDK_SHIFT_MASK) &&
+		(event->keyval == GDK_c || event->keyval == GDK_Cyrillic_es ||
+		 event->keyval == GDK_d || event->keyval == GDK_Cyrillic_ve ||
+		 event->keyval == GDK_C || event->keyval == GDK_Cyrillic_ES ||
+		 event->keyval == GDK_D || event->keyval == GDK_Cyrillic_VE))
 	{
 		vte_restart(widget);
+		return TRUE;
+	}
+	if ((event->state & GDK_CONTROL_MASK) && !(event->state & GDK_SHIFT_MASK) &&
+		(event->keyval == GDK_c || event->keyval == GDK_Cyrillic_es ||
+		 event->keyval == GDK_C || event->keyval == GDK_Cyrillic_ES))
+	{
+		if (vf->vte_terminal_get_has_selection(VTE_TERMINAL(vc->vte)))
+			vf->vte_terminal_copy_clipboard(VTE_TERMINAL(vc->vte));
+		return TRUE;
+	}
+	if ((event->state & GDK_CONTROL_MASK) && !(event->state & GDK_SHIFT_MASK) &&
+		(event->keyval == GDK_v || event->keyval == GDK_Cyrillic_em ||
+		 event->keyval == GDK_V || event->keyval == GDK_Cyrillic_EM))
+	{
+		vf->vte_terminal_paste_clipboard(VTE_TERMINAL(vc->vte));
 		return TRUE;
 	}
 	return FALSE;
@@ -736,16 +752,22 @@ static GtkWidget *vte_create_popup_menu(void)
 	accel_group = gtk_accel_group_new();
 	gtk_window_add_accel_group(GTK_WINDOW(main_widgets.window), accel_group);
 
+	GdkModifierType mods;
+	if (vc->enable_bash_keys)
+		mods = GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK;
+	else
+		mods = GEANY_PRIMARY_MOD_MASK;
+	
 	item = gtk_image_menu_item_new_from_stock(GTK_STOCK_COPY, NULL);
 	gtk_widget_add_accelerator(item, "activate", accel_group,
-		GDK_c, GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+		GDK_c, mods, GTK_ACCEL_VISIBLE);
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
 	g_signal_connect(item, "activate", G_CALLBACK(vte_popup_menu_clicked), GINT_TO_POINTER(POPUP_COPY));
 
 	item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PASTE, NULL);
 	gtk_widget_add_accelerator(item, "activate", accel_group,
-		GDK_v, GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+		GDK_v, mods, GTK_ACCEL_VISIBLE);
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
 	g_signal_connect(item, "activate", G_CALLBACK(vte_popup_menu_clicked), GINT_TO_POINTER(POPUP_PASTE));
