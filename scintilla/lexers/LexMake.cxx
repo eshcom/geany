@@ -115,7 +115,7 @@ static void ColouriseMakeLine(
 }
 
 static void ColouriseMakeDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
-	char lineBuffer[1024];
+	char lineBuffer[4096];
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
 	Sci_PositionU linePos = 0;

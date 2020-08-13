@@ -466,7 +466,7 @@ static void ColouriseBatchDoc(
     WordList *keywordlists[],
     Accessor &styler) {
 
-	char lineBuffer[1024];
+	char lineBuffer[4096];
 
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
