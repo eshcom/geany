@@ -40,7 +40,7 @@ void configuration_add_pref_group(struct StashGroup *group, gboolean for_prefs_d
 void configuration_add_various_pref_group(struct StashGroup *group,
 	const gchar *prefix);
 
-void configuration_save(void);
+void configuration_save(gboolean project_open);
 
 gboolean configuration_load(void);
 
@@ -53,6 +53,7 @@ void configuration_save_default_session(void);
 void configuration_clear_default_session(void);
 
 void configuration_load_session_files(GKeyFile *config, gboolean read_recent_files);
+void configuration_set_vte_info_dir(GKeyFile *config);
 
 void configuration_save_session_files(GKeyFile *config);
 

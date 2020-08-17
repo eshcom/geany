@@ -1151,7 +1151,7 @@ gint main_lib(gint argc, gchar **argv)
 	plugins_init();
 #endif
 	sidebar_init();
-	load_settings();	/* load keyfile */
+	load_settings();	/* load global keyfile (geany.conf) */
 
 	msgwin_init();
 	build_init();
@@ -1209,7 +1209,7 @@ gint main_lib(gint argc, gchar **argv)
 
 	/* load any command line files or session files */
 	main_status.opening_session_files = TRUE;
-	load_startup_files(argc, argv);
+	load_startup_files(argc, argv);		/* load project keyfile (*.geany) */
 	main_status.opening_session_files = FALSE;
 
 	/* open a new file if no other file was opened */
@@ -1273,7 +1273,7 @@ static void queue_free(GQueue *queue)
 
 static gboolean do_main_quit(void)
 {
-	configuration_save();
+	configuration_save(app->project != NULL);
 
 	if (app->project != NULL)
 	{

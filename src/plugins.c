@@ -1906,7 +1906,7 @@ static void pm_dialog_response(GtkDialog *dialog, gint response, gpointer user_d
 			gtk_widget_destroy(GTK_WIDGET(dialog));
 			pm_widgets.dialog = NULL;
 
-			configuration_save();
+			configuration_save(app->project != NULL);
 			break;
 		case PM_BUTTON_CONFIGURE:
 		case PM_BUTTON_HELP:
