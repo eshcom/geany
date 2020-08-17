@@ -721,7 +721,6 @@ void configuration_load_session_files(GKeyFile *config, gboolean read_recent_fil
 	}
 
 #ifdef HAVE_VTE
-	/* BUG: after loading project at startup, closing project doesn't restore old VTE path */
 	if (vte_info.have_vte)
 	{
 		gchar *tmp_string = utils_get_setting_string(config, "VTE", "last_dir", NULL);

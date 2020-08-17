@@ -1,0 +1,22 @@
+configuration_reload_default_session (geany.conf)
+load_settings -> configuration_load (geany.conf)
+load_startup_files -> (main_load_project_from_command_line, load_session_project_file) -> project_load_file -> load_config (*.geany)
+project_load_file_with_session -> -> project_load_file -> load_config (*.geany)
+	-> configuration_load_session_files
+	-> configuration_save_default_session
+
+
+(configuration_save, configuration_save_default_session, write_config) -> configuration_save_session_files
+project_new -> configuration_clear_default_session
+	-> remove_session_files
+
+
+vte_start -> (vte_terminal_spawn_sync, vte_terminal_fork_command)
+vte_send_cmd -> vte_terminal_feed_child
+
+
+
+const gchar *message = _("IPC socket could not be created, see Help->Debug Messages for details.");
+ui_set_statusbar(TRUE, "%s", message);
+
+ui_set_statusbar(TRUE, "No more message items.");

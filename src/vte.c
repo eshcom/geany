@@ -248,7 +248,7 @@ static void on_startup_complete(G_GNUC_UNUSED GObject *dummy)
 
 	if (doc && vc->follow_path)
 		vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
-	else
+	else // esh: set project VTE/last_dir (see project/load_config -> keyfile/configuration_set_vte_info_dir)
 		vte_cwd(vte_info.dir, TRUE);
 }
 
