@@ -1072,6 +1072,9 @@ static gboolean load_config(const gchar *filename)
 		document_close_all();
 		/* read session files so they can be opened with configuration_open_files() */
 		configuration_load_session_files(config, FALSE);
+		//~ esh: set vte_info.dir - the terminal path will be set after
+		//~		 starting the terminal process (see vte/on_startup_complete)
+		configuration_set_vte_info_dir(config);
 	}
 	g_signal_emit_by_name(geany_object, "project-open", config);
 	g_key_file_free(config);

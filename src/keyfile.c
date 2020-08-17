@@ -616,7 +616,7 @@ static void save_ui_prefs(GKeyFile *config)
 }
 
 
-void configuration_save(void)
+void configuration_save(gboolean project_open)
 {
 	GKeyFile *config = g_key_file_new();
 	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
@@ -633,15 +633,9 @@ void configuration_save(void)
 	save_recent_files(config, ui_prefs.recent_queue, "recent_files");
 	save_recent_files(config, ui_prefs.recent_projects_queue, "recent_projects");
 
-	if (cl_options.load_session)
+	//~ esh: save VTE/last_dir and session files to geany.conf only for non project session
+	if (!project_open && cl_options.load_session)
 		configuration_save_session_files(config);
-#ifdef HAVE_VTE
-	else if (vte_info.have_vte)
-	{
-		vte_get_working_directory();	/* refresh vte_info.dir */
-		g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);
-	}
-#endif
 
 	/* write the file */
 	data = g_key_file_to_data(config, NULL, NULL);
@@ -670,6 +664,16 @@ static void load_recent_files(GKeyFile *config, GQueue *queue, const gchar *key)
 	}
 }
 
+void configuration_set_vte_info_dir(GKeyFile *config)
+{
+	gchar *tmp_string = utils_get_setting_string(config, "VTE", "last_dir", NULL);
+	if (tmp_string != NULL && !utils_str_equal(tmp_string, ""))
+	{
+		g_free(vte_info.dir);
+		vte_info.dir = g_strdup(tmp_string);
+	}
+	g_free(tmp_string);
+}
 
 /*
  * Load session list from the given keyfile, and store it in the global
@@ -721,7 +725,7 @@ void configuration_load_session_files(GKeyFile *config, gboolean read_recent_fil
 	if (vte_info.have_vte)
 	{
 		gchar *tmp_string = utils_get_setting_string(config, "VTE", "last_dir", NULL);
-		vte_cwd(tmp_string,TRUE);
+		vte_cwd(tmp_string, TRUE);
 		g_free(tmp_string);
 	}
 #endif

@@ -246,8 +246,10 @@ static void on_startup_complete(G_GNUC_UNUSED GObject *dummy)
 {
 	GeanyDocument *doc = document_get_current();
 
-	if (doc)
+	if (doc && vc->follow_path)
 		vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
+	else
+		vte_cwd(vte_info.dir, TRUE);
 }
 
 
@@ -885,7 +887,6 @@ const gchar *vte_get_working_directory(void)
 		}
 		g_free(file);
 	}
-
 	return vte_info.dir;
 }
 
@@ -913,9 +914,18 @@ void vte_cwd(const gchar *filename, gboolean force)
 			/* use g_shell_quote to avoid problems with spaces, '!' or something else in path */
 			gchar *quoted_path = g_shell_quote(path);
 			gchar *cmd = g_strconcat(vc->send_cmd_prefix, "cd ", quoted_path, "\n", NULL);
-			if (! vte_send_cmd(cmd))
+			if (pid > 0)
 			{
-				const gchar *msg = _("Directory not changed because the terminal may contain some input (press Ctrl+C or Enter to clear it).");
+				if (! vte_send_cmd(cmd))
+				{
+					const gchar *msg = _("Directory not changed because the terminal may contain some input (press Ctrl+C or Enter to clear it).");
+					ui_set_statusbar(FALSE, "%s", msg);
+					geany_debug("%s", msg);
+				}
+			}
+			else
+			{
+				const gchar *msg = _("Directory not changed because the terminal process is not running.");
 				ui_set_statusbar(FALSE, "%s", msg);
 				geany_debug("%s", msg);
 			}

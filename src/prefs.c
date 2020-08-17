@@ -1307,7 +1307,7 @@ on_prefs_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
 		ui_update_statusbar(doc, -1);
 
 		/* store all settings */
-		configuration_save();
+		configuration_save(app->project != NULL);
 	}
 
 	if (response == GTK_RESPONSE_HELP)
