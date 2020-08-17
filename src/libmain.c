@@ -884,7 +884,7 @@ static void load_session_project_file(void)
 	locale_filename = utils_get_locale_from_utf8(project_prefs.session_file);
 
 	if (G_LIKELY(!EMPTY(locale_filename)))
-		project_load_file(locale_filename);
+		project_load_file(locale_filename, TRUE);
 
 	g_free(locale_filename);
 	g_free(project_prefs.session_file);	/* no longer needed */
@@ -920,7 +920,7 @@ void main_load_project_from_command_line(const gchar *locale_filename, gboolean 
 		if (use_session)
 			project_load_file_with_session(pfile);
 		else
-			project_load_file(pfile);
+			project_load_file(pfile, FALSE);
 	}
 	g_free(pfile);
 }
