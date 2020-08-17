@@ -16,7 +16,7 @@ vte_send_cmd -> vte_terminal_feed_child
 
 
 
-const gchar *message = _("IPC socket could not be created, see Help->Debug Messages for details.");
-ui_set_statusbar(TRUE, "%s", message);
+const gchar *message = "text";
+ui_set_statusbar(TRUE, "message = %s", message);
 
 ui_set_statusbar(TRUE, "No more message items.");
