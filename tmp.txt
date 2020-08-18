@@ -6,12 +6,12 @@ ui_set_statusbar(TRUE, "message1 = %s, message2 = %s", message1, message2); // e
 ui_set_statusbar(TRUE, "No more message items."); // esh: log
 ----------------------------------------------------------------------------------------
 
-	ui_set_statusbar(TRUE, "filter_tags, "
+	ui_set_statusbar(TRUE, "tmtag: "
 		"name = %s, type = %d, scope = %s, var_type = %s, file = %s, "
-		"arglist = %s, impl = %s, inheritance = %s",
+		"arglist = %s, lang = %d, impl = %s, inheritance = %s",
 		tmtag->name, tmtag->type, tmtag->scope, tmtag->var_type, 
-		tmtag->file->short_name,
-		tmtag->arglist, tmtag->impl, tmtag->inheritance); // esh: log
+		tmtag->file->short_name, tmtag->arglist, tmtag->lang,
+		tmtag->impl, tmtag->inheritance); // esh: log
 ----------------------------------------------------------------------------------------
 
 configuration_reload_default_session (geany.conf)
