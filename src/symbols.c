@@ -1965,12 +1965,21 @@ static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags, gboolean have_b
 		gchar *fname = short_names[i];
 		gchar *text;
 
+		/* For translators: it's the filename and line number of a symbol in the goto-symbol popup menu */
 		if (! first && have_best)
-			/* For translators: it's the filename and line number of a symbol in the goto-symbol popup menu */
-			text = g_markup_printf_escaped(_("<b>%s: %lu</b>"), fname, tmtag->line);
+		{
+			if (tmtag->scope)
+				text = g_markup_printf_escaped(_("<b>%s: %lu  (%s)</b>"), fname, tmtag->line, tmtag->scope);
+			else
+				text = g_markup_printf_escaped(_("<b>%s: %lu</b>"), fname, tmtag->line);
+		}
 		else
-			/* For translators: it's the filename and line number of a symbol in the goto-symbol popup menu */
-			text = g_markup_printf_escaped(_("%s: %lu"), fname, tmtag->line);
+		{
+			if (tmtag->scope)
+				text = g_markup_printf_escaped(_("%s: %lu  (%s)"), fname, tmtag->line, tmtag->scope);
+			else
+				text = g_markup_printf_escaped(_("%s: %lu"), fname, tmtag->line);
+		}
 
 		image = gtk_image_new_from_pixbuf(symbols_icons[get_tag_class(tmtag)].pixbuf);
 		label = g_object_new(GTK_TYPE_LABEL, "label", text, "use-markup", TRUE, "xalign", 0.0, NULL);
