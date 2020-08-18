@@ -1,3 +1,11 @@
+const gchar *message1 = "text";
+const gchar *message2 = "text";
+ui_set_statusbar(TRUE, "message1 = %s", message1);
+ui_set_statusbar(TRUE, "message1 = %s, message2 = %s", message1, message2);
+
+ui_set_statusbar(TRUE, "No more message items.");
+----------------------------------------------------------------------------------------
+
 configuration_reload_default_session (geany.conf)
 load_settings -> configuration_load (geany.conf)
 load_startup_files -> (main_load_project_from_command_line, load_session_project_file) -> project_load_file -> load_config (*.geany)
@@ -13,12 +21,3 @@ project_new -> configuration_clear_default_session
 
 vte_start -> (vte_terminal_spawn_sync, vte_terminal_fork_command)
 vte_send_cmd -> vte_terminal_feed_child
-
-
-
-const gchar *message1 = "text";
-const gchar *message2 = "text";
-ui_set_statusbar(TRUE, "message1 = %s", message1);
-ui_set_statusbar(TRUE, "message1 = %s, message2 = %s", message1, message2);
-
-ui_set_statusbar(TRUE, "No more message items.");
