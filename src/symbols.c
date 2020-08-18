@@ -1938,6 +1938,18 @@ static void goto_popup_position_func(GtkMenu *menu, gint *x, gint *y, gboolean *
 }
 
 
+static gboolean show_scope(TMParserType lang)
+{
+	switch (lang)
+	{
+		// for erlang: file name equal module name (scope) - show scope not need
+		case TM_PARSER_ERLANG:
+			return FALSE;
+		default:
+			return TRUE;
+	}
+}
+
 static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags, gboolean have_best)
 {
 	GtkWidget *first = NULL;
@@ -1968,14 +1980,14 @@ static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags, gboolean have_b
 		/* For translators: it's the filename and line number of a symbol in the goto-symbol popup menu */
 		if (! first && have_best)
 		{
-			if (tmtag->scope)
+			if (show_scope(tmtag->lang) && tmtag->scope)
 				text = g_markup_printf_escaped(_("<b>%s: %lu  (%s)</b>"), fname, tmtag->line, tmtag->scope);
 			else
 				text = g_markup_printf_escaped(_("<b>%s: %lu</b>"), fname, tmtag->line);
 		}
 		else
 		{
-			if (tmtag->scope)
+			if (show_scope(tmtag->lang) && tmtag->scope)
 				text = g_markup_printf_escaped(_("%s: %lu  (%s)"), fname, tmtag->line, tmtag->scope);
 			else
 				text = g_markup_printf_escaped(_("%s: %lu"), fname, tmtag->line);
