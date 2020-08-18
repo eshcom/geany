@@ -16,7 +16,9 @@ vte_send_cmd -> vte_terminal_feed_child
 
 
 
-const gchar *message = "text";
-ui_set_statusbar(TRUE, "message = %s", message);
+const gchar *message1 = "text";
+const gchar *message2 = "text";
+ui_set_statusbar(TRUE, "message1 = %s", message1);
+ui_set_statusbar(TRUE, "message1 = %s, message2 = %s", message1, message2);
 
 ui_set_statusbar(TRUE, "No more message items.");
