@@ -99,10 +99,8 @@ static void auto_multiline(GeanyEditor *editor, gint pos);
 static void auto_close_chars(ScintillaObject *sci, gint pos, gchar c);
 static void close_block(GeanyEditor *editor, gint pos);
 static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos);
-static void read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-		const gchar *wc, gboolean stem);
-static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gchar *word,
-							   gsize wordlen, const gchar *wc, gboolean stem);
+static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+							  const gchar *wc, gboolean stem);
 static gsize count_indent_size(GeanyEditor *editor, const gchar *base_indent);
 static const gchar *snippets_find_completion_by_name(const gchar *type, const gchar *name);
 static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
@@ -1682,52 +1680,46 @@ static void close_block(GeanyEditor *editor, gint pos)
  * NULL terminated in any case, even when the word is truncated because wordlen is too small.
  * position can be -1, then the current position is used.
  * wc are the wordchars to use, if NULL, GEANY_WORDCHARS will be used */
-static void read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-		const gchar *wc, gboolean stem)
+static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+							  const gchar *wc, gboolean stem)
 {
-	g_return_if_fail(editor != NULL);
+	g_return_val_if_fail(editor != NULL, -1);
 	ScintillaObject *sci = editor->sci;
-
+	
 	if (pos == -1)
 		pos = sci_get_current_position(sci);
-
+	
 	gint line = sci_get_line_from_position(sci, pos);
 	gint line_start = sci_get_position_from_line(sci, line);
 	gint startword = pos - line_start;
 	gint endword = pos - line_start;
 	gchar *chunk = sci_get_line(sci, line);
-
+	
 	if (wc == NULL)
 		wc = GEANY_WORDCHARS;
-
-	read_current_chunk(chunk, &startword, &endword, word, wordlen, wc, stem);
-	g_free(chunk);
-}
-
-
-static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gchar *word,
-							   gsize wordlen, const gchar *wc, gboolean stem)
-{
-	word[0] = '\0';
-
+	
 	/* the checks for "c < 0" are to allow any Unicode character which should make the code
 	 * a little bit more Unicode safe, anyway, this allows also any Unicode punctuation,
 	 * TODO: improve this code */
-	while (*startword > 0 && (strchr(wc, chunk[*startword - 1]) || ! IS_ASCII(chunk[*startword - 1])))
-		(*startword)--;
+	while (startword > 0 && (strchr(wc, chunk[startword - 1]) || ! IS_ASCII(chunk[startword - 1])))
+		startword--;
 	if (!stem)
 	{
-		while (chunk[*endword] != 0 && (strchr(wc, chunk[*endword]) || ! IS_ASCII(chunk[*endword])))
-			(*endword)++;
+		while (chunk[endword] != 0 && (strchr(wc, chunk[endword]) || ! IS_ASCII(chunk[endword])))
+			endword++;
 	}
-
-	if (*startword != *endword)
+	
+	word[0] = '\0';
+	if (startword != endword)
 	{
-		chunk[*endword] = '\0';
-		g_strlcpy(word, chunk + *startword, wordlen); /* ensure null terminated */
+		chunk[endword] = '\0';
+		g_strlcpy(word, chunk + startword, wordlen); /* ensure null terminated */
 	}
 	else
 		g_strlcpy(word, "", wordlen);
+	
+	g_free(chunk);
+	return line_start + startword;
 }
 
 
@@ -1736,26 +1728,35 @@ static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gch
 void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
 										gchar *scope, gsize scopelen, const gchar *wc)
 {
-	ui_set_statusbar(TRUE, "lang1 = %d", editor->document->file_type->lang); // esh: log
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
-
-	if (pos == -1)
-		pos = sci_get_current_position(sci);
-
-	gint line = sci_get_line_from_position(sci, pos);
-	gint line_start = sci_get_position_from_line(sci, line);
-	gint startword = pos - line_start;
-	gint endword = pos - line_start;
-	gchar *chunk = sci_get_line(sci, line);
-
-	if (wc == NULL)
-		wc = GEANY_WORDCHARS;
-
-	read_current_chunk(chunk, &startword, &endword, word, wordlen, wc, FALSE);
-	//~ TODO: add read_current_chunk to find scope
-	//~ read_current_chunk(chunk, &startword, &endword, scope, scopelen, wc, FALSE);
-	g_free(chunk);
+	
+	pos = read_current_word(editor, pos, word, wordlen, wc, FALSE);
+	
+	/* allow for a space between word and operator */
+	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
+		pos--;
+	
+	if (pos > 0)
+	{
+		const gchar *context_sep = tm_parser_context_separator(editor->document->file_type->lang);
+		
+		if (match_last_chars(sci, pos, context_sep))
+		{
+			pos -= strlen(context_sep);
+			
+			/* allow for a space between word and operator */
+			while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
+				pos--;
+			
+			if (pos > 0)
+			{
+				read_current_word(editor, pos, scope, scopelen, wc, FALSE);
+				return;
+			}
+		}
+	}
+	*scope = '\0';
 }
 
 
@@ -3307,8 +3308,8 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 
 
 /* set toggle to TRUE if the caller is the toggle function, FALSE otherwise */
-gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_lines, gboolean toggle,
-		gboolean single_comment)
+gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_lines,
+					   gboolean toggle, gboolean single_comment)
 {
 	gint first_line, last_line;
 	gint x, i, line_start, line_len;
