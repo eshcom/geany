@@ -1822,11 +1822,16 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 	{
 		if (DOC_VALID(doc))
 		{
+			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
 			editor_find_current_word_and_scope(doc->editor, -1,
 				editor_info.current_word, GEANY_MAX_WORD_LENGTH,
-				*scope, GEANY_MAX_WORD_LENGTH, NULL);
+				current_scope, GEANY_MAX_WORD_LENGTH, NULL);
 			if (*editor_info.current_word != 0)
+			{
 				*word = g_strdup(editor_info.current_word);
+				if (*current_scope != 0)
+					*scope = g_strdup(current_scope);
+			}
 		}
 	}
 }
