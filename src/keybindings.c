@@ -1822,8 +1822,9 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 	{
 		if (DOC_VALID(doc))
 		{
-			editor_find_current_word_and_scope(doc->editor,
-				editor_info.current_word, *scope);
+			editor_find_current_word_and_scope(doc->editor, -1,
+				editor_info.current_word, GEANY_MAX_WORD_LENGTH,
+				*scope, GEANY_MAX_WORD_LENGTH, NULL);
 			if (*editor_info.current_word != 0)
 				*word = g_strdup(editor_info.current_word);
 		}
@@ -2103,10 +2104,9 @@ static void goto_tag(GeanyDocument *doc, gboolean definition)
 	gchar *scope = NULL;
 	//~ word = get_current_word_or_sel(doc, FALSE); // esh: it was
 	get_current_word_and_scope(doc, &word, &scope); // esh: it is
-	ui_set_statusbar(TRUE, "word = %s, scope = %s", word, scope); // esh: log
 
 	if (word)
-		symbols_goto_tag(word, definition);
+		symbols_goto_tag(word, scope, definition);
 	else
 		utils_beep();
 

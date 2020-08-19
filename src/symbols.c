@@ -2192,8 +2192,9 @@ static gboolean goto_tag(const gchar *name, gboolean definition)
 }
 
 
-gboolean symbols_goto_tag(const gchar *name, gboolean definition)
+gboolean symbols_goto_tag(const gchar *name, const gchar *scope, gboolean definition)
 {
+	ui_set_statusbar(TRUE, "symbols_goto_tag, name = %s, scope = %s", name, scope); // esh: log
 	if (goto_tag(name, definition))
 		return TRUE;
 
