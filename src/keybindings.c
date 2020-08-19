@@ -78,6 +78,7 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *event, gpoint
 static gboolean check_current_word(GeanyDocument *doc, gboolean sci_word);
 static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word);
 static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word);
+static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope);
 
 static gboolean cb_func_file_action(guint key_id);
 static gboolean cb_func_project_action(guint key_id);
@@ -1809,6 +1810,27 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 }
 
 
+static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope)
+{
+	ScintillaObject *sci = doc->editor->sci;
+
+	if (sci_has_selection(sci))
+	{
+		*word = sci_get_selection_contents(sci);
+	}
+	else
+	{
+		if (DOC_VALID(doc))
+		{
+			editor_find_current_word_and_scope(doc->editor,
+				editor_info.current_word, *scope);
+			if (*editor_info.current_word != 0)
+				*word = g_strdup(editor_info.current_word);
+		}
+	}
+}
+
+
 static void focus_sidebar(void)
 {
 	if (ui_prefs.sidebar_visible)
@@ -2077,14 +2099,19 @@ static gboolean cb_func_clipboard_action(guint key_id)
 
 static void goto_tag(GeanyDocument *doc, gboolean definition)
 {
-	gchar *text = get_current_word_or_sel(doc, FALSE);
+	gchar *word = NULL;
+	gchar *scope = NULL;
+	//~ word = get_current_word_or_sel(doc, FALSE); // esh: it was
+	get_current_word_and_scope(doc, &word, &scope); // esh: it is
+	ui_set_statusbar(TRUE, "word = %s, scope = %s", word, scope); // esh: log
 
-	if (text)
-		symbols_goto_tag(text, definition);
+	if (word)
+		symbols_goto_tag(word, definition);
 	else
 		utils_beep();
 
-	g_free(text);
+	g_free(word);
+	g_free(scope);
 }
 
 

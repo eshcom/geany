@@ -101,6 +101,8 @@ static void close_block(GeanyEditor *editor, gint pos);
 static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos);
 static void read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
 		const gchar *wc, gboolean stem);
+static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gchar *word,
+							   gsize wordlen, const gchar *wc, gboolean stem);
 static gsize count_indent_size(GeanyEditor *editor, const gchar *base_indent);
 static const gchar *snippets_find_completion_by_name(const gchar *type, const gchar *name);
 static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
@@ -1681,47 +1683,68 @@ static void close_block(GeanyEditor *editor, gint pos)
 static void read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
 		const gchar *wc, gboolean stem)
 {
-	gint line, line_start, startword, endword;
-	gchar *chunk;
-	ScintillaObject *sci;
-
 	g_return_if_fail(editor != NULL);
-	sci = editor->sci;
+	ScintillaObject *sci = editor->sci;
 
 	if (pos == -1)
 		pos = sci_get_current_position(sci);
 
-	line = sci_get_line_from_position(sci, pos);
-	line_start = sci_get_position_from_line(sci, line);
-	startword = pos - line_start;
-	endword = pos - line_start;
-
-	word[0] = '\0';
-	chunk = sci_get_line(sci, line);
+	gint line = sci_get_line_from_position(sci, pos);
+	gint line_start = sci_get_position_from_line(sci, line);
+	gint startword = pos - line_start;
+	gint endword = pos - line_start;
+	gchar *chunk = sci_get_line(sci, line);
 
 	if (wc == NULL)
 		wc = GEANY_WORDCHARS;
 
+	read_current_chunk(chunk, &startword, &endword, word, wordlen, wc, stem);
+	g_free(chunk);
+}
+
+
+static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gchar *word,
+							   gsize wordlen, const gchar *wc, gboolean stem)
+{
+	word[0] = '\0';
+
 	/* the checks for "c < 0" are to allow any Unicode character which should make the code
 	 * a little bit more Unicode safe, anyway, this allows also any Unicode punctuation,
 	 * TODO: improve this code */
-	while (startword > 0 && (strchr(wc, chunk[startword - 1]) || ! IS_ASCII(chunk[startword - 1])))
-		startword--;
+	while (*startword > 0 && (strchr(wc, chunk[*startword - 1]) || ! IS_ASCII(chunk[*startword - 1])))
+		(*startword)--;
 	if (!stem)
 	{
-		while (chunk[endword] != 0 && (strchr(wc, chunk[endword]) || ! IS_ASCII(chunk[endword])))
-			endword++;
+		while (chunk[*endword] != 0 && (strchr(wc, chunk[*endword]) || ! IS_ASCII(chunk[*endword])))
+			(*endword)++;
 	}
 
-	if (startword != endword)
+	if (*startword != *endword)
 	{
-		chunk[endword] = '\0';
-
-		g_strlcpy(word, chunk + startword, wordlen); /* ensure null terminated */
+		chunk[*endword] = '\0';
+		g_strlcpy(word, chunk + *startword, wordlen); /* ensure null terminated */
 	}
 	else
 		g_strlcpy(word, "", wordlen);
+}
 
+
+/* esh: Reads the word and scope and writes it into the given buffer.
+ * 		(based on read_current_word) */
+void editor_find_current_word_and_scope(GeanyEditor *editor, gchar *word, gchar *scope)
+{
+	g_return_if_fail(editor != NULL);
+	ScintillaObject *sci = editor->sci;
+	
+	gint pos = sci_get_current_position(sci);
+	gint line = sci_get_line_from_position(sci, pos);
+	gint line_start = sci_get_position_from_line(sci, line);
+	gint startword = pos - line_start;
+	gint endword = pos - line_start;
+	gchar *chunk = sci_get_line(sci, line);
+	
+	read_current_chunk(chunk, &startword, &endword, word, GEANY_MAX_WORD_LENGTH,
+					   GEANY_WORDCHARS, FALSE);
 	g_free(chunk);
 }
 
