@@ -317,10 +317,12 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		{
 			sci_set_current_position(editor->sci, editor_info.click_pos, FALSE);
 
-			editor_find_current_word(editor, editor_info.click_pos,
-				current_word, sizeof current_word, NULL);
+			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
+			editor_find_current_word_and_scope(editor, editor_info.click_pos,
+				current_word, sizeof current_word,
+				current_scope, sizeof current_scope, NULL);
 			if (*current_word)
-				return symbols_goto_tag(current_word, TRUE);
+				return symbols_goto_tag(current_word, current_scope, TRUE);
 			else
 				keybindings_send_command(GEANY_KEY_GROUP_GOTO, GEANY_KEYS_GOTO_MATCHINGBRACE);
 			return TRUE;
@@ -1730,21 +1732,29 @@ static void read_current_chunk(gchar *chunk, gint *startword, gint *endword, gch
 
 
 /* esh: Reads the word and scope and writes it into the given buffer.
- * 		(based on read_current_word) */
-void editor_find_current_word_and_scope(GeanyEditor *editor, gchar *word, gchar *scope)
+ * 		(based on editor_find_current_word/read_current_word) */
+void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+										gchar *scope, gsize scopelen, const gchar *wc)
 {
+	ui_set_statusbar(TRUE, "lang1 = %d", editor->document->file_type->lang); // esh: log
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
-	
-	gint pos = sci_get_current_position(sci);
+
+	if (pos == -1)
+		pos = sci_get_current_position(sci);
+
 	gint line = sci_get_line_from_position(sci, pos);
 	gint line_start = sci_get_position_from_line(sci, line);
 	gint startword = pos - line_start;
 	gint endword = pos - line_start;
 	gchar *chunk = sci_get_line(sci, line);
-	
-	read_current_chunk(chunk, &startword, &endword, word, GEANY_MAX_WORD_LENGTH,
-					   GEANY_WORDCHARS, FALSE);
+
+	if (wc == NULL)
+		wc = GEANY_WORDCHARS;
+
+	read_current_chunk(chunk, &startword, &endword, word, wordlen, wc, FALSE);
+	//~ TODO: add read_current_chunk to find scope
+	//~ read_current_chunk(chunk, &startword, &endword, scope, scopelen, wc, FALSE);
 	g_free(chunk);
 }
 

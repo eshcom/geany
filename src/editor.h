@@ -246,8 +246,8 @@ gboolean editor_show_calltip(GeanyEditor *editor, gint pos);
 
 void editor_do_comment_toggle(GeanyEditor *editor);
 
-gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_lines, gboolean toggle,
-		gboolean single_comment);
+gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_lines,
+					   gboolean toggle, gboolean single_comment);
 
 gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle);
 
@@ -278,14 +278,16 @@ const GeanyEditorPrefs *editor_get_prefs(GeanyEditor *editor);
 
 /* General editing functions */
 
-void editor_find_current_word_and_scope(GeanyEditor *editor, gchar *word, gchar *scope);
+void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+										gchar *scope, gsize scopelen, const gchar *wc);
 
 void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-	const gchar *wc);
+							  const gchar *wc);
 
 void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen);
 
-gchar *editor_get_default_selection(GeanyEditor *editor, gboolean use_current_word, const gchar *wordchars);
+gchar *editor_get_default_selection(GeanyEditor *editor, gboolean use_current_word,
+									const gchar *wordchars);
 
 
 void editor_select_word(GeanyEditor *editor);
