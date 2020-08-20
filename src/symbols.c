@@ -2080,13 +2080,14 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 }
 
 
-static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, gboolean definition)
+static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
+							  const gchar *scope, gboolean definition)
 {
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	guint i;
-
+	
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		if ((definition && !(tmtag->type & forward_types)) ||
@@ -2102,17 +2103,18 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, gboolean defi
 					g_ptr_array_add(filtered_tags, tmtag);
 			}
 			else if (tmtag != current_tag)
-				g_ptr_array_add(filtered_tags, tmtag);
-
+			{
+				if (EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
+					g_ptr_array_add(filtered_tags, tmtag);
+			}
 			last_tag = tmtag;
 		}
 	}
-
 	return filtered_tags;
 }
 
 
-static gboolean goto_tag(const gchar *name, gboolean definition)
+static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definition)
 {
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *current_tag = NULL;
@@ -2122,9 +2124,9 @@ static gboolean goto_tag(const gchar *name, gboolean definition)
 	GPtrArray *tags, *filtered_tags;
 	guint i;
 	guint current_line = sci_get_current_line(old_doc->editor->sci) + 1;
-
+	
 	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL, old_doc->file_type->lang);
-
+	
 	/* get rid of global tags and find tag at current line */
 	tags = g_ptr_array_new();
 	foreach_ptr_array(tmtag, i, all_tags)
@@ -2136,42 +2138,42 @@ static gboolean goto_tag(const gchar *name, gboolean definition)
 				current_tag = tmtag;
 		}
 	}
-
+	
 	if (current_tag)
 		/* swap definition/declaration search */
 		definition = current_tag->type & forward_types;
-
-	filtered_tags = filter_tags(tags, current_tag, definition);
+	
+	filtered_tags = filter_tags(tags, current_tag, scope, definition);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, !definition);
+		filtered_tags = filter_tags(tags, current_tag, scope, !definition);
 	}
 	g_ptr_array_free(tags, TRUE);
 	tags = filtered_tags;
-
+	
 	if (tags->len == 1)
 	{
 		GeanyDocument *new_doc;
-
+		
 		tmtag = tags->pdata[0];
 		new_doc = document_find_by_real_path(tmtag->file->file_name);
-
+		
 		if (!new_doc)
 			/* not found in opened document, should open */
 			new_doc = document_open_file(tmtag->file->file_name, FALSE, NULL, NULL);
-
+		
 		navqueue_goto_line(old_doc, new_doc, tmtag->line);
 	}
 	else if (tags->len > 1)
 	{
 		GPtrArray *tag_list;
 		TMTag *tag, *best_tag;
-
+		
 		g_ptr_array_sort(tags, compare_tags_by_name_line);
 		best_tag = find_best_goto_tag(old_doc, tags);
-
+		
 		tag_list = g_ptr_array_new();
 		if (best_tag)
 			g_ptr_array_add(tag_list, best_tag);
@@ -2181,26 +2183,25 @@ static gboolean goto_tag(const gchar *name, gboolean definition)
 				g_ptr_array_add(tag_list, tag);
 		}
 		show_goto_popup(old_doc, tag_list, best_tag != NULL);
-
+		
 		g_ptr_array_free(tag_list, TRUE);
 	}
-
+	
 	found = tags->len > 0;
 	g_ptr_array_free(tags, TRUE);
-
+	
 	return found;
 }
 
 
 gboolean symbols_goto_tag(const gchar *name, const gchar *scope, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "symbols_goto_tag, name = %s, scope = %s", name, scope); // esh: log
-	if (goto_tag(name, definition))
+	if (goto_tag(name, scope, definition))
 		return TRUE;
-
+	
 	/* if we are here, there was no match and we are beeping ;-) */
 	utils_beep();
-
+	
 	if (!definition)
 		ui_set_statusbar(FALSE, _("Forward declaration \"%s\" not found."), name);
 	else
