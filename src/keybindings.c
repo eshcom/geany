@@ -1810,28 +1810,44 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 }
 
 
+/* esh: based on get_current_word_or_sel/read_current_word */
 static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope)
 {
 	ScintillaObject *sci = doc->editor->sci;
-
+	
+	static gchar current_scope[GEANY_MAX_WORD_LENGTH];
+	
 	if (sci_has_selection(sci))
 	{
-		*word = sci_get_selection_contents(sci);
-	}
-	else
-	{
-		if (DOC_VALID(doc))
+		gchar *selection = sci_get_selection_contents(sci);
+		static gchar current_word[GEANY_MAX_WORD_LENGTH];
+		
+		editor_find_select_word_and_scope(selection,
+			doc->editor->document->file_type->lang,
+			current_word, GEANY_MAX_WORD_LENGTH,
+			current_scope, GEANY_MAX_WORD_LENGTH);
+		if (*current_word != 0)
 		{
-			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
-			editor_find_current_word_and_scope(doc->editor, -1,
-				editor_info.current_word, GEANY_MAX_WORD_LENGTH,
-				current_scope, GEANY_MAX_WORD_LENGTH, NULL);
-			if (*editor_info.current_word != 0)
+			if (*current_scope != 0)
 			{
-				*word = g_strdup(editor_info.current_word);
-				if (*current_scope != 0)
-					*scope = g_strdup(current_scope);
+				*word = g_strdup(current_word);
+				*scope = g_strdup(current_scope);
 			}
+			else
+				*word = g_strdup(selection);
+		}
+		g_free(selection);
+	}
+	else if (DOC_VALID(doc))
+	{
+		editor_find_current_word_and_scope(doc->editor, -1,
+			editor_info.current_word, GEANY_MAX_WORD_LENGTH,
+			current_scope, GEANY_MAX_WORD_LENGTH);
+		if (*editor_info.current_word != 0)
+		{
+			*word = g_strdup(editor_info.current_word);
+			if (*current_scope != 0)
+				*scope = g_strdup(current_scope);
 		}
 	}
 }
@@ -2109,12 +2125,12 @@ static void goto_tag(GeanyDocument *doc, gboolean definition)
 	gchar *scope = NULL;
 	//~ word = get_current_word_or_sel(doc, FALSE); // esh: it was
 	get_current_word_and_scope(doc, &word, &scope); // esh: it is
-
+	
 	if (word)
 		symbols_goto_tag(word, scope, definition);
 	else
 		utils_beep();
-
+	
 	g_free(word);
 	g_free(scope);
 }

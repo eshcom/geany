@@ -738,6 +738,9 @@ const gchar *tm_parser_context_separator(TMParserType lang)
 {
 	switch (lang)
 	{
+		case TM_PARSER_ERLANG:
+			return ":";
+		
 		case TM_PARSER_C:	/* for C++ .h headers or C structs */
 		case TM_PARSER_CPP:
 		case TM_PARSER_GLSL:	/* for structs */
@@ -747,17 +750,17 @@ const gchar *tm_parser_context_separator(TMParserType lang)
 		case TM_PARSER_RUST:
 		case TM_PARSER_ZEPHIR:
 			return "::";
-
+		
 		/* avoid confusion with other possible separators in group/section name */
 		case TM_PARSER_CONF:
 		case TM_PARSER_REST:
 			return ":::";
-
+		
 		/* no context separator */
 		case TM_PARSER_ASCIIDOC:
 		case TM_PARSER_TXT2TAGS:
 			return "\x03";
-
+		
 		default:
 			return ".";
 	}

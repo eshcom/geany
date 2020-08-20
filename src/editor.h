@@ -278,8 +278,13 @@ const GeanyEditorPrefs *editor_get_prefs(GeanyEditor *editor);
 
 /* General editing functions */
 
-void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-										gchar *scope, gsize scopelen, const gchar *wc);
+void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
+										gchar *word, gsize wordlen,
+										gchar *scope, gsize scopelen);
+
+void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
+									   gchar *word, gsize wordlen,
+									   gchar *scope, gsize scopelen);
 
 void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
 							  const gchar *wc);
