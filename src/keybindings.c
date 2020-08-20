@@ -1826,16 +1826,13 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 			doc->editor->document->file_type->lang,
 			current_word, GEANY_MAX_WORD_LENGTH,
 			current_scope, GEANY_MAX_WORD_LENGTH);
-		if (*current_word != 0)
+		if (*current_word && *current_scope)
 		{
-			if (*current_scope != 0)
-			{
-				*word = g_strdup(current_word);
-				*scope = g_strdup(current_scope);
-			}
-			else
-				*word = g_strdup(selection);
+			*word = g_strdup(current_word);
+			*scope = g_strdup(current_scope);
 		}
+		else
+			*word = g_strdup(selection);
 		g_free(selection);
 	}
 	else if (DOC_VALID(doc))
@@ -1843,10 +1840,10 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 		editor_find_current_word_and_scope(doc->editor, -1,
 			editor_info.current_word, GEANY_MAX_WORD_LENGTH,
 			current_scope, GEANY_MAX_WORD_LENGTH);
-		if (*editor_info.current_word != 0)
+		if (*editor_info.current_word)
 		{
 			*word = g_strdup(editor_info.current_word);
-			if (*current_scope != 0)
+			if (*current_scope)
 				*scope = g_strdup(current_scope);
 		}
 	}
