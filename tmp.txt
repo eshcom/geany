@@ -32,4 +32,15 @@ vte_send_cmd -> vte_terminal_feed_child
 ----------------------------------------------------------------------------------------
 
 keybindings/goto_tag -> symbols/symbols_goto_tag -> symbols/goto_tag
+----------------------------------------------------------------------------------------
 
+--string example1:
+	wildcard = g_strndup(cmd, (gsize) (match - cmd + 1));
+	cmd = g_strndup(wildcard + 9, strlen(wildcard) - 10);
+
+--string example2:
+	return g_strndup(&text[start], end - start);
+
+--string example3:
+	len = (gsize)(cur - begin);
+	return len ? g_strndup(begin, len) : NULL;

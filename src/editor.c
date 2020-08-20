@@ -101,6 +101,8 @@ static void close_block(GeanyEditor *editor, gint pos);
 static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos);
 static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
 							  const gchar *wc, gboolean stem);
+static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
+					  gsize wordlen, const gchar *wc, gboolean stem);
 static gsize count_indent_size(GeanyEditor *editor, const gchar *base_indent);
 static const gchar *snippets_find_completion_by_name(const gchar *type, const gchar *name);
 static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
@@ -318,7 +320,7 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
 			editor_find_current_word_and_scope(editor, editor_info.click_pos,
 				current_word, sizeof current_word,
-				current_scope, sizeof current_scope, NULL);
+				current_scope, sizeof current_scope);
 			if (*current_word)
 				return symbols_goto_tag(current_word, current_scope, TRUE);
 			else
@@ -647,16 +649,30 @@ static void show_tags_list(GeanyEditor *editor, const GPtrArray *tags, gsize roo
 static gboolean match_last_chars(ScintillaObject *sci, gint pos, const gchar *str)
 {
 	gsize len = strlen(str);
-	gchar *buf;
-
 	g_return_val_if_fail(len < 100, FALSE);
-
+	
 	if ((gint)len > pos)
 		return FALSE;
-
-	buf = g_alloca(len + 1);
+	
+	gchar *buf = g_alloca(len + 1);
 	sci_get_text_range(sci, pos - len, pos, buf);
 	return strcmp(str, buf) == 0;
+}
+
+
+/* esh: based on match_last_chars */
+static gboolean match_last_chars_chunk(gchar *chunk, gint pos, const gchar *str)
+{
+	gsize len = strlen(str);
+	g_return_val_if_fail(len < 100, FALSE);
+	
+	if ((gint)len > pos)
+		return FALSE;
+	
+	gchar *buf = g_strndup(&chunk[pos - len], len);
+	gboolean match = (strcmp(str, buf) == 0);
+	g_free(buf);
+	return match;
 }
 
 
@@ -1692,46 +1708,53 @@ static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize 
 	gint line = sci_get_line_from_position(sci, pos);
 	gint line_start = sci_get_position_from_line(sci, line);
 	gint startword = pos - line_start;
-	gint endword = pos - line_start;
+	gint endword = startword;
 	gchar *chunk = sci_get_line(sci, line);
 	
 	if (wc == NULL)
 		wc = GEANY_WORDCHARS;
 	
-	/* the checks for "c < 0" are to allow any Unicode character which should make the code
-	 * a little bit more Unicode safe, anyway, this allows also any Unicode punctuation,
-	 * TODO: improve this code */
-	while (startword > 0 && (strchr(wc, chunk[startword - 1]) || ! IS_ASCII(chunk[startword - 1])))
-		startword--;
-	if (!stem)
-	{
-		while (chunk[endword] != 0 && (strchr(wc, chunk[endword]) || ! IS_ASCII(chunk[endword])))
-			endword++;
-	}
-	
-	word[0] = '\0';
-	if (startword != endword)
-	{
-		chunk[endword] = '\0';
-		g_strlcpy(word, chunk + startword, wordlen); /* ensure null terminated */
-	}
-	else
-		g_strlcpy(word, "", wordlen);
-	
+	read_word(chunk, &startword, &endword, word, wordlen, wc, stem);
 	g_free(chunk);
 	return line_start + startword;
 }
 
 
-/* esh: Reads the word and scope and writes it into the given buffer.
- * 		(based on editor_find_current_word/read_current_word) */
-void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-										gchar *scope, gsize scopelen, const gchar *wc)
+static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
+					  gsize wordlen, const gchar *wc, gboolean stem)
+{
+	word[0] = '\0';
+	
+	/* the checks for "c < 0" are to allow any Unicode character which should make the code
+	 * a little bit more Unicode safe, anyway, this allows also any Unicode punctuation,
+	 * TODO: improve this code */
+	while (*startword > 0 && (strchr(wc, chunk[*startword - 1]) || ! IS_ASCII(chunk[*startword - 1])))
+		(*startword)--;
+	if (!stem)
+	{
+		while (chunk[*endword] != 0 && (strchr(wc, chunk[*endword]) || ! IS_ASCII(chunk[*endword])))
+			(*endword)++;
+	}
+	if (*startword != *endword)
+	{
+		chunk[*endword] = '\0';
+		g_strlcpy(word, chunk + *startword, wordlen); /* ensure null terminated */
+	}
+	else
+		g_strlcpy(word, "", wordlen);
+}
+
+
+/* esh: Reads the word and scope by cursor position.
+ * 		(based on editor_find_current_word) */
+void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
+										gchar *word, gsize wordlen,
+										gchar *scope, gsize scopelen)
 {
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
 	
-	pos = read_current_word(editor, pos, word, wordlen, wc, FALSE);
+	pos = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
 	
 	/* allow for a space between word and operator */
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
@@ -1751,7 +1774,48 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos, gchar *wo
 			
 			if (pos > 0)
 			{
-				read_current_word(editor, pos, scope, scopelen, wc, FALSE);
+				read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
+				return;
+			}
+		}
+	}
+	*scope = '\0';
+}
+
+
+/* esh: Reads the word and scope by selection.
+ * 		(based on editor_find_current_word_and_scope) */
+void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
+									   gchar *word, gsize wordlen,
+									   gchar *scope, gsize scopelen)
+{
+	gint startword = strlen(chunk);
+	gint endword = startword;
+	
+	read_word(chunk, &startword, &endword, word, wordlen,
+			  GEANY_WORDCHARS, FALSE);
+	
+	/* allow for a space between word and operator */
+	while (startword > 0 && isspace(chunk[startword - 1]))
+		startword--;
+	
+	if (startword > 0)
+	{
+		const gchar *context_sep = tm_parser_context_separator(lang);
+		
+		if (match_last_chars_chunk(chunk, startword, context_sep))
+		{
+			startword -= strlen(context_sep);
+			
+			/* allow for a space between word and operator */
+			while (startword > 0 && isspace(chunk[startword - 1]))
+				startword--;
+			
+			if (startword > 0)
+			{
+				endword = startword;
+				read_word(chunk, &startword, &endword, scope, scopelen,
+						  GEANY_WORDCHARS, FALSE);
 				return;
 			}
 		}
