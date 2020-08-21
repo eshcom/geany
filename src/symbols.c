@@ -2080,6 +2080,31 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 }
 
 
+static GPtrArray *filter_tags_by_file(GPtrArray *tags, TMSourceFile *file)
+{
+	TMTag *tmtag = NULL;
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	guint i;
+	
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if (g_strcmp0(tmtag->file->file_name, file->file_name) == 0)
+			g_ptr_array_add(filtered_tags, tmtag);
+	}
+	if (filtered_tags->len == 0)
+	{
+		gchar *dir = g_path_get_dirname(file->file_name);
+		foreach_ptr_array(tmtag, i, tags)
+		{
+			if (g_str_has_prefix(tmtag->file->file_name, dir))
+				g_ptr_array_add(filtered_tags, tmtag);
+		}
+		g_free(dir);
+	}
+	return filtered_tags;
+}
+
+
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, gboolean definition)
 {
@@ -2128,12 +2153,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 	
 	if (filtered_tags->len > 1 && current_file)
 	{
-		filtered_tags_add = g_ptr_array_new();
-		foreach_ptr_array(tmtag, i, filtered_tags)
-		{
-			if (tmtag->file == current_file)
-				g_ptr_array_add(filtered_tags_add, tmtag);
-		}
+		filtered_tags_add = filter_tags_by_file(filtered_tags, current_file);
 		if (filtered_tags_add->len > 0)
 		{
 			g_ptr_array_free(filtered_tags, TRUE);
