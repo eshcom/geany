@@ -2080,12 +2080,15 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 }
 
 
-static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
+static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, gboolean definition)
 {
+	//~ ui_set_statusbar(TRUE, "filter_tags, scope = %s, file = %s, definition = %d",
+					 //~ scope, current_file->short_name, definition); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
+	GPtrArray *filtered_tags_ext = g_ptr_array_new();
 	guint i;
 	
 	foreach_ptr_array(tmtag, i, tags)
@@ -2104,13 +2107,37 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 			}
 			else if (tmtag != current_tag)
 			{
-				if (EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
-					g_ptr_array_add(filtered_tags, tmtag);
+				//~ ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, var_type = %s, file = %s",
+								 //~ tmtag->scope, tmtag->name, tmtag->type,
+								 //~ tmtag->var_type, tmtag->file->short_name); // esh: log
+				if (definition)
+				{
+					if (EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
+						g_ptr_array_add(filtered_tags, tmtag);
+					else
+						g_ptr_array_add(filtered_tags_ext, tmtag);
+				}
+				else
+				{
+					if (current_file == NULL || current_file == tmtag->file)
+						g_ptr_array_add(filtered_tags, tmtag);
+					else
+						g_ptr_array_add(filtered_tags_ext, tmtag);
+				}
 			}
 			last_tag = tmtag;
 		}
 	}
-	return filtered_tags;
+	if (filtered_tags->len == 0)
+	{
+		g_ptr_array_free(filtered_tags, TRUE);
+		return filtered_tags_ext;
+	}
+	else
+	{
+		g_ptr_array_free(filtered_tags_ext, TRUE);
+		return filtered_tags;
+	}
 }
 
 
@@ -2143,12 +2170,12 @@ static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definit
 		/* swap definition/declaration search */
 		definition = current_tag->type & forward_types;
 	
-	filtered_tags = filter_tags(tags, current_tag, scope, definition);
+	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope, definition);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, scope, !definition);
+		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope, !definition);
 	}
 	g_ptr_array_free(tags, TRUE);
 	tags = filtered_tags;
