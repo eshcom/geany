@@ -2088,7 +2088,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	GPtrArray *filtered_tags_ext = g_ptr_array_new();
+	GPtrArray *filtered_tags_add = g_ptr_array_new();
 	guint i;
 	
 	foreach_ptr_array(tmtag, i, tags)
@@ -2110,20 +2110,10 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 				//~ ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, var_type = %s, file = %s",
 								 //~ tmtag->scope, tmtag->name, tmtag->type,
 								 //~ tmtag->var_type, tmtag->file->short_name); // esh: log
-				if (definition)
-				{
-					if (EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
-						g_ptr_array_add(filtered_tags, tmtag);
-					else
-						g_ptr_array_add(filtered_tags_ext, tmtag);
-				}
+				if (!definition || EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
+					g_ptr_array_add(filtered_tags, tmtag);
 				else
-				{
-					if (current_file == NULL || current_file == tmtag->file)
-						g_ptr_array_add(filtered_tags, tmtag);
-					else
-						g_ptr_array_add(filtered_tags_ext, tmtag);
-				}
+					g_ptr_array_add(filtered_tags_add, tmtag);
 			}
 			last_tag = tmtag;
 		}
@@ -2131,13 +2121,28 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 	if (filtered_tags->len == 0)
 	{
 		g_ptr_array_free(filtered_tags, TRUE);
-		return filtered_tags_ext;
+		filtered_tags = filtered_tags_add;
 	}
 	else
+		g_ptr_array_free(filtered_tags_add, TRUE);
+	
+	if (filtered_tags->len > 1 && current_file)
 	{
-		g_ptr_array_free(filtered_tags_ext, TRUE);
-		return filtered_tags;
+		filtered_tags_add = g_ptr_array_new();
+		foreach_ptr_array(tmtag, i, filtered_tags)
+		{
+			if (tmtag->file == current_file)
+				g_ptr_array_add(filtered_tags_add, tmtag);
+		}
+		if (filtered_tags_add->len > 0)
+		{
+			g_ptr_array_free(filtered_tags, TRUE);
+			filtered_tags = filtered_tags_add;
+		}
+		else
+			g_ptr_array_free(filtered_tags_add, TRUE);
 	}
+	return filtered_tags;
 }
 
 
