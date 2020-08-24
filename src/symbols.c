@@ -2080,7 +2080,35 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 }
 
 
-static GPtrArray *filter_tags_by_file(GPtrArray *tags, TMSourceFile *file)
+static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope)
+{
+	TMTag *tmtag = NULL;
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	guint i;
+	
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if (utils_str_equal(tmtag->scope, scope))
+			g_ptr_array_add(filtered_tags, tmtag);
+	}
+	return filtered_tags;
+}
+
+static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
+{
+	TMTag *tmtag = NULL;
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	guint i;
+	
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if (tmtag->type & type)
+			g_ptr_array_add(filtered_tags, tmtag);
+	}
+	return filtered_tags;
+}
+
+static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 {
 	TMTag *tmtag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
@@ -2104,16 +2132,26 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, TMSourceFile *file)
 	return filtered_tags;
 }
 
+static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
+{
+	if ((*new_tags)->len > 0)
+	{
+		g_ptr_array_free(*old_tags, TRUE);
+		*old_tags = *new_tags;
+	}
+	else
+		g_ptr_array_free(*new_tags, TRUE);
+}
 
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, gboolean definition)
 {
-	//~ ui_set_statusbar(TRUE, "filter_tags, scope = %s, file = %s, definition = %d",
-					 //~ scope, current_file->short_name, definition); // esh: log
+	ui_set_statusbar(TRUE, "filter_tags, scope = %s, file = %s, definition = %d",
+					 scope, current_file->short_name, definition); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	GPtrArray *filtered_tags_add = g_ptr_array_new();
+	GPtrArray *new_tags;
 	guint i;
 	
 	foreach_ptr_array(tmtag, i, tags)
@@ -2132,35 +2170,28 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			}
 			else if (tmtag != current_tag)
 			{
-				//~ ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, var_type = %s, file = %s",
-								 //~ tmtag->scope, tmtag->name, tmtag->type,
-								 //~ tmtag->var_type, tmtag->file->short_name); // esh: log
-				if (!definition || EMPTY(scope) || utils_str_equal(scope, tmtag->scope))
-					g_ptr_array_add(filtered_tags, tmtag);
-				else
-					g_ptr_array_add(filtered_tags_add, tmtag);
+				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, var_type = %s, file = %s",
+								 tmtag->scope, tmtag->name, tmtag->type,
+								 tmtag->var_type, tmtag->file->short_name); // esh: log
+				g_ptr_array_add(filtered_tags, tmtag);
 			}
 			last_tag = tmtag;
 		}
 	}
-	if (filtered_tags->len == 0)
+	if (filtered_tags->len > 1 && definition && !EMPTY(scope))
 	{
-		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filtered_tags_add;
+		new_tags = filter_tags_by_scope(filtered_tags, scope);
+		filter_tags_check(&filtered_tags, &new_tags);
 	}
-	else
-		g_ptr_array_free(filtered_tags_add, TRUE);
-	
+	if (filtered_tags->len > 1 && definition)
+	{
+		new_tags = filter_tags_by_type(filtered_tags, tm_tag_function_t);
+		filter_tags_check(&filtered_tags, &new_tags);
+	}
 	if (filtered_tags->len > 1 && current_file)
 	{
-		filtered_tags_add = filter_tags_by_file(filtered_tags, current_file);
-		if (filtered_tags_add->len > 0)
-		{
-			g_ptr_array_free(filtered_tags, TRUE);
-			filtered_tags = filtered_tags_add;
-		}
-		else
-			g_ptr_array_free(filtered_tags_add, TRUE);
+		new_tags = filter_tags_by_file(filtered_tags, current_file);
+		filter_tags_check(&filtered_tags, &new_tags);
 	}
 	return filtered_tags;
 }
