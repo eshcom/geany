@@ -258,15 +258,17 @@ static const HLStyle highlighting_styles_C[] =
 	/* used for local structs and typedefs */
 	{ SCE_C_GLOBALCLASS,			"globalclass",				FALSE },
 	{ SCE_C_TASKMARKER,				"taskmarker",				FALSE },
-	{ SCE_C_ESCAPESEQUENCE,			"escapesequence",			FALSE }
+	{ SCE_C_ESCAPESEQUENCE,			"escapesequence",			FALSE },
+	{ SCE_C_COMMONWORD,				"commonword",				FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {
 	{ 0, "primary",		FALSE },
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
 	{ 1, "secondary",	TRUE },
-	{ 2, "docComment",	FALSE }
+	{ 2, "docComment",	FALSE },
 	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	{ 6, "commonword",	FALSE }
 };
 static const HLProperty highlighting_properties_C[] =
 {
