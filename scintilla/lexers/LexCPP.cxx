@@ -388,6 +388,7 @@ const char *const cppWordLists[] = {
             "Global classes and typedefs",
             "Preprocessor definitions",
             "Task marker and error marker keywords",
+            "Common keywords and identifiers",
             nullptr,
 };
 
@@ -495,6 +496,7 @@ LexicalClass lexicalClasses[] = {
 	25, "SCE_C_USERLITERAL", "literal", "User defined literals",
 	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
 	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+	28, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
 };
 
 }
@@ -516,6 +518,7 @@ class LexerCPP : public ILexerWithMetaData {
 	WordList keywords4;
 	WordList ppDefinitions;
 	WordList markerList;
+	WordList commonWords;
 	struct SymbolValue {
 		std::string value;
 		std::string arguments;
@@ -719,6 +722,9 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 		break;
 	case 5:
 		wordListN = &markerList;
+		break;
+	case 6:
+		wordListN = &commonWords;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -931,6 +937,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					if (keywords.InList(s)) {
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_WORD|activitySet);
+					} else if (commonWords.InList(s)) {
+						sc.ChangeState(SCE_C_COMMONWORD|activitySet);
 					} else if (keywords2.InList(s)) {
 						sc.ChangeState(SCE_C_WORD2|activitySet);
 					} else if (keywords4.InList(s)) {
