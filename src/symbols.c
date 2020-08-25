@@ -2146,8 +2146,7 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "filter_tags, scope = %s, file = %s, definition = %d",
-					 scope, current_file->short_name, definition); // esh: log
+	ui_set_statusbar(TRUE, "filter_tags, scope = %s, definition = %d", scope, definition); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
