@@ -3,9 +3,11 @@
 
 [keywords]
 # all items must be in one line
-primary=abstract break case cast catch class continue default trace do dynamic else enum extends extern false for function if implements import in inline interface macro new null override package private public return static switch this throw true try typedef untyped using var while
+primary=abstract break case cast catch class continue default trace do dynamic else enum extends extern for function if implements import in inline interface macro new override package private public return static switch this throw try typedef untyped using var while
 secondary=Bool Dynamic Float Int Void Enum String
 classes=Array ArrayAccess Class Date DateTools EReg Hash IntHash IntIter Iterable Iterator Lambda List Math Null Protected Reflect Std StringBuf StringTools Type UInt ValueType Xml XmlType
+# Common keywords
+commonword=null true false
 
 [lexer_properties=C]
 # Haxe preprocessor has different directive than C, which the C lexer doesn't understand, so

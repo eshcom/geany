@@ -2,11 +2,13 @@
 [styling=C]
 
 [keywords]
-primary=abstract assert break case catch class const continue default do else enum extends final finally for goto if implements import instanceof interface native new package private protected public return static strictfp super switch synchronized this throw throws transient try volatile while true false null
+primary=abstract assert break case catch class const continue default do else enum extends final finally for goto if implements import instanceof interface native new package private protected public return static strictfp super switch synchronized this throw throws transient try volatile while
 secondary=boolean byte char double float int long short void
 # documentation keywords for javadoc
 doccomment=author deprecated exception param return see serial serialData serialField since throws todo version
 typedefs=
+# Common keywords
+commonword=null true false
 
 [lexer_properties=C]
 
