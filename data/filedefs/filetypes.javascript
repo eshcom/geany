@@ -7,6 +7,8 @@ primary=break case catch class const continue debugger default delete do else en
 secondary=Array Boolean Date Function Math Number Object String RegExp EvalError Error RangeError ReferenceError SyntaxError TypeError URIError constructor prototype decodeURI decodeURIComponent encodeURI encodeURIComponent eval isFinite isNaN parseFloat parseInt
 # Common keywords
 commonword=NaN null true false
+# Other classes
+otherclass=
 
 [lexer_properties=C]
 # partially handles ES6 template strings

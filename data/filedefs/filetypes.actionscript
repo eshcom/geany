@@ -8,6 +8,8 @@ secondary=decodeURI decodeURIcomponent encodeURI encodeURIcomponent escape isFin
 classes=ArgumentError Array Boolean Class Date DefinitionError Error EvalError Function int Math NameSpace Null Number Object QName RangeError ReferenceError RegExp SecurityError String SyntaxError TypeError uint URIError Vector VerifyError void XML XMLList
 # Common keywords
 commonword=NaN null true false
+# Other classes
+otherclass=
 
 [lexer_properties=C]
 
