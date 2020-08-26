@@ -129,7 +129,8 @@ static const HLKeyword highlighting_keywords_AS[] =
 	{ 0, "primary",		FALSE },
 	{ 1, "secondary",	FALSE },
 	{ 3, "classes",		FALSE },
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_AS	highlighting_properties_C
 
@@ -621,7 +622,8 @@ static const HLKeyword highlighting_keywords_FERITE[] =
 	{ 0, "primary",		FALSE },
 	{ 1, "types",		FALSE },
 	{ 2, "docComment",	FALSE },
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_FERITE	highlighting_properties_C
 
@@ -715,7 +717,8 @@ static const HLKeyword highlighting_keywords_HAXE[] =
 	{ 0, "primary",		FALSE },
 	{ 1, "secondary",	FALSE },
 	{ 3, "classes",		FALSE },
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_HAXE	highlighting_properties_C
 
@@ -878,7 +881,8 @@ static const HLKeyword highlighting_keywords_JAVA[] =
 	{ 2, "doccomment",	FALSE },
 	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
 	{ 4, "typedefs",	FALSE },
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_JAVA	highlighting_properties_C
 
@@ -890,7 +894,8 @@ static const HLKeyword highlighting_keywords_JS[] =
 {
 	{ 0, "primary",		FALSE },
 	{ 1, "secondary",	FALSE },
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_JS	highlighting_properties_C
 

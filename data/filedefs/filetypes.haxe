@@ -8,6 +8,8 @@ secondary=Bool Dynamic Float Int Void Enum String
 classes=Array ArrayAccess Class Date DateTools EReg Hash IntHash IntIter Iterable Iterator Lambda List Math Null Protected Reflect Std StringBuf StringTools Type UInt ValueType Xml XmlType
 # Common keywords
 commonword=null true false
+# Other classes
+otherclass=
 
 [lexer_properties=C]
 # Haxe preprocessor has different directive than C, which the C lexer doesn't understand, so

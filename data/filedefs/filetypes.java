@@ -9,6 +9,8 @@ doccomment=author deprecated exception param return see serial serialData serial
 typedefs=
 # Common keywords
 commonword=null true false
+# Other classes
+otherclass=
 
 [lexer_properties=C]
 

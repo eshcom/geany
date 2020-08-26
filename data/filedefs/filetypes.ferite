@@ -8,6 +8,8 @@ types=boolean string number array object void XML Unix Sys String Stream Seriali
 docComment=brief class declaration description end example extends function group implements modifies module namespace param protocol return return static type variable warning
 # Common keywords
 commonword=null true false
+# Other classes
+otherclass=
 
 [lexer_properties=C]
 
