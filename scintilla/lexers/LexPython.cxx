@@ -259,6 +259,7 @@ struct OptionsPython {
 static const char *const pythonWordListDesc[] = {
 	"Keywords",
 	"Highlighted identifiers",
+	"Common keywords and identifiers",
 	0
 };
 
@@ -330,6 +331,7 @@ LexicalClass lexicalClasses[] = {
 	17, "SCE_P_FCHARACTER", "literal string interpolated", "Single quoted f-string",
 	18, "SCE_P_FTRIPLE", "literal string interpolated", "Triple quoted f-string",
 	19, "SCE_P_FTRIPLEDOUBLE", "literal string interpolated", "Triple double quoted f-string",
+	20, "SCE_P_COMMONWORD", "keyword", "Common keywords (None True False)",
 };
 
 }
@@ -337,6 +339,7 @@ LexicalClass lexicalClasses[] = {
 class LexerPython : public DefaultLexer {
 	WordList keywords;
 	WordList keywords2;
+	WordList commonWords;
 	OptionsPython options;
 	OptionSetPython osPython;
 	enum { ssIdentifier };
@@ -432,6 +435,9 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		break;
 	case 1:
 		wordListN = &keywords2;
+		break;
+	case 2:
+		wordListN = &commonWords;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -599,6 +605,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 					style = SCE_P_WORD;
 				} else if (keywords.InList(s)) {
 					style = SCE_P_WORD;
+				} else if (commonWords.InList(s)) {
+					style = SCE_P_COMMONWORD;
 				} else if (kwLast == kwClass) {
 					style = SCE_P_CLASSNAME;
 				} else if (kwLast == kwDef) {
