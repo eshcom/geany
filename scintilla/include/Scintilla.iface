@@ -3005,6 +3005,7 @@ val SCE_P_FCHARACTER=17
 val SCE_P_FTRIPLE=18
 val SCE_P_FTRIPLEDOUBLE=19
 val SCE_P_COMMONWORD=20
+val SCE_P_REFCLASSWORD=21
 # Lexical states for SCLEX_CPP
 # Lexical states for SCLEX_BULLANT
 # Lexical states for SCLEX_COBOL
