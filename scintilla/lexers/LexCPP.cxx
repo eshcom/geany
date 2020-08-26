@@ -706,25 +706,25 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	WordList *wordListN = nullptr;
 	switch (n) {
 	case 0:
-		wordListN = &keywords;
+		wordListN = &keywords;		//Primary keywords and identifiers
 		break;
 	case 1:
-		wordListN = &keywords2;
+		wordListN = &keywords2;		//Secondary keywords and identifiers
 		break;
 	case 2:
-		wordListN = &keywords3;
+		wordListN = &keywords3;		//Documentation comment keywords
 		break;
 	case 3:
-		wordListN = &keywords4;
+		wordListN = &keywords4;		//Global classes and typedefs
 		break;
 	case 4:
-		wordListN = &ppDefinitions;
+		wordListN = &ppDefinitions;	//Preprocessor definitions
 		break;
 	case 5:
-		wordListN = &markerList;
+		wordListN = &markerList;	//Task marker and error marker keywords
 		break;
 	case 6:
-		wordListN = &commonWords;
+		wordListN = &commonWords;	//Common keywords and identifiers
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -934,14 +934,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					if (keywords.InList(s)) {
+					if (keywords.InList(s)) {							//Primary keywords and identifiers
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_WORD|activitySet);
-					} else if (commonWords.InList(s)) {
+					} else if (commonWords.InList(s)) {					//Common keywords and identifiers
 						sc.ChangeState(SCE_C_COMMONWORD|activitySet);
-					} else if (keywords2.InList(s)) {
+					} else if (keywords2.InList(s)) {					//Secondary keywords and identifiers
 						sc.ChangeState(SCE_C_WORD2|activitySet);
-					} else if (keywords4.InList(s)) {
+					} else if (keywords4.InList(s)) {					//Global classes and typedefs
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
 					} else {
 						int subStyle = classifierIdentifiers.ValueFor(s);
