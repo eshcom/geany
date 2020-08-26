@@ -260,7 +260,8 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_GLOBALCLASS,			"globalclass",				FALSE },
 	{ SCE_C_TASKMARKER,				"taskmarker",				FALSE },
 	{ SCE_C_ESCAPESEQUENCE,			"escapesequence",			FALSE },
-	{ SCE_C_COMMONWORD,				"commonword",				FALSE }
+	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
+	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {
@@ -269,7 +270,8 @@ static const HLKeyword highlighting_keywords_C[] =
 	{ 1, "secondary",	TRUE },
 	{ 2, "docComment",	FALSE },
 	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
-	{ 6, "commonword",	FALSE }
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 static const HLProperty highlighting_properties_C[] =
 {
