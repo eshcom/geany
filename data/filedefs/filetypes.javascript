@@ -3,10 +3,10 @@
 
 [keywords]
 # all items must be in one line
-primary=break case catch class const continue debugger default delete do else enum export extends finally for function get if import in Infinity instanceof let NaN new return set static super switch this throw try typeof undefined var void while with yield prototype async await
+primary=break case catch class const continue debugger default delete do else enum export extends finally for function get if import in Infinity instanceof let new return set static super switch this throw try typeof undefined var void while with yield prototype async await
 secondary=Array Boolean Date Function Math Number Object String RegExp EvalError Error RangeError ReferenceError SyntaxError TypeError URIError constructor prototype decodeURI decodeURIComponent encodeURI encodeURIComponent eval isFinite isNaN parseFloat parseInt
 # Common keywords
-commonword=null true false
+commonword=NaN null true false
 
 [lexer_properties=C]
 # partially handles ES6 template strings
