@@ -389,6 +389,7 @@ const char *const cppWordLists[] = {
             "Preprocessor definitions",
             "Task marker and error marker keywords",
             "Common keywords and identifiers",
+            "Other classes and typedefs",
             nullptr,
 };
 
@@ -497,6 +498,7 @@ LexicalClass lexicalClasses[] = {
 	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
 	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
 	28, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
+	29, "SCE_C_OTHERCLASS", "identifier", "Other classes",
 };
 
 }
@@ -519,6 +521,7 @@ class LexerCPP : public ILexerWithMetaData {
 	WordList ppDefinitions;
 	WordList markerList;
 	WordList commonWords;
+	WordList otherClasses;
 	struct SymbolValue {
 		std::string value;
 		std::string arguments;
@@ -726,6 +729,9 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	case 6:
 		wordListN = &commonWords;	//Common keywords and identifiers
 		break;
+	case 7:
+		wordListN = &otherClasses;	//Other classes and typedefs
+		break;
 	}
 	Sci_Position firstModification = -1;
 	if (wordListN) {
@@ -794,8 +800,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
-      (MaskActive(initStyle) == SCE_C_COMMENTLINE) ||
-      (MaskActive(initStyle) == SCE_C_COMMENTLINEDOC)) {
+		(MaskActive(initStyle) == SCE_C_COMMENTLINE) ||
+		(MaskActive(initStyle) == SCE_C_COMMENTLINEDOC)) {
 		// Set continuationLine if last character of previous line is '\'
 		if (lineCurrent > 0) {
 			const Sci_Position endLinePrevious = styler.LineEnd(lineCurrent - 1);
@@ -943,6 +949,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 						sc.ChangeState(SCE_C_WORD2|activitySet);
 					} else if (keywords4.InList(s)) {					//Global classes and typedefs
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
+					} else if (otherClasses.InList(s)) {				//Other classes and typedefs
+						sc.ChangeState(SCE_C_OTHERCLASS|activitySet);
 					} else {
 						int subStyle = classifierIdentifiers.ValueFor(s);
 						if (subStyle >= 0) {
