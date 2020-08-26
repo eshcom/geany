@@ -260,6 +260,7 @@ static const char *const pythonWordListDesc[] = {
 	"Keywords",
 	"Highlighted identifiers",
 	"Common keywords and identifiers",
+	"Reference name to the current class instance (eg. self)",
 	0
 };
 
@@ -332,6 +333,7 @@ LexicalClass lexicalClasses[] = {
 	18, "SCE_P_FTRIPLE", "literal string interpolated", "Triple quoted f-string",
 	19, "SCE_P_FTRIPLEDOUBLE", "literal string interpolated", "Triple double quoted f-string",
 	20, "SCE_P_COMMONWORD", "keyword", "Common keywords (None True False)",
+	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
 };
 
 }
@@ -340,6 +342,7 @@ class LexerPython : public DefaultLexer {
 	WordList keywords;
 	WordList keywords2;
 	WordList commonWords;
+	WordList refclassWords;
 	OptionsPython options;
 	OptionSetPython osPython;
 	enum { ssIdentifier };
@@ -438,6 +441,9 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		break;
 	case 2:
 		wordListN = &commonWords;
+		break;
+	case 3:
+		wordListN = &refclassWords;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -607,6 +613,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 					style = SCE_P_WORD;
 				} else if (commonWords.InList(s)) {
 					style = SCE_P_COMMONWORD;
+				} else if (refclassWords.InList(s)) {
+					style = SCE_P_REFCLASSWORD;
 				} else if (kwLast == kwClass) {
 					style = SCE_P_CLASSNAME;
 				} else if (kwLast == kwDef) {
