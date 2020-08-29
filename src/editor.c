@@ -108,6 +108,7 @@ static const gchar *snippets_find_completion_by_name(const gchar *type, const gc
 static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
 static GeanyFiletype *editor_get_filetype_at_line(GeanyEditor *editor, gint line);
 static gboolean sci_is_blank_line(ScintillaObject *sci, gint line);
+static gint find_start_bracket(ScintillaObject *sci, gint pos);
 
 
 void editor_snippets_free(void)
@@ -1774,8 +1775,14 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 			
 			if (pos > 0)
 			{
-				read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
-				return;
+				if (sci_get_char_at(sci, pos - 1) == ')')
+					pos = find_start_bracket(sci, pos - 2);
+				
+				if (pos > 0)
+				{
+					read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
+					return;
+				}
 			}
 		}
 	}
