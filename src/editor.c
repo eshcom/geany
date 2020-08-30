@@ -109,6 +109,7 @@ static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
 static GeanyFiletype *editor_get_filetype_at_line(GeanyEditor *editor, gint line);
 static gboolean sci_is_blank_line(ScintillaObject *sci, gint line);
 static gint find_start_bracket(ScintillaObject *sci, gint pos);
+static gint find_start_bracket_txt(gchar *chunk, gint pos);
 
 
 void editor_snippets_free(void)
@@ -1820,10 +1821,16 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 			
 			if (startword > 0)
 			{
-				endword = startword;
-				read_word(chunk, &startword, &endword, scope, scopelen,
-						  GEANY_WORDCHARS, FALSE);
-				return;
+				if (chunk[startword - 1] == ')')
+					startword = find_start_bracket_txt(chunk, startword - 2);
+				
+				if (startword > 0)
+				{
+					endword = startword;
+					read_word(chunk, &startword, &endword, scope, scopelen,
+							  GEANY_WORDCHARS, FALSE);
+					return;
+				}
 			}
 		}
 	}
@@ -1936,6 +1943,22 @@ static gint find_start_bracket(ScintillaObject *sci, gint pos)
 
 		if (c == ')') brackets++;
 		else if (c == '(') brackets--;
+		if (brackets < 0) return pos;	/* found start bracket */
+		pos--;
+	}
+	return -1;
+}
+
+
+static gint find_start_bracket_txt(gchar *chunk, gint pos)
+{
+	gint brackets = 0;
+	gint orig_pos = pos;
+
+	while (pos > 0 && pos > orig_pos - 300)
+	{
+		if (chunk[pos] == ')') brackets++;
+		else if (chunk[pos] == '(') brackets--;
 		if (brackets < 0) return pos;	/* found start bracket */
 		pos--;
 	}
