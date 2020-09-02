@@ -2178,14 +2178,14 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			last_tag = tmtag;
 		}
 	}
-	if (filtered_tags->len > 1 && definition)
-	{
-		new_tags = filter_tags_by_type(filtered_tags, tm_tag_function_t);
-		filter_tags_check(&filtered_tags, &new_tags);
-	}
 	if (filtered_tags->len > 1 && definition && !EMPTY(scope))
 	{
 		new_tags = filter_tags_by_scope(filtered_tags, scope);
+		filter_tags_check(&filtered_tags, &new_tags);
+	}
+	if (filtered_tags->len > 1 && definition)
+	{
+		new_tags = filter_tags_by_type(filtered_tags, tm_tag_function_t | tm_tag_method_t);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
 	if (filtered_tags->len > 1 && current_file && EMPTY(scope) &&
