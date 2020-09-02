@@ -2144,7 +2144,7 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
 }
 
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
-							  const gchar *scope, gboolean definition)
+							  const gchar *scope, gboolean definition, TMParserType lang)
 {
 	ui_set_statusbar(TRUE, "filter_tags, scope = %s, definition = %d", scope, definition); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
@@ -2169,9 +2169,10 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			}
 			else if (tmtag != current_tag)
 			{
-				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, var_type = %s, file = %s",
-								 tmtag->scope, tmtag->name, tmtag->type,
-								 tmtag->var_type, tmtag->file->short_name); // esh: log
+				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, "
+										"var_type = %s, file = %s, arglist = %s",
+								 tmtag->scope, tmtag->name, tmtag->type, tmtag->var_type,
+								 tmtag->file->short_name, tmtag->arglist); // esh: log
 				g_ptr_array_add(filtered_tags, tmtag);
 			}
 			last_tag = tmtag;
@@ -2187,7 +2188,8 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 		new_tags = filter_tags_by_scope(filtered_tags, scope);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
-	if (filtered_tags->len > 1 && current_file && EMPTY(scope))
+	if (filtered_tags->len > 1 && current_file && EMPTY(scope) &&
+		lang != TM_PARSER_ERLANG)
 	{
 		new_tags = filter_tags_by_file(filtered_tags, current_file);
 		filter_tags_check(&filtered_tags, &new_tags);
@@ -2225,12 +2227,14 @@ static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definit
 		/* swap definition/declaration search */
 		definition = current_tag->type & forward_types;
 	
-	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope, definition);
+	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope,
+								definition, old_doc->file_type->lang);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope, !definition);
+		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope,
+									!definition, old_doc->file_type->lang);
 	}
 	g_ptr_array_free(tags, TRUE);
 	tags = filtered_tags;
