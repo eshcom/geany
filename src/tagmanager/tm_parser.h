@@ -29,7 +29,7 @@ typedef enum
 	tm_tag_function_t = 16, /**< Function definition */
 	tm_tag_interface_t = 32, /**< Interface (Java only) */
 	tm_tag_member_t = 64, /**< Member variable of class/struct */
-	tm_tag_method_t = 128, /**< Class method (Java only) */
+	tm_tag_method_t = 128, /**< Class method (Java/Python only) */
 	tm_tag_namespace_t = 256, /**< Namespace declaration */
 	tm_tag_package_t = 512, /**< Package (Java only) */
 	tm_tag_prototype_t = 1024, /**< Function prototype */
