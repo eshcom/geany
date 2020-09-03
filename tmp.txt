@@ -74,3 +74,7 @@ tmtag: scope = GtkBuilderWidgetWrapper, name = get_widget, type = 128, var_type 
 tmtag: scope = (null), name = GtkContextMenuCaller, type = 32768, var_type = (null), file = browser.py, arglist = (null)
 tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = log.py, arglist = (null)
 tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = action.py, arglist = (null)
+
+--filter by file:
+include tags: 32768 | 4096 | 16
+no check empty(cursor scope)
