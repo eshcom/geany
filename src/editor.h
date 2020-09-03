@@ -225,6 +225,13 @@ typedef struct
 
 extern EditorInfo editor_info;
 
+// esh:
+typedef struct
+{
+	gint start;
+	gint end;
+} WordBound;
+
 
 void editor_init(void);
 
