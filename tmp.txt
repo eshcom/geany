@@ -52,3 +52,25 @@ if (g_strcmp0(documents[j]->real_path, tag->file->file_name) == 0)
 --if example2:
 gchar *dir = g_path_get_dirname(doc->real_path);
 if (g_str_has_prefix(tag->file->file_name, dir))
+----------------------------------------------------------------------------------------
+
+--C:
+tmtag: scope = (null), name = find_tags, type = 16, var_type = void, file = prjorg-sidebar.c, arglist = (const gchar *name, gboolean declaration, gboolean case_sensitive, MatchType match_type, gchar *utf8_path)
+tmtag: scope = (null), name = find_tags, type = 16, var_type = void, file = geanyctags.c, arglist = (const gchar *name, gboolean declaration, gboolean case_sensitive, MatchType match_type)
+tmtag: scope = (null), name = MatchType, type = 4096, var_type = anon_enum_1, file = prjorg-sidebar.c, arglist = (null)
+tmtag: scope = (null), name = MatchType, type = 4096, var_type = anon_enum_2, file = geanyctags.c, arglist = (null)
+
+--Erlang:
+tmtag: scope = adptransfer_log, name = warn, type = 16, var_type = (null), file = adptransfer_log.erl, arglist = (null)
+
+--Python:
+tmtag: scope = encode_revisions, name = append, type = 16, var_type = (null), file = helper.py, arglist = (start, last, list)
+tmtag: scope = VCSAction, name = append, type = 128, var_type = (null), file = action.py, arglist = (self, func, *args, **kwargs)
+tmtag: scope = VCSAction, name = __init__, type = 128, var_type = (null), file = action.py, arglist = (self, client, register_gtk_quit=False, notification=True,
+tmtag: scope = GitAction, name = __init__, type = 128, var_type = (null), file = action.py, arglist = (self, client, register_gtk_quit=False, notification=True,
+tmtag: scope = InterfaceView, name = __init__, type = 128, var_type = (null), file = __init__.py, arglist = (self, *args, **kwargs)
+tmtag: scope = GtkContextMenu, name = get_widget, type = 128, var_type = (null), file = contextmenu.py, arglist = (self)
+tmtag: scope = GtkBuilderWidgetWrapper, name = get_widget, type = 128, var_type = (null), file = __init__.py, arglist = (self, id = None)
+tmtag: scope = (null), name = GtkContextMenuCaller, type = 32768, var_type = (null), file = browser.py, arglist = (null)
+tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = log.py, arglist = (null)
+tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = action.py, arglist = (null)
