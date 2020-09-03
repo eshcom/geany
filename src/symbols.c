@@ -2114,9 +2114,13 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	guint i;
 	
+	const TMTagType include_types = tm_tag_attr_pos_t | tm_tag_attr_impl_t |
+									tm_tag_attr_pointer_t;
+	
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		if (g_strcmp0(tmtag->file->file_name, file->file_name) == 0)
+		if (g_strcmp0(tmtag->file->file_name, file->file_name) == 0 &&
+			tmtag->type & include_types)
 			g_ptr_array_add(filtered_tags, tmtag);
 	}
 	if (filtered_tags->len == 0)
@@ -2124,7 +2128,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 		gchar *dir = g_path_get_dirname(file->file_name);
 		foreach_ptr_array(tmtag, i, tags)
 		{
-			if (g_str_has_prefix(tmtag->file->file_name, dir))
+			if (g_str_has_prefix(tmtag->file->file_name, dir) &&
+				tmtag->type & include_types)
 				g_ptr_array_add(filtered_tags, tmtag);
 		}
 		g_free(dir);
@@ -2183,13 +2188,13 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 		new_tags = filter_tags_by_scope(filtered_tags, scope);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
+	const TMTagType def_func_types = tm_tag_function_t | tm_tag_method_t;
 	if (filtered_tags->len > 1 && definition)
 	{
-		new_tags = filter_tags_by_type(filtered_tags, tm_tag_function_t | tm_tag_method_t);
+		new_tags = filter_tags_by_type(filtered_tags, def_func_types);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
-	if (filtered_tags->len > 1 && current_file && EMPTY(scope) &&
-		lang != TM_PARSER_ERLANG)
+	if (filtered_tags->len > 1 && current_file && lang != TM_PARSER_ERLANG)
 	{
 		new_tags = filter_tags_by_file(filtered_tags, current_file);
 		filter_tags_check(&filtered_tags, &new_tags);
