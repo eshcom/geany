@@ -1850,28 +1850,27 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
  * NULL terminated in any case, even when the word is truncated because wordlen is too small.
  * position can be -1, then the current position is used.
  * wc are the wordchars to use, if NULL, GEANY_WORDCHARS will be used */
-void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-							  const gchar *wc)
+WordBound editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
+								   gsize wordlen, const gchar *wc)
 {
-	read_current_word(editor, pos, word, wordlen, wc, FALSE);
+	return read_current_word(editor, pos, word, wordlen, wc, FALSE);
 }
 
 
 /* Same as editor_find_current_word() but uses editor's word boundaries to decide what the word
  * is.  This should be used e.g. to get the word to search for */
-void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen)
+WordBound editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
+										 gchar *word, gsize wordlen)
 {
-	gint start;
-	gint end;
-
-	g_return_if_fail(editor != NULL);
-
+	WordBound wordBound = {-1, -1};
+	g_return_val_if_fail(editor != NULL, wordBound);
+	
 	if (pos == -1)
 		pos = sci_get_current_position(editor->sci);
-
-	start = sci_word_start_position(editor->sci, pos, TRUE);
-	end = sci_word_end_position(editor->sci, pos, TRUE);
-
+	
+	gint start = sci_word_start_position(editor->sci, pos, TRUE);
+	gint end = sci_word_end_position(editor->sci, pos, TRUE);
+	
 	if (start == end) /* caret in whitespaces sequence */
 		*word = 0;
 	else
@@ -1879,7 +1878,10 @@ void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos, gchar *word, 
 		if ((guint)(end - start) >= wordlen)
 			end = start + (wordlen - 1);
 		sci_get_text_range(editor->sci, start, end, word);
+		wordBound.start = start;
+		wordBound.end = end;
 	}
+	return wordBound;
 }
 
 
