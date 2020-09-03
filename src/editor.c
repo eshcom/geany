@@ -99,8 +99,8 @@ static void auto_multiline(GeanyEditor *editor, gint pos);
 static void auto_close_chars(ScintillaObject *sci, gint pos, gchar c);
 static void close_block(GeanyEditor *editor, gint pos);
 static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos);
-static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-							  const gchar *wc, gboolean stem);
+static WordBound read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+								   const gchar *wc, gboolean stem);
 static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
 					  gsize wordlen, const gchar *wc, gboolean stem);
 static gsize count_indent_size(GeanyEditor *editor, const gchar *base_indent);
@@ -1698,10 +1698,11 @@ static void close_block(GeanyEditor *editor, gint pos)
  * NULL terminated in any case, even when the word is truncated because wordlen is too small.
  * position can be -1, then the current position is used.
  * wc are the wordchars to use, if NULL, GEANY_WORDCHARS will be used */
-static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
-							  const gchar *wc, gboolean stem)
+static WordBound read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+								   const gchar *wc, gboolean stem)
 {
-	g_return_val_if_fail(editor != NULL, -1);
+	WordBound wordBound = {-1, -1};
+	g_return_val_if_fail(editor != NULL, wordBound);
 	ScintillaObject *sci = editor->sci;
 	
 	if (pos == -1)
@@ -1718,7 +1719,13 @@ static gint read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize 
 	
 	read_word(chunk, &startword, &endword, word, wordlen, wc, stem);
 	g_free(chunk);
-	return line_start + startword;
+	
+	if (startword != endword)
+	{
+		wordBound.start = line_start + startword;
+		wordBound.end = line_start + endword;
+	}
+	return wordBound;
 }
 
 
@@ -1756,7 +1763,8 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
 	
-	pos = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
+	WordBound wordBound = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
+	pos = wordBound.start;
 	
 	/* allow for a space between word and operator */
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
