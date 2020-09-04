@@ -1861,27 +1861,28 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
  * NULL terminated in any case, even when the word is truncated because wordlen is too small.
  * position can be -1, then the current position is used.
  * wc are the wordchars to use, if NULL, GEANY_WORDCHARS will be used */
-WordBound editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
-								   gsize wordlen, const gchar *wc)
+void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+							  const gchar *wc)
 {
-	return read_current_word(editor, pos, word, wordlen, wc, FALSE);
+	read_current_word(editor, pos, word, wordlen, wc, FALSE);
 }
 
 
 /* Same as editor_find_current_word() but uses editor's word boundaries to decide what the word
  * is.  This should be used e.g. to get the word to search for */
-WordBound editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
-										 gchar *word, gsize wordlen)
+void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen)
 {
-	WordBound wordBound = {-1, -1};
-	g_return_val_if_fail(editor != NULL, wordBound);
-	
+	gint start;
+	gint end;
+
+	g_return_if_fail(editor != NULL);
+
 	if (pos == -1)
 		pos = sci_get_current_position(editor->sci);
-	
-	gint start = sci_word_start_position(editor->sci, pos, TRUE);
-	gint end = sci_word_end_position(editor->sci, pos, TRUE);
-	
+
+	start = sci_word_start_position(editor->sci, pos, TRUE);
+	end = sci_word_end_position(editor->sci, pos, TRUE);
+
 	if (start == end) /* caret in whitespaces sequence */
 		*word = 0;
 	else
@@ -1889,10 +1890,7 @@ WordBound editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
 		if ((guint)(end - start) >= wordlen)
 			end = start + (wordlen - 1);
 		sci_get_text_range(editor->sci, start, end, word);
-		wordBound.start = start;
-		wordBound.end = end;
 	}
-	return wordBound;
 }
 
 
@@ -4192,22 +4190,40 @@ void editor_finalize(void)
 }
 
 
-//~ /* esh: Reads the word1 and word2 by cursor position or selection.
- //~ * 		(based on editor_get_default_selection) */
-//~ void *editor_get_custom_selection(GeanyEditor *editor,
-								  //~ gchar *word1, gsize wordlen1, const gchar *wordchars1
-								  //~ gchar *word2, gsize wordlen2, const gchar *wordchars2)
-//~ {
-	//~ g_return_if_fail(editor != NULL);
+/* esh: Reads the word1 and word2 by cursor position or selection.
+ * 		(based on editor_get_default_selection) */
+void editor_get_custom_selection(GeanyEditor *editor, const gchar separator,
+								 gchar *word1, gsize wordlen1, const gchar *wordchars1,
+								 gchar *word2, gsize wordlen2, const gchar *wordchars2)
+{
+	g_return_if_fail(editor != NULL);
 	
-	//~ if (sci_get_lines_selected(editor->sci) == 1)
+	if (sci_get_lines_selected(editor->sci) == 1)
+	{
 		//~ gchar *s = sci_get_selection_contents(editor->sci);
-	//~ else if (sci_get_lines_selected(editor->sci) == 0)
-	//~ {	/* use the word at current cursor position */
-		//~ editor_find_current_word(editor, -1, word1, wordlen1, wordchars1);
-	//~ }
-	//~ g_free(s);
-//~ }
+	}
+	else if (sci_get_lines_selected(editor->sci) == 0)
+	{
+		WordBound wordBound = read_current_word(editor, -1, word1, wordlen1,
+												wordchars1, FALSE);
+		if (wordBound.start != wordBound.end)
+		{
+			gint pos = wordBound.end;
+			while (isspace(sci_get_char_at(editor->sci, pos)))
+				pos++;
+			if (sci_get_char_at(editor->sci, pos) == separator)
+			{
+				pos++;
+				while (isspace(sci_get_char_at(editor->sci, pos)))
+					pos++;
+				
+				read_current_word(editor, pos, word2, wordlen2,
+								  wordchars2, FALSE);
+			}
+			
+		}
+	}
+}
 
 
 /* wordchars: NULL or a string containing characters to match a word.

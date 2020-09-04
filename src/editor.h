@@ -293,14 +293,18 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 									   gchar *word, gsize wordlen,
 									   gchar *scope, gsize scopelen);
 
-WordBound editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
-								   gsize wordlen, const gchar *wc);
+void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
+							  gsize wordlen, const gchar *wc);
 
-WordBound editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
-										 gchar *word, gsize wordlen);
+void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
+									gchar *word, gsize wordlen);
 
 gchar *editor_get_default_selection(GeanyEditor *editor, gboolean use_current_word,
 									const gchar *wordchars);
+
+void editor_get_custom_selection(GeanyEditor *editor, const gchar separator,
+								 gchar *word1, gsize wordlen1, const gchar *wordchars1,
+								 gchar *word2, gsize wordlen2, const gchar *wordchars2);
 
 
 void editor_select_word(GeanyEditor *editor);
