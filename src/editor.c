@@ -109,7 +109,7 @@ static void snippets_make_replacements(GeanyEditor *editor, GString *pattern);
 static GeanyFiletype *editor_get_filetype_at_line(GeanyEditor *editor, gint line);
 static gboolean sci_is_blank_line(ScintillaObject *sci, gint line);
 static gint find_start_bracket(ScintillaObject *sci, gint pos);
-static gint find_start_bracket_txt(gchar *chunk, gint pos);
+static gint find_start_bracket_chunk(gchar *chunk, gint pos);
 
 
 void editor_snippets_free(void)
@@ -662,7 +662,7 @@ static gboolean match_last_chars(ScintillaObject *sci, gint pos, const gchar *st
 }
 
 
-/* esh: based on match_last_chars */
+/* esh: (based on match_last_chars) */
 static gboolean match_last_chars_chunk(gchar *chunk, gint pos, const gchar *str)
 {
 	gsize len = strlen(str);
@@ -1755,7 +1755,8 @@ static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
 
 
 /* esh: Reads the word and scope by cursor position.
- * 		(based on editor_find_current_word) */
+ * 		(is an extended func of editor_find_current_word
+ * 		 with the addition of a scope search) */
 void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 										gchar *word, gsize wordlen,
 										gchar *scope, gsize scopelen)
@@ -1763,6 +1764,7 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
 	
+	//~ word search
 	WordBound wordBound = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
 	pos = wordBound.start;
 	
@@ -1778,7 +1780,7 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 		{
 			pos -= strlen(context_sep);
 			
-			/* allow for a space between word and operator */
+			/* allow for a space between scope and operator */
 			while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
 				pos--;
 			
@@ -1789,6 +1791,7 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 				
 				if (pos > 0)
 				{
+					//~ scope search
 					read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
 					return;
 				}
@@ -1806,6 +1809,14 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 									   gchar *scope, gsize scopelen)
 {
 	gint startword = strlen(chunk);
+	while (startword > 0 && !strchr(GEANY_WORDCHARS"()", chunk[startword - 1]))
+		startword--;
+	if (chunk[startword - 1] == '(')
+		startword--;
+	else if (chunk[startword - 1] == ')')
+		startword = find_start_bracket_chunk(chunk, startword - 2);
+	while (startword > 0 && isspace(chunk[startword - 1]))
+		startword--;
 	gint endword = startword;
 	
 	read_word(chunk, &startword, &endword, word, wordlen,
@@ -1823,14 +1834,14 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 		{
 			startword -= strlen(context_sep);
 			
-			/* allow for a space between word and operator */
+			/* allow for a space between scope and operator */
 			while (startword > 0 && isspace(chunk[startword - 1]))
 				startword--;
 			
 			if (startword > 0)
 			{
 				if (chunk[startword - 1] == ')')
-					startword = find_start_bracket_txt(chunk, startword - 2);
+					startword = find_start_bracket_chunk(chunk, startword - 2);
 				
 				if (startword > 0)
 				{
@@ -1930,7 +1941,7 @@ editor_read_word_stem(GeanyEditor *editor, gint pos, const gchar *wordchars)
 static gint find_previous_brace(ScintillaObject *sci, gint pos)
 {
 	gint orig_pos = pos;
-
+	
 	while (pos >= 0 && pos > orig_pos - 300)
 	{
 		gchar c = sci_get_char_at(sci, pos);
@@ -1946,11 +1957,11 @@ static gint find_start_bracket(ScintillaObject *sci, gint pos)
 {
 	gint brackets = 0;
 	gint orig_pos = pos;
-
+	
 	while (pos > 0 && pos > orig_pos - 300)
 	{
 		gchar c = sci_get_char_at(sci, pos);
-
+		
 		if (c == ')') brackets++;
 		else if (c == '(') brackets--;
 		if (brackets < 0) return pos;	/* found start bracket */
@@ -1960,11 +1971,12 @@ static gint find_start_bracket(ScintillaObject *sci, gint pos)
 }
 
 
-static gint find_start_bracket_txt(gchar *chunk, gint pos)
+/* esh: (based on find_start_bracket) */
+static gint find_start_bracket_chunk(gchar *chunk, gint pos)
 {
 	gint brackets = 0;
 	gint orig_pos = pos;
-
+	
 	while (pos > 0 && pos > orig_pos - 300)
 	{
 		if (chunk[pos] == ')') brackets++;
@@ -4180,6 +4192,24 @@ void editor_finalize(void)
 }
 
 
+//~ /* esh: Reads the word1 and word2 by cursor position or selection.
+ //~ * 		(based on editor_get_default_selection) */
+//~ void *editor_get_custom_selection(GeanyEditor *editor,
+								  //~ gchar *word1, gsize wordlen1, const gchar *wordchars1
+								  //~ gchar *word2, gsize wordlen2, const gchar *wordchars2)
+//~ {
+	//~ g_return_if_fail(editor != NULL);
+	
+	//~ if (sci_get_lines_selected(editor->sci) == 1)
+		//~ gchar *s = sci_get_selection_contents(editor->sci);
+	//~ else if (sci_get_lines_selected(editor->sci) == 0)
+	//~ {	/* use the word at current cursor position */
+		//~ editor_find_current_word(editor, -1, word1, wordlen1, wordchars1);
+	//~ }
+	//~ g_free(s);
+//~ }
+
+
 /* wordchars: NULL or a string containing characters to match a word.
  * Returns: the current selection or the current word.
  *
@@ -4189,20 +4219,20 @@ gchar *editor_get_default_selection(GeanyEditor *editor, gboolean use_current_wo
 									const gchar *wordchars)
 {
 	gchar *s = NULL;
-
+	
 	g_return_val_if_fail(editor != NULL, NULL);
-
+	
 	if (sci_get_lines_selected(editor->sci) == 1)
 		s = sci_get_selection_contents(editor->sci);
 	else if (sci_get_lines_selected(editor->sci) == 0 && use_current_word)
 	{	/* use the word at current cursor position */
 		gchar word[GEANY_MAX_WORD_LENGTH];
-
+		
 		if (wordchars != NULL)
 			editor_find_current_word(editor, -1, word, sizeof(word), wordchars);
 		else
 			editor_find_current_word_sciwc(editor, -1, word, sizeof(word));
-
+		
 		if (word[0] != '\0')
 			s = g_strdup(word);
 	}
