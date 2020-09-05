@@ -1371,37 +1371,41 @@ static void on_menu_project1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(doc != NULL);
+	
 	gchar *sel = NULL;
 	const gchar *wc;
-
+	
 #ifdef G_OS_WIN32
 	wc = GEANY_WORDCHARS "./-" "\\";
 #else
 	wc = GEANY_WORDCHARS "./-";
 #endif
-
-	g_return_if_fail(doc != NULL);
-
-	sel = editor_get_default_selection(doc->editor, TRUE, wc);
+	
+	gchar *sel2 = NULL;
+	static const gchar *wc2 = "0123456789";
+	
+	//~ sel = editor_get_default_selection(doc->editor, TRUE, wc); // esh: it was
+	editor_get_custom_words(doc->editor, ':', &sel, wc, &sel2, wc2); // esh: it is
 	SETPTR(sel, utils_get_locale_from_utf8(sel));
-
+	
 	if (sel != NULL)
 	{
 		gchar *filename = NULL;
-
+		
 		if (g_path_is_absolute(sel))
 			filename = g_strdup(sel);
 		else
 		{	/* relative filename, add the path of the current file */
 			gchar *path;
-
+			
 			path = utils_get_current_file_dir_utf8();
 			SETPTR(path, utils_get_locale_from_utf8(path));
 			if (!path)
 				path = g_get_current_dir();
-
+			
 			filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
-
+			
 			if (! g_file_test(filename, G_FILE_TEST_EXISTS) &&
 				app->project != NULL && !EMPTY(app->project->base_path))
 			{
@@ -1414,22 +1418,33 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem, gpointer user_d
 #ifdef G_OS_UNIX
 			if (! g_file_test(filename, G_FILE_TEST_EXISTS))
 				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, "/usr/local/include", sel, NULL));
-
+			
 			if (! g_file_test(filename, G_FILE_TEST_EXISTS))
 				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, "/usr/include", sel, NULL));
 #endif
 		}
-
+		
 		if (g_file_test(filename, G_FILE_TEST_EXISTS))
-			document_open_file(filename, FALSE, NULL, NULL);
+		{
+			GeanyDocument *new_doc = document_open_file(filename, FALSE, NULL, NULL);
+			//~ esh: call editor_goto_line
+			if (sel2 != NULL)
+			{
+				gint offset;
+				gint line_no;
+				get_line_and_offset_from_text(sel2, &line_no, &offset);
+				if (! editor_goto_line(new_doc->editor, line_no, offset))
+					utils_beep();
+			}
+		}
 		else
 		{
 			SETPTR(sel, utils_get_utf8_from_locale(sel));
 			ui_set_statusbar(TRUE, _("Could not open file %s (File not found)"), sel);
 		}
-
 		g_free(filename);
 		g_free(sel);
+		g_free(sel2);
 	}
 }
 

@@ -78,3 +78,25 @@ tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = actio
 --filter by file:
 include tags: 32768 | 4096 | 16
 no check empty(cursor scope)
+----------------------------------------------------------------------------------------
+
+	gint offset;
+	gint line_no;
+
+	g_return_if_fail(doc != NULL);
+
+	get_line_and_offset_from_text(result, &line_no, &offset);
+	if (! editor_goto_line(doc->editor, line_no, offset))
+		utils_beep();
+----
+
+	GeanyDocument *new_doc, *old_doc;
+
+	g_return_if_fail(tag);
+
+	old_doc = document_get_current();
+	new_doc = document_open_file(tag->file->file_name, FALSE, NULL, NULL);
+
+	if (new_doc)
+		navqueue_goto_line(old_doc, new_doc, tag->line);
+----------------------------------------------------------------------------------------

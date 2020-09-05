@@ -1772,7 +1772,7 @@ static void cb_func_menu_messagewindow(G_GNUC_UNUSED guint key_id)
 static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word)
 {
 	g_return_val_if_fail(DOC_VALID(doc), FALSE);
-
+	
 	if (sci_word)
 	{
 		editor_find_current_word_sciwc(doc->editor, -1,
@@ -1783,7 +1783,6 @@ static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word)
 		editor_find_current_word(doc->editor, -1,
 			editor_info.current_word, GEANY_MAX_WORD_LENGTH, NULL);
 	}
-
 	return (*editor_info.current_word != 0);
 }
 
@@ -1802,15 +1801,15 @@ static gboolean check_current_word(GeanyDocument *doc, gboolean sci_word)
 static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 {
 	ScintillaObject *sci = doc->editor->sci;
-
+	
 	if (sci_has_selection(sci))
 		return sci_get_selection_contents(sci);
-
+	
 	return read_current_word(doc, sci_word) ? g_strdup(editor_info.current_word) : NULL;
 }
 
 
-/* esh: based on get_current_word_or_sel/read_current_word */
+/* esh: (based on get_current_word_or_sel/read_current_word) */
 static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope)
 {
 	ScintillaObject *sci = doc->editor->sci;
@@ -1822,7 +1821,7 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 		gchar *selection = sci_get_selection_contents(sci);
 		static gchar current_word[GEANY_MAX_WORD_LENGTH];
 		
-		editor_find_select_word_and_scope(selection,
+		editor_find_word_and_scope_chunk(selection,
 			doc->editor->document->file_type->lang,
 			current_word, GEANY_MAX_WORD_LENGTH,
 			current_scope, GEANY_MAX_WORD_LENGTH);
@@ -1835,9 +1834,9 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 			*word = g_strdup(selection);
 		g_free(selection);
 	}
-	else if (DOC_VALID(doc))
+	else
 	{
-		editor_find_current_word_and_scope(doc->editor, -1,
+		editor_find_word_and_scope(doc->editor, -1,
 			editor_info.current_word, GEANY_MAX_WORD_LENGTH,
 			current_scope, GEANY_MAX_WORD_LENGTH);
 		if (*editor_info.current_word)
