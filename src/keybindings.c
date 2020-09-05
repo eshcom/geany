@@ -1825,13 +1825,12 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 			doc->editor->document->file_type->lang,
 			current_word, GEANY_MAX_WORD_LENGTH,
 			current_scope, GEANY_MAX_WORD_LENGTH);
-		if (*current_word && *current_scope)
+		if (*current_word)
 		{
 			*word = g_strdup(current_word);
-			*scope = g_strdup(current_scope);
+			if (*current_scope)
+				*scope = g_strdup(current_scope);
 		}
-		else
-			*word = g_strdup(selection);
 		g_free(selection);
 	}
 	else
