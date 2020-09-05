@@ -296,7 +296,7 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 {
 	GeanyEditor *editor = data;
 	GeanyDocument *doc = editor->document;
-
+	
 	/* it's very unlikely we got a 'real' click even on 0, 0, so assume it is a
 	 * fake event to show the editor menu triggered by a key event where we want to use the
 	 * text cursor position. */
@@ -305,11 +305,11 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 			(gint)event->x, (gint)event->y, FALSE);
 	else
 		editor_info.click_pos = sci_get_current_position(editor->sci);
-
+	
 	if (event->button == 1)
 	{
 		guint state = keybindings_get_modifiers(event->state);
-
+		
 		if (event->type == GDK_BUTTON_PRESS && editor_prefs.disable_dnd)
 		{
 			gint ss = sci_get_selection_start(editor->sci);
@@ -318,9 +318,9 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		if (event->type == GDK_BUTTON_PRESS && state == GEANY_PRIMARY_MOD_MASK)
 		{
 			sci_set_current_position(editor->sci, editor_info.click_pos, FALSE);
-
+			
 			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
-			editor_find_current_word_and_scope(editor, editor_info.click_pos,
+			editor_find_word_and_scope(editor, editor_info.click_pos,
 				current_word, sizeof current_word,
 				current_scope, sizeof current_scope);
 			if (*current_word)
@@ -331,29 +331,29 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 		}
 		return document_check_disk_status(doc, FALSE);
 	}
-
+	
 	/* calls the edit popup menu in the editor */
 	if (event->button == 3)
 	{
 		gboolean can_goto;
-
+		
 		/* ensure the editor widget has the focus after this operation */
 		gtk_widget_grab_focus(widget);
-
+		
 		editor_find_current_word(editor, editor_info.click_pos,
 			current_word, sizeof current_word, NULL);
-
+		
 		can_goto = sci_has_selection(editor->sci) || current_word[0] != '\0';
 		ui_update_popup_goto_items(can_goto);
 		ui_update_popup_copy_items(doc);
 		ui_update_insert_include_item(doc, 0);
-
+		
 		g_signal_emit_by_name(geany_object, "update-editor-menu",
 			current_word, editor_info.click_pos, doc);
-
+		
 		gtk_menu_popup(GTK_MENU(main_widgets.editor_menu),
 			NULL, NULL, NULL, NULL, event->button, event->time);
-
+		
 		return TRUE;
 	}
 	return FALSE;
@@ -367,7 +367,6 @@ static gboolean is_style_php(gint style)
 	{
 		return TRUE;
 	}
-
 	return FALSE;
 }
 
@@ -384,7 +383,7 @@ static gint editor_get_long_line_type(void)
 			case 2: /* custom (enabled) */
 				return editor_prefs.long_line_type;
 		}
-
+	
 	if (!editor_prefs.long_line_enabled)
 		return 2;
 	else
@@ -1757,18 +1756,17 @@ static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
 /* esh: Reads the word and scope by cursor position.
  * 		(is an extended func of editor_find_current_word
  * 		 with the addition of a scope search) */
-void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
-										gchar *word, gsize wordlen,
-										gchar *scope, gsize scopelen)
+void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
+								gchar *word, gsize wordlen,
+								gchar *scope, gsize scopelen)
 {
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
 	
-	//~ word search
+	//~ word search:
 	WordBound wordBound = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
 	pos = wordBound.start;
-	
-	/* allow for a space between word and operator */
+	/* skip whitespaces */
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
 		pos--;
 	
@@ -1779,19 +1777,22 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 		if (match_last_chars(sci, pos, context_sep))
 		{
 			pos -= strlen(context_sep);
-			
-			/* allow for a space between scope and operator */
+			/* skip whitespaces */
 			while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
 				pos--;
 			
 			if (pos > 0)
 			{
 				if (sci_get_char_at(sci, pos - 1) == ')')
+				{
 					pos = find_start_bracket(sci, pos - 2);
-				
+					/* skip whitespaces */
+					while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
+						pos--;
+				}
 				if (pos > 0)
 				{
-					//~ scope search
+					//~ scope search:
 					read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
 					return;
 				}
@@ -1803,11 +1804,13 @@ void editor_find_current_word_and_scope(GeanyEditor *editor, gint pos,
 
 
 /* esh: Reads the word and scope by selection.
- * 		(based on editor_find_current_word_and_scope) */
-void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
-									   gchar *word, gsize wordlen,
-									   gchar *scope, gsize scopelen)
+ * 		(based on editor_find_word_and_scope) */
+void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
+									  gchar *word, gsize wordlen,
+									  gchar *scope, gsize scopelen)
 {
+	g_return_if_fail(chunk != NULL);
+	
 	gint startword = strlen(chunk);
 	while (startword > 0 && !strchr(GEANY_WORDCHARS"()", chunk[startword - 1]))
 		startword--;
@@ -1815,14 +1818,15 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 		startword--;
 	else if (chunk[startword - 1] == ')')
 		startword = find_start_bracket_chunk(chunk, startword - 2);
+	/* skip whitespaces */
 	while (startword > 0 && isspace(chunk[startword - 1]))
 		startword--;
 	gint endword = startword;
 	
+	//~ word search:
 	read_word(chunk, &startword, &endword, word, wordlen,
 			  GEANY_WORDCHARS, FALSE);
-	
-	/* allow for a space between word and operator */
+	/* skip whitespaces */
 	while (startword > 0 && isspace(chunk[startword - 1]))
 		startword--;
 	
@@ -1833,19 +1837,23 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 		if (match_last_chars_chunk(chunk, startword, context_sep))
 		{
 			startword -= strlen(context_sep);
-			
-			/* allow for a space between scope and operator */
+			/* skip whitespaces */
 			while (startword > 0 && isspace(chunk[startword - 1]))
 				startword--;
 			
 			if (startword > 0)
 			{
 				if (chunk[startword - 1] == ')')
+				{
 					startword = find_start_bracket_chunk(chunk, startword - 2);
-				
+					/* skip whitespaces */
+					while (startword > 0 && isspace(chunk[startword - 1]))
+						startword--;
+				}
 				if (startword > 0)
 				{
 					endword = startword;
+					//~ scope search:
 					read_word(chunk, &startword, &endword, scope, scopelen,
 							  GEANY_WORDCHARS, FALSE);
 					return;
@@ -1854,6 +1862,72 @@ void editor_find_select_word_and_scope(gchar *chunk, TMParserType lang,
 		}
 	}
 	*scope = '\0';
+}
+
+
+/* esh: Reads custom word1 and word2 by cursor position.
+ * 		(based on editor_find_word_and_scope) */
+void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
+							  gchar *word1, gsize wordlen1, const gchar *wordchars1,
+							  gchar *word2, gsize wordlen2, const gchar *wordchars2)
+{
+	g_return_if_fail(editor != NULL);
+	ScintillaObject *sci = editor->sci;
+	
+	WordBound wordBound = read_current_word(editor, -1, word1, wordlen1,
+											wordchars1, FALSE);
+	if (wordBound.start != wordBound.end)
+	{
+		gint pos = wordBound.end;
+		while (isspace(sci_get_char_at(sci, pos)))
+			pos++;
+		if (sci_get_char_at(sci, pos) == separator)
+		{
+			pos++;
+			while (isspace(sci_get_char_at(sci, pos)))
+				pos++;
+			
+			read_current_word(editor, pos, word2, wordlen2,
+							  wordchars2, FALSE);
+			return;
+		}
+	}
+	*word2 = '\0';
+}
+
+
+/* esh: Reads custom word1 and word2 by selection.
+ * 		(based on editor_find_custom_words/editor_find_word_and_scope_chunk) */
+void editor_find_custom_words_chunk(gchar *chunk, const gchar separator,
+									gchar *word1, gsize wordlen1, const gchar *wordchars1,
+									gchar *word2, gsize wordlen2, const gchar *wordchars2)
+{
+	g_return_if_fail(chunk != NULL);
+	
+	gint startword = 0;
+	while (isspace(chunk[startword]))
+		startword++;
+	gint endword = startword;
+	
+	read_word(chunk, &startword, &endword, word1, wordlen1,
+			  wordchars1, FALSE);
+	if (startword != endword)
+	{
+		while (isspace(chunk[endword]))
+			endword++;
+		if (chunk[endword] == separator)
+		{
+			endword++;
+			while (isspace(chunk[endword]))
+				endword++;
+			
+			startword = endword;
+			read_word(chunk, &startword, &endword, word2, wordlen2,
+					  wordchars2, FALSE);
+			return;
+		}
+	}
+	*word2 = '\0';
 }
 
 
@@ -1874,15 +1948,15 @@ void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos, gchar *word, 
 {
 	gint start;
 	gint end;
-
+	
 	g_return_if_fail(editor != NULL);
-
+	
 	if (pos == -1)
 		pos = sci_get_current_position(editor->sci);
-
+	
 	start = sci_word_start_position(editor->sci, pos, TRUE);
 	end = sci_word_end_position(editor->sci, pos, TRUE);
-
+	
 	if (start == end) /* caret in whitespaces sequence */
 		*word = 0;
 	else
@@ -4190,37 +4264,43 @@ void editor_finalize(void)
 }
 
 
-/* esh: Reads the word1 and word2 by cursor position or selection.
- * 		(based on editor_get_default_selection) */
-void editor_get_custom_selection(GeanyEditor *editor, const gchar separator,
-								 gchar *word1, gsize wordlen1, const gchar *wordchars1,
-								 gchar *word2, gsize wordlen2, const gchar *wordchars2)
+/* esh: Reads custom word1 and word2 by cursor position or selection.
+ * 		(based on editor_get_default_selection/get_current_word_and_scope) */
+void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
+							 gchar **word1, const gchar *wordchars1,
+							 gchar **word2, const gchar *wordchars2)
 {
 	g_return_if_fail(editor != NULL);
 	
-	if (sci_get_lines_selected(editor->sci) == 1)
+	static gchar custom_word1[GEANY_MAX_WORD_LENGTH];
+	static gchar custom_word2[GEANY_MAX_WORD_LENGTH];
+	
+	if (sci_has_selection(editor->sci))
 	{
-		//~ gchar *s = sci_get_selection_contents(editor->sci);
-	}
-	else if (sci_get_lines_selected(editor->sci) == 0)
-	{
-		WordBound wordBound = read_current_word(editor, -1, word1, wordlen1,
-												wordchars1, FALSE);
-		if (wordBound.start != wordBound.end)
+		gchar *selection = sci_get_selection_contents(editor->sci);
+		
+		editor_find_custom_words_chunk(selection, separator,
+									   custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
+									   custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
+		if (*custom_word1 && *custom_word2)
 		{
-			gint pos = wordBound.end;
-			while (isspace(sci_get_char_at(editor->sci, pos)))
-				pos++;
-			if (sci_get_char_at(editor->sci, pos) == separator)
-			{
-				pos++;
-				while (isspace(sci_get_char_at(editor->sci, pos)))
-					pos++;
-				
-				read_current_word(editor, pos, word2, wordlen2,
-								  wordchars2, FALSE);
-			}
-			
+			*word1 = g_strdup(custom_word1);
+			*word2 = g_strdup(custom_word2);
+		}
+		else
+			*word1 = g_strdup(selection);
+		g_free(selection);
+	}
+	else
+	{
+		editor_find_custom_words(editor, separator,
+								 custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
+								 custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
+		if (*custom_word1)
+		{
+			*word1 = g_strdup(custom_word1);
+			if (*custom_word2)
+				*word2 = g_strdup(custom_word2);
 		}
 	}
 }
