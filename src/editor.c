@@ -1874,22 +1874,31 @@ void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
 	
+	//~ word1 search:
 	WordBound wordBound = read_current_word(editor, -1, word1, wordlen1,
 											wordchars1, FALSE);
 	if (wordBound.start != wordBound.end)
 	{
 		gint pos = wordBound.end;
-		while (isspace(sci_get_char_at(sci, pos)))
+		gint limit = pos + 300;
+		/* skip whitespaces */
+		while (pos < limit && isspace(sci_get_char_at(sci, pos)))
 			pos++;
-		if (sci_get_char_at(sci, pos) == separator)
+		
+		if (pos < limit && sci_get_char_at(sci, pos) == separator)
 		{
 			pos++;
-			while (isspace(sci_get_char_at(sci, pos)))
+			/* skip whitespaces */
+			while (pos < limit && isspace(sci_get_char_at(sci, pos)))
 				pos++;
 			
-			read_current_word(editor, pos, word2, wordlen2,
-							  wordchars2, FALSE);
-			return;
+			if (pos < limit)
+			{
+				//~ word2 search:
+				read_current_word(editor, pos, word2, wordlen2,
+								  wordchars2, FALSE);
+				return;
+			}
 		}
 	}
 	*word2 = '\0';
@@ -1905,28 +1914,40 @@ void editor_find_custom_words_chunk(gchar *chunk, const gchar separator,
 	g_return_if_fail(chunk != NULL);
 	
 	gint startword = 0;
-	while (isspace(chunk[startword]))
+	gint limit = strlen(chunk);
+	/* skip whitespaces */
+	while (startword < limit && isspace(chunk[startword]))
 		startword++;
 	gint endword = startword;
 	
+	gchar *chunk2 = g_strdup(chunk);
+	//~ word1 search:
 	read_word(chunk, &startword, &endword, word1, wordlen1,
 			  wordchars1, FALSE);
 	if (startword != endword)
 	{
-		while (isspace(chunk[endword]))
+		/* skip whitespaces */
+		while (endword < limit && isspace(chunk2[endword]))
 			endword++;
-		if (chunk[endword] == separator)
+		if (endword < limit && chunk2[endword] == separator)
 		{
 			endword++;
-			while (isspace(chunk[endword]))
+			/* skip whitespaces */
+			while (endword < limit && isspace(chunk2[endword]))
 				endword++;
 			
-			startword = endword;
-			read_word(chunk, &startword, &endword, word2, wordlen2,
-					  wordchars2, FALSE);
-			return;
+			if (endword < limit)
+			{
+				startword = endword;
+				//~ word2 search:
+				read_word(chunk2, &startword, &endword, word2, wordlen2,
+						  wordchars2, FALSE);
+				g_free(chunk2);
+				return;
+			}
 		}
 	}
+	g_free(chunk2);
 	*word2 = '\0';
 }
 
@@ -4282,13 +4303,6 @@ void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
 		editor_find_custom_words_chunk(selection, separator,
 									   custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
 									   custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
-		if (*custom_word1 && *custom_word2)
-		{
-			*word1 = g_strdup(custom_word1);
-			*word2 = g_strdup(custom_word2);
-		}
-		else
-			*word1 = g_strdup(selection);
 		g_free(selection);
 	}
 	else
@@ -4296,12 +4310,12 @@ void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
 		editor_find_custom_words(editor, separator,
 								 custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
 								 custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
-		if (*custom_word1)
-		{
-			*word1 = g_strdup(custom_word1);
-			if (*custom_word2)
-				*word2 = g_strdup(custom_word2);
-		}
+	}
+	if (*custom_word1)
+	{
+		*word1 = g_strdup(custom_word1);
+		if (*custom_word2)
+			*word2 = g_strdup(custom_word2);
 	}
 }
 
