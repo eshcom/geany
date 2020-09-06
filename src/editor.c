@@ -1880,7 +1880,7 @@ void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
 	if (wordBound.start != wordBound.end)
 	{
 		gint pos = wordBound.end;
-		gint limit = pos + 300;
+		gint limit = sci_get_length(sci);
 		/* skip whitespaces */
 		while (pos < limit && isspace(sci_get_char_at(sci, pos)))
 			pos++;
@@ -1929,6 +1929,7 @@ void editor_find_custom_words_chunk(gchar *chunk, const gchar separator,
 		/* skip whitespaces */
 		while (endword < limit && isspace(chunk2[endword]))
 			endword++;
+		
 		if (endword < limit && chunk2[endword] == separator)
 		{
 			endword++;
