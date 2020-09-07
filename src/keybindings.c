@@ -1485,7 +1485,7 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *ev, gpointer 
 			keyval += GDK_a - GDK_A;
 	// esh (correcting cyrillic hotkey combinations)
 	if ((ev->state & GEANY_PRIMARY_MOD_MASK) || (ev->state & GDK_MOD1_MASK))
-		if (keyval >= GDK_Cyrillic_je && keyval <= GDK_Cyrillic_HARDSIGN)
+		if (keyval >= GDK_Cyrillic_io && keyval <= GDK_Cyrillic_HARDSIGN)
 			keyval = key_cyr_translate(keyval);
 
 	if (keyval >= GDK_KP_Space && keyval < GDK_KP_Equal)
