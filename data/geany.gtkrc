@@ -51,17 +51,17 @@ widget "*.geany-document-status-disk-changed" style "geany-document-status-disk-
 widget "*.geany-document-status-readonly" style "geany-document-status-readonly-style"
 
 # compiler message colors
-# red (255,0,43)
+# red (255,0,43) #FF002B
 style "geany-compiler-error-style" {
     fg[NORMAL] = "#ffff00002b2b"
     fg[ACTIVE] = "#ffff00002b2b"
 }
-# orange (255,68,0)
+# orange (255,68,0) #FF4400
 style "geany-compiler-context-style" {
     fg[NORMAL] = "#ffff44440000"
     fg[ACTIVE] = "#ffff44440000"
 }
-# cyan (0,171,255)
+# cyan (0,171,255) #00ABFF
 style "geany-compiler-message-style" {
     fg[NORMAL] = "#0000ababffff"
     fg[ACTIVE] = "#0000ababffff"
