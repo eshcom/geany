@@ -1281,14 +1281,18 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_FTRIPLEDOUBLE,	"ftripledouble",	FALSE },
 	{ SCE_P_DECORATOR,		"decorator",		FALSE },
 	{ SCE_P_COMMONWORD,		"commonword",		FALSE },
-	{ SCE_P_REFCLASSWORD,	"refclassword",		FALSE }
+	{ SCE_P_REFCLASSWORD,	"refclassword",		FALSE },
+	{ SCE_P_WORD_ADD,		"word_add",			FALSE },
+	{ SCE_P_WORD2_ADD,		"word2_add",		FALSE }
 };
 static const HLKeyword highlighting_keywords_PYTHON[] =
 {
 	{ 0, "primary",			FALSE },
 	{ 1, "identifiers",		FALSE },
 	{ 2, "commonword",		FALSE },
-	{ 3, "refclassword",	FALSE }
+	{ 3, "refclassword",	FALSE },
+	{ 4, "primary_add",		FALSE },
+	{ 5, "identifiers_add",	FALSE }
 };
 #define highlighting_properties_PYTHON	EMPTY_PROPERTIES
 
