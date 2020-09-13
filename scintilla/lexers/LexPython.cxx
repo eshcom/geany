@@ -334,13 +334,17 @@ LexicalClass lexicalClasses[] = {
 	19, "SCE_P_FTRIPLEDOUBLE", "literal string interpolated", "Triple double quoted f-string",
 	20, "SCE_P_COMMONWORD", "keyword", "Common keywords (None True False)",
 	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
+	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
+	23, "SCE_P_WORD2_ADD", "identifier", "Highlighted identifiers additional",
 };
 
 }
 
 class LexerPython : public DefaultLexer {
 	WordList keywords;
+	WordList keywordsAdd;
 	WordList keywords2;
+	WordList keywords2Add;
 	WordList commonWords;
 	WordList refclassWords;
 	OptionsPython options;
@@ -444,6 +448,12 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		break;
 	case 3:
 		wordListN = &refclassWords;
+		break;
+	case 4:
+		wordListN = &keywordsAdd;
+		break;
+	case 5:
+		wordListN = &keywords2Add;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -552,6 +562,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 	}
 
 	kwType kwLast = kwOther;
+	int styleLast;
 	int spaceFlags = 0;
 	styler.IndentAmount(lineCurrent, &spaceFlags, IsPyComment);
 	bool base_n_number = false;
@@ -593,7 +604,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 
 		bool needEOLCheck = false;
 
-
 		if (sc.state == SCE_P_OPERATOR) {
 			kwLast = kwOther;
 			sc.SetState(SCE_P_DEFAULT);
@@ -608,9 +618,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 				sc.GetCurrent(s, sizeof(s));
 				int style = SCE_P_IDENTIFIER;
 				if ((kwLast == kwImport) && (strcmp(s, "as") == 0)) {
-					style = SCE_P_WORD;
+					style = styleLast;
 				} else if (keywords.InList(s)) {
 					style = SCE_P_WORD;
+				} else if (keywordsAdd.InList(s)) {
+					style = SCE_P_WORD_ADD;
 				} else if (commonWords.InList(s)) {
 					style = SCE_P_COMMONWORD;
 				} else if (refclassWords.InList(s)) {
@@ -647,6 +659,17 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 					} else {
 						style = SCE_P_WORD2;
 					}
+				} else if (keywords2Add.InList(s)) {
+					if (options.keywords2NoSubIdentifiers) {
+						// We don't want to highlight keywords2Add
+						// that are used as a sub-identifier,
+						// i.e. not open in "foo.open".
+						Sci_Position pos = styler.GetStartSegment() - 1;
+						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
+							style = SCE_P_WORD2_ADD;
+					} else {
+						style = SCE_P_WORD2_ADD;
+					}
 				} else {
 					int subStyle = classifierIdentifiers.ValueFor(s);
 					if (subStyle >= 0) {
@@ -655,19 +678,25 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 				}
 				sc.ChangeState(style);
 				sc.SetState(SCE_P_DEFAULT);
-				if (style == SCE_P_WORD) {
+				if (style == SCE_P_WORD || style == SCE_P_WORD_ADD) {
 					if (0 == strcmp(s, "class"))
 						kwLast = kwClass;
 					else if (0 == strcmp(s, "def"))
 						kwLast = kwDef;
 					else if (0 == strcmp(s, "import"))
+					{
 						kwLast = kwImport;
+						styleLast = style;
+					}
 					else if (0 == strcmp(s, "cdef"))
 						kwLast = kwCDef;
 					else if (0 == strcmp(s, "cpdef"))
 						kwLast = kwCPDef;
 					else if (0 == strcmp(s, "cimport"))
+					{
 						kwLast = kwImport;
+						styleLast = style;
+					}
 					else if (kwLast != kwCDef && kwLast != kwCPDef)
 						kwLast = kwOther;
 				} else if (kwLast != kwCDef && kwLast != kwCPDef) {
