@@ -121,9 +121,12 @@ struct VteFunctions
 	gboolean (*vte_terminal_get_has_selection) (VteTerminal *terminal);
 	void (*vte_terminal_copy_clipboard) (VteTerminal *terminal);
 	void (*vte_terminal_paste_clipboard) (VteTerminal *terminal);
-	void (*vte_terminal_set_color_foreground) (VteTerminal *terminal, const GdkColor *foreground);
+	//~ void (*vte_terminal_set_color_foreground) (VteTerminal *terminal, const GdkColor *foreground);
 	void (*vte_terminal_set_color_bold) (VteTerminal *terminal, const GdkColor *foreground);
-	void (*vte_terminal_set_color_background) (VteTerminal *terminal, const GdkColor *background);
+	//~ void (*vte_terminal_set_color_background) (VteTerminal *terminal, const GdkColor *background);
+	void (*vte_terminal_set_colors) (VteTerminal *terminal, const GdkColor *foreground,
+									 const GdkColor *background, const GdkColor *palette,
+									 gsize palette_size);
 	void (*vte_terminal_feed_child) (VteTerminal *terminal, const char *data, glong length);
 	void (*vte_terminal_im_append_menuitems) (VteTerminal *terminal, GtkMenuShell *menushell);
 	void (*vte_terminal_set_cursor_blink_mode) (VteTerminal *terminal,
@@ -134,9 +137,12 @@ struct VteFunctions
 	GtkAdjustment* (*vte_terminal_get_adjustment) (VteTerminal *terminal);
 #if GTK_CHECK_VERSION(3, 0, 0)
 	/* hack for the VTE 2.91 API using GdkRGBA: we wrap the API to keep using GdkColor on our side */
-	void (*vte_terminal_set_color_foreground_rgba) (VteTerminal *terminal, const GdkRGBA *foreground);
+	//~ void (*vte_terminal_set_color_foreground_rgba) (VteTerminal *terminal, const GdkRGBA *foreground);
 	void (*vte_terminal_set_color_bold_rgba) (VteTerminal *terminal, const GdkRGBA *foreground);
-	void (*vte_terminal_set_color_background_rgba) (VteTerminal *terminal, const GdkRGBA *background);
+	//~ void (*vte_terminal_set_color_background_rgba) (VteTerminal *terminal, const GdkRGBA *background);
+	void (*vte_terminal_set_colors_rgba) (VteTerminal *terminal, const GdkRGBA *foreground,
+										  const GdkRGBA *background, const GdkRGBA *palette,
+										  gsize palette_size);
 #endif
 };
 
@@ -211,12 +217,53 @@ static void rgba_from_color(GdkRGBA *rgba, const GdkColor *color)
 		vf->name##_rgba(terminal, &rgba); \
 	}
 
-WRAP_RGBA_SETTER(vte_terminal_set_color_background)
+//~ WRAP_RGBA_SETTER(vte_terminal_set_color_background)
 WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
-WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
-
+//~ WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
 #	undef WRAP_RGBA_SETTER
+
+#	define WRAP_RGBA_SETTER2(name) \
+	static void wrap_##name(VteTerminal *terminal, const GdkColor *color1, const GdkColor *color2,
+							const GdkColor *color3, gsize palette_size) \
+	{ \
+		GdkRGBA rgba1; \
+		rgba_from_color(&rgba1, color1); \
+		GdkRGBA rgba2; \
+		rgba_from_color(&rgba2, color2); \
+		GdkRGBA rgba3; \
+		rgba_from_color(&rgba3, color3); \
+		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba3, palette_size); \
+	}
+
+WRAP_RGBA_SETTER2(vte_terminal_set_colors)
+#	undef WRAP_RGBA_SETTER2
+
 #endif
+
+// esh: palette obtained from dconf param "org.gnome.gedit.plugins.terminal.palette"
+// ['#2E2E34343636', '#CCCC00000000', '#4E4E9A9A0606', '#C4C4A0A00000',
+//  '#34346565A4A4', '#757550507B7B', '#060698209A9A', '#D3D3D7D7CFCF',
+//  '#555557575353', '#EFEF29292929', '#8A8AE2E23434', '#FCFCE9E94F4F',
+//  '#72729F9FCFCF', '#ADAD7F7FA8A8', '#3434E2E2E2E2', '#EEEEEEEEECEC']
+static const GdkColor palette[] =
+{
+	{0, 0x2E2E, 0x3434, 0x3636},
+	{0, 0xCCCC, 0x0000, 0x0000},
+	{0, 0x4E4E, 0x9A9A, 0x0606},
+	{0, 0xC4C4, 0xA0A0, 0x0000},
+	{0, 0x3434, 0x6565, 0xA4A4},
+	{0, 0x7575, 0x5050, 0x7B7B},
+	{0, 0x0606, 0x9820, 0x9A9A},
+	{0, 0xD3D3, 0xD7D7, 0xCFCF},
+	{0, 0x5555, 0x5757, 0x5353},
+	{0, 0xEFEF, 0x2929, 0x2929},
+	{0, 0x8A8A, 0xE2E2, 0x3434},
+	{0, 0xFCFC, 0xE9E9, 0x4F4F},
+	{0, 0x7272, 0x9F9F, 0xCFCF},
+	{0, 0xADAD, 0x7F7F, 0xA8A8},
+	{0, 0x3434, 0xE2E2, 0xE2E2},
+	{0, 0xEEEE, 0xEEEE, 0xECEC}
+};
 
 
 static gchar **vte_get_child_environment(void)
@@ -637,16 +684,18 @@ static gboolean vte_register_symbols(GModule *mod)
 #if GTK_CHECK_VERSION(3, 0, 0)
 	if (vte_is_2_91())
 	{
-		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_foreground);
+		//~ BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_foreground);
 		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_bold);
-		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_background);
+		//~ BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_background);
+		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_colors);
 	}
 	else
 #endif
 	{
-		BIND_REQUIRED_SYMBOL(vte_terminal_set_color_foreground);
+		//~ BIND_REQUIRED_SYMBOL(vte_terminal_set_color_foreground);
 		BIND_REQUIRED_SYMBOL(vte_terminal_set_color_bold);
-		BIND_REQUIRED_SYMBOL(vte_terminal_set_color_background);
+		//~ BIND_REQUIRED_SYMBOL(vte_terminal_set_color_background);
+		BIND_REQUIRED_SYMBOL(vte_terminal_set_colors);
 	}
 	BIND_REQUIRED_SYMBOL(vte_terminal_feed_child);
 	BIND_SYMBOL(vte_terminal_im_append_menuitems);
@@ -673,22 +722,27 @@ static gboolean vte_register_symbols(GModule *mod)
 void vte_apply_user_settings(void)
 {
 	PangoFontDescription *font_desc;
-
+	
 	if (! ui_prefs.msgwindow_visible)
 		return;
-
+	
 	vf->vte_terminal_set_scrollback_lines(VTE_TERMINAL(vc->vte), vc->scrollback_lines);
 	vf->vte_terminal_set_scroll_on_keystroke(VTE_TERMINAL(vc->vte), vc->scroll_on_key);
 	vf->vte_terminal_set_scroll_on_output(VTE_TERMINAL(vc->vte), vc->scroll_on_out);
 	font_desc = pango_font_description_from_string(vc->font);
 	vf->vte_terminal_set_font(VTE_TERMINAL(vc->vte), font_desc);
 	pango_font_description_free(font_desc);
-	vf->vte_terminal_set_color_foreground(VTE_TERMINAL(vc->vte), &vc->colour_fore);
+	
+	// esh: use vte_terminal_set_colors
+	vf->vte_terminal_set_colors(VTE_TERMINAL(vc->vte), &vc->colour_fore, &vc->colour_back,
+								palette, 16);
+	//~ vf->vte_terminal_set_color_foreground(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	vf->vte_terminal_set_color_bold(VTE_TERMINAL(vc->vte), &vc->colour_fore);
-	vf->vte_terminal_set_color_background(VTE_TERMINAL(vc->vte), &vc->colour_back);
+	//~ vf->vte_terminal_set_color_background(VTE_TERMINAL(vc->vte), &vc->colour_back);
+	
 	vf->vte_terminal_set_audible_bell(VTE_TERMINAL(vc->vte), prefs.beep_on_errors);
 	vte_set_cursor_blink_mode();
-
+	
 	override_menu_key();
 }
 
