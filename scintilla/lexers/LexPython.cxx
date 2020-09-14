@@ -699,7 +699,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 					}
 					else if (kwLast != kwCDef && kwLast != kwCPDef)
 						kwLast = kwOther;
-				} else if (kwLast != kwCDef && kwLast != kwCPDef) {
+				} else if (kwLast != kwCDef && kwLast != kwCPDef && kwLast != kwImport) {
 					kwLast = kwOther;
 				}
 			}
