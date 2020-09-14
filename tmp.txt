@@ -4,6 +4,7 @@ ui_set_statusbar(TRUE, "message1 = %s", message1); // esh: log
 ui_set_statusbar(TRUE, "message1 = %s, message2 = %s", message1, message2); // esh: log
 
 ui_set_statusbar(TRUE, "No more message items."); // esh: log
+
 ----------------------------------------------------------------------------------------
 
 	ui_set_statusbar(TRUE, "tmtag: "
@@ -12,6 +13,7 @@ ui_set_statusbar(TRUE, "No more message items."); // esh: log
 		tmtag->name, tmtag->type, tmtag->scope, tmtag->var_type, 
 		tmtag->file->short_name, tmtag->arglist, tmtag->lang,
 		tmtag->impl, tmtag->inheritance); // esh: log
+
 ----------------------------------------------------------------------------------------
 
 configuration_reload_default_session (geany.conf)
@@ -29,9 +31,11 @@ project_new -> configuration_clear_default_session
 
 vte_start -> (vte_terminal_spawn_sync, vte_terminal_fork_command)
 vte_send_cmd -> vte_terminal_feed_child
+
 ----------------------------------------------------------------------------------------
 
 keybindings/goto_tag -> symbols/symbols_goto_tag -> symbols/goto_tag
+
 ----------------------------------------------------------------------------------------
 
 --string example1:
@@ -44,6 +48,7 @@ keybindings/goto_tag -> symbols/symbols_goto_tag -> symbols/goto_tag
 --string example3:
 	len = (gsize)(cur - begin);
 	return len ? g_strndup(begin, len) : NULL;
+
 ----------------------------------------------------------------------------------------
 
 --if example1:
@@ -52,6 +57,7 @@ if (g_strcmp0(documents[j]->real_path, tag->file->file_name) == 0)
 --if example2:
 gchar *dir = g_path_get_dirname(doc->real_path);
 if (g_str_has_prefix(tag->file->file_name, dir))
+
 ----------------------------------------------------------------------------------------
 
 --C:
@@ -78,6 +84,7 @@ tmtag: scope = (null), name = vcs, type = 32768, var_type = (null), file = actio
 --filter by file:
 include tags: 32768 | 4096 | 16
 no check empty(cursor scope)
+
 ----------------------------------------------------------------------------------------
 
 	gint offset;
@@ -99,4 +106,22 @@ no check empty(cursor scope)
 
 	if (new_doc)
 		navqueue_goto_line(old_doc, new_doc, tag->line);
+
 ----------------------------------------------------------------------------------------
+
+palette:
+['#2E2E34343636', '#CCCC00000000', '#4E4E9A9A0606', '#C4C4A0A00000', '#34346565A4A4', '#757550507B7B', '#060698209A9A', '#D3D3D7D7CFCF', '#555557575353', '#EFEF29292929', '#8A8AE2E23434', '#FCFCE9E94F4F', '#72729F9FCFCF', '#ADAD7F7FA8A8', '#3434E2E2E2E2', '#EEEEEEEEECEC']
+['rgb(0,0,0)', 'rgb(204,0,0)', 'rgb(78,154,6)', 'rgb(196,160,0)', 'rgb(52,101,164)', 'rgb(117,80,123)', 'rgb(6,152,154)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(239,41,41)', 'rgb(138,226,52)', 'rgb(252,233,79)', 'rgb(114,159,207)', 'rgb(173,127,168)', 'rgb(52,226,226)', 'rgb(238,238,236)']
+
+gsize n_colors = 16;
+--------------------
+
+--example set vte_terminal from terminal-screen.c:
+
+  colors = terminal_g_settings_get_rgba_palette (priv->profile, "palette", &n_colors);
+  vte_terminal_set_colors (VTE_TERMINAL (screen), &fg, &bg,
+                           colors, n_colors);
+  vte_terminal_set_color_bold (VTE_TERMINAL (screen), boldp);
+
+----------------------------------------------------------------------------------------
+
