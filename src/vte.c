@@ -186,60 +186,6 @@ static const GtkTargetEntry dnd_targets[] =
 };
 
 
-/* replacement for vte_terminal_get_adjustment() when it's not available */
-static GtkAdjustment *default_vte_terminal_get_adjustment(VteTerminal *vte)
-{
-#if GTK_CHECK_VERSION(3, 0, 0)
-	if (GTK_IS_SCROLLABLE(vte))
-		return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
-#endif
-	/* this is only valid in < 0.38, 0.38 broke ABI */
-	return vte->adjustment;
-}
-
-
-#if GTK_CHECK_VERSION(3, 0, 0)
-/* Wrap VTE 2.91 API using GdkRGBA with GdkColor so we use a single API on our side */
-
-static void rgba_from_color(GdkRGBA *rgba, const GdkColor *color)
-{
-	rgba->red = color->red / 65535.0;
-	rgba->green = color->green / 65535.0;
-	rgba->blue = color->blue / 65535.0;
-	rgba->alpha = 1.0;
-}
-
-#	define WRAP_RGBA_SETTER(name) \
-	static void wrap_##name(VteTerminal *terminal, const GdkColor *color) \
-	{ \
-		GdkRGBA rgba; \
-		rgba_from_color(&rgba, color); \
-		vf->name##_rgba(terminal, &rgba); \
-	}
-
-//~ WRAP_RGBA_SETTER(vte_terminal_set_color_background)
-WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
-//~ WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
-#	undef WRAP_RGBA_SETTER
-
-#	define WRAP_RGBA_SETTER2(name) \
-	static void wrap_##name(VteTerminal *terminal, const GdkColor *color1, const GdkColor *color2,
-							const GdkColor *color3, gsize palette_size) \
-	{ \
-		GdkRGBA rgba1; \
-		rgba_from_color(&rgba1, color1); \
-		GdkRGBA rgba2; \
-		rgba_from_color(&rgba2, color2); \
-		GdkRGBA rgba3; \
-		rgba_from_color(&rgba3, color3); \
-		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba3, palette_size); \
-	}
-
-WRAP_RGBA_SETTER2(vte_terminal_set_colors)
-#	undef WRAP_RGBA_SETTER2
-
-#endif
-
 // esh: palette obtained from dconf param "org.gnome.gedit.plugins.terminal.palette"
 // ['#2E2E34343636', '#CCCC00000000', '#4E4E9A9A0606', '#C4C4A0A00000',
 //  '#34346565A4A4', '#757550507B7B', '#060698209A9A', '#D3D3D7D7CFCF',
@@ -264,6 +210,73 @@ static const GdkColor palette[] =
 	{0, 0x3434, 0xE2E2, 0xE2E2},
 	{0, 0xEEEE, 0xEEEE, 0xECEC}
 };
+#define PALETTE_SIZE 16
+
+
+/* replacement for vte_terminal_get_adjustment() when it's not available */
+static GtkAdjustment *default_vte_terminal_get_adjustment(VteTerminal *vte)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+	if (GTK_IS_SCROLLABLE(vte))
+		return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
+#endif
+	/* this is only valid in < 0.38, 0.38 broke ABI */
+	return vte->adjustment;
+}
+
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+/* Wrap VTE 2.91 API using GdkRGBA with GdkColor so we use a single API on our side */
+
+static void rgba_from_color(GdkRGBA *rgba, const GdkColor *color)
+{
+	rgba->red = color->red / 65535.0;
+	rgba->green = color->green / 65535.0;
+	rgba->blue = color->blue / 65535.0;
+	rgba->alpha = 1.0;
+}
+
+static void rgba_from_color_array(GdkRGBA *rgba_palette, const GdkColor *color_palette,
+								  gsize p_size)
+{
+	for (guint i = 0; i < p_size; i++)
+	{
+		GdkRGBA rgba;
+		rgba_from_color(&rgba, &color_palette[i]);
+		rgba_palette[i] = rgba;
+	}
+}
+
+#	define WRAP_RGBA_SETTER(name) \
+	static void wrap_##name(VteTerminal *terminal, const GdkColor *color) \
+	{ \
+		GdkRGBA rgba; \
+		rgba_from_color(&rgba, color); \
+		vf->name##_rgba(terminal, &rgba); \
+	}
+
+//~ WRAP_RGBA_SETTER(vte_terminal_set_color_background)
+WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
+//~ WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
+#	undef WRAP_RGBA_SETTER
+
+#	define WRAP_RGBA_SETTER2(name) \
+	static void wrap_##name(VteTerminal *terminal, const GdkColor *color1, const GdkColor *color2, \
+							const GdkColor *color_palette, gsize p_size) \
+	{ \
+		GdkRGBA rgba1; \
+		rgba_from_color(&rgba1, color1); \
+		GdkRGBA rgba2; \
+		rgba_from_color(&rgba2, color2); \
+		static GdkRGBA rgba_palette[PALETTE_SIZE]; \
+		rgba_from_color_array(rgba_palette, color_palette, PALETTE_SIZE); \
+		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba_palette, p_size); \
+	}
+
+WRAP_RGBA_SETTER2(vte_terminal_set_colors)
+#	undef WRAP_RGBA_SETTER2
+
+#endif
 
 
 static gchar **vte_get_child_environment(void)
@@ -735,7 +748,7 @@ void vte_apply_user_settings(void)
 	
 	// esh: use vte_terminal_set_colors
 	vf->vte_terminal_set_colors(VTE_TERMINAL(vc->vte), &vc->colour_fore, &vc->colour_back,
-								palette, 16);
+								palette, PALETTE_SIZE);
 	//~ vf->vte_terminal_set_color_foreground(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	vf->vte_terminal_set_color_bold(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	//~ vf->vte_terminal_set_color_background(VTE_TERMINAL(vc->vte), &vc->colour_back);
