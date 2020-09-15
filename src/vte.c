@@ -187,6 +187,7 @@ static const GtkTargetEntry dnd_targets[] =
 
 
 // esh: palette obtained from dconf param "org.gnome.gedit.plugins.terminal.palette"
+// esh: this is Tango palette:
 // ['#2E2E34343636', '#CCCC00000000', '#4E4E9A9A0606', '#C4C4A0A00000',
 //  '#34346565A4A4', '#757550507B7B', '#060698209A9A', '#D3D3D7D7CFCF',
 //  '#555557575353', '#EFEF29292929', '#8A8AE2E23434', '#FCFCE9E94F4F',
@@ -210,7 +211,7 @@ static const GdkColor palette[] =
 	{0, 0x3434, 0xE2E2, 0xE2E2},
 	{0, 0xEEEE, 0xEEEE, 0xECEC}
 };
-#define PALETTE_SIZE 16
+#define PALETTE_SIZE (sizeof(palette) / sizeof(GdkColor))
 
 
 /* replacement for vte_terminal_get_adjustment() when it's not available */
@@ -237,9 +238,9 @@ static void rgba_from_color(GdkRGBA *rgba, const GdkColor *color)
 }
 
 static void rgba_from_color_array(GdkRGBA *rgba_palette, const GdkColor *color_palette,
-								  gsize p_size)
+								  gsize palette_size)
 {
-	for (guint i = 0; i < p_size; i++)
+	for (guint i = 0; i < palette_size; i++)
 	{
 		GdkRGBA rgba;
 		rgba_from_color(&rgba, &color_palette[i]);
@@ -262,7 +263,7 @@ WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
 
 #	define WRAP_RGBA_SETTER2(name) \
 	static void wrap_##name(VteTerminal *terminal, const GdkColor *color1, const GdkColor *color2, \
-							const GdkColor *color_palette, gsize p_size) \
+							const GdkColor *color_palette, gsize palette_size) \
 	{ \
 		GdkRGBA rgba1; \
 		rgba_from_color(&rgba1, color1); \
@@ -270,7 +271,7 @@ WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
 		rgba_from_color(&rgba2, color2); \
 		static GdkRGBA rgba_palette[PALETTE_SIZE]; \
 		rgba_from_color_array(rgba_palette, color_palette, PALETTE_SIZE); \
-		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba_palette, p_size); \
+		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba_palette, palette_size); \
 	}
 
 WRAP_RGBA_SETTER2(vte_terminal_set_colors)

@@ -610,7 +610,8 @@ gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang)
 }
 
 
-static void add_subparser(TMParserType lang, TMParserType sublang, TMSubparserMapEntry *map, guint map_size)
+static void add_subparser(TMParserType lang, TMParserType sublang,
+						  TMSubparserMapEntry *map, guint map_size)
 {
 	guint i;
 	GPtrArray *mapping;
