@@ -72,7 +72,8 @@ gboolean main_quit(void);
 
 gboolean main_handle_filename(const gchar *locale_filename);
 
-void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session);
+void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session,
+										 gboolean save_default_session);
 
 gint main_lib(gint argc, gchar **argv);
 

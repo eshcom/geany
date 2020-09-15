@@ -632,8 +632,10 @@ static void handle_input_filename(const gchar *buf)
 	{
 		if (g_str_has_suffix(locale_filename, ".geany"))
 		{
+			gboolean save_default_session = app->project == NULL;
 			if (project_ask_close())
-				main_load_project_from_command_line(locale_filename, TRUE);
+				main_load_project_from_command_line(locale_filename, TRUE,
+													save_default_session);
 		}
 		else
 			main_handle_filename(locale_filename);

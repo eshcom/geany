@@ -40,11 +40,13 @@ static gboolean app_block_termination_cb(GtkosxApplication *app, gpointer data)
 static gboolean open_project_idle(gchar *locale_path)
 {
 	gchar *utf8_path;
-
+	
 	utf8_path = utils_get_utf8_from_locale(locale_path);
+	
+	gboolean save_default_session = app->project == NULL;
 	if (app->project == NULL ||
 		(g_strcmp0(utf8_path, app->project->file_name) != 0 && project_ask_close()))
-		project_load_file_with_session(locale_path);
+		project_load_file_with_session(locale_path, save_default_session);
 	g_free(utf8_path);
 	g_free(locale_path);
 	return FALSE;

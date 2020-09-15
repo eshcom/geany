@@ -264,9 +264,10 @@ void project_new(void)
 }
 
 
-gboolean project_load_file_with_session(const gchar *locale_file_name)
+gboolean project_load_file_with_session(const gchar *locale_file_name,
+										gboolean save_default_session)
 {
-	if (project_load_file(locale_file_name, TRUE))
+	if (project_load_file(locale_file_name, save_default_session))
 	{
 		if (project_prefs.project_session)
 		{
@@ -280,14 +281,14 @@ gboolean project_load_file_with_session(const gchar *locale_file_name)
 }
 
 
-static void run_open_dialog(GtkDialog *dialog)
+static void run_open_dialog(GtkDialog *dialog, gboolean save_default_session)
 {
 	while (gtk_dialog_run(dialog) == GTK_RESPONSE_ACCEPT)
 	{
 		gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
 		/* try to load the config */
-		if (! project_load_file_with_session(filename))
+		if (! project_load_file_with_session(filename, save_default_session))
 		{
 			gchar *utf8_filename = utils_get_utf8_from_locale(filename);
 
@@ -306,9 +307,10 @@ static void run_open_dialog(GtkDialog *dialog)
 void project_open(void)
 {
 	const gchar *dir = local_prefs.project_file_path;
-
+	
+	gboolean save_default_session = app->project == NULL;
 	if (! project_ask_close()) return;
-
+	
 #ifdef G_OS_WIN32
 	if (interface_prefs.use_native_windows_dialogs)
 	{
@@ -316,7 +318,7 @@ void project_open(void)
 		if (file != NULL)
 		{
 			/* try to load the config */
-			if (! project_load_file_with_session(file))
+			if (! project_load_file_with_session(file, save_default_session))
 			{
 				SHOW_ERR1(_("Project file \"%s\" could not be loaded."), file);
 			}
@@ -329,13 +331,13 @@ void project_open(void)
 		GtkWidget *dialog;
 		GtkFileFilter *filter;
 		gchar *locale_path;
-
+		
 		dialog = gtk_file_chooser_dialog_new(_("Open Project"), GTK_WINDOW(main_widgets.window),
 				GTK_FILE_CHOOSER_ACTION_OPEN,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		gtk_widget_set_name(dialog, "GeanyDialogProject");
-
+		
 		/* set default Open, so pressing enter can open multiple files */
 		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
@@ -343,7 +345,7 @@ void project_open(void)
 		gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(main_widgets.window));
 		gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-
+		
 		/* add FileFilters */
 		filter = gtk_file_filter_new();
 		gtk_file_filter_set_name(filter, _("All files"));
@@ -354,7 +356,7 @@ void project_open(void)
 		gtk_file_filter_add_pattern(filter, "*." GEANY_PROJECT_EXT);
 		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
-
+		
 		locale_path = utils_get_locale_from_utf8(dir);
 		if (g_file_test(locale_path, G_FILE_TEST_EXISTS) &&
 			g_file_test(locale_path, G_FILE_TEST_IS_DIR))
@@ -362,9 +364,9 @@ void project_open(void)
 			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), locale_path);
 		}
 		g_free(locale_path);
-
+		
 		gtk_widget_show_all(dialog);
-		run_open_dialog(GTK_DIALOG(dialog));
+		run_open_dialog(GTK_DIALOG(dialog), save_default_session);
 		gtk_widget_destroy(GTK_WIDGET(dialog));
 	}
 }
@@ -995,7 +997,8 @@ static void on_entries_changed(GtkEditable *editable, PropertyDialogElements *e)
 }
 
 
-static void on_radio_long_line_custom_toggled(GtkToggleButton *radio, GtkWidget *spin_long_line)
+static void on_radio_long_line_custom_toggled(GtkToggleButton *radio,
+											  GtkWidget *spin_long_line)
 {
 	gtk_widget_set_sensitive(spin_long_line, gtk_toggle_button_get_active(radio));
 }
