@@ -121,9 +121,9 @@ struct VteFunctions
 	gboolean (*vte_terminal_get_has_selection) (VteTerminal *terminal);
 	void (*vte_terminal_copy_clipboard) (VteTerminal *terminal);
 	void (*vte_terminal_paste_clipboard) (VteTerminal *terminal);
+	//~ void (*vte_terminal_set_color_background) (VteTerminal *terminal, const GdkColor *background);
 	//~ void (*vte_terminal_set_color_foreground) (VteTerminal *terminal, const GdkColor *foreground);
 	void (*vte_terminal_set_color_bold) (VteTerminal *terminal, const GdkColor *foreground);
-	//~ void (*vte_terminal_set_color_background) (VteTerminal *terminal, const GdkColor *background);
 	void (*vte_terminal_set_colors) (VteTerminal *terminal, const GdkColor *foreground,
 									 const GdkColor *background, const GdkColor *palette,
 									 gsize palette_size);
@@ -137,9 +137,9 @@ struct VteFunctions
 	GtkAdjustment* (*vte_terminal_get_adjustment) (VteTerminal *terminal);
 #if GTK_CHECK_VERSION(3, 0, 0)
 	/* hack for the VTE 2.91 API using GdkRGBA: we wrap the API to keep using GdkColor on our side */
+	//~ void (*vte_terminal_set_color_background_rgba) (VteTerminal *terminal, const GdkRGBA *background);
 	//~ void (*vte_terminal_set_color_foreground_rgba) (VteTerminal *terminal, const GdkRGBA *foreground);
 	void (*vte_terminal_set_color_bold_rgba) (VteTerminal *terminal, const GdkRGBA *foreground);
-	//~ void (*vte_terminal_set_color_background_rgba) (VteTerminal *terminal, const GdkRGBA *background);
 	void (*vte_terminal_set_colors_rgba) (VteTerminal *terminal, const GdkRGBA *foreground,
 										  const GdkRGBA *background, const GdkRGBA *palette,
 										  gsize palette_size);
@@ -248,7 +248,7 @@ static void rgba_from_color_array(GdkRGBA *rgba_palette, const GdkColor *color_p
 	}
 }
 
-#	define WRAP_RGBA_SETTER(name) \
+#define WRAP_RGBA_SETTER(name) \
 	static void wrap_##name(VteTerminal *terminal, const GdkColor *color) \
 	{ \
 		GdkRGBA rgba; \
@@ -257,11 +257,11 @@ static void rgba_from_color_array(GdkRGBA *rgba_palette, const GdkColor *color_p
 	}
 
 //~ WRAP_RGBA_SETTER(vte_terminal_set_color_background)
-WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
 //~ WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
-#	undef WRAP_RGBA_SETTER
+WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
+#undef WRAP_RGBA_SETTER
 
-#	define WRAP_RGBA_SETTER2(name) \
+#define WRAP_RGBA_SETTER2(name) \
 	static void wrap_##name(VteTerminal *terminal, const GdkColor *color1, const GdkColor *color2, \
 							const GdkColor *color_palette, gsize palette_size) \
 	{ \
@@ -269,13 +269,15 @@ WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
 		rgba_from_color(&rgba1, color1); \
 		GdkRGBA rgba2; \
 		rgba_from_color(&rgba2, color2); \
-		static GdkRGBA rgba_palette[PALETTE_SIZE]; \
-		rgba_from_color_array(rgba_palette, color_palette, PALETTE_SIZE); \
-		vf->name##_rgba(terminal, &rgba1, &rgba2, &rgba_palette, palette_size); \
+		static GdkRGBA *rgba_palette = NULL; \
+		if (rgba_palette == NULL) \
+			rgba_palette = g_new(GdkRGBA, palette_size); \
+		rgba_from_color_array(rgba_palette, color_palette, palette_size); \
+		vf->name##_rgba(terminal, &rgba1, &rgba2, rgba_palette, palette_size); \
 	}
 
 WRAP_RGBA_SETTER2(vte_terminal_set_colors)
-#	undef WRAP_RGBA_SETTER2
+#undef WRAP_RGBA_SETTER2
 
 #endif
 
@@ -698,17 +700,17 @@ static gboolean vte_register_symbols(GModule *mod)
 #if GTK_CHECK_VERSION(3, 0, 0)
 	if (vte_is_2_91())
 	{
+		//~ BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_background);
 		//~ BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_foreground);
 		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_bold);
-		//~ BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_color_background);
 		BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(vte_terminal_set_colors);
 	}
 	else
 #endif
 	{
+		//~ BIND_REQUIRED_SYMBOL(vte_terminal_set_color_background);
 		//~ BIND_REQUIRED_SYMBOL(vte_terminal_set_color_foreground);
 		BIND_REQUIRED_SYMBOL(vte_terminal_set_color_bold);
-		//~ BIND_REQUIRED_SYMBOL(vte_terminal_set_color_background);
 		BIND_REQUIRED_SYMBOL(vte_terminal_set_colors);
 	}
 	BIND_REQUIRED_SYMBOL(vte_terminal_feed_child);
@@ -750,9 +752,9 @@ void vte_apply_user_settings(void)
 	// esh: use vte_terminal_set_colors
 	vf->vte_terminal_set_colors(VTE_TERMINAL(vc->vte), &vc->colour_fore, &vc->colour_back,
 								palette, PALETTE_SIZE);
-	//~ vf->vte_terminal_set_color_foreground(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	vf->vte_terminal_set_color_bold(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	//~ vf->vte_terminal_set_color_background(VTE_TERMINAL(vc->vte), &vc->colour_back);
+	//~ vf->vte_terminal_set_color_foreground(VTE_TERMINAL(vc->vte), &vc->colour_fore);
 	
 	vf->vte_terminal_set_audible_bell(VTE_TERMINAL(vc->vte), prefs.beep_on_errors);
 	vte_set_cursor_blink_mode();
