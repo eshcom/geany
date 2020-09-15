@@ -910,17 +910,18 @@ static void load_settings(void)
 }
 
 
-void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session)
+void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session,
+										 gboolean save_default_session)
 {
 	gchar *pfile;
-
+	
 	pfile = utils_get_path_from_uri(locale_filename);
 	if (pfile != NULL)
 	{
 		if (use_session)
-			project_load_file_with_session(pfile);
+			project_load_file_with_session(pfile, save_default_session);
 		else
-			project_load_file(pfile, FALSE);
+			project_load_file(pfile, save_default_session);
 	}
 	g_free(pfile);
 }
@@ -935,7 +936,7 @@ static void load_startup_files(gint argc, gchar **argv)
 		gchar *filename = main_get_argv_filename(argv[1]);
 
 		/* project file specified: load it, but decide the session later */
-		main_load_project_from_command_line(filename, FALSE);
+		main_load_project_from_command_line(filename, FALSE, FALSE);
 		argc--, argv++;
 		/* force session load if using project-based session files */
 		load_session = project_prefs.project_session;

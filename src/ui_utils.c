@@ -1190,10 +1190,12 @@ static void recent_project_activate_cb(GtkMenuItem *menuitem, G_GNUC_UNUSED gpoi
 {
 	gchar *utf8_filename = ui_menu_item_get_text(menuitem);
 	gchar *locale_filename = utils_get_locale_from_utf8(utf8_filename);
-
-	if (project_ask_close() && project_load_file_with_session(locale_filename))
+	
+	gboolean save_default_session = app->project == NULL;
+	if (project_ask_close() && project_load_file_with_session(locale_filename,
+															  save_default_session))
 		recent_file_loaded(utf8_filename, recent_get_recent_projects());
-
+	
 	g_free(locale_filename);
 	g_free(utf8_filename);
 }
