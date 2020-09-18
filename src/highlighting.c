@@ -1402,6 +1402,7 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 				style == SCE_C_STRING ||
 				style == SCE_C_STRINGEOL ||
 				style == SCE_C_STRINGRAW ||
+				style == SCE_C_STRINGJSONKEY ||
 				style == SCE_C_VERBATIM ||
 				style == SCE_C_USERLITERAL ||
 				style == SCE_C_TRIPLEVERBATIM ||
