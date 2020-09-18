@@ -262,7 +262,8 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_TASKMARKER,				"taskmarker",				FALSE },
 	{ SCE_C_ESCAPESEQUENCE,			"escapesequence",			FALSE },
 	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
-	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE }
+	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE },
+	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {

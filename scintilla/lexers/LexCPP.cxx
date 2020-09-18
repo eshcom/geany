@@ -344,6 +344,7 @@ struct OptionsCPP {
 	bool hashquotedStrings;
 	bool backQuotedStrings;
 	bool escapeSequence;
+	bool jsonKeyStrings;
 	bool fold;
 	bool foldSyntaxBased;
 	bool foldComment;
@@ -366,6 +367,7 @@ struct OptionsCPP {
 		hashquotedStrings = false;
 		backQuotedStrings = false;
 		escapeSequence = false;
+		jsonKeyStrings = false;
 		fold = false;
 		foldSyntaxBased = true;
 		foldComment = false;
@@ -382,15 +384,15 @@ struct OptionsCPP {
 };
 
 const char *const cppWordLists[] = {
-            "Primary keywords and identifiers",
-            "Secondary keywords and identifiers",
-            "Documentation comment keywords",
-            "Global classes and typedefs",
-            "Preprocessor definitions",
-            "Task marker and error marker keywords",
-            "Common keywords and identifiers",
-            "Other classes and typedefs",
-            nullptr,
+			"Primary keywords and identifiers",
+			"Secondary keywords and identifiers",
+			"Documentation comment keywords",
+			"Global classes and typedefs",
+			"Preprocessor definitions",
+			"Task marker and error marker keywords",
+			"Common keywords and identifiers",
+			"Other classes and typedefs",
+			nullptr,
 };
 
 struct OptionSetCPP : public OptionSet<OptionsCPP> {
@@ -423,6 +425,9 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 
 		DefineProperty("lexer.cpp.escape.sequence", &OptionsCPP::escapeSequence,
 			"Set to 1 to enable highlighting of escape sequences in strings");
+
+		DefineProperty("lexer.cpp.jsonkey.strings", &OptionsCPP::jsonKeyStrings,
+			"Set to 1 to detect JSON-key strings and highlighting them with a separate style.");
 
 		DefineProperty("fold", &OptionsCPP::fold);
 
@@ -499,6 +504,7 @@ LexicalClass lexicalClasses[] = {
 	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
 	28, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
 	29, "SCE_C_OTHERCLASS", "identifier", "Other classes",
+	30, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
 };
 
 }
@@ -850,6 +856,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 	SparseState<std::string> rawSTNew(lineCurrent);
 
 	int activitySet = preproc.ActiveState();
+	// esh: added lastOperator, stringState for highlighting JSON-keys
+	int lastOperator = '.';
+	int stringState = SCE_C_STRING;
 
 	const WordClassifier &classifierIdentifiers = subStyles.Classifier(SCE_C_IDENTIFIER);
 	const WordClassifier &classifierDocKeyWords = subStyles.Classifier(SCE_C_COMMENTDOCKEYWORD);
@@ -861,7 +870,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 		if (sc.atLineStart) {
 			// Using MaskActive() is not needed in the following statement.
 			// Inside inactive preprocessor declaration, state will be reset anyway at the end of this block.
-			if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER)) {
+			if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER) ||
+				(sc.state == SCE_C_STRINGJSONKEY)) {
 				// Prevent SCE_C_STRINGEOL from leaking back to previous line which
 				// ends with a line continuation by locking in the state up to this position.
 				sc.SetState(sc.state);
@@ -924,7 +934,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				} else if (!(setWord.Contains(sc.ch)
 				   || (sc.ch == '\'')
 				   || ((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E' ||
-				                                          sc.chPrev == 'p' || sc.chPrev == 'P')))) {
+														  sc.chPrev == 'p' || sc.chPrev == 'P')))) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
 				break;
@@ -1067,7 +1077,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				} else if (sc.ch == '[' || sc.ch == '{') {
 					seenDocKeyBrace = true;
 				} else if (!setDoxygen.Contains(sc.ch)
-				           && !(seenDocKeyBrace && (sc.ch == ',' || sc.ch == '.'))) {
+						   && !(seenDocKeyBrace && (sc.ch == ',' || sc.ch == '.'))) {
 					char s[100];
 					if (caseSensitive) {
 						sc.GetCurrent(s, sizeof(s));
@@ -1089,6 +1099,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				}
 				break;
 			case SCE_C_STRING:
+			case SCE_C_STRINGJSONKEY:
 				if (sc.atLineEnd) {
 					sc.ChangeState(SCE_C_STRINGEOL|activitySet);
 				} else if (isIncludePreprocessor) {
@@ -1116,13 +1127,13 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					break;
 				}
 				if (sc.ch == '"') {
-					sc.SetState(SCE_C_STRING|activitySet);
+					sc.SetState(stringState|activitySet);
 					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '\\') {
 					escapeSeq.resetEscapeState(sc.chNext);
 					sc.Forward();
 				} else {
-					sc.SetState(SCE_C_STRING|activitySet);
+					sc.SetState(stringState|activitySet);
 					if (sc.atLineEnd) {
 						sc.ChangeState(SCE_C_STRINGEOL|activitySet);
 					}
@@ -1263,9 +1274,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
 			} else if (sc.ch == '/'
 				   && (setOKBeforeRE.Contains(chPrevNonWhite)
-				       || followsReturnKeyword(sc, styler))
+					   || followsReturnKeyword(sc, styler))
 				   && (!setCouldBePostOp.Contains(chPrevNonWhite)
-				       || !FollowsPostfixOperator(sc, styler))) {
+					   || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_C_REGEX|activitySet);	// JavaScript's RegEx
 				inRERange = false;
 			} else if (sc.ch == '\"') {
@@ -1285,7 +1296,13 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 						sc.SetState(SCE_C_STRING|activitySet);
 					}
 				} else {
-					sc.SetState(SCE_C_STRING|activitySet);
+					// esh: added detect JSON-key
+					if (options.jsonKeyStrings && lastOperator != ':') {
+						stringState = SCE_C_STRINGJSONKEY;
+					} else {
+						stringState = SCE_C_STRING;
+					}
+					sc.SetState(stringState|activitySet);
 				}
 				isIncludePreprocessor = false;	// ensure that '>' won't end the string
 			} else if (isIncludePreprocessor && sc.ch == '<') {
@@ -1416,6 +1433,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				}
 			} else if (isoperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
+				if (options.jsonKeyStrings)
+					lastOperator = sc.ch;
 			}
 		}
 
