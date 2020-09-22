@@ -2928,23 +2928,31 @@ static void insert_closing_tag(GeanyEditor *editor, gint pos, gchar ch, const gc
 {
 	ScintillaObject *sci = editor->sci;
 	gchar *to_insert = NULL;
-
-	if (ch == '/')
+	
+	// esh: check '>' for all case (ch == '/' or ch == '>')
+	// esh: (to work correctly with the plugin "autoclose")
+	const gchar *gt = ">";
+	gboolean move_pos = FALSE;
+	/* if there is already a '>' behind the cursor, don't add it */
+	if (sci_get_char_at(sci, pos) == '>')
 	{
-		const gchar *gt = ">";
-		/* if there is already a '>' behind the cursor, don't add it */
-		if (sci_get_char_at(sci, pos) == '>')
-			gt = "";
-
-		to_insert = g_strconcat(tag_name, gt, NULL);
+		gt = "";
+		move_pos = TRUE;
 	}
-	else
-		to_insert = g_strconcat("</", tag_name, ">", NULL);
-
+	if (ch == '/')
+		to_insert = g_strconcat(tag_name, gt, NULL);
+	else // esh: ch == '>'
+		to_insert = g_strconcat("</", tag_name, gt, NULL);
+	
 	sci_start_undo_action(sci);
 	sci_replace_sel(sci, to_insert);
 	if (ch == '>')
 		sci_set_selection(sci, pos, pos);
+	else if (move_pos) // esh: added setting of increased pos
+	{
+		gint new_pos = sci_get_current_position(sci) + 1;
+		sci_set_current_position(sci, new_pos, FALSE);
+	}
 	sci_end_undo_action(sci);
 	g_free(to_insert);
 }
@@ -2963,40 +2971,40 @@ static gboolean handle_xml(GeanyEditor *editor, gint pos, gchar ch)
 	gint min, size, style;
 	gchar *str_found, sel[512];
 	gboolean result = FALSE;
-
+	
 	/* If the user has turned us off, quit now.
 	 * This may make sense only in certain languages */
 	if (! editor_prefs.auto_close_xml_tags || (lexer != SCLEX_HTML && lexer != SCLEX_XML))
 		return FALSE;
-
+	
 	/* return if we are inside any embedded script */
 	style = sci_get_style_at(sci, pos);
 	if (style > SCE_H_XCCOMMENT && ! highlighting_is_string_style(lexer, style))
 		return FALSE;
-
+	
 	/* if ch is /, check for </, else quit */
 	if (ch == '/' && sci_get_char_at(sci, pos - 2) != '<')
 		return FALSE;
-
+	
 	/* Grab the last 512 characters or so */
 	min = pos - (sizeof(sel) - 1);
 	if (min < 0) min = 0;
-
+	
 	if (pos - min < 3)
 		return FALSE; /* Smallest tag is 3 characters e.g. <p> */
-
+	
 	sci_get_text_range(sci, min, pos, sel);
 	sel[sizeof(sel) - 1] = '\0';
-
+	
 	if (ch == '>' && sel[pos - min - 2] == '/')
 		/* User typed something like "<br/>" */
 		return FALSE;
-
+	
 	size = pos - min;
 	if (ch == '/')
 		size -= 2; /* skip </ */
 	str_found = utils_find_open_xml_tag(sel, size);
-
+	
 	if (lexer == SCLEX_HTML && utils_is_short_html_tag(str_found))
 	{
 		/* ignore tag */
@@ -3017,9 +3025,9 @@ static gsize count_indent_size(GeanyEditor *editor, const gchar *base_indent)
 	const gchar *ptr;
 	gsize tab_size = sci_get_tab_width(editor->sci);
 	gsize count = 0;
-
+	
 	g_return_val_if_fail(base_indent, 0);
-
+	
 	for (ptr = base_indent; *ptr != 0; ptr++)
 	{
 		switch (*ptr)
