@@ -1297,7 +1297,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					}
 				} else {
 					// esh: added detect JSON-key
-					if (options.jsonKeyStrings && lastOperator != ':') {
+					if (options.jsonKeyStrings && lastOperator != ':' &&
+						lastOperator != '[') {
 						stringState = SCE_C_STRINGJSONKEY;
 					} else {
 						stringState = SCE_C_STRING;
@@ -1433,7 +1434,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				}
 			} else if (isoperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
-				if (options.jsonKeyStrings)
+				if (options.jsonKeyStrings && !(lastOperator == '[' && sc.ch == ','))
 					lastOperator = sc.ch;
 			}
 		}
