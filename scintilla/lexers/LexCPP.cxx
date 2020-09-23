@@ -777,22 +777,23 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
+							  int initStyle, IDocument *pAccess) {
 	LexAccessor styler(pAccess);
-
+	
 	CharacterSet setOKBeforeRE(CharacterSet::setNone, "([{=,:;!%^&*|?~+-");
 	CharacterSet setCouldBePostOp(CharacterSet::setNone, "+-");
-
+	
 	CharacterSet setDoxygen(CharacterSet::setAlpha, "$@\\&<>#{}[]");
-
+	
 	setWordStart = CharacterSet(CharacterSet::setAlpha, "_", 0x80, true);
-
+	
 	CharacterSet setInvalidRawFirst(CharacterSet::setNone, " )\\\t\v\f\n");
-
+	
 	if (options.identifiersAllowDollars) {
 		setWordStart.Add('$');
 	}
-
+	
 	int chPrevNonWhite = ' ';
 	int visibleChars = 0;
 	bool lastWordWasUUID = false;
@@ -803,7 +804,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 	bool isStringInPreprocessor = false;
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
-
+	
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
 		(MaskActive(initStyle) == SCE_C_COMMENTLINE) ||
@@ -816,7 +817,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			}
 		}
 	}
-
+	
 	// look back to set chPrevNonWhite properly for better regex colouring
 	if (startPos > 0) {
 		Sci_Position back = startPos;
@@ -826,24 +827,24 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			chPrevNonWhite = styler.SafeGetCharAt(back);
 		}
 	}
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	LinePPState preproc = vlls.ForLine(lineCurrent);
-
+	
 	bool definitionsChanged = false;
-
+	
 	// Truncate ppDefineHistory before current line
-
+	
 	if (!options.updatePreprocessor)
 		ppDefineHistory.clear();
-
+	
 	std::vector<PPDefinition>::iterator itInvalid = std::find_if(ppDefineHistory.begin(), ppDefineHistory.end(),
 		[lineCurrent](const PPDefinition &p) { return p.line >= lineCurrent; });
 	if (itInvalid != ppDefineHistory.end()) {
 		ppDefineHistory.erase(itInvalid, ppDefineHistory.end());
 		definitionsChanged = true;
 	}
-
+	
 	SymbolTable preprocessorDefinitions = preprocessorDefinitionsStart;
 	for (const PPDefinition &ppDef : ppDefineHistory) {
 		if (ppDef.isUndef)
@@ -851,22 +852,40 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 		else
 			preprocessorDefinitions[ppDef.key] = SymbolValue(ppDef.value, ppDef.arguments);
 	}
-
+	
 	std::string rawStringTerminator = rawStringTerminators.ValueAt(lineCurrent-1);
 	SparseState<std::string> rawSTNew(lineCurrent);
-
+	
 	int activitySet = preproc.ActiveState();
-	// esh: added lastOperator, stringState for highlighting JSON-keys
-	int lastOperator = '.';
+	
+	// esh: added stringState, jsonLastOper for highlighting JSON-keys
 	int stringState = SCE_C_STRING;
-
+	int jsonLastOper = '.';
+	if (options.jsonKeyStrings && startPos > 0) {
+		Sci_Position back = startPos;
+		int foundOper;
+		while (--back)
+			if (MaskActive(styler.StyleAt(back) == SCE_C_OPERATOR)) {
+				foundOper = styler.SafeGetCharAt(back);
+				if (foundOper == ',') {
+					jsonLastOper = foundOper;
+					continue;
+				} else if (foundOper != '[' && jsonLastOper == ',') {
+					break;
+				} else {
+					jsonLastOper = foundOper;
+					break;
+				}
+			}
+	}
+	
 	const WordClassifier &classifierIdentifiers = subStyles.Classifier(SCE_C_IDENTIFIER);
 	const WordClassifier &classifierDocKeyWords = subStyles.Classifier(SCE_C_COMMENTDOCKEYWORD);
-
+	
 	Sci_PositionU lineEndNext = styler.LineEnd(lineCurrent);
-
+	
 	for (; sc.More();) {
-
+		
 		if (sc.atLineStart) {
 			// Using MaskActive() is not needed in the following statement.
 			// Inside inactive preprocessor declaration, state will be reset anyway at the end of this block.
@@ -890,7 +909,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				sc.SetState(sc.state | activitySet);
 			}
 		}
-
+		
 		if (sc.atLineEnd) {
 			lineCurrent++;
 			lineEndNext = styler.LineEnd(lineCurrent);
@@ -899,7 +918,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 			}
 		}
-
+		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
 			if ((sc.currentPos+1) >= lineEndNext) {
@@ -919,9 +938,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				continue;
 			}
 		}
-
+		
 		const bool atLineEndBeforeSwitch = sc.atLineEnd;
-
+		
 		// Determine if the current state should terminate.
 		switch (MaskActive(sc.state)) {
 			case SCE_C_OPERATOR:
@@ -1223,14 +1242,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					styleBeforeTaskMarker = SCE_C_DEFAULT;
 				}
 		}
-
+		
 		if (sc.atLineEnd && !atLineEndBeforeSwitch) {
 			// State exit processing consumed characters up to end of line.
 			lineCurrent++;
 			lineEndNext = styler.LineEnd(lineCurrent);
 			vlls.Add(lineCurrent, preproc);
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (MaskActive(sc.state) == SCE_C_DEFAULT) {
 			if (sc.Match('@', '\"')) {
@@ -1297,8 +1316,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					}
 				} else {
 					// esh: added detect JSON-key
-					if (options.jsonKeyStrings && lastOperator != ':' &&
-						lastOperator != '[') {
+					if (options.jsonKeyStrings && jsonLastOper != ':' &&
+						jsonLastOper != '[') {
 						stringState = SCE_C_STRINGJSONKEY;
 					} else {
 						stringState = SCE_C_STRING;
@@ -1434,11 +1453,11 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				}
 			} else if (isoperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
-				if (options.jsonKeyStrings && !(lastOperator == '[' && sc.ch == ','))
-					lastOperator = sc.ch;
+				if (options.jsonKeyStrings && !(jsonLastOper == '[' && sc.ch == ','))
+					jsonLastOper = sc.ch;
 			}
 		}
-
+		
 		if (!IsASpace(sc.ch) && !IsSpaceEquiv(MaskActive(sc.state))) {
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
