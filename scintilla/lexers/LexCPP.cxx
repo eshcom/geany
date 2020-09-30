@@ -142,7 +142,8 @@ BracketPair FindBracketPair(std::vector<std::string> &tokens) {
 }
 
 void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
-		int activity, const WordList &markerList, bool caseSensitive){
+						 int activity, const WordList &markerList,
+						 bool caseSensitive) {
 	if ((isoperator(sc.chPrev) || IsASpace(sc.chPrev)) && markerList.Length()) {
 		const int lengthMarker = 50;
 		char marker[lengthMarker+1] = "";
@@ -240,7 +241,8 @@ struct PPDefinition {
 	std::string value;
 	bool isUndef;
 	std::string arguments;
-	PPDefinition(Sci_Position line_, const std::string &key_, const std::string &value_, bool isUndef_ = false, const std::string &arguments_="") :
+	PPDefinition(Sci_Position line_, const std::string &key_, const std::string &value_,
+				 bool isUndef_ = false, const std::string &arguments_=""):
 		line(line_), key(key_), value(value_), isUndef(isUndef_), arguments(arguments_) {
 	}
 };
@@ -251,7 +253,7 @@ class LinePPState {
 	// Track the state of preprocessor conditionals to allow showing active and inactive
 	// code in different styles.
 	// Only works up to 31 levels of conditional nesting.
-
+	
 	// state is a bit mask with 1 bit per level
 	// bit is 1 for level if section inactive, so any bits set = inactive style
 	int state = 0;
@@ -401,71 +403,71 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 			"For C++ code, determines whether all preprocessor code is styled in the "
 			"preprocessor style (0, the default) or only from the initial # to the end "
 			"of the command word(1).");
-
+		
 		DefineProperty("lexer.cpp.allow.dollars", &OptionsCPP::identifiersAllowDollars,
 			"Set to 0 to disallow the '$' character in identifiers with the cpp lexer.");
-
+		
 		DefineProperty("lexer.cpp.track.preprocessor", &OptionsCPP::trackPreprocessor,
 			"Set to 1 to interpret #if/#else/#endif to grey out code that is not active.");
-
+		
 		DefineProperty("lexer.cpp.update.preprocessor", &OptionsCPP::updatePreprocessor,
 			"Set to 1 to update preprocessor definitions when #define found.");
-
+		
 		DefineProperty("lexer.cpp.verbatim.strings.allow.escapes", &OptionsCPP::verbatimStringsAllowEscapes,
 			"Set to 1 to allow verbatim strings to contain escape sequences.");
-
+		
 		DefineProperty("lexer.cpp.triplequoted.strings", &OptionsCPP::triplequotedStrings,
 			"Set to 1 to enable highlighting of triple-quoted strings.");
-
+		
 		DefineProperty("lexer.cpp.hashquoted.strings", &OptionsCPP::hashquotedStrings,
 			"Set to 1 to enable highlighting of hash-quoted strings.");
-
+		
 		DefineProperty("lexer.cpp.backquoted.strings", &OptionsCPP::backQuotedStrings,
 			"Set to 1 to enable highlighting of back-quoted raw strings .");
-
+		
 		DefineProperty("lexer.cpp.escape.sequence", &OptionsCPP::escapeSequence,
 			"Set to 1 to enable highlighting of escape sequences in strings");
-
+		
 		DefineProperty("lexer.cpp.jsonkey.strings", &OptionsCPP::jsonKeyStrings,
 			"Set to 1 to detect JSON-key strings and highlighting them with a separate style.");
-
+		
 		DefineProperty("fold", &OptionsCPP::fold);
-
+		
 		DefineProperty("fold.cpp.syntax.based", &OptionsCPP::foldSyntaxBased,
 			"Set this property to 0 to disable syntax based folding.");
-
+		
 		DefineProperty("fold.comment", &OptionsCPP::foldComment,
 			"This option enables folding multi-line comments and explicit fold points when using the C++ lexer. "
 			"Explicit fold points allows adding extra folding by placing a //{ comment at the start and a //} "
 			"at the end of a section that should fold.");
-
+		
 		DefineProperty("fold.cpp.comment.multiline", &OptionsCPP::foldCommentMultiline,
 			"Set this property to 0 to disable folding multi-line comments when fold.comment=1.");
-
+		
 		DefineProperty("fold.cpp.comment.explicit", &OptionsCPP::foldCommentExplicit,
 			"Set this property to 0 to disable folding explicit fold points when fold.comment=1.");
-
+		
 		DefineProperty("fold.cpp.explicit.start", &OptionsCPP::foldExplicitStart,
 			"The string to use for explicit fold start points, replacing the standard //{.");
-
+		
 		DefineProperty("fold.cpp.explicit.end", &OptionsCPP::foldExplicitEnd,
 			"The string to use for explicit fold end points, replacing the standard //}.");
-
+		
 		DefineProperty("fold.cpp.explicit.anywhere", &OptionsCPP::foldExplicitAnywhere,
 			"Set this property to 1 to enable explicit fold points anywhere, not just in line comments.");
-
+		
 		DefineProperty("fold.cpp.preprocessor.at.else", &OptionsCPP::foldPreprocessorAtElse,
 			"This option enables folding on a preprocessor #else or #endif line of an #if statement.");
-
+		
 		DefineProperty("fold.preprocessor", &OptionsCPP::foldPreprocessor,
 			"This option enables folding preprocessor directives when using the C++ lexer. "
 			"Includes C#'s explicit #region and #endregion folding directives.");
-
+		
 		DefineProperty("fold.compact", &OptionsCPP::foldCompact);
-
+		
 		DefineProperty("fold.at.else", &OptionsCPP::foldAtElse,
 			"This option enables C++ folding on a \"} else {\" line of an if statement.");
-
+		
 		DefineWordListSets(cppWordLists);
 	}
 };
@@ -592,15 +594,15 @@ public:
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-
+	
 	void * SCI_METHOD PrivateCall(int, void *) noexcept override {
 		return nullptr;
 	}
-
+	
 	int SCI_METHOD LineEndTypesSupported() noexcept override {
 		return SC_LINE_END_TYPE_UNICODE;
 	}
-
+	
 	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override {
 		return subStyles.Allocate(styleBase, numberStyles);
 	}
@@ -683,7 +685,7 @@ public:
 		// TODO: inactive and substyles
 		return "";
 	}
-
+	
 	static ILexer *LexerFactoryCPP() {
 		return new LexerCPP(true);
 	}
@@ -1475,13 +1477,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
 
-void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
-
+void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, IDocument *pAccess) {
+	
 	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	const Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	bool inLineComment = false;
@@ -1542,7 +1545,6 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				} else if (styler.Match(j, "end")) {
 					levelNext--;
 				}
-
 				if (options.foldPreprocessorAtElse && (styler.Match(j, "else") || styler.Match(j, "elif"))) {
 					levelMinCurrent--;
 				}
@@ -1591,11 +1593,11 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int 
 	}
 }
 
-void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTable &preprocessorDefinitions) {
-
+void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens,
+							  const SymbolTable &preprocessorDefinitions) {
 	// Remove whitespace tokens
 	tokens.erase(std::remove_if(tokens.begin(), tokens.end(), OnlySpaceOrTab), tokens.end());
-
+	
 	// Evaluate defined statements to either 0 or 1
 	for (size_t i=0; (i+1)<tokens.size();) {
 		if (tokens[i] == "defined") {
@@ -1628,7 +1630,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 			i++;
 		}
 	}
-
+	
 	// Evaluate identifiers
 	const size_t maxIterations = 100;
 	size_t iterations = 0;	// Limit number of iterations in case there is a recursive macro.
@@ -1653,13 +1655,11 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 							}
 							tok++;
 						}
-
 						// Remove invocation
 						tokens.erase(tokens.begin() + i, tokens.begin() + tok + 1);
-
 						// Substitute values into macro
 						macroTokens.erase(std::remove_if(macroTokens.begin(), macroTokens.end(), OnlySpaceOrTab), macroTokens.end());
-
+						
 						for (size_t iMacro = 0; iMacro < macroTokens.size();) {
 							if (setWordStart.Contains(macroTokens[iMacro][0])) {
 								std::map<std::string, std::string>::const_iterator itFind = arguments.find(macroTokens[iMacro]);
@@ -1670,10 +1670,8 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 							}
 							iMacro++;
 						}
-
 						// Insert results back into tokens
 						tokens.insert(tokens.begin() + i, macroTokens.begin(), macroTokens.end());
-
 					} else {
 						i++;
 					}
@@ -1691,22 +1689,22 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 			i++;
 		}
 	}
-
+	
 	// Find bracketed subexpressions and recurse on them
 	BracketPair bracketPair = FindBracketPair(tokens);
 	while (bracketPair.itBracket != tokens.end()) {
 		std::vector<std::string> inBracket(bracketPair.itBracket + 1, bracketPair.itEndBracket);
 		EvaluateTokens(inBracket, preprocessorDefinitions);
-
+		
 		// The insertion is done before the removal because there were failures with the opposite approach
 		tokens.insert(bracketPair.itBracket, inBracket.begin(), inBracket.end());
-
+		
 		bracketPair = FindBracketPair(tokens);
 		tokens.erase(bracketPair.itBracket, bracketPair.itEndBracket + 1);
-
+		
 		bracketPair = FindBracketPair(tokens);
 	}
-
+	
 	// Evaluate logical negations
 	for (size_t j=0; (j+1)<tokens.size();) {
 		if (setNegationOp.Contains(tokens[j][0])) {
@@ -1720,7 +1718,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 			j++;
 		}
 	}
-
+	
 	// Evaluate expressions in precedence order
 	enum precedence { precMult, precAdd, precRelative
 		, precLogical, /* end marker */ precLast };
@@ -1814,11 +1812,12 @@ std::vector<std::string> LexerCPP::Tokenize(const std::string &expr) const {
 	return tokens;
 }
 
-bool LexerCPP::EvaluateExpression(const std::string &expr, const SymbolTable &preprocessorDefinitions) {
+bool LexerCPP::EvaluateExpression(const std::string &expr,
+								  const SymbolTable &preprocessorDefinitions) {
 	std::vector<std::string> tokens = Tokenize(expr);
-
+	
 	EvaluateTokens(tokens, preprocessorDefinitions);
-
+	
 	// "0" or "" -> false else true
 	const bool isFalse = tokens.empty() ||
 		((tokens.size() == 1) && ((tokens[0] == "") || tokens[0] == "0"));
