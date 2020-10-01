@@ -73,10 +73,6 @@ static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
 
-static inline bool IsLowerCaseAlpha(const int ch) {
-	return ch >= 0x61 && ch <= 0x7A; // a-z
-}
-
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
 							   WordList *keywordlists[], Accessor &styler) {
 	
@@ -451,7 +447,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
 				case '-' :
-					if (IsLowerCaseAlpha(sc.chNext)) {
+					if (islower(sc.chNext)) {
 						parse_state = PREPROCESSOR;
 						sc.SetState(SCE_ERLANG_UNKNOWN);
 						break;
