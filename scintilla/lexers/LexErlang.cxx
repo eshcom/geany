@@ -178,7 +178,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 			/* -------------------------------------------------------------- */
 			/* Atoms ---------------------------------------------------------*/
 				case ATOM_UNQUOTED : {
-					if ('@' == sc.ch){
+					if ('@' == sc.ch) {
 						parse_state = NODE_NAME_UNQUOTED;
 					} else if (sc.ch == ':') {
 						// Searching for module name
@@ -199,11 +199,11 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 						if (reservedWords.InList(cur)) {
 							style = SCE_ERLANG_KEYWORD;
 						} else if (erlangBIFs.InList(cur)
-									&& strcmp(cur,"erlang:")){
+									&& strcmp(cur,"erlang:")) {
 							style = SCE_ERLANG_BIFS;
-						} else if (erlangAtomSpec.InList(cur)){
+						} else if (erlangAtomSpec.InList(cur)) {
 							style = SCE_ERLANG_ATOM_SPEC;
-						} else if (sc.ch == '(' || '/' == sc.ch){
+						} else if (sc.ch == '(' || '/' == sc.ch) {
 							style = SCE_ERLANG_FUNCTION_NAME;
 						} else {
 							style = SCE_ERLANG_ATOM;
@@ -215,7 +215,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 				} break;
 				
 				case ATOM_QUOTED : {
-					if ( '@' == sc.ch ){
+					if ('@' == sc.ch) {
 						parse_state = NODE_NAME_QUOTED;
 					} else if ('\'' == sc.ch && '\\' != sc.chPrev) {
 						sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
