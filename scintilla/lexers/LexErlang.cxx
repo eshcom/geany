@@ -356,7 +356,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 				} break;
 			/* Exponent, either integer or float (xEyy, x.yyEzzz) */
 				case NUMERAL_EXPONENT : {
-					if (('-' == sc.ch || '+' == sc.ch) && isdigit(sc.chNext)) {
+					if (('-' == sc.ch || '+' == sc.ch)
+							&& (isdigit(sc.chNext))) {
 						sc.Forward();
 					} else if (!isdigit(sc.ch)) {
 						if (0 < exponent_digits)
@@ -450,10 +451,11 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 					if (IsADigit(sc.chNext)) {
 						parse_state = NUMERAL_START;
 						radix_digits = 0;
+						sc.SetState(SCE_ERLANG_UNKNOWN);
 					} else if (sc.ch == '-') {
 						parse_state = PREPROCESSOR;
+						sc.SetState(SCE_ERLANG_UNKNOWN);
 					}
-					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
 				default : no_new_state = true;
 			}
@@ -467,7 +469,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 				} else if (isalpha(sc.ch)) {
 					parse_state = ATOM_UNQUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
-				} else if (isoperator(static_cast<char>(sc.ch)) || sc.ch == '\\') {
+				} else if (isoperator(static_cast<char>(sc.ch))
+							|| sc.ch == '\\') {
 					sc.SetState(SCE_ERLANG_OPERATOR);
 				}
 			}
