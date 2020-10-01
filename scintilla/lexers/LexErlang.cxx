@@ -358,7 +358,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 				case NUMERAL_EXPONENT : {
 					if (('-' == sc.ch || '+' == sc.ch)
 							&& (isdigit(sc.chNext))) {
-						sc.Forward();
+						continue;
 					} else if (!isdigit(sc.ch)) {
 						if (0 < exponent_digits)
 							sc.ChangeState(SCE_ERLANG_NUMBER);
