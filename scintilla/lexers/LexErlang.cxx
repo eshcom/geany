@@ -73,8 +73,12 @@ static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
 
+static inline bool IsLowerCaseAlpha(const int ch) {
+	return ch >= 0x61 && ch <= 0x7A; // a-z
+}
+
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-								WordList *keywordlists[], Accessor &styler) {
+							   WordList *keywordlists[], Accessor &styler) {
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	WordList &reservedWords = *keywordlists[0];
@@ -446,17 +450,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int 
 					parse_state = ATOM_QUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
-				case '+' :
-				case '-' : {
-					if (IsADigit(sc.chNext)) {
-						parse_state = NUMERAL_START;
-						radix_digits = 0;
-						sc.SetState(SCE_ERLANG_UNKNOWN);
-					} else if (sc.ch == '-') {
+				case '-' :
+					if (IsLowerCaseAlpha(sc.chNext)) {
 						parse_state = PREPROCESSOR;
 						sc.SetState(SCE_ERLANG_UNKNOWN);
+						break;
 					}
-				} break;
 				default : no_new_state = true;
 			}
 			if (no_new_state) {
