@@ -2114,7 +2114,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	guint i;
 	
-	const TMTagType include_types = tm_tag_attr_pos_t | tm_tag_attr_impl_t |
+	const TMTagType include_types = tm_tag_attr_file_t | tm_tag_attr_pos_t |
+									tm_tag_attr_inheritance_t | tm_tag_attr_impl_t |
 									tm_tag_attr_inactive_t | tm_tag_attr_pointer_t;
 	
 	foreach_ptr_array(tmtag, i, tags)
