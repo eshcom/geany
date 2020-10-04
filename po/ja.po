@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 11:56+0200\n"
+"POT-Creation-Date: 2020-10-04 11:05+0300\n"
 "PO-Revision-Date: 2014-11-09 13:26+0900\n"
 "Last-Translator: Chikahiro Masami <cmasa.z321@gmail.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -97,7 +97,7 @@ msgstr "非表示"
 msgid "_Insert \"include <...>\""
 msgstr "\"include <...>\" 文を挿入(_I)"
 
-#: ../data/geany.glade.h:16 ../src/keybindings.c:513
+#: ../data/geany.glade.h:16 ../src/keybindings.c:514
 msgid "Insert Alternative _White Space"
 msgstr "代替空白を挿入(_W)"
 
@@ -109,11 +109,11 @@ msgstr "検索(_S)"
 msgid "Open Selected F_ile"
 msgstr "選択したファイルを開く(_I)"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2618
+#: ../data/geany.glade.h:19 ../src/symbols.c:2733
 msgid "Find _Usage"
 msgstr "使い方を検索(_U)"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2623
+#: ../data/geany.glade.h:20 ../src/symbols.c:2738
 msgid "Find _Document Usage"
 msgstr "文書の使い方を検索(_D)"
 
@@ -166,7 +166,7 @@ msgstr "上"
 msgid "Bottom"
 msgstr "下"
 
-#: ../data/geany.glade.h:31 ../src/keybindings.c:523
+#: ../data/geany.glade.h:31 ../src/keybindings.c:524
 msgid "Preferences"
 msgstr "設定"
 
@@ -1122,7 +1122,7 @@ msgstr "<b>仮の空白</b>"
 msgid "Display"
 msgstr "表示"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:311 ../src/prefs.c:1608
+#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "エディタ"
 
@@ -1204,7 +1204,7 @@ msgstr "行末の空白とタブを除去"
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "行末の空白やタブを除去します"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:670
+#: ../data/geany.glade.h:253 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "タブを空白に置換"
 
@@ -1287,7 +1287,7 @@ msgstr ""
 msgid "<b>Commands</b>"
 msgstr "<b>コマンド</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:323 ../src/prefs.c:1612
+#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "ツール"
 
@@ -1596,7 +1596,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>端末</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:390
+#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
 msgid "Terminal"
 msgstr "端末"
 
@@ -1665,27 +1665,27 @@ msgstr "すべて閉じる(_L)"
 msgid "Co_mmands"
 msgstr "コマンド(_M)"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:436
+#: ../data/geany.glade.h:357 ../src/keybindings.c:437
 msgid "Cu_t Current Line(s)"
 msgstr "現在の行を切り取り(_T)"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:433
+#: ../data/geany.glade.h:358 ../src/keybindings.c:434
 msgid "_Copy Current Line(s)"
 msgstr "現在の行をコピー(_C)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:386
+#: ../data/geany.glade.h:359 ../src/keybindings.c:387
 msgid "_Delete Current Line(s)"
 msgstr "現在の行を削除(_D)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:383
+#: ../data/geany.glade.h:360 ../src/keybindings.c:384
 msgid "D_uplicate Line or Selection"
 msgstr "行/選択範囲を複製(_U)"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:446
+#: ../data/geany.glade.h:361 ../src/keybindings.c:447
 msgid "S_elect Current Line(s)"
 msgstr "現在の行を選択(_E)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:449
+#: ../data/geany.glade.h:362 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr "現在の段落を選択(_L)"
 
@@ -1697,15 +1697,15 @@ msgstr "行を上に移動(_M)"
 msgid "M_ove Line(s) Down"
 msgstr "行を下に移動(_O)"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:500
+#: ../data/geany.glade.h:365 ../src/keybindings.c:501
 msgid "_Send Selection to Terminal"
 msgstr "選択範囲を端末に送る(_S)"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:502
+#: ../data/geany.glade.h:366 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr "複数行/ブロックを整形(_R)"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:460
+#: ../data/geany.glade.h:367 ../src/keybindings.c:461
 msgid "T_oggle Case of Selection"
 msgstr "選択範囲の大文字と小文字を反転(_O)"
 
@@ -1729,7 +1729,7 @@ msgstr "インデントを増やす(_I)"
 msgid "_Decrease Indent"
 msgstr "インデントを減らす(_D)"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:479
+#: ../data/geany.glade.h:373 ../src/keybindings.c:480
 msgid "S_mart Line Indent"
 msgstr "スマート行インデント(_M)"
 
@@ -1745,7 +1745,7 @@ msgstr "コメントを挿入(_N)"
 msgid "Preference_s"
 msgstr "設定(_S)"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:526
+#: ../data/geany.glade.h:377 ../src/keybindings.c:527
 msgid "P_lugin Preferences"
 msgstr "プラグインの設定(_L)"
 
@@ -1761,7 +1761,7 @@ msgstr "次を検索(_N)"
 msgid "Find _Previous"
 msgstr "前を検索(_P)"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2628
+#: ../data/geany.glade.h:381 ../src/symbols.c:2743
 msgid "Find in F_iles..."
 msgstr "複数のファイルから検索(_I)..."
 
@@ -1777,11 +1777,11 @@ msgstr "次のメッセージ(_S)"
 msgid "Pr_evious Message"
 msgstr "前のメッセージ(_E)"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:575
+#: ../data/geany.glade.h:385 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr "次のマーカーへ移動(_X)"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:578
+#: ../data/geany.glade.h:386 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr "前のマーカーへ移動(_V)"
 
@@ -1789,15 +1789,15 @@ msgstr "前のマーカーへ移動(_V)"
 msgid "_Go to Line..."
 msgstr "指定行へ移動(_G)..."
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:538
+#: ../data/geany.glade.h:388 ../src/keybindings.c:539
 msgid "Find Next _Selection"
 msgstr "選択文字列を後方検索(_S)"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:540
+#: ../data/geany.glade.h:389 ../src/keybindings.c:541
 msgid "Find Pre_vious Selection"
 msgstr "選択文字列を前方検索(_V)"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:557
+#: ../data/geany.glade.h:390 ../src/keybindings.c:558
 msgid "_Mark All"
 msgstr "すべてマーク(_M)"
 
@@ -1953,11 +1953,11 @@ msgstr "_LF (Unix)に変換"
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "CR (Classic _Mac)に変換"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:666
+#: ../data/geany.glade.h:429 ../src/keybindings.c:667
 msgid "_Clone"
 msgstr "複製(_C)"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:668
+#: ../data/geany.glade.h:430 ../src/keybindings.c:669
 msgid "_Strip Trailing Spaces"
 msgstr "末尾の空白を除去(_S)"
 
@@ -2132,7 +2132,7 @@ msgstr ""
 "と既存のディレクトリのいずれかを指定できます。プロジェクトのファイル名に間接"
 "パスが使用できます。"
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:321
+#: ../data/geany.glade.h:471 ../src/keybindings.c:322
 msgid "Project"
 msgstr "プロジェクト"
 
@@ -2486,7 +2486,7 @@ msgid "%d file saved."
 msgid_plural "%d files saved."
 msgstr[0] "%d 個のファイルを保存しました"
 
-#: ../src/callbacks.c:899 ../src/keybindings.c:566
+#: ../src/callbacks.c:899 ../src/keybindings.c:567
 msgid "Go to Line"
 msgstr "指定行へ移動"
 
@@ -2503,26 +2503,26 @@ msgstr "この機能を使う前に現在のファイルにファイルの種類
 msgid "No more message items."
 msgstr "これ以上メッセージ項目はありません"
 
-#: ../src/callbacks.c:1428
+#: ../src/callbacks.c:1443
 #, c-format
 msgid "Could not open file %s (File not found)"
 msgstr "ファイル %s を開けません（ファイルなし）"
 
-#: ../src/callbacks.c:1477
+#: ../src/callbacks.c:1492
 msgid "Check the path setting in Filetype configuration."
 msgstr "ファイル種類設定のパスの設定を確認してください。"
 
-#: ../src/callbacks.c:1482
+#: ../src/callbacks.c:1497
 msgid "Check the path setting in Preferences."
 msgstr "パス設定を確認してください。"
 
 #. G_SHELL_ERROR is parsing error, it may be caused by %s word with quotes
-#: ../src/callbacks.c:1495
+#: ../src/callbacks.c:1510
 #, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr "ユーザ定義コマンド \"%s\" を実行できません: %s. %s"
 
-#: ../src/callbacks.c:1504
+#: ../src/callbacks.c:1519
 msgid "No context action set."
 msgstr "ユーザ定義コマンド設定がありません"
 
@@ -2672,7 +2672,7 @@ msgstr "エラーが発生したかファイル情報が取得できません（
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2432 ../src/symbols.c:2448 ../src/ui_utils.c:288
+#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "不明"
 
@@ -2898,8 +2898,8 @@ msgstr "ファイル %s を保存しました"
 msgid "Wrap search and find again?"
 msgstr "もう一度折り返して検索しますか?"
 
-#: ../src/document.c:2464 ../src/search.c:1367 ../src/search.c:1420
-#: ../src/search.c:2222 ../src/search.c:2223
+#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
+#: ../src/search.c:2229 ../src/search.c:2230
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "\"%s\" に一致するものが見つかりません"
@@ -2914,15 +2914,15 @@ msgstr[0] "%s: %d 個の \"%s\" を \"%s\" と置換しました"
 msgid "Do you want to reload it?"
 msgstr "再読み込みしますか?"
 
-#: ../src/editor.c:4461
+#: ../src/editor.c:4748
 msgid "Enter Tab Width"
 msgstr "タブの幅を指定"
 
-#: ../src/editor.c:4462
+#: ../src/editor.c:4749
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "タブ文字に置き換えられる空白の数を指定"
 
-#: ../src/editor.c:4668
+#: ../src/editor.c:4955
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "警告: 非標準のタブ幅: %d != 8!"
@@ -3142,7 +3142,7 @@ msgid "All Source"
 msgstr "すべてのソース"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1210 ../src/project.c:349 ../src/win32.c:145
+#: ../src/filetypes.c:1210 ../src/project.c:351 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "すべてのファイル"
@@ -3179,560 +3179,560 @@ msgid "Color Schemes"
 msgstr "色の設定"
 
 #. visual group order
-#: ../src/keybindings.c:310 ../src/symbols.c:492
+#: ../src/keybindings.c:311 ../src/symbols.c:492
 msgid "File"
 msgstr "ファイル"
 
-#: ../src/keybindings.c:312
+#: ../src/keybindings.c:313
 msgid "Clipboard"
 msgstr "クリップボード"
 
-#: ../src/keybindings.c:313
+#: ../src/keybindings.c:314
 msgid "Select"
 msgstr "選択"
 
-#: ../src/keybindings.c:314
+#: ../src/keybindings.c:315
 msgid "Format"
 msgstr "書式"
 
-#: ../src/keybindings.c:315
+#: ../src/keybindings.c:316
 msgid "Insert"
 msgstr "挿入"
 
-#: ../src/keybindings.c:316
+#: ../src/keybindings.c:317
 msgid "Settings"
 msgstr "設定"
 
-#: ../src/keybindings.c:317
+#: ../src/keybindings.c:318
 msgid "Search"
 msgstr "検索"
 
-#: ../src/keybindings.c:318
+#: ../src/keybindings.c:319
 msgid "Go to"
 msgstr "指定行へ移動"
 
-#: ../src/keybindings.c:319
+#: ../src/keybindings.c:320
 msgid "View"
 msgstr "表示"
 
-#: ../src/keybindings.c:320 ../src/symbols.c:643
+#: ../src/keybindings.c:321 ../src/symbols.c:643
 msgid "Document"
 msgstr "文書"
 
-#: ../src/keybindings.c:322 ../src/keybindings.c:693 ../src/project.c:512
-#: ../src/ui_utils.c:2224
+#: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
+#: ../src/ui_utils.c:2226
 msgid "Build"
 msgstr "ビルド"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:718
+#: ../src/keybindings.c:325 ../src/keybindings.c:719
 msgid "Help"
 msgstr "ヘルプ"
 
-#: ../src/keybindings.c:325
+#: ../src/keybindings.c:326
 msgid "Focus"
 msgstr "フォーカス"
 
-#: ../src/keybindings.c:326
+#: ../src/keybindings.c:327
 msgid "Notebook tab"
 msgstr "メモ"
 
-#: ../src/keybindings.c:335 ../src/keybindings.c:367
+#: ../src/keybindings.c:336 ../src/keybindings.c:368
 msgid "New"
 msgstr "新規"
 
-#: ../src/keybindings.c:337 ../src/keybindings.c:369
+#: ../src/keybindings.c:338 ../src/keybindings.c:370
 msgid "Open"
 msgstr "開く"
 
-#: ../src/keybindings.c:340
+#: ../src/keybindings.c:341
 msgid "Open selected file"
 msgstr "選択されたファイルを開く"
 
-#: ../src/keybindings.c:342
+#: ../src/keybindings.c:343
 msgid "Save"
 msgstr "保存"
 
-#: ../src/keybindings.c:344 ../src/toolbar.c:58
+#: ../src/keybindings.c:345 ../src/toolbar.c:58
 msgid "Save as"
 msgstr "別名で保存"
 
-#: ../src/keybindings.c:346
+#: ../src/keybindings.c:347
 msgid "Save all"
 msgstr "すべて保存"
 
-#: ../src/keybindings.c:349 ../src/symbols.c:728
+#: ../src/keybindings.c:350 ../src/symbols.c:728
 msgid "Properties"
 msgstr "プロパティ"
 
-#: ../src/keybindings.c:351
+#: ../src/keybindings.c:352
 msgid "Print"
 msgstr "印刷"
 
-#: ../src/keybindings.c:353 ../src/keybindings.c:374
+#: ../src/keybindings.c:354 ../src/keybindings.c:375
 msgid "Close"
 msgstr "閉じる"
 
-#: ../src/keybindings.c:355
+#: ../src/keybindings.c:356
 msgid "Close all"
 msgstr "すべて閉じる"
 
-#: ../src/keybindings.c:358
+#: ../src/keybindings.c:359
 msgid "Reload file"
 msgstr "再読み込み"
 
-#: ../src/keybindings.c:360
+#: ../src/keybindings.c:361
 msgid "Re-open last closed tab"
 msgstr "最後に閉じたタブを再び開く"
 
-#: ../src/keybindings.c:362
+#: ../src/keybindings.c:363
 msgid "Quit"
 msgstr "終了"
 
-#: ../src/keybindings.c:379
+#: ../src/keybindings.c:380
 msgid "Undo"
 msgstr "元に戻す"
 
-#: ../src/keybindings.c:381
+#: ../src/keybindings.c:382
 msgid "Redo"
 msgstr "やり直し"
 
-#: ../src/keybindings.c:390
+#: ../src/keybindings.c:391
 msgid "Delete to line end"
 msgstr "行末まで削除"
 
-#: ../src/keybindings.c:393
+#: ../src/keybindings.c:394
 msgid "Delete to beginning of line"
 msgstr "行頭まで削除"
 
-#: ../src/keybindings.c:396
+#: ../src/keybindings.c:397
 msgid "_Transpose Current Line"
 msgstr "現在の行と直前の行を入れ替え(_T)"
 
-#: ../src/keybindings.c:398
+#: ../src/keybindings.c:399
 msgid "Scroll to current line"
 msgstr "現在の行へスクロール"
 
-#: ../src/keybindings.c:400
+#: ../src/keybindings.c:401
 msgid "Scroll up the view by one line"
 msgstr "１行上へスクロール"
 
-#: ../src/keybindings.c:402
+#: ../src/keybindings.c:403
 msgid "Scroll down the view by one line"
 msgstr "１行下へスクロール"
 
-#: ../src/keybindings.c:404
+#: ../src/keybindings.c:405
 msgid "Complete snippet"
 msgstr "スニペットを補完"
 
-#: ../src/keybindings.c:406
+#: ../src/keybindings.c:407
 msgid "Move cursor in snippet"
 msgstr "スニペットにカーソルを移動"
 
-#: ../src/keybindings.c:408
+#: ../src/keybindings.c:409
 msgid "Suppress snippet completion"
 msgstr "スニペット補完を抑制する"
 
-#: ../src/keybindings.c:410
+#: ../src/keybindings.c:411
 msgid "Context Action"
 msgstr "ユーザ定義コマンド"
 
-#: ../src/keybindings.c:412
+#: ../src/keybindings.c:413
 msgid "Complete word"
 msgstr "単語を補完"
 
-#: ../src/keybindings.c:414
+#: ../src/keybindings.c:415
 msgid "Show calltip"
 msgstr "コールチップを表示"
 
-#: ../src/keybindings.c:416
+#: ../src/keybindings.c:417
 msgid "Word part completion"
 msgstr "単語部分補完"
 
-#: ../src/keybindings.c:419
+#: ../src/keybindings.c:420
 msgid "Move line(s) up"
 msgstr "行を上に移動"
 
-#: ../src/keybindings.c:422
+#: ../src/keybindings.c:423
 msgid "Move line(s) down"
 msgstr "行を下に移動"
 
-#: ../src/keybindings.c:427
+#: ../src/keybindings.c:428
 msgid "Cut"
 msgstr "切り取り"
 
-#: ../src/keybindings.c:429
+#: ../src/keybindings.c:430
 msgid "Copy"
 msgstr "コピー"
 
-#: ../src/keybindings.c:431
+#: ../src/keybindings.c:432
 msgid "Paste"
 msgstr "貼り付け"
 
-#: ../src/keybindings.c:442
+#: ../src/keybindings.c:443
 msgid "Select All"
 msgstr "すべて選択"
 
-#: ../src/keybindings.c:444
+#: ../src/keybindings.c:445
 msgid "Select current word"
 msgstr "現在の単語を選択"
 
-#: ../src/keybindings.c:452
+#: ../src/keybindings.c:453
 msgid "Select to previous word part"
 msgstr "前の単語の部分を選択"
 
-#: ../src/keybindings.c:454
+#: ../src/keybindings.c:455
 msgid "Select to next word part"
 msgstr "次の単語の部分を選択"
 
-#: ../src/keybindings.c:462
+#: ../src/keybindings.c:463
 msgid "Toggle line commentation"
 msgstr "行のコメント化を反転"
 
-#: ../src/keybindings.c:465
+#: ../src/keybindings.c:466
 msgid "Comment line(s)"
 msgstr "行をコメント化"
 
-#: ../src/keybindings.c:467
+#: ../src/keybindings.c:468
 msgid "Uncomment line(s)"
 msgstr "行のコメント化を解除"
 
-#: ../src/keybindings.c:469
+#: ../src/keybindings.c:470
 msgid "Increase indent"
 msgstr "インデントを増やす"
 
-#: ../src/keybindings.c:472
+#: ../src/keybindings.c:473
 msgid "Decrease indent"
 msgstr "インデントを減らす"
 
-#: ../src/keybindings.c:475
+#: ../src/keybindings.c:476
 msgid "Increase indent by one space"
 msgstr "インデントを空白１文字増やす"
 
-#: ../src/keybindings.c:477
+#: ../src/keybindings.c:478
 msgid "Decrease indent by one space"
 msgstr "インデントを空白１文字減らす"
 
-#: ../src/keybindings.c:481
+#: ../src/keybindings.c:482
 msgid "Send to Custom Command 1"
 msgstr "カスタムコマンド 1"
 
-#: ../src/keybindings.c:483
+#: ../src/keybindings.c:484
 msgid "Send to Custom Command 2"
 msgstr "カスタムコマンド 2"
 
-#: ../src/keybindings.c:485
+#: ../src/keybindings.c:486
 msgid "Send to Custom Command 3"
 msgstr "カスタムコマンド 3"
 
-#: ../src/keybindings.c:487
+#: ../src/keybindings.c:488
 msgid "Send to Custom Command 4"
 msgstr "カスタムコマンド 4"
 
-#: ../src/keybindings.c:489
+#: ../src/keybindings.c:490
 msgid "Send to Custom Command 5"
 msgstr "カスタムコマンド 5"
 
-#: ../src/keybindings.c:491
+#: ../src/keybindings.c:492
 msgid "Send to Custom Command 6"
 msgstr "カスタムコマンド 6"
 
-#: ../src/keybindings.c:493
+#: ../src/keybindings.c:494
 msgid "Send to Custom Command 7"
 msgstr "カスタムコマンド 7"
 
-#: ../src/keybindings.c:495
+#: ../src/keybindings.c:496
 msgid "Send to Custom Command 8"
 msgstr "カスタムコマンド 8"
 
-#: ../src/keybindings.c:497
+#: ../src/keybindings.c:498
 msgid "Send to Custom Command 9"
 msgstr "カスタムコマンド 9"
 
-#: ../src/keybindings.c:505
+#: ../src/keybindings.c:506
 msgid "Join lines"
 msgstr "行を結合"
 
-#: ../src/keybindings.c:510
+#: ../src/keybindings.c:511
 msgid "Insert date"
 msgstr "日付を挿入"
 
-#: ../src/keybindings.c:516
+#: ../src/keybindings.c:517
 msgid "Insert New Line Before Current"
 msgstr "現在の行の前に空行を挿入"
 
-#: ../src/keybindings.c:518
+#: ../src/keybindings.c:519
 msgid "Insert New Line After Current"
 msgstr "現在の行の後に空行を挿入"
 
-#: ../src/keybindings.c:531 ../src/search.c:465
+#: ../src/keybindings.c:532 ../src/search.c:467
 msgid "Find"
 msgstr "検索"
 
-#: ../src/keybindings.c:533
+#: ../src/keybindings.c:534
 msgid "Find Next"
 msgstr "次を検索"
 
-#: ../src/keybindings.c:535
+#: ../src/keybindings.c:536
 msgid "Find Previous"
 msgstr "前を検索"
 
-#: ../src/keybindings.c:542 ../src/search.c:618
+#: ../src/keybindings.c:543 ../src/search.c:620
 msgid "Replace"
 msgstr "置換"
 
-#: ../src/keybindings.c:544 ../src/search.c:868
+#: ../src/keybindings.c:545 ../src/search.c:870
 msgid "Find in Files"
 msgstr "複数のファイルから検索"
 
-#: ../src/keybindings.c:547
+#: ../src/keybindings.c:548
 msgid "Next Message"
 msgstr "次のメッセージ"
 
-#: ../src/keybindings.c:549
+#: ../src/keybindings.c:550
 msgid "Previous Message"
 msgstr "前のメッセージ"
 
-#: ../src/keybindings.c:552
+#: ../src/keybindings.c:553
 msgid "Find Usage"
 msgstr "使い方を検索"
 
-#: ../src/keybindings.c:555
+#: ../src/keybindings.c:556
 msgid "Find Document Usage"
 msgstr "文書の使い方を検索"
 
-#: ../src/keybindings.c:562 ../src/toolbar.c:69
+#: ../src/keybindings.c:563 ../src/toolbar.c:69
 msgid "Navigate back a location"
 msgstr "元の位置に戻る"
 
-#: ../src/keybindings.c:564 ../src/toolbar.c:70
+#: ../src/keybindings.c:565 ../src/toolbar.c:70
 msgid "Navigate forward a location"
 msgstr "次の位置に進む"
 
-#: ../src/keybindings.c:569
+#: ../src/keybindings.c:570
 msgid "Go to matching brace"
 msgstr "対応する括弧に移動"
 
-#: ../src/keybindings.c:572
+#: ../src/keybindings.c:573
 msgid "Toggle marker"
 msgstr "マーカーを切り替え"
 
-#: ../src/keybindings.c:581
+#: ../src/keybindings.c:582
 msgid "Go to Symbol Definition"
 msgstr "シンボル定義に移動"
 
-#: ../src/keybindings.c:584
+#: ../src/keybindings.c:585
 msgid "Go to Symbol Declaration"
 msgstr "シンボル宣言に移動"
 
-#: ../src/keybindings.c:586
+#: ../src/keybindings.c:587
 msgid "Go to Start of Line"
 msgstr "行頭に移動"
 
-#: ../src/keybindings.c:588
+#: ../src/keybindings.c:589
 msgid "Go to End of Line"
 msgstr "行末に移動"
 
-#: ../src/keybindings.c:590
+#: ../src/keybindings.c:591
 msgid "Go to Start of Display Line"
 msgstr "表示行の先頭に移動"
 
-#: ../src/keybindings.c:592
+#: ../src/keybindings.c:593
 msgid "Go to End of Display Line"
 msgstr "表示行の末端に移動"
 
-#: ../src/keybindings.c:594
+#: ../src/keybindings.c:595
 msgid "Go to Previous Word Part"
 msgstr "前の単語へ移動"
 
-#: ../src/keybindings.c:596
+#: ../src/keybindings.c:597
 msgid "Go to Next Word Part"
 msgstr "次の単語に移動"
 
-#: ../src/keybindings.c:601
+#: ../src/keybindings.c:602
 msgid "Toggle All Additional Widgets"
 msgstr "すべての追加ウィジェットを表示/非表示"
 
-#: ../src/keybindings.c:604
+#: ../src/keybindings.c:605
 msgid "Fullscreen"
 msgstr "全画面表示"
 
-#: ../src/keybindings.c:606
+#: ../src/keybindings.c:607
 msgid "Toggle Messages Window"
 msgstr "メッセージウィンドウを表示/非表示"
 
-#: ../src/keybindings.c:609
+#: ../src/keybindings.c:610
 msgid "Toggle Sidebar"
 msgstr "サイドバーを表示/非表示"
 
-#: ../src/keybindings.c:611
+#: ../src/keybindings.c:612
 msgid "Zoom In"
 msgstr "拡大"
 
-#: ../src/keybindings.c:613
+#: ../src/keybindings.c:614
 msgid "Zoom Out"
 msgstr "縮小"
 
-#: ../src/keybindings.c:615
+#: ../src/keybindings.c:616
 msgid "Zoom Reset"
 msgstr "標準サイズ"
 
-#: ../src/keybindings.c:620
+#: ../src/keybindings.c:621
 msgid "Switch to Editor"
 msgstr "エディタに切り替え"
 
-#: ../src/keybindings.c:622
+#: ../src/keybindings.c:623
 msgid "Switch to Search Bar"
 msgstr "検索バーに切り替え"
 
-#: ../src/keybindings.c:624
+#: ../src/keybindings.c:625
 msgid "Switch to Message Window"
 msgstr "メッセージウィンドウに切り替え"
 
-#: ../src/keybindings.c:626
+#: ../src/keybindings.c:627
 msgid "Switch to Compiler"
 msgstr "コンパイラに切り替え"
 
-#: ../src/keybindings.c:628
+#: ../src/keybindings.c:629
 msgid "Switch to Messages"
 msgstr "メッセージに切り替え"
 
-#: ../src/keybindings.c:630
+#: ../src/keybindings.c:631
 msgid "Switch to Scribble"
 msgstr "メモに切り替え"
 
-#: ../src/keybindings.c:632
+#: ../src/keybindings.c:633
 msgid "Switch to VTE"
 msgstr "VTE に切り替え"
 
-#: ../src/keybindings.c:634
+#: ../src/keybindings.c:635
 msgid "Switch to Sidebar"
 msgstr "サイドバーに切り替え"
 
-#: ../src/keybindings.c:636
+#: ../src/keybindings.c:637
 msgid "Switch to Sidebar Symbol List"
 msgstr "シンボルリスト サイドバーに切り替え"
 
-#: ../src/keybindings.c:638
+#: ../src/keybindings.c:639
 msgid "Switch to Sidebar Document List"
 msgstr "文書リスト サイドバーに切り替え"
 
-#: ../src/keybindings.c:643
+#: ../src/keybindings.c:644
 msgid "Switch to left document"
 msgstr "左の文書に切り替え"
 
-#: ../src/keybindings.c:645
+#: ../src/keybindings.c:646
 msgid "Switch to right document"
 msgstr "右の文書に切り替え"
 
-#: ../src/keybindings.c:647
+#: ../src/keybindings.c:648
 msgid "Switch to last used document"
 msgstr "最後に使用した文書に切り替え"
 
-#: ../src/keybindings.c:650
+#: ../src/keybindings.c:651
 msgid "Move document left"
 msgstr "文書を左に移動"
 
-#: ../src/keybindings.c:653
+#: ../src/keybindings.c:654
 msgid "Move document right"
 msgstr "文書を右に移動"
 
-#: ../src/keybindings.c:655
+#: ../src/keybindings.c:656
 msgid "Move document first"
 msgstr "文書を先頭に移動"
 
-#: ../src/keybindings.c:657
+#: ../src/keybindings.c:658
 msgid "Move document last"
 msgstr "文書を末尾に移動"
 
-#: ../src/keybindings.c:662
+#: ../src/keybindings.c:663
 msgid "Toggle Line wrapping"
 msgstr "行の折り返しを切り替え"
 
-#: ../src/keybindings.c:664
+#: ../src/keybindings.c:665
 msgid "Toggle Line breaking"
 msgstr "自動改行を切り替え"
 
-#: ../src/keybindings.c:672
+#: ../src/keybindings.c:673
 msgid "Replace spaces with tabs"
 msgstr "タブを空白に置換"
 
-#: ../src/keybindings.c:674
+#: ../src/keybindings.c:675
 msgid "Toggle current fold"
 msgstr "行の折りたたみを切り替え"
 
-#: ../src/keybindings.c:676
+#: ../src/keybindings.c:677
 msgid "Fold all"
 msgstr "すべて折りたたみ"
 
-#: ../src/keybindings.c:678
+#: ../src/keybindings.c:679
 msgid "Unfold all"
 msgstr "すべて広げる"
 
-#: ../src/keybindings.c:680
+#: ../src/keybindings.c:681
 msgid "Reload symbol list"
 msgstr "シンボルリストを再読み込み"
 
-#: ../src/keybindings.c:682
+#: ../src/keybindings.c:683
 msgid "Remove Markers"
 msgstr "マーカーを消去"
 
-#: ../src/keybindings.c:684
+#: ../src/keybindings.c:685
 msgid "Remove Error Indicators"
 msgstr "エラーインジケータを消去"
 
-#: ../src/keybindings.c:686
+#: ../src/keybindings.c:687
 msgid "Remove Markers and Error Indicators"
 msgstr "マーカーとエラーインジケータを消去"
 
-#: ../src/keybindings.c:691 ../src/toolbar.c:71
+#: ../src/keybindings.c:692 ../src/toolbar.c:71
 msgid "Compile"
 msgstr "コンパイル"
 
-#: ../src/keybindings.c:695
+#: ../src/keybindings.c:696
 msgid "Make all"
 msgstr "すべてメイク"
 
-#: ../src/keybindings.c:698
+#: ../src/keybindings.c:699
 msgid "Make custom target"
 msgstr "カスタムターゲットをメイク"
 
-#: ../src/keybindings.c:700
+#: ../src/keybindings.c:701
 msgid "Make object"
 msgstr "オブジェクトをメイク"
 
-#: ../src/keybindings.c:702
+#: ../src/keybindings.c:703
 msgid "Next error"
 msgstr "次のエラー"
 
-#: ../src/keybindings.c:704
+#: ../src/keybindings.c:705
 msgid "Previous error"
 msgstr "前のエラー"
 
-#: ../src/keybindings.c:706
+#: ../src/keybindings.c:707
 msgid "Run"
 msgstr "実行"
 
-#: ../src/keybindings.c:708
+#: ../src/keybindings.c:709
 msgid "Build options"
 msgstr "ビルドオプション"
 
-#: ../src/keybindings.c:713
+#: ../src/keybindings.c:714
 msgid "Show Color Chooser"
 msgstr "色の選択"
 
-#: ../src/keybindings.c:996
+#: ../src/keybindings.c:997
 msgid "Keyboard Shortcuts"
 msgstr "キーボード ショートカット"
 
-#: ../src/keybindings.c:1008
+#: ../src/keybindings.c:1009
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "以下のキーボード ショートカットが設定できます:"
 
-#: ../src/keyfile.c:1047
+#: ../src/keyfile.c:1050
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "メモとして、ここには自由に入力できます。"
 
-#: ../src/keyfile.c:1274
+#: ../src/keyfile.c:1277
 msgid "Failed to load one or more session files."
 msgstr "セッションファイルの読み込みに失敗"
 
@@ -3891,26 +3891,26 @@ msgstr ""
 "設定ディレクトリなしでGeanyを使うと問題が起きる場合があります。\n"
 "それでも Geany を実行しますか?"
 
-#: ../src/libmain.c:1174
+#: ../src/libmain.c:1175
 #, c-format
 msgid "This is Geany %s."
 msgstr "Geany %s を起動しました"
 
-#: ../src/libmain.c:1177
+#: ../src/libmain.c:1178
 #, c-format
 msgid "Configuration directory could not be created (%s)."
 msgstr "設定ディレクトリが作成できません(%s)"
 
-#: ../src/libmain.c:1184
+#: ../src/libmain.c:1185
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 "IPCソケットが作成できません(ヘルプのデバッグメッセージを確認してください)。"
 
-#: ../src/libmain.c:1413
+#: ../src/libmain.c:1414
 msgid "Do you really want to quit?"
 msgstr "本当に終了しますか?"
 
-#: ../src/libmain.c:1451
+#: ../src/libmain.c:1452
 msgid "Configuration files reloaded."
 msgstr "設定ファイルを再読み込みしました"
 
@@ -4036,11 +4036,11 @@ msgstr "キーの組み合わせ"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "\"%s\"を使用するためのキーの組み合わせをタイプします"
 
-#: ../src/prefs.c:226 ../src/symbols.c:2586 ../src/sidebar.c:751
+#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:751
 msgid "_Expand All"
 msgstr "すべて展開(_E)"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2591 ../src/sidebar.c:757
+#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:757
 msgid "_Collapse All"
 msgstr "すべて閉じる(_C)"
 
@@ -4208,11 +4208,11 @@ msgstr ""
 msgid "Base path:"
 msgstr "基本パス:"
 
-#: ../src/project.c:211 ../src/project.c:485
+#: ../src/project.c:211 ../src/project.c:487
 msgid "Choose Project Base Path"
 msgstr "プロジェクトの基本パスを選択"
 
-#: ../src/project.c:250 ../src/project.c:622 ../src/project.c:1155
+#: ../src/project.c:250 ../src/project.c:624 ../src/project.c:1164
 msgid "Project file could not be written"
 msgstr "プロジェクトファイルが書き込めません"
 
@@ -4221,94 +4221,94 @@ msgstr "プロジェクトファイルが書き込めません"
 msgid "Project \"%s\" created."
 msgstr "プロジェクト \"%s\" 作成しました"
 
-#: ../src/project.c:294 ../src/project.c:321 ../src/project.c:1022
+#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1025
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "プロジェクトファイル \"%s\" は読み込めませんでした"
 
-#: ../src/project.c:315 ../src/project.c:333
+#: ../src/project.c:317 ../src/project.c:335
 msgid "Open Project"
 msgstr "プロジェクトを開く"
 
-#: ../src/project.c:353
+#: ../src/project.c:355
 msgid "Project files"
 msgstr "プロジェクトファイル"
 
-#: ../src/project.c:415
+#: ../src/project.c:417
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "プロジェクト \"%s\" を閉じました"
 
-#: ../src/project.c:625
+#: ../src/project.c:627
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "プロジェクト \"%s\" を保存しました"
 
-#: ../src/project.c:658
+#: ../src/project.c:660
 msgid "Do you want to close it before proceeding?"
 msgstr "実行する前にプロジェクトを閉じますか?"
 
-#: ../src/project.c:659
+#: ../src/project.c:661
 #, c-format
 msgid "The '%s' project is open."
 msgstr "'%s' プロジェクトは開いています"
 
-#: ../src/project.c:708
+#: ../src/project.c:710
 msgid "The specified project name is too short."
 msgstr "指定したプロジェクト名は短すぎます"
 
-#: ../src/project.c:714
+#: ../src/project.c:716
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "指定したプロジェクト名は長すぎます(最大 %d 文字)"
 
-#: ../src/project.c:726
+#: ../src/project.c:728
 msgid "You have specified an invalid project filename."
 msgstr "無効なプロジェクト名を指定しました"
 
-#: ../src/project.c:749
+#: ../src/project.c:751
 msgid "Create the project's base path directory?"
 msgstr "プロジェクトの基本パスのディレクトリを作成しますか?"
 
-#: ../src/project.c:750
+#: ../src/project.c:752
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "パス \"%s\" は存在しません"
 
-#: ../src/project.c:759
+#: ../src/project.c:761
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "プロジェクト基本ディレクトリが作成できません(%s)"
 
-#: ../src/project.c:772
+#: ../src/project.c:774
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "プロジェクトファイルが書き込めません（%s）"
 
-#: ../src/project.c:778 ../src/search.c:628
+#: ../src/project.c:780 ../src/search.c:630
 msgid "_Replace"
 msgstr "置換(_R)"
 
-#: ../src/project.c:780 ../plugins/export.c:330
+#: ../src/project.c:782 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "ファイル '%s' はすでに存在します。上書きしますか?"
 
 #. initialise the dialog
-#: ../src/project.c:926 ../src/project.c:937
+#: ../src/project.c:928 ../src/project.c:939
 msgid "Choose Project Filename"
 msgstr "プロジェクトのファイル名を選択"
 
-#: ../src/project.c:1012
+#: ../src/project.c:1015
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "プロジェクト \"%s\" を開きました"
 
-#: ../src/search.c:309 ../src/search.c:961
+#: ../src/search.c:311 ../src/search.c:963
 msgid "_Use regular expressions"
 msgstr "正規表現を使用(_U)"
 
-#: ../src/search.c:312
+#: ../src/search.c:314
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
@@ -4316,11 +4316,11 @@ msgstr ""
 "Perl 風の正規表現を使用します。正規表現の使用についてはドキュメントを読んでく"
 "ださい。"
 
-#: ../src/search.c:317
+#: ../src/search.c:319
 msgid "Use _escape sequences"
 msgstr "エスケープシーケンスを使用(_E)"
 
-#: ../src/search.c:321
+#: ../src/search.c:323
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4328,11 +4328,11 @@ msgstr ""
 "\\\\, \\t, \\n, \\r および \\uXXXX (Unicode 文字)を対応する制御文字に置き換え"
 "ます"
 
-#: ../src/search.c:324
+#: ../src/search.c:326
 msgid "Use multi-line matchin_g"
 msgstr "複数行一致を使用(_G)"
 
-#: ../src/search.c:329
+#: ../src/search.c:331
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4343,98 +4343,98 @@ msgstr ""
 "検索を実行します。このモードでは、改行文字は入力の一部になり、検索パターンに"
 "使用可能な文字として扱われます。"
 
-#: ../src/search.c:342
+#: ../src/search.c:344
 msgid "Search _backwards"
 msgstr "後方を検索(_B)"
 
-#: ../src/search.c:348 ../src/search.c:970
+#: ../src/search.c:350 ../src/search.c:972
 msgid "C_ase sensitive"
 msgstr "大文字と小文字を区別する(_A)"
 
-#: ../src/search.c:352 ../src/search.c:975
+#: ../src/search.c:354 ../src/search.c:977
 msgid "Match only a _whole word"
 msgstr "完全一致(_W)"
 
-#: ../src/search.c:356
+#: ../src/search.c:358
 msgid "Match from s_tart of word"
 msgstr "前方一致(_T)"
 
-#: ../src/search.c:472
+#: ../src/search.c:474
 msgid "_Previous"
 msgstr "前へ(_P)"
 
-#: ../src/search.c:477
+#: ../src/search.c:479
 msgid "_Next"
 msgstr "次へ(_N)"
 
-#: ../src/search.c:481 ../src/search.c:639 ../src/search.c:878
+#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
 msgid "_Search for:"
 msgstr "検索文字列(_S):"
 
 #. Now add the multiple match options
-#: ../src/search.c:509
+#: ../src/search.c:511
 msgid "_Find All"
 msgstr "すべて検索(_F)"
 
-#: ../src/search.c:516
+#: ../src/search.c:518
 msgid "_Mark"
 msgstr "マーク(_M)"
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 msgid "Mark all matches in the current document"
 msgstr "現在の文書で一致するものすべてをマークします"
 
-#: ../src/search.c:523 ../src/search.c:698
+#: ../src/search.c:525 ../src/search.c:700
 msgid "In Sessi_on"
 msgstr "セッション内(_O)"
 
-#: ../src/search.c:528 ../src/search.c:703
+#: ../src/search.c:530 ../src/search.c:705
 msgid "_In Document"
 msgstr "文書内(_I)"
 
 #. close window checkbox
-#: ../src/search.c:534 ../src/search.c:716
+#: ../src/search.c:536 ../src/search.c:718
 msgid "Close _dialog"
 msgstr "ダイアログを閉じる(_D)"
 
-#: ../src/search.c:538 ../src/search.c:720
+#: ../src/search.c:540 ../src/search.c:722
 msgid "Disable this option to keep the dialog open"
 msgstr "ダイアログを開いたままにするには、このオプションを無効にしてください"
 
-#: ../src/search.c:633
+#: ../src/search.c:635
 msgid "Replace & Fi_nd"
 msgstr "置換と検索(_N)"
 
-#: ../src/search.c:642
+#: ../src/search.c:644
 msgid "Replace wit_h:"
 msgstr "置換文字列(_H):"
 
 #. Now add the multiple replace options
-#: ../src/search.c:691
+#: ../src/search.c:693
 msgid "Re_place All"
 msgstr "すべて置換(_P)"
 
-#: ../src/search.c:708
+#: ../src/search.c:710
 msgid "In Se_lection"
 msgstr "選択範囲内(_L)"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "Replace all matches found in the currently selected text"
 msgstr "現在選択されているテキストで一致しているものをすべて置換します"
 
-#: ../src/search.c:827
+#: ../src/search.c:829
 msgid "all"
 msgstr "すべて"
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 msgid "project"
 msgstr "プロジェクト"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "custom"
 msgstr "カスタム"
 
-#: ../src/search.c:835
+#: ../src/search.c:837
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4444,100 +4444,100 @@ msgstr ""
 "プロジェクト: プロジェクトの設定で定義されたファイルパターンを使用\n"
 "カスタム: ファイルパターンを指定"
 
-#: ../src/search.c:897
+#: ../src/search.c:899
 msgid "Fi_les:"
 msgstr "ファイル(_L):"
 
-#: ../src/search.c:909
+#: ../src/search.c:911
 msgid "File patterns, e.g. *.c *.h"
 msgstr "ファイルパターン 例 *.c *.h"
 
-#: ../src/search.c:921
+#: ../src/search.c:923
 msgid "_Directory:"
 msgstr "ディレクトリ(_D):"
 
-#: ../src/search.c:940
+#: ../src/search.c:942
 msgid "E_ncoding:"
 msgstr "エンコーディング(_N):"
 
-#: ../src/search.c:964
+#: ../src/search.c:966
 msgid "See grep's manual page for more information"
 msgstr "詳細は grep のマニュアルページを参照してください"
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "_Recurse in subfolders"
 msgstr "サブフォルダを再帰的に検索(_R)"
 
-#: ../src/search.c:979
+#: ../src/search.c:981
 msgid "_Invert search results"
 msgstr "検索結果を反転する(_I)"
 
-#: ../src/search.c:983
+#: ../src/search.c:985
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "検索文字列に合致しない行を選択するには、検索結果を反転してください"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1002
 msgid "E_xtra options:"
 msgstr "追加オプション(_X):"
 
-#: ../src/search.c:1008
+#: ../src/search.c:1010
 msgid "Other options to pass to Grep"
 msgstr "Grep に渡すその他のオプション"
 
-#: ../src/search.c:1370 ../src/search.c:2228 ../src/search.c:2231
+#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "%d 個が検索されました( \"%s\" を検索)"
 
-#: ../src/search.c:1426
+#: ../src/search.c:1433
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "%u 個が置換されました( %u ファイル中)"
 
-#: ../src/search.c:1615
+#: ../src/search.c:1622
 msgid "Invalid directory for find in files."
 msgstr "複数のファイルから検索するときに無効なディレクトリ"
 
-#: ../src/search.c:1632
+#: ../src/search.c:1639
 msgid "No text to find."
 msgstr "検索するテキストがありません"
 
-#: ../src/search.c:1708
+#: ../src/search.c:1715
 msgid "Searching..."
 msgstr "検索中..."
 
-#: ../src/search.c:1710
+#: ../src/search.c:1717
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (ディレクトリ: %s)"
 
-#: ../src/search.c:1718
+#: ../src/search.c:1725
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr "grep ツール \"%s\" が実行できません: %s. パス設定を確認してください。"
 
-#: ../src/search.c:1758
+#: ../src/search.c:1765
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "ディレクトリを開けませんでした (%s)"
 
-#: ../src/search.c:1848
+#: ../src/search.c:1855
 msgid "Search failed."
 msgstr "検索失敗"
 
-#: ../src/search.c:1872
+#: ../src/search.c:1879
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "%d 個が検索されました"
 
-#: ../src/search.c:1880
+#: ../src/search.c:1887
 msgid "No matches found."
 msgstr "一致しません"
 
-#: ../src/search.c:1910
+#: ../src/search.c:1917
 #, c-format
 msgid "Bad regex: %s"
 msgstr "正規表現が不正です: %s"
@@ -4945,33 +4945,41 @@ msgstr "%s タグファイル '%s' を読み込みました"
 msgid "Could not load tags file '%s'."
 msgstr "タグファイル '%s' を読み込めませんでした"
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1970
+#: ../src/symbols.c:1984
+#, fuzzy, c-format
+msgid "<b>%s: %lu  (%s)</b>"
+msgstr "<b>%s: %lu</b>"
+
+#: ../src/symbols.c:1986
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1973
+#: ../src/symbols.c:1991
+#, fuzzy, c-format
+msgid "%s: %lu  (%s)"
+msgstr "%s: %lu"
+
+#: ../src/symbols.c:1993
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2183
+#: ../src/symbols.c:2298
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "前方宣言 \"%s\" が見つかりません"
 
-#: ../src/symbols.c:2185
+#: ../src/symbols.c:2300
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "\"%s\" の定義が見つかりません"
 
-#: ../src/symbols.c:2601
+#: ../src/symbols.c:2716
 msgid "Sort by _Name"
 msgstr "名前順に並び替え(_N)"
 
-#: ../src/symbols.c:2608
+#: ../src/symbols.c:2723
 msgid "Sort by _Appearance"
 msgstr "出現順に並び替え(_A)"
 
@@ -5365,27 +5373,27 @@ msgstr "日付書式の文字列が変換できません (おそらく長過ぎ�
 msgid "_Set Custom Date Format"
 msgstr "任意の日付書式を設定(_S)"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 msgid "Select Folder"
 msgstr "フォルダを選択"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 msgid "Select File"
 msgstr "ファイルを選択"
 
-#: ../src/ui_utils.c:2185
+#: ../src/ui_utils.c:2187
 msgid "_Filetype Configuration"
 msgstr "ファイル種類の設定(_F)"
 
-#: ../src/ui_utils.c:2222
+#: ../src/ui_utils.c:2224
 msgid "Save All"
 msgstr "すべて保存"
 
-#: ../src/ui_utils.c:2223
+#: ../src/ui_utils.c:2225
 msgid "Close All"
 msgstr "すべて閉じる"
 
-#: ../src/ui_utils.c:2455
+#: ../src/ui_utils.c:2457
 msgid "Geany cannot start!"
 msgstr "Geanyを起動できません!"
 
@@ -5425,27 +5433,34 @@ msgstr "CR"
 msgid "LF"
 msgstr "LF"
 
-#: ../src/vte.c:585
+#: ../src/vte.c:666
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr "無効な VTE ライブラリ \"%s\": シンボル \"%s\" がありません"
 
-#: ../src/vte.c:766
+#: ../src/vte.c:860
 msgid "_Set Path From Document"
 msgstr "パスを文書から設定(_S)"
 
-#: ../src/vte.c:771
+#: ../src/vte.c:865
 msgid "_Restart Terminal"
 msgstr "端末を再起動(_R)"
 
-#: ../src/vte.c:804
+#: ../src/vte.c:898
 msgid "_Input Methods"
 msgstr "入力メソッド(_I)"
 
-#: ../src/vte.c:896
+#: ../src/vte.c:991
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
+msgstr ""
+"不正な入力(Ctrl+C を押したか、Enter でクリアした)のため、ディレクトリは変更で"
+"きません。"
+
+#: ../src/vte.c:998
+#, fuzzy
+msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 "不正な入力(Ctrl+C を押したか、Enter でクリアした)のため、ディレクトリは変更で"
 "きません。"

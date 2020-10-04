@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 11:56+0200\n"
+"POT-Creation-Date: 2020-10-04 11:05+0300\n"
 "PO-Revision-Date: 2008-10-14 19:27+0100\n"
 "Last-Translator: Song Hyeon Sik <hyeonsiksong@gmail.com>\n"
 "Language-Team: Korean\n"
@@ -96,7 +96,7 @@ msgstr "보이지 않는"
 msgid "_Insert \"include <...>\""
 msgstr "\"include <...>\" 템플릿 삽입(_I)"
 
-#: ../data/geany.glade.h:16 ../src/keybindings.c:513
+#: ../data/geany.glade.h:16 ../src/keybindings.c:514
 msgid "Insert Alternative _White Space"
 msgstr "대안할 공백 삽입(_W)"
 
@@ -108,11 +108,11 @@ msgstr "찾기(_S)"
 msgid "Open Selected F_ile"
 msgstr "선택한 파일 열기(_i)"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2618
+#: ../data/geany.glade.h:19 ../src/symbols.c:2733
 msgid "Find _Usage"
 msgstr "사용법 찾기(_U)"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2623
+#: ../data/geany.glade.h:20 ../src/symbols.c:2738
 msgid "Find _Document Usage"
 msgstr "문서 사용법 찾기(_D)"
 
@@ -166,7 +166,7 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: ../data/geany.glade.h:31 ../src/keybindings.c:523
+#: ../data/geany.glade.h:31 ../src/keybindings.c:524
 msgid "Preferences"
 msgstr "기본 설정"
 
@@ -1136,7 +1136,7 @@ msgstr "<b>도구 경로</b>"
 msgid "Display"
 msgstr "표시"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:311 ../src/prefs.c:1608
+#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "편집기"
 
@@ -1221,7 +1221,7 @@ msgstr "질질 끌리는 스페이스와 탭 지우기"
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "질질 끌리는 스페이스, 탭, 줄끝표시 지우기"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:670
+#: ../data/geany.glade.h:253 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "탭을 스페이스로 바꾸기"
 
@@ -1304,7 +1304,7 @@ msgstr ""
 msgid "<b>Commands</b>"
 msgstr "<b>명령</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:323 ../src/prefs.c:1612
+#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "도구"
 
@@ -1621,7 +1621,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>터미널</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:390
+#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
 msgid "Terminal"
 msgstr "터미널"
 
@@ -1690,27 +1690,27 @@ msgstr "모두 닫기(_l)"
 msgid "Co_mmands"
 msgstr "명령(_m)"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:436
+#: ../data/geany.glade.h:357 ../src/keybindings.c:437
 msgid "Cu_t Current Line(s)"
 msgstr "현재 줄(들) 잘라내기(_t)"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:433
+#: ../data/geany.glade.h:358 ../src/keybindings.c:434
 msgid "_Copy Current Line(s)"
 msgstr "현재 줄(들) 복사(_C)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:386
+#: ../data/geany.glade.h:359 ../src/keybindings.c:387
 msgid "_Delete Current Line(s)"
 msgstr "현재 줄(들) 지우기(_D)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:383
+#: ../data/geany.glade.h:360 ../src/keybindings.c:384
 msgid "D_uplicate Line or Selection"
 msgstr "선택한 부분 복제(_u)"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:446
+#: ../data/geany.glade.h:361 ../src/keybindings.c:447
 msgid "S_elect Current Line(s)"
 msgstr "현재 줄(들) 선택(_e)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:449
+#: ../data/geany.glade.h:362 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr "현재 문단 선택(_l)"
 
@@ -1722,15 +1722,15 @@ msgstr "줄(들)을 위로 이동(_M)"
 msgid "M_ove Line(s) Down"
 msgstr "줄(들)을 아래로 이동(_o)"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:500
+#: ../data/geany.glade.h:365 ../src/keybindings.c:501
 msgid "_Send Selection to Terminal"
 msgstr "선택한 부분 터미널로 보내기(_S)"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:502
+#: ../data/geany.glade.h:366 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr ""
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:460
+#: ../data/geany.glade.h:367 ../src/keybindings.c:461
 msgid "T_oggle Case of Selection"
 msgstr "선택한 부분 활자케이스전환(_o)"
 
@@ -1754,7 +1754,7 @@ msgstr "들여쓰기 증가(_I)"
 msgid "_Decrease Indent"
 msgstr "들여쓰기 감소(_D)"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:479
+#: ../data/geany.glade.h:373 ../src/keybindings.c:480
 msgid "S_mart Line Indent"
 msgstr "똑똑한 한줄 들여쓰기(_m)"
 
@@ -1770,7 +1770,7 @@ msgstr "주석 삽입(_n)"
 msgid "Preference_s"
 msgstr "기본 설정(_s)"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:526
+#: ../data/geany.glade.h:377 ../src/keybindings.c:527
 msgid "P_lugin Preferences"
 msgstr "플러그인 기본 설정(_l)"
 
@@ -1786,7 +1786,7 @@ msgstr "다음 찾기(_N)"
 msgid "Find _Previous"
 msgstr "이전 찾기(_P)"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2628
+#: ../data/geany.glade.h:381 ../src/symbols.c:2743
 msgid "Find in F_iles..."
 msgstr "파일 안에서 찾기(_i)"
 
@@ -1802,11 +1802,11 @@ msgstr "다음 메시지(_s)"
 msgid "Pr_evious Message"
 msgstr "이전 메시지(_e)"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:575
+#: ../data/geany.glade.h:385 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr "다음 표시로 이동(_x)"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:578
+#: ../data/geany.glade.h:386 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr "이전 표시로 이동(_v)"
 
@@ -1814,16 +1814,16 @@ msgstr "이전 표시로 이동(_v)"
 msgid "_Go to Line..."
 msgstr "줄로 이동(_G)"
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:538
+#: ../data/geany.glade.h:388 ../src/keybindings.c:539
 msgid "Find Next _Selection"
 msgstr "다음 선택부분 찾기(_S)"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:540
+#: ../data/geany.glade.h:389 ../src/keybindings.c:541
 #, fuzzy
 msgid "Find Pre_vious Selection"
 msgstr "이전 선택부분 찾기"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:557
+#: ../data/geany.glade.h:390 ../src/keybindings.c:558
 msgid "_Mark All"
 msgstr "전부 표시(_M)"
 
@@ -1980,11 +1980,11 @@ msgstr "LF(유닉스)로 변환(_L)"
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "CR(매킨토시)로 변환(_M)"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:666
+#: ../data/geany.glade.h:429 ../src/keybindings.c:667
 msgid "_Clone"
 msgstr "복제(_C)"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:668
+#: ../data/geany.glade.h:430 ../src/keybindings.c:669
 msgid "_Strip Trailing Spaces"
 msgstr "질질끌리는 공백 지우기(_S)"
 
@@ -2161,7 +2161,7 @@ msgstr ""
 "프로젝트를 구성하는 모든 파일들의 기반 폴더. 새로 만들거나, 기존 폴더를 사용"
 "할 수 있습니다. 프로젝트 파일 이름에 상대경로를 사용할 수 있게합니다."
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:321
+#: ../data/geany.glade.h:471 ../src/keybindings.c:322
 msgid "Project"
 msgstr "프로젝트"
 
@@ -2513,7 +2513,7 @@ msgid "%d file saved."
 msgid_plural "%d files saved."
 msgstr[0] "%d 파일 저장됨."
 
-#: ../src/callbacks.c:899 ../src/keybindings.c:566
+#: ../src/callbacks.c:899 ../src/keybindings.c:567
 msgid "Go to Line"
 msgstr "줄번호로 이동"
 
@@ -2530,26 +2530,26 @@ msgstr "이 기능을 사용하기 전에 파일형식을 지정하십시오."
 msgid "No more message items."
 msgstr "메시지 아이템 더이상 없음."
 
-#: ../src/callbacks.c:1428
+#: ../src/callbacks.c:1443
 #, c-format
 msgid "Could not open file %s (File not found)"
 msgstr "%s 파일 열 수 없음 (파일이 존재하지 않음)"
 
-#: ../src/callbacks.c:1477
+#: ../src/callbacks.c:1492
 msgid "Check the path setting in Filetype configuration."
 msgstr "파일형식 설정의 경로를 확인하세요."
 
-#: ../src/callbacks.c:1482
+#: ../src/callbacks.c:1497
 msgid "Check the path setting in Preferences."
 msgstr "기본설정의 경로를 확인하세요."
 
 #. G_SHELL_ERROR is parsing error, it may be caused by %s word with quotes
-#: ../src/callbacks.c:1495
+#: ../src/callbacks.c:1510
 #, fuzzy, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr "맞춤 외부 명령 '%s' 실행 실패 (%s)."
 
-#: ../src/callbacks.c:1504
+#: ../src/callbacks.c:1519
 #, fuzzy
 msgid "No context action set."
 msgstr "컨텍스트 행동:"
@@ -2702,7 +2702,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2432 ../src/symbols.c:2448 ../src/ui_utils.c:288
+#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "알 수 없음"
 
@@ -2921,8 +2921,8 @@ msgstr "%s 파일 저장됨."
 msgid "Wrap search and find again?"
 msgstr "다시 처음부터 찾을까요?"
 
-#: ../src/document.c:2464 ../src/search.c:1367 ../src/search.c:1420
-#: ../src/search.c:2222 ../src/search.c:2223
+#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
+#: ../src/search.c:2229 ../src/search.c:2230
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "\"%s\" 찾을 수 없음."
@@ -2937,15 +2937,15 @@ msgstr[0] "%s: %d번 \"%s\" -> \"%s\" 바꿈."
 msgid "Do you want to reload it?"
 msgstr "다시 불러올까요?"
 
-#: ../src/editor.c:4461
+#: ../src/editor.c:4748
 msgid "Enter Tab Width"
 msgstr "탭 너비 입력"
 
-#: ../src/editor.c:4462
+#: ../src/editor.c:4749
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "탭을 몇개의 스페이스로 구성할지 입력하시오."
 
-#: ../src/editor.c:4668
+#: ../src/editor.c:4955
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3165,7 +3165,7 @@ msgid "All Source"
 msgstr "모든 소스"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1210 ../src/project.c:349 ../src/win32.c:145
+#: ../src/filetypes.c:1210 ../src/project.c:351 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "모든 파일"
@@ -3203,577 +3203,577 @@ msgid "Color Schemes"
 msgstr "색상 선택기(_C)"
 
 #. visual group order
-#: ../src/keybindings.c:310 ../src/symbols.c:492
+#: ../src/keybindings.c:311 ../src/symbols.c:492
 msgid "File"
 msgstr "파일"
 
-#: ../src/keybindings.c:312
+#: ../src/keybindings.c:313
 msgid "Clipboard"
 msgstr "클립보드"
 
-#: ../src/keybindings.c:313
+#: ../src/keybindings.c:314
 msgid "Select"
 msgstr "선택"
 
-#: ../src/keybindings.c:314
+#: ../src/keybindings.c:315
 msgid "Format"
 msgstr "형식"
 
-#: ../src/keybindings.c:315
+#: ../src/keybindings.c:316
 msgid "Insert"
 msgstr "삽입"
 
-#: ../src/keybindings.c:316
+#: ../src/keybindings.c:317
 msgid "Settings"
 msgstr "환경 설정"
 
-#: ../src/keybindings.c:317
+#: ../src/keybindings.c:318
 msgid "Search"
 msgstr "찾기"
 
-#: ../src/keybindings.c:318
+#: ../src/keybindings.c:319
 msgid "Go to"
 msgstr "이동"
 
-#: ../src/keybindings.c:319
+#: ../src/keybindings.c:320
 msgid "View"
 msgstr "보기"
 
-#: ../src/keybindings.c:320 ../src/symbols.c:643
+#: ../src/keybindings.c:321 ../src/symbols.c:643
 msgid "Document"
 msgstr "문서"
 
-#: ../src/keybindings.c:322 ../src/keybindings.c:693 ../src/project.c:512
-#: ../src/ui_utils.c:2224
+#: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
+#: ../src/ui_utils.c:2226
 msgid "Build"
 msgstr "제작"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:718
+#: ../src/keybindings.c:325 ../src/keybindings.c:719
 msgid "Help"
 msgstr "도움말"
 
-#: ../src/keybindings.c:325
+#: ../src/keybindings.c:326
 msgid "Focus"
 msgstr "포커스"
 
-#: ../src/keybindings.c:326
+#: ../src/keybindings.c:327
 msgid "Notebook tab"
 msgstr "노트북 탭"
 
-#: ../src/keybindings.c:335 ../src/keybindings.c:367
+#: ../src/keybindings.c:336 ../src/keybindings.c:368
 msgid "New"
 msgstr "새로 만들기"
 
-#: ../src/keybindings.c:337 ../src/keybindings.c:369
+#: ../src/keybindings.c:338 ../src/keybindings.c:370
 msgid "Open"
 msgstr "열기"
 
-#: ../src/keybindings.c:340
+#: ../src/keybindings.c:341
 msgid "Open selected file"
 msgstr "선택한 파일 열기"
 
-#: ../src/keybindings.c:342
+#: ../src/keybindings.c:343
 msgid "Save"
 msgstr "저장"
 
-#: ../src/keybindings.c:344 ../src/toolbar.c:58
+#: ../src/keybindings.c:345 ../src/toolbar.c:58
 msgid "Save as"
 msgstr "다른 이름으로 저장"
 
-#: ../src/keybindings.c:346
+#: ../src/keybindings.c:347
 msgid "Save all"
 msgstr "모두 저장"
 
-#: ../src/keybindings.c:349 ../src/symbols.c:728
+#: ../src/keybindings.c:350 ../src/symbols.c:728
 msgid "Properties"
 msgstr "속성"
 
-#: ../src/keybindings.c:351
+#: ../src/keybindings.c:352
 msgid "Print"
 msgstr "인쇄"
 
-#: ../src/keybindings.c:353 ../src/keybindings.c:374
+#: ../src/keybindings.c:354 ../src/keybindings.c:375
 msgid "Close"
 msgstr "닫기"
 
-#: ../src/keybindings.c:355
+#: ../src/keybindings.c:356
 msgid "Close all"
 msgstr "모두 닫기"
 
-#: ../src/keybindings.c:358
+#: ../src/keybindings.c:359
 msgid "Reload file"
 msgstr "다시 불러오기"
 
-#: ../src/keybindings.c:360
+#: ../src/keybindings.c:361
 msgid "Re-open last closed tab"
 msgstr ""
 
-#: ../src/keybindings.c:362
+#: ../src/keybindings.c:363
 msgid "Quit"
 msgstr ""
 
-#: ../src/keybindings.c:379
+#: ../src/keybindings.c:380
 msgid "Undo"
 msgstr "실행취소"
 
-#: ../src/keybindings.c:381
+#: ../src/keybindings.c:382
 msgid "Redo"
 msgstr "재실행"
 
-#: ../src/keybindings.c:390
+#: ../src/keybindings.c:391
 #, fuzzy
 msgid "Delete to line end"
 msgstr "현재 줄(들) 지우기"
 
-#: ../src/keybindings.c:393
+#: ../src/keybindings.c:394
 #, fuzzy
 msgid "Delete to beginning of line"
 msgstr "현재 줄(들) 지우기"
 
-#: ../src/keybindings.c:396
+#: ../src/keybindings.c:397
 #, fuzzy
 msgid "_Transpose Current Line"
 msgstr "현재 줄 자리바꾸기"
 
-#: ../src/keybindings.c:398
+#: ../src/keybindings.c:399
 msgid "Scroll to current line"
 msgstr "현재 줄로 스크롤"
 
-#: ../src/keybindings.c:400
+#: ../src/keybindings.c:401
 msgid "Scroll up the view by one line"
 msgstr "한줄 위로 스크롤"
 
-#: ../src/keybindings.c:402
+#: ../src/keybindings.c:403
 msgid "Scroll down the view by one line"
 msgstr "한줄 아래로 스크롤"
 
-#: ../src/keybindings.c:404
+#: ../src/keybindings.c:405
 msgid "Complete snippet"
 msgstr "토막 완성"
 
-#: ../src/keybindings.c:406
+#: ../src/keybindings.c:407
 msgid "Move cursor in snippet"
 msgstr ""
 
-#: ../src/keybindings.c:408
+#: ../src/keybindings.c:409
 msgid "Suppress snippet completion"
 msgstr "토막 완성 감춤"
 
-#: ../src/keybindings.c:410
+#: ../src/keybindings.c:411
 msgid "Context Action"
 msgstr "컨텍스트 행동"
 
-#: ../src/keybindings.c:412
+#: ../src/keybindings.c:413
 msgid "Complete word"
 msgstr "단어 완성"
 
-#: ../src/keybindings.c:414
+#: ../src/keybindings.c:415
 msgid "Show calltip"
 msgstr "calltip 보기"
 
-#: ../src/keybindings.c:416
+#: ../src/keybindings.c:417
 #, fuzzy
 msgid "Word part completion"
 msgstr "토막 완성"
 
-#: ../src/keybindings.c:419
+#: ../src/keybindings.c:420
 msgid "Move line(s) up"
 msgstr "줄(들)을 위로 이동"
 
-#: ../src/keybindings.c:422
+#: ../src/keybindings.c:423
 msgid "Move line(s) down"
 msgstr "줄(들)을 아래로 이동"
 
-#: ../src/keybindings.c:427
+#: ../src/keybindings.c:428
 msgid "Cut"
 msgstr "잘라내기"
 
-#: ../src/keybindings.c:429
+#: ../src/keybindings.c:430
 msgid "Copy"
 msgstr "복사"
 
-#: ../src/keybindings.c:431
+#: ../src/keybindings.c:432
 msgid "Paste"
 msgstr "붙여 넣기"
 
-#: ../src/keybindings.c:442
+#: ../src/keybindings.c:443
 msgid "Select All"
 msgstr "모두 선택"
 
-#: ../src/keybindings.c:444
+#: ../src/keybindings.c:445
 msgid "Select current word"
 msgstr "현재 단어 선택"
 
-#: ../src/keybindings.c:452
+#: ../src/keybindings.c:453
 msgid "Select to previous word part"
 msgstr "이전 단어부분 선택"
 
-#: ../src/keybindings.c:454
+#: ../src/keybindings.c:455
 msgid "Select to next word part"
 msgstr "다음 단어부분으로 선택"
 
-#: ../src/keybindings.c:462
+#: ../src/keybindings.c:463
 msgid "Toggle line commentation"
 msgstr "한줄 주석 전환"
 
-#: ../src/keybindings.c:465
+#: ../src/keybindings.c:466
 msgid "Comment line(s)"
 msgstr "줄(들) 주석"
 
-#: ../src/keybindings.c:467
+#: ../src/keybindings.c:468
 msgid "Uncomment line(s)"
 msgstr "줄(들) 주석 해제"
 
-#: ../src/keybindings.c:469
+#: ../src/keybindings.c:470
 msgid "Increase indent"
 msgstr "들여쓰기 증가"
 
-#: ../src/keybindings.c:472
+#: ../src/keybindings.c:473
 msgid "Decrease indent"
 msgstr "들여쓰기 감소"
 
-#: ../src/keybindings.c:475
+#: ../src/keybindings.c:476
 msgid "Increase indent by one space"
 msgstr "공백 하나만큼 들여쓰기 증가"
 
-#: ../src/keybindings.c:477
+#: ../src/keybindings.c:478
 msgid "Decrease indent by one space"
 msgstr "공백 하나만큼 들여쓰기 감소"
 
-#: ../src/keybindings.c:481
+#: ../src/keybindings.c:482
 msgid "Send to Custom Command 1"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:483
+#: ../src/keybindings.c:484
 msgid "Send to Custom Command 2"
 msgstr "맞춤 명령 2로 보냄"
 
-#: ../src/keybindings.c:485
+#: ../src/keybindings.c:486
 msgid "Send to Custom Command 3"
 msgstr "맞춤 명령 3으로 보냄"
 
-#: ../src/keybindings.c:487
+#: ../src/keybindings.c:488
 #, fuzzy
 msgid "Send to Custom Command 4"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:489
+#: ../src/keybindings.c:490
 #, fuzzy
 msgid "Send to Custom Command 5"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:491
+#: ../src/keybindings.c:492
 #, fuzzy
 msgid "Send to Custom Command 6"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:493
+#: ../src/keybindings.c:494
 #, fuzzy
 msgid "Send to Custom Command 7"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:495
+#: ../src/keybindings.c:496
 #, fuzzy
 msgid "Send to Custom Command 8"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:497
+#: ../src/keybindings.c:498
 #, fuzzy
 msgid "Send to Custom Command 9"
 msgstr "맞춤 명령 1로 보냄"
 
-#: ../src/keybindings.c:505
+#: ../src/keybindings.c:506
 #, fuzzy
 msgid "Join lines"
 msgstr "줄(들) 주석"
 
-#: ../src/keybindings.c:510
+#: ../src/keybindings.c:511
 msgid "Insert date"
 msgstr "날짜 삽입"
 
-#: ../src/keybindings.c:516
+#: ../src/keybindings.c:517
 msgid "Insert New Line Before Current"
 msgstr ""
 
-#: ../src/keybindings.c:518
+#: ../src/keybindings.c:519
 msgid "Insert New Line After Current"
 msgstr ""
 
-#: ../src/keybindings.c:531 ../src/search.c:465
+#: ../src/keybindings.c:532 ../src/search.c:467
 msgid "Find"
 msgstr "찾기"
 
-#: ../src/keybindings.c:533
+#: ../src/keybindings.c:534
 msgid "Find Next"
 msgstr "다음 찾기"
 
-#: ../src/keybindings.c:535
+#: ../src/keybindings.c:536
 msgid "Find Previous"
 msgstr "이전 찾기"
 
-#: ../src/keybindings.c:542 ../src/search.c:618
+#: ../src/keybindings.c:543 ../src/search.c:620
 msgid "Replace"
 msgstr "바꾸기"
 
-#: ../src/keybindings.c:544 ../src/search.c:868
+#: ../src/keybindings.c:545 ../src/search.c:870
 msgid "Find in Files"
 msgstr "파일 안에서 찾기"
 
-#: ../src/keybindings.c:547
+#: ../src/keybindings.c:548
 msgid "Next Message"
 msgstr "다음 메시지"
 
-#: ../src/keybindings.c:549
+#: ../src/keybindings.c:550
 msgid "Previous Message"
 msgstr "이전 메시지"
 
-#: ../src/keybindings.c:552
+#: ../src/keybindings.c:553
 msgid "Find Usage"
 msgstr "사용법 찾기"
 
-#: ../src/keybindings.c:555
+#: ../src/keybindings.c:556
 msgid "Find Document Usage"
 msgstr "문서 사용법 찾기"
 
-#: ../src/keybindings.c:562 ../src/toolbar.c:69
+#: ../src/keybindings.c:563 ../src/toolbar.c:69
 msgid "Navigate back a location"
 msgstr "뒤로"
 
-#: ../src/keybindings.c:564 ../src/toolbar.c:70
+#: ../src/keybindings.c:565 ../src/toolbar.c:70
 msgid "Navigate forward a location"
 msgstr "앞으로"
 
-#: ../src/keybindings.c:569
+#: ../src/keybindings.c:570
 msgid "Go to matching brace"
 msgstr "일치하는 괄호로 이동"
 
-#: ../src/keybindings.c:572
+#: ../src/keybindings.c:573
 msgid "Toggle marker"
 msgstr "표지 보기 전환"
 
-#: ../src/keybindings.c:581
+#: ../src/keybindings.c:582
 #, fuzzy
 msgid "Go to Symbol Definition"
 msgstr "태그 정의로 이동"
 
-#: ../src/keybindings.c:584
+#: ../src/keybindings.c:585
 #, fuzzy
 msgid "Go to Symbol Declaration"
 msgstr "태그 선언으로 이동"
 
-#: ../src/keybindings.c:586
+#: ../src/keybindings.c:587
 msgid "Go to Start of Line"
 msgstr "줄 처음으로 이동"
 
-#: ../src/keybindings.c:588
+#: ../src/keybindings.c:589
 msgid "Go to End of Line"
 msgstr "줄 끝으로 이동"
 
-#: ../src/keybindings.c:590
+#: ../src/keybindings.c:591
 msgid "Go to Start of Display Line"
 msgstr "화면 줄 시작으로 이동"
 
-#: ../src/keybindings.c:592
+#: ../src/keybindings.c:593
 msgid "Go to End of Display Line"
 msgstr "화면 줄 끝으로 이동"
 
-#: ../src/keybindings.c:594
+#: ../src/keybindings.c:595
 msgid "Go to Previous Word Part"
 msgstr "이전 단어부분으로 이동"
 
-#: ../src/keybindings.c:596
+#: ../src/keybindings.c:597
 msgid "Go to Next Word Part"
 msgstr "다음 단어부분으로 이동"
 
-#: ../src/keybindings.c:601
+#: ../src/keybindings.c:602
 msgid "Toggle All Additional Widgets"
 msgstr "모든 부가적인 위젯 보기 전환"
 
-#: ../src/keybindings.c:604
+#: ../src/keybindings.c:605
 msgid "Fullscreen"
 msgstr "전체 화면"
 
-#: ../src/keybindings.c:606
+#: ../src/keybindings.c:607
 msgid "Toggle Messages Window"
 msgstr "메시지창 보기 전환"
 
-#: ../src/keybindings.c:609
+#: ../src/keybindings.c:610
 msgid "Toggle Sidebar"
 msgstr "가장자리창 보기 전환"
 
-#: ../src/keybindings.c:611
+#: ../src/keybindings.c:612
 msgid "Zoom In"
 msgstr "확대"
 
-#: ../src/keybindings.c:613
+#: ../src/keybindings.c:614
 msgid "Zoom Out"
 msgstr "축소"
 
-#: ../src/keybindings.c:615
+#: ../src/keybindings.c:616
 msgid "Zoom Reset"
 msgstr "원래대로"
 
-#: ../src/keybindings.c:620
+#: ../src/keybindings.c:621
 msgid "Switch to Editor"
 msgstr "편집창으로 포커스 전환"
 
-#: ../src/keybindings.c:622
+#: ../src/keybindings.c:623
 msgid "Switch to Search Bar"
 msgstr "찾기 막대로 포커스 전환"
 
-#: ../src/keybindings.c:624
+#: ../src/keybindings.c:625
 #, fuzzy
 msgid "Switch to Message Window"
 msgstr "메시지창 보기(_W)"
 
-#: ../src/keybindings.c:626
+#: ../src/keybindings.c:627
 msgid "Switch to Compiler"
 msgstr "컴파일러창으로 포커스 전환"
 
-#: ../src/keybindings.c:628
+#: ../src/keybindings.c:629
 #, fuzzy
 msgid "Switch to Messages"
 msgstr "가장자리창으로 포커스 전환"
 
-#: ../src/keybindings.c:630
+#: ../src/keybindings.c:631
 msgid "Switch to Scribble"
 msgstr "낙서창으로 포커스 전환"
 
-#: ../src/keybindings.c:632
+#: ../src/keybindings.c:633
 msgid "Switch to VTE"
 msgstr "VTE로 포커스 전환"
 
-#: ../src/keybindings.c:634
+#: ../src/keybindings.c:635
 msgid "Switch to Sidebar"
 msgstr "가장자리창으로 포커스 전환"
 
-#: ../src/keybindings.c:636
+#: ../src/keybindings.c:637
 #, fuzzy
 msgid "Switch to Sidebar Symbol List"
 msgstr "가장자리창으로 포커스 전환"
 
-#: ../src/keybindings.c:638
+#: ../src/keybindings.c:639
 #, fuzzy
 msgid "Switch to Sidebar Document List"
 msgstr "왼쪽 문서로 포커스 전환"
 
-#: ../src/keybindings.c:643
+#: ../src/keybindings.c:644
 msgid "Switch to left document"
 msgstr "왼쪽 문서로 포커스 전환"
 
-#: ../src/keybindings.c:645
+#: ../src/keybindings.c:646
 msgid "Switch to right document"
 msgstr "오른쪽 문서로 포커스 전환"
 
-#: ../src/keybindings.c:647
+#: ../src/keybindings.c:648
 msgid "Switch to last used document"
 msgstr "최근에 사용한 문서로 포커스 전환"
 
-#: ../src/keybindings.c:650
+#: ../src/keybindings.c:651
 msgid "Move document left"
 msgstr "문서를 왼쪽으로 이동"
 
-#: ../src/keybindings.c:653
+#: ../src/keybindings.c:654
 msgid "Move document right"
 msgstr "문서를 오른쪽으로 이동"
 
-#: ../src/keybindings.c:655
+#: ../src/keybindings.c:656
 msgid "Move document first"
 msgstr "문서를 처음으로 이동"
 
-#: ../src/keybindings.c:657
+#: ../src/keybindings.c:658
 msgid "Move document last"
 msgstr "문서를 끝으로 이동"
 
-#: ../src/keybindings.c:662
+#: ../src/keybindings.c:663
 msgid "Toggle Line wrapping"
 msgstr "자동 줄바꿈 전환"
 
-#: ../src/keybindings.c:664
+#: ../src/keybindings.c:665
 msgid "Toggle Line breaking"
 msgstr "자동 행분리 전환"
 
-#: ../src/keybindings.c:672
+#: ../src/keybindings.c:673
 msgid "Replace spaces with tabs"
 msgstr "스페이스를 탭으로 바꿈"
 
-#: ../src/keybindings.c:674
+#: ../src/keybindings.c:675
 msgid "Toggle current fold"
 msgstr "현재 접기 전환"
 
-#: ../src/keybindings.c:676
+#: ../src/keybindings.c:677
 msgid "Fold all"
 msgstr "모두 접기"
 
-#: ../src/keybindings.c:678
+#: ../src/keybindings.c:679
 msgid "Unfold all"
 msgstr "모두 펼치기"
 
-#: ../src/keybindings.c:680
+#: ../src/keybindings.c:681
 msgid "Reload symbol list"
 msgstr "심볼 목록 다시 불러오기"
 
-#: ../src/keybindings.c:682
+#: ../src/keybindings.c:683
 msgid "Remove Markers"
 msgstr "표시 지우기"
 
-#: ../src/keybindings.c:684
+#: ../src/keybindings.c:685
 msgid "Remove Error Indicators"
 msgstr "오류 지표 지우기"
 
-#: ../src/keybindings.c:686
+#: ../src/keybindings.c:687
 msgid "Remove Markers and Error Indicators"
 msgstr "표시와 오류 지표 지우기"
 
-#: ../src/keybindings.c:691 ../src/toolbar.c:71
+#: ../src/keybindings.c:692 ../src/toolbar.c:71
 msgid "Compile"
 msgstr "컴파일"
 
-#: ../src/keybindings.c:695
+#: ../src/keybindings.c:696
 msgid "Make all"
 msgstr "Make all"
 
-#: ../src/keybindings.c:698
+#: ../src/keybindings.c:699
 msgid "Make custom target"
 msgstr "Make 맞춤타겟"
 
-#: ../src/keybindings.c:700
+#: ../src/keybindings.c:701
 msgid "Make object"
 msgstr "Make 오브젝트"
 
-#: ../src/keybindings.c:702
+#: ../src/keybindings.c:703
 msgid "Next error"
 msgstr "다음 오류"
 
-#: ../src/keybindings.c:704
+#: ../src/keybindings.c:705
 msgid "Previous error"
 msgstr "이전 오류"
 
-#: ../src/keybindings.c:706
+#: ../src/keybindings.c:707
 msgid "Run"
 msgstr "실행"
 
-#: ../src/keybindings.c:708
+#: ../src/keybindings.c:709
 msgid "Build options"
 msgstr "제작 옵션"
 
-#: ../src/keybindings.c:713
+#: ../src/keybindings.c:714
 msgid "Show Color Chooser"
 msgstr "색상 선택기 보기"
 
-#: ../src/keybindings.c:996
+#: ../src/keybindings.c:997
 msgid "Keyboard Shortcuts"
 msgstr "바로 가기"
 
-#: ../src/keybindings.c:1008
+#: ../src/keybindings.c:1009
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "다음 바로 가기는 변경 가능:"
 
-#: ../src/keyfile.c:1047
+#: ../src/keyfile.c:1050
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "메모 및 낙서로 사용할 문자열을 입력하십시오."
 
-#: ../src/keyfile.c:1274
+#: ../src/keyfile.c:1277
 msgid "Failed to load one or more session files."
 msgstr "하나 또는 그 이상의 세션 파일 불러오기 실패함."
 
@@ -3929,25 +3929,25 @@ msgstr ""
 "환경설정 폴더없이 지니를 실행하면 문제가 생길 수 있습니다.\n"
 "무시하고 지니를 시작할까요?"
 
-#: ../src/libmain.c:1174
+#: ../src/libmain.c:1175
 #, c-format
 msgid "This is Geany %s."
 msgstr "지니 %s 입니다."
 
-#: ../src/libmain.c:1177
+#: ../src/libmain.c:1178
 #, c-format
 msgid "Configuration directory could not be created (%s)."
 msgstr "환경설정 폴더를 만들 수 없습니다 (%s)."
 
-#: ../src/libmain.c:1184
+#: ../src/libmain.c:1185
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1413
+#: ../src/libmain.c:1414
 msgid "Do you really want to quit?"
 msgstr "정말로 끝낼까요?"
 
-#: ../src/libmain.c:1451
+#: ../src/libmain.c:1452
 msgid "Configuration files reloaded."
 msgstr "환경설정 파일 다시 불러옴."
 
@@ -4066,11 +4066,11 @@ msgstr "키 가로채기"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "\"%s\"에 할당하고싶은 키 조합을 누르십시오."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2586 ../src/sidebar.c:751
+#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:751
 msgid "_Expand All"
 msgstr "모두 펼치기(_E)"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2591 ../src/sidebar.c:757
+#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:757
 msgid "_Collapse All"
 msgstr "모두 접기(_C)"
 
@@ -4236,11 +4236,11 @@ msgstr ""
 msgid "Base path:"
 msgstr "기반 경로:"
 
-#: ../src/project.c:211 ../src/project.c:485
+#: ../src/project.c:211 ../src/project.c:487
 msgid "Choose Project Base Path"
 msgstr "프로젝트 기반 경로 선택"
 
-#: ../src/project.c:250 ../src/project.c:622 ../src/project.c:1155
+#: ../src/project.c:250 ../src/project.c:624 ../src/project.c:1164
 msgid "Project file could not be written"
 msgstr "프로젝트 파일을 쓸 수 없습니다"
 
@@ -4249,94 +4249,94 @@ msgstr "프로젝트 파일을 쓸 수 없습니다"
 msgid "Project \"%s\" created."
 msgstr "\"%s\" 프로젝트 만듬."
 
-#: ../src/project.c:294 ../src/project.c:321 ../src/project.c:1022
+#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1025
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "\"%s\" 프로젝트 파일을 불러올 수 없습니다."
 
-#: ../src/project.c:315 ../src/project.c:333
+#: ../src/project.c:317 ../src/project.c:335
 msgid "Open Project"
 msgstr "프로젝트 열기"
 
-#: ../src/project.c:353
+#: ../src/project.c:355
 msgid "Project files"
 msgstr "프로젝트 파일"
 
-#: ../src/project.c:415
+#: ../src/project.c:417
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "\"%s\" 프로젝트 닫음."
 
-#: ../src/project.c:625
+#: ../src/project.c:627
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "\"%s\" 프로젝트 저장함."
 
-#: ../src/project.c:658
+#: ../src/project.c:660
 msgid "Do you want to close it before proceeding?"
 msgstr "계속하기 전에 닫을까요?"
 
-#: ../src/project.c:659
+#: ../src/project.c:661
 #, c-format
 msgid "The '%s' project is open."
 msgstr "'%s' 프로젝트를 열고 있습니다."
 
-#: ../src/project.c:708
+#: ../src/project.c:710
 msgid "The specified project name is too short."
 msgstr "지정된 프로젝트명이 너무 짧습니다."
 
-#: ../src/project.c:714
+#: ../src/project.c:716
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "지정된 프로젝트명이 너무 깁니다. (최대 글자수: %d)"
 
-#: ../src/project.c:726
+#: ../src/project.c:728
 msgid "You have specified an invalid project filename."
 msgstr "올바르지 않은 프로젝트 파일 이름을 지정했습니다."
 
-#: ../src/project.c:749
+#: ../src/project.c:751
 msgid "Create the project's base path directory?"
 msgstr "프로젝트 기반 경로 폴더를 만들까요?"
 
-#: ../src/project.c:750
+#: ../src/project.c:752
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "\"%s\" 경로는 존재하지 않습니다."
 
-#: ../src/project.c:759
+#: ../src/project.c:761
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "프로젝트 기반 폴더를 만들 수 없습니다 (%s)."
 
-#: ../src/project.c:772
+#: ../src/project.c:774
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "프로젝트 파일을 쓸 수 업습니다 (%s)."
 
-#: ../src/project.c:778 ../src/search.c:628
+#: ../src/project.c:780 ../src/search.c:630
 msgid "_Replace"
 msgstr "바꾸기(_R)"
 
-#: ../src/project.c:780 ../plugins/export.c:330
+#: ../src/project.c:782 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "기존의 '%s'파일이 있습니다. 바꾸시겠습니까?"
 
 #. initialise the dialog
-#: ../src/project.c:926 ../src/project.c:937
+#: ../src/project.c:928 ../src/project.c:939
 msgid "Choose Project Filename"
 msgstr "프로젝트 파일 이름 선택"
 
-#: ../src/project.c:1012
+#: ../src/project.c:1015
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "\"%s\" 프로젝트 열음."
 
-#: ../src/search.c:309 ../src/search.c:961
+#: ../src/search.c:311 ../src/search.c:963
 msgid "_Use regular expressions"
 msgstr "정규 표현식 사용(_U)"
 
-#: ../src/search.c:312
+#: ../src/search.c:314
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
@@ -4345,11 +4345,11 @@ msgstr ""
 "POSIX 호환 정규 표현식을 사용합니다. 정규표현식 사용에 관한 자세한 정보는 도"
 "움말 문서를 읽어보십시오."
 
-#: ../src/search.c:317
+#: ../src/search.c:319
 msgid "Use _escape sequences"
 msgstr "예외처리문자 사용(_e)"
 
-#: ../src/search.c:321
+#: ../src/search.c:323
 #, fuzzy
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
@@ -4358,11 +4358,11 @@ msgstr ""
 "\\\\, \\uXXXX(유니코드 문자), \\t, \\n, \\r 등을 상응하는 제어문자로 바꿉니"
 "다."
 
-#: ../src/search.c:324
+#: ../src/search.c:326
 msgid "Use multi-line matchin_g"
 msgstr ""
 
-#: ../src/search.c:329
+#: ../src/search.c:331
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4370,199 +4370,199 @@ msgid ""
 "the pattern."
 msgstr ""
 
-#: ../src/search.c:342
+#: ../src/search.c:344
 msgid "Search _backwards"
 msgstr "뒤로 찾기(_b)"
 
-#: ../src/search.c:348 ../src/search.c:970
+#: ../src/search.c:350 ../src/search.c:972
 msgid "C_ase sensitive"
 msgstr "대소문자 구분(_a)"
 
-#: ../src/search.c:352 ../src/search.c:975
+#: ../src/search.c:354 ../src/search.c:977
 msgid "Match only a _whole word"
 msgstr "단어 전체 일치(_w)"
 
-#: ../src/search.c:356
+#: ../src/search.c:358
 msgid "Match from s_tart of word"
 msgstr "단어 시작부분 일치(_t)"
 
-#: ../src/search.c:472
+#: ../src/search.c:474
 msgid "_Previous"
 msgstr "이전(_P)"
 
-#: ../src/search.c:477
+#: ../src/search.c:479
 msgid "_Next"
 msgstr "다음(_N)"
 
-#: ../src/search.c:481 ../src/search.c:639 ../src/search.c:878
+#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
 msgid "_Search for:"
 msgstr "찾기(_S):"
 
 #. Now add the multiple match options
-#: ../src/search.c:509
+#: ../src/search.c:511
 msgid "_Find All"
 msgstr "모두 찾기(_F)"
 
-#: ../src/search.c:516
+#: ../src/search.c:518
 msgid "_Mark"
 msgstr "표시(_M)"
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 msgid "Mark all matches in the current document"
 msgstr "현재 문서의 모든 일치하는 부분 표시."
 
-#: ../src/search.c:523 ../src/search.c:698
+#: ../src/search.c:525 ../src/search.c:700
 msgid "In Sessi_on"
 msgstr "세션(_o)"
 
-#: ../src/search.c:528 ../src/search.c:703
+#: ../src/search.c:530 ../src/search.c:705
 msgid "_In Document"
 msgstr "문서(_I)"
 
 #. close window checkbox
-#: ../src/search.c:534 ../src/search.c:716
+#: ../src/search.c:536 ../src/search.c:718
 msgid "Close _dialog"
 msgstr "대화상자 닫기(_d)"
 
-#: ../src/search.c:538 ../src/search.c:720
+#: ../src/search.c:540 ../src/search.c:722
 msgid "Disable this option to keep the dialog open"
 msgstr "열린 대화상자를 유지하기 원하면 이 옵션을 비활성화."
 
-#: ../src/search.c:633
+#: ../src/search.c:635
 msgid "Replace & Fi_nd"
 msgstr "바꾸고 찾기(_n)"
 
-#: ../src/search.c:642
+#: ../src/search.c:644
 msgid "Replace wit_h:"
 msgstr "바꿀 문자열(_h):"
 
 #. Now add the multiple replace options
-#: ../src/search.c:691
+#: ../src/search.c:693
 msgid "Re_place All"
 msgstr "모두 바꾸기(_p)"
 
-#: ../src/search.c:708
+#: ../src/search.c:710
 msgid "In Se_lection"
 msgstr "선택(_l)"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "Replace all matches found in the currently selected text"
 msgstr "선택한 부분에서 일치하는 것 모두 바꾸기"
 
-#: ../src/search.c:827
+#: ../src/search.c:829
 msgid "all"
 msgstr ""
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 msgid "project"
 msgstr "프로젝트"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "custom"
 msgstr "사용자화"
 
-#: ../src/search.c:835
+#: ../src/search.c:837
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:897
+#: ../src/search.c:899
 msgid "Fi_les:"
 msgstr "파일(_l)"
 
-#: ../src/search.c:909
+#: ../src/search.c:911
 msgid "File patterns, e.g. *.c *.h"
 msgstr "파일 패턴, 예) *.c *.h"
 
-#: ../src/search.c:921
+#: ../src/search.c:923
 msgid "_Directory:"
 msgstr "폴더(_D):"
 
-#: ../src/search.c:940
+#: ../src/search.c:942
 msgid "E_ncoding:"
 msgstr "인코딩:(_n)"
 
-#: ../src/search.c:964
+#: ../src/search.c:966
 msgid "See grep's manual page for more information"
 msgstr "자세한 정보는 grep 매뉴얼 참고."
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "_Recurse in subfolders"
 msgstr "하위 폴더 포함(_R)"
 
-#: ../src/search.c:979
+#: ../src/search.c:981
 msgid "_Invert search results"
 msgstr "찾기 결과 반전(_I)"
 
-#: ../src/search.c:983
+#: ../src/search.c:985
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "일치하는 부분 반전."
 
-#: ../src/search.c:1000
+#: ../src/search.c:1002
 msgid "E_xtra options:"
 msgstr "추가 옵션(_x):"
 
-#: ../src/search.c:1008
+#: ../src/search.c:1010
 msgid "Other options to pass to Grep"
 msgstr "grep에 사용할 추가 옵션"
 
-#: ../src/search.c:1370 ../src/search.c:2228 ../src/search.c:2231
+#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "%d번의 \"%s\" 일치 찾음."
 
-#: ../src/search.c:1426
+#: ../src/search.c:1433
 #, fuzzy, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "현재 문서의 모든 일치하는 부분 표시."
 
-#: ../src/search.c:1615
+#: ../src/search.c:1622
 msgid "Invalid directory for find in files."
 msgstr "올바르지 않은 폴더."
 
-#: ../src/search.c:1632
+#: ../src/search.c:1639
 msgid "No text to find."
 msgstr "문자열 찾을 수 없음."
 
-#: ../src/search.c:1708
+#: ../src/search.c:1715
 msgid "Searching..."
 msgstr "찾는 중"
 
-#: ../src/search.c:1710
+#: ../src/search.c:1717
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (폴더: %s)"
 
-#: ../src/search.c:1718
+#: ../src/search.c:1725
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 "grep 도구 \"%s\" : %s 실행 실패; 기본 설정에서 경로설정을 점검하십시오."
 
-#: ../src/search.c:1758
+#: ../src/search.c:1765
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "%s 폴더를 열 수 없습니다."
 
-#: ../src/search.c:1848
+#: ../src/search.c:1855
 msgid "Search failed."
 msgstr "찾기 실패함."
 
-#: ../src/search.c:1872
+#: ../src/search.c:1879
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] ""
 
-#: ../src/search.c:1880
+#: ../src/search.c:1887
 msgid "No matches found."
 msgstr "일치 없음."
 
-#: ../src/search.c:1910
+#: ../src/search.c:1917
 #, c-format
 msgid "Bad regex: %s"
 msgstr "올바르지 않은 정규 표현식: %s"
@@ -4968,33 +4968,41 @@ msgstr "태그파일 %s 불러옴 '%s'."
 msgid "Could not load tags file '%s'."
 msgstr "'%s' 태그파일 불러오기 실패."
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1970
+#: ../src/symbols.c:1984
+#, fuzzy, c-format
+msgid "<b>%s: %lu  (%s)</b>"
+msgstr "<b>표시</b>"
+
+#: ../src/symbols.c:1986
 #, fuzzy, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>표시</b>"
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1973
+#: ../src/symbols.c:1991
+#, c-format
+msgid "%s: %lu  (%s)"
+msgstr ""
+
+#: ../src/symbols.c:1993
 #, c-format
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2183
+#: ../src/symbols.c:2298
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "\"%s\" 선언을 찾을 수 없습니다."
 
-#: ../src/symbols.c:2185
+#: ../src/symbols.c:2300
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "\"%s\" 정의를 찾을 수 없습니다."
 
-#: ../src/symbols.c:2601
+#: ../src/symbols.c:2716
 msgid "Sort by _Name"
 msgstr "이름순으로 정렬(_N)"
 
-#: ../src/symbols.c:2608
+#: ../src/symbols.c:2723
 msgid "Sort by _Appearance"
 msgstr "형태순으로 정렬(_A)"
 
@@ -5389,27 +5397,27 @@ msgstr "날짜형식 변환 실패: 너무 김."
 msgid "_Set Custom Date Format"
 msgstr "맞춤 날짜 형식 설정(_S)"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 msgid "Select Folder"
 msgstr "폴더 선택"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 msgid "Select File"
 msgstr "파일 선택"
 
-#: ../src/ui_utils.c:2185
+#: ../src/ui_utils.c:2187
 msgid "_Filetype Configuration"
 msgstr "파일형식 설정(_F)"
 
-#: ../src/ui_utils.c:2222
+#: ../src/ui_utils.c:2224
 msgid "Save All"
 msgstr "모두 저장"
 
-#: ../src/ui_utils.c:2223
+#: ../src/ui_utils.c:2225
 msgid "Close All"
 msgstr "모두 닫기"
 
-#: ../src/ui_utils.c:2455
+#: ../src/ui_utils.c:2457
 msgid "Geany cannot start!"
 msgstr ""
 
@@ -5447,27 +5455,31 @@ msgstr ""
 msgid "LF"
 msgstr ""
 
-#: ../src/vte.c:585
+#: ../src/vte.c:666
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr ""
 
-#: ../src/vte.c:766
+#: ../src/vte.c:860
 msgid "_Set Path From Document"
 msgstr "문서로부터 경로 설정(_S)"
 
-#: ../src/vte.c:771
+#: ../src/vte.c:865
 msgid "_Restart Terminal"
 msgstr "터미널 다시 시작(_R)"
 
-#: ../src/vte.c:804
+#: ../src/vte.c:898
 msgid "_Input Methods"
 msgstr "입력기(_I)"
 
-#: ../src/vte.c:896
+#: ../src/vte.c:991
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
+msgstr ""
+
+#: ../src/vte.c:998
+msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 
 #: ../src/win32.c:210
