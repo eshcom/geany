@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 11:56+0200\n"
+"POT-Creation-Date: 2020-10-04 11:05+0300\n"
 "PO-Revision-Date: 2011-11-09 01:15+0530\n"
 "Last-Translator: Цэцэнцэнгэл <tsetsee.yugi@gmail.com>\n"
 "Language-Team: Монгол <tsetsee.yugi@gmail.com>\n"
@@ -105,7 +105,7 @@ msgstr "үл үзэгдэх"
 msgid "_Insert \"include <...>\""
 msgstr "\"include <...>\"-ийг _оруулах"
 
-#: ../data/geany.glade.h:16 ../src/keybindings.c:513
+#: ../data/geany.glade.h:16 ../src/keybindings.c:514
 msgid "Insert Alternative _White Space"
 msgstr ""
 
@@ -117,12 +117,12 @@ msgstr "_Хайх"
 msgid "Open Selected F_ile"
 msgstr "Сонгосон Ф_айлыг нээх"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2618
+#: ../data/geany.glade.h:19 ../src/symbols.c:2733
 #, fuzzy
 msgid "Find _Usage"
 msgstr "Хэрэглээг хай"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2623
+#: ../data/geany.glade.h:20 ../src/symbols.c:2738
 #, fuzzy
 msgid "Find _Document Usage"
 msgstr "Хэрэглээг хай"
@@ -177,7 +177,7 @@ msgstr "Дээш"
 msgid "Bottom"
 msgstr "Доош"
 
-#: ../data/geany.glade.h:31 ../src/keybindings.c:523
+#: ../data/geany.glade.h:31 ../src/keybindings.c:524
 msgid "Preferences"
 msgstr "Тохиргоо"
 
@@ -1167,7 +1167,7 @@ msgstr "<b>Хэсгүүдийн байршуулалт</b>"
 msgid "Display"
 msgstr "<b>Дэлгэц</b>"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:311 ../src/prefs.c:1608
+#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "Засварлагч"
 
@@ -1251,7 +1251,7 @@ msgstr "Strip trailing spaces"
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Мөрийн эцэс дэх зай, догол мөрийг устгах"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:670
+#: ../data/geany.glade.h:253 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "Догол мөрийг зайгаа орлуулах"
 
@@ -1333,7 +1333,7 @@ msgstr ""
 msgid "<b>Commands</b>"
 msgstr "<b>Фонт</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:323 ../src/prefs.c:1612
+#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "Багаж"
 
@@ -1659,7 +1659,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>Хандах эрх:</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:390
+#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
 #, fuzzy
 msgid "Terminal"
 msgstr "Терминал:"
@@ -1734,32 +1734,32 @@ msgstr "Бүх Файлыг Х_аа"
 msgid "Co_mmands"
 msgstr " командууд"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:436
+#: ../data/geany.glade.h:357 ../src/keybindings.c:437
 #, fuzzy
 msgid "Cu_t Current Line(s)"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:433
+#: ../data/geany.glade.h:358 ../src/keybindings.c:434
 #, fuzzy
 msgid "_Copy Current Line(s)"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:386
+#: ../data/geany.glade.h:359 ../src/keybindings.c:387
 #, fuzzy
 msgid "_Delete Current Line(s)"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:383
+#: ../data/geany.glade.h:360 ../src/keybindings.c:384
 #, fuzzy
 msgid "D_uplicate Line or Selection"
 msgstr "Дав_хардсан Мөр эсвэл Идэвхжилт"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:446
+#: ../data/geany.glade.h:361 ../src/keybindings.c:447
 #, fuzzy
 msgid "S_elect Current Line(s)"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:449
+#: ../data/geany.glade.h:362 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr ""
 
@@ -1773,16 +1773,16 @@ msgstr "_Тайлбарын мөр(үүд)"
 msgid "M_ove Line(s) Down"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:500
+#: ../data/geany.glade.h:365 ../src/keybindings.c:501
 #, fuzzy
 msgid "_Send Selection to Terminal"
 msgstr "Идэвхжсэнийг _жижиг үсэг болгох"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:502
+#: ../data/geany.glade.h:366 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr ""
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:460
+#: ../data/geany.glade.h:367 ../src/keybindings.c:461
 #, fuzzy
 msgid "T_oggle Case of Selection"
 msgstr "Дав_хардсан Мөр эсвэл Идэвхжилт"
@@ -1807,7 +1807,7 @@ msgstr "Догол мөрийг _Өсгөх"
 msgid "_Decrease Indent"
 msgstr "Догол мөрийг _Багасгах"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:479
+#: ../data/geany.glade.h:373 ../src/keybindings.c:480
 #, fuzzy
 msgid "S_mart Line Indent"
 msgstr "Мөрийн _төгсгөлийг заа"
@@ -1825,7 +1825,7 @@ msgstr "Тайлбар О_руулах"
 msgid "Preference_s"
 msgstr "Тохиргоо"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:526
+#: ../data/geany.glade.h:377 ../src/keybindings.c:527
 #, fuzzy
 msgid "P_lugin Preferences"
 msgstr "Тохиргоо"
@@ -1842,7 +1842,7 @@ msgstr "Ур_агшаа Хай"
 msgid "Find _Previous"
 msgstr "_Хойшоо Хай"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2628
+#: ../data/geany.glade.h:381 ../src/symbols.c:2743
 #, fuzzy
 msgid "Find in F_iles..."
 msgstr "Ф_айлуудаас Хай"
@@ -1861,11 +1861,11 @@ msgstr "Даргаагийн _Мэдээ"
 msgid "Pr_evious Message"
 msgstr "Даргаагийн _Мэдээ"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:575
+#: ../data/geany.glade.h:385 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr ""
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:578
+#: ../data/geany.glade.h:386 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr ""
 
@@ -1874,17 +1874,17 @@ msgstr ""
 msgid "_Go to Line..."
 msgstr "_Мөр-лүү Оч"
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:538
+#: ../data/geany.glade.h:388 ../src/keybindings.c:539
 #, fuzzy
 msgid "Find Next _Selection"
 msgstr "_Сонгосныг Хай"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:540
+#: ../data/geany.glade.h:389 ../src/keybindings.c:541
 #, fuzzy
 msgid "Find Pre_vious Selection"
 msgstr "_Урьд Сонгосныг Хай"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:557
+#: ../data/geany.glade.h:390 ../src/keybindings.c:558
 #, fuzzy
 msgid "_Mark All"
 msgstr "_Бүгдийг Үүсгэх"
@@ -2053,12 +2053,12 @@ msgstr "_LF (Юникс)-д Хувирга эсвэл Зааж өгөх"
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "CR (_Мак)-д Хувирга эсвэл Зааж өгөх"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:666
+#: ../data/geany.glade.h:429 ../src/keybindings.c:667
 #, fuzzy
 msgid "_Clone"
 msgstr "_Хаах"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:668
+#: ../data/geany.glade.h:430 ../src/keybindings.c:669
 #, fuzzy
 msgid "_Strip Trailing Spaces"
 msgstr "Strip trailing spaces"
@@ -2243,7 +2243,7 @@ msgid ""
 "project filename."
 msgstr ""
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:321
+#: ../data/geany.glade.h:471 ../src/keybindings.c:322
 #, fuzzy
 msgid "Project"
 msgstr "_Төсөл"
@@ -2615,7 +2615,7 @@ msgid_plural "%d files saved."
 msgstr[0] "%s файл хадгалагдлаа."
 msgstr[1] "%s файл хадгалагдлаа."
 
-#: ../src/callbacks.c:899 ../src/keybindings.c:566
+#: ../src/callbacks.c:899 ../src/keybindings.c:567
 msgid "Go to Line"
 msgstr "Мөрлүү оч"
 
@@ -2632,28 +2632,28 @@ msgstr "Энэ функцыг хэрэглэхийн өмнө файлынхаа
 msgid "No more message items."
 msgstr "Мэдээ дууссан."
 
-#: ../src/callbacks.c:1428
+#: ../src/callbacks.c:1443
 #, fuzzy, c-format
 msgid "Could not open file %s (File not found)"
 msgstr "%s файлыг нээж чадахгүй байна (%s)"
 
-#: ../src/callbacks.c:1477
+#: ../src/callbacks.c:1492
 msgid "Check the path setting in Filetype configuration."
 msgstr ""
 
-#: ../src/callbacks.c:1482
+#: ../src/callbacks.c:1497
 #, fuzzy
 msgid "Check the path setting in Preferences."
 msgstr ""
 "'%s'-ээс терминалыг олсонгүй (Тохиргоо цэснээс Терминалын замыг шалгана уу)"
 
 #. G_SHELL_ERROR is parsing error, it may be caused by %s word with quotes
-#: ../src/callbacks.c:1495
+#: ../src/callbacks.c:1510
 #, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr ""
 
-#: ../src/callbacks.c:1504
+#: ../src/callbacks.c:1519
 #, fuzzy
 msgid "No context action set."
 msgstr "Гүйцээлтийг байгуул"
@@ -2805,7 +2805,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2432 ../src/symbols.c:2448 ../src/ui_utils.c:288
+#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "үл танигдах"
 
@@ -3024,8 +3024,8 @@ msgstr "%s файл хадгалагдлаа."
 msgid "Wrap search and find again?"
 msgstr "Wrap search and find again?"
 
-#: ../src/document.c:2464 ../src/search.c:1367 ../src/search.c:1420
-#: ../src/search.c:2222 ../src/search.c:2223
+#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
+#: ../src/search.c:2229 ../src/search.c:2230
 #, fuzzy, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Олдсонгүй."
@@ -3042,16 +3042,16 @@ msgstr[1] "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgid "Do you want to reload it?"
 msgstr "'%s'-ийг дахин ачааллуулах уу?"
 
-#: ../src/editor.c:4461
+#: ../src/editor.c:4748
 #, fuzzy
 msgid "Enter Tab Width"
 msgstr "Хэсгийн өргөх:"
 
-#: ../src/editor.c:4462
+#: ../src/editor.c:4749
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr ""
 
-#: ../src/editor.c:4668
+#: ../src/editor.c:4955
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3279,7 +3279,7 @@ msgid "All Source"
 msgstr ""
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1210 ../src/project.c:349 ../src/win32.c:145
+#: ../src/filetypes.c:1210 ../src/project.c:351 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Бүх файл"
@@ -3318,640 +3318,640 @@ msgid "Color Schemes"
 msgstr "Өнгө Сонгогч"
 
 #. visual group order
-#: ../src/keybindings.c:310 ../src/symbols.c:492
+#: ../src/keybindings.c:311 ../src/symbols.c:492
 #, fuzzy
 msgid "File"
 msgstr "_Файл"
 
-#: ../src/keybindings.c:312
+#: ../src/keybindings.c:313
 msgid "Clipboard"
 msgstr ""
 
-#: ../src/keybindings.c:313
+#: ../src/keybindings.c:314
 #, fuzzy
 msgid "Select"
 msgstr "_Бүгдийг Сонгох"
 
-#: ../src/keybindings.c:314
+#: ../src/keybindings.c:315
 #, fuzzy
 msgid "Format"
 msgstr "_Хэлбэржилт"
 
-#: ../src/keybindings.c:315
+#: ../src/keybindings.c:316
 #, fuzzy
 msgid "Insert"
 msgstr "Огн_оо Оруулах"
 
-#: ../src/keybindings.c:316
+#: ../src/keybindings.c:317
 msgid "Settings"
 msgstr ""
 
-#: ../src/keybindings.c:317
+#: ../src/keybindings.c:318
 #, fuzzy
 msgid "Search"
 msgstr "_Хайх"
 
-#: ../src/keybindings.c:318
+#: ../src/keybindings.c:319
 #, fuzzy
 msgid "Go to"
 msgstr "Мөр-лүү оч"
 
-#: ../src/keybindings.c:319
+#: ../src/keybindings.c:320
 #, fuzzy
 msgid "View"
 msgstr "_Харагдац"
 
-#: ../src/keybindings.c:320 ../src/symbols.c:643
+#: ../src/keybindings.c:321 ../src/symbols.c:643
 #, fuzzy
 msgid "Document"
 msgstr "_Баримт"
 
-#: ../src/keybindings.c:322 ../src/keybindings.c:693 ../src/project.c:512
-#: ../src/ui_utils.c:2224
+#: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
+#: ../src/ui_utils.c:2226
 #, fuzzy
 msgid "Build"
 msgstr "_Боловсруул"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:718
+#: ../src/keybindings.c:325 ../src/keybindings.c:719
 #, fuzzy
 msgid "Help"
 msgstr "_Тусламж"
 
-#: ../src/keybindings.c:325
+#: ../src/keybindings.c:326
 msgid "Focus"
 msgstr ""
 
-#: ../src/keybindings.c:326
+#: ../src/keybindings.c:327
 msgid "Notebook tab"
 msgstr ""
 
-#: ../src/keybindings.c:335 ../src/keybindings.c:367
+#: ../src/keybindings.c:336 ../src/keybindings.c:368
 #, fuzzy
 msgid "New"
 msgstr "_Шинээр"
 
-#: ../src/keybindings.c:337 ../src/keybindings.c:369
+#: ../src/keybindings.c:338 ../src/keybindings.c:370
 #, fuzzy
 msgid "Open"
 msgstr "_Нээх"
 
-#: ../src/keybindings.c:340
+#: ../src/keybindings.c:341
 #, fuzzy
 msgid "Open selected file"
 msgstr "Сонгосон Ф_айлыг нээх"
 
-#: ../src/keybindings.c:342
+#: ../src/keybindings.c:343
 #, fuzzy
 msgid "Save"
 msgstr "Бүгдийг хадгал"
 
-#: ../src/keybindings.c:344 ../src/toolbar.c:58
+#: ../src/keybindings.c:345 ../src/toolbar.c:58
 #, fuzzy
 msgid "Save as"
 msgstr "Бүгдийг хадгал"
 
-#: ../src/keybindings.c:346
+#: ../src/keybindings.c:347
 msgid "Save all"
 msgstr "Бүгдийг хадгал"
 
-#: ../src/keybindings.c:349 ../src/symbols.c:728
+#: ../src/keybindings.c:350 ../src/symbols.c:728
 msgid "Properties"
 msgstr "Шинж чанар"
 
-#: ../src/keybindings.c:351
+#: ../src/keybindings.c:352
 msgid "Print"
 msgstr ""
 
-#: ../src/keybindings.c:353 ../src/keybindings.c:374
+#: ../src/keybindings.c:354 ../src/keybindings.c:375
 #, fuzzy
 msgid "Close"
 msgstr "_Хаах"
 
-#: ../src/keybindings.c:355
+#: ../src/keybindings.c:356
 #, fuzzy
 msgid "Close all"
 msgstr "Бүх Файлыг Х_аа"
 
-#: ../src/keybindings.c:358
+#: ../src/keybindings.c:359
 #, fuzzy
 msgid "Reload file"
 msgstr "_Дахин ачаал"
 
-#: ../src/keybindings.c:360
+#: ../src/keybindings.c:361
 msgid "Re-open last closed tab"
 msgstr ""
 
-#: ../src/keybindings.c:362
+#: ../src/keybindings.c:363
 msgid "Quit"
 msgstr ""
 
-#: ../src/keybindings.c:379
+#: ../src/keybindings.c:380
 msgid "Undo"
 msgstr ""
 
-#: ../src/keybindings.c:381
+#: ../src/keybindings.c:382
 msgid "Redo"
 msgstr ""
 
-#: ../src/keybindings.c:390
+#: ../src/keybindings.c:391
 msgid "Delete to line end"
 msgstr ""
 
-#: ../src/keybindings.c:393
+#: ../src/keybindings.c:394
 msgid "Delete to beginning of line"
 msgstr ""
 
-#: ../src/keybindings.c:396
+#: ../src/keybindings.c:397
 #, fuzzy
 msgid "_Transpose Current Line"
 msgstr "Файлыг хэвлэ"
 
-#: ../src/keybindings.c:398
+#: ../src/keybindings.c:399
 #, fuzzy
 msgid "Scroll to current line"
 msgstr "Файлыг хөрвүүл"
 
-#: ../src/keybindings.c:400
+#: ../src/keybindings.c:401
 msgid "Scroll up the view by one line"
 msgstr ""
 
-#: ../src/keybindings.c:402
+#: ../src/keybindings.c:403
 msgid "Scroll down the view by one line"
 msgstr ""
 
-#: ../src/keybindings.c:404
+#: ../src/keybindings.c:405
 #, fuzzy
 msgid "Complete snippet"
 msgstr "Файлыг хөрвүүл"
 
-#: ../src/keybindings.c:406
+#: ../src/keybindings.c:407
 msgid "Move cursor in snippet"
 msgstr ""
 
-#: ../src/keybindings.c:408
+#: ../src/keybindings.c:409
 msgid "Suppress snippet completion"
 msgstr ""
 
-#: ../src/keybindings.c:410
+#: ../src/keybindings.c:411
 msgid "Context Action"
 msgstr ""
 
-#: ../src/keybindings.c:412
+#: ../src/keybindings.c:413
 #, fuzzy
 msgid "Complete word"
 msgstr "Хөрвүүлэгч"
 
-#: ../src/keybindings.c:414
+#: ../src/keybindings.c:415
 msgid "Show calltip"
 msgstr ""
 
-#: ../src/keybindings.c:416
+#: ../src/keybindings.c:417
 #, fuzzy
 msgid "Word part completion"
 msgstr "Үгийн гүйцээлт"
 
-#: ../src/keybindings.c:419
+#: ../src/keybindings.c:420
 msgid "Move line(s) up"
 msgstr ""
 
-#: ../src/keybindings.c:422
+#: ../src/keybindings.c:423
 msgid "Move line(s) down"
 msgstr ""
 
-#: ../src/keybindings.c:427
+#: ../src/keybindings.c:428
 msgid "Cut"
 msgstr ""
 
-#: ../src/keybindings.c:429
+#: ../src/keybindings.c:430
 msgid "Copy"
 msgstr ""
 
-#: ../src/keybindings.c:431
+#: ../src/keybindings.c:432
 msgid "Paste"
 msgstr ""
 
-#: ../src/keybindings.c:442
+#: ../src/keybindings.c:443
 #, fuzzy
 msgid "Select All"
 msgstr "_Бүгдийг Сонгох"
 
-#: ../src/keybindings.c:444
+#: ../src/keybindings.c:445
 #, fuzzy
 msgid "Select current word"
 msgstr "Файлыг хадгал"
 
-#: ../src/keybindings.c:452
+#: ../src/keybindings.c:453
 msgid "Select to previous word part"
 msgstr ""
 
-#: ../src/keybindings.c:454
+#: ../src/keybindings.c:455
 msgid "Select to next word part"
 msgstr ""
 
-#: ../src/keybindings.c:462
+#: ../src/keybindings.c:463
 #, fuzzy
 msgid "Toggle line commentation"
 msgstr "_Идэвхжсэн Мөрийн Тайлбар"
 
-#: ../src/keybindings.c:465
+#: ../src/keybindings.c:466
 #, fuzzy
 msgid "Comment line(s)"
 msgstr "_Тайлбарын мөр(үүд)"
 
-#: ../src/keybindings.c:467
+#: ../src/keybindings.c:468
 #, fuzzy
 msgid "Uncomment line(s)"
 msgstr "Тайлбар _биш Мөр(үүд)"
 
-#: ../src/keybindings.c:469
+#: ../src/keybindings.c:470
 #, fuzzy
 msgid "Increase indent"
 msgstr "Догол мөрийг _Өсгөх"
 
-#: ../src/keybindings.c:472
+#: ../src/keybindings.c:473
 #, fuzzy
 msgid "Decrease indent"
 msgstr "Догол мөрийг _Багасгах"
 
-#: ../src/keybindings.c:475
+#: ../src/keybindings.c:476
 #, fuzzy
 msgid "Increase indent by one space"
 msgstr "Догол мөрийг _Өсгөх"
 
-#: ../src/keybindings.c:477
+#: ../src/keybindings.c:478
 #, fuzzy
 msgid "Decrease indent by one space"
 msgstr "Догол мөрийг _Багасгах"
 
-#: ../src/keybindings.c:481
+#: ../src/keybindings.c:482
 msgid "Send to Custom Command 1"
 msgstr ""
 
-#: ../src/keybindings.c:483
+#: ../src/keybindings.c:484
 msgid "Send to Custom Command 2"
 msgstr ""
 
-#: ../src/keybindings.c:485
+#: ../src/keybindings.c:486
 msgid "Send to Custom Command 3"
 msgstr ""
 
-#: ../src/keybindings.c:487
+#: ../src/keybindings.c:488
 msgid "Send to Custom Command 4"
 msgstr ""
 
-#: ../src/keybindings.c:489
+#: ../src/keybindings.c:490
 msgid "Send to Custom Command 5"
 msgstr ""
 
-#: ../src/keybindings.c:491
+#: ../src/keybindings.c:492
 msgid "Send to Custom Command 6"
 msgstr ""
 
-#: ../src/keybindings.c:493
+#: ../src/keybindings.c:494
 msgid "Send to Custom Command 7"
 msgstr ""
 
-#: ../src/keybindings.c:495
+#: ../src/keybindings.c:496
 msgid "Send to Custom Command 8"
 msgstr ""
 
-#: ../src/keybindings.c:497
+#: ../src/keybindings.c:498
 msgid "Send to Custom Command 9"
 msgstr ""
 
-#: ../src/keybindings.c:505
+#: ../src/keybindings.c:506
 #, fuzzy
 msgid "Join lines"
 msgstr "Мөр-лүү оч"
 
-#: ../src/keybindings.c:510
+#: ../src/keybindings.c:511
 #, fuzzy
 msgid "Insert date"
 msgstr "Огн_оо Оруулах"
 
-#: ../src/keybindings.c:516
+#: ../src/keybindings.c:517
 msgid "Insert New Line Before Current"
 msgstr ""
 
-#: ../src/keybindings.c:518
+#: ../src/keybindings.c:519
 msgid "Insert New Line After Current"
 msgstr ""
 
-#: ../src/keybindings.c:531 ../src/search.c:465
+#: ../src/keybindings.c:532 ../src/search.c:467
 msgid "Find"
 msgstr ""
 
-#: ../src/keybindings.c:533
+#: ../src/keybindings.c:534
 #, fuzzy
 msgid "Find Next"
 msgstr "Ур_агшаа Хай"
 
-#: ../src/keybindings.c:535
+#: ../src/keybindings.c:536
 #, fuzzy
 msgid "Find Previous"
 msgstr "_Хойшоо Хай"
 
-#: ../src/keybindings.c:542 ../src/search.c:618
+#: ../src/keybindings.c:543 ../src/search.c:620
 #, fuzzy
 msgid "Replace"
 msgstr "_Орлуулах"
 
-#: ../src/keybindings.c:544 ../src/search.c:868
+#: ../src/keybindings.c:545 ../src/search.c:870
 #, fuzzy
 msgid "Find in Files"
 msgstr "Ф_айлуудаас Хай"
 
-#: ../src/keybindings.c:547
+#: ../src/keybindings.c:548
 #, fuzzy
 msgid "Next Message"
 msgstr "Даргаагийн _Мэдээ"
 
-#: ../src/keybindings.c:549
+#: ../src/keybindings.c:550
 #, fuzzy
 msgid "Previous Message"
 msgstr "Даргаагийн _Мэдээ"
 
-#: ../src/keybindings.c:552
+#: ../src/keybindings.c:553
 msgid "Find Usage"
 msgstr "Хэрэглээг хай"
 
-#: ../src/keybindings.c:555
+#: ../src/keybindings.c:556
 #, fuzzy
 msgid "Find Document Usage"
 msgstr "Хэрэглээг хай"
 
-#: ../src/keybindings.c:562 ../src/toolbar.c:69
+#: ../src/keybindings.c:563 ../src/toolbar.c:69
 msgid "Navigate back a location"
 msgstr ""
 
-#: ../src/keybindings.c:564 ../src/toolbar.c:70
+#: ../src/keybindings.c:565 ../src/toolbar.c:70
 msgid "Navigate forward a location"
 msgstr ""
 
-#: ../src/keybindings.c:569
+#: ../src/keybindings.c:570
 #, fuzzy
 msgid "Go to matching brace"
 msgstr "Мөр-лүү оч"
 
-#: ../src/keybindings.c:572
+#: ../src/keybindings.c:573
 #, fuzzy
 msgid "Toggle marker"
 msgstr "Long line marker:"
 
-#: ../src/keybindings.c:581
+#: ../src/keybindings.c:582
 #, fuzzy
 msgid "Go to Symbol Definition"
 msgstr "Go to Tag Definition"
 
-#: ../src/keybindings.c:584
+#: ../src/keybindings.c:585
 #, fuzzy
 msgid "Go to Symbol Declaration"
 msgstr "Go to Tag Declaration"
 
-#: ../src/keybindings.c:586
+#: ../src/keybindings.c:587
 #, fuzzy
 msgid "Go to Start of Line"
 msgstr "Мөрлүү оч"
 
-#: ../src/keybindings.c:588
+#: ../src/keybindings.c:589
 #, fuzzy
 msgid "Go to End of Line"
 msgstr "Мөрлүү оч"
 
-#: ../src/keybindings.c:590
+#: ../src/keybindings.c:591
 #, fuzzy
 msgid "Go to Start of Display Line"
 msgstr "Мөрлүү оч"
 
-#: ../src/keybindings.c:592
+#: ../src/keybindings.c:593
 msgid "Go to End of Display Line"
 msgstr ""
 
-#: ../src/keybindings.c:594
+#: ../src/keybindings.c:595
 msgid "Go to Previous Word Part"
 msgstr ""
 
-#: ../src/keybindings.c:596
+#: ../src/keybindings.c:597
 msgid "Go to Next Word Part"
 msgstr ""
 
-#: ../src/keybindings.c:601
+#: ../src/keybindings.c:602
 msgid "Toggle All Additional Widgets"
 msgstr ""
 
-#: ../src/keybindings.c:604
+#: ../src/keybindings.c:605
 #, fuzzy
 msgid "Fullscreen"
 msgstr "Бүтэн _дэлгэц"
 
-#: ../src/keybindings.c:606
+#: ../src/keybindings.c:607
 #, fuzzy
 msgid "Toggle Messages Window"
 msgstr "Мэдээний _Цонхыг Харуул"
 
-#: ../src/keybindings.c:609
+#: ../src/keybindings.c:610
 #, fuzzy
 msgid "Toggle Sidebar"
 msgstr "Ха_жуу самбарыг Харуул"
 
-#: ../src/keybindings.c:611
+#: ../src/keybindings.c:612
 msgid "Zoom In"
 msgstr ""
 
-#: ../src/keybindings.c:613
+#: ../src/keybindings.c:614
 msgid "Zoom Out"
 msgstr ""
 
-#: ../src/keybindings.c:615
+#: ../src/keybindings.c:616
 #, fuzzy
 msgid "Zoom Reset"
 msgstr "Текст-рүү ойртох"
 
-#: ../src/keybindings.c:620
+#: ../src/keybindings.c:621
 msgid "Switch to Editor"
 msgstr ""
 
-#: ../src/keybindings.c:622
+#: ../src/keybindings.c:623
 msgid "Switch to Search Bar"
 msgstr ""
 
-#: ../src/keybindings.c:624
+#: ../src/keybindings.c:625
 #, fuzzy
 msgid "Switch to Message Window"
 msgstr "Мэдээний _Цонхыг Харуул"
 
-#: ../src/keybindings.c:626
+#: ../src/keybindings.c:627
 #, fuzzy
 msgid "Switch to Compiler"
 msgstr "Хөрвүүлэгч"
 
-#: ../src/keybindings.c:628
+#: ../src/keybindings.c:629
 #, fuzzy
 msgid "Switch to Messages"
 msgstr "Мэдээ"
 
-#: ../src/keybindings.c:630
+#: ../src/keybindings.c:631
 #, fuzzy
 msgid "Switch to Scribble"
 msgstr "Scribble"
 
-#: ../src/keybindings.c:632
+#: ../src/keybindings.c:633
 msgid "Switch to VTE"
 msgstr ""
 
-#: ../src/keybindings.c:634
+#: ../src/keybindings.c:635
 #, fuzzy
 msgid "Switch to Sidebar"
 msgstr "Ха_жуу самбарыг Харуул"
 
-#: ../src/keybindings.c:636
+#: ../src/keybindings.c:637
 msgid "Switch to Sidebar Symbol List"
 msgstr ""
 
-#: ../src/keybindings.c:638
+#: ../src/keybindings.c:639
 msgid "Switch to Sidebar Document List"
 msgstr ""
 
-#: ../src/keybindings.c:643
+#: ../src/keybindings.c:644
 #, fuzzy
 msgid "Switch to left document"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:645
+#: ../src/keybindings.c:646
 #, fuzzy
 msgid "Switch to right document"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:647
+#: ../src/keybindings.c:648
 #, fuzzy
 msgid "Switch to last used document"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:650
+#: ../src/keybindings.c:651
 #, fuzzy
 msgid "Move document left"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:653
+#: ../src/keybindings.c:654
 #, fuzzy
 msgid "Move document right"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:655
+#: ../src/keybindings.c:656
 #, fuzzy
 msgid "Move document first"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:657
+#: ../src/keybindings.c:658
 #, fuzzy
 msgid "Move document last"
 msgstr "бүх барим"
 
-#: ../src/keybindings.c:662
+#: ../src/keybindings.c:663
 #, fuzzy
 msgid "Toggle Line wrapping"
 msgstr "Line wrapping"
 
-#: ../src/keybindings.c:664
+#: ../src/keybindings.c:665
 #, fuzzy
 msgid "Toggle Line breaking"
 msgstr "_Идэвхжсэн Мөрийн Тайлбар"
 
-#: ../src/keybindings.c:672
+#: ../src/keybindings.c:673
 #, fuzzy
 msgid "Replace spaces with tabs"
 msgstr "Догол мөрийг Зайгаар _орлуулах"
 
-#: ../src/keybindings.c:674
+#: ../src/keybindings.c:675
 #, fuzzy
 msgid "Toggle current fold"
 msgstr "Файлыг хөрвүүл"
 
-#: ../src/keybindings.c:676
+#: ../src/keybindings.c:677
 #, fuzzy
 msgid "Fold all"
 msgstr "_Fold All"
 
-#: ../src/keybindings.c:678
+#: ../src/keybindings.c:679
 #, fuzzy
 msgid "Unfold all"
 msgstr "_Unfold All"
 
-#: ../src/keybindings.c:680
+#: ../src/keybindings.c:681
 #, fuzzy
 msgid "Reload symbol list"
 msgstr "Тэмдэгтийн жагсаалтыг харуул"
 
-#: ../src/keybindings.c:682
+#: ../src/keybindings.c:683
 msgid "Remove Markers"
 msgstr ""
 
-#: ../src/keybindings.c:684
+#: ../src/keybindings.c:685
 #, fuzzy
 msgid "Remove Error Indicators"
 msgstr "Алдаа _Заагчдыг Арилгах"
 
-#: ../src/keybindings.c:686
+#: ../src/keybindings.c:687
 #, fuzzy
 msgid "Remove Markers and Error Indicators"
 msgstr "Алдаа _Заагчдыг Арилгах"
 
-#: ../src/keybindings.c:691 ../src/toolbar.c:71
+#: ../src/keybindings.c:692 ../src/toolbar.c:71
 msgid "Compile"
 msgstr "Хөрвүүлэх"
 
-#: ../src/keybindings.c:695
+#: ../src/keybindings.c:696
 #, fuzzy
 msgid "Make all"
 msgstr "_Бүгдийг Үүсгэх"
 
-#: ../src/keybindings.c:698
+#: ../src/keybindings.c:699
 #, fuzzy
 msgid "Make custom target"
 msgstr "Аргументтэйгээр Үүсгэх"
 
-#: ../src/keybindings.c:700
+#: ../src/keybindings.c:701
 #, fuzzy
 msgid "Make object"
 msgstr "_Объектыг боловсруул"
 
-#: ../src/keybindings.c:702
+#: ../src/keybindings.c:703
 #, fuzzy
 msgid "Next error"
 msgstr "_Дараачийн Алдаа"
 
-#: ../src/keybindings.c:704
+#: ../src/keybindings.c:705
 msgid "Previous error"
 msgstr ""
 
-#: ../src/keybindings.c:706
+#: ../src/keybindings.c:707
 msgid "Run"
 msgstr ""
 
-#: ../src/keybindings.c:708
+#: ../src/keybindings.c:709
 msgid "Build options"
 msgstr ""
 
-#: ../src/keybindings.c:713
+#: ../src/keybindings.c:714
 #, fuzzy
 msgid "Show Color Chooser"
 msgstr "Өнгө Сонгогч"
 
-#: ../src/keybindings.c:996
+#: ../src/keybindings.c:997
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "_Товчлуурын Хослол"
 
-#: ../src/keybindings.c:1008
+#: ../src/keybindings.c:1009
 #, fuzzy
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Дараах хослолууд тодорхойлогдсон:"
 
-#: ../src/keyfile.c:1047
+#: ../src/keyfile.c:1050
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr ""
 
-#: ../src/keyfile.c:1274
+#: ../src/keyfile.c:1277
 msgid "Failed to load one or more session files."
 msgstr ""
 
@@ -4101,25 +4101,25 @@ msgid ""
 "Start Geany anyway?"
 msgstr ""
 
-#: ../src/libmain.c:1174
+#: ../src/libmain.c:1175
 #, c-format
 msgid "This is Geany %s."
 msgstr ""
 
-#: ../src/libmain.c:1177
+#: ../src/libmain.c:1178
 #, fuzzy, c-format
 msgid "Configuration directory could not be created (%s)."
 msgstr "Процесс зогсож чадахгүй байсан (%s)."
 
-#: ../src/libmain.c:1184
+#: ../src/libmain.c:1185
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1413
+#: ../src/libmain.c:1414
 msgid "Do you really want to quit?"
 msgstr "Гармаар байна уу?"
 
-#: ../src/libmain.c:1451
+#: ../src/libmain.c:1452
 #, fuzzy
 msgid "Configuration files reloaded."
 msgstr "Хөрвүүлэлтийн алдаа гарлаа."
@@ -4242,12 +4242,12 @@ msgstr ""
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 
-#: ../src/prefs.c:226 ../src/symbols.c:2586 ../src/sidebar.c:751
+#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:751
 #, fuzzy
 msgid "_Expand All"
 msgstr "_Unfold All"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2591 ../src/sidebar.c:757
+#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:757
 #, fuzzy
 msgid "_Collapse All"
 msgstr "Бүх Файлыг Х_аа"
@@ -4413,11 +4413,11 @@ msgstr ""
 msgid "Base path:"
 msgstr ""
 
-#: ../src/project.c:211 ../src/project.c:485
+#: ../src/project.c:211 ../src/project.c:487
 msgid "Choose Project Base Path"
 msgstr ""
 
-#: ../src/project.c:250 ../src/project.c:622 ../src/project.c:1155
+#: ../src/project.c:250 ../src/project.c:624 ../src/project.c:1164
 #, fuzzy
 msgid "Project file could not be written"
 msgstr "Процесс зогсож чадахгүй байсан (%s)."
@@ -4427,118 +4427,118 @@ msgstr "Процесс зогсож чадахгүй байсан (%s)."
 msgid "Project \"%s\" created."
 msgstr ""
 
-#: ../src/project.c:294 ../src/project.c:321 ../src/project.c:1022
+#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1025
 #, fuzzy, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Процесс зогсож чадахгүй байсан (%s)."
 
-#: ../src/project.c:315 ../src/project.c:333
+#: ../src/project.c:317 ../src/project.c:335
 #, fuzzy
 msgid "Open Project"
 msgstr "_Төсөл"
 
-#: ../src/project.c:353
+#: ../src/project.c:355
 #, fuzzy
 msgid "Project files"
 msgstr "_Төсөл"
 
-#: ../src/project.c:415
+#: ../src/project.c:417
 #, fuzzy, c-format
 msgid "Project \"%s\" closed."
 msgstr "%s файл хаагдлаа."
 
-#: ../src/project.c:625
+#: ../src/project.c:627
 #, fuzzy, c-format
 msgid "Project \"%s\" saved."
 msgstr "%s файл хадгалагдлаа."
 
-#: ../src/project.c:658
+#: ../src/project.c:660
 #, fuzzy
 msgid "Do you want to close it before proceeding?"
 msgstr "Хаахын өмнө хадгалах уу?"
 
-#: ../src/project.c:659
+#: ../src/project.c:661
 #, c-format
 msgid "The '%s' project is open."
 msgstr ""
 
-#: ../src/project.c:708
+#: ../src/project.c:710
 msgid "The specified project name is too short."
 msgstr ""
 
-#: ../src/project.c:714
+#: ../src/project.c:716
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr ""
 
-#: ../src/project.c:726
+#: ../src/project.c:728
 msgid "You have specified an invalid project filename."
 msgstr ""
 
-#: ../src/project.c:749
+#: ../src/project.c:751
 msgid "Create the project's base path directory?"
 msgstr ""
 
-#: ../src/project.c:750
+#: ../src/project.c:752
 #, fuzzy, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "\"%s\" файл %s-д зөв биш."
 
-#: ../src/project.c:759
+#: ../src/project.c:761
 #, fuzzy, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Процесс зогсож чадахгүй байсан (%s)."
 
-#: ../src/project.c:772
+#: ../src/project.c:774
 #, fuzzy, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Процесс зогсож чадахгүй байсан (%s)."
 
-#: ../src/project.c:778 ../src/search.c:628
+#: ../src/project.c:780 ../src/search.c:630
 msgid "_Replace"
 msgstr "_Орлуулах"
 
-#: ../src/project.c:780 ../plugins/export.c:330
+#: ../src/project.c:782 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "'%s' файл үүсчихсэн байна. Дарж бичих үү?"
 
 #. initialise the dialog
-#: ../src/project.c:926 ../src/project.c:937
+#: ../src/project.c:928 ../src/project.c:939
 msgid "Choose Project Filename"
 msgstr ""
 
-#: ../src/project.c:1012
+#: ../src/project.c:1015
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr ""
 
-#: ../src/search.c:309 ../src/search.c:961
+#: ../src/search.c:311 ../src/search.c:963
 msgid "_Use regular expressions"
 msgstr ""
 
-#: ../src/search.c:312
+#: ../src/search.c:314
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
 msgstr ""
 
-#: ../src/search.c:317
+#: ../src/search.c:319
 msgid "Use _escape sequences"
 msgstr ""
 
-#: ../src/search.c:321
+#: ../src/search.c:323
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
 msgstr ""
 
-#: ../src/search.c:324
+#: ../src/search.c:326
 #, fuzzy
 msgid "Use multi-line matchin_g"
 msgstr "Автомат догол мөрийг _хэрэглэ"
 
-#: ../src/search.c:329
+#: ../src/search.c:331
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4546,216 +4546,216 @@ msgid ""
 "the pattern."
 msgstr ""
 
-#: ../src/search.c:342
+#: ../src/search.c:344
 msgid "Search _backwards"
 msgstr ""
 
-#: ../src/search.c:348 ../src/search.c:970
+#: ../src/search.c:350 ../src/search.c:972
 msgid "C_ase sensitive"
 msgstr ""
 
-#: ../src/search.c:352 ../src/search.c:975
+#: ../src/search.c:354 ../src/search.c:977
 msgid "Match only a _whole word"
 msgstr ""
 
-#: ../src/search.c:356
+#: ../src/search.c:358
 msgid "Match from s_tart of word"
 msgstr ""
 
-#: ../src/search.c:472
+#: ../src/search.c:474
 #, fuzzy
 msgid "_Previous"
 msgstr "_Хойшоо Хай"
 
-#: ../src/search.c:477
+#: ../src/search.c:479
 #, fuzzy
 msgid "_Next"
 msgstr "Ур_агшаа Хай"
 
-#: ../src/search.c:481 ../src/search.c:639 ../src/search.c:878
+#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
 #, fuzzy
 msgid "_Search for:"
 msgstr "_Хайх"
 
 #. Now add the multiple match options
-#: ../src/search.c:509
+#: ../src/search.c:511
 #, fuzzy
 msgid "_Find All"
 msgstr "_Fold All"
 
-#: ../src/search.c:516
+#: ../src/search.c:518
 msgid "_Mark"
 msgstr ""
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 #, fuzzy
 msgid "Mark all matches in the current document"
 msgstr "Баримтын бүх алдаа заагчийг арилгах"
 
-#: ../src/search.c:523 ../src/search.c:698
+#: ../src/search.c:525 ../src/search.c:700
 msgid "In Sessi_on"
 msgstr ""
 
-#: ../src/search.c:528 ../src/search.c:703
+#: ../src/search.c:530 ../src/search.c:705
 #, fuzzy
 msgid "_In Document"
 msgstr "_Баримт"
 
 #. close window checkbox
-#: ../src/search.c:534 ../src/search.c:716
+#: ../src/search.c:536 ../src/search.c:718
 #, fuzzy
 msgid "Close _dialog"
 msgstr "Бүх Файлыг Х_аа"
 
-#: ../src/search.c:538 ../src/search.c:720
+#: ../src/search.c:540 ../src/search.c:722
 msgid "Disable this option to keep the dialog open"
 msgstr ""
 
-#: ../src/search.c:633
+#: ../src/search.c:635
 #, fuzzy
 msgid "Replace & Fi_nd"
 msgstr "_Орлуулах"
 
-#: ../src/search.c:642
+#: ../src/search.c:644
 #, fuzzy
 msgid "Replace wit_h:"
 msgstr "_Орлуулах"
 
 #. Now add the multiple replace options
-#: ../src/search.c:691
+#: ../src/search.c:693
 #, fuzzy
 msgid "Re_place All"
 msgstr "_Орлуулах"
 
-#: ../src/search.c:708
+#: ../src/search.c:710
 #, fuzzy
 msgid "In Se_lection"
 msgstr "сонголт"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "Replace all matches found in the currently selected text"
 msgstr ""
 
-#: ../src/search.c:827
+#: ../src/search.c:829
 msgid "all"
 msgstr ""
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 #, fuzzy
 msgid "project"
 msgstr "_Төсөл"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "custom"
 msgstr ""
 
-#: ../src/search.c:835
+#: ../src/search.c:837
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:897
+#: ../src/search.c:899
 msgid "Fi_les:"
 msgstr ""
 
-#: ../src/search.c:909
+#: ../src/search.c:911
 msgid "File patterns, e.g. *.c *.h"
 msgstr ""
 
-#: ../src/search.c:921
+#: ../src/search.c:923
 msgid "_Directory:"
 msgstr ""
 
-#: ../src/search.c:940
+#: ../src/search.c:942
 #, fuzzy
 msgid "E_ncoding:"
 msgstr "Энкодчиллыг заа:"
 
-#: ../src/search.c:964
+#: ../src/search.c:966
 msgid "See grep's manual page for more information"
 msgstr ""
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "_Recurse in subfolders"
 msgstr ""
 
-#: ../src/search.c:979
+#: ../src/search.c:981
 msgid "_Invert search results"
 msgstr ""
 
-#: ../src/search.c:983
+#: ../src/search.c:985
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 
-#: ../src/search.c:1000
+#: ../src/search.c:1002
 msgid "E_xtra options:"
 msgstr ""
 
-#: ../src/search.c:1008
+#: ../src/search.c:1010
 msgid "Other options to pass to Grep"
 msgstr ""
 
-#: ../src/search.c:1370 ../src/search.c:2228 ../src/search.c:2231
+#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:1426
+#: ../src/search.c:1433
 #, fuzzy, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Баримтын бүх догол мөрийг зайгаар орлуулах"
 
-#: ../src/search.c:1615
+#: ../src/search.c:1622
 msgid "Invalid directory for find in files."
 msgstr ""
 
-#: ../src/search.c:1632
+#: ../src/search.c:1639
 msgid "No text to find."
 msgstr ""
 
-#: ../src/search.c:1708
+#: ../src/search.c:1715
 #, fuzzy
 msgid "Searching..."
 msgstr "_Хайх"
 
-#: ../src/search.c:1710
+#: ../src/search.c:1717
 #, fuzzy, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s (%s хавтасд)"
 
-#: ../src/search.c:1718
+#: ../src/search.c:1725
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 "'%s'-ээс терминалыг олсонгүй (Тохиргоо цэснээс Терминалын замыг шалгана уу)"
 
-#: ../src/search.c:1758
+#: ../src/search.c:1765
 #, fuzzy, c-format
 msgid "Could not open directory (%s)"
 msgstr "%s файлыг нээж чадахгүй байна (%s)"
 
-#: ../src/search.c:1848
+#: ../src/search.c:1855
 #, fuzzy
 msgid "Search failed."
 msgstr "Хайлтын талбарыг харуул"
 
-#: ../src/search.c:1872
+#: ../src/search.c:1879
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:1880
+#: ../src/search.c:1887
 msgid "No matches found."
 msgstr "Олдсонгүй."
 
-#: ../src/search.c:1910
+#: ../src/search.c:1917
 #, c-format
 msgid "Bad regex: %s"
 msgstr ""
@@ -5173,33 +5173,41 @@ msgstr ""
 msgid "Could not load tags file '%s'."
 msgstr "%s файлыг нээж чадахгүй байна (%s)"
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1970
+#: ../src/symbols.c:1984
+#, fuzzy, c-format
+msgid "<b>%s: %lu  (%s)</b>"
+msgstr "<b>Дэлгэц</b>"
+
+#: ../src/symbols.c:1986
 #, fuzzy, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>Дэлгэц</b>"
 
-#. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1973
+#: ../src/symbols.c:1991
+#, c-format
+msgid "%s: %lu  (%s)"
+msgstr ""
+
+#: ../src/symbols.c:1993
 #, c-format
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2183
+#: ../src/symbols.c:2298
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "\"%s\" Forward declaration олдсонгүй."
 
-#: ../src/symbols.c:2185
+#: ../src/symbols.c:2300
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "\"%s\"-ийн тодорхойлолт олдсонгүй."
 
-#: ../src/symbols.c:2601
+#: ../src/symbols.c:2716
 msgid "Sort by _Name"
 msgstr ""
 
-#: ../src/symbols.c:2608
+#: ../src/symbols.c:2723
 #, fuzzy
 msgid "Sort by _Appearance"
 msgstr "<b>Харагдац</b>"
@@ -5608,32 +5616,32 @@ msgstr "Огнооны хэлбэр тэмдэгт мөр-лүү хөрвөгд�
 msgid "_Set Custom Date Format"
 msgstr "Огнооны Хэлбэрүүдийг Хэрэглэх"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 #, fuzzy
 msgid "Select Folder"
 msgstr "_Бүгдийг Сонгох"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2017
 #, fuzzy
 msgid "Select File"
 msgstr "Сонгосон Ф_айлыг нээх"
 
-#: ../src/ui_utils.c:2185
+#: ../src/ui_utils.c:2187
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "Config файл"
 
-#: ../src/ui_utils.c:2222
+#: ../src/ui_utils.c:2224
 #, fuzzy
 msgid "Save All"
 msgstr "Б_үх Файлыг Хадгал"
 
-#: ../src/ui_utils.c:2223
+#: ../src/ui_utils.c:2225
 #, fuzzy
 msgid "Close All"
 msgstr "Бүх Файлыг Х_аа"
 
-#: ../src/ui_utils.c:2455
+#: ../src/ui_utils.c:2457
 msgid "Geany cannot start!"
 msgstr ""
 
@@ -5674,28 +5682,32 @@ msgstr ""
 msgid "LF"
 msgstr ""
 
-#: ../src/vte.c:585
+#: ../src/vte.c:666
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr ""
 
-#: ../src/vte.c:766
+#: ../src/vte.c:860
 msgid "_Set Path From Document"
 msgstr ""
 
-#: ../src/vte.c:771
+#: ../src/vte.c:865
 #, fuzzy
 msgid "_Restart Terminal"
 msgstr "Терминал:"
 
-#: ../src/vte.c:804
+#: ../src/vte.c:898
 msgid "_Input Methods"
 msgstr ""
 
-#: ../src/vte.c:896
+#: ../src/vte.c:991
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
+msgstr ""
+
+#: ../src/vte.c:998
+msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 
 #: ../src/win32.c:210
