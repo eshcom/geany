@@ -125,3 +125,32 @@ gsize n_colors = 16;
 
 ----------------------------------------------------------------------------------------
 
+#run debug geany:
+gdb geany
+#enter:
+>r
+#enter:
+>bt
+
+Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b0b51f in makeTagEntry (tag=tag@entry=0x7fffffffd200) at main/entry.c:1255
+1255		if (tag->name [0] == '\0' && (!tag->placeholder))
+(gdb) bt
+#0  0x00007ffff7b0b51f in makeTagEntry (tag=tag@entry=0x7fffffffd200) at main/entry.c:1255
+#1  0x00007ffff7b27038 in makePascalTag (tag=0x7fffffffd200) at parsers/pascal.c:61
+#2  findPascalTags () at parsers/pascal.c:272
+#3  0x00007ffff7b23376 in createTagsForFile (language=<optimized out>, passCount=1)
+    at main/parse.c:2158
+#4  0x00007ffff7b263ce in createTagsWithFallback1 (userData=0xd66d90, 
+    passCallback=0x7ffff7afe200 <ctags_pass_start>, language=4) at main/parse.c:2233
+#5  createTagsWithFallback (buffer=<optimized out>, bufferSize=<optimized out>, 
+    fileName=<optimized out>, language=4, tagCallback=<optimized out>, 
+    passCallback=0x7ffff7afe200 <ctags_pass_start>, userData=0xd66d90) at main/parse.c:2320
+#6  0x00007ffff7b09642 in ctagsParse (buffer=<optimized out>, bufferSize=bufferSize@entry=47, 
+    fileName=fileName@entry=0x10e7b30 "/home/tatiana/upload/geany_crash/fhackform2.pas", 
+    language=<optimized out>, tagCallback=tagCallback@entry=0x7ffff7afe3c0 <ctags_new_tag>, 
+    passCallback=passCallback@entry=0x7ffff7afe200 <ctags_pass_start>, userData=<optimized out>)
+    at main/ctags-api.c:74
+
+----------------------------------------------------------------------------------------
+

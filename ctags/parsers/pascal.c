@@ -44,7 +44,7 @@ static void createPascalTag (tagEntryInfo* const tag,
 	if (PascalKinds [kind].enabled  &&  name != NULL  &&  vStringLength (name) > 0)
 	{
 		initTagEntry (tag, vStringValue (name), kind);
-
+		
 		tag->extensionFields.signature = arglist;
 		tag->extensionFields.varType = vartype;
 	}
@@ -52,6 +52,14 @@ static void createPascalTag (tagEntryInfo* const tag,
 	{
 		/* TODO: Passing NULL as name makes an assertion behind initTagEntry failure */
 		/* initTagEntry (tag, NULL, NULL); */
+		
+		//~ esh: if we do not set NULL, then we will catch the error:
+		//~ 		Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
+		//~ 		0x00007ffff7b0b51f in makeTagEntry (tag=tag@entry=0x7fffffffd200) at main/entry.c:1255
+		//~ 		1255		if (tag->name [0] == '\0' && (!tag->placeholder))
+		//~ because the check (tag->name != NULL) passed,
+		//~ but check (tag->name [0] == '\0') failed (crashed geany)
+		tag->name = NULL;
 	}
 }
 
@@ -71,7 +79,7 @@ static bool tail (const char *cp)
 {
 	bool result = false;
 	register int len = 0;
-
+	
 	while (*cp != '\0' && tolower ((int) *cp) == tolower ((int) dbp [len]))
 		cp++, len++;
 	if (*cp == '\0' && !intoken (dbp [len]))
@@ -86,10 +94,10 @@ static void parseArglist(const char *buf, char **arglist, char **vartype)
 {
 	char *c, *start, *end;
 	int level;
-
+	
 	if (NULL == buf || NULL == arglist)
 		return;
-
+	
 	c = strdup(buf);
 	/* parse argument list which can be missing like in "function ginit:integer;" */
 	if (NULL != (start = strchr(c, '(')))
@@ -109,20 +117,20 @@ static void parseArglist(const char *buf, char **arglist, char **vartype)
 		start = "()";
 		end = c;
 	}
-
+	
 	/* parse return type if requested by passing a non-NULL vartype argument */
 	if (NULL != vartype)
 	{
 		char *var, *var_start;
-
+		
 		*vartype = NULL;
-
+		
 		if (NULL != (var = strchr(end, ':')))
 		{
 			var++; /* skip ':' */
 			while (isspace((int) *var))
 				++var;
-
+			
 			if (starttoken(*var))
 			{
 				var_start = var;
@@ -137,10 +145,10 @@ static void parseArglist(const char *buf, char **arglist, char **vartype)
 			}
 		}
 	}
-
+	
 	*end = '\0';
 	*arglist = strdup(start);
-
+	
 	eFree(c);
 }
 
@@ -171,12 +179,12 @@ static void findPascalTags (void)
 		 * whether this is a FORWARD/EXTERN to be ignored, or whether it is a
 		 * real tag
 		 */
-
+	
 	dbp = readLineFromInputFile ();
 	while (dbp != NULL)
 	{
 		int c = *dbp++;
-
+		
 		if (c == '\0')  /* if end of line */
 		{
 			dbp = readLineFromInputFile ();
@@ -276,10 +284,10 @@ static void findPascalTags (void)
 		if (get_tagname)  /* grab name of proc or fn */
 		{
 			const unsigned char *cp;
-
+			
 			if (*dbp == '\0')
 				continue;
-
+			
 			/* grab block name */
 			while (isspace ((int) *dbp))
 				++dbp;
