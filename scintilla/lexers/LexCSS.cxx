@@ -245,9 +245,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.SetState(SCE_CSS_EXTENDED_PSEUDOCLASS);
 				break;
 			case ')':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT || lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS || lastState == SCE_CSS_EXTENDED_PSEUDOCLASS || lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
-					lastState == SCE_CSS_PSEUDOELEMENT || lastState == SCE_CSS_EXTENDED_PSEUDOELEMENT)
+				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+					lastState == SCE_CSS_PSEUDOCLASS ||
+					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
+					lastState == SCE_CSS_PSEUDOELEMENT ||
+					lastState == SCE_CSS_EXTENDED_PSEUDOELEMENT)
 					sc.SetState(SCE_CSS_TAG);
 				break;
 			case ':':
@@ -275,13 +279,19 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				}
 				break;
 			case '.':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT || lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS || lastState == SCE_CSS_EXTENDED_PSEUDOCLASS || lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+					lastState == SCE_CSS_PSEUDOCLASS ||
+					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
 					sc.SetState(SCE_CSS_CLASS);
 				break;
 			case '#':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT || lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS || lastState == SCE_CSS_EXTENDED_PSEUDOCLASS || lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+					lastState == SCE_CSS_PSEUDOCLASS ||
+					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
 					sc.SetState(SCE_CSS_ID);
 				break;
 			case ',':
@@ -384,7 +394,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		// nesting rules that apply to SCSS and Less
 		if (hasNesting) {
 			// check for nested rule selector
-			if (sc.state == SCE_CSS_IDENTIFIER && (IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
+			if (sc.state == SCE_CSS_IDENTIFIER && (IsAWordChar(sc.ch) ||
+				sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
 				// look ahead to see whether { comes before next ; and }
 				Sci_PositionU endPos = startPos + length;
 				int ch;
@@ -412,7 +423,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			sc.state == SCE_CSS_IDENTIFIER3 || sc.state == SCE_CSS_EXTENDED_IDENTIFIER ||
 			sc.state == SCE_CSS_UNKNOWN_IDENTIFIER ||
 			sc.state == SCE_CSS_PSEUDOCLASS || sc.state == SCE_CSS_PSEUDOELEMENT ||
-			sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS || sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
+			sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+			sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
 			sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
 			sc.state == SCE_CSS_IMPORTANT ||
 			sc.state == SCE_CSS_DIRECTIVE
@@ -448,7 +460,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.ChangeState(SCE_CSS_PSEUDOCLASS);
 				else if (opPrev == ':' && pseudoElements.InList(s2))
 					sc.ChangeState(SCE_CSS_PSEUDOELEMENT);
-				else if ((op == ':' || (op == '(' && lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) && opPrev != ':' && exPseudoClasses.InList(s2))
+				else if ((op == ':' || (op == '(' && lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) &&
+						 opPrev != ':' && exPseudoClasses.InList(s2))
 					sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOCLASS);
 				else if (opPrev == ':' && exPseudoElements.InList(s2))
 					sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOELEMENT);
@@ -470,7 +483,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			sc.state == SCE_CSS_CLASS || sc.state == SCE_CSS_ID ||
 			(sc.ch != '(' && sc.ch != ')' && ( /* This line of the condition makes it possible to extend pseudo-classes with parentheses */
 				sc.state == SCE_CSS_PSEUDOCLASS || sc.state == SCE_CSS_PSEUDOELEMENT ||
-				sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS || sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
+				sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+				sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
 				sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS
 			))
 		))
@@ -506,7 +520,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	sc.Complete();
 }
 
-static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length, int,
+					   WordList *[], Accessor &styler) {
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	Sci_PositionU endPos = startPos + length;
