@@ -232,7 +232,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case SCE_CSS_IDENTIFIER2:
 				case SCE_CSS_IDENTIFIER3:
 					if (hasNesting)
-						sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER : SCE_CSS_DEFAULT);
+						sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
+													   SCE_CSS_DEFAULT);
 					else
 						sc.SetState(SCE_CSS_DEFAULT);
 					break;
@@ -394,8 +395,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		// nesting rules that apply to SCSS and Less
 		if (hasNesting) {
 			// check for nested rule selector
-			if (sc.state == SCE_CSS_IDENTIFIER && (IsAWordChar(sc.ch) ||
-				sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
+			if (sc.state == SCE_CSS_IDENTIFIER &&
+				(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
 				// look ahead to see whether { comes before next ; and }
 				Sci_PositionU endPos = startPos + length;
 				int ch;
@@ -460,7 +461,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.ChangeState(SCE_CSS_PSEUDOCLASS);
 				else if (opPrev == ':' && pseudoElements.InList(s2))
 					sc.ChangeState(SCE_CSS_PSEUDOELEMENT);
-				else if ((op == ':' || (op == '(' && lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) &&
+				else if ((op == ':' || (op == '(' &&
+						  lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) &&
 						 opPrev != ':' && exPseudoClasses.InList(s2))
 					sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOCLASS);
 				else if (opPrev == ':' && exPseudoElements.InList(s2))
@@ -482,7 +484,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		if (sc.ch != '.' && sc.ch != ':' && sc.ch != '#' && (
 			sc.state == SCE_CSS_CLASS || sc.state == SCE_CSS_ID ||
 			(sc.ch != '(' && sc.ch != ')' && ( /* This line of the condition makes it possible to extend pseudo-classes with parentheses */
-				sc.state == SCE_CSS_PSEUDOCLASS || sc.state == SCE_CSS_PSEUDOELEMENT ||
+				sc.state == SCE_CSS_PSEUDOCLASS ||
+				sc.state == SCE_CSS_PSEUDOELEMENT ||
 				sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
 				sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
 				sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS
