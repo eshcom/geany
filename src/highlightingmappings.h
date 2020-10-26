@@ -399,7 +399,8 @@ static const HLStyle highlighting_styles_CSS[] =
 	{ SCE_CSS_NUMBER,					"number",					FALSE },
 	{ SCE_CSS_DIMENSION,				"dimension",				FALSE },
 	{ SCE_CSS_NAMED_COLOR,				"named_color",				FALSE },
-	{ SCE_CSS_HEXADEC_COLOR,			"hexadec_color",			FALSE }
+	{ SCE_CSS_HEXADEC_COLOR,			"hexadec_color",			FALSE },
+	{ SCE_CSS_ERROR_VALUE,				"error_value",				FALSE }
 };
 static const HLKeyword highlighting_keywords_CSS[] =
 {
