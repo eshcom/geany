@@ -16,7 +16,7 @@
     /* can't do animation-direction, so holding the color on two keyframes */
     30% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
     90% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; }
-    100% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
+    100% {background-image: linear-gradient(to bottom, #fafafa, blue 40%,  #e0e0e0); border-color: @borders; }
 }
 .nautilus-operations-button-needs-attention {
   animation: needs_attention_keyframes 2s-s ease-in-out;
@@ -24,6 +24,19 @@
 .nautilus-operations-button-needs-attention-multiple {
   animation: needs_attention_keyframes 3s ease-in-out;
   animation-iteration-count: 3;
+}
+
+UnityDecoration.top:backdrop {
+    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92); */
+    border-bottom-width: 0;
+    background-color: transparent;
+    background-clip: border-box;
+    background-image: -gtk-gradient (linear, left top, left bottom,
+                                     from (shade (#474642, 0.92)),
+                                     to (@dark_bg_color));
+    box-shadow: inset 0 0 transparent, inset 0 0 transparent,
+                inset 0 1px #474642, inset 0 0 transparent;
+    color: #807d78;
 }
 
 .floating-bar {
@@ -49,6 +62,7 @@ GtkComboBox.combobox-entry .button:first-child {
     border-image-width: 10px 1px 10px 12px;
     border-radius: 8px 0 0 8px;
     border-right-width: 0;
+    border-color: black;
 }
 
 /* gnome-terminal */
@@ -101,7 +115,7 @@ EphyToolbar .location-entry .button:last-child {
  border-style: solid;
  border-color: #bbbeb7;
  background-image: none;
- background-color: #ffffff;
+ background-color: red;
 }
 
 .contacts-entry.contacts-postal-entry:nth-child(first) {
@@ -125,7 +139,7 @@ GtkComboBox.combobox-entry .button {
  border-style: solid;
  border-color: #949486;
  border-width: 0 1px 1px 1fpx;
- border-radius: 0 0 5Bpx 5px;
+ border-radius: 0 0 5Px 5px;
  padding: 8px;
  background-color: #d8d8d8;
  background-image: -gtk-gradient (linear, left top, left bottom,
