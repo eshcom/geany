@@ -198,162 +198,165 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				}
 			}
 			switch (op) {
-			case '@':
-				if (lastState == SCE_CSS_DEFAULT || hasNesting)
-					sc.SetState(SCE_CSS_DIRECTIVE);
-				break;
-			case '>':
-			case '+':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_CLASS ||
-					lastState == SCE_CSS_ID || lastState == SCE_CSS_PSEUDOCLASS ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_DEFAULT);
-				break;
-			case '[':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
-					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_ATTRIBUTE);
-				break;
-			case ']':
-				if (lastState == SCE_CSS_ATTRIBUTE)
-					sc.SetState(SCE_CSS_TAG);
-				break;
-			case '{':
-				nestingLevel++;
-				switch (lastState) {
-				case SCE_CSS_MEDIA:
-					sc.SetState(SCE_CSS_DEFAULT);
+				case '@':
+					if (lastState == SCE_CSS_DEFAULT || hasNesting)
+						sc.SetState(SCE_CSS_DIRECTIVE);
 					break;
-				case SCE_CSS_TAG:
-				case SCE_CSS_DIRECTIVE:
-					sc.SetState(SCE_CSS_IDENTIFIER);
-					break;
-				}
-				break;
-			case '}':
-				if (--nestingLevel < 0)
-					nestingLevel = 0;
-				switch (lastState) {
-				case SCE_CSS_DEFAULT:
-				case SCE_CSS_VALUE:
-				case SCE_CSS_IMPORTANT:
-				case SCE_CSS_IDENTIFIER:
-				case SCE_CSS_IDENTIFIER2:
-				case SCE_CSS_IDENTIFIER3:
-					if (hasNesting)
-						sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
-													   SCE_CSS_DEFAULT);
-					else
+				case '>':
+				case '+':
+					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_CLASS ||
+						lastState == SCE_CSS_ID || lastState == SCE_CSS_PSEUDOCLASS ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
 						sc.SetState(SCE_CSS_DEFAULT);
 					break;
-				}
-				break;
-			case '(':
-				if (lastState == SCE_CSS_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_TAG);
-				else if (lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_EXTENDED_PSEUDOCLASS);
-				break;
-			case ')':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
-					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
-					lastState == SCE_CSS_PSEUDOELEMENT ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOELEMENT)
-					sc.SetState(SCE_CSS_TAG);
-				break;
-			case ':':
-				switch (lastState) {
-				case SCE_CSS_TAG:
-				case SCE_CSS_DEFAULT:
-				case SCE_CSS_CLASS:
-				case SCE_CSS_ID:
-				case SCE_CSS_PSEUDOCLASS:
-				case SCE_CSS_EXTENDED_PSEUDOCLASS:
-				case SCE_CSS_UNKNOWN_PSEUDOCLASS:
-				case SCE_CSS_PSEUDOELEMENT:
-				case SCE_CSS_EXTENDED_PSEUDOELEMENT:
-					sc.SetState(SCE_CSS_PSEUDOCLASS);
+				case '[':
+					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+						lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+						lastState == SCE_CSS_PSEUDOCLASS ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+						sc.SetState(SCE_CSS_ATTRIBUTE);
 					break;
-				case SCE_CSS_IDENTIFIER:
-				case SCE_CSS_IDENTIFIER2:
-				case SCE_CSS_IDENTIFIER3:
-				case SCE_CSS_EXTENDED_IDENTIFIER:
-				case SCE_CSS_UNKNOWN_IDENTIFIER:
-				case SCE_CSS_VARIABLE:
-					sc.SetState(SCE_CSS_VALUE);
-					lastStateVal = lastState;
+				case ']':
+					if (lastState == SCE_CSS_ATTRIBUTE)
+						sc.SetState(SCE_CSS_TAG);
 					break;
-				}
-				break;
-			case '.':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
-					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_CLASS);
-				break;
-			case '#':
-				if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
-					lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
-					lastState == SCE_CSS_PSEUDOCLASS ||
-					lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-					lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
-					sc.SetState(SCE_CSS_ID);
-				break;
-			case ',':
-			case '|':
-			case '~':
-				if (lastState == SCE_CSS_TAG)
-					sc.SetState(SCE_CSS_DEFAULT);
-				break;
-			case ';':
-				switch (lastState) {
-				case SCE_CSS_DIRECTIVE:
-					if (hasNesting) {
-						sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER : SCE_CSS_DEFAULT);
-					} else {
-						sc.SetState(SCE_CSS_DEFAULT);
-					}
-					break;
-				case SCE_CSS_VALUE:
-				case SCE_CSS_IMPORTANT:
-					// data URLs can have semicolons; simplistically check for wrapping parentheses and move along
-					if (insideParentheses) {
-						sc.SetState(lastState);
-					} else {
-						if (lastStateVal == SCE_CSS_VARIABLE) {
+				case '{':
+					nestingLevel++;
+					switch (lastState) {
+						case SCE_CSS_MEDIA:
 							sc.SetState(SCE_CSS_DEFAULT);
-						} else {
+							break;
+						case SCE_CSS_TAG:
+						case SCE_CSS_DIRECTIVE:
 							sc.SetState(SCE_CSS_IDENTIFIER);
-						}
+							break;
 					}
 					break;
-				case SCE_CSS_VARIABLE:
-					if (lastStateVar == SCE_CSS_VALUE) {
-						// data URLs can have semicolons; simplistically check for wrapping parentheses and move along
-						if (insideParentheses) {
+				case '}':
+					if (--nestingLevel < 0)
+						nestingLevel = 0;
+					switch (lastState) {
+						case SCE_CSS_DEFAULT:
+						case SCE_CSS_VALUE:
+						case SCE_CSS_IMPORTANT:
+						case SCE_CSS_IDENTIFIER:
+						case SCE_CSS_IDENTIFIER2:
+						case SCE_CSS_IDENTIFIER3:
+							if (hasNesting)
+								sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
+															   SCE_CSS_DEFAULT);
+							else
+								sc.SetState(SCE_CSS_DEFAULT);
+							break;
+					}
+					break;
+				case '(':
+					if (lastState == SCE_CSS_PSEUDOCLASS)
+						sc.SetState(SCE_CSS_TAG);
+					else if (lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)
+						sc.SetState(SCE_CSS_EXTENDED_PSEUDOCLASS);
+					break;
+				case ')':
+					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+						lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+						lastState == SCE_CSS_PSEUDOCLASS ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
+						lastState == SCE_CSS_PSEUDOELEMENT ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOELEMENT)
+						sc.SetState(SCE_CSS_TAG);
+					break;
+				case ':':
+					switch (lastState) {
+						case SCE_CSS_TAG:
+						case SCE_CSS_DEFAULT:
+						case SCE_CSS_CLASS:
+						case SCE_CSS_ID:
+						case SCE_CSS_PSEUDOCLASS:
+						case SCE_CSS_EXTENDED_PSEUDOCLASS:
+						case SCE_CSS_UNKNOWN_PSEUDOCLASS:
+						case SCE_CSS_PSEUDOELEMENT:
+						case SCE_CSS_EXTENDED_PSEUDOELEMENT:
+							sc.SetState(SCE_CSS_PSEUDOCLASS);
+							break;
+						case SCE_CSS_IDENTIFIER:
+						case SCE_CSS_IDENTIFIER2:
+						case SCE_CSS_IDENTIFIER3:
+						case SCE_CSS_EXTENDED_IDENTIFIER:
+						case SCE_CSS_UNKNOWN_IDENTIFIER:
+						case SCE_CSS_VARIABLE:
 							sc.SetState(SCE_CSS_VALUE);
-						} else {
-							sc.SetState(SCE_CSS_IDENTIFIER);
-						}
-					} else {
-						sc.SetState(SCE_CSS_DEFAULT);
+							lastStateVal = lastState;
+							break;
 					}
 					break;
-				}
-				break;
-			case '!':
-				if (lastState == SCE_CSS_VALUE)
-					sc.SetState(SCE_CSS_IMPORTANT);
-				break;
+				case '.':
+					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+						lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+						lastState == SCE_CSS_PSEUDOCLASS ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+						sc.SetState(SCE_CSS_CLASS);
+					break;
+				case '#':
+					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
+						lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
+						lastState == SCE_CSS_PSEUDOCLASS ||
+						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+						sc.SetState(SCE_CSS_ID);
+					break;
+				case ',':
+				case '|':
+				case '~':
+					if (lastState == SCE_CSS_TAG)
+						sc.SetState(SCE_CSS_DEFAULT);
+					break;
+				case ';':
+					switch (lastState) {
+						case SCE_CSS_DIRECTIVE:
+							if (hasNesting) {
+								sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
+															   SCE_CSS_DEFAULT);
+							} else {
+								sc.SetState(SCE_CSS_DEFAULT);
+							}
+							break;
+						case SCE_CSS_VALUE:
+						case SCE_CSS_IMPORTANT:
+							// data URLs can have semicolons; simplistically check 
+							// for wrapping parentheses and move along
+							if (insideParentheses) {
+								sc.SetState(lastState);
+							} else {
+								if (lastStateVal == SCE_CSS_VARIABLE) {
+									sc.SetState(SCE_CSS_DEFAULT);
+								} else {
+									sc.SetState(SCE_CSS_IDENTIFIER);
+								}
+							}
+							break;
+						case SCE_CSS_VARIABLE:
+							if (lastStateVar == SCE_CSS_VALUE) {
+								// data URLs can have semicolons; simplistically check
+								// for wrapping parentheses and move along
+								if (insideParentheses) {
+									sc.SetState(SCE_CSS_VALUE);
+								} else {
+									sc.SetState(SCE_CSS_IDENTIFIER);
+								}
+							} else {
+								sc.SetState(SCE_CSS_DEFAULT);
+							}
+							break;
+					}
+					break;
+				case '!':
+					if (lastState == SCE_CSS_VALUE)
+						sc.SetState(SCE_CSS_IMPORTANT);
+					break;
 			}
 		}
 		
@@ -373,14 +376,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			// variable name
 			if (sc.ch == varPrefix) {
 				switch (sc.state) {
-				case SCE_CSS_DEFAULT:
-					if (isLessDocument) // give priority to pseudo elements
-						break;
-					// Falls through.
-				case SCE_CSS_VALUE:
-					lastStateVar = sc.state;
-					sc.SetState(SCE_CSS_VARIABLE);
-					continue;
+					case SCE_CSS_DEFAULT:
+						if (isLessDocument) // give priority to pseudo elements
+							break;
+						// Falls through.
+					case SCE_CSS_VALUE:
+						lastStateVar = sc.state;
+						sc.SetState(SCE_CSS_VARIABLE);
+						continue;
 				}
 			}
 			if (sc.state == SCE_CSS_VARIABLE) {
@@ -397,10 +400,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			// nested rule parent selector
 			if (sc.ch == '&') {
 				switch (sc.state) {
-				case SCE_CSS_DEFAULT:
-				case SCE_CSS_IDENTIFIER:
-					sc.SetState(SCE_CSS_TAG);
-					continue;
+					case SCE_CSS_DEFAULT:
+					case SCE_CSS_IDENTIFIER:
+						sc.SetState(SCE_CSS_TAG);
+						continue;
 				}
 			}
 		}
@@ -449,48 +452,48 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			while (*s2 && !IsAWordChar(*s2))
 				s2++;
 			switch (sc.state) {
-			case SCE_CSS_IDENTIFIER:
-			case SCE_CSS_IDENTIFIER2:
-			case SCE_CSS_IDENTIFIER3:
-			case SCE_CSS_EXTENDED_IDENTIFIER:
-			case SCE_CSS_UNKNOWN_IDENTIFIER:
-				if (css1Props.InList(s2))
-					sc.ChangeState(SCE_CSS_IDENTIFIER);
-				else if (css2Props.InList(s2))
-					sc.ChangeState(SCE_CSS_IDENTIFIER2);
-				else if (css3Props.InList(s2))
-					sc.ChangeState(SCE_CSS_IDENTIFIER3);
-				else if (exProps.InList(s2))
-					sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
-				else
-					sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
-				break;
-			case SCE_CSS_PSEUDOCLASS:
-			case SCE_CSS_PSEUDOELEMENT:
-			case SCE_CSS_EXTENDED_PSEUDOCLASS:
-			case SCE_CSS_EXTENDED_PSEUDOELEMENT:
-			case SCE_CSS_UNKNOWN_PSEUDOCLASS:
-				if (op == ':' && opPrev != ':' && pseudoClasses.InList(s2))
-					sc.ChangeState(SCE_CSS_PSEUDOCLASS);
-				else if (opPrev == ':' && pseudoElements.InList(s2))
-					sc.ChangeState(SCE_CSS_PSEUDOELEMENT);
-				else if ((op == ':' || (op == '(' &&
-						  lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) &&
-						 opPrev != ':' && exPseudoClasses.InList(s2))
-					sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOCLASS);
-				else if (opPrev == ':' && exPseudoElements.InList(s2))
-					sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOELEMENT);
-				else
-					sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
-				break;
-			case SCE_CSS_IMPORTANT:
-				if (strcmp(s2, "important") != 0)
-					sc.ChangeState(SCE_CSS_VALUE);
-				break;
-			case SCE_CSS_DIRECTIVE:
-				if (op == '@' && strcmp(s2, "media") == 0)
-					sc.ChangeState(SCE_CSS_MEDIA);
-				break;
+				case SCE_CSS_IDENTIFIER:
+				case SCE_CSS_IDENTIFIER2:
+				case SCE_CSS_IDENTIFIER3:
+				case SCE_CSS_EXTENDED_IDENTIFIER:
+				case SCE_CSS_UNKNOWN_IDENTIFIER:
+					if (css1Props.InList(s2))
+						sc.ChangeState(SCE_CSS_IDENTIFIER);
+					else if (css2Props.InList(s2))
+						sc.ChangeState(SCE_CSS_IDENTIFIER2);
+					else if (css3Props.InList(s2))
+						sc.ChangeState(SCE_CSS_IDENTIFIER3);
+					else if (exProps.InList(s2))
+						sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
+					else
+						sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
+					break;
+				case SCE_CSS_PSEUDOCLASS:
+				case SCE_CSS_PSEUDOELEMENT:
+				case SCE_CSS_EXTENDED_PSEUDOCLASS:
+				case SCE_CSS_EXTENDED_PSEUDOELEMENT:
+				case SCE_CSS_UNKNOWN_PSEUDOCLASS:
+					if (op == ':' && opPrev != ':' && pseudoClasses.InList(s2))
+						sc.ChangeState(SCE_CSS_PSEUDOCLASS);
+					else if (opPrev == ':' && pseudoElements.InList(s2))
+						sc.ChangeState(SCE_CSS_PSEUDOELEMENT);
+					else if ((op == ':' || (op == '(' &&
+							  lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)) &&
+							 opPrev != ':' && exPseudoClasses.InList(s2))
+						sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOCLASS);
+					else if (opPrev == ':' && exPseudoElements.InList(s2))
+						sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOELEMENT);
+					else
+						sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
+					break;
+				case SCE_CSS_IMPORTANT:
+					if (strcmp(s2, "important") != 0)
+						sc.ChangeState(SCE_CSS_VALUE);
+					break;
+				case SCE_CSS_DIRECTIVE:
+					if (op == '@' && strcmp(s2, "media") == 0)
+						sc.ChangeState(SCE_CSS_MEDIA);
+					break;
 			}
 		}
 		
