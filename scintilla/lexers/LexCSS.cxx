@@ -56,6 +56,10 @@ static inline bool IsAWordChar(const unsigned int ch) {
 	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
 }
 
+static inline bool IsAWordOrPercent(int ch) {
+	return IsAWordChar(ch) || ch == '%';
+}
+
 inline bool IsCssOperator(const int ch) {
 	if (!((ch < 0x80) && isalnum(ch)) &&
 		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
@@ -105,6 +109,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	int op = ' '; // last operator
 	int opPrev = ' '; // last operator
 	bool insideParentheses = false; // true if currently in a CSS url() or similar construct
+	
+	// esh:
+	int lastStateSubVal = -1; // before sub-value
 	
 	// property lexer.css.scss.language
 	// Set to 1 for Sassy CSS (.scss)
@@ -406,6 +413,58 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						continue;
 				}
 			}
+		}
+		
+		// esh: number, hexadec-color, named-color, dimension
+		switch (sc.state) {
+			case SCE_CSS_VALUE:
+			// esh: with SCE_CSS_DIRECTIVE incorrect highlighting:
+			// @namespace svg url(http://www.w3.org/2000/svg);
+			//~ case SCE_CSS_DIRECTIVE:
+				lastStateSubVal = sc.state;
+				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+					((sc.ch == '+' || sc.ch == '-') && IsADigit(sc.chNext))) {
+					sc.SetState(SCE_CSS_NUMBER);
+					continue;
+				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+					sc.SetState(SCE_CSS_HEXADEC_COLOR);
+					continue;
+				} else if (IsAWordChar(sc.ch)) {
+					continue;
+				} else if (IsAWordChar(sc.chPrev)) {
+					char ncol[100];
+					if (namedColors.InList(ncol)) {
+						sc.ChangeState(SCE_CSS_NAMED_COLOR);
+						sc.SetState(lastStateSubVal);
+					}
+				}
+				break;
+			case SCE_CSS_NUMBER:
+				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
+					continue;
+				if (IsAWordOrPercent(sc.ch))
+				{
+					sc.SetState(SCE_CSS_DIMENSION);
+					continue;
+				}
+				sc.SetState(lastStateSubVal);
+				break;
+			case SCE_CSS_DIMENSION: {
+					if (IsAWordOrPercent(sc.ch))
+						continue;
+					char dim[10];
+					sc.GetCurrent(dim, sizeof(dim));
+					if (!IsDimension(dim)) {
+						sc.ChangeState(SCE_CSS_ERROR_VALUE);
+					}
+					sc.SetState(lastStateSubVal);
+				}
+				break;
+			case SCE_CSS_HEXADEC_COLOR:
+				if (IsADigit(sc.ch, 16))
+					continue;
+				sc.SetState(lastStateSubVal);
+				break;
 		}
 		
 		// nesting rules that apply to SCSS and Less
