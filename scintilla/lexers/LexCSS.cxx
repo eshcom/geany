@@ -417,10 +417,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		
 		// esh: number, hexadec-color, named-color, dimension
 		switch (sc.state) {
-			case SCE_CSS_VALUE:
 			// esh: with SCE_CSS_DIRECTIVE incorrect highlighting:
 			// @namespace svg url(http://www.w3.org/2000/svg);
 			//~ case SCE_CSS_DIRECTIVE:
+			case SCE_CSS_VALUE:
 				lastStateSubVal = sc.state;
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 					((sc.ch == '+' || sc.ch == '-') && IsADigit(sc.chNext))) {
@@ -432,8 +432,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				} else if (IsAWordChar(sc.ch)) {
 					continue;
 				} else if (IsAWordChar(sc.chPrev)) {
-					char ncol[100];
-					if (namedColors.InList(ncol)) {
+					char ncol[50];
+					sc.GetCurrent(ncol, sizeof(ncol));
+					char *ncol2 = ncol;
+					while (*ncol2 && !IsAWordChar(*ncol2))
+						ncol2++;
+					if (namedColors.InList(ncol2)) {
 						sc.ChangeState(SCE_CSS_NAMED_COLOR);
 						sc.SetState(lastStateSubVal);
 					}
