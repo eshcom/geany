@@ -25,6 +25,10 @@ extended_identifier=keyword_1
 extended_pseudoclass=string_1
 extended_pseudoelement=string_2
 media=parameter
+number=value
+dimension=value
+named_color=value
+hexadec_color=value
 
 [keywords]
 # CSS 1 properties
@@ -38,6 +42,7 @@ pseudo_elements=after before choices first-letter first-line line-marker marker 
 browser_css_properties=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
 browser_pseudo_classes=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
 browser_pseudo_elements=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
+named_colors=aqua black blue fuchsia gray green grey lime maroon navy olive orange purple red silver teal white yellow
 
 [settings]
 # default extension used when saving files

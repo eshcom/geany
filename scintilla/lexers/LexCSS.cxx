@@ -34,6 +34,18 @@
 
 using namespace Scintilla;
 
+static inline bool IsDimension(const char* s) {
+	//~ % em ex px pt pc in ft mm cm Hz kHz deg rad grad s ms turn
+	return (strcmp(s, "%") == 0 || strcmp(s, "em") == 0 ||
+			strcmp(s, "ex") == 0 || strcmp(s, "px") == 0 ||
+			strcmp(s, "pt") == 0 || strcmp(s, "pc") == 0 ||
+			strcmp(s, "in") == 0 || strcmp(s, "ft") == 0 ||
+			strcmp(s, "mm") == 0 || strcmp(s, "cm") == 0 ||
+			strcmp(s, "Hz") == 0 || strcmp(s, "kHz") == 0 ||
+			strcmp(s, "deg") == 0 || strcmp(s, "rad") == 0 ||
+			strcmp(s, "grad") == 0 || strcmp(s, "s") == 0 ||
+			strcmp(s, "ms") == 0 || strcmp(s, "turn") == 0);
+}
 
 static inline bool IsAWordChar(const unsigned int ch) {
 	/* FIXME:
@@ -81,6 +93,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	WordList &exProps = *keywordlists[5];
 	WordList &exPseudoClasses = *keywordlists[6];
 	WordList &exPseudoElements = *keywordlists[7];
+	WordList &namedColors = *keywordlists[8];
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -583,6 +596,7 @@ static const char * const cssWordListDesc[] = {
 	"Browser-Specific CSS Properties",
 	"Browser-Specific Pseudo-classes",
 	"Browser-Specific Pseudo-elements",
+	"Named Colors",
 	0
 };
 

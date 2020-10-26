@@ -1,0 +1,255 @@
+/*
+ * Some applications depend on these named colors.
+ */
+
+@define-color theme_fg_color @fg_color;
+@define-color theme_base_color @base_color;
+@define-color borders shade(@bg_color, 0.82);
+@define-color unfocused_borders transparent;
+
+@define-color warning_color @warning_fg_color;
+@define-color error_color @error_fg_color;
+@define-color success_color @success_color;
+
+@keyframes needs_attention_keyframes {
+    0% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
+    /* can't do animation-direction, so holding the color on two keyframes */
+    30% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
+    90% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; }
+    100% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
+}
+.nautilus-operations-button-needs-attention {
+  animation: needs_attention_keyframes 2s ease-in-out;
+}
+.nautilus-operations-button-needs-attention-multiple {
+  animation: needs_attention_keyframes 3s ease-in-out;
+  animation-iteration-count: 3;
+}
+
+.floating-bar {
+  padding: 2px;
+  background-color: @theme_base_color bold!important;
+  border-width: 1px;
+  border-style: solid solid none;
+  border-color: @borders;
+  border-radius: 3px 3px 0 0;
+}
+
+@define-color disk_space_unknown #888a85;
+@define-color disk_space_used #729fcf;
+@define-color disk_space_free #eeeeec;
+
+.disk-space-display.unknown {
+    background-color: @disk_space_unknown;
+    border-color: shade(@disk_space_unknown, 0.7);
+}
+
+GtkComboBox.combobox-entry .entry:first-child,
+GtkComboBox.combobox-entry .button:first-child {
+    border-image-width: 10px 1px 10px 12px;
+    border-radius: 8px 0 0 8px;
+    border-right-width: 0;
+}
+
+/* gnome-terminal */
+TerminalScreen {
+    background-color: @theme_base_color;
+    color: @theme_fg_color;
+    -TerminalScreen-background-darkness: 0.95;
+}
+
+NautilusSearchBar.info,
+NautilusQueryEditor.info {
+    background-color: @nautilus_cluebar_color;
+    color: @theme_base_color;
+
+    border-color: shade(@nautilus_cluebar_color, 0.85);
+}
+
+NautilusWindow > GtkGrid > .pane-separator:backdrop,
+NautilusWindow > GtkGrid > .pane-separator:hover:backdrop {
+    border-width: 1px 1px 0 0;
+    border-style: solid;
+    border-color: @unfocused_borders;
+    background-color: @sidebar_bg_unfocused;
+    color: shade (@theme_bg_color, 0.9);
+}
+
+EphyToolbar .location-entry .button:last-child {
+    border-image: url("borders/generic-border.svg") 3 3 4 3 / 3 3 4 0 stretch;
+    border-width: 1px 1px 2px 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    padding-left: 4px;
+    padding-right: 2px;
+}
+
+#ephy-page-menu-button.active-menu {
+    background-image: none;
+    background-color: @bg_color;
+
+    border-image: none;
+    border-color: @bg_color;
+    border-radius: 4px 4px 0 0;
+}
+
+.contacts-entry {
+ box-shadow: none;
+ border-image: none;
+ border-width: 1px;
+ border-radius: 4px;
+ border-style: solid;
+ border-color: #bbbeb7;
+ background-image: none;
+ background-color: #ffffff;
+}
+
+.contacts-entry.contacts-postal-entry:nth-child(first) {
+ border-radius: 4px 4px 0 0;
+}
+
+GtkComboBox.combobox-entry .button {
+    border-image: url("assets/combobox-button.png") 10 12 10 1 / 10px 12px 10px 1px stretch;
+}
+
+@keyframes dashentry_spinner {
+    to { -gtk-icon-transform: rotate(1turn); }
+}
+
+.lightdm.entry:active {
+    -gtk-icon-source: -gtk-icontheme("process-working-symbolic");
+    animation: dashentry_spinner 1s infinite linear;
+}
+
+.contacts-notification {
+ border-style: solid;
+ border-color: #949486;
+ border-width: 0 1px 1px 1px;
+ border-radius: 0 0 5px 5px;
+ padding: 8px;
+ background-color: #d8d8d8;
+ background-image: -gtk-gradient (linear, left top, left bottom,
+                                  from (rgba (0, 0, 0, 0.15)),
+                                  color-stop (0.15, rgba (0, 0, 0, 0.04)),
+                                  to (rgba (0, 0, 0, 0.0)));
+}
+
+.nautilus-inactive-pane .nautilus-canvas-item:selected {
+    background-color: @theme_unfocused_selected_bg_color;
+    color: @theme_unfocused_selected_fg_color;
+}
+
+@font-face {
+  font-family: 'CustomFont';
+  src: url('customfont.eot'), /* IE9 */
+       url('customfont.eot?#iefix') format('embedded-opentype'); /* IE6-IE8 */
+}
+
+@font-face {
+  font-family: 'CustomFont';
+  url('webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  src:  url('Helvetica') format('woff'),
+        local('Helvetica.woff') format('woff');
+}
+
+@font-face {
+  font-family: "CustomFont";
+}
+
+// Possible usage
+p {
+  font-family: 'CustomFont';
+}
+
+@keyframes ANIMATION-NAME {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+// OR
+@keyframes ANIMATION-NAME {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#box {
+  background-color: green;
+}
+
+@media only screen and (max-width: 600px) {
+  #box {
+    background-color: yellow;
+  }
+}
+
+@property --my-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: '#9400D3';
+}
+
+.mycolor {
+  --my-color: '#FFFFFF';
+  background: linear-gradient(var(--my-color), black);
+  transition: --my-color 1s;
+}
+
+..mycolor:hover {
+  --my-color: '#FF0000';
+}
+
+@namespace svg url(http://www.w3.org/2000/svg);
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
+}
+
+@counter-style thumbs {
+  system: cyclic;
+  symbols: "\1F44D";
+}
+
+.print-only {
+  display: none;
+
+  @media print { display: block; }
+}
+
+@mixin corner-icon($name, $top-or-bottom, $left-or-right) {
+  .icon-#{$name} {
+    background-image: url("/icons/#{$name}.svg");
+    position: absolute;
+    #{$top-or-bottom}: 0;
+    #{$left-or-right}: 0;
+  }
+}
+
+@include corner-icon("mail", top, left);
+
+@mixin inline-animation($duration) {
+  $name: inline-#{unique-id()};
+
+  @keyframes #{$name} {
+    @content;
+  }
+
+  animation-name: $name;
+  animation-duration: $duration;
+  animation-iteration-count: infinite;
+}
+
+.pulse {
+  @include inline-animation(2s) {
+    from { background-color: yellow }
+    to { background-color: red }
+  }
+}
+
+.example {
+  unquoted: #{"string"};
+}
