@@ -395,7 +395,11 @@ static const HLStyle highlighting_styles_CSS[] =
 	{ SCE_CSS_EXTENDED_IDENTIFIER,		"extended_identifier",		FALSE },
 	{ SCE_CSS_EXTENDED_PSEUDOCLASS,		"extended_pseudoclass",		FALSE },
 	{ SCE_CSS_EXTENDED_PSEUDOELEMENT,	"extended_pseudoelement",	FALSE },
-	{ SCE_CSS_MEDIA,					"media",					FALSE }
+	{ SCE_CSS_MEDIA,					"media",					FALSE },
+	{ SCE_CSS_NUMBER,					"number",					FALSE },
+	{ SCE_CSS_DIMENSION,				"dimension",				FALSE },
+	{ SCE_CSS_NAMED_COLOR,				"named_color",				FALSE },
+	{ SCE_CSS_HEXADEC_COLOR,			"hexadec_color",			FALSE }
 };
 static const HLKeyword highlighting_keywords_CSS[] =
 {
@@ -406,7 +410,8 @@ static const HLKeyword highlighting_keywords_CSS[] =
 	{ 4, "pseudo_elements",			FALSE },
 	{ 5, "browser_css_properties",	FALSE },
 	{ 6, "browser_pseudo_classes",	FALSE },
-	{ 7, "browser_pseudo_elements",	FALSE }
+	{ 7, "browser_pseudo_elements",	FALSE },
+	{ 8, "named_colors",			FALSE }
 };
 #define highlighting_properties_CSS		EMPTY_PROPERTIES
 
