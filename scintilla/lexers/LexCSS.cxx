@@ -336,7 +336,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_IMPORTANT:
 							// data URLs can have semicolons; simplistically check 
 							// for wrapping parentheses and move along
-							if (insideParentheses) { // esh: oper ';' inside parentheses inside var/..important
+							if (insideParentheses) { // esh: oper ';' inside parentheses inside val/..important
 								sc.SetState(lastState);
 							} else {
 								if (beforeValState == SCE_CSS_VARIABLE) { // esh: (var: val;) or (var: ..important;)
