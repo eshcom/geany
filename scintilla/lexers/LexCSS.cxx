@@ -347,10 +347,11 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							}
 							break;
 						case SCE_CSS_VARIABLE:
+							// esh: beforeVarState can be SCE_CSS_DEFAULT or SCE_CSS_VALUE
 							if (beforeVarState == SCE_CSS_VALUE) { // esh: if (var) inside (val;)
 								// data URLs can have semicolons; simplistically check
 								// for wrapping parentheses and move along
-								if (insideParentheses) { // esh: oper ';' inside parentheses
+								if (insideParentheses) { // esh: var and oper ';' inside parentheses inside (val;)
 									sc.SetState(SCE_CSS_VALUE);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
@@ -389,7 +390,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							break;
 						// Falls through.
 					case SCE_CSS_VALUE:
-						beforeVarState = sc.state;
+						beforeVarState = sc.state; // esh: can be SCE_CSS_DEFAULT or SCE_CSS_VALUE
 						sc.SetState(SCE_CSS_VARIABLE);
 						continue;
 				}
