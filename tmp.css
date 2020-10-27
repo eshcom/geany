@@ -12,11 +12,11 @@
 @define-color success_color @success_color;
 
 @keyframes needs_attention_keyframes {
-    0% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%%,  #e0e0e0); border-color: @borders; }
+    0% {background-image: linear-gradient(to bottom, #fafa, #ededed 40%%,  #e0e0e0); border-color: @borders; }
     /* can't do animation-direction, so holding the color on two keyframes */
     30% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
     90% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; }
-    100% {background-image: linear-gradient(to bottom, #fafafa, blue 40%,  #e0e0e0); border-color: @borders; }
+    100% {background-image: linear-gradient(to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
 }
 .nautilus-operations-button-needs-attention {
   animation: needs_attention_keyframes 2s-s ease-in-out;
@@ -27,7 +27,7 @@
 }
 
 UnityDecoration.top:backdrop {
-    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92); */
+    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */;
     border-bottom-width: 0;
     background-color: transparent;
     background-clip: border-box;
@@ -43,9 +43,10 @@ UnityDecoration.top:backdrop {
   padding: 2px;
   background-color: @theme_base_color bold!important;
   border-width: 1px;
-  border-style: solid solid none;
+  border-style: solid solid none @theme_base_color;
   border-color: @borders;
   border-radius: 3px 3px 0 0;
+  color: @theme_base_color!important;
 }
 
 @define-color disk_space_unknown #888a85;
@@ -76,7 +77,7 @@ NautilusSearchBar.info,
 NautilusQueryEditor.info {
     background-color: @nautilus_cluebar_color;
     color: @theme_base_color;
-
+    test-color: black;
     border-color: shade(@nautilus_cluebar_color, 0.85);
 }
 

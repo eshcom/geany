@@ -351,7 +351,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 								// data URLs can have semicolons; simplistically check
 								// for wrapping parentheses and move along
 								if (insideParentheses) { // esh: oper ';' inside parentheses
-									sc.SetState(beforeVarState);
+									sc.SetState(SCE_CSS_VALUE);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
 								}
@@ -362,7 +362,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					}
 					break;
 				case '!':
-					if (lastState == SCE_CSS_VALUE)
+					if (lastState == SCE_CSS_VALUE) // esh: lastState - state before oper
 						sc.SetState(SCE_CSS_IMPORTANT);
 					break;
 			}
@@ -401,7 +401,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				}
 				if (beforeVarState == SCE_CSS_VALUE) {
 					// not looking at the variable name any more, and it was part of a value
-					sc.SetState(beforeVarState);
+					sc.SetState(SCE_CSS_VALUE);
 				}
 			}
 			// nested rule parent selector

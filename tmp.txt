@@ -154,3 +154,5 @@ Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
 
 ----------------------------------------------------------------------------------------
 
+1) LexCSS.cxx: added IsCssOperValue func
+2) LexCSS.cxx: added logic for define and highlighting new styles
