@@ -29,7 +29,7 @@
 UnityDecoration.top:backdrop {
     border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */;
     border-bottom-width: 0;
-    background-color: transparent;
+    background-color: transparent!importan;
     background-clip: border-box;
     background-image: -gtk-gradient (linear, left top, left bottom,
                                      from (shade (#474642, 0.92)),
@@ -43,7 +43,7 @@ UnityDecoration.top:backdrop {
   padding: 2px;
   background-color: @theme_base_color bold!important;
   border-width: 1px;
-  border-style: solid solid none @theme_base_color;
+  border-style: solid solid!important none @theme_base_color;
   border-color: @borders;
   border-radius: 3px 3px 0 0;
   color: @theme_base_color!important;
