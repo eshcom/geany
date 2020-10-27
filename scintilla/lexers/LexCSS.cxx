@@ -104,8 +104,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	int lastState = -1; // before operator
 	int lastStateC = -1; // before comment
 	int lastStateS = -1; // before single-quoted/double-quoted string
-	int lastStateVar = -1; // before variable (SCSS)
-	int lastStateVal = -1; // before value (SCSS)
+	int beforeVarState = -1; // before variable (SCSS)
+	int beforeValState = -1; // before value (SCSS)
 	int op = ' '; // last operator
 	int opPrev = ' '; // last operator
 	bool insideParentheses = false; // true if currently in a CSS url() or similar construct
@@ -296,7 +296,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_UNKNOWN_IDENTIFIER:
 						case SCE_CSS_VARIABLE:
 							sc.SetState(SCE_CSS_VALUE); // esh: (ident: val) or (var: val)
-							lastStateVal = lastState; // esh: save ident/var-state to lastStateVal
+							beforeValState = lastState; // esh: save ident/var-state to beforeValState
 							break;
 					}
 					break;
@@ -339,7 +339,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							if (insideParentheses) { // esh: oper ';' inside parentheses inside var/..important
 								sc.SetState(lastState);
 							} else {
-								if (lastStateVal == SCE_CSS_VARIABLE) { // esh: (var: val;) or (var: ..important;)
+								if (beforeValState == SCE_CSS_VARIABLE) { // esh: (var: val;) or (var: ..important;)
 									sc.SetState(SCE_CSS_DEFAULT);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
@@ -347,11 +347,11 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							}
 							break;
 						case SCE_CSS_VARIABLE:
-							if (lastStateVar == SCE_CSS_VALUE) { // esh: if (var) inside (val;)
+							if (beforeVarState == SCE_CSS_VALUE) { // esh: if (var) inside (val;)
 								// data URLs can have semicolons; simplistically check
 								// for wrapping parentheses and move along
 								if (insideParentheses) { // esh: oper ';' inside parentheses
-									sc.SetState(SCE_CSS_VALUE);
+									sc.SetState(beforeVarState);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
 								}
@@ -389,7 +389,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							break;
 						// Falls through.
 					case SCE_CSS_VALUE:
-						lastStateVar = sc.state;
+						beforeVarState = sc.state;
 						sc.SetState(SCE_CSS_VARIABLE);
 						continue;
 				}
@@ -399,9 +399,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					// still looking at the variable name
 					continue;
 				}
-				if (lastStateVar == SCE_CSS_VALUE) {
+				if (beforeVarState == SCE_CSS_VALUE) {
 					// not looking at the variable name any more, and it was part of a value
-					sc.SetState(SCE_CSS_VALUE);
+					sc.SetState(beforeVarState);
 				}
 			}
 			// nested rule parent selector
