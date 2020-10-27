@@ -33,6 +33,7 @@
   color: solid @theme_base_color transparent;
   color: solid @theme_base_color;
   color: @theme_base_color solid;
+  color: @theme_base_color white;
 }
 
 UnityDecoration.top:backdrop {
