@@ -112,6 +112,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	
 	// esh:
 	int lastStateSubVal = -1; // before sub-value
+	int hexadecColorLen = 0;
 	
 	// property lexer.css.scss.language
 	// Set to 1 for Sassy CSS (.scss)
@@ -294,8 +295,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_EXTENDED_IDENTIFIER:
 						case SCE_CSS_UNKNOWN_IDENTIFIER:
 						case SCE_CSS_VARIABLE:
-							sc.SetState(SCE_CSS_VALUE);
-							lastStateVal = lastState;
+							sc.SetState(SCE_CSS_VALUE); // esh: (ident: val) or (var: val)
+							lastStateVal = lastState; // esh: save ident/var-state to lastStateVal
 							break;
 					}
 					break;
@@ -335,10 +336,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_IMPORTANT:
 							// data URLs can have semicolons; simplistically check 
 							// for wrapping parentheses and move along
-							if (insideParentheses) {
+							if (insideParentheses) { // esh: oper ';' inside parentheses inside var/..important
 								sc.SetState(lastState);
 							} else {
-								if (lastStateVal == SCE_CSS_VARIABLE) {
+								if (lastStateVal == SCE_CSS_VARIABLE) { // esh: (var: val;) or (var: ..important;)
 									sc.SetState(SCE_CSS_DEFAULT);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
@@ -346,10 +347,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							}
 							break;
 						case SCE_CSS_VARIABLE:
-							if (lastStateVar == SCE_CSS_VALUE) {
+							if (lastStateVar == SCE_CSS_VALUE) { // esh: if (var) inside (val;)
 								// data URLs can have semicolons; simplistically check
 								// for wrapping parentheses and move along
-								if (insideParentheses) {
+								if (insideParentheses) { // esh: oper ';' inside parentheses
 									sc.SetState(SCE_CSS_VALUE);
 								} else {
 									sc.SetState(SCE_CSS_IDENTIFIER);
@@ -403,7 +404,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.SetState(SCE_CSS_VALUE);
 				}
 			}
-			
 			// nested rule parent selector
 			if (sc.ch == '&') {
 				switch (sc.state) {
@@ -427,13 +427,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.SetState(SCE_CSS_NUMBER);
 					continue;
 				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+					hexadecColorLen = 0;
 					sc.SetState(SCE_CSS_HEXADEC_COLOR);
 					continue;
 				} else if (IsAWordChar(sc.ch)) {
 					continue;
 				} else if (IsAWordChar(sc.chPrev)) {
 					char ncol[50];
-					sc.GetCurrent(ncol, sizeof(ncol));
+					sc.GetCurrentLowered(ncol, sizeof(ncol));
 					char *ncol2 = ncol;
 					while (*ncol2 && !IsAWordChar(*ncol2))
 						ncol2++;
@@ -446,8 +447,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			case SCE_CSS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
 					continue;
-				if (IsAWordOrPercent(sc.ch))
-				{
+				if (IsAWordOrPercent(sc.ch)) {
 					sc.SetState(SCE_CSS_DIMENSION);
 					continue;
 				}
@@ -457,16 +457,19 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					if (IsAWordOrPercent(sc.ch))
 						continue;
 					char dim[10];
-					sc.GetCurrent(dim, sizeof(dim));
-					if (!IsDimension(dim)) {
+					sc.GetCurrentLowered(dim, sizeof(dim));
+					if (!IsDimension(dim))
 						sc.ChangeState(SCE_CSS_ERROR_VALUE);
-					}
 					sc.SetState(lastStateSubVal);
 				}
 				break;
 			case SCE_CSS_HEXADEC_COLOR:
-				if (IsADigit(sc.ch, 16))
+				if (IsADigit(sc.ch, 16)) {
+					hexadecColorLen++;
 					continue;
+				}
+				if (hexadecColorLen != 3 && hexadecColorLen != 6)
+					sc.ChangeState(SCE_CSS_ERROR_VALUE);
 				sc.SetState(lastStateSubVal);
 				break;
 		}
