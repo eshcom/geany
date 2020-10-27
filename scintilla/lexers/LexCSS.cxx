@@ -439,10 +439,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					char *ncol2 = ncol;
 					while (*ncol2 && !IsAWordChar(*ncol2))
 						ncol2++;
-					if (namedColors.InList(ncol2)) {
+					if (namedColors.InList(ncol2))
 						sc.ChangeState(SCE_CSS_NAMED_COLOR);
-						sc.SetState(lastStateSubVal);
-					}
+					sc.SetState(lastStateSubVal);
 				}
 				break;
 			case SCE_CSS_NUMBER:
