@@ -25,10 +25,10 @@ extended_identifier=keyword_1
 extended_pseudoclass=string_1
 extended_pseudoelement=string_2
 media=parameter
-number=value
-dimension=value
-named_color=value
-hexadec_color=value
+number=number_1
+dimension=number_1
+named_color=character
+hexadec_color=character
 error_value=error
 
 [keywords]
