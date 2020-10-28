@@ -53,13 +53,22 @@ UnityDecoration.top:backdrop {
 }
 
 .floating-bar {
-  padding: 2px;
-  background-color: @theme_base_color bold !important;
+  padding: 2!important;
+  padding: 2! important;
+  padding: 2px!important;
+  padding: 2px! important;
+  padding: 2px ! important;
+  padding: 2px !important;
+  color: #807d78!important;
+  color: #807d78! important;
+  color: #807d78 ! important;
+  color: #807d78 !important;
+  background-color: @theme_base_color bold ;
   border-width: 1px;
   border-style: solid solid @theme_base_color;
   border-color: @borders;
   border-radius: 3px 3px 0 0kHz;
-  color: @theme_base_color !important;
+  color: @theme_base_color ! important;
 }
 
 @define-color disk_space_unknown #888a85;

@@ -60,6 +60,10 @@ static inline bool IsAWordOrPercent(int ch) {
 	return IsAWordChar(ch) || ch == '%';
 }
 
+static inline bool IsAWordOrSpace(int ch) {
+	return IsAWordChar(ch) || IsASpace(ch);
+}
+
 inline bool IsCssOperValue(const int ch) {
 	return ch == '(' || ch == ')' || ch == ',' || ch == '/';
 }
@@ -252,7 +256,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					switch (lastState) {
 						case SCE_CSS_DEFAULT:
 						case SCE_CSS_VALUE:
-						case SCE_CSS_IMPORTANT:
 						case SCE_CSS_IDENTIFIER:
 						case SCE_CSS_IDENTIFIER2:
 						case SCE_CSS_IDENTIFIER3:
@@ -337,7 +340,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							}
 							break;
 						case SCE_CSS_VALUE:
-						case SCE_CSS_IMPORTANT:
 							// data URLs can have semicolons; simplistically check 
 							// for wrapping parentheses and move along
 							if (insideParentheses) { // esh: oper ';' inside parentheses inside val/..important
@@ -367,10 +369,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							}
 							break;
 					}
-					break;
-				case '!':
-					if (lastState == SCE_CSS_VALUE) // esh: lastState - state before oper
-						sc.SetState(SCE_CSS_IMPORTANT);
 					break;
 			}
 		}
@@ -498,12 +496,30 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				if (hexadecColorLen != 3 && hexadecColorLen != 6)
 					sc.ChangeState(SCE_CSS_ERROR_VALUE);
 				break;
+			case SCE_CSS_IMPORTANT:
+				if (IsAWordChar(sc.ch))
+					continue;
+				char imp[100];
+				sc.GetCurrentLowered(imp, sizeof(imp));
+				char *imp2 = imp;
+				while (*imp2 && !IsAWordChar(*imp2))
+					imp2++;
+				if (strcmp(imp2, "important") != 0)
+					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+				break;
 		}
 		if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_NUMBER ||
 			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEXADEC_COLOR ||
 			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERROR_VALUE ||
-			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE)) {
-			if (IsCssOperValue(sc.ch)) {
+			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE ||
+			 sc.state == SCE_CSS_IMPORTANT)) {
+			
+			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
+				sc.SetState(SCE_CSS_IMPORTANT);
+				while (IsASpace(sc.chNext))
+					sc.Forward();
+				continue;
+			} else if (IsCssOperValue(sc.ch)) {
 				if (!sc.Match('/', '*') && !sc.Match('/', '/')) {
 					sc.SetState(SCE_CSS_OPER_VALUE);
 					continue;
@@ -548,7 +564,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
 			sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
 			sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
-			sc.state == SCE_CSS_IMPORTANT ||
 			sc.state == SCE_CSS_DIRECTIVE
 		)) {
 			char s[100];
@@ -590,10 +605,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						sc.ChangeState(SCE_CSS_EXTENDED_PSEUDOELEMENT);
 					else
 						sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
-					break;
-				case SCE_CSS_IMPORTANT:
-					if (strcmp(s2, "important") != 0)
-						sc.ChangeState(SCE_CSS_VALUE);
 					break;
 				case SCE_CSS_DIRECTIVE:
 					if (op == '@' && strcmp(s2, "media") == 0)
