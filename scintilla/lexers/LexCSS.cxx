@@ -426,8 +426,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		
 		// esh: number, hexadec-color, named-color, dimension
 		switch (sc.state) {
-			// esh: with SCE_CSS_DIRECTIVE incorrect highlighting:
-			// @namespace svg url(http://www.w3.org/2000/svg);
+			//~ using highlighting for directive values is not debugged
 			//~ case SCE_CSS_DIRECTIVE:
 			case SCE_CSS_VALUE:
 				beforeSubValState = sc.state;
