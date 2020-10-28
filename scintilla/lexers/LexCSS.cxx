@@ -120,7 +120,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	bool insideParentheses = false; // true if currently in a CSS url() or similar construct
 	
 	// esh:
-	int lastStateSubVal = -1; // before sub-value
+	int beforeSubValState = -1; // before sub-value
 	int hexadecColorLen = 0;
 	
 	// property lexer.css.scss.language
@@ -430,7 +430,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			// @namespace svg url(http://www.w3.org/2000/svg);
 			//~ case SCE_CSS_DIRECTIVE:
 			case SCE_CSS_VALUE:
-				lastStateSubVal = sc.state;
+				beforeSubValState = sc.state;
 				// Falls through.
 			case SCE_CSS_OPER_VALUE:
 				if (!IsAWordChar(sc.chPrev) &&
@@ -454,10 +454,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					int ch = 0;
 					while (i < endPos) {
 						ch = styler.SafeGetCharAt(i);
-						if (IsASpace(ch))
-							i++;
-						else
-							break;
+						if (IsASpace(ch)) i++;
+						else break;
 					}
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
@@ -527,7 +525,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					continue;
 				}
 			} else {
-				sc.SetState(lastStateSubVal);
+				sc.SetState(beforeSubValState);
 			}
 		}
 		

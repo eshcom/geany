@@ -6,6 +6,9 @@
 @define-color theme_base_color #ededed;
 @define-color borders shade(@bg_color, 0.82);
 @define-color unfocused_borders transparent;
+@namespace url(http://www.w3.org/1999/xhtml);
+@namespace svg url(http://www.w3.org/2000/svg);
+@charset "utf-8";
 
 @define-color warning_color @warning_fg_color;
 @define-color error_color @error_fg_color;
@@ -14,8 +17,9 @@
 @keyframes needs_attention_keyframes {
     0% {background-image: linear-gradient(to bottom, #fafa, #ededed 40%%,  #e0e0e0); border-color: @borders; }
     /* can't do animation-direction, so holding the color on two keyframes */
-    30% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
-    90% {background-image: linear-gradient(to bottom, @theme_base_color); border-color: @theme_fg_color; }
+    30% {background-image: linear-gradient
+										(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
+    90% {background-image: linear-gradient (to bottom, @theme_base_color); border-color: @theme_fg_color; }
     100% {background-image: linear-gradient( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
 }
 .nautilus-operations-button-needs-attention {
@@ -77,6 +81,29 @@ UnityDecoration.top:backdrop {
 @define-color disk_space_unknown #888a85;
 @define-color disk_space_used #729fcf;
 @define-color disk_space_free #eeeeec;
+
+.btn {
+  @apply font-bold py-2 px-4 rounded !important;
+}
+
+@screen md {
+  .btn {
+    @apply inline-block;
+  }
+}
+
+@variants focus, hover {
+  .rotate-0 {
+    transform: rotate(0deg);
+  }
+  .rotate-90 {
+    transform: rotate(90deg);
+  }
+}
+
+@page :first {
+  margin: 2cm;
+}
 
 .disk-space-display.unknown {
     background-color: @disk_space_unknown;
@@ -243,8 +270,6 @@ p {
   --my-color: '#FF0000';
 }
 
-@namespace svg url(http://www.w3.org/2000/svg);
-
 @font-face {
   font-family: "Open Sans";
   src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
@@ -260,6 +285,39 @@ p {
 
   @media print { display: block; }
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  div.dialog_container div.dialog_window {
+    top: 0;
+    margin-top: 71px; }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px),
+       only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+  .mobile {
+    display: inherit;
+  }
+}
+
+@media print {
+  body { font-size: 10pt }
+}
+@media screen {
+  body { font-size: 13px }
+}
+@media screen, print {
+  body { line-height: 1.2 }
+}
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    body { line-height: 1.4 }
+}
+
+@media print {div.crosslinks {visibility:hidden;}}
+
+@media print { pre { font-size: 60% } }
 
 @mixin corner-icon($name, $top-or-bottom, $left-or-right) {
   .icon-#{$name} {
