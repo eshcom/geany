@@ -461,7 +461,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
 					} else {
-						char ncol[50];
+						char ncol[100];
 						sc.GetCurrentLowered(ncol, sizeof(ncol));
 						char *ncol2 = ncol;
 						while (*ncol2 && !IsAWordChar(*ncol2))
