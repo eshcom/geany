@@ -434,8 +434,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				lastStateSubVal = sc.state;
 				// Falls through.
 			case SCE_CSS_OPER_VALUE:
-				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-					((sc.ch == '+' || sc.ch == '-') && IsADigit(sc.chNext))) {
+				if (!IsAWordChar(sc.chPrev) &&
+					(IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+					 ((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
+														 IsADigit(sc.chNext))))) {
 					sc.SetState(SCE_CSS_NUMBER);
 					continue;
 				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {

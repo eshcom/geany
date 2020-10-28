@@ -47,16 +47,19 @@ UnityDecoration.top:backdrop {
     box-shadow: inset 0 0 transparent, inset 0 0,
                 inset 0 1px #474642, inset 0 0 transparent;
     color: #807d78;
+    src: url(http://test.com/2020/q?id=12);
+    top: -.3em;
+    background-image:url(data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=);
 }
 
 .floating-bar {
   padding: 2px;
-  background-color: @theme_base_color bold!important;
+  background-color: @theme_base_color bold !important;
   border-width: 1px;
-  border-style: solid solid!important none @theme_base_color;
+  border-style: solid solid @theme_base_color;
   border-color: @borders;
-  border-radius: 3px 3px 0 0;
-  color: @theme_base_color!important;
+  border-radius: 3px 3px 0 0kHz;
+  color: @theme_base_color !important;
 }
 
 @define-color disk_space_unknown #888a85;
