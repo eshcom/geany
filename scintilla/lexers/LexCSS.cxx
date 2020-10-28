@@ -65,7 +65,8 @@ static inline bool IsAWordOrSpace(int ch) {
 }
 
 inline bool IsCssOperValue(const int ch) {
-	return ch == '(' || ch == ')' || ch == ',' || ch == '/';
+	return ch == '(' || ch == ')' || ch == ',' ||
+		   ch == '/' || ch == '.' || ch == ':';
 }
 
 inline bool IsCssOperator(const int ch) {
@@ -520,7 +521,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.Forward();
 				continue;
 			} else if (IsCssOperValue(sc.ch)) {
-				if (!sc.Match('/', '*') && !sc.Match('/', '/')) {
+				if (!sc.Match('/', '*') && !(sc.Match('/', '/') &&
+											 !insideParentheses)) {
 					sc.SetState(SCE_CSS_OPER_VALUE);
 					continue;
 				}
