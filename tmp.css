@@ -37,7 +37,7 @@
 }
 
 UnityDecoration.top:backdrop {
-    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */;
+    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */
     border-bottom-width: 0;
     background-color: transparent!importan;
     background-clip: border-box;
@@ -50,6 +50,9 @@ UnityDecoration.top:backdrop {
     src: url(http://test.com/2020/q?id=12);
     top: -.3em;
     background-image:url(data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=);
+    background-image: url(file.png);
+    background-image: url(images/background.gif);
+    background-image: url(http://www.w3.org/2000/svg);
 }
 
 .floating-bar {
