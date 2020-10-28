@@ -41,7 +41,7 @@ static inline bool IsDimension(const char* s) {
 			strcmp(s, "pt") == 0 || strcmp(s, "pc") == 0 ||
 			strcmp(s, "in") == 0 || strcmp(s, "ft") == 0 ||
 			strcmp(s, "mm") == 0 || strcmp(s, "cm") == 0 ||
-			strcmp(s, "Hz") == 0 || strcmp(s, "kHz") == 0 ||
+			strcmp(s, "hz") == 0 || strcmp(s, "khz") == 0 ||
 			strcmp(s, "deg") == 0 || strcmp(s, "rad") == 0 ||
 			strcmp(s, "grad") == 0 || strcmp(s, "s") == 0 ||
 			strcmp(s, "ms") == 0 || strcmp(s, "turn") == 0);
