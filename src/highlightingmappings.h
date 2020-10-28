@@ -402,6 +402,7 @@ static const HLStyle highlighting_styles_CSS[] =
 	{ SCE_CSS_HEXADEC_COLOR,			"hexadec_color",			FALSE },
 	{ SCE_CSS_ERROR_VALUE,				"error_value",				FALSE },
 	{ SCE_CSS_OPER_VALUE,				"oper_value",				FALSE },
+	{ SCE_CSS_URL_VALUE,				"url_value",				FALSE },
 	{ SCE_CSS_FUNCTION,					"function",					FALSE }
 };
 static const HLKeyword highlighting_keywords_CSS[] =

@@ -65,8 +65,7 @@ static inline bool IsAWordOrSpace(int ch) {
 }
 
 inline bool IsCssOperValue(const int ch) {
-	return ch == '(' || ch == ')' || ch == ',' ||
-		   ch == '/' || ch == ':';
+	return ch == '(' || ch == ')' || ch == ',' || ch == '/';
 }
 
 inline bool IsCssOperator(const int ch) {
@@ -459,13 +458,17 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
 					} else {
-						char ncol[100];
-						sc.GetCurrentLowered(ncol, sizeof(ncol));
-						char *ncol2 = ncol;
-						while (*ncol2 && !IsAWordChar(*ncol2))
-							ncol2++;
-						if (namedColors.InList(ncol2))
+						char word[100];
+						sc.GetCurrentLowered(word, sizeof(word));
+						char *word2 = word;
+						while (*word2 && !IsAWordChar(*word2))
+							word2++;
+						if (namedColors.InList(word2)) {
 							sc.ChangeState(SCE_CSS_NAMED_COLOR);
+						} else if (insideParentheses && strcmp(word2, "http") == 0) {
+							sc.ChangeState(SCE_CSS_URL_VALUE);
+							continue;
+						}
 					}
 				}
 				break;
@@ -494,17 +497,22 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				if (hexadecColorLen != 3 && hexadecColorLen != 6)
 					sc.ChangeState(SCE_CSS_ERROR_VALUE);
 				break;
-			case SCE_CSS_IMPORTANT:
-				if (IsAWordChar(sc.ch))
-					continue;
-				char imp[100];
-				sc.GetCurrentLowered(imp, sizeof(imp));
-				char *imp2 = imp;
-				while (*imp2 && !IsAWordChar(*imp2))
-					imp2++;
-				if (strcmp(imp2, "important") != 0)
-					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+			case SCE_CSS_IMPORTANT: {
+					if (IsAWordChar(sc.ch))
+						continue;
+					char imp[100];
+					sc.GetCurrentLowered(imp, sizeof(imp));
+					char *imp2 = imp;
+					while (*imp2 && !IsAWordChar(*imp2))
+						imp2++;
+					if (strcmp(imp2, "important") != 0)
+						sc.ChangeState(SCE_CSS_ERROR_VALUE);
+				}
 				break;
+			case SCE_CSS_URL_VALUE:
+				if (sc.ch == ')')
+					sc.SetState(SCE_CSS_OPER_VALUE);
+				continue;
 		}
 		if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_NUMBER ||
 			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEXADEC_COLOR ||
@@ -517,7 +525,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				while (IsASpace(sc.chNext))
 					sc.Forward();
 				continue;
-			} else if (IsCssOperValue(sc.ch)) {
+			} else if (IsCssOperValue(sc.ch) || ((sc.ch == ':' || sc.ch == ';') &&
+												 insideParentheses)) {
 				if (!sc.Match('/', '*') && !(sc.Match('/', '/') &&
 											 !insideParentheses)) {
 					sc.SetState(SCE_CSS_OPER_VALUE);
