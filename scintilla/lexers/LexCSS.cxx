@@ -119,8 +119,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	bool insideParentheses = false; // true if currently in a CSS url() or similar construct
 	
 	// esh:
-	int beforeSubValState = -1; // before sub-value
 	int hexadecColorLen = 0;
+	bool isDirectiveVal = false;
 	
 	// property lexer.css.scss.language
 	// Set to 1 for Sassy CSS (.scss)
@@ -425,11 +425,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		
 		// esh: number, hexadec-color, named-color, dimension
 		switch (sc.state) {
-			//~ using highlighting for directive values is not debugged
-			//~ case SCE_CSS_DIRECTIVE:
 			case SCE_CSS_VALUE:
-				beforeSubValState = sc.state;
-				// Falls through.
 			case SCE_CSS_OPER_VALUE:
 				if (!IsAWordChar(sc.chPrev) &&
 					(IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
@@ -533,7 +529,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					continue;
 				}
 			} else {
-				sc.SetState(beforeSubValState);
+				if (isDirectiveVal && !insideParentheses &&
+					(sc.ch == ';' || sc.ch == '{')) {
+					sc.SetState(SCE_CSS_DIRECTIVE);
+					isDirectiveVal = false;
+				} else {
+					sc.SetState(SCE_CSS_VALUE);
+				}
 			}
 		}
 		
@@ -615,8 +617,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
 					break;
 				case SCE_CSS_DIRECTIVE:
-					if (op == '@' && strcmp(s2, "media") == 0)
+					if (op == '@' && strcmp(s2, "media") == 0) {
 						sc.ChangeState(SCE_CSS_MEDIA);
+					} else {
+						sc.SetState(SCE_CSS_VALUE);
+						isDirectiveVal = true;
+					}
 					break;
 			}
 		}
