@@ -66,7 +66,7 @@ static inline bool IsAWordOrSpace(int ch) {
 
 inline bool IsCssOperValue(const int ch) {
 	return ch == '(' || ch == ')' || ch == ',' ||
-		   ch == '/' || ch == '.' || ch == ':';
+		   ch == '/' || ch == ':';
 }
 
 inline bool IsCssOperator(const int ch) {
@@ -641,7 +641,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			sc.SetState((sc.ch == '\"' ? SCE_CSS_DOUBLESTRING : SCE_CSS_SINGLESTRING));
 		} else if (IsCssOperator(sc.ch)
 				   && (sc.state != SCE_CSS_ATTRIBUTE || sc.ch == ']')
-				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '}' || sc.ch == '!')
+				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '}')
 				   && ((sc.state != SCE_CSS_DIRECTIVE && sc.state != SCE_CSS_MEDIA) ||
 					   sc.ch == ';' || sc.ch == '{')) {
 			if (sc.state != SCE_CSS_OPERATOR)
