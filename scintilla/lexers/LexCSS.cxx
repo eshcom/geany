@@ -498,14 +498,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.SetState(SCE_CSS_OPER_VALUE); // fixate current state by oper-val
 					continue;
 				}
-			} else {
-				if (isDirectiveVal && !insideParentheses &&
-					(sc.ch == ';' || sc.ch == '{')) {
-					sc.SetState(SCE_CSS_DIRECTIVE); // fixate current state by directive
-					isDirectiveVal = false;
-				} else if (sc.state != SCE_CSS_VALUE) {
-					sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val
-				}
+			} else if (isDirectiveVal && !insideParentheses &&
+					   (sc.ch == ';' || sc.ch == '{')) {
+				sc.SetState(SCE_CSS_DIRECTIVE); // fixate current state by directive
+				isDirectiveVal = false;
+			} else if (sc.state != SCE_CSS_VALUE) {
+				sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val
 			}
 		}
 		
