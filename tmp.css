@@ -216,11 +216,6 @@ GtkComboBox.combobox-entry .button {
 }
 
 @font-face {
-  font-family: 'CustomFont';
-  url('webfont.woff') format('woff');
-}
-
-@font-face {
   font-family: 'Helvetica';
   src:  url('Helvetica') format('woff'),
         local('Helvetica.woff') format('woff');
