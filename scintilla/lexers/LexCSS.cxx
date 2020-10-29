@@ -189,7 +189,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						break;
 				}
 			}
-			switch (op) {
+			switch (op) { // esh: lastState before this oper
 				case '@':
 					sc.SetState(SCE_CSS_DIRECTIVE);
 					break;
@@ -585,7 +585,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					if (op == '@' && strcmp(s2, "media") == 0) {
 						sc.ChangeState(SCE_CSS_MEDIA);
 					} else if (sc.ch != ';' && sc.ch != '{') { // esh: exclude directive like @content;
-						sc.SetState(SCE_CSS_VALUE);
+						sc.SetState(SCE_CSS_VALUE); // fixate directive by val
 						isDirectiveVal = true;
 					}
 					break;
