@@ -122,7 +122,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	int hexadecColorLen = 0;
 	bool isDirectiveVal = false;
 	
-	// SCSS/LESS/HSS support single-line comments	
+	// SCSS/LESS/HSS support single-line comments
 	typedef enum _CommentModes { eCommentBlock = 0, eCommentLine = 1} CommentMode;
 	CommentMode comment_mode = eCommentBlock;
 	
@@ -310,21 +310,20 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_VALUE:
 							// data URLs can have semicolons; simplistically check 
 							// for wrapping parentheses and move along
-							if (insideParentheses) { // esh: oper ';' inside parentheses inside val/..important
+							if (insideParentheses) { // esh: oper ';' inside parentheses inside val
 								sc.SetState(lastState);
 							} else {
 								// esh: beforeValState can be var or ident
-								if (beforeValState == SCE_CSS_VARIABLE) { // esh: (var: val;) or (var: ..important;)
+								if (beforeValState == SCE_CSS_VARIABLE) { // esh: (var: val;)
 									sc.SetState(SCE_CSS_DEFAULT);
-								} else {
+								} else {								  // esh: (ident: val;)
 									sc.SetState(SCE_CSS_IDENTIFIER);
 								}
 							}
 							break;
 						case SCE_CSS_VARIABLE:
-							// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
-							if (beforeVarState == SCE_CSS_VALUE || // esh: if (var) inside (val;)
-								beforeVarState == SCE_CSS_OPER_VALUE) {
+							// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_VALUE
+							if (beforeVarState == SCE_CSS_VALUE) { // esh: if (var) inside (val;)
 								// data URLs can have semicolons; simplistically check
 								// for wrapping parentheses and move along
 								if (insideParentheses) { // esh: var and oper ';' inside parentheses inside (val;)
@@ -359,10 +358,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case SCE_CSS_DEFAULT:
 					if (sc.ch == '@') // give priority to pseudo elements for LESS
 						break;
-					// Falls through.
-				case SCE_CSS_VALUE:
-				case SCE_CSS_OPER_VALUE:
-					beforeVarState = sc.state;
+					beforeVarState = SCE_CSS_DEFAULT;
+					sc.SetState(SCE_CSS_VARIABLE);
+					continue;
+				case SCE_CSS_VALUE:			// esh: var inside val
+				case SCE_CSS_OPER_VALUE:	// esh: var inside val after oper-val
+					beforeVarState = SCE_CSS_VALUE; // esh: oper-val is part of val
 					sc.SetState(SCE_CSS_VARIABLE);
 					continue;
 			}
@@ -372,9 +373,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				// still looking at the variable name
 				continue;
 			}
-			// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
-			if (beforeVarState == SCE_CSS_VALUE ||
-				beforeVarState == SCE_CSS_OPER_VALUE) {
+			// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_VALUE
+			if (beforeVarState == SCE_CSS_VALUE) {
 				// not looking at the variable name any more, and it was part of a value
 				sc.SetState(SCE_CSS_VALUE);
 			}
