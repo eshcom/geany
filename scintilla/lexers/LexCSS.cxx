@@ -621,24 +621,26 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
 				sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS
 			))
-		))
-			sc.SetState(SCE_CSS_TAG);
+		)) sc.SetState(SCE_CSS_TAG);
 		
 		if (sc.Match('/', '*')) {
 			lastStateC = sc.state;
 			comment_mode = eCommentBlock;
 			sc.SetState(SCE_CSS_COMMENT);
 			sc.Forward();
+			
 		} else if (sc.Match('/', '/') && !insideParentheses) {
 			// note that we've had to treat ([...]// as the start of a URL not a comment, e.g. url(http://example.com), url(//example.com)
 			lastStateC = sc.state;
 			comment_mode = eCommentLine;
 			sc.SetState(SCE_CSS_COMMENT);
 			sc.Forward();
+			
 		} else if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_ATTRIBUTE)
 				   && (sc.ch == '\"' || sc.ch == '\'')) {
 			lastStateS = sc.state;
 			sc.SetState((sc.ch == '\"' ? SCE_CSS_DOUBLESTRING : SCE_CSS_SINGLESTRING));
+			
 		} else if (IsCssOperator(sc.ch)
 				   && (sc.state != SCE_CSS_ATTRIBUTE || sc.ch == ']')
 				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '}')
