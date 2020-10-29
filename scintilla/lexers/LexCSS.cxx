@@ -582,7 +582,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case SCE_CSS_DIRECTIVE:
 					if (op == '@' && strcmp(s2, "media") == 0) {
 						sc.ChangeState(SCE_CSS_MEDIA);
-					} else {
+					} else if (sc.ch != ';' && sc.ch != '{') { // esh: exclude directive like @content;
 						sc.SetState(SCE_CSS_VALUE);
 						isDirectiveVal = true;
 					}
