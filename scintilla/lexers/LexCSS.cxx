@@ -109,6 +109,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
+	Sci_PositionU endPos = startPos + length;
+	
 	int lastState = -1; // before operator
 	int lastStateC = -1; // before comment
 	int lastStateS = -1; // before single-quoted/double-quoted string
@@ -414,17 +416,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					
 				} else if (IsAWordChar(sc.chPrev)) {
 					// look ahead to see '('
-					Sci_PositionU i = sc.currentPos;
-					Sci_PositionU endPos = startPos + length;
 					int ch = 0;
-					while (i < endPos) {
+					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 						ch = styler.SafeGetCharAt(i);
 						if (IsASpace(ch)) i++;
 						else break;
 					}
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
-						
 					} else {
 						char word[100];
 						sc.GetCurrentLowered(word, sizeof(word));
@@ -496,8 +495,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			
 			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state by important
-				
-				Sci_PositionU endPos = startPos + length;
 				while (sc.currentPos < endPos && IsASpace(sc.chNext))
 					sc.Forward();
 				continue;
@@ -518,9 +515,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		if (sc.state == SCE_CSS_IDENTIFIER &&
 			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
 			// look ahead to see whether { comes before next ; and }
-			Sci_PositionU endPos = startPos + length;
 			int ch;
-			
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 				ch = styler.SafeGetCharAt(i);
 				if (ch == ';' || ch == '}')
@@ -594,7 +589,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					if (op == '@' && strcmp(s2, "media") == 0)
 						sc.ChangeState(SCE_CSS_MEDIA);
 					
-					Sci_PositionU endPos = startPos + length;
 					while (sc.currentPos < endPos && IsASpace(sc.ch))
 						sc.Forward();
 					break;
@@ -665,13 +659,16 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length, int,
 					   WordList *[], Accessor &styler) {
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
+	
 	int levelPrev = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
 	bool inComment = (styler.StyleAt(startPos-1) == SCE_CSS_COMMENT);
+	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
