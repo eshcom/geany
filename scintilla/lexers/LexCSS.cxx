@@ -393,21 +393,25 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		switch (sc.state) {
 			case SCE_CSS_VALUE:			// sub-val: solid, linear, transparent, ...
 			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
+				
 				if (!IsAWordChar(sc.chPrev) &&
 					(IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 					 ((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
 														 IsADigit(sc.chNext))))) {
 					sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
 					continue;
+					
 				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
 					hexadecColorLen = 0;
 					sc.SetState(SCE_CSS_HEXADEC_COLOR); // fixate sub-val/oper-val by hexadec-color
 					continue;
+					
 				} else if (IsAWordChar(sc.ch)) {
 					// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
 					if (sc.state != SCE_CSS_VALUE)	// if current state -> oper-val:
 						sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val
 					continue;
+					
 				} else if (IsAWordChar(sc.chPrev)) {
 					// look ahead to see '('
 					Sci_PositionU i = sc.currentPos;
@@ -420,6 +424,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					}
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
+						
 					} else {
 						char word[100];
 						sc.GetCurrentLowered(word, sizeof(word));
@@ -441,6 +446,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			case SCE_CSS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
 					continue;
+				
 				if (IsAWordOrPercent(sc.ch)) {
 					sc.SetState(SCE_CSS_DIMENSION);
 					continue;
@@ -449,6 +455,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			case SCE_CSS_DIMENSION: {
 					if (IsAWordOrPercent(sc.ch))
 						continue;
+					
 					char dim[10];
 					sc.GetCurrentLowered(dim, sizeof(dim));
 					if (!IsDimension(dim))
@@ -466,6 +473,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			case SCE_CSS_IMPORTANT: {
 					if (IsAWordChar(sc.ch))
 						continue;
+					
 					char imp[100];
 					sc.GetCurrentLowered(imp, sizeof(imp));
 					char *imp2 = imp;
@@ -488,9 +496,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			
 			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state by important
-				while (IsASpace(sc.chNext))
+				
+				Sci_PositionU endPos = startPos + length;
+				while (sc.currentPos < endPos && IsASpace(sc.chNext))
 					sc.Forward();
 				continue;
+				
 			} else if (IsCssOperValue(sc.ch) || ((sc.ch == ':' || sc.ch == ';') &&
 												 insideParentheses)) {
 				if (!sc.Match('/', '*') && !(sc.Match('/', '/') &&
@@ -563,6 +574,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					else
 						sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
 					break;
+					
 				case SCE_CSS_PSEUDOCLASS:
 				case SCE_CSS_PSEUDOELEMENT:
 				case SCE_CSS_EXTENDED_PSEUDOCLASS:
@@ -581,12 +593,20 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					else
 						sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
 					break;
+					
 				case SCE_CSS_DIRECTIVE:
 					if (op == '@' && strcmp(s2, "media") == 0) {
 						sc.ChangeState(SCE_CSS_MEDIA);
-					} else if (sc.ch != ';' && sc.ch != '{') { // esh: exclude directive like @content;
-						sc.SetState(SCE_CSS_VALUE); // fixate directive by val
-						isDirectiveVal = true;
+						
+					} else {
+						Sci_PositionU endPos = startPos + length;
+						while (sc.currentPos < endPos && IsASpace(sc.ch))
+							sc.Forward();
+						
+						if (sc.ch != ';' && sc.ch != '{') {
+							sc.SetState(SCE_CSS_VALUE); // fixate directive by val
+							isDirectiveVal = true;
+						}
 					}
 					break;
 			}
