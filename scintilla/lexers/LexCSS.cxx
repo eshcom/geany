@@ -509,10 +509,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.SetState(SCE_CSS_OPER_VALUE); // fixate current state by oper-val
 					continue;
 				}
-			} else if (isDirectiveVal && !insideParentheses &&
-					   (sc.ch == ';' || sc.ch == '{')) {
-				sc.SetState(SCE_CSS_DIRECTIVE); // fixate current state by directive
-				isDirectiveVal = false;
 			} else if (sc.state != SCE_CSS_VALUE) {
 				sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val
 			}
@@ -595,21 +591,30 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					break;
 					
 				case SCE_CSS_DIRECTIVE:
-					if (op == '@' && strcmp(s2, "media") == 0) {
+					if (op == '@' && strcmp(s2, "media") == 0)
 						sc.ChangeState(SCE_CSS_MEDIA);
-						
-					} else {
-						Sci_PositionU endPos = startPos + length;
-						while (sc.currentPos < endPos && IsASpace(sc.ch))
-							sc.Forward();
-						
-						if (sc.ch != ';' && sc.ch != '{') {
-							sc.SetState(SCE_CSS_VALUE); // fixate directive by val
-							isDirectiveVal = true;
-						}
-					}
+					
+					Sci_PositionU endPos = startPos + length;
+					while (sc.currentPos < endPos && IsASpace(sc.ch))
+						sc.Forward();
 					break;
 			}
+		}
+		
+		switch (sc.state) {
+			case SCE_CSS_DIRECTIVE:
+				if (sc.ch != ';' && sc.ch != '{') {
+					// esh: set next state for directive
+					sc.SetState(SCE_CSS_VALUE); // fixate directive by val
+					isDirectiveVal = true;
+				}
+				break;
+			case SCE_CSS_VALUE:
+				if (isDirectiveVal && (sc.ch == ';' || sc.ch == '{')) {
+					sc.ChangeState(SCE_CSS_DIRECTIVE);
+					isDirectiveVal = false;
+				}
+				break;
 		}
 		
 		if (sc.ch != '.' && sc.ch != ':' && sc.ch != '#' && (
