@@ -419,8 +419,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					int ch = 0;
 					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 						ch = styler.SafeGetCharAt(i);
-						if (IsASpace(ch)) i++;
-						else break;
+						if (!IsASpace(ch)) break;
 					}
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
