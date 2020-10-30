@@ -359,8 +359,36 @@ p {
     #{$left-or-right}: 0;
 }
 
+body-#{$name}, .icon-#{$name} {
+    background-image: url("/icons/#{$name}.svg");
+    position: absolute;
+    #{$top-or-bottom}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+}
+
 @mixin corner-icon($name, $top-or-bottom, $left-or-right) {
+  body-#{$name} {
+    background-image: url("/icons/#{$name}.svg");
+    position: absolute;
+    #{$top-or-bottom}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+  }
   .icon-#{$name} {
+    background-image: url("/icons/#{$name}.svg");
+    position: absolute;
+    #{$top-or-bottom}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+  }
+  body-#{$name} {
     background-image: url("/icons/#{$name}.svg");
     position: absolute;
     #{$top-or-bottom}: 0;

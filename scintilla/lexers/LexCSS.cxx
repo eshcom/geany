@@ -289,7 +289,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						lastState == SCE_CSS_CLASS || lastState == SCE_CSS_ID ||
 						lastState == SCE_CSS_PSEUDOCLASS ||
 						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS)
+						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
+						lastState == SCE_CSS_IDENTIFIER) // esh: after '@dir {'
 						sc.SetState(SCE_CSS_CLASS);
 					break;
 				case '#':
