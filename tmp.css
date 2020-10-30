@@ -2,20 +2,50 @@
  * Some applications depend on these named colors.
  */
 
-@define-color theme_fg_color @fg_color;
-@define-color theme_base_color #ededed;
-@define-color borders shade(@bg_color, 0.82);
+p {
+  transition: "dfg";
+  transition: #{a};
+  transition: #{a};
+}
+
+.example {
+  unquoted: #{"string"};
+  unquoted: #{"string"};
+}
+
+@define-color theme_fg_color /**/ @fg_color;
+@define-color theme_base_color /**/ #ededed;
+@define-color borders shade(/**/@bg_color/**/, /**/ 0.82/**/);
+@define-color borders shade(/**/#ededed/**/, /**/0.82/**/);
+@define-color borders /**/ shade(/**/red/**/, 0.82);
+@define-color borders shade(solid, 0.82);
+@define-color borders shade (solid rgba(14/**/,/**/ 13, 0, 0.03)/**/,/**/ 0.82);
 @define-color unfocused_borders transparent;
 @namespace url(http://www.w3.org/1999/xhtml);
 @namespace svg url(http://www.w3.org/2000/svg);
+@namespace var1 /**/ , var2, var3 url(http://www.w3.org/2000/svg);
+@namespace var1, // var1
+		   var2, /* var2 */
+		   var3  /* var3 */,
+		   var4  // var4
+		   url(http://www.w3.org/2000/svg);
 @charset "utf-8";
+@keyframes1 ;
+@keyframes1 /**/;
+@keyframes2 /**/sdfsdf;
+@keyframes2 /**/sdfsdf/**/;
+@keyframes3 /**/@keyframes/**/;
+@keyframes3 /**/40%/**/;
+@keyframes3 /**/3s/**/;
+@keyframes3 test1(/**/to bottom/**/);
+@keyframes3 test2(/**/"to bottom"/**/);
 
-@define-color warning_color @warning_fg_color;
+@define-color /**/warning_color /**/@warning_fg_color/**/;
 @define-color error_color @error_fg_color;
 @define-color success_color @success_color;
 
 @keyframes needs_attention_keyframes {
-    0% {background-image: linear-gradient(to bottom, #fafa, #ededed 40%%,  #e0e0e0); border-color: @borders; }
+    0% {background-image: linear-gradient(to bottom, #fafa, @keyframes 40%%,  #e0e0e0); border-color: @borders; }
     /* can't do animation-direction, so holding the color on two keyframes */
     30% {background-image: linear-gradient
 										(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
@@ -317,27 +347,67 @@ p {
 
 @media print { pre { font-size: 60% } }
 
+@keyframes2 url("/icons/#{$name}.svg");
+
+.icon-#{$name}, body-#{$name} {
+    background-image: url("/icons/#{$name}.svg");
+    position: absolute;
+    #{$top-or-bottom}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+}
+
 @mixin corner-icon($name, $top-or-bottom, $left-or-right) {
   .icon-#{$name} {
     background-image: url("/icons/#{$name}.svg");
     position: absolute;
     #{$top-or-bottom}: 0;
+    animation-name: inline-#{unique-id()};
+    #{$left-or-right}: 0;
+    animation-name: inline-#{unique-id()};
     #{$left-or-right}: 0;
   }
 }
 
 @include corner-icon("mail", top, left);
+@   content;
+@content2 ;
+@	test fd ;
+@test2 dsfsdf;
+
+@mixin {
+  animation-name: inline-#{unique-id()};
+  animation-name: inline-#{unique-id()};
+  animation-name: inline-#{unique-id()};
+  animation-name: unique-id();
+  animation-name: "test";
+}
 
 @mixin inline-animation($duration) {
   $name: inline-#{unique-id()};
+  $name: inline-#{};
+  $name: inline-#{unique-id()};
+  $name: inline-#{ };
+  $name: unique-id();
+  $name: unique-id(  );
+  $name: unique-id(df);
+  $name: "test";
 
   @keyframes #{$name} {
-    @content;
+	@content;
+	@content2 ;
+	@test fd ;
+	@test2 dsfsdf;
   }
 
   animation-name: $name;
   animation-duration: $duration;
   animation-iteration-count: infinite;
+  $name: unique-id();
+  $name: test;
+  $name: "test";
 }
 
 .pulse {
@@ -347,6 +417,112 @@ p {
   }
 }
 
-.example {
-  unquoted: #{"string"};
+table.colortable td {
+  text-align:center;
 }
+table.colortable td.c {
+  text-transform:uppercase;
+}
+table.colortable td:first-child, table.colortable td:first-child+td {
+  border:1px solid black;
+}
+table.colortable th {
+  text-align:center;
+  background:black;
+  color:white;
+}
+
+table.colortable {
+  & td {
+    text-align:center;
+    &.c { text-transform:uppercase }
+    &:first-child, &:first-child + td { border:1px solid black }
+  }
+  & th {
+    text-align:center;
+    background:black;
+    color:white;
+  }
+}
+
+a, b {
+  & c { color: blue; }
+}
+
+:matches(a, b) c { color: blue; }
+
+#a, .b {
+  & c { color: blue; }
+}
+
+.foo {
+  color: blue;
+  & > .bar { color: red; }
+}
+
+.foo {
+  color: blue;
+  &.bar { color: red; }
+}
+
+.foo, .bar {
+  color: blue;
+  & + .baz, &.qux { color: red; }
+}
+
+.foo {
+  color: red;
+  @nest & > .bar {
+    color: blue;
+  }
+}
+
+.foo {
+  color: red;
+  @nest .parent & {
+    color: blue;
+  }
+}
+
+.foo {
+  color: red;
+  @nest :not(&) {
+    color: blue;
+  }
+}
+
+.post .title, .post .alt-title  {
+  color: #000000;
+  font-size:20px;
+}
+.post .alt-title {
+  border-bottom:1px solid #EFC6F3;
+}
+
+$border: 1px solid #EFC6F3;
+.post {
+  border-radius: 3px;
+  background: #FFF8FF;
+  border: $border;
+  padding: 15px;
+  color: #333333;
+  .title {
+    color: #000000;
+    font-size: 20px;
+  }
+  .alt-title {
+    @extend .title;
+    border-bottom: $border;
+  }
+}
+
+@mixin define-emoji($name, $glyph) {
+  span.emoji-#{$name} {
+    font-family: IconFont;
+    font-variant: normal;
+    font-weight: normal;
+    content: $glyph;
+  }
+}
+
+@include define-emoji("women-holding-hands", "👭");
