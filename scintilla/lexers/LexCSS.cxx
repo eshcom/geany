@@ -122,7 +122,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	
 	// esh:
 	int hexadecColorLen = 0;
-	bool isDirectiveVal = false;
+	bool isDirectiveVal = false; // @dir var1, var2 val (where: var1, var2 val - isDirectiveVal)
+	bool isSubVar = false;	// example: #{$name}, where $name - var
+							//          #{unique-id()}, where unique-id() - func
+	int beforeSubVarState = -1;
 	
 	// SCSS/LESS/HSS support single-line comments
 	typedef enum _CommentModes { eCommentBlock = 0, eCommentLine = 1} CommentMode;
@@ -353,6 +356,26 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		else if (sc.ch == ')')
 			insideParentheses = false;
 		
+		// esh: sub-var
+		if (sc.Match('#', '{')) {
+			beforeSubVarState = sc.state;
+			sc.SetState(SCE_CSS_OPER_VALUE);
+			sc.Forward();
+			sc.Forward();
+			if (sc.ch == '}') {
+				sc.ForwardSetState(beforeSubVarState);
+			} else {
+				sc.SetState(SCE_CSS_VALUE);
+				isSubVar = true;
+			}
+			
+		} else if (isSubVar && sc.ch == '}') {
+			sc.SetState(SCE_CSS_OPER_VALUE);
+			sc.Forward();
+			sc.SetState(beforeSubVarState);
+			isSubVar = false;
+		}
+		
 		// variable name
 		// esh: @ - for LESS, $ - for SCSS/HSS
 		if ((sc.ch == '@' || sc.ch == '$') && IsAWordChar(sc.chNext)) {
@@ -512,14 +535,16 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		
 		// check for nested rule selector (SCSS/LESS)
 		if (sc.state == SCE_CSS_IDENTIFIER &&
-			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
+			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
+			 (sc.ch == '#' && sc.chNext != '{'))) {
 			// look ahead to see whether { comes before next ; and }
-			int ch;
+			int ch, chPrev;
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 				ch = styler.SafeGetCharAt(i);
 				if (ch == ';' || ch == '}')
 					break;
-				if (ch == '{') {
+				chPrev = styler.SafeGetCharAt(i-1);
+				if (ch == '{' && chPrev != '#') {
 					sc.SetState(SCE_CSS_DEFAULT);
 					continue;
 				}
