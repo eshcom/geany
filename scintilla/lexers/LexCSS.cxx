@@ -587,20 +587,15 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case SCE_CSS_DIRECTIVE:
 					if (op == '@' && strcmp(s2, "media") == 0)
 						sc.ChangeState(SCE_CSS_MEDIA);
-					
-					while (sc.currentPos < endPos && IsASpace(sc.ch))
-						sc.Forward();
 					break;
 			}
 		}
 		
 		switch (sc.state) {
 			case SCE_CSS_DIRECTIVE:
-				if (sc.ch != ';' && sc.ch != '{') {
-					// esh: set next state for directive
-					sc.SetState(SCE_CSS_VALUE); // fixate directive by val
-					isDirectiveVal = true;
-				}
+				// esh: set next state for directive
+				sc.SetState(SCE_CSS_VALUE); // fixate directive by val
+				isDirectiveVal = true;
 				break;
 			case SCE_CSS_VALUE:
 				if (isDirectiveVal && (sc.ch == ';' || sc.ch == '{')) {
