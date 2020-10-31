@@ -435,7 +435,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				} else if (IsAWordChar(sc.ch)) {
 					// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
 					if (sc.state != SCE_CSS_VALUE)	// if current state -> oper-val:
-						sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val
+						sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default)
 					continue;
 					
 				} else if (IsAWordChar(sc.chPrev)) {
@@ -460,7 +460,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 							sc.ChangeState(SCE_CSS_URL_VALUE);
 							continue;
 						} else {
-							sc.SetState(SCE_CSS_VALUE); // fixate sub-val by sub-val
+							sc.SetState(SCE_CSS_VALUE); // fixate sub-val by sub-val (by default)
 						}
 					}
 				}
@@ -514,7 +514,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEXADEC_COLOR ||
 			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERROR_VALUE ||
 			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE ||
-			 sc.state == SCE_CSS_IMPORTANT)) {
+			 sc.state == SCE_CSS_IMPORTANT)) { // TODO: refactoring: invert conditions
 			
 			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state by important
@@ -530,7 +530,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					continue;
 				}
 			} else if (sc.state != SCE_CSS_VALUE) {
-				sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val
+				sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val (by default)
 			}
 		}
 		
@@ -540,14 +540,24 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			 (sc.ch == '#' && sc.chNext != '{'))) {
 			// look ahead to see whether { comes before next ; and }
 			int ch, chPrev;
+			int subVarLevel = 0;
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 				ch = styler.SafeGetCharAt(i);
-				if (ch == ';' || ch == '}')
+				if (ch == ';' || ch == '}') {
+					if (ch == '}' && subVarLevel > 0) {
+						subVarLevel--;
+						continue;
+					}
 					break;
+				}
 				chPrev = styler.SafeGetCharAt(i-1);
-				if (ch == '{' && chPrev != '#') {
-					sc.SetState(SCE_CSS_DEFAULT);
-					continue;
+				if (ch == '{') {
+					if (chPrev == '#') {
+						subVarLevel++;
+					} else if (subVarLevel == 0) {
+						sc.SetState(SCE_CSS_DEFAULT);
+						break;
+					}
 				}
 			}
 		}
