@@ -360,7 +360,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		// esh: sub-var
 		if (sc.Match('#', '{')) {
 			beforeSubVarState = sc.state;
-			sc.SetState(SCE_CSS_OPER_VALUE);
+			sc.SetState(SCE_CSS_OPERATOR);
 			sc.Forward();
 			sc.Forward();
 			if (sc.ch == '}') {
@@ -371,7 +371,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}
 			
 		} else if (isSubVar && sc.ch == '}') {
-			sc.SetState(SCE_CSS_OPER_VALUE);
+			sc.SetState(SCE_CSS_OPERATOR);
 			sc.Forward();
 			sc.SetState(beforeSubVarState);
 			isSubVar = false;
