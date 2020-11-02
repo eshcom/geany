@@ -360,7 +360,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		// esh: sub-var
 		if (sc.Match('#', '{')) {
 			beforeSubVarState = sc.state;
-			sc.SetState(SCE_CSS_OPERATOR);
+			sc.SetState(SCE_CSS_SUBVAR_OPER);
 			sc.Forward();
 			sc.Forward();
 			if (sc.ch == '}') {
@@ -371,7 +371,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}
 			
 		} else if (isSubVar && sc.ch == '}') {
-			sc.SetState(SCE_CSS_OPERATOR);
+			sc.SetState(SCE_CSS_SUBVAR_OPER);
 			sc.Forward();
 			sc.SetState(beforeSubVarState);
 			isSubVar = false;
@@ -382,9 +382,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		if ((sc.ch == '@' || sc.ch == '$') && IsAWordChar(sc.chNext)) {
 			switch (sc.state) {
 				case SCE_CSS_DEFAULT:
+				case SCE_CSS_IDENTIFIER:
 					if (sc.ch == '@') // give priority to pseudo elements for LESS
 						break;
-					beforeVarState = SCE_CSS_DEFAULT;
+					beforeVarState = sc.state;
 					sc.SetState(SCE_CSS_VARIABLE);
 					continue;
 				case SCE_CSS_VALUE:			// esh: var inside val
@@ -399,7 +400,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				// still looking at the variable name
 				continue;
 			}
-			// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_VALUE
+			// esh: beforeVarState can be SCE_CSS_DEFAULT, SCE_CSS_IDENTIFIER, SCE_CSS_VALUE
 			if (beforeVarState == SCE_CSS_VALUE) {
 				// not looking at the variable name any more, and it was part of a value
 				sc.SetState(SCE_CSS_VALUE);
@@ -475,15 +476,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				}
 				break;
 			case SCE_CSS_DIMENSION: {
-					if (IsAWordOrPercent(sc.ch))
-						continue;
-					
-					char dim[10];
-					sc.GetCurrentLowered(dim, sizeof(dim));
-					if (!IsDimension(dim))
-						sc.ChangeState(SCE_CSS_ERROR_VALUE);
-				}
-				break;
+				if (IsAWordOrPercent(sc.ch))
+					continue;
+				
+				char dim[10];
+				sc.GetCurrentLowered(dim, sizeof(dim));
+				if (!IsDimension(dim))
+					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+			}	break;
 			case SCE_CSS_HEXADEC_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexadecColorLen++;
@@ -493,18 +493,17 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					sc.ChangeState(SCE_CSS_ERROR_VALUE);
 				break;
 			case SCE_CSS_IMPORTANT: {
-					if (IsAWordChar(sc.ch))
-						continue;
-					
-					char imp[100];
-					sc.GetCurrentLowered(imp, sizeof(imp));
-					char *imp2 = imp;
-					while (*imp2 && !IsAWordChar(*imp2))
-						imp2++;
-					if (strcmp(imp2, "important") != 0)
-						sc.ChangeState(SCE_CSS_ERROR_VALUE);
-				}
-				break;
+				if (IsAWordChar(sc.ch))
+					continue;
+				
+				char imp[100];
+				sc.GetCurrentLowered(imp, sizeof(imp));
+				char *imp2 = imp;
+				while (*imp2 && !IsAWordChar(*imp2))
+					imp2++;
+				if (strcmp(imp2, "important") != 0)
+					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+			}	break;
 			case SCE_CSS_URL_VALUE:
 				if (sc.ch == ')')
 					sc.SetState(SCE_CSS_OPER_VALUE);
@@ -544,7 +543,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 				ch = styler.SafeGetCharAt(i);
 				if (ch == ';' || ch == '}') {
-					if (ch == '}' && subVarLevel > 0) {
+					if (ch == '}' && subVarLevel > 0) { // skip sub-var
 						subVarLevel--;
 						continue;
 					}
@@ -552,7 +551,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				}
 				chPrev = styler.SafeGetCharAt(i-1);
 				if (ch == '{') {
-					if (chPrev == '#') {
+					if (chPrev == '#') {				// skip sub-var
 						subVarLevel++;
 					} else if (subVarLevel == 0) {
 						sc.SetState(SCE_CSS_DEFAULT);
