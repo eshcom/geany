@@ -401,6 +401,8 @@ body-#{$name}, .icon-#{$name} {
   }
   body-#{$name} {
     background-image: url("/icons/#{$name}.svg");
+    background-image: url("/icons/#{}.svg");
+    background-image: url("/icons/#{}");
     position: absolute;
     #{$top-or-bottom}: 0;
     animation-name: inline-#{unique-id()};
