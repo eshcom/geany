@@ -69,7 +69,8 @@ inline bool IsCssOperValue(const int ch) {
 }
 
 inline bool IsCssSelectorOper(const int ch) {
-	return ch == '.' || ch == ':' || ch == '&' || ch == '>' || ch == '+';
+	return ch == '.' || ch == ':' || ch == '&' ||
+		   ch == '>' || ch == '+' || ch == '[';
 }
 
 inline bool IsCssOperator(const int ch) {
@@ -249,6 +250,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					break;
 				case '(':
 					switch (lastState) {
+						case SCE_CSS_TAG:
 						case SCE_CSS_CLASS:
 						case SCE_CSS_PSEUDOCLASS:
 						case SCE_CSS_UNKNOWN_PSEUDOCLASS:
@@ -299,7 +301,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						lastState == SCE_CSS_PSEUDOCLASS ||
 						lastState == SCE_CSS_EXTENDED_PSEUDOCLASS ||
 						lastState == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
-						lastState == SCE_CSS_IDENTIFIER) // esh: after '@dir {'
+						lastState == SCE_CSS_IDENTIFIER) // esh: after '@dir {' state is ident
 						sc.SetState(SCE_CSS_CLASS);
 					break;
 				case '#':
@@ -640,7 +642,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				int ch = 0;
 				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 					ch = styler.SafeGetCharAt(i);
-					if (IsCssOperator(ch)) break;
+					if (IsCssOperator(ch) || ch == '&') break;
 				}
 				if (IsCssSelectorOper(ch)) {
 					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default

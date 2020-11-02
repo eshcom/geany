@@ -489,8 +489,13 @@ a, b {
 }
 
 tag.matches(a, b) c { color: blue; }
+tag:pseudoclass(a, b) c { color: blue; }
+tag:pseudoclass:focus(a, b) c { color: blue; }
+tag:pseudoclass.class(a, b) c { color: blue; }
+tag::pseudoelem::pseudoelem(a, b) c { color: blue; }
 .matches(a, b) c { color: blue; }
 :focus(a, b) c { color: blue; }
+.class(a, b) c { color: blue; }
 :pseudoclass(a, b) c { color: blue; }
 ::pseudoelem(a, b) c { color: blue; }
 & + .baz(a, b), &.qux(a, b) { color: red; }
