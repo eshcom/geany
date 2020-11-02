@@ -85,6 +85,29 @@ inline bool IsCssOperator(const int ch) {
 	return false;
 }
 
+//~ esh: CheckSubVar func
+inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
+						int *beforeSubVarState) {
+	if (sc.Match('#', '{')) {
+		*beforeSubVarState = sc.state;
+		sc.SetState(SCE_CSS_SUBVAR_OPER);
+		sc.Forward();
+		sc.Forward();
+		if (sc.ch == '}') {
+			sc.ForwardSetState(*beforeSubVarState);
+		} else {
+			sc.SetState(SCE_CSS_VALUE);
+			*isSubVar = true;
+		}
+	} else if (*isSubVar && sc.ch == '}') {
+		sc.SetState(SCE_CSS_SUBVAR_OPER);
+		sc.Forward();
+		sc.SetState(*beforeSubVarState);
+		*isSubVar = false;
+	}
+	return *isSubVar;
+}
+
 // look behind (from start of document to our start position) to determine current nesting level
 inline int NestingLevelLookBehind(Sci_PositionU startPos, Accessor &styler) {
 	int ch;
@@ -177,15 +200,21 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		if (sc.state == SCE_CSS_COMMENT)
 			continue;
 		
+		// esh: check sub-var
+		CheckSubVar(sc, &isSubVar, &beforeSubVarState);
+		
 		if (sc.state == SCE_CSS_DOUBLESTRING || sc.state == SCE_CSS_SINGLESTRING) {
 			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
-				continue;
+				continue; // esh: continue of string value
 			Sci_PositionU i = sc.currentPos;
 			while (i && styler[i-1] == '\\')
 				i--;
 			if ((sc.currentPos - i) % 2 == 1)
-				continue;
+				continue; // esh: continue of string value
+			// esh: end of string value
 			sc.ForwardSetState(lastStateS);
+			// esh: string value can be inside sub-var - check sub-var
+			CheckSubVar(sc, &isSubVar, &beforeSubVarState);
 		}
 		
 		if (sc.state == SCE_CSS_OPERATOR) {
@@ -366,26 +395,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			insideParentheses = true;
 		else if (sc.ch == ')')
 			insideParentheses = false;
-		
-		// esh: sub-var
-		if (sc.Match('#', '{')) {
-			beforeSubVarState = sc.state;
-			sc.SetState(SCE_CSS_SUBVAR_OPER);
-			sc.Forward();
-			sc.Forward();
-			if (sc.ch == '}') {
-				sc.ForwardSetState(beforeSubVarState);
-			} else {
-				sc.SetState(SCE_CSS_VALUE);
-				isSubVar = true;
-			}
-			
-		} else if (isSubVar && sc.ch == '}') {
-			sc.SetState(SCE_CSS_SUBVAR_OPER);
-			sc.Forward();
-			sc.SetState(beforeSubVarState);
-			isSubVar = false;
-		}
 		
 		// variable name
 		// esh: @ - for LESS, $ - for SCSS/HSS
