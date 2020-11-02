@@ -279,6 +279,9 @@ p {
   #box {
     background-color: yellow;
   }
+  #box(a, b) {
+    background-color: yellow;
+  }
 }
 
 @property --my-color {
@@ -294,7 +297,10 @@ p {
   background-color: yellow;
 }
 
-..mycolor:hover {
+.mycolor:hover {
+  --my-color: '#FF0000';
+}
+.mycolor:hover(a, b) {
   --my-color: '#FF0000';
 }
 
@@ -317,7 +323,12 @@ p {
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   div.dialog_container div.dialog_window {
     top: 0;
-    margin-top: 71px; }
+    margin-top: 71px;
+  }
+  div.dialog_container(a, b) div.dialog_window(a, b) {
+    top: 0;
+    margin-top: 71px;
+  }
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px),
@@ -328,13 +339,12 @@ p {
 }
 
 @media print {
-  body { font-size: 10pt }
-}
-@media screen {
-  body { font-size: 13px }
-}
-@media screen, print {
-  body { line-height: 1.2 }
+	body { font-size: 10pt }
+	display: block;
+	body { font-size: 10pt }
+	display: block;
+	body { font-size: 10pt }
+	display: block;
 }
 @media only screen 
   and (min-device-width: 320px) 
@@ -344,6 +354,7 @@ p {
 }
 
 @media print {div.crosslinks {visibility:hidden;}}
+@media print {div.crosslinks(a, b) {visibility:hidden;}}
 
 @media print { pre { font-size: 60% } }
 
@@ -477,7 +488,12 @@ a, b {
   & c { color: blue; }
 }
 
-:matches(a, b) c { color: blue; }
+tag.matches(a, b) c { color: blue; }
+.matches(a, b) c { color: blue; }
+:focus(a, b) c { color: blue; }
+:pseudoclass(a, b) c { color: blue; }
+::pseudoelem(a, b) c { color: blue; }
+& + .baz(a, b), &.qux(a, b) { color: red; }
 
 #a, .b {
   & c { color: blue; }
@@ -496,6 +512,9 @@ a, b {
 .foo, .bar {
   color: blue;
   & + .baz, &.qux { color: red; }
+  .qux { color: red; }
+  td { color: red; }
+  :focus { color: red; }
 }
 
 .foo {
