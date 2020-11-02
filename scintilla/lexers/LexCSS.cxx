@@ -68,6 +68,10 @@ inline bool IsCssOperValue(const int ch) {
 	return ch == '(' || ch == ')' || ch == ',' || ch == '/';
 }
 
+inline bool IsCssSelectorOper(const int ch) {
+	return ch == '.' || ch == ':' || ch == '&' || ch == '>' || ch == '+';
+}
+
 inline bool IsCssOperator(const int ch) {
 	if (!((ch < 0x80) && isalnum(ch)) &&
 		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
@@ -221,10 +225,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case '{':
 					nestingLevel++;
 					switch (lastState) {
-						case SCE_CSS_MEDIA:
-							sc.SetState(SCE_CSS_DEFAULT);
-							break;
 						case SCE_CSS_TAG:
+						case SCE_CSS_MEDIA:
 						case SCE_CSS_DIRECTIVE:
 							sc.SetState(SCE_CSS_IDENTIFIER);
 							break;
@@ -233,6 +235,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				case '}':
 					if (--nestingLevel < 0)
 						nestingLevel = 0;
+					// esh: TODO: lastState check can be deleted and call sc.SetState for any state
 					switch (lastState) {
 						case SCE_CSS_DEFAULT:
 						case SCE_CSS_VALUE:
@@ -245,10 +248,16 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					}
 					break;
 				case '(':
-					if (lastState == SCE_CSS_PSEUDOCLASS)
-						sc.SetState(SCE_CSS_TAG);
-					else if (lastState == SCE_CSS_EXTENDED_PSEUDOCLASS)
-						sc.SetState(SCE_CSS_EXTENDED_PSEUDOCLASS);
+					switch (lastState) {
+						case SCE_CSS_CLASS:
+						case SCE_CSS_PSEUDOCLASS:
+						case SCE_CSS_UNKNOWN_PSEUDOCLASS:
+							sc.SetState(SCE_CSS_TAG);
+							break;
+						case SCE_CSS_EXTENDED_PSEUDOCLASS:
+							sc.SetState(SCE_CSS_EXTENDED_PSEUDOCLASS);
+							break;
+					}
 					break;
 				case ')':
 					if (lastState == SCE_CSS_TAG || lastState == SCE_CSS_DEFAULT ||
@@ -309,10 +318,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					break;
 				case ';':
 					switch (lastState) {
-						case SCE_CSS_DIRECTIVE:
-							sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
-														   SCE_CSS_DEFAULT);
-							break;
 						case SCE_CSS_VALUE:
 							// data URLs can have semicolons; simplistically check 
 							// for wrapping parentheses and move along
@@ -341,6 +346,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 								sc.SetState(SCE_CSS_DEFAULT);
 							}
 							break;
+						default:
+							sc.SetState(nestingLevel > 0 ? SCE_CSS_IDENTIFIER :
+														   SCE_CSS_DEFAULT);
 					}
 					break;
 			}
@@ -536,7 +544,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		// check for nested rule selector (SCSS/LESS)
 		if (sc.state == SCE_CSS_IDENTIFIER &&
 			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
-			 (sc.ch == '#' && sc.chNext != '{'))) {
+			 (sc.ch == '#' && sc.chNext != '{'))) {		// skip sub-var
 			// look ahead to see whether { comes before next ; and }
 			int ch, chPrev;
 			int subVarLevel = 0;
@@ -627,11 +635,20 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		}
 		
 		switch (sc.state) {
-			case SCE_CSS_DIRECTIVE:
+			case SCE_CSS_DIRECTIVE: {
 				// esh: set next state for directive
-				sc.SetState(SCE_CSS_VALUE); // fixate directive by val
-				isDirectiveVal = true;
-				break;
+				int ch = 0;
+				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+					ch = styler.SafeGetCharAt(i);
+					if (IsCssOperator(ch)) break;
+				}
+				if (IsCssSelectorOper(ch)) {
+					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
+				} else {
+					sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
+					isDirectiveVal = true;
+				}
+			}	break;
 			case SCE_CSS_VALUE:
 				if (isDirectiveVal && (sc.ch == ';' || sc.ch == '{')) {
 					sc.ChangeState(SCE_CSS_DIRECTIVE);
