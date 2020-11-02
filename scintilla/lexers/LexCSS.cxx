@@ -647,13 +647,17 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		
 		switch (sc.state) {
 			case SCE_CSS_DIRECTIVE: {
-				// esh: set next state for directive
 				int ch = 0;
+				bool wordExists = false;
 				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 					ch = styler.SafeGetCharAt(i);
-					if (IsCssOperator(ch) || ch == '&') break;
+					if ((IsCssOperator(ch) && ch != ',') || ch == '&')
+						break;
+					else if (IsAWordChar(ch))
+						wordExists = true;
 				}
-				if (IsCssSelectorOper(ch)) {
+				// esh: set next state for directive
+				if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
 					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
 				} else {
 					sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
