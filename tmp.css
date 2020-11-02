@@ -3,14 +3,14 @@
  */
 
 p {
-  transition: "dfg";
-  transition: #{a};
-  transition: #{a};
+	transition: "dfg";
+	transition: #{a};
+	transition: #{a};
 }
 
 .example {
-  unquoted: #{"string"};
-  unquoted: #{"string"};
+	unquoted: #{"string"};
+	unquoted: #{"string"};
 }
 
 @define-color theme_fg_color /**/ @fg_color;
@@ -45,67 +45,67 @@ p {
 @define-color success_color @success_color;
 
 @keyframes needs_attention_keyframes {
-    0% {background-image: linear-gradient(to bottom, #fafa, @keyframes 40%%,  #e0e0e0); border-color: @borders; }
-    /* can't do animation-direction, so holding the color on two keyframes */
-    30% {background-image: linear-gradient
+	0% {background-image: linear-gradient(to bottom, #fafa, @keyframes 40%%,  #e0e0e0); border-color: @borders; }
+	/* can't do animation-direction, so holding the color on two keyframes */
+	30% {background-image: linear-gradient
 										(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
-    90% {background-image: linear-gradient (to bottom, @theme_base_color); border-color: @theme_fg_color; }
-    100% {background-image: linear-gradient( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
+	90% {background-image: linear-gradient (to bottom, @theme_base_color); border-color: @theme_fg_color; }
+	100% {background-image: linear-gradient( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
 }
 .nautilus-operations-button-needs-attention {
-  animation: needs_attention_keyframes 2s-s ease-in-out;
+	animation: needs_attention_keyframes 2s-s ease-in-out;
 }
 .nautilus-operations-button-needs-attention-multiple {
-  animation: needs_attention_keyframes 3s ease-in-out;
-  animation-iteration-count: 3;
-  background-color: white;
-  border-color: 3px white;
-  color: white solid;
-  color: solid white;
-  color: solid white transparent;
-  color: white @theme_base_color transparent;
-  color: solid @theme_base_color transparent;
-  color: solid @theme_base_color;
-  color: @theme_base_color solid;
-  color: @theme_base_color white;
+	animation: needs_attention_keyframes 3s ease-in-out;
+	animation-iteration-count: 3;
+	background-color: white;
+	border-color: 3px white;
+	color: white solid;
+	color: solid white;
+	color: solid white transparent;
+	color: white @theme_base_color transparent;
+	color: solid @theme_base_color transparent;
+	color: solid @theme_base_color;
+	color: @theme_base_color solid;
+	color: @theme_base_color white;
 }
 
 UnityDecoration.top:backdrop {
-    border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */
-    border-bottom-width: 0;
-    background-color: transparent!importan;
-    background-clip: border-box;
-    background-image: -gtk-gradient (linear, left top, left bottom,
-                                     from (shade (#474642, 0.92)),
-                                     to (@dark_bg_color));
-    box-shadow: inset 0 0 transparent, inset 0 0,
-                inset 0 1px #474642, inset 0 0 transparent;
-    color: #807d78;
-    src: url(http://test.com/2020/q?id=12);
-    top: -.3em;
-    background-image:url(data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=);
-    background-image: url(file.png);
-    background-image: url(images/background.gif);
-    background-image: url(http://www.w3.org/2000/svg);
+	border: 1px solid rgba (14, 13, 0, 0.03); /* @dark_bg_color - shade (#474642, 0.92) */
+	border-bottom-width: 0;
+	background-color: transparent!importan;
+	background-clip: border-box;
+	background-image: -gtk-gradient (linear, left top, left bottom,
+									 from (shade (#474642, 0.92)),
+									 to (@dark_bg_color));
+	box-shadow: inset 0 0 transparent, inset 0 0,
+				inset 0 1px #474642, inset 0 0 transparent;
+	color: #807d78;
+	src: url(http://test.com/2020/q?id=12);
+	top: -.3em;
+	background-image:url(data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=);
+	background-image: url(file.png);
+	background-image: url(images/background.gif);
+	background-image: url(http://www.w3.org/2000/svg);
 }
 
 .floating-bar {
-  padding: 2!important;
-  padding: 2! important;
-  padding: 2px!important;
-  padding: 2px! important;
-  padding: 2px ! important;
-  padding: 2px !important;
-  color: #807d78!important;
-  color: #807d78! important;
-  color: #807d78 ! important;
-  color: #807d78 !important;
-  background-color: @theme_base_color bold ;
-  border-width: 1px;
-  border-style: solid solid @theme_base_color;
-  border-color: @borders;
-  border-radius: 3px 3px 0 0kHz;
-  color: @theme_base_color ! important;
+	padding: 2!important;
+	padding: 2! important;
+	padding: 2px!important;
+	padding: 2px! important;
+	padding: 2px ! important;
+	padding: 2px !important;
+	color: #807d78!important;
+	color: #807d78! important;
+	color: #807d78 ! important;
+	color: #807d78 !important;
+	background-color: @theme_base_color bold ;
+	border-width: 1px;
+	border-style: solid solid @theme_base_color;
+	border-color: @borders;
+	border-radius: 3px 3px 0 0kHz;
+	color: @theme_base_color ! important;
 }
 
 @define-color disk_space_unknown #888a85;
@@ -113,112 +113,128 @@ UnityDecoration.top:backdrop {
 @define-color disk_space_free #eeeeec;
 
 .btn {
-  @apply font-bold py-2 px-4 rounded !important;
+	@apply font-bold py-2 px-4 rounded !important;
 }
 
 @screen md {
-  .btn {
-    @apply inline-block;
-    @apply font-bold py-2 px-4 rounded ! important;
-    @define-color disk_space_free #eeeeec;
-    @charset "utf-8";
-  }
+	.btn {
+		@apply inline-block;
+		@apply font-bold py-2 px-4 rounded ! important;
+		@define-color disk_space_free #eeeeec;
+		@charset "utf-8";
+	}
 }
 
-@variants focus, hover {
-  .rotate-0 {
-    transform: rotate(0deg);
-  }
-  .rotate-90 {
-    transform: rotate(90deg);
-  }
+@variants focus, :hover {
+	.rotate-0 {
+		transform: rotate(0deg);
+	}
+	.rotate-90 {
+		transform: rotate(90deg);
+	}
 }
+@variants :hover, focus {
+	.rotate-0 {
+		transform: rotate(0deg);
+	}
+	.rotate-90 {
+		transform: rotate(90deg);
+	}
+}
+
+span[lang="pt"] {color:green;}
+span[lang~="en-us"] {color: blue;}
+span[lang|="zh"] {color: red;}
+a[href^="#"] {background-color:gold}
+a[href$=".cn"] {color: red;}
+a[href*="example"] {background-color: #CCCCCC;}
+
 
 @page :first {
-  margin: 2cm;
+	margin: 2cm;
 }
 
 .disk-space-display.unknown {
-    background-color: @disk_space_unknown;
-    border-color: shade(@disk_space_unknown, 0.7);
+	background-color: @disk_space_unknown;
+	border-color: shade(@disk_space_unknown, 0.7);
 }
 
 GtkComboBox.combobox-entry .entry:first-child,
 GtkComboBox.combobox-entry .button:first-child {
-    border-image-width: 10px 1px 10px 12px;
-    border-radius: 8px 0 0 8px;
-    border-right-width: 0;
-    border-color: black;
+	border-image-width: 10px 1px 10px 12px;
+	border-radius: 8px 0 0 8px;
+	border-right-width: 0;
+	border-color: black;
 }
 
 /* gnome-terminal */
 TerminalScreen {
-    background-color: @theme_base_color;
-    color: @theme_fg_color;
-    -TerminalScreen-background-darkness: 0.95;
+	background-color: @theme_base_color;
+	color: @theme_fg_color;
+	-TerminalScreen-background-darkness: 0.95;
 }
 
 NautilusSearchBar.info,
 NautilusQueryEditor.info {
-    background-color: @nautilus_cluebar_color;
-    color: @theme_base_color;
-    test-color: black;
-    border-color: shade(@nautilus_cluebar_color, 0.85);
+	background-color: @nautilus_cluebar_color;
+	color: @theme_base_color;
+	test-color: black;
+	border-color: shade(@nautilus_cluebar_color, 0.85);
 }
 
 NautilusWindow > GtkGrid > .pane-separator:backdrop,
 NautilusWindow > GtkGrid > .pane-separator:hover:backdrop {
-    border-width: 1px 1px 0 0;
-    border-style: solid;
-    border-color: @unfocused_borders;
-    background-color: @sidebar_bg_unfocused;
-    color: shade (@theme_bg_color, 0.9);
+	border-width: 1px 1px 0 0;
+	border-style: solid;
+	border-color: @unfocused_borders;
+	background-color: @sidebar_bg_unfocused;
+	color: shade (@theme_bg_color, 0.9);
 }
 
 EphyToolbar .location-entry .button:last-child {
-    border-image: url("borders/generic-border.svg") 3 3 4 3 / 3 3 4 0 stretch;
-    border-width: 1px 1px 2px 0;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-    padding-left: 4px;
-    padding-right: 2px;
+	border-image: url("borders/generic-border.svg") 3 3 4 3 / 3 3 4 0 stretch;
+	border-width: 1px 1px 2px 0;
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 0;
+	padding-left: 4px;
+	padding-right: 2px;
 }
 
 #ephy-page-menu-button.active-menu {
-    background-image: none;
-    background-color: @bg_color;
+	background-image: none;
+	background-color: @bg_color;
 
-    border-image: none;
-    border-color: @bg_color;
-    border-radius: 4px 4px 0 0;
+	border-image: none;
+	border-color: @bg_color;
+	border-radius: 4px 4px 0 0;
 }
 
 .contacts-entry {
- box-shadow: none;
- border-image: none;
- border-width: 1px;
- border-radius: 4px;
- border-style: solid;
- border-color: #bbbeb7;
- background-image: none;
- background-color: red;
+	box-shadow: none;
+	border-image: none;
+	border-width: 1px;
+	border-radius: 4px;
+	border-style: solid;
+	border-color: #bbbeb7;
+	background-image: none;
+	background-color: red;
 }
 
 .contacts-entry.contacts-postal-entry:nth-child(first) {
- border-radius: 4px 4px 0 0;
+	border-radius: 4px 4px 0 0;
 }
 
 GtkComboBox.combobox-entry .button {
-    border-image: url("assets/combobox-button.png") 10 12 10 1 / 10px 12px 10px 1px stretch;
+	border-image: url("assets/combobox-button.png") 10 12 10 1 / 10px 12px 10px 1px stretch;
 }
 
 @keyframes dashentry_spinner {
-    to { -gtk-icon-transform: rotate(1turn); }
+	to { -gtk-icon-transform: rotate(1turn); }
 }
 
 .lightdm.entry:active {
-    -gtk-icon-source: -gtk-icontheme("process-working-symbolic");
-    animation: dashentry_spinner 1s infinite linear;
+	-gtk-icon-source: -gtk-icontheme("process-working-symbolic");
+	animation: dashentry_spinner 1s infinite linear;
 }
 
 .contacts-notification {
@@ -229,113 +245,112 @@ GtkComboBox.combobox-entry .button {
  padding: 8px;
  background-color: #d8d8d8;
  background-image: -gtk-gradient (linear, left top, left bottom,
-                                  from (rgba (0, 0, 0, 0.15)),
-                                  color-stop (0.15, rgba (0, 0, 0, 0.04)),
-                                  to (rgba (0, 0, 0, 0.0)));
+								  from (rgba (0, 0, 0, 0.15)),
+								  color-stop (0.15, rgba (0, 0, 0, 0.04)),
+								  to (rgba (0, 0, 0, 0.0)));
 }
 
 .nautilus-inactive-pane .nautilus-canvas-item:selected {
-    background-color: @theme_unfocused_selected_bg_color;
-    color: @theme_unfocused_selected_fg_color;
+	background-color: @theme_unfocused_selected_bg_color;
+	color: @theme_unfocused_selected_fg_color;
 }
 
 @font-face {
-  font-family: 'CustomFont';
-  src: url('customfont.eot'), /* IE9 */
-       url('customfont.eot?#iefix') format('embedded-opentype'); /* IE6-IE8 */
+	font-family: 'CustomFont';
+	src: url('customfont.eot'), /* IE9 */
+		 url('customfont.eot?#iefix') format('embedded-opentype'); /* IE6-IE8 */
 }
 
 @font-face {
-  font-family: 'Helvetica';
-  src:  url('Helvetica') format('woff'),
-        local('Helvetica.woff') format('woff');
+	font-family: 'Helvetica';
+	src: url('Helvetica') format('woff'),
+		 local('Helvetica.woff') format('woff');
 }
 
 @font-face {
-  font-family: "CustomFont";
+	font-family: "CustomFont";
 }
 
 // Possible usage
 p {
-  font-family: 'CustomFont';
+	font-family: 'CustomFont';
 }
 
 @keyframes ANIMATION-NAME {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
+	0%   { opacity: 0; }
+	100% { opacity: 1; }
 }
 
 // OR
 @keyframes ANIMATION-NAME {
-  from { opacity: 0; }
-  to { opacity: 1; }
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
 #box {
-  background-color: green;
+	background-color: green;
 }
 
 @media only screen and (max-width: 600px) {
-  #box {
-    background-color: yellow;
-  }
-  #box(a, b) {
-    background-color: yellow;
-  }
+	#box {
+		background-color: yellow;
+	}
+	#box(a, b) {
+		background-color: yellow;
+	}
 }
 
 @property --my-color {
-  syntax: "<color>";
-  inherits: false;
-  initial-value: '#9400D3';
+	syntax: "<color>";
+	inherits: false;
+	initial-value: '#9400D3';
 }
 
 .mycolor {
-  --my-color: '#FFFFFF';
-  background: linear-gradient(var(--my-color), black);
-  transition: --my-color 1s;
-  background-color: yellow;
+	--my-color: '#FFFFFF';
+	background: linear-gradient(var(--my-color), black);
+	transition: --my-color 1s;
+	background-color: yellow;
 }
 
 .mycolor:hover {
-  --my-color: '#FF0000';
+	--my-color: '#FF0000';
 }
 .mycolor:hover(a, b) {
-  --my-color: '#FF0000';
+	--my-color: '#FF0000';
 }
 
 @font-face {
-  font-family: "Open Sans";
-  src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
+	font-family: "Open Sans";
+	src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
 }
 
 @counter-style thumbs {
-  system: cyclic;
-  symbols: "\1F44D";
+	system: cyclic;
+	symbols: "\1F44D";
 }
 
 .print-only {
-  display: none;
-
-  @media print { display: block; }
+	display: none;
+	@media print { display: block; }
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-  div.dialog_container div.dialog_window {
-    top: 0;
-    margin-top: 71px;
-  }
-  div.dialog_container(a, b) div.dialog_window(a, b) {
-    top: 0;
-    margin-top: 71px;
-  }
+	div.dialog_container div.dialog_window {
+		top: 0;
+		margin-top: 71px;
+	}
+	div.dialog_container(a, b) div.dialog_window(a, b) {
+		top: 0;
+		margin-top: 71px;
+	}
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px),
-       only screen and (min-device-width: 320px) and (max-device-width: 568px) {
-  .mobile {
-    display: inherit;
-  }
+	   only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+	.mobile {
+		display: inherit;
+	}
 }
 
 @media print {
@@ -347,10 +362,10 @@ p {
 	display: block;
 }
 @media only screen 
-  and (min-device-width: 320px) 
-  and (max-device-width: 480px)
-  and (-webkit-min-device-pixel-ratio: 2) {
-    body { line-height: 1.4 }
+		and (min-device-width: 320px) 
+		and (max-device-width: 480px)
+		and (-webkit-min-device-pixel-ratio: 2) {
+	body { line-height: 1.4 }
 }
 
 @media print {div.crosslinks {visibility:hidden;}}
@@ -361,55 +376,55 @@ p {
 @keyframes2 url("/icons/#{$name}.svg");
 
 .icon-#{$name}, body-#{$name} {
-    background-image: url("/icons/#{$name}.svg");
-    position: absolute;
-    #{$top-or-bottom}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
+	background-image: url("/icons/#{$name}.svg");
+	position: absolute;
+	#{$top-or-bottom}: 0;
+	animation-name: inline-#{unique-id()};
+	#{$left-or-right}: 0;
+	animation-name: inline-#{unique-id()};
+	#{$left-or-right}: 0;
 }
 
 body-#{$name}, .icon-#{$name} {
-    background-image: url("/icons/#{$name}.svg");
-    position: absolute;
-    #{$top-or-bottom}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
+	background-image: url("/icons/#{$name}.svg");
+	position: absolute;
+	#{$top-or-bottom}: 0;
+	animation-name: inline-#{unique-id()};
+	#{$left-or-right}: 0;
+	animation-name: inline-#{unique-id()};
+	#{$left-or-right}: 0;
 }
 
 @mixin corner-icon($name, $top-or-bottom, $left-or-right) {
-  body-#{$name} {
-    background-image: url("/icons/#{$name}.svg");
-    position: absolute;
-    #{$top-or-bottom}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-  }
-  .icon-#{$name} {
-    background-image: url("/icons/#{$name}.svg");
-    position: absolute;
-    #{$top-or-bottom}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-  }
-  body-#{$name} {
-    background-image: url("/icons/#{$name}.svg");
-    background-image: url("/icons/#{}.svg");
-    background-image: url("/icons/#{}");
-    position: absolute;
-    #{$top-or-bottom}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-    animation-name: inline-#{unique-id()};
-    #{$left-or-right}: 0;
-  }
+	body-#{$name} {
+		background-image: url("/icons/#{$name}.svg");
+		position: absolute;
+		#{$top-or-bottom}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+	}
+	.icon-#{$name} {
+		background-image: url("/icons/#{$name}.svg");
+		position: absolute;
+		#{$top-or-bottom}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+	}
+	body-#{$name} {
+		background-image: url("/icons/#{$name}.svg");
+		background-image: url("/icons/#{}.svg");
+		background-image: url("/icons/#{}");
+		position: absolute;
+		#{$top-or-bottom}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+		animation-name: inline-#{unique-id()};
+		#{$left-or-right}: 0;
+	}
 }
 
 @include corner-icon("mail", top, left);
@@ -419,75 +434,75 @@ body-#{$name}, .icon-#{$name} {
 @test2 dsfsdf;
 
 @mixin {
-  animation-name: inline-#{unique-id()};
-  animation-name: inline-#{unique-id()};
-  animation-name: inline-#{unique-id()};
-  animation-name: unique-id();
-  animation-name: "test";
+	animation-name: inline-#{unique-id()};
+	animation-name: inline-#{unique-id()};
+	animation-name: inline-#{unique-id()};
+	animation-name: unique-id();
+	animation-name: "test";
 }
 
 @mixin inline-animation($duration) {
-  $name: inline-#{unique-id()};
-  $name: inline-#{};
-  $name: inline-#{unique-id()};
-  $name: inline-#{ };
-  $name: unique-id();
-  $name: unique-id(  );
-  $name: unique-id(df);
-  $name: "test";
+	$name: inline-#{unique-id()};
+	$name: inline-#{};
+	$name: inline-#{unique-id()};
+	$name: inline-#{ };
+	$name: unique-id();
+	$name: unique-id(  );
+	$name: unique-id(df);
+	$name: "test";
 
-  @keyframes #{$name} {
-	@content;
-	@content2 ;
-	@test fd ;
-	@test2 dsfsdf;
-  }
+	@keyframes #{$name} {
+		@content;
+		@content2 ;
+		@test fd ;
+		@test2 dsfsdf;
+	}
 
-  animation-name: $name;
-  animation-duration: $duration;
-  animation-iteration-count: infinite;
-  $name: unique-id();
-  $name: test;
-  $name: "test";
+	animation-name: $name;
+	animation-duration: $duration;
+	animation-iteration-count: infinite;
+	$name: unique-id();
+	$name: test;
+	$name: "test";
 }
 
 .pulse {
-  @include inline-animation(2s) {
-    from { background-color: yellow }
-    to { background-color: red }
-  }
+	@include inline-animation(2s) {
+		from { background-color: yellow }
+		to { background-color: red }
+	}
 }
 
 table.colortable td {
-  text-align:center;
+	text-align:center;
 }
 table.colortable td.c {
-  text-transform:uppercase;
+	text-transform:uppercase;
 }
 table.colortable td:first-child, table.colortable td:first-child+td {
-  border:1px solid black;
+	border:1px solid black;
 }
 table.colortable th {
-  text-align:center;
-  background:black;
-  color:white;
+	text-align:center;
+	background:black;
+	color:white;
 }
 
 table.colortable {
-  & td {
-    text-align:center;
-    &.c { text-transform:uppercase }
-    &:first-child, &:first-child + td { border:1px solid black }
-  }
-  & th {
-    text-align:center;
-    background:black;
-    color:white;
-  }
+	& td {
+		text-align:center;
+		&.c { text-transform:uppercase }
+		&:first-child, &:first-child + td { border:1px solid black }
+	}
+	& th {
+		text-align:center;
+		background:black;
+		color:white;
+	}
 }
 
 a, b {
-  & c { color: blue; }
+	& c { color: blue; }
 }
 
 tag.matches(a, b) c { color: blue; }
@@ -503,80 +518,80 @@ tag::pseudoelem::pseudoelem(a, b) c { color: blue; }
 & + .baz(a, b), &.qux(a, b) { color: red; }
 
 #a, .b {
-  & c { color: blue; }
+	& c { color: blue; }
 }
 
 .foo {
-  color: blue;
-  & > .bar { color: red; }
+	color: blue;
+	& > .bar { color: red; }
 }
 
 .foo {
-  color: blue;
-  &.bar { color: red; }
+	color: blue;
+	&.bar { color: red; }
 }
 
 .foo, .bar {
-  color: blue;
-  & + .baz, &.qux { color: red; }
-  .qux { color: red; }
-  td { color: red; }
-  :focus { color: red; }
+	color: blue;
+	& + .baz, &.qux { color: red; }
+	.qux { color: red; }
+	td { color: red; }
+	:focus { color: red; }
 }
 
 .foo {
-  color: red;
-  @nest & > .bar {
-    color: blue;
-  }
+	color: red;
+	@nest & > .bar {
+		color: blue;
+	}
 }
 
 .foo {
-  color: red;
-  @nest .parent & {
-    color: blue;
-  }
+	color: red;
+	@nest .parent & {
+		color: blue;
+	}
 }
 
 .foo {
-  color: red;
-  @nest :not(&) {
-    color: blue;
-  }
+	color: red;
+	@nest :not(&) {
+		color: blue;
+	}
 }
 
 .post .title, .post .alt-title  {
-  color: #000000;
-  font-size:20px;
+	color: #000000;
+	font-size:20px;
 }
 .post .alt-title {
-  border-bottom:1px solid #EFC6F3;
+	border-bottom:1px solid #EFC6F3;
 }
 
 $border: 1px solid #EFC6F3;
 .post {
-  border-radius: 3px;
-  background: #FFF8FF;
-  border: $border;
-  padding: 15px;
-  color: #333333;
-  .title {
-    color: #000000;
-    font-size: 20px;
-  }
-  .alt-title {
-    @extend .title;
-    border-bottom: $border;
-  }
+	border-radius: 3px;
+	background: #FFF8FF;
+	border: $border;
+	padding: 15px;
+	color: #333333;
+	.title {
+		color: #000000;
+		font-size: 20px;
+	}
+	.alt-title {
+		@extend .title;
+		border-bottom: $border;
+	}
 }
 
 @mixin define-emoji($name, $glyph) {
-  span.emoji-#{$name} {
-    font-family: IconFont;
-    font-variant: normal;
-    font-weight: normal;
-    content: $glyph;
-  }
+	span.emoji-#{$name} {
+		font-family: IconFont;
+		font-variant: normal;
+		font-weight: normal;
+		content: $glyph;
+	}
 }
 
 @include define-emoji("women-holding-hands", "👭");
