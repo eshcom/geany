@@ -490,7 +490,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		std::pair<Sci_Position, std::vector<SingleFStringExpState> > val;
 		val.first = sc.currentLine;
 		val.second = fstringStateStack;
-
+		
 		ftripleStateAtEol.insert(val);
 	}
 	if ((sc.state == SCE_P_DEFAULT)
@@ -1011,13 +1011,15 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 		}
 		// Set fold header on non-quote line
 		if (!quote && !(indentCurrent & SC_FOLDLEVELWHITEFLAG)) {
-			if ((indentCurrent & SC_FOLDLEVELNUMBERMASK) < (indentNext & SC_FOLDLEVELNUMBERMASK))
+			if ((indentCurrent & SC_FOLDLEVELNUMBERMASK) <
+				(indentNext & SC_FOLDLEVELNUMBERMASK))
 				lev |= SC_FOLDLEVELHEADERFLAG;
 		}
 		// Keep track of triple quote state of previous line
 		prevQuote = quote;
 		// Set fold level for this line and move to next line
-		styler.SetLevel(lineCurrent, options.foldCompact ? lev : lev & ~SC_FOLDLEVELWHITEFLAG);
+		styler.SetLevel(lineCurrent,
+						options.foldCompact ? lev : lev & ~SC_FOLDLEVELWHITEFLAG);
 		indentCurrent = indentNext;
 		lineCurrent = lineNext;
 	}
@@ -1026,5 +1028,5 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 	//styler.SetLevel(lineCurrent, indentCurrent);
 }
 
-LexerModule lmPython(SCLEX_PYTHON, LexerPython::LexerFactoryPython, "python",
-			 pythonWordListDesc);
+LexerModule lmPython(SCLEX_PYTHON, LexerPython::LexerFactoryPython,
+					 "python", pythonWordListDesc);
