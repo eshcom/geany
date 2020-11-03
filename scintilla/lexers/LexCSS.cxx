@@ -149,7 +149,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	bool insideParentheses = false; // true if currently in a CSS url() or similar construct
 	
 	// esh:
-	int hexadecColorLen = 0;
+	int hexColorLen = 0;
 	bool isDirectiveVal = false; // @dir var1, var2 val (where: var1, var2 val - isDirectiveVal)
 	bool isSubVar = false;	// example: #{$name}, where $name - var
 							//          #{unique-id()}, where unique-id() - func
@@ -448,7 +448,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					continue;
 					
 				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
-					hexadecColorLen = 0;
+					hexColorLen = 0;
 					sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
 					continue;
 					
@@ -505,10 +505,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}	break;
 			case SCE_CSS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
-					hexadecColorLen++;
+					hexColorLen++;
 					continue;
 				}
-				if (hexadecColorLen != 3 && hexadecColorLen != 6)
+				if (hexColorLen != 3 && hexColorLen != 6)
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
 				break;
 			case SCE_CSS_IMPORTANT: {
