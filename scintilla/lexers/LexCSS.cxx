@@ -449,7 +449,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					
 				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
 					hexadecColorLen = 0;
-					sc.SetState(SCE_CSS_HEXADEC_COLOR); // fixate sub-val/oper-val by hexadec-color
+					sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
 					continue;
 					
 				} else if (IsAWordChar(sc.ch)) {
@@ -501,15 +501,15 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				char dim[10];
 				sc.GetCurrentLowered(dim, sizeof(dim));
 				if (!IsDimension(dim))
-					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+					sc.ChangeState(SCE_CSS_ERR_VALUE);
 			}	break;
-			case SCE_CSS_HEXADEC_COLOR:
+			case SCE_CSS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexadecColorLen++;
 					continue;
 				}
 				if (hexadecColorLen != 3 && hexadecColorLen != 6)
-					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+					sc.ChangeState(SCE_CSS_ERR_VALUE);
 				break;
 			case SCE_CSS_IMPORTANT: {
 				if (IsAWordChar(sc.ch))
@@ -521,7 +521,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				while (*imp2 && !IsAWordChar(*imp2))
 					imp2++;
 				if (strcmp(imp2, "important") != 0)
-					sc.ChangeState(SCE_CSS_ERROR_VALUE);
+					sc.ChangeState(SCE_CSS_ERR_VALUE);
 			}	break;
 			case SCE_CSS_URL_VALUE:
 				if (sc.ch == ')')
@@ -529,8 +529,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				continue;
 		}
 		if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_NUMBER ||
-			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEXADEC_COLOR ||
-			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERROR_VALUE ||
+			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEX_COLOR ||
+			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERR_VALUE ||
 			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE ||
 			 sc.state == SCE_CSS_IMPORTANT)) { // TODO: refactoring: invert conditions
 			
