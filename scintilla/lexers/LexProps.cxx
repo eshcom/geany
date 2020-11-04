@@ -58,7 +58,7 @@ static void ColourisePropsLine(
 			styler.ColourTo(endPos, SCE_PROPS_SECTION);
 		} else if (lineBuffer[i] == '@') {
 			styler.ColourTo(startLine + i, SCE_PROPS_DEFVAL);
-			if (isassignchar(lineBuffer[i++]))
+			if (isassignchar(lineBuffer[++i]))
 				styler.ColourTo(startLine + i, SCE_PROPS_ASSIGNMENT);
 			styler.ColourTo(endPos, SCE_PROPS_DEFAULT);
 		} else {
