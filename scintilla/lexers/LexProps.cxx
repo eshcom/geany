@@ -92,10 +92,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, 
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		if (AtEOL(styler, i)) {
 			// End of line - colourise it
-			if (startLine <= i) {
-				// esh: colourise from startLine before i + 1
-				ColourisePropsLine(styler, startLine, i + 1, allowInitialSpaces);
-			}
+			// esh: colourise from startLine before i + 1
+			ColourisePropsLine(styler, startLine, i + 1, allowInitialSpaces);
 			startLine = i + 1; // esh: i + EOL
 		}
 	}
