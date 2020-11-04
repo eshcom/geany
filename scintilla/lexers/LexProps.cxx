@@ -90,16 +90,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, 
 	const bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
-		if (AtEOL(styler, i)) {
+		// Last line does not have ending characters -
+		// added check i == (endPos - 1)
+		if (AtEOL(styler, i) || i == (endPos - 1)) {
 			// End of line - colourise it
 			// esh: colourise from startLine before i + 1
 			ColourisePropsLine(styler, startLine, i + 1, allowInitialSpaces);
 			startLine = i + 1; // esh: i + EOL
 		}
-	}
-	if (startLine < endPos) {	// Last line does not have ending characters
-		// esh: colourise from startLine before endPos
-		ColourisePropsLine(styler, startLine, endPos, allowInitialSpaces);
 	}
 }
 
