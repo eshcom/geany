@@ -35,55 +35,53 @@ static inline bool isassignchar(unsigned char ch) {
 }
 
 static void ColourisePropsLine(
-	const char *lineBuffer,
-	Sci_PositionU lengthLine,
-	Sci_PositionU startLine,
-	Sci_PositionU endPos,
 	Accessor &styler,
+	Sci_PositionU pos,
+	Sci_PositionU endLine,
 	bool allowInitialSpaces) {
 	
-	Sci_PositionU i = 0;
 	if (allowInitialSpaces) {
-		while ((i < lengthLine) && isspacechar(lineBuffer[i]))	// Skip initial spaces
-			i++;
+		while ((pos < endLine) && isspacechar(styler[pos]))	// Skip initial spaces
+			pos++;
 	} else {
-		if (isspacechar(lineBuffer[i])) // don't allow initial spaces
-			i = lengthLine;
+		if (isspacechar(styler[pos])) // don't allow initial spaces
+			pos = endLine;
 	}
 	
-	if (i < lengthLine) {
-		if (lineBuffer[i] == '#' || lineBuffer[i] == '!' || lineBuffer[i] == ';') {
-			styler.ColourTo(endPos, SCE_PROPS_COMMENT);
-		} else if (lineBuffer[i] == '[') {
-			styler.ColourTo(endPos, SCE_PROPS_SECTION);
-		} else if (lineBuffer[i] == '@') {
-			styler.ColourTo(startLine + i, SCE_PROPS_DEFVAL);
-			if (isassignchar(lineBuffer[++i]))
-				styler.ColourTo(startLine + i, SCE_PROPS_ASSIGNMENT);
-			styler.ColourTo(endPos, SCE_PROPS_DEFAULT);
+	if (pos < endLine) {
+		if (styler[pos] == '#' || styler[pos] == '!' ||
+			styler[pos] == ';') {
+			// esh: ColourTo func colourise by style include styler[endLine - 1] char
+			styler.ColourTo(endLine - 1, SCE_PROPS_COMMENT);
+		} else if (styler[pos] == '[') {
+			styler.ColourTo(endLine - 1, SCE_PROPS_SECTION);
+		} else if (styler[pos] == '@') {
+			styler.ColourTo(pos, SCE_PROPS_DEFVAL);
+			if (isassignchar(styler[++pos]))
+				styler.ColourTo(pos, SCE_PROPS_ASSIGNMENT);
+			styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
 		} else {
 			// Search for the '=' character
-			while ((i < lengthLine) && !isassignchar(lineBuffer[i]))
-				i++;
-			if ((i < lengthLine) && isassignchar(lineBuffer[i])) {
-				styler.ColourTo(startLine + i - 1, SCE_PROPS_KEY);
-				styler.ColourTo(startLine + i, SCE_PROPS_ASSIGNMENT);
-				styler.ColourTo(endPos, SCE_PROPS_DEFAULT);
+			while ((pos < endLine) && !isassignchar(styler[pos]))
+				pos++;
+			if ((pos < endLine) && isassignchar(styler[pos])) {
+				styler.ColourTo(pos - 1, SCE_PROPS_KEY);
+				styler.ColourTo(pos, SCE_PROPS_ASSIGNMENT);
+				styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
 			} else {
-				styler.ColourTo(endPos, SCE_PROPS_DEFAULT);
+				styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
 			}
 		}
 	} else {
-		styler.ColourTo(endPos, SCE_PROPS_DEFAULT);
+		styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
 	}
 }
 
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
-	char lineBuffer[4096];
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
-	Sci_PositionU linePos = 0;
 	Sci_PositionU startLine = startPos;
+	Sci_PositionU endPos = startPos + length;
 	
 	// property lexer.props.allow.initial.spaces
 	//	For properties files, set to 0 to style all lines that start with whitespace in the default style.
@@ -91,18 +89,19 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, 
 	//	can be used for RFC2822 text where indentation is used for continuation lines.
 	const bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 	
-	for (Sci_PositionU i = startPos; i < startPos + length; i++) {
-		lineBuffer[linePos++] = styler[i];
-		if (AtEOL(styler, i) || (linePos >= sizeof(lineBuffer) - 1)) {
-			// End of line (or of line buffer) met, colourise it
-			lineBuffer[linePos] = '\0';
-			ColourisePropsLine(lineBuffer, linePos, startLine, i, styler, allowInitialSpaces);
-			linePos = 0;
-			startLine = i + 1;
+	for (Sci_PositionU i = startPos; i < endPos; i++) {
+		if (AtEOL(styler, i)) {
+			// End of line - colourise it
+			if (startLine <= i) {
+				// esh: colourise from startLine before i + 1
+				ColourisePropsLine(styler, startLine, i + 1, allowInitialSpaces);
+			}
+			startLine = i + 1; // esh: i + EOL
 		}
 	}
-	if (linePos > 0) {	// Last line does not have ending characters
-		ColourisePropsLine(lineBuffer, linePos, startLine, startPos + length - 1, styler, allowInitialSpaces);
+	if (startLine < endPos) {	// Last line does not have ending characters
+		// esh: colourise from startLine before endPos
+		ColourisePropsLine(styler, startLine, endPos, allowInitialSpaces);
 	}
 }
 
