@@ -152,5 +152,8 @@ Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
     passCallback=passCallback@entry=0x7ffff7afe200 <ctags_pass_start>, userData=<optimized out>)
     at main/ctags-api.c:74
 
+#exit:
+>q
+
 ----------------------------------------------------------------------------------------
 
