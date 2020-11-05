@@ -458,8 +458,8 @@
 #define SCE_PROPS_DEFAULT 0
 #define SCE_PROPS_COMMENT 1
 #define SCE_PROPS_SECTION 2
-#define SCE_PROPS_ASSIGNMENT 3
-#define SCE_PROPS_DEFVAL 4
+#define SCE_PROPS_ASSIGNMENT 3	// esh: this is '=' or ':' operator
+#define SCE_PROPS_DEFVAL 4		// esh: symbol @ in: @value or @=value
 #define SCE_PROPS_KEY 5
 #define SCE_L_DEFAULT 0
 #define SCE_L_COMMAND 1
