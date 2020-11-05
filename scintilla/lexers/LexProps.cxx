@@ -34,53 +34,11 @@ static inline bool isassignchar(unsigned char ch) {
 	return (ch == '=') || (ch == ':');
 }
 
-static void ColourisePropsLine(
-	Accessor &styler,
-	Sci_PositionU pos,
-	Sci_PositionU endLine,
-	bool allowInitialSpaces) {
-	
-	if (allowInitialSpaces) {
-		while ((pos < endLine) && isspacechar(styler[pos]))	// Skip initial spaces
-			pos++;
-	} else {
-		if (isspacechar(styler[pos])) // don't allow initial spaces
-			pos = endLine;
-	}
-	
-	if (pos < endLine) {
-		if (styler[pos] == '#' || styler[pos] == '!' ||
-			styler[pos] == ';') {
-			// esh: ColourTo func colourise by style include styler[endLine - 1] char
-			styler.ColourTo(endLine - 1, SCE_PROPS_COMMENT);
-		} else if (styler[pos] == '[') {
-			styler.ColourTo(endLine - 1, SCE_PROPS_SECTION);
-		} else if (styler[pos] == '@') {
-			styler.ColourTo(pos, SCE_PROPS_DEFVAL);
-			if (isassignchar(styler[++pos]))
-				styler.ColourTo(pos, SCE_PROPS_ASSIGNMENT);
-			styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
-		} else {
-			// Search for the '=' character
-			while ((pos < endLine) && !isassignchar(styler[pos]))
-				pos++;
-			if ((pos < endLine) && isassignchar(styler[pos])) {
-				styler.ColourTo(pos - 1, SCE_PROPS_KEY);
-				styler.ColourTo(pos, SCE_PROPS_ASSIGNMENT);
-				styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
-			} else {
-				styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
-			}
-		}
-	} else {
-		styler.ColourTo(endLine - 1, SCE_PROPS_DEFAULT);
-	}
-}
-
-static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int,
+							  WordList *[], Accessor &styler) {
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
-	Sci_PositionU startLine = startPos;
+	Sci_PositionU pos = startPos;
 	Sci_PositionU endPos = startPos + length;
 	
 	// property lexer.props.allow.initial.spaces
@@ -89,21 +47,69 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int, 
 	//	can be used for RFC2822 text where indentation is used for continuation lines.
 	const bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 	
-	for (Sci_PositionU i = startPos; i < endPos; i++) {
-		// Last line does not have ending characters -
-		// added check i == (endPos - 1)
-		if (AtEOL(styler, i) || i == (endPos - 1)) {
-			// End of line - colourise it
-			// esh: colourise from startLine before i + 1
-			ColourisePropsLine(styler, startLine, i + 1, allowInitialSpaces);
-			startLine = i + 1; // esh: i + EOL
+	int state = SCE_PROPS_DEFAULT;
+	bool beginLine = true;
+	bool goToEndLine = false;
+	
+	while (pos < endPos) {
+		
+		if (beginLine) {
+			beginLine = false;
+			if (allowInitialSpaces) {
+				// Skip initial spaces
+				while ((pos < endPos) && isspacechar(styler[pos]))
+					pos++;
+				if (pos == endPos) break;
+				
+			} else if (isspacechar(styler[pos])) {
+				// don't allow initial spaces
+				goToEndLine = true;
+			}
 		}
+		
+		if (AtEOL(styler, pos)) {
+			// End of line - colourise it
+			styler.ColourTo(pos++, state);
+			state = SCE_PROPS_DEFAULT;
+			beginLine = true;
+			goToEndLine = false;
+			continue;
+			
+		} else if (goToEndLine) {
+			pos++;
+			continue;
+		}
+		
+		if (styler[pos] == '#' || styler[pos] == '!' || styler[pos] == ';') {
+			state = SCE_PROPS_COMMENT;
+			pos++;
+		} else if (styler[pos] == '[') {
+			state = SCE_PROPS_SECTION;
+			pos++;
+		} else if (styler[pos] == '@') {
+			styler.ColourTo(pos, SCE_PROPS_DEFVAL);
+			if ((++pos < endPos) && isassignchar(styler[pos]))
+				styler.ColourTo(pos++, SCE_PROPS_ASSIGNMENT);
+		} else {
+			// Search for the '=' character
+			while ((pos < endPos) && !isassignchar(styler[pos]))
+				pos++;
+			
+			if ((pos < endPos) && isassignchar(styler[pos])) {
+				styler.ColourTo(pos - 1, SCE_PROPS_KEY);
+				styler.ColourTo(pos++, SCE_PROPS_ASSIGNMENT);
+			}
+		}
+		goToEndLine = true;
 	}
+	if (endPos > 0)
+		styler.ColourTo(endPos - 1, state);
 }
 
 // adaption by ksc, using the "} else {" trick of 1.53
 // 030721
-static void FoldPropsDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void FoldPropsDoc(Sci_PositionU startPos, Sci_Position length,
+						 int, WordList *[], Accessor &styler) {
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	
 	const Sci_PositionU endPos = startPos + length;
@@ -179,4 +185,5 @@ static const char *const emptyWordListDesc[] = {
 	0
 };
 
-LexerModule lmProps(SCLEX_PROPERTIES, ColourisePropsDoc, "props", FoldPropsDoc, emptyWordListDesc);
+LexerModule lmProps(SCLEX_PROPERTIES, ColourisePropsDoc, "props",
+					FoldPropsDoc, emptyWordListDesc);
