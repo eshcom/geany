@@ -569,7 +569,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const WordClassifier &classifierIdentifiers = subStyles.Classifier(SCE_P_IDENTIFIER);
 	
-	StyleContext sc(startPos, endPos - startPos, initStyle, styler);
+	StyleContext sc(startPos, length, initStyle, styler);
 	
 	bool indentGood = true;
 	Sci_Position startIndicator = sc.currentPos;
