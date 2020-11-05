@@ -437,14 +437,32 @@ static const HLKeyword highlighting_keywords_COBOL[] =
 #define highlighting_lexer_CONF			SCLEX_PROPERTIES
 static const HLStyle highlighting_styles_CONF[] =
 {
-	{ SCE_PROPS_DEFAULT,	"default",		FALSE },
-	{ SCE_PROPS_COMMENT,	"comment",		FALSE },
-	{ SCE_PROPS_SECTION,	"section",		FALSE },
-	{ SCE_PROPS_KEY,		"key",			FALSE },
-	{ SCE_PROPS_ASSIGNMENT,	"assignment",	FALSE },
-	{ SCE_PROPS_DEFVAL,		"defval",		FALSE }
+	{ SCE_PROPS_DEFAULT,		"default",		FALSE },
+	{ SCE_PROPS_COMMENT,		"comment",		FALSE },
+	{ SCE_PROPS_SECTION,		"section",		FALSE },
+	{ SCE_PROPS_KEY,			"key",			FALSE },
+	{ SCE_PROPS_VALUE,			"comval",		FALSE },
+	{ SCE_PROPS_ASSIGNMENT,		"assignment",	FALSE },
+	{ SCE_PROPS_DEFVAL,			"defval",		FALSE },
+	{ SCE_PROPS_COMMONWORD,		"commonword",	FALSE },
+	{ SCE_PROPS_DOUBLESTRING,	"doublestring",	FALSE },
+	{ SCE_PROPS_SINGLESTRING,	"singlestring",	FALSE },
+	{ SCE_PROPS_NUMBER,			"number",		FALSE },
+	{ SCE_PROPS_HEXNUMBER,		"hexnumber",	FALSE },
+	{ SCE_PROPS_NAMED_COLOR,	"named_color",	FALSE },
+	{ SCE_PROPS_HEX_COLOR,		"hex_color",	FALSE },
+	{ SCE_PROPS_IP_VALUE,		"ip_value",		FALSE },
+	{ SCE_PROPS_URL_VALUE,		"url_value",	FALSE },
+	{ SCE_PROPS_MAIL_VALUE,		"mail_value",	FALSE },
+	{ SCE_PROPS_OPER_VALUE,		"oper_value",	FALSE },
+	{ SCE_PROPS_VARIABLE,		"variable",		FALSE },
+	{ SCE_PROPS_SUBVAR_OPER,	"subvar_oper",	FALSE }
 };
-#define highlighting_keywords_CONF		EMPTY_KEYWORDS
+static const HLKeyword highlighting_keywords_CONF[] =
+{
+	{ 0, "commonword",		FALSE },
+	{ 1, "named_colors",	FALSE }
+};
 #define highlighting_properties_CONF	EMPTY_PROPERTIES
 
 

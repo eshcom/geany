@@ -461,6 +461,20 @@
 #define SCE_PROPS_ASSIGNMENT 3	// esh: this is '=' or ':' operator
 #define SCE_PROPS_DEFVAL 4		// esh: symbol @ in: @value or @=value
 #define SCE_PROPS_KEY 5
+#define SCE_PROPS_VALUE 6
+#define SCE_PROPS_DOUBLESTRING 10
+#define SCE_PROPS_SINGLESTRING 11
+#define SCE_PROPS_NUMBER 12
+#define SCE_PROPS_HEXNUMBER 13
+#define SCE_PROPS_COMMONWORD 14
+#define SCE_PROPS_NAMED_COLOR 15
+#define SCE_PROPS_HEX_COLOR 16
+#define SCE_PROPS_IP_VALUE 17
+#define SCE_PROPS_URL_VALUE 18
+#define SCE_PROPS_MAIL_VALUE 19
+#define SCE_PROPS_OPER_VALUE 20
+#define SCE_PROPS_VARIABLE 21
+#define SCE_PROPS_SUBVAR_OPER 22
 #define SCE_L_DEFAULT 0
 #define SCE_L_COMMAND 1
 #define SCE_L_TAG 2
