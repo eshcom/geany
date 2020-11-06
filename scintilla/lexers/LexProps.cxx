@@ -80,6 +80,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				sc.state == SCE_PROPS_SINGLESTRING)
 				// incomplete typed values are changed to SCE_PROPS_VALUE
 				sc.ChangeState(SCE_PROPS_VALUE);
+			else if (sc.state == SCE_PROPS_SECTION)
+				// incomplete section are changed to SCE_PROPS_DEFAULT
+				sc.ChangeState(SCE_PROPS_DEFAULT);
 			else if (sc.state == SCE_PROPS_KEY)
 				// incomplete key are changed to SCE_PROPS_DEFAULT
 				sc.ChangeState(SCE_PROPS_DEFAULT);
@@ -99,7 +102,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					goToLineEnd = true;
 				} else if (sc.ch == '[') {
 					sc.ChangeState(SCE_PROPS_SECTION);
-					goToLineEnd = true;
 				} else if (sc.ch == '@') {
 					sc.ChangeState(SCE_PROPS_DEFVAL);
 					if (isassignchar(sc.chNext))
@@ -110,6 +112,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
+				continue;
+				
+			case SCE_PROPS_SECTION:
+				if (sc.ch == ']')
+					sc.ForwardSetState(SCE_PROPS_DEFAULT);
 				continue;
 				
 			case SCE_PROPS_KEY:
