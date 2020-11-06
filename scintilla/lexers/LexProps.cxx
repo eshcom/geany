@@ -25,11 +25,6 @@
 
 using namespace Scintilla;
 
-static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
-	return (styler[i] == '\n') ||
-		   ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
-}
-
 static inline bool isassignchar(unsigned char ch) {
 	return (ch == '=') || (ch == ':');
 }
@@ -48,7 +43,7 @@ inline bool IsOperValue(const int ch) {
 		   ch == '/' || ch == '\\';
 }
 
-static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int,
+static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
 							  WordList *keywordlists[], Accessor &styler) {
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -64,174 +59,74 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int,
 	//	can be used for RFC2822 text where indentation is used for continuation lines.
 	const bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 	
-	int state = SCE_PROPS_DEFAULT;
-	bool beginLine = true;
-	bool goToEndLine = false;
-	bool isSubVar = false;
-	int ch, chNext, hexColorLen;
-	Sci_PositionU wordPos;
+	StyleContext sc(startPos, length, initStyle, styler);
 	
-	while (pos < endPos) {
+	bool goToLineEnd = false;
+	bool isSubVar = false;
+	int hexColorLen = 0;
+	
+	for (; sc.More(); sc.Forward()) {
 		
-		if (beginLine) {
-			beginLine = false;
-			if (allowInitialSpaces) {
-				// Skip initial spaces
-				while ((pos < endPos) && isspacechar(styler[pos]))
-					pos++;
-				if (pos == endPos) break;
-			} else if (isspacechar(styler[pos])) {
+		if (sc.atLineStart) {
+			sc.SetState(SCE_PROPS_DEFAULT);
+			
+			if (!allowInitialSpaces && IsASpaceOrTab(sc.ch)) {
 				// don't allow initial spaces
-				goToEndLine = true;
+				goToLineEnd = true;
+				continue;
 			}
 		}
-		
-		if (AtEOL(styler, pos)) {
-			// End of line - colourise it
-			if (state == SCE_PROPS_DOUBLESTRING ||
-				state == SCE_PROPS_SINGLESTRING ||
-				state == SCE_PROPS_HEX_COLOR)
-				state = SCE_PROPS_VALUE;
-			styler.ColourTo(pos++, state);
-			state = SCE_PROPS_DEFAULT;
-			beginLine = true;
-			goToEndLine = false;
-			continue;
-		} else if (goToEndLine) {
-			pos++;
+		if (sc.atLineEnd) {
+			if (sc.state == SCE_PROPS_DOUBLESTRING ||
+				sc.state == SCE_PROPS_SINGLESTRING ||
+				sc.state == SCE_PROPS_HEX_COLOR)
+				// incomplete typed values are changed to SCE_PROPS_VALUE
+				sc.ChangeState(SCE_PROPS_VALUE);
+			else if (sc.state == SCE_PROPS_KEY)
+				// incomplete key are changed to SCE_PROPS_DEFAULT
+				sc.ChangeState(SCE_PROPS_DEFAULT);
+			
+			goToLineEnd = false;
 			continue;
 		}
+		if (goToLineEnd)
+			continue;
+		if (IsASpaceOrTab(sc.ch))
+			continue;
 		
-		switch (state) {
+		// Determine if the current state should terminate.
+		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
-				if (styler[pos] == '#' || styler[pos] == '!' || styler[pos] == ';') {
-					state = SCE_PROPS_COMMENT;
-					goToEndLine = true;
-					pos++;
-				} else if (styler[pos] == '[') {
-					state = SCE_PROPS_SECTION;
-					goToEndLine = true;
-					pos++;
-				} else if (styler[pos] == '@') {
-					styler.ColourTo(pos++, SCE_PROPS_DEFVAL);
-					if ((pos < endPos) && isassignchar(styler[pos]))
-						styler.ColourTo(pos++, SCE_PROPS_ASSIGNMENT);
-					state = SCE_PROPS_VALUE;
-				} else {
-					// Search for the '=' character
-					while ((pos < endPos) && !isassignchar(styler[pos]))
-						pos++;
-					if ((pos < endPos) && isassignchar(styler[pos])) {
-						styler.ColourTo(pos - 1, SCE_PROPS_KEY);
-						styler.ColourTo(pos++, SCE_PROPS_ASSIGNMENT);
-						state = SCE_PROPS_VALUE;
+				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
+					sc.ChangeState(SCE_PROPS_COMMENT);
+					goToLineEnd = true;
+				} else if (sc.ch == '[') {
+					sc.ChangeState(SCE_PROPS_SECTION);
+					goToLineEnd = true;
+				} else if (sc.ch == '@') {
+					sc.ChangeState(SCE_PROPS_DEFVAL);
+					sc.Forward();
+					if (isassignchar(sc.ch)) {
+						sc.SetState(SCE_PROPS_ASSIGNMENT);
+						sc.Forward();
 					}
+					sc.SetState(SCE_PROPS_VALUE);
+				} else {
+					sc.ChangeState(SCE_PROPS_KEY);
 				}
-				break;
-				
+				continue;
+			case SCE_PROPS_KEY:
+				if (isassignchar(sc.ch))
+					sc.SetState(SCE_PROPS_ASSIGNMENT);
+				continue;
+			case SCE_PROPS_ASSIGNMENT:
+				sc.SetState(SCE_PROPS_VALUE);
+				continue;
 			case SCE_PROPS_VALUE:
-				while ((pos < endPos) && IsASpaceOrTab(styler[pos]))
-					pos++;
-				if (pos == endPos) break;
-				
-				ch = styler[pos];
-				chNext = styler.SafeGetCharAt(pos + 1);
-				
-				if (ch == '$' && IsUpperOrLowerCase(chNext)) {
-					state = SCE_PROPS_VARIABLE;
-					pos++;
-				//~ } else if (ch == '#' && chNext == '{') {
-					//~ styler.ColourTo(++pos, SCE_PROPS_SUBVAR_OPER);
-					//~ isSubVar = true;
-					//~ pos++;
-				//~ } else if (ch == '#' && IsADigit(chNext, 16)) {
-					//~ state = SCE_PROPS_HEX_COLOR;
-					//~ hexColorLen = 0;
-					//~ pos++;
-				//~ } else if (ch == '\"') {
-					//~ state = SCE_PROPS_DOUBLESTRING;
-					//~ pos++;
-				//~ } else if (ch == '\'') {
-					//~ state = SCE_PROPS_SINGLESTRING;
-					//~ pos++;
-				//~ } else if (IsOperValue(ch)) {
-					//~ if (isSubVar && ch == '}') {
-						//~ isSubVar = false;
-						//~ styler.ColourTo(pos++, SCE_PROPS_SUBVAR_OPER);
-					//~ } else {
-						//~ styler.ColourTo(pos++, SCE_PROPS_OPER_VALUE);
-					//~ }
-				//~ } else if (IsAWordChar(ch)) {
-					//~ state = SCE_PROPS_COMMONWORD;
-					//~ wordPos = pos++;
-				} else {
-					goToEndLine = true;
-				}
-				break;
-				
-			case SCE_PROPS_VARIABLE:
-				if (IsAWordChar(styler[pos])) {
-					pos++;
-					continue;
-				}
-				styler.ColourTo(pos - 1, state);
-				state = SCE_PROPS_VALUE;
-				break;
-			case SCE_PROPS_HEX_COLOR:
-				pos++;
-				break;
-			case SCE_PROPS_DOUBLESTRING:
-				pos++;
-				break;
-			case SCE_PROPS_SINGLESTRING:
-				pos++;
-				break;
-			case SCE_PROPS_SUBVAR_OPER:
-				pos++;
-				break;
-			case SCE_PROPS_NUMBER:
-				pos++;
-				break;
-			case SCE_PROPS_HEXNUMBER:
-				pos++;
-				break;
-			case SCE_PROPS_URL_VALUE:
-				pos++;
-				break;
-			case SCE_PROPS_MAIL_VALUE:
-				pos++;
-				break;
-			case SCE_PROPS_OPER_VALUE:
-				pos++;
-				break;
-			case SCE_PROPS_COMMONWORD:
-				if (IsAWordChar(ch)) {
-					pos++;
-					continue;
-				}
-				char s[100];
-				Sci_PositionU i = 0;
-				while (wordPos < pos && i < (sizeof(s) - 1))
-					s[i++] = MakeLowerCase(styler[wordPos++]);
-				s[i] = '\0';
-				
-				if (commonWords.InList(s)) {
-					styler.ColourTo(pos - 1, SCE_PROPS_COMMONWORD);
-				} else if (namedColors.InList(s)) {
-					styler.ColourTo(pos - 1, SCE_PROPS_NAMED_COLOR);
-				} else {
-					state = SCE_PROPS_VALUE;
-				}
-				break;
+				continue;
 		}
 	}
-	if (endPos > 0) {
-		if (state == SCE_PROPS_DOUBLESTRING ||
-			state == SCE_PROPS_SINGLESTRING ||
-			state == SCE_PROPS_HEX_COLOR)
-			state = SCE_PROPS_VALUE;
-		styler.ColourTo(endPos - 1, state);
-	}
+	sc.Complete();
 }
 
 // adaption by ksc, using the "} else {" trick of 1.53
