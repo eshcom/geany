@@ -92,7 +92,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 		if (IsASpaceOrTab(sc.ch))
 			continue;
 		
-		// Determine if the current state should terminate.
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
@@ -103,12 +102,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					goToLineEnd = true;
 				} else if (sc.ch == '@') {
 					sc.ChangeState(SCE_PROPS_DEFVAL);
-					sc.Forward();
-					if (isassignchar(sc.ch)) {
-						sc.SetState(SCE_PROPS_ASSIGNMENT);
-						sc.Forward();
-					}
-					sc.SetState(SCE_PROPS_VALUE);
+					if (isassignchar(sc.chNext))
+						sc.ForwardSetState(SCE_PROPS_ASSIGNMENT);
+					sc.ForwardSetState(SCE_PROPS_VALUE);
+				} else if (sc.ch == '=') {
+					sc.SetState(SCE_PROPS_ASSIGNMENT);
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
@@ -123,7 +121,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			case SCE_PROPS_VALUE:
 			case SCE_PROPS_OPER_VALUE:
 				if (!IsAWordChar(sc.chPrev)) {
-					if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+					if (sc.Match('0', 'x') &&
+						IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
+						sc.SetState(SCE_PROPS_HEXNUMBER);
+						sc.Forward();
+						continue;
+						
+					} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
 															IsADigit(sc.chNext)))) {
 						sc.SetState(SCE_PROPS_NUMBER);
@@ -152,6 +156,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					} else if (sc.ch == '\'') {
 						sc.SetState(SCE_PROPS_SINGLESTRING);
 						continue;
+						
+					} else if (IsAWordChar(sc.ch)) {
+						sc.SetState(SCE_PROPS_VALUE);
+						continue;
 					}
 				}
 				if (IsOperValue(sc.ch)) {
@@ -162,7 +170,17 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						sc.SetState(SCE_PROPS_OPER_VALUE);
 					}
 				} else if (IsAWordChar(sc.ch)) {
-					sc.SetState(SCE_PROPS_COMMONWORD);
+					continue;
+				} else if (IsAWordChar(sc.chPrev)) {
+					char s[100];
+					sc.GetCurrentLowered(s, sizeof(s));
+					
+					if (commonWords.InList(s)) {
+						sc.ChangeState(SCE_PROPS_COMMONWORD);
+					} else if (namedColors.InList(s)) {
+						sc.ChangeState(SCE_PROPS_NAMED_COLOR);
+					}
+					sc.SetState(SCE_PROPS_VALUE);
 				}
 				continue;
 			
@@ -194,30 +212,15 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				sc.SetState(SCE_PROPS_VALUE);
 				continue;
 			case SCE_PROPS_HEXNUMBER:
+				if (IsADigit(sc.ch, 16))
+					continue;
+				sc.SetState(SCE_PROPS_VALUE);
+				continue;
+			case SCE_PROPS_IP_VALUE:
 				continue;
 			case SCE_PROPS_URL_VALUE:
 				continue;
 			case SCE_PROPS_MAIL_VALUE:
-				continue;
-			case SCE_PROPS_COMMONWORD:
-				//~ if (IsAWordChar(sc.ch)) {
-					//~ pos++;
-					//~ continue;
-				//~ }
-				//~ char s[100];
-				//~ Sci_PositionU i = 0;
-				//~ while (wordPos < pos && i < (sizeof(s) - 1))
-					//~ s[i++] = MakeLowerCase(styler[wordPos++]);
-				//~ s[i] = '\0';
-				
-				//~ if (commonWords.InList(s)) {
-					//~ styler.ColourTo(pos - 1, SCE_PROPS_COMMONWORD);
-				//~ } else if (namedColors.InList(s)) {
-					//~ styler.ColourTo(pos - 1, SCE_PROPS_NAMED_COLOR);
-				//~ } else {
-					//~ styler.ColourTo(pos - 1, SCE_PROPS_VALUE);
-				//~ }
-				//~ state = SCE_PROPS_VALUE;
 				continue;
 		}
 	}
