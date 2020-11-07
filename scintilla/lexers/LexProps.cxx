@@ -112,6 +112,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 	bool goToLineEnd = false;
 	bool isSubVar = false;
 	int hexColorLen = 0;
+	int ipAddrLen = 0;
 	
 	for (; sc.More(); sc.Forward()) {
 		
@@ -182,14 +183,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						}
 					}
 					if (sc.Match('0', 'x') &&
-						IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
+							IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 						sc.SetState(SCE_PROPS_HEXNUMBER);
 						sc.Forward();
 						continue;
 						
 					} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
-															IsADigit(sc.chNext)))) {
+							   ((sc.ch == '+' || sc.ch == '-') &&
+								(sc.chNext == '.' || IsADigit(sc.chNext)))) {
 						sc.SetState(SCE_PROPS_NUMBER);
 						continue;
 						
@@ -229,7 +230,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					sc.GetCurrentLowered(s, sizeof(s));
 					
 					// check url:
-					if (strcmp(s, "http") == 0 && sc.ch == ':' && sc.chNext == '/') {
+					if ((strcmp(s, "http") == 0 || strcmp(s, "https") == 0 ||
+						 strcmp(s, "ftp") == 0 || strcmp(s, "sftp") == 0) &&
+							sc.ch == ':' && sc.chNext == '/' &&
+							styler.SafeGetCharAt(sc.currentPos + 2) == '/') {
 						sc.ChangeState(SCE_PROPS_URL_VALUE);
 						goToLineEnd = true;
 						continue;
