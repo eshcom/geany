@@ -30,7 +30,55 @@ static inline bool isassignchar(unsigned char ch) {
 }
 
 static inline bool IsAWordChar(const unsigned int ch) {
-	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
+	return isalnum(ch) || ch == '-' || ch == '_';
+}
+
+static inline bool IsSpaceOrTab(int ch) {
+	return ch == ' ' || ch == '\t';
+}
+
+static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
+							   Sci_PositionU endPos) {
+	int mailState = 0;
+	for (; pos < endPos; pos++) {
+		if (styler[pos] == '\r' || styler[pos] == '\n') { // end of line
+			while (--pos > 0 && IsSpaceOrTab(styler[pos]));
+			if (!IsUpperOrLowerCase(styler[pos]))
+				mailState = 0;
+			break;
+		} else if (mailState == 0) {
+			if (styler[pos] == '@' && pos > 0 && pos < (endPos - 1) &&
+				isalnum(styler[pos - 1]) && isalnum(styler[pos + 1])) {
+				mailState = 1;
+			} else if (!IsAWordChar(styler[pos]) && styler[pos] != '.') {
+				break;
+			}
+		} else if (mailState == 1) {
+			if (IsAWordChar(styler[pos])) {
+				mailState = 2;
+			} else {
+				break;
+			}
+		} else if (mailState == 2) {
+			if (styler[pos] == '.') {
+				mailState = 3;
+			} else if (!IsAWordChar(styler[pos])) {
+				break;
+			}
+		} else if (mailState == 3) {
+			if (IsAWordChar(styler[pos])) {
+				mailState = 4;
+			} else {
+				break;
+			}
+		} else if (mailState == 4) {
+			if (!IsAWordChar(styler[pos]) && styler[pos] != '.') {
+				mailState = 0;
+				break;
+			}
+		}
+	}
+	return mailState == 4;
 }
 
 inline bool IsOperValue(const int ch) {
@@ -187,18 +235,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						continue;
 					}
 					// check email:
-					int mailState = 0;
-					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
-						if (styler[i] == '\r' || styler[i] == '\n') { // end of line
-							break;
-						} else if (mailState == 0 && styler[i] == '@') {
-							mailState++;
-						} else if (mailState == 1 && styler[i] == '.') {
-							mailState++;
-							break;
-						}
-					}
-					if (mailState == 2) {
+					if (IsValidMail(styler, sc.currentPos, endPos)) {
 						sc.ChangeState(SCE_PROPS_MAIL_VALUE);
 						goToLineEnd = true;
 						continue;
@@ -255,8 +292,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
 			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
 			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
-			sc.state == SCE_PROPS_IP_VALUE || sc.state == SCE_PROPS_URL_VALUE ||
-			sc.state == SCE_PROPS_MAIL_VALUE || sc.state == SCE_PROPS_ASSIGNMENT) {
+			sc.state == SCE_PROPS_IP_VALUE || sc.state == SCE_PROPS_ASSIGNMENT) {
 			if (IsOperValue(sc.ch)) {
 				if (isSubVar && sc.ch == '}') {
 					sc.SetState(SCE_PROPS_SUBVAR_OPER);
