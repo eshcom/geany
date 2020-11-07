@@ -75,6 +75,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				continue;
 			}
 			goToLineEnd = false;
+			isSubVar = false;
 		}
 		if (goToLineEnd)
 			continue;
@@ -96,6 +97,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else if (sc.ch == '=') {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
+					continue;
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
@@ -107,14 +109,22 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				break;
 				
 			case SCE_PROPS_KEY:
-				if (isassignchar(sc.ch))
+				if (isassignchar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
+					continue;
+				}
 				break;
 				
 			case SCE_PROPS_ASSIGNMENT:
 			case SCE_PROPS_VALUE:
 			case SCE_PROPS_OPER_VALUE:
 				if (!IsAWordChar(sc.chPrev)) {
+					if (sc.Match('#', '{')) {
+						sc.SetState(SCE_PROPS_SUBVAR_OPER);
+						sc.Forward();
+						sc.ForwardSetState(SCE_PROPS_VALUE);
+						isSubVar = true;
+					}
 					if (sc.Match('0', 'x') &&
 						IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 						sc.SetState(SCE_PROPS_HEXNUMBER);
@@ -129,13 +139,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						
 					} else if (sc.ch == '$' && IsUpperOrLowerCase(sc.chNext)) {
 						sc.SetState(SCE_PROPS_VARIABLE);
-						continue;
-						
-					} else if (sc.ch == '#' && sc.chNext == '{') {	// TODO: need change
-						sc.SetState(SCE_PROPS_SUBVAR_OPER);
-						sc.Forward();
-						sc.ForwardSetState(SCE_PROPS_VALUE);
-						isSubVar = true;
 						continue;
 						
 					} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
@@ -154,7 +157,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						sc.SetState(SCE_PROPS_VALUE);
 						continue;
 					}
-				} else if (!IsAWordChar(sc.ch)) {
+				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
 					char s[100];
 					sc.GetCurrentLowered(s, sizeof(s));
 					
@@ -192,6 +195,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			case SCE_PROPS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
 					continue;
+				if (IsAWordChar(sc.ch))
+					sc.ChangeState(SCE_PROPS_VALUE);
 				sc.SetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_HEXNUMBER:
@@ -213,9 +218,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			sc.state == SCE_PROPS_DOUBLESTRING || sc.state == SCE_PROPS_SINGLESTRING ||
 			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
 			sc.state == SCE_PROPS_IP_VALUE || sc.state == SCE_PROPS_URL_VALUE ||
-			sc.state == SCE_PROPS_MAIL_VALUE) {
+			sc.state == SCE_PROPS_MAIL_VALUE || sc.state == SCE_PROPS_ASSIGNMENT) {
 			if (IsOperValue(sc.ch)) {
-				if (isSubVar && sc.ch == '}') {		// TODO: need change
+				if (isSubVar && sc.ch == '}') {
 					sc.SetState(SCE_PROPS_SUBVAR_OPER);
 					isSubVar = false;
 				} else {
