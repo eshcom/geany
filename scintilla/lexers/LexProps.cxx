@@ -40,7 +40,8 @@ inline bool IsOperValue(const int ch) {
 		   ch == '@' || ch == '^' || ch == '~' || ch == '|' ||
 		   ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
 		   ch == '(' || ch == ')' || ch == '<' || ch == '>' ||
-		   ch == '/' || ch == '\\';
+		   ch == '/' || ch == '\\' || ch == '$' || ch == '"' ||
+		   ch == '\'';
 }
 
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
@@ -120,10 +121,17 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			case SCE_PROPS_OPER_VALUE:
 				if (!IsAWordChar(sc.chPrev)) {
 					if (sc.Match('#', '{')) {
-						sc.SetState(SCE_PROPS_SUBVAR_OPER);
-						sc.Forward();
-						sc.ForwardSetState(SCE_PROPS_VALUE);
-						isSubVar = true;
+						for (Sci_PositionU i = sc.currentPos + 2; i < endPos; i++) {
+							if (styler[i] == '\r' || styler[i] == '\n') { // end of line
+								break;
+							} else if (styler[i] == '}') {
+								sc.SetState(SCE_PROPS_SUBVAR_OPER);
+								sc.Forward();
+								sc.ForwardSetState(SCE_PROPS_VALUE);
+								isSubVar = true;
+								break;
+							}
+						}
 					}
 					if (sc.Match('0', 'x') &&
 						IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
@@ -147,12 +155,23 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						continue;
 						
 					} else if (sc.ch == '\"') {
-						sc.SetState(SCE_PROPS_DOUBLESTRING);
-						continue;
-						
+						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
+							if (styler[i] == '\r' || styler[i] == '\n') { // end of line
+								break;
+							} else if (styler[i] == '"') {
+								sc.SetState(SCE_PROPS_DOUBLESTRING);
+								break;
+							}
+						}
 					} else if (sc.ch == '\'') {
-						sc.SetState(SCE_PROPS_SINGLESTRING);
-						continue;
+						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
+							if (styler[i] == '\r' || styler[i] == '\n') { // end of line
+								break;
+							} else if (styler[i] == '\'') {
+								sc.SetState(SCE_PROPS_SINGLESTRING);
+								break;
+							}
+						}
 					} else if (IsAWordChar(sc.ch)) {
 						sc.SetState(SCE_PROPS_VALUE);
 						continue;
@@ -161,6 +180,30 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					char s[100];
 					sc.GetCurrentLowered(s, sizeof(s));
 					
+					// check url:
+					if (strcmp(s, "http") == 0 && sc.ch == ':' && sc.chNext == '/') {
+						sc.ChangeState(SCE_PROPS_URL_VALUE);
+						goToLineEnd = true;
+						continue;
+					}
+					// check email:
+					int mailState = 0;
+					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+						if (styler[i] == '\r' || styler[i] == '\n') { // end of line
+							break;
+						} else if (mailState == 0 && styler[i] == '@') {
+							mailState++;
+						} else if (mailState == 1 && styler[i] == '.') {
+							mailState++;
+							break;
+						}
+					}
+					if (mailState == 2) {
+						sc.ChangeState(SCE_PROPS_MAIL_VALUE);
+						goToLineEnd = true;
+						continue;
+					}
+					// find a word to defined lists:
 					if (commonWords.InList(s)) {
 						sc.ChangeState(SCE_PROPS_COMMONWORD);
 					} else if (namedColors.InList(s)) {
@@ -208,14 +251,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				break;
 			case SCE_PROPS_IP_VALUE:
 				break;
-			case SCE_PROPS_URL_VALUE:
-				break;
-			case SCE_PROPS_MAIL_VALUE:
-				break;
 		}
 		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
 			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
-			sc.state == SCE_PROPS_DOUBLESTRING || sc.state == SCE_PROPS_SINGLESTRING ||
 			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
 			sc.state == SCE_PROPS_IP_VALUE || sc.state == SCE_PROPS_URL_VALUE ||
 			sc.state == SCE_PROPS_MAIL_VALUE || sc.state == SCE_PROPS_ASSIGNMENT) {
@@ -229,9 +267,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			}
 		}
 		if (sc.atLineEnd) {
-			if (sc.state == SCE_PROPS_DOUBLESTRING ||
-				sc.state == SCE_PROPS_SINGLESTRING ||
-				sc.state == SCE_PROPS_HEX_COLOR)
+			if (sc.state == SCE_PROPS_HEX_COLOR)
 				// incomplete typed values are changed to SCE_PROPS_VALUE
 				sc.ChangeState(SCE_PROPS_VALUE);
 			else if (sc.state == SCE_PROPS_SECTION ||
