@@ -74,32 +74,19 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				goToLineEnd = true;
 				continue;
 			}
-		}
-		if (sc.atLineEnd) {
-			if (sc.state == SCE_PROPS_DOUBLESTRING ||
-				sc.state == SCE_PROPS_SINGLESTRING)
-				// incomplete typed values are changed to SCE_PROPS_VALUE
-				sc.ChangeState(SCE_PROPS_VALUE);
-			else if (sc.state == SCE_PROPS_SECTION)
-				// incomplete section are changed to SCE_PROPS_DEFAULT
-				sc.ChangeState(SCE_PROPS_DEFAULT);
-			else if (sc.state == SCE_PROPS_KEY)
-				// incomplete key are changed to SCE_PROPS_DEFAULT
-				sc.ChangeState(SCE_PROPS_DEFAULT);
-			
 			goToLineEnd = false;
-			continue;
 		}
 		if (goToLineEnd)
-			continue;
-		if (IsASpaceOrTab(sc.ch))
 			continue;
 		
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
+				if (IsASpaceOrTab(sc.ch))
+					continue;
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
 					sc.ChangeState(SCE_PROPS_COMMENT);
 					goToLineEnd = true;
+					continue;
 				} else if (sc.ch == '[') {
 					sc.ChangeState(SCE_PROPS_SECTION);
 				} else if (sc.ch == '@') {
@@ -112,17 +99,17 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
-				continue;
+				break;
 				
 			case SCE_PROPS_SECTION:
 				if (sc.ch == ']')
 					sc.ForwardSetState(SCE_PROPS_DEFAULT);
-				continue;
+				break;
 				
 			case SCE_PROPS_KEY:
 				if (isassignchar(sc.ch))
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
-				continue;
+				break;
 				
 			case SCE_PROPS_ASSIGNMENT:
 			case SCE_PROPS_VALUE:
@@ -144,7 +131,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						sc.SetState(SCE_PROPS_VARIABLE);
 						continue;
 						
-					} else if (sc.ch == '#' && sc.chNext == '{') {
+					} else if (sc.ch == '#' && sc.chNext == '{') {	// TODO: need change
 						sc.SetState(SCE_PROPS_SUBVAR_OPER);
 						sc.Forward();
 						sc.ForwardSetState(SCE_PROPS_VALUE);
@@ -163,22 +150,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					} else if (sc.ch == '\'') {
 						sc.SetState(SCE_PROPS_SINGLESTRING);
 						continue;
-						
 					} else if (IsAWordChar(sc.ch)) {
 						sc.SetState(SCE_PROPS_VALUE);
 						continue;
 					}
-				}
-				if (IsOperValue(sc.ch)) {
-					if (isSubVar && sc.ch == '}') {
-						sc.SetState(SCE_PROPS_SUBVAR_OPER);
-						isSubVar = false;
-					} else {
-						sc.SetState(SCE_PROPS_OPER_VALUE);
-					}
-				} else if (IsAWordChar(sc.ch)) {
-					continue;
-				} else if (IsAWordChar(sc.chPrev)) {
+				} else if (!IsAWordChar(sc.ch)) {
 					char s[100];
 					sc.GetCurrentLowered(s, sizeof(s));
 					
@@ -189,13 +165,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					}
 					sc.SetState(SCE_PROPS_VALUE);
 				}
-				continue;
+				break;
 			
 			case SCE_PROPS_VARIABLE:
 				if (IsAWordChar(sc.ch))
 					continue;
 				sc.SetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexColorLen++;
@@ -204,31 +180,59 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				if ((hexColorLen != 3 && hexColorLen != 6) || IsAWordChar(sc.ch))
 					sc.ChangeState(SCE_PROPS_VALUE);
 				sc.SetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_DOUBLESTRING:
 				if (sc.ch == '\"')
 					sc.ForwardSetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_SINGLESTRING:
 				if (sc.ch == '\'')
 					sc.ForwardSetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
 					continue;
 				sc.SetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_HEXNUMBER:
 				if (IsADigit(sc.ch, 16))
 					continue;
+				if (IsAWordChar(sc.ch))
+					sc.ChangeState(SCE_PROPS_VALUE);
 				sc.SetState(SCE_PROPS_VALUE);
-				continue;
+				break;
 			case SCE_PROPS_IP_VALUE:
-				continue;
+				break;
 			case SCE_PROPS_URL_VALUE:
-				continue;
+				break;
 			case SCE_PROPS_MAIL_VALUE:
-				continue;
+				break;
+		}
+		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
+			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
+			sc.state == SCE_PROPS_DOUBLESTRING || sc.state == SCE_PROPS_SINGLESTRING ||
+			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
+			sc.state == SCE_PROPS_IP_VALUE || sc.state == SCE_PROPS_URL_VALUE ||
+			sc.state == SCE_PROPS_MAIL_VALUE) {
+			if (IsOperValue(sc.ch)) {
+				if (isSubVar && sc.ch == '}') {		// TODO: need change
+					sc.SetState(SCE_PROPS_SUBVAR_OPER);
+					isSubVar = false;
+				} else {
+					sc.SetState(SCE_PROPS_OPER_VALUE);
+				}
+			}
+		}
+		if (sc.atLineEnd) {
+			if (sc.state == SCE_PROPS_DOUBLESTRING ||
+				sc.state == SCE_PROPS_SINGLESTRING ||
+				sc.state == SCE_PROPS_HEX_COLOR)
+				// incomplete typed values are changed to SCE_PROPS_VALUE
+				sc.ChangeState(SCE_PROPS_VALUE);
+			else if (sc.state == SCE_PROPS_SECTION ||
+					 sc.state == SCE_PROPS_KEY)
+				// incomplete section/key are changed to SCE_PROPS_DEFAULT
+				sc.ChangeState(SCE_PROPS_DEFAULT);
 		}
 	}
 	sc.Complete();
