@@ -449,6 +449,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			if (op == '@' && strcmp(s2, "media") == 0) {
 				sc.ChangeState(SCE_CSS_MEDIA);
 			}
+			// determine next state:
 			int ch = 0;
 			bool wordExists = false;
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
@@ -458,7 +459,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				else if (IsAWordChar(ch))
 					wordExists = true;
 			}
-			// esh: set next state for directive/media
+			// set next state for directive/media
 			if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
 				sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
 			} else {
@@ -494,7 +495,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
 					// look ahead to see '('
 					int ch = 0;
-					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+					Sci_PositionU i = sc.currentPos;
+					for (; i < endPos; i++) {
 						ch = styler.SafeGetCharAt(i);
 						if (!IsASpace(ch)) break;
 					}
@@ -507,6 +509,31 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						while (*word2 && !IsAWordChar(*word2))
 							word2++;
 						
+						if (ch == ':' && insideParentheses) {
+							bool isValue = false;
+							for (; i < endPos; i++) {
+								ch = styler.SafeGetCharAt(i);
+								if (ch == ')') {
+									break;
+								} else if (ch == '/' || ch == ',' || ch == ';') {
+									isValue = true;
+									break;
+								}
+							}
+							if (!isValue) {
+								if (css1Props.InList(word2))
+									sc.ChangeState(SCE_CSS_IDENTIFIER);
+								else if (css2Props.InList(word2))
+									sc.ChangeState(SCE_CSS_IDENTIFIER2);
+								else if (css3Props.InList(word2))
+									sc.ChangeState(SCE_CSS_IDENTIFIER3);
+								else if (exProps.InList(word2))
+									sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
+								else
+									sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
+								break;
+							}
+						}
 						if (namedColors.InList(word2)) {
 							sc.ChangeState(SCE_CSS_NAMED_COLOR);
 						} else if (insideParentheses && strcmp(word2, "http") == 0) {
