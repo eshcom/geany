@@ -65,7 +65,8 @@ static inline bool IsAWordOrSpace(int ch) {
 }
 
 inline bool IsCssOperValue(const int ch) {
-	return ch == '(' || ch == ')' || ch == ',' || ch == '/';
+	return ch == '(' || ch == ')' || ch == ',' || ch == '/' ||
+		   ch == '*' || ch == '+';
 }
 
 inline bool IsCssSelectorOper(const int ch) {
@@ -78,8 +79,8 @@ inline bool IsCssOperator(const int ch) {
 		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
 		 ch == '.' || ch == '#' || ch == '!' || ch == '@' ||
 		 /* CSS2 */
-		 ch == '*' || ch == '>' || ch == '+' || ch == '=' || ch == '~' || ch == '|' ||
-		 ch == '[' || ch == ']' || ch == '(' || ch == ')')) {
+		 ch == '*' || ch == '>' || ch == '+' || ch == '=' || ch == '~' ||
+		 ch == '|' || ch == '[' || ch == ']' || ch == '(' || ch == ')')) {
 		return true;
 	}
 	return false;
@@ -440,25 +441,25 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			case SCE_CSS_VALUE:			// sub-val: solid, linear, transparent, ...
 			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
 				
-				if (!IsAWordChar(sc.chPrev) &&
-					(IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-					 ((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
-														 IsADigit(sc.chNext))))) {
-					sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
-					continue;
-					
-				} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
-					hexColorLen = 0;
-					sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
-					continue;
-					
-				} else if (IsAWordChar(sc.ch)) {
-					// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
-					if (sc.state != SCE_CSS_VALUE)	// if current state -> oper-val:
-						sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default)
-					continue;
-					
-				} else if (IsAWordChar(sc.chPrev)) {
+				if (!IsAWordChar(sc.chPrev)) {
+					if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
+															IsADigit(sc.chNext))))) {
+						sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
+						continue;
+						
+					} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+						hexColorLen = 0;
+						sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
+						continue;
+						
+					} else if (IsAWordChar(sc.ch)) {
+						// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
+						if (sc.state != SCE_CSS_VALUE)	// if current state -> oper-val:
+							sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default)
+						continue;
+					}
+				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
 					// look ahead to see '('
 					int ch = 0;
 					for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
