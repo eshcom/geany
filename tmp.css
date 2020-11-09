@@ -14,7 +14,9 @@ p {
 }
 
 @define-color theme_fg_color /**/ @fg_color;
+@define-color theme_fg_color /**/ @fg_color@fg_color;
 @define-color theme_base_color /**/ #ededed;
+@define-color theme_base_color /**/ #ededed#ededed;
 @define-color borders shade(/**/@bg_color/**/, /**/ 0.82/**/);
 @define-color borders shade(/**/#ededed/**/, /**/0.82/**/);
 @define-color borders /**/ shade(/**/red/**/, 0.82);
