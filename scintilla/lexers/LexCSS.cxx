@@ -436,6 +436,36 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}
 		}
 		
+		// esh: directive, media
+		if (sc.state == SCE_CSS_DIRECTIVE &&
+			!IsAWordChar(sc.ch) && IsAWordChar(sc.chPrev)) {
+			char s[100];
+			sc.GetCurrentLowered(s, sizeof(s));
+			char *s2 = s;
+			while (*s2 && !IsAWordChar(*s2))
+				s2++;
+			if (op == '@' && strcmp(s2, "media") == 0) {
+				sc.ChangeState(SCE_CSS_MEDIA);
+			} else {
+				int ch = 0;
+				bool wordExists = false;
+				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+					ch = styler.SafeGetCharAt(i);
+					if ((IsCssOperator(ch) && ch != ',') || ch == '&')
+						break;
+					else if (IsAWordChar(ch))
+						wordExists = true;
+				}
+				// esh: set next state for directive
+				if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
+					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
+				} else {
+					sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
+					isDirectiveVal = true;
+				}
+			}
+		}
+		
 		// esh: number, hexadec-color, named-color, dimension, ...
 		switch (sc.state) {
 			case SCE_CSS_VALUE:			// sub-val: solid, linear, transparent, ...
@@ -587,16 +617,17 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			continue;
 		}
 		
-		if (IsAWordChar(sc.chPrev) && (
-			sc.state == SCE_CSS_IDENTIFIER || sc.state == SCE_CSS_IDENTIFIER2 ||
-			sc.state == SCE_CSS_IDENTIFIER3 || sc.state == SCE_CSS_EXTENDED_IDENTIFIER ||
-			sc.state == SCE_CSS_UNKNOWN_IDENTIFIER ||
-			sc.state == SCE_CSS_PSEUDOCLASS || sc.state == SCE_CSS_PSEUDOELEMENT ||
-			sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
-			sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
-			sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS ||
-			sc.state == SCE_CSS_DIRECTIVE
-		)) {
+		if (IsAWordChar(sc.chPrev) &&
+			(sc.state == SCE_CSS_IDENTIFIER ||
+			 sc.state == SCE_CSS_IDENTIFIER2 ||
+			 sc.state == SCE_CSS_IDENTIFIER3 ||
+			 sc.state == SCE_CSS_EXTENDED_IDENTIFIER ||
+			 sc.state == SCE_CSS_UNKNOWN_IDENTIFIER ||
+			 sc.state == SCE_CSS_PSEUDOCLASS ||
+			 sc.state == SCE_CSS_PSEUDOELEMENT ||
+			 sc.state == SCE_CSS_EXTENDED_PSEUDOCLASS ||
+			 sc.state == SCE_CSS_EXTENDED_PSEUDOELEMENT ||
+			 sc.state == SCE_CSS_UNKNOWN_PSEUDOCLASS)) {
 			char s[100];
 			sc.GetCurrentLowered(s, sizeof(s));
 			char *s2 = s;
@@ -638,39 +669,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					else
 						sc.ChangeState(SCE_CSS_UNKNOWN_PSEUDOCLASS);
 					break;
-					
-				case SCE_CSS_DIRECTIVE:
-					if (op == '@' && strcmp(s2, "media") == 0)
-						sc.ChangeState(SCE_CSS_MEDIA);
-					break;
 			}
 		}
 		
-		switch (sc.state) {
-			case SCE_CSS_DIRECTIVE: {
-				int ch = 0;
-				bool wordExists = false;
-				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
-					ch = styler.SafeGetCharAt(i);
-					if ((IsCssOperator(ch) && ch != ',') || ch == '&')
-						break;
-					else if (IsAWordChar(ch))
-						wordExists = true;
-				}
-				// esh: set next state for directive
-				if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
-					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
-				} else {
-					sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
-					isDirectiveVal = true;
-				}
-			}	break;
-			case SCE_CSS_VALUE:
-				if (isDirectiveVal && (sc.ch == ';' || sc.ch == '{')) {
-					sc.ChangeState(SCE_CSS_DIRECTIVE);
-					isDirectiveVal = false;
-				}
-				break;
+		if (sc.state == SCE_CSS_VALUE && isDirectiveVal &&
+			(sc.ch == ';' || sc.ch == '{')) {
+			sc.ChangeState(SCE_CSS_DIRECTIVE);
+			isDirectiveVal = false;
 		}
 		
 		if (sc.ch != '.' && sc.ch != ':' && sc.ch != '#' && (
