@@ -151,7 +151,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	
 	// esh:
 	int hexColorLen = 0;
-	bool isDirectiveVal = false; // @dir var1, var2 val (where: var1, var2 val - isDirectiveVal)
+	int dirMediaState = -1;
+	bool isDirMediaVal = false; // example: @charset "utf-8", @media only screen,
+								// where "utf-8" - is value, only screen - is value
 	bool isSubVar = false;	// example: #{$name}, where $name - var
 							//          #{unique-id()}, where unique-id() - func
 	int beforeSubVarState = -1;
@@ -446,23 +448,23 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				s2++;
 			if (op == '@' && strcmp(s2, "media") == 0) {
 				sc.ChangeState(SCE_CSS_MEDIA);
+			}
+			int ch = 0;
+			bool wordExists = false;
+			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+				ch = styler.SafeGetCharAt(i);
+				if ((IsCssOperator(ch) && ch != ',') || ch == '&')
+					break;
+				else if (IsAWordChar(ch))
+					wordExists = true;
+			}
+			// esh: set next state for directive/media
+			if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
+				sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
 			} else {
-				int ch = 0;
-				bool wordExists = false;
-				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
-					ch = styler.SafeGetCharAt(i);
-					if ((IsCssOperator(ch) && ch != ',') || ch == '&')
-						break;
-					else if (IsAWordChar(ch))
-						wordExists = true;
-				}
-				// esh: set next state for directive
-				if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
-					sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
-				} else {
-					sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
-					isDirectiveVal = true;
-				}
+				dirMediaState = sc.state;
+				sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
+				isDirMediaVal = true;
 			}
 		}
 		
@@ -672,10 +674,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}
 		}
 		
-		if (sc.state == SCE_CSS_VALUE && isDirectiveVal &&
+		if (sc.state == SCE_CSS_VALUE && isDirMediaVal &&
 			(sc.ch == ';' || sc.ch == '{')) {
-			sc.ChangeState(SCE_CSS_DIRECTIVE);
-			isDirectiveVal = false;
+			sc.ChangeState(dirMediaState);
+			isDirMediaVal = false;
 		}
 		
 		if (sc.ch != '.' && sc.ch != ':' && sc.ch != '#' && (
