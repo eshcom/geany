@@ -681,7 +681,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 			}
 		}
 		/***************************************/
-		if (!isspacechar(ch)) visibleChars++;
+		if (!IsASpace(ch)) visibleChars++;
 	}
 	/***************************************/
 }

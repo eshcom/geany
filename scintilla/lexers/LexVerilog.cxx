@@ -767,7 +767,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		}
-		if (isEscapedId && isspacechar(sc.ch)) {
+		if (isEscapedId && IsASpace(sc.ch)) {
 			isEscapedId = false;
 		}
 	}
@@ -1047,7 +1047,7 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 			levelMinCurrent = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 	}
 }

@@ -521,7 +521,7 @@ static void FoldNoBoxVHDLDoc(
 			visibleChars = 0;
 		}
 		/***************************************/
-		if (!isspacechar(ch)) visibleChars++;
+		if (!IsASpace(ch)) visibleChars++;
 	}
 
 	/***************************************/

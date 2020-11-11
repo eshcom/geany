@@ -2504,10 +2504,10 @@ Sci::Position Document::WordPartLeft(Sci::Position pos) const {
 					pos -= CharacterBefore(pos).widthBytes;
 				if (!IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (isspacechar(ceStart.character)) {
-				while (pos > 0 && isspacechar(CharacterAfter(pos).character))
+			} else if (IsASpace(ceStart.character)) {
+				while (pos > 0 && IsASpace(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!isspacechar(CharacterAfter(pos).character))
+				if (!IsASpace(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
 			} else if (!IsASCII(ceStart.character)) {
 				while (pos > 0 && !IsASCII(CharacterAfter(pos).character))
@@ -2553,8 +2553,8 @@ Sci::Position Document::WordPartRight(Sci::Position pos) const {
 	} else if (IsASCIIPunctuationCharacter(ceStart.character)) {
 		while (pos < length && IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
-	} else if (isspacechar(ceStart.character)) {
-		while (pos < length && isspacechar(CharacterAfter(pos).character))
+	} else if (IsASpace(ceStart.character)) {
+		while (pos < length && IsASpace(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
 	} else {
 		pos += CharacterAfter(pos).widthBytes;

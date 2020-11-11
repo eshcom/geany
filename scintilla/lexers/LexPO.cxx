@@ -59,7 +59,7 @@ static void ColourisePODoc(Sci_PositionU startPos, Sci_Position length, int init
 			case SCE_PO_MSGCTXT:
 			case SCE_PO_MSGID:
 			case SCE_PO_MSGSTR:
-				if (isspacechar(sc.ch))
+				if (IsASpace(sc.ch))
 					sc.SetState(SCE_PO_DEFAULT);
 				break;
 
@@ -102,7 +102,7 @@ static void ColourisePODoc(Sci_PositionU startPos, Sci_Position length, int init
 				if (curLineState == SCE_PO_COMMENT)
 					curLineState = SCE_PO_DEFAULT;
 
-				while (sc.More() && ! sc.atLineEnd && isspacechar(sc.ch))
+				while (sc.More() && ! sc.atLineEnd && IsASpace(sc.ch))
 					sc.Forward();
 			}
 
@@ -130,7 +130,7 @@ static void ColourisePODoc(Sci_PositionU startPos, Sci_Position length, int init
 					sc.SetState(SCE_PO_MSGSTR_TEXT);
 				else
 					sc.SetState(SCE_PO_ERROR);
-			} else if (! isspacechar(sc.ch))
+			} else if (!IsASpace(sc.ch))
 				sc.SetState(SCE_PO_ERROR);
 
 			if (sc.state != SCE_PO_DEFAULT)
@@ -149,7 +149,7 @@ static void ColourisePODoc(Sci_PositionU startPos, Sci_Position length, int init
 static int FindNextNonEmptyLineState(Sci_PositionU startPos, Accessor &styler) {
 	Sci_PositionU length = styler.Length();
 	for (Sci_PositionU i = startPos; i < length; i++) {
-		if (! isspacechar(styler[i])) {
+		if (!IsASpace(styler[i])) {
 			return styler.GetLineState(styler.GetLine(i));
 		}
 	}
@@ -175,7 +175,7 @@ static void FoldPODoc(Sci_PositionU startPos, Sci_Position length, int, WordList
 		int ch = chNext;
 		chNext = styler.SafeGetCharAt(i+1);
 
-		if (! isspacechar(ch)) {
+		if (!IsASpace(ch)) {
 			visible++;
 		} else if ((ch == '\r' && chNext != '\n') || ch == '\n' || i+1 >= endPos) {
 			int lvl = level;

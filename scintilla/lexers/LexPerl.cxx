@@ -1799,7 +1799,7 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 		chPrev = ch;
 	}

@@ -426,7 +426,7 @@ static void FoldPropsDoc(Sci_PositionU startPos, Sci_Position length,
 			visibleChars = 0;
 			headerPoint = false;
 		}
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 	}
 	

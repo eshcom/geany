@@ -168,7 +168,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 
 	styler.StartSegment(startPos);
 	bool bNewLine = true;
-	bool bAarea = !isspacechar(chNext);
+	bool bAarea = !IsASpace(chNext);
 	int column = 0;
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
@@ -181,7 +181,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 			column = 0;
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !isspacechar(ch);
+			bAarea = !IsASpace(ch);
 			}
 		bool bSetNewLine = false;
 		if ((ch == '\r' && chNext != '\n') || (ch == '\n')) {
@@ -319,7 +319,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 	char chNext = styler[startPos];
 
 	bool bNewLine = true;
-	bool bAarea = !isspacechar(chNext);
+	bool bAarea = !IsASpace(chNext);
 	int column = 0;
 	bool bComment = false;
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
@@ -332,7 +332,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 			bComment = (ch == '*' || ch == '/' || ch == '?');
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !isspacechar(ch);
+			bAarea = !IsASpace(ch);
 			}
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		if (atEOL) {
@@ -361,7 +361,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 			bNewLine = false;
 		}
 
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 	}
 

@@ -150,13 +150,6 @@ inline bool IsAlphaNumeric(int ch) {
 		((ch >= 'A') && (ch <= 'Z'));
 }
 
-/**
- * Check if a character is a space.
- * This is ASCII specific but is safe with chars >= 0x80.
- */
-inline bool isspacechar(int ch) {
-	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
-}
 
 inline bool iswordchar(int ch) {
 	return IsAlphaNumeric(ch) || ch == '.' || ch == '_';

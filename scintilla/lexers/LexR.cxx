@@ -194,7 +194,7 @@ static void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList 
 			levelMinCurrent = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 	}
 }
