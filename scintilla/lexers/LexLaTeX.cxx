@@ -96,11 +96,11 @@ static bool latexIsSpecial(int ch) {
 }
 
 static bool latexIsBlank(int ch) {
-	return (ch == ' ') || (ch == '\t');
+	return IsASpaceOrTab(ch);
 }
 
 static bool latexIsBlankAndNL(int ch) {
-	return (ch == ' ') || (ch == '\t') || (ch == '\r') || (ch == '\n');
+	return IsASpaceOrTab(ch) || (ch == '\r') || (ch == '\n');
 }
 
 static bool latexIsLetter(int ch) {

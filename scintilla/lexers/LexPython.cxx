@@ -211,7 +211,7 @@ static bool IsFirstNonWhitespace(Sci_Position pos, Accessor &styler) {
 	Sci_Position start_pos = styler.LineStart(line);
 	for (Sci_Position i = start_pos; i < pos; i++) {
 		const char ch = styler[i];
-		if (!(ch == ' ' || ch == '\t'))
+		if (!IsASpaceOrTab(ch))
 			return false;
 	}
 	return true;
@@ -642,7 +642,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						} else if (ch == ':') {
 							style = SCE_P_CLASSNAME;
 							break;
-						} else if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+						} else if (IsASpaceOrTab(ch) || ch == '\n' || ch == '\r') {
 							pos++;
 							ch = styler.SafeGetCharAt(pos, '\0');
 						} else {

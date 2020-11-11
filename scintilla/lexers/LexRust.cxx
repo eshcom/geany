@@ -70,47 +70,47 @@ struct OptionsRust {
 };
 
 static const char * const rustWordLists[NUM_RUST_KEYWORD_LISTS + 1] = {
-			"Primary keywords and identifiers",
-			"Built in types",
-			"Other keywords",
-			"Keywords 4",
-			"Keywords 5",
-			"Keywords 6",
-			"Keywords 7",
-			0,
-		};
+		"Primary keywords and identifiers",
+		"Built in types",
+		"Other keywords",
+		"Keywords 4",
+		"Keywords 5",
+		"Keywords 6",
+		"Keywords 7",
+		0,
+	};
 
 struct OptionSetRust : public OptionSet<OptionsRust> {
 	OptionSetRust() {
 		DefineProperty("fold", &OptionsRust::fold);
-
+		
 		DefineProperty("fold.comment", &OptionsRust::foldComment);
-
+		
 		DefineProperty("fold.compact", &OptionsRust::foldCompact);
-
+		
 		DefineProperty("fold.at.else", &OptionsRust::foldAtElse);
-
+		
 		DefineProperty("fold.rust.syntax.based", &OptionsRust::foldSyntaxBased,
 			"Set this property to 0 to disable syntax based folding.");
-
+		
 		DefineProperty("fold.rust.comment.multiline", &OptionsRust::foldCommentMultiline,
 			"Set this property to 0 to disable folding multi-line comments when fold.comment=1.");
-
+		
 		DefineProperty("fold.rust.comment.explicit", &OptionsRust::foldCommentExplicit,
 			"Set this property to 0 to disable folding explicit fold points when fold.comment=1.");
-
+		
 		DefineProperty("fold.rust.explicit.start", &OptionsRust::foldExplicitStart,
 			"The string to use for explicit fold start points, replacing the standard //{.");
-
+		
 		DefineProperty("fold.rust.explicit.end", &OptionsRust::foldExplicitEnd,
 			"The string to use for explicit fold end points, replacing the standard //}.");
-
+		
 		DefineProperty("fold.rust.explicit.anywhere", &OptionsRust::foldExplicitAnywhere,
 			"Set this property to 1 to enable explicit fold points anywhere, not just in line comments.");
-
+		
 		DefineProperty("lexer.rust.fold.at.else", &OptionsRust::foldAtElseInt,
 			"This option enables Rust folding on a \"} else {\" line of an if statement.");
-
+		
 		DefineWordListSets(rustWordLists);
 	}
 };
@@ -142,8 +142,10 @@ public:
 		return osRust.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
@@ -173,8 +175,8 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-static bool IsWhitespace(int c) {
-    return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+static bool IsWhitespace(int ch) {
+	return IsASpaceOrTab(ch) || ch == '\r' || ch == '\n';
 }
 
 /* This isn't quite right for Unicode identifiers */
@@ -196,17 +198,19 @@ static void ScanWhitespace(Accessor& styler, Sci_Position& pos, Sci_Position max
 	styler.ColourTo(pos-1, SCE_RUST_DEFAULT);
 }
 
-static void GrabString(char* s, Accessor& styler, Sci_Position start, Sci_Position len) {
+static void GrabString(char* s, Accessor& styler, Sci_Position start,
+					   Sci_Position len) {
 	for (Sci_Position ii = 0; ii < len; ii++)
 		s[ii] = styler[ii + start];
 	s[len] = '\0';
 }
 
-static void ScanIdentifier(Accessor& styler, Sci_Position& pos, WordList *keywords) {
+static void ScanIdentifier(Accessor& styler, Sci_Position& pos,
+						   WordList *keywords) {
 	Sci_Position start = pos;
 	while (IsIdentifierContinue(styler.SafeGetCharAt(pos, '\0')))
 		pos++;
-
+	
 	if (styler.SafeGetCharAt(pos, '\0') == '!') {
 		pos++;
 		styler.ColourTo(pos - 1, SCE_RUST_MACRO);
@@ -260,7 +264,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 		pos += 2;
 		base = 8;
 	}
-
+	
 	/* Scan initial digits. The literal is malformed if there are none. */
 	error |= !ScanDigits(styler, pos, base);
 	/* See if there's an integer suffix. We mimic the Rust's lexer
@@ -297,7 +301,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			/* It's ok to have no digits after the period. */
 			ScanDigits(styler, pos, 10);
 		}
-
+		
 		/* Look for the exponentiation. */
 		c = styler.SafeGetCharAt(pos, '\0');
 		if (c == 'e' || c == 'E') {
@@ -309,7 +313,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			/* It is invalid to have no digits in the exponent. */
 			error |= !ScanDigits(styler, pos, 10);
 		}
-
+		
 		/* Scan the floating point suffix. */
 		c = styler.SafeGetCharAt(pos, '\0');
 		if (c == 'f') {
@@ -326,7 +330,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			}
 		}
 	}
-
+	
 	if (error)
 		styler.ColourTo(pos - 1, SCE_RUST_LEXERROR);
 	else
@@ -335,42 +339,43 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 
 static bool IsOneCharOperator(int c) {
 	return c == ';' || c == ',' || c == '(' || c == ')'
-	    || c == '{' || c == '}' || c == '[' || c == ']'
-	    || c == '@' || c == '#' || c == '~' || c == '+'
-	    || c == '*' || c == '/' || c == '^' || c == '%'
-	    || c == '.' || c == ':' || c == '!' || c == '<'
-	    || c == '>' || c == '=' || c == '-' || c == '&'
-	    || c == '|' || c == '$' || c == '?';
+		|| c == '{' || c == '}' || c == '[' || c == ']'
+		|| c == '@' || c == '#' || c == '~' || c == '+'
+		|| c == '*' || c == '/' || c == '^' || c == '%'
+		|| c == '.' || c == ':' || c == '!' || c == '<'
+		|| c == '>' || c == '=' || c == '-' || c == '&'
+		|| c == '|' || c == '$' || c == '?';
 }
 
 static bool IsTwoCharOperator(int c, int n) {
 	return (c == '.' && n == '.') || (c == ':' && n == ':')
-	    || (c == '!' && n == '=') || (c == '<' && n == '<')
-	    || (c == '<' && n == '=') || (c == '>' && n == '>')
-	    || (c == '>' && n == '=') || (c == '=' && n == '=')
-	    || (c == '=' && n == '>') || (c == '-' && n == '>')
-	    || (c == '&' && n == '&') || (c == '|' && n == '|')
-	    || (c == '-' && n == '=') || (c == '&' && n == '=')
-	    || (c == '|' && n == '=') || (c == '+' && n == '=')
-	    || (c == '*' && n == '=') || (c == '/' && n == '=')
-	    || (c == '^' && n == '=') || (c == '%' && n == '=');
+		|| (c == '!' && n == '=') || (c == '<' && n == '<')
+		|| (c == '<' && n == '=') || (c == '>' && n == '>')
+		|| (c == '>' && n == '=') || (c == '=' && n == '=')
+		|| (c == '=' && n == '>') || (c == '-' && n == '>')
+		|| (c == '&' && n == '&') || (c == '|' && n == '|')
+		|| (c == '-' && n == '=') || (c == '&' && n == '=')
+		|| (c == '|' && n == '=') || (c == '+' && n == '=')
+		|| (c == '*' && n == '=') || (c == '/' && n == '=')
+		|| (c == '^' && n == '=') || (c == '%' && n == '=');
 }
 
 static bool IsThreeCharOperator(int c, int n, int n2) {
 	return (c == '<' && n == '<' && n2 == '=')
-	    || (c == '>' && n == '>' && n2 == '=');
+		|| (c == '>' && n == '>' && n2 == '=');
 }
 
 static bool IsValidCharacterEscape(int c) {
 	return c == 'n'  || c == 'r' || c == 't' || c == '\\'
-	    || c == '\'' || c == '"' || c == '0';
+		|| c == '\'' || c == '"' || c == '0';
 }
 
 static bool IsValidStringEscape(int c) {
 	return IsValidCharacterEscape(c) || c == '\n' || c == '\r';
 }
 
-static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos, Sci_Position num_digits, bool stop_asap) {
+static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos,
+							  Sci_Position num_digits, bool stop_asap) {
 	for (;;) {
 		int c = styler.SafeGetCharAt(pos, '\0');
 		if (!IsADigit(c, 16))
@@ -389,7 +394,8 @@ static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos, Sci_Position 
 
 /* This is overly permissive for character literals in order to accept UTF-8 encoded
  * character literals. */
-static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos, bool ascii_only) {
+static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos,
+										   bool ascii_only) {
 	pos++;
 	int c = styler.SafeGetCharAt(pos, '\0');
 	int n = styler.SafeGetCharAt(pos + 1, '\0');
@@ -413,8 +419,8 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos, 
 						valid_char = ScanNumericEscape(styler, pos, 4, false);
 					} else {
 						int n_digits = 0;
-						while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) && n_digits++ < 6) {
-						}
+						while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+							   n_digits++ < 6);
 						if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 							pos++;
 						else
@@ -451,7 +457,7 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos, 
 		}
 		c = styler.SafeGetCharAt(pos, '\0');
 		n = styler.SafeGetCharAt(pos + 1, '\0');
-
+		
 		first = false;
 	}
 	if (styler.SafeGetCharAt(pos, '\0') == '\'') {
@@ -463,7 +469,8 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos, 
 		styler.ColourTo(pos - 1, SCE_RUST_LIFETIME);
 	} else if (valid_char) {
 		pos++;
-		styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTECHARACTER : SCE_RUST_CHARACTER);
+		styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTECHARACTER :
+											  SCE_RUST_CHARACTER);
 	} else {
 		styler.ColourTo(pos - 1, SCE_RUST_LEXERROR);
 	}
@@ -479,7 +486,8 @@ enum CommentState {
  * The rule for block-doc comments is as follows: /xxN and /x! (where x is an asterisk, N is a non-asterisk) start doc comments.
  * Otherwise it's a regular comment.
  */
-static void ResumeBlockComment(Accessor &styler, Sci_Position& pos, Sci_Position max, CommentState state, int level) {
+static void ResumeBlockComment(Accessor &styler, Sci_Position& pos,
+							   Sci_Position max, CommentState state, int level) {
 	int c = styler.SafeGetCharAt(pos, '\0');
 	bool maybe_doc_comment = false;
 	if (c == '*') {
@@ -490,7 +498,7 @@ static void ResumeBlockComment(Accessor &styler, Sci_Position& pos, Sci_Position
 	} else if (c == '!') {
 		maybe_doc_comment = true;
 	}
-
+	
 	for (;;) {
 		int n = styler.SafeGetCharAt(pos + 1, '\0');
 		if (pos == styler.LineEnd(styler.GetLine(pos)))
@@ -502,7 +510,8 @@ static void ResumeBlockComment(Accessor &styler, Sci_Position& pos, Sci_Position
 				level--;
 				if (level == 0) {
 					styler.SetLineState(styler.GetLine(pos), 0);
-					if (state == DocComment || (state == UnknownComment && maybe_doc_comment))
+					if (state == DocComment || (state == UnknownComment &&
+												maybe_doc_comment))
 						styler.ColourTo(pos - 1, SCE_RUST_COMMENTBLOCKDOC);
 					else
 						styler.ColourTo(pos - 1, SCE_RUST_COMMENTBLOCK);
@@ -534,7 +543,8 @@ static void ResumeBlockComment(Accessor &styler, Sci_Position& pos, Sci_Position
  * The rule for line-doc comments is as follows... ///N and //! (where N is a non slash) start doc comments.
  * Otherwise it's a normal line comment.
  */
-static void ResumeLineComment(Accessor &styler, Sci_Position& pos, Sci_Position max, CommentState state) {
+static void ResumeLineComment(Accessor &styler, Sci_Position& pos,
+							  Sci_Position max, CommentState state) {
 	bool maybe_doc_comment = false;
 	int c = styler.SafeGetCharAt(pos, '\0');
 	if (c == '/') {
@@ -548,21 +558,22 @@ static void ResumeLineComment(Accessor &styler, Sci_Position& pos, Sci_Position 
 	} else if (c == '!') {
 		maybe_doc_comment = true;
 	}
-
+	
 	while (pos < max && c != '\n') {
 		if (pos == styler.LineEnd(styler.GetLine(pos)))
 			styler.SetLineState(styler.GetLine(pos), 0);
 		pos++;
 		c = styler.SafeGetCharAt(pos, '\0');
 	}
-
+	
 	if (state == DocComment || (state == UnknownComment && maybe_doc_comment))
 		styler.ColourTo(pos - 1, SCE_RUST_COMMENTLINEDOC);
 	else
 		styler.ColourTo(pos - 1, SCE_RUST_COMMENTLINE);
 }
 
-static void ScanComments(Accessor &styler, Sci_Position& pos, Sci_Position max) {
+static void ScanComments(Accessor &styler, Sci_Position& pos,
+						 Sci_Position max) {
 	pos++;
 	int c = styler.SafeGetCharAt(pos, '\0');
 	pos++;
@@ -572,7 +583,8 @@ static void ScanComments(Accessor &styler, Sci_Position& pos, Sci_Position max) 
 		ResumeBlockComment(styler, pos, max, UnknownComment, 1);
 }
 
-static void ResumeString(Accessor &styler, Sci_Position& pos, Sci_Position max, bool ascii_only) {
+static void ResumeString(Accessor &styler, Sci_Position& pos,
+						 Sci_Position max, bool ascii_only) {
 	int c = styler.SafeGetCharAt(pos, '\0');
 	bool error = false;
 	while (c != '"' && !error) {
@@ -596,8 +608,8 @@ static void ResumeString(Accessor &styler, Sci_Position& pos, Sci_Position max, 
 					error = !ScanNumericEscape(styler, pos, 4, true);
 				} else {
 					int n_digits = 0;
-					while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) && n_digits++ < 6) {
-					}
+					while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+						   n_digits++ < 6);
 					if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 						pos++;
 					else
@@ -623,11 +635,12 @@ static void ResumeString(Accessor &styler, Sci_Position& pos, Sci_Position max, 
 	styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTESTRING : SCE_RUST_STRING);
 }
 
-static void ResumeRawString(Accessor &styler, Sci_Position& pos, Sci_Position max, int num_hashes, bool ascii_only) {
+static void ResumeRawString(Accessor &styler, Sci_Position& pos,
+							Sci_Position max, int num_hashes, bool ascii_only) {
 	for (;;) {
 		if (pos == styler.LineEnd(styler.GetLine(pos)))
 			styler.SetLineState(styler.GetLine(pos), num_hashes);
-
+		
 		int c = styler.SafeGetCharAt(pos, '\0');
 		if (c == '"') {
 			pos++;
@@ -648,10 +661,12 @@ static void ResumeRawString(Accessor &styler, Sci_Position& pos, Sci_Position ma
 			pos++;
 		}
 	}
-	styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTESTRINGR : SCE_RUST_STRINGR);
+	styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTESTRINGR :
+										  SCE_RUST_STRINGR);
 }
 
-static void ScanRawString(Accessor &styler, Sci_Position& pos, Sci_Position max, bool ascii_only) {
+static void ScanRawString(Accessor &styler, Sci_Position& pos,
+						  Sci_Position max, bool ascii_only) {
 	pos++;
 	int num_hashes = 0;
 	while (styler.SafeGetCharAt(pos, '\0') == '#') {
@@ -666,34 +681,42 @@ static void ScanRawString(Accessor &styler, Sci_Position& pos, Sci_Position max,
 	}
 }
 
-void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, IDocument *pAccess) {
 	PropSetSimple props;
 	Accessor styler(pAccess, &props);
 	Sci_Position pos = startPos;
 	Sci_Position max = pos + length;
-
+	
 	styler.StartAt(pos);
 	styler.StartSegment(pos);
-
+	
 	if (initStyle == SCE_RUST_COMMENTBLOCK || initStyle == SCE_RUST_COMMENTBLOCKDOC) {
-		ResumeBlockComment(styler, pos, max, initStyle == SCE_RUST_COMMENTBLOCKDOC ? DocComment : NotDocComment, styler.GetLineState(styler.GetLine(pos) - 1));
+		ResumeBlockComment(styler, pos, max,
+						   initStyle == SCE_RUST_COMMENTBLOCKDOC ? DocComment :
+																   NotDocComment,
+						   styler.GetLineState(styler.GetLine(pos) - 1));
 	} else if (initStyle == SCE_RUST_COMMENTLINE || initStyle == SCE_RUST_COMMENTLINEDOC) {
-		ResumeLineComment(styler, pos, max, initStyle == SCE_RUST_COMMENTLINEDOC ? DocComment : NotDocComment);
+		ResumeLineComment(styler, pos, max,
+						  initStyle == SCE_RUST_COMMENTLINEDOC ? DocComment :
+																 NotDocComment);
 	} else if (initStyle == SCE_RUST_STRING) {
 		ResumeString(styler, pos, max, false);
 	} else if (initStyle == SCE_RUST_BYTESTRING) {
 		ResumeString(styler, pos, max, true);
 	} else if (initStyle == SCE_RUST_STRINGR) {
-		ResumeRawString(styler, pos, max, styler.GetLineState(styler.GetLine(pos) - 1), false);
+		ResumeRawString(styler, pos, max,
+						styler.GetLineState(styler.GetLine(pos) - 1), false);
 	} else if (initStyle == SCE_RUST_BYTESTRINGR) {
-		ResumeRawString(styler, pos, max, styler.GetLineState(styler.GetLine(pos) - 1), true);
+		ResumeRawString(styler, pos, max,
+						styler.GetLineState(styler.GetLine(pos) - 1), true);
 	}
-
+	
 	while (pos < max) {
 		int c = styler.SafeGetCharAt(pos, '\0');
 		int n = styler.SafeGetCharAt(pos + 1, '\0');
 		int n2 = styler.SafeGetCharAt(pos + 2, '\0');
-
+		
 		if (pos == 0 && c == '#' && n == '!' && n2 != '[') {
 			pos += 2;
 			ResumeLineComment(styler, pos, max, NotDocComment);
@@ -739,13 +762,13 @@ void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	styler.Flush();
 }
 
-void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
-
+void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length,
+								int initStyle, IDocument *pAccess) {
 	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	bool inLineComment = false;
@@ -759,7 +782,8 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length, int
 	char chNext = styler[startPos];
 	int styleNext = styler.StyleAt(startPos);
 	int style = initStyle;
-	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() && !options.foldExplicitEnd.empty();
+	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() &&
+										!options.foldExplicitEnd.empty();
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
@@ -769,7 +793,8 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length, int
 		bool atEOL = i == (lineStartNext-1);
 		if ((style == SCE_RUST_COMMENTLINE) || (style == SCE_RUST_COMMENTLINEDOC))
 			inLineComment = true;
-		if (options.foldComment && options.foldCommentMultiline && IsStreamCommentStyle(style) && !inLineComment) {
+		if (options.foldComment && options.foldCommentMultiline &&
+				IsStreamCommentStyle(style) && !inLineComment) {
 			if (!IsStreamCommentStyle(stylePrev)) {
 				levelNext++;
 			} else if (!IsStreamCommentStyle(styleNext) && !atEOL) {
@@ -777,7 +802,8 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length, int
 				levelNext--;
 			}
 		}
-		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_RUST_COMMENTLINE) || options.foldExplicitAnywhere)) {
+		if (options.foldComment && options.foldCommentExplicit &&
+			((style == SCE_RUST_COMMENTLINE) || options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
 					levelNext++;
@@ -828,7 +854,8 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length, int
 			levelMinCurrent = levelCurrent;
 			if (atEOL && (i == static_cast<Sci_PositionU>(styler.Length()-1))) {
 				// There is an empty line at end of file so give it same level and empty
-				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) | SC_FOLDLEVELWHITEFLAG);
+				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) |
+											 SC_FOLDLEVELWHITEFLAG);
 			}
 			visibleChars = 0;
 			inLineComment = false;
