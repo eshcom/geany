@@ -52,11 +52,11 @@ inline bool IsOperator(int ch) {
 		return false;
 	// '.' left out as it is used to make up numbers
 	if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
-	        ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
-	        ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
-	        ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
-	        ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
-	        ch == '?' || ch == '!' || ch == '.' || ch == '~')
+			ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
+			ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
+			ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
+			ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
+			ch == '?' || ch == '!' || ch == '.' || ch == '~')
 		return true;
 	return false;
 }
@@ -182,7 +182,7 @@ int stateForPrintState(int StateToPrint) {
 
 inline bool IsNumber(Sci_PositionU start, Accessor &styler) {
 	return IsADigit(styler[start]) || (styler[start] == '.') ||
-	       (styler[start] == '-') || (styler[start] == '#');
+		   (styler[start] == '-') || (styler[start] == '#');
 }
 
 inline bool isStringState(int state) {
@@ -268,9 +268,9 @@ void classifyAttribHTML(Sci_PositionU start, Sci_PositionU end, const WordList &
 }
 
 int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
-                           const WordList &keywords, Accessor &styler, bool &tagDontFold,
-                    bool caseSensitive, bool isXml, bool allowScripts,
-                    const std::set<std::string> &nonFoldingTags) {
+						   const WordList &keywords, Accessor &styler, bool &tagDontFold,
+					bool caseSensitive, bool isXml, bool allowScripts,
+					const std::set<std::string> &nonFoldingTags) {
 	std::string tag;
 	// Copy after the '<'
 	for (Sci_PositionU cPos = start; cPos <= end; cPos++) {
@@ -316,7 +316,7 @@ int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
 }
 
 void classifyWordHTJS(Sci_PositionU start, Sci_PositionU end,
-                             const WordList &keywords, Accessor &styler, script_mode inScriptType) {
+							 const WordList &keywords, Accessor &styler, script_mode inScriptType) {
 	char s[30 + 1];
 	Sci_PositionU i = 0;
 	for (; i < end - start + 1 && i < 30; i++) {
@@ -450,10 +450,10 @@ inline bool IsPhpWordChar(int ch) {
 
 bool InTagState(int state) {
 	return state == SCE_H_TAG || state == SCE_H_TAGUNKNOWN ||
-	       state == SCE_H_SCRIPT ||
-	       state == SCE_H_ATTRIBUTE || state == SCE_H_ATTRIBUTEUNKNOWN ||
-	       state == SCE_H_NUMBER || state == SCE_H_OTHER ||
-	       state == SCE_H_DOUBLESTRING || state == SCE_H_SINGLESTRING;
+		   state == SCE_H_SCRIPT ||
+		   state == SCE_H_ATTRIBUTE || state == SCE_H_ATTRIBUTEUNKNOWN ||
+		   state == SCE_H_NUMBER || state == SCE_H_OTHER ||
+		   state == SCE_H_DOUBLESTRING || state == SCE_H_SINGLESTRING;
 }
 
 bool IsCommentState(const int state) {
@@ -465,10 +465,6 @@ bool IsScriptCommentState(const int state) {
 		   state == SCE_HJA_COMMENTLINE || state == SCE_HB_COMMENTLINE || state == SCE_HBA_COMMENTLINE;
 }
 
-bool isLineEnd(int ch) {
-	return ch == '\r' || ch == '\n';
-}
-
 bool isMakoBlockEnd(const int ch, const int chNext, const std::string &blockType) {
 	if (blockType.empty()) {
 		return ((ch == '%') && (chNext == '>'));
@@ -478,10 +474,10 @@ bool isMakoBlockEnd(const int ch, const int chNext, const std::string &blockType
 			   (blockType == "page")) {
 		return ((ch == '/') && (chNext == '>'));
 	} else if (blockType == "%") {
-		if (ch == '/' && isLineEnd(chNext))
+		if (ch == '/' && IsCRLR(chNext))
 			return true;
 		else
-			return isLineEnd(ch);
+			return IsCRLR(ch);
 	} else if (blockType == "{") {
 		return ch == '}';
 	} else {
@@ -503,10 +499,10 @@ bool isDjangoBlockEnd(const int ch, const int chNext, const std::string &blockTy
 
 bool isPHPStringState(int state) {
 	return
-	    (state == SCE_HPHP_HSTRING) ||
-	    (state == SCE_HPHP_SIMPLESTRING) ||
-	    (state == SCE_HPHP_HSTRING_VARIABLE) ||
-	    (state == SCE_HPHP_COMPLEX_VARIABLE);
+		(state == SCE_HPHP_HSTRING) ||
+		(state == SCE_HPHP_SIMPLESTRING) ||
+		(state == SCE_HPHP_HSTRING_VARIABLE) ||
+		(state == SCE_HPHP_COMPLEX_VARIABLE);
 }
 
 Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Position i, const Sci_Position lengthDoc, Accessor &styler, bool &isSimpleString) {
@@ -530,9 +526,9 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 	}
 	phpStringDelimiter.push_back(ch);
 	i++;
-	for (j = i; j < lengthDoc && !isLineEnd(styler[j]); j++) {
+	for (j = i; j < lengthDoc && !IsCRLR(styler[j]); j++) {
 		if (!IsPhpWordChar(styler[j])) {
-			if (isSimpleString && (styler[j] == '\'') && isLineEnd(styler.SafeGetCharAt(j + 1))) {
+			if (isSimpleString && (styler[j] == '\'') && IsCRLR(styler.SafeGetCharAt(j + 1))) {
 				isValidSimpleString = true;
 				j++;
 				break;
@@ -941,7 +937,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	}
 	// String can be heredoc, must find a delimiter first. Reread from beginning of line containing the string, to get the correct lineState
 	if (isPHPStringState(state)) {
-		while (startPos > 0 && (isPHPStringState(state) || !isLineEnd(styler[startPos - 1]))) {
+		while (startPos > 0 && (isPHPStringState(state) || !IsCRLR(styler[startPos - 1]))) {
 			startPos--;
 			length++;
 			state = styler.StyleAt(startPos);
@@ -1126,12 +1122,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				levelPrev = levelCurrent;
 			}
 			styler.SetLineState(lineCurrent,
-			                    ((inScriptType & 0x03) << 0) |
-			                    ((tagOpened ? 1 : 0) << 2) |
-			                    ((tagClosing ? 1 : 0) << 3) |
-			                    ((aspScript & 0x0F) << 4) |
-			                    ((clientScript & 0x0F) << 8) |
-			                    ((beforePreProc & 0xFF) << 12));
+								((inScriptType & 0x03) << 0) |
+								((tagOpened ? 1 : 0) << 2) |
+								((tagClosing ? 1 : 0) << 3) |
+								((aspScript & 0x0F) << 4) |
+								((clientScript & 0x0F) << 8) |
+								((beforePreProc & 0xFF) << 12));
 			lineCurrent++;
 			lineStartVisibleChars = 0;
 		}
@@ -1143,7 +1139,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 
 		// handle end of Mako comment line
-		else if (isMako && makoComment && (ch == '\r' || ch == '\n')) {
+		else if (isMako && makoComment && IsCRLR(ch)) {
 			makoComment = 0;
 			styler.ColourTo(i - 1, StateToPrint);
 			if (scriptLanguage == eScriptPython) {
@@ -1214,13 +1210,13 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		/////////////////////////////////////
 		// handle the start of PHP pre-processor = Non-HTML
 		else if ((state != SCE_H_ASPAT) &&
-		         !isStringState(state) &&
-		         (state != SCE_HPHP_COMMENT) &&
-		         (state != SCE_HPHP_COMMENTLINE) &&
-		         (ch == '<') &&
-		         (chNext == '?') &&
+				 !isStringState(state) &&
+				 (state != SCE_HPHP_COMMENT) &&
+				 (state != SCE_HPHP_COMMENTLINE) &&
+				 (ch == '<') &&
+				 (chNext == '?') &&
 				 !IsScriptCommentState(state)) {
- 			beforeLanguage = scriptLanguage;
+			beforeLanguage = scriptLanguage;
 			scriptLanguage = segIsScriptingIndicator(styler, i + 2, i + 6, isXml ? eScriptXML : eScriptPHP);
 			if ((scriptLanguage != eScriptPHP) && (isStringState(state) || (state==SCE_H_COMMENT))) continue;
 			styler.ColourTo(i - 1, StateToPrint);
@@ -1412,12 +1408,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 		// handle the end of Mako Python code
 		else if (isMako &&
-			     ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
+				 ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
 				 (scriptLanguage != eScriptNone) && stateAllowsTermination(state) &&
 				 isMakoBlockEnd(ch, chNext, makoBlockType)) {
 			if (state == SCE_H_ASPAT) {
 				aspScript = segIsScriptingIndicator(styler,
-				                                    styler.GetStartSegment(), i - 1, aspScript);
+													styler.GetStartSegment(), i - 1, aspScript);
 			}
 			if (state == SCE_HP_WORD) {
 				classifyWordHTPy(styler.GetStartSegment(), i - 1, keywords4, styler, prevWord, inScriptType, isMako);
@@ -1427,7 +1423,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			if ((makoBlockType != "%") && (makoBlockType != "{") && ch != '>') {
 				i++;
 				visibleChars++;
-		    }
+			}
 			else if ((makoBlockType == "%") && ch == '/') {
 				i++;
 				visibleChars++;
@@ -1446,12 +1442,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 		// handle the end of Django template code
 		else if (isDjango &&
-			     ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
+				 ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
 				 (scriptLanguage != eScriptNone) && stateAllowsTermination(state) &&
 				 isDjangoBlockEnd(ch, chNext, djangoBlockType)) {
 			if (state == SCE_H_ASPAT) {
 				aspScript = segIsScriptingIndicator(styler,
-				                                    styler.GetStartSegment(), i - 1, aspScript);
+													styler.GetStartSegment(), i - 1, aspScript);
 			}
 			if (state == SCE_HP_WORD) {
 				classifyWordHTPy(styler.GetStartSegment(), i - 1, keywords4, styler, prevWord, inScriptType, isMako);
@@ -1474,10 +1470,10 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		else if ((!isMako && !isDjango && ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
 				  (((scriptLanguage != eScriptNone) && stateAllowsTermination(state))) &&
 				  (((ch == '%') || (ch == '?')) && (chNext == '>'))) ||
-		         ((scriptLanguage == eScriptSGML) && (ch == '>') && (state != SCE_H_SGML_COMMENT))) {
+				 ((scriptLanguage == eScriptSGML) && (ch == '>') && (state != SCE_H_SGML_COMMENT))) {
 			if (state == SCE_H_ASPAT) {
 				aspScript = segIsScriptingIndicator(styler,
-				                                    styler.GetStartSegment(), i - 1, aspScript);
+													styler.GetStartSegment(), i - 1, aspScript);
 			}
 			// Bounce out of any ASP mode
 			switch (state) {
@@ -1919,7 +1915,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_SINGLESTRING;
 			} else if ((ch == '<') && (chNext == '!') && (chNext2 == '-') &&
-			           styler.SafeGetCharAt(i + 3) == '-') {
+					   styler.SafeGetCharAt(i + 3) == '-') {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
 			} else if ((ch == '-') && (chNext == '-') && (chNext2 == '>')) {
@@ -1972,7 +1968,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HJ_COMMENTLINE:
-			if (ch == '\r' || ch == '\n') {
+			if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, statePrintForState(SCE_HJ_COMMENTLINE, inScriptType));
 				state = SCE_HJ_DEFAULT;
 				ch = ' ';
@@ -1990,7 +1986,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
 				i += 2;
-			} else if (isLineEnd(ch)) {
+			} else if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_STRINGEOL;
 			}
@@ -2007,7 +2003,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
 				i += 2;
-			} else if (isLineEnd(ch)) {
+			} else if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				if (chPrev != '\\' && (chPrev2 != '\\' || chPrev != '\r' || ch != '\n')) {
 					state = SCE_HJ_STRINGEOL;
@@ -2015,16 +2011,16 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HJ_STRINGEOL:
-			if (!isLineEnd(ch)) {
+			if (!IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_DEFAULT;
-			} else if (!isLineEnd(chNext)) {
+			} else if (!IsCRLR(chNext)) {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HJ_DEFAULT;
 			}
 			break;
 		case SCE_HJ_REGEX:
-			if (ch == '\r' || ch == '\n' || ch == '/') {
+			if (IsCRLR(ch) || ch == '/') {
 				if (ch == '/') {
 					while (IsASCII(chNext) && islower(chNext)) {   // gobble regex flags
 						i++;
@@ -2055,7 +2051,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_STRING;
 			} else if ((ch == '<') && (chNext == '!') && (chNext2 == '-') &&
-			           styler.SafeGetCharAt(i + 3) == '-') {
+					   styler.SafeGetCharAt(i + 3) == '-') {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_COMMENTLINE;
 			} else if (IsOperator(ch)) {
@@ -2088,22 +2084,22 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			if (ch == '\"') {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HB_DEFAULT;
-			} else if (ch == '\r' || ch == '\n') {
+			} else if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_STRINGEOL;
 			}
 			break;
 		case SCE_HB_COMMENTLINE:
-			if (ch == '\r' || ch == '\n') {
+			if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_DEFAULT;
 			}
 			break;
 		case SCE_HB_STRINGEOL:
-			if (!isLineEnd(ch)) {
+			if (!IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_DEFAULT;
-			} else if (!isLineEnd(chNext)) {
+			} else if (!IsCRLR(chNext)) {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HB_DEFAULT;
 			}
@@ -2114,7 +2110,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HP_WORD;
 			} else if ((ch == '<') && (chNext == '!') && (chNext2 == '-') &&
-			           styler.SafeGetCharAt(i + 3) == '-') {
+					   styler.SafeGetCharAt(i + 3) == '-') {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HP_COMMENTLINE;
 			} else if (ch == '#') {
@@ -2185,7 +2181,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HP_COMMENTLINE:
-			if (ch == '\r' || ch == '\n') {
+			if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HP_DEFAULT;
 			}
@@ -2285,7 +2281,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HPHP_COMMENTLINE:
-			if (ch == '\r' || ch == '\n') {
+			if (IsCRLR(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HPHP_DEFAULT;
 			}
@@ -2305,12 +2301,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				if (phpStringDelimiter == "\"") {
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
-				} else if (isLineEnd(chPrev)) {
+				} else if (IsCRLR(chPrev)) {
 					const int psdLength = static_cast<int>(phpStringDelimiter.length());
 					const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
 					const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-					if (isLineEnd(chAfterPsd) ||
-						(chAfterPsd == ';' && isLineEnd(chAfterPsd2))) {
+					if (IsCRLR(chAfterPsd) ||
+						(chAfterPsd == ';' && IsCRLR(chAfterPsd2))) {
 							i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 						styler.ColourTo(i, StateToPrint);
 						state = SCE_HPHP_DEFAULT;
@@ -2328,12 +2324,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
 				}
-			} else if (isLineEnd(chPrev) && styler.Match(i, phpStringDelimiter.c_str())) {
+			} else if (IsCRLR(chPrev) && styler.Match(i, phpStringDelimiter.c_str())) {
 				const int psdLength = static_cast<int>(phpStringDelimiter.length());
 				const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
 				const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-				if (isLineEnd(chAfterPsd) ||
-				(chAfterPsd == ';' && isLineEnd(chAfterPsd2))) {
+				if (IsCRLR(chAfterPsd) ||
+				(chAfterPsd == ';' && IsCRLR(chAfterPsd2))) {
 					i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;

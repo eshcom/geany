@@ -87,52 +87,48 @@ static bool IsSpaceToEOL(Sci_Position startPos, Accessor &styler) {
 }
 
 static void ColouriseMatlabOctaveDoc(
-            Sci_PositionU startPos, Sci_Position length, int initStyle,
-            WordList *keywordlists[], Accessor &styler,
-            bool (*IsCommentChar)(int),
-            bool ismatlab) {
-
+			Sci_PositionU startPos, Sci_Position length, int initStyle,
+			WordList *keywordlists[], Accessor &styler,
+			bool (*IsCommentChar)(int),
+			bool ismatlab) {
+	
 	WordList &keywords = *keywordlists[0];
-
+	
 	styler.StartAt(startPos);
-
+	
 	// boolean for when the ' is allowed to be transpose vs the start/end
 	// of a string
 	bool transpose = false;
-
+	
 	// count of brackets as boolean for when end could be an operator not a keyword
 	int allow_end_op = 0;
-
+	
 	// approximate position of first non space character in a line
 	int nonSpaceColumn = -1;
 	// approximate column position of the current character in a line
 	int column = 0;
-
-        // use the line state of each line to store the block comment depth
+	
+		// use the line state of each line to store the block comment depth
 	Sci_Position curLine = styler.GetLine(startPos);
-        int commentDepth = curLine > 0 ? styler.GetLineState(curLine-1) : 0;
-
-
+		int commentDepth = curLine > 0 ? styler.GetLineState(curLine-1) : 0;
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward(), column++) {
-
-               	if(sc.atLineStart) {
+		if (sc.atLineStart) {
 			// set the line state to the current commentDepth
 			curLine = styler.GetLine(sc.currentPos);
-                        styler.SetLineState(curLine, commentDepth);
-
+			styler.SetLineState(curLine, commentDepth);
+			
 			// reset the column to 0, nonSpace to -1 (not set)
 			column = 0;
 			nonSpaceColumn = -1;
 		}
-
+		
 		// save the column position of first non space character in a line
 		if((nonSpaceColumn == -1) && (! IsASpace(sc.ch)))
-		{
 			nonSpaceColumn = column;
-		}
-
+		
 		// check for end of states
 		if (sc.state == SCE_MATLAB_OPERATOR) {
 			if (sc.chPrev == '.') {
@@ -142,10 +138,10 @@ static void ColouriseMatlabOctaveDoc(
 				} else if (sc.ch == '\'') {
 					sc.ForwardSetState(SCE_MATLAB_DEFAULT);
 					transpose = true;
-                                } else if(sc.ch == '.' && sc.chNext == '.') {
-                                        // we werent an operator, but a '...'
-                                        sc.ChangeState(SCE_MATLAB_COMMENT);
-                                        transpose = false;
+								} else if(sc.ch == '.' && sc.chNext == '.') {
+										// we werent an operator, but a '...'
+										sc.ChangeState(SCE_MATLAB_COMMENT);
+										transpose = false;
 				} else {
 					sc.SetState(SCE_MATLAB_DEFAULT);
 				}
@@ -156,7 +152,7 @@ static void ColouriseMatlabOctaveDoc(
 			if (!isalnum(sc.ch) && sc.ch != '_') {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
-
+				
 				if (keywords.InList(s)) {
 					if (strcmp ("end", s) == 0 && allow_end_op) {
 						sc.ChangeState(SCE_MATLAB_NUMBER);
@@ -171,18 +167,18 @@ static void ColouriseMatlabOctaveDoc(
 			}
 		} else if (sc.state == SCE_MATLAB_NUMBER) {
 			if (!isdigit(sc.ch) && sc.ch != '.'
-			        && !(sc.ch == 'e' || sc.ch == 'E')
-			        && !((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E'))) {
+					&& !(sc.ch == 'e' || sc.ch == 'E')
+					&& !((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E'))) {
 				sc.SetState(SCE_MATLAB_DEFAULT);
 				transpose = true;
 			}
 		} else if (sc.state == SCE_MATLAB_STRING) {
 			if (sc.ch == '\'') {
 				if (sc.chNext == '\'') {
- 					sc.Forward();
+					sc.Forward();
 				} else {
 					sc.ForwardSetState(SCE_MATLAB_DEFAULT);
- 				}
+				}
 			}
 		} else if (sc.state == SCE_MATLAB_DOUBLEQUOTESTRING) {
 			if (sc.ch == '\\') {
@@ -199,42 +195,42 @@ static void ColouriseMatlabOctaveDoc(
 			}
 		} else if (sc.state == SCE_MATLAB_COMMENT) {
 			// end or start of a nested a block comment?
-			if( IsCommentChar(sc.ch) && sc.chNext == '}' && nonSpaceColumn == column && IsSpaceToEOL(sc.currentPos+2, styler)) {
-                           	if(commentDepth > 0) commentDepth --;
-
+			if (IsCommentChar(sc.ch) && sc.chNext == '}' && nonSpaceColumn == column &&
+					IsSpaceToEOL(sc.currentPos+2, styler)) {
+				if (commentDepth > 0) commentDepth --;
+				
 				curLine = styler.GetLine(sc.currentPos);
 				styler.SetLineState(curLine, commentDepth);
 				sc.Forward();
-
+				
 				if (commentDepth == 0) {
 					sc.ForwardSetState(SCE_D_DEFAULT);
 					transpose = false;
 				}
-                        }
-                        else if( IsCommentChar(sc.ch) && sc.chNext == '{' && nonSpaceColumn == column && IsSpaceToEOL(sc.currentPos+2, styler))
-                        {
- 				commentDepth ++;
-
+			} else if (IsCommentChar(sc.ch) && sc.chNext == '{' && nonSpaceColumn == column &&
+					   IsSpaceToEOL(sc.currentPos+2, styler)) {
+				commentDepth ++;
+				
 				curLine = styler.GetLine(sc.currentPos);
 				styler.SetLineState(curLine, commentDepth);
 				sc.Forward();
 				transpose = false;
-
-                        } else if(commentDepth == 0) {
+				
+			} else if (commentDepth == 0) {
 				// single line comment
-				if (sc.atLineEnd || sc.ch == '\r' || sc.ch == '\n') {
+				if (sc.atLineEnd || IsCRLR(sc.ch)) {
 					sc.SetState(SCE_MATLAB_DEFAULT);
 					transpose = false;
 				}
 			}
 		}
-
+		
 		// check start of a new state
 		if (sc.state == SCE_MATLAB_DEFAULT) {
 			if (IsCommentChar(sc.ch)) {
 				// ncrement depth if we are a block comment
-				if(sc.chNext == '{' && nonSpaceColumn == column) {
-					if(IsSpaceToEOL(sc.currentPos+2, styler)) {
+				if (sc.chNext == '{' && nonSpaceColumn == column) {
+					if (IsSpaceToEOL(sc.currentPos+2, styler)) {
 						commentDepth ++;
 					}
 				}
@@ -265,7 +261,7 @@ static void ColouriseMatlabOctaveDoc(
 				} else if ((sc.ch == ')' || sc.ch == ']' || sc.ch == '}') && (allow_end_op > 0)) {
 					allow_end_op --;
 				}
-
+				
 				if (sc.ch == ')' || sc.ch == ']' || sc.ch == '}') {
 					transpose = true;
 				} else {
@@ -281,25 +277,27 @@ static void ColouriseMatlabOctaveDoc(
 }
 
 static void ColouriseMatlabDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                               WordList *keywordlists[], Accessor &styler) {
-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar, true);
+							   WordList *keywordlists[], Accessor &styler) {
+	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler,
+							 IsMatlabCommentChar, true);
 }
 
 static void ColouriseOctaveDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                               WordList *keywordlists[], Accessor &styler) {
-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar, false);
+							   WordList *keywordlists[], Accessor &styler) {
+	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler,
+							 IsOctaveCommentChar, false);
 }
 
 static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                                WordList *[], Accessor &styler,
-                                bool (*IsComment)(int ch)) {
-
+								WordList *[], Accessor &styler,
+								bool (*IsComment)(int ch)) {
+	
 	if (styler.GetPropertyInt("fold") == 0)
 		return;
-
+	
 	const bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
-
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
@@ -318,9 +316,10 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-
+		
 		// a line that starts with a comment
-		if (foldComment && style == SCE_MATLAB_COMMENT && IsComment(ch) && visibleChars == 0) {
+		if (foldComment && style == SCE_MATLAB_COMMENT &&
+			IsComment(ch) && visibleChars == 0) {
 			// start/end of block comment
 			if (chNext == '{' && IsSpaceToEOL(i+2, styler))
 				levelNext ++;
@@ -337,9 +336,9 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
 			if (styleNext !=  SCE_MATLAB_KEYWORD) {
 				word[wordlen] = '\0';
 				wordlen = 0;
-
+				
 				levelNext += CheckKeywordFoldPoint(word);
- 			}
+			}
 		}
 		if (!IsASpace(ch))
 			visibleChars++;
@@ -365,13 +364,15 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
 }
 
 static void FoldMatlabDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                          WordList *keywordlists[], Accessor &styler) {
-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
+						  WordList *keywordlists[], Accessor &styler) {
+	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists,
+						styler, IsMatlabCommentChar);
 }
 
 static void FoldOctaveDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                          WordList *keywordlists[], Accessor &styler) {
-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+						  WordList *keywordlists[], Accessor &styler) {
+	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists,
+						styler, IsOctaveCommentChar);
 }
 
 static const char * const matlabWordListDesc[] = {
@@ -384,6 +385,8 @@ static const char * const octaveWordListDesc[] = {
 	0
 };
 
-LexerModule lmMatlab(SCLEX_MATLAB, ColouriseMatlabDoc, "matlab", FoldMatlabDoc, matlabWordListDesc);
+LexerModule lmMatlab(SCLEX_MATLAB, ColouriseMatlabDoc, "matlab",
+					 FoldMatlabDoc, matlabWordListDesc);
 
-LexerModule lmOctave(SCLEX_OCTAVE, ColouriseOctaveDoc, "octave", FoldOctaveDoc, octaveWordListDesc);
+LexerModule lmOctave(SCLEX_OCTAVE, ColouriseOctaveDoc, "octave",
+					 FoldOctaveDoc, octaveWordListDesc);

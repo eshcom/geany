@@ -624,7 +624,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 						HereDoc.Quoted = true;
 						HereDoc.State = 1;
 					} else if (setHereDoc.Contains(sc.chNext) ||
-					           (sc.chNext == '=' && cmdState != BASH_CMD_ARITH)) {
+							   (sc.chNext == '=' && cmdState != BASH_CMD_ARITH)) {
 						// an unquoted here-doc delimiter, no special handling
 						HereDoc.State = 1;
 					} else if (sc.chNext == '<') {	// HERE string <<<
@@ -633,7 +633,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					} else if (IsASpace(sc.chNext)) {
 						// eat whitespace
 					} else if (setLeftShift.Contains(sc.chNext) ||
-					           (sc.chNext == '=' && cmdState == BASH_CMD_ARITH)) {
+							   (sc.chNext == '=' && cmdState == BASH_CMD_ARITH)) {
 						// left shift <<$var or <<= cases
 						sc.ChangeState(SCE_SH_OPERATOR);
 						sc.ForwardSetState(SCE_SH_DEFAULT);
@@ -645,9 +645,9 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					// * if single quoted, there's no escape
 					// * if double quoted, there are \\ and \" escapes
 					if ((HereDoc.Quote == '\'' && sc.ch != HereDoc.Quote) ||
-					    (HereDoc.Quoted && sc.ch != HereDoc.Quote && sc.ch != '\\') ||
-					    (HereDoc.Quote != '\'' && sc.chPrev == '\\') ||
-					    (setHereDoc2.Contains(sc.ch))) {
+						(HereDoc.Quoted && sc.ch != HereDoc.Quote && sc.ch != '\\') ||
+						(HereDoc.Quote != '\'' && sc.chPrev == '\\') ||
+						(setHereDoc2.Contains(sc.ch))) {
 						HereDoc.Append(sc.ch);
 					} else if (HereDoc.Quoted && sc.ch == HereDoc.Quote) {	// closing quote => end of delimiter
 						sc.ForwardSetState(SCE_SH_DEFAULT);

@@ -109,31 +109,31 @@ struct OptionSetAsm : public OptionSet<OptionsAsm> {
 	OptionSetAsm() {
 		DefineProperty("lexer.asm.comment.delimiter", &OptionsAsm::delimiter,
 			"Character used for COMMENT directive's delimiter, replacing the standard \"~\".");
-
+		
 		DefineProperty("fold", &OptionsAsm::fold);
-
+		
 		DefineProperty("fold.asm.syntax.based", &OptionsAsm::foldSyntaxBased,
 			"Set this property to 0 to disable syntax based folding.");
-
+		
 		DefineProperty("fold.asm.comment.multiline", &OptionsAsm::foldCommentMultiline,
 			"Set this property to 1 to enable folding multi-line comments.");
-
+		
 		DefineProperty("fold.asm.comment.explicit", &OptionsAsm::foldCommentExplicit,
 			"This option enables folding explicit fold points when using the Asm lexer. "
 			"Explicit fold points allows adding extra folding by placing a ;{ comment at the start and a ;} "
 			"at the end of a section that should fold.");
-
+		
 		DefineProperty("fold.asm.explicit.start", &OptionsAsm::foldExplicitStart,
 			"The string to use for explicit fold start points, replacing the standard ;{.");
-
+		
 		DefineProperty("fold.asm.explicit.end", &OptionsAsm::foldExplicitEnd,
 			"The string to use for explicit fold end points, replacing the standard ;}.");
-
+		
 		DefineProperty("fold.asm.explicit.anywhere", &OptionsAsm::foldExplicitAnywhere,
 			"Set this property to 1 to enable explicit fold points anywhere, not just in line comments.");
-
+		
 		DefineProperty("fold.compact", &OptionsAsm::foldCompact);
-
+		
 		DefineWordListSets(asmWordListDesc);
 	}
 };
@@ -176,17 +176,19 @@ public:
 		return osAsm.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
+	
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
-
+	
 	static ILexer *LexerFactoryAsm() {
 		return new LexerAsm(';');
 	}
-
+	
 	static ILexer *LexerFactoryAs() {
 		return new LexerAsm('#');
 	}
@@ -239,25 +241,25 @@ Sci_Position SCI_METHOD LexerAsm::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
+							  int initStyle, IDocument *pAccess) {
 	LexAccessor styler(pAccess);
-
+	
 	// Do not leak onto next line
 	if (initStyle == SCE_ASM_STRINGEOL)
 		initStyle = SCE_ASM_DEFAULT;
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward())
 	{
-
 		// Prevent SCE_ASM_STRINGEOL from leaking back to previous line
 		if (sc.atLineStart && (sc.state == SCE_ASM_STRING)) {
 			sc.SetState(SCE_ASM_STRING);
 		} else if (sc.atLineStart && (sc.state == SCE_ASM_CHARACTER)) {
 			sc.SetState(SCE_ASM_CHARACTER);
 		}
-
+		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
 			if (sc.chNext == '\n' || sc.chNext == '\r') {
@@ -268,11 +270,11 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				continue;
 			}
 		}
-
+		
 		// Determine if the current state should terminate.
 		if (sc.state == SCE_ASM_OPERATOR) {
 			if (!IsAsmOperator(sc.ch)) {
-			    sc.SetState(SCE_ASM_DEFAULT);
+				sc.SetState(SCE_ASM_DEFAULT);
 			}
 		} else if (sc.state == SCE_ASM_NUMBER) {
 			if (!IsAWordChar(sc.ch)) {
@@ -283,7 +285,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				bool IsDirective = false;
-
+				
 				if (cpuInstruction.InList(s)) {
 					sc.ChangeState(SCE_ASM_CPUINSTRUCTION);
 				} else if (mathInstruction.InList(s)) {
@@ -344,12 +346,14 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				sc.ForwardSetState(SCE_ASM_DEFAULT);
 			}
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_ASM_DEFAULT) {
 			if (sc.ch == commentChar){
 				sc.SetState(SCE_ASM_COMMENT);
-			} else if (IsASCII(sc.ch) && (isdigit(sc.ch) || (sc.ch == '.' && IsASCII(sc.chNext) && isdigit(sc.chNext)))) {
+			} else if (IsASCII(sc.ch) && (isdigit(sc.ch) || (sc.ch == '.' &&
+															 IsASCII(sc.chNext) &&
+															 isdigit(sc.chNext)))) {
 				sc.SetState(SCE_ASM_NUMBER);
 			} else if (IsAWordStart(sc.ch)) {
 				sc.SetState(SCE_ASM_IDENTIFIER);
@@ -361,7 +365,6 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				sc.SetState(SCE_ASM_OPERATOR);
 			}
 		}
-
 	}
 	sc.Complete();
 }
@@ -370,13 +373,14 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length, int i
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "else".
 
-void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
-
+void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, IDocument *pAccess) {
+	
 	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
@@ -389,7 +393,8 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length, int 
 	int style = initStyle;
 	char word[100];
 	int wordlen = 0;
-	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() && !options.foldExplicitEnd.empty();
+	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() &&
+										!options.foldExplicitEnd.empty();
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
@@ -405,13 +410,14 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				levelNext--;
 			}
 		}
-		if (options.foldCommentExplicit && ((style == SCE_ASM_COMMENT) || options.foldExplicitAnywhere)) {
+		if (options.foldCommentExplicit && ((style == SCE_ASM_COMMENT) ||
+											options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
- 					levelNext++;
+					levelNext++;
 				} else if (styler.Match(i, options.foldExplicitEnd.c_str())) {
- 					levelNext--;
- 				}
+					levelNext--;
+				}
 			} else {
 				if (ch == ';') {
 					if (chNext == '{') {
@@ -420,8 +426,8 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length, int 
 						levelNext--;
 					}
 				}
- 			}
- 		}
+			}
+		}
 		if (options.foldSyntaxBased && (style == SCE_ASM_DIRECTIVE)) {
 			word[wordlen++] = static_cast<char>(LowerCase(ch));
 			if (wordlen == 100) {                   // prevent overflow
@@ -463,4 +469,3 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length, int 
 
 LexerModule lmAsm(SCLEX_ASM, LexerAsm::LexerFactoryAsm, "asm", asmWordListDesc);
 LexerModule lmAs(SCLEX_AS, LexerAsm::LexerFactoryAs, "as", asmWordListDesc);
-

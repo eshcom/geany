@@ -176,7 +176,7 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 }
 
 static bool IsWhitespace(int ch) {
-	return IsASpaceOrTab(ch) || ch == '\r' || ch == '\n';
+	return IsASpaceOrTab(ch) || IsCRLR(ch);
 }
 
 /* This isn't quite right for Unicode identifiers */

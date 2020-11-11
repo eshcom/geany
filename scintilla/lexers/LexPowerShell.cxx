@@ -31,7 +31,7 @@ static inline bool IsAWordChar(int ch) {
 }
 
 static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-				   WordList *keywordlists[], Accessor &styler) {
+								   WordList *keywordlists[], Accessor &styler) {
 
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
@@ -162,8 +162,8 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-			      WordList *[], Accessor &styler) {
+static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length,
+							  int initStyle, WordList *[], Accessor &styler) {
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
@@ -248,5 +248,6 @@ static const char *const powershellWordLists[] = {
 	0
 };
 
-LexerModule lmPowerShell(SCLEX_POWERSHELL, ColourisePowerShellDoc, "powershell", FoldPowerShellDoc, powershellWordLists);
+LexerModule lmPowerShell(SCLEX_POWERSHELL, ColourisePowerShellDoc, "powershell",
+						 FoldPowerShellDoc, powershellWordLists);
 
