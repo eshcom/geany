@@ -448,7 +448,7 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int /* initS
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!isspacechar(ch)) {
+		if (!IsASpace(ch)) {
 			visibleChars++;
 		}
 	}

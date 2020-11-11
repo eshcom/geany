@@ -40,8 +40,8 @@ static inline bool isLispoperator(char ch) {
 }
 
 static inline bool isLispwordstart(char ch) {
-	return IsASCII(ch) && ch != ';'  && !isspacechar(ch) && !isLispoperator(ch) &&
-		   ch != '\n' && ch != '\r' &&  ch != '\"';
+	return IsASCII(ch) && !IsASpace(ch) && !isLispoperator(ch) &&
+		   ch != ';' && ch != '\n' && ch != '\r' &&  ch != '\"';
 }
 
 
@@ -267,7 +267,7 @@ static void FoldLispDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!isspacechar(ch))
+		if (!IsASpace(ch))
 			visibleChars++;
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later

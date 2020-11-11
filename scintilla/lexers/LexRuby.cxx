@@ -1425,7 +1425,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length, int init
 				   state == SCE_RB_STRING_QX || state == SCE_RB_STRING_QW ||
 				   state == SCE_RB_STRING || state == SCE_RB_CHARACTER ||
 				   state == SCE_RB_BACKTICKS) {
-			if (!Quote.Down && !isspacechar(ch)) {
+			if (!Quote.Down && !IsASpace(ch)) {
 				Quote.Open(ch);
 			} else if (ch == '\\' && Quote.Up != '\\') {
 				//Riddle me this: Is it safe to skip *every* escaped char?
@@ -1838,7 +1838,7 @@ static void FoldRbDoc(Sci_PositionU startPos, Sci_Position length, int initStyle
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 			buffer_ends_with_eol = true;
-		} else if (!isspacechar(ch)) {
+		} else if (!IsASpace(ch)) {
 			visibleChars++;
 			buffer_ends_with_eol = false;
 		}

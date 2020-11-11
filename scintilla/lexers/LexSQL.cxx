@@ -958,7 +958,7 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 			if (!options.foldOnlyBegin)
 				sqlStates.Set(lineCurrent, sqlStatesCurrentLine);
 		}
-		if (!isspacechar(ch)) {
+		if (!IsASpace(ch)) {
 			visibleChars++;
 		}
 	}

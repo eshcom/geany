@@ -78,7 +78,7 @@ static void ColouriseBatchLine(
 	bool sKeywordFound;		// Exit Special Keyword for-loop if found
 
 	// Skip initial spaces
-	while ((offset < lengthLine) && (isspacechar(lineBuffer[offset]))) {
+	while ((offset < lengthLine) && IsASpace(lineBuffer[offset])) {
 		offset++;
 	}
 	// Colorize Default Text
@@ -97,11 +97,11 @@ static void ColouriseBatchLine(
 		}
 		return;
 	// Check for Drive Change (Drive Change is internal command) - return if found
-	} else if ((IsAlphabetic(lineBuffer[offset])) &&
-		(lineBuffer[offset + 1] == ':') &&
-		((isspacechar(lineBuffer[offset + 2])) ||
-		(((lineBuffer[offset + 2] == '\\')) &&
-		(isspacechar(lineBuffer[offset + 3]))))) {
+	} else if (IsAlphabetic(lineBuffer[offset]) &&
+			   lineBuffer[offset + 1] == ':' &&
+			   (IsASpace(lineBuffer[offset + 2]) ||
+				(lineBuffer[offset + 2] == '\\' &&
+				 IsASpace(lineBuffer[offset + 3])))) {
 		// Colorize Regular Keyword
 		styler.ColourTo(endPos, SCE_BAT_WORD);
 		return;
@@ -113,7 +113,7 @@ static void ColouriseBatchLine(
 		offset++;
 	}
 	// Skip next spaces
-	while ((offset < lengthLine) && (isspacechar(lineBuffer[offset]))) {
+	while ((offset < lengthLine) && IsASpace(lineBuffer[offset])) {
 		offset++;
 	}
 
@@ -126,7 +126,7 @@ static void ColouriseBatchLine(
 		// Copy word from Line Buffer into Word Buffer
 		wbl = 0;
 		for (; offset < lengthLine && wbl < 80 &&
-		        !isspacechar(lineBuffer[offset]); wbl++, offset++) {
+					!IsASpace(lineBuffer[offset]); wbl++, offset++) {
 			wordBuffer[wbl] = static_cast<char>(tolower(lineBuffer[offset]));
 		}
 		wordBuffer[wbl] = '\0';
@@ -178,18 +178,15 @@ static void ColouriseBatchLine(
 				// Reset External Command / Program Location
 				cmdLoc = offset;
 				// Skip next spaces
-				while ((cmdLoc < lengthLine) &&
-					(isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 				// Skip comparison
-				while ((cmdLoc < lengthLine) &&
-					(!isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && !IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 				// Skip next spaces
-				while ((cmdLoc < lengthLine) &&
-					(isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 			// Identify External Command / Program Location for CALL, DO, LOADHIGH and LH
@@ -200,8 +197,7 @@ static void ColouriseBatchLine(
 				// Reset External Command / Program Location
 				cmdLoc = offset;
 				// Skip next spaces
-				while ((cmdLoc < lengthLine) &&
-					(isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 			}
@@ -265,20 +261,17 @@ static void ColouriseBatchLine(
 						// Reset External Command / Program Location
 						cmdLoc = offset;
 						// Skip next spaces
-						while ((cmdLoc < lengthLine) &&
-							(isspacechar(lineBuffer[cmdLoc]))) {
+						while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 							cmdLoc++;
 						}
 						// Reset External Command / Program Location if command switch detected
 						if (lineBuffer[cmdLoc] == '/') {
 							// Skip command switch
-							while ((cmdLoc < lengthLine) &&
-								(!isspacechar(lineBuffer[cmdLoc]))) {
+							while ((cmdLoc < lengthLine) && !IsASpace(lineBuffer[cmdLoc])) {
 								cmdLoc++;
 							}
 							// Skip next spaces
-							while ((cmdLoc < lengthLine) &&
-								(isspacechar(lineBuffer[cmdLoc]))) {
+							while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 								cmdLoc++;
 							}
 						}
@@ -402,8 +395,7 @@ static void ColouriseBatchLine(
 				// Identify External Command / Program Location for IF
 				cmdLoc = offset;
 				// Skip next spaces
-				while ((cmdLoc < lengthLine) &&
-					(isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 				// Colorize Comparison Operator
@@ -415,8 +407,7 @@ static void ColouriseBatchLine(
 				// Reset External Command / Program Location
 				cmdLoc = offset - wbl + 1;
 				// Skip next spaces
-				while ((cmdLoc < lengthLine) &&
-					(isspacechar(lineBuffer[cmdLoc]))) {
+				while ((cmdLoc < lengthLine) && IsASpace(lineBuffer[cmdLoc])) {
 					cmdLoc++;
 				}
 				// Colorize Pipe Operator
@@ -451,7 +442,7 @@ static void ColouriseBatchLine(
 			offset -= (wbl - wbo);
 		}
 		// Skip next spaces - nothing happens if Offset was Reset
-		while ((offset < lengthLine) && (isspacechar(lineBuffer[offset]))) {
+		while ((offset < lengthLine) && IsASpace(lineBuffer[offset])) {
 			offset++;
 		}
 	}
