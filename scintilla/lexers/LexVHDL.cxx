@@ -419,17 +419,17 @@ static void FoldNoBoxVHDLDoc(
 						{ // check for instantiated unit by backward searching for the colon.
 							Sci_PositionU pos = lastStart;
 							char chAtPos=0, styleAtPos;
-							do{// skip white spaces
+							do {// skip white spaces
 								if(!pos)
 									break;
 								pos--;
 								styleAtPos = styler.StyleAt(pos);
 								chAtPos = styler.SafeGetCharAt(pos);
-							}while(pos &&
-										 (chAtPos == ' ' || chAtPos == '\t' ||
-											chAtPos == '\n' || chAtPos == '\r' ||
-											IsCommentStyle(styleAtPos)));
-
+							}
+							while (pos && (IsASpaceOrTab(chAtPos) ||
+										   chAtPos == '\n' || chAtPos == '\r' ||
+										   IsCommentStyle(styleAtPos)));
+							
 							// check for a colon (':') before the instantiated units "entity", "component" or "configuration". Don't fold thereafter.
 							if (chAtPos != ':')
 							{
