@@ -37,6 +37,22 @@ static inline bool IsSpaceOrTab(int ch) {
 	return ch == ' ' || ch == '\t';
 }
 
+static inline bool IsSubtractOper(StyleContext &sc) {
+	return sc.ch == '-' && !IsAWordChar(sc.chPrev) &&
+						   !IsAWordChar(sc.chNext);
+}
+
+static inline bool IsOperValue(const int ch) {
+	return ch == '!' || ch == '#' || ch == '%' || ch == '&' ||
+		   ch == '*' || ch == '+' || ch == ',' || ch == '.' ||
+		   ch == ':' || ch == ';' || ch == '=' || ch == '?' ||
+		   ch == '@' || ch == '^' || ch == '~' || ch == '|' ||
+		   ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
+		   ch == '(' || ch == ')' || ch == '<' || ch == '>' ||
+		   ch == '/' || ch == '\\' || ch == '$' || ch == '"' ||
+		   ch == '\'';
+}
+
 static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
 							   Sci_PositionU endPos) {
 	int mailState = 0;
@@ -79,17 +95,6 @@ static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
 		}
 	}
 	return mailState == 4;
-}
-
-inline bool IsOperValue(const int ch) {
-	return ch == '!' || ch == '#' || ch == '%' || ch == '&' ||
-		   ch == '*' || ch == '+' || ch == ',' || ch == '.' ||
-		   ch == ':' || ch == ';' || ch == '=' || ch == '?' ||
-		   ch == '@' || ch == '^' || ch == '~' || ch == '|' ||
-		   ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-		   ch == '(' || ch == ')' || ch == '<' || ch == '>' ||
-		   ch == '/' || ch == '\\' || ch == '$' || ch == '"' ||
-		   ch == '\'';
 }
 
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
@@ -236,7 +241,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 								break;
 							}
 						}
-					} else if (IsAWordChar(sc.ch)) {
+					} else if (IsAWordChar(sc.ch) && !IsSubtractOper(sc)) {
 						sc.SetState(SCE_PROPS_VALUE);
 						continue;
 					}
@@ -346,7 +351,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
 			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
 			sc.state == SCE_PROPS_ASSIGNMENT) {
-			if (IsOperValue(sc.ch)) {
+			if (IsOperValue(sc.ch) || IsSubtractOper(sc)) {
 				if (isSubVar && sc.ch == '}') {
 					sc.SetState(SCE_PROPS_SUBVAR_OPER);
 					isSubVar = false;
