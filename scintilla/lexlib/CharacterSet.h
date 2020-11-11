@@ -101,8 +101,12 @@ public:
 
 // Functions for classifying characters
 
+inline bool IsCRLR(int ch) {
+	return (ch == '\r') || (ch == '\n');
+}
+
 inline bool IsASpace(int ch) {
-    return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
+	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
 inline bool IsASpaceOrTab(int ch) {
@@ -118,8 +122,8 @@ inline bool IsADigit(int ch, int base) {
 		return (ch >= '0') && (ch < '0' + base);
 	} else {
 		return ((ch >= '0') && (ch <= '9')) ||
-		       ((ch >= 'A') && (ch < 'A' + base - 10)) ||
-		       ((ch >= 'a') && (ch < 'a' + base - 10));
+			   ((ch >= 'A') && (ch < 'A' + base - 10)) ||
+			   ((ch >= 'a') && (ch < 'a' + base - 10));
 	}
 }
 
@@ -151,7 +155,7 @@ inline bool IsAlphaNumeric(int ch) {
  * This is ASCII specific but is safe with chars >= 0x80.
  */
 inline bool isspacechar(int ch) {
-    return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
+	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
 inline bool iswordchar(int ch) {
@@ -166,11 +170,11 @@ inline bool isoperator(int ch) {
 	if (IsAlphaNumeric(ch))
 		return false;
 	if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
-	        ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
-	        ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
-	        ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
-	        ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
-	        ch == '?' || ch == '!' || ch == '.' || ch == '~')
+			ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
+			ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
+			ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
+			ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
+			ch == '?' || ch == '!' || ch == '.' || ch == '~')
 		return true;
 	return false;
 }

@@ -385,7 +385,7 @@ static void ColouriseLuaDoc(
 }
 
 static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length, int /* initStyle */, WordList *[],
-                       Accessor &styler) {
+					   Accessor &styler) {
 	const Sci_PositionU lengthDoc = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);

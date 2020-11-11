@@ -39,17 +39,17 @@ static inline bool IsAnOperator(const int ch) {
 		return false;
 	// '.' left out as it is used to make up numbers
 	if (ch == '-' || ch == '+' || ch == '!' || ch == '~' ||
-	        ch == '?' || ch == ':' || ch == '*' || ch == '/' ||
-	        ch == '^' || ch == '<' || ch == '>' || ch == '=' ||
-	        ch == '&' || ch == '|' || ch == '$' || ch == '(' ||
-	        ch == ')' || ch == '}' || ch == '{' || ch == '[' ||
+			ch == '?' || ch == ':' || ch == '*' || ch == '/' ||
+			ch == '^' || ch == '<' || ch == '>' || ch == '=' ||
+			ch == '&' || ch == '|' || ch == '$' || ch == '(' ||
+			ch == ')' || ch == '}' || ch == '{' || ch == '[' ||
 		ch == ']')
 		return true;
 	return false;
 }
 
 static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-                            Accessor &styler) {
+							Accessor &styler) {
 
 	WordList &keywords   = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
@@ -91,7 +91,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_COMMENT) {
-			if (sc.ch == '\r' || sc.ch == '\n') {
+			if (IsCRLR(sc.ch)) {
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_STRING) {
@@ -145,7 +145,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
 static void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
-                       Accessor &styler) {
+					   Accessor &styler) {
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
 	Sci_PositionU endPos = startPos + length;
@@ -201,14 +201,12 @@ static void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList 
 
 
 static const char * const RWordLists[] = {
-            "Language Keywords",
-            "Base / Default package function",
-            "Other Package Functions",
-            "Unused",
-            "Unused",
-            0,
-        };
-
-
+			"Language Keywords",
+			"Base / Default package function",
+			"Other Package Functions",
+			"Unused",
+			"Unused",
+			0,
+		};
 
 LexerModule lmR(SCLEX_R, ColouriseRDoc, "r", FoldRDoc, RWordLists);

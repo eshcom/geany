@@ -33,18 +33,20 @@ using namespace Scintilla;
 static inline bool isLispoperator(char ch) {
 	if (IsASCII(ch) && isalnum(ch))
 		return false;
-	if (ch == '\'' || ch == '`' || ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}')
+	if (ch == '\'' || ch == '`' || ch == '(' || ch == ')' ||
+		ch == '[' || ch == ']' || ch == '{' || ch == '}')
 		return true;
 	return false;
 }
 
 static inline bool isLispwordstart(char ch) {
 	return IsASCII(ch) && ch != ';'  && !isspacechar(ch) && !isLispoperator(ch) &&
-		ch != '\n' && ch != '\r' &&  ch != '\"';
+		   ch != '\n' && ch != '\r' &&  ch != '\"';
 }
 
 
-static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &keywords, WordList &keywords_kw, Accessor &styler) {
+static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &keywords,
+							 WordList &keywords_kw, Accessor &styler) {
 	assert(end >= start);
 	char s[100];
 	Sci_PositionU i;
@@ -63,7 +65,7 @@ static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &k
 		} else if (keywords_kw.InList(s)) {
 			chAttr = SCE_LISP_KEYWORD_KW;
 		} else if ((s[0] == '*' && s[i-1] == '*') ||
-			   (s[0] == '+' && s[i-1] == '+')) {
+				   (s[0] == '+' && s[i-1] == '+')) {
 			chAttr = SCE_LISP_SPECIAL;
 		}
 	}
@@ -72,8 +74,8 @@ static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &k
 }
 
 
-static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-                            Accessor &styler) {
+static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
+							 WordList *keywordlists[], Accessor &styler) {
 
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords_kw = *keywordlists[1];
@@ -226,13 +228,12 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int in
 				}
 			}
 		}
-
 	}
 	styler.ColourTo(lengthDoc - 1, state);
 }
 
-static void FoldLispDoc(Sci_PositionU startPos, Sci_Position length, int /* initStyle */, WordList *[],
-                            Accessor &styler) {
+static void FoldLispDoc(Sci_PositionU startPos, Sci_Position length,
+						int /* initStyle */, WordList *[], Accessor &styler) {
 	Sci_PositionU lengthDoc = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);

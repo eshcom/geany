@@ -58,7 +58,7 @@ static Sci_PositionU GetContinuedPos(Sci_PositionU pos, Accessor &styler) {
 }
 /***************************************/
 static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-        WordList *keywordlists[], Accessor &styler, bool isFixFormat) {
+		WordList *keywordlists[], Accessor &styler, bool isFixFormat) {
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];
@@ -89,9 +89,9 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 		if (isFixFormat && (toLineStart < 6 || toLineStart >= 72)) {
 			if ((toLineStart == 0 && (tolower(sc.ch) == 'c' || sc.ch == '*')) || sc.ch == '!') {
 				if (sc.MatchIgnoreCase("cdec$") || sc.MatchIgnoreCase("*dec$") || sc.MatchIgnoreCase("!dec$") ||
-				        sc.MatchIgnoreCase("cdir$") || sc.MatchIgnoreCase("*dir$") || sc.MatchIgnoreCase("!dir$") ||
-				        sc.MatchIgnoreCase("cms$")  || sc.MatchIgnoreCase("*ms$")  || sc.MatchIgnoreCase("!ms$")  ||
-				        sc.chNext == '$') {
+						sc.MatchIgnoreCase("cdir$") || sc.MatchIgnoreCase("*dir$") || sc.MatchIgnoreCase("!dir$") ||
+						sc.MatchIgnoreCase("cms$")  || sc.MatchIgnoreCase("*ms$")  || sc.MatchIgnoreCase("!ms$")  ||
+						sc.chNext == '$') {
 					sc.SetState(SCE_F_PREPROCESSOR);
 				} else {
 					sc.SetState(SCE_F_COMMENT);
@@ -175,7 +175,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 				sc.SetState(SCE_F_DEFAULT);
 			}
 		} else if (sc.state == SCE_F_COMMENT || sc.state == SCE_F_PREPROCESSOR) {
-			if (sc.ch == '\r' || sc.ch == '\n') {
+			if (IsCRLR(sc.ch)) {
 				sc.SetState(SCE_F_DEFAULT);
 			}
 		} else if (sc.state == SCE_F_STRING1) {
@@ -421,27 +421,27 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 		|| (strcmp(prevWord, "module") == 0 && strcmp(s, "function") == 0)) {
 		lev = 0;
 	} else if (strcmp(s, "associate") == 0 || strcmp(s, "block") == 0
-	        || strcmp(s, "blockdata") == 0 || strcmp(s, "select") == 0
-	        || strcmp(s, "selecttype") == 0 || strcmp(s, "selectcase") == 0
-	        || strcmp(s, "do") == 0 || strcmp(s, "enum") ==0
-	        || strcmp(s, "function") == 0 || strcmp(s, "interface") == 0
-	        || strcmp(s, "module") == 0 || strcmp(s, "program") == 0
-	        || strcmp(s, "subroutine") == 0 || strcmp(s, "then") == 0
-	        || (strcmp(s, "type") == 0 && chNextNonBlank != '(')
+			|| strcmp(s, "blockdata") == 0 || strcmp(s, "select") == 0
+			|| strcmp(s, "selecttype") == 0 || strcmp(s, "selectcase") == 0
+			|| strcmp(s, "do") == 0 || strcmp(s, "enum") ==0
+			|| strcmp(s, "function") == 0 || strcmp(s, "interface") == 0
+			|| strcmp(s, "module") == 0 || strcmp(s, "program") == 0
+			|| strcmp(s, "subroutine") == 0 || strcmp(s, "then") == 0
+			|| (strcmp(s, "type") == 0 && chNextNonBlank != '(')
 		|| strcmp(s, "critical") == 0 || strcmp(s, "submodule") == 0){
 		if (strcmp(prevWord, "end") == 0)
 			lev = 0;
 		else
 			lev = 1;
 	} else if ((strcmp(s, "end") == 0 && chNextNonBlank != '=')
-	        || strcmp(s, "endassociate") == 0 || strcmp(s, "endblock") == 0
-	        || strcmp(s, "endblockdata") == 0 || strcmp(s, "endselect") == 0
-	        || strcmp(s, "enddo") == 0 || strcmp(s, "endenum") ==0
-	        || strcmp(s, "endif") == 0 || strcmp(s, "endforall") == 0
-	        || strcmp(s, "endfunction") == 0 || strcmp(s, "endinterface") == 0
-	        || strcmp(s, "endmodule") == 0 || strcmp(s, "endprogram") == 0
-	        || strcmp(s, "endsubroutine") == 0 || strcmp(s, "endtype") == 0
-	        || strcmp(s, "endwhere") == 0 || strcmp(s, "endcritical") == 0
+			|| strcmp(s, "endassociate") == 0 || strcmp(s, "endblock") == 0
+			|| strcmp(s, "endblockdata") == 0 || strcmp(s, "endselect") == 0
+			|| strcmp(s, "enddo") == 0 || strcmp(s, "endenum") ==0
+			|| strcmp(s, "endif") == 0 || strcmp(s, "endforall") == 0
+			|| strcmp(s, "endfunction") == 0 || strcmp(s, "endinterface") == 0
+			|| strcmp(s, "endmodule") == 0 || strcmp(s, "endprogram") == 0
+			|| strcmp(s, "endsubroutine") == 0 || strcmp(s, "endtype") == 0
+			|| strcmp(s, "endwhere") == 0 || strcmp(s, "endcritical") == 0
 		|| (strcmp(prevWord, "module") == 0 && strcmp(s, "procedure") == 0)  // Take care of the "module procedure" statement
 		|| strcmp(s, "endsubmodule") == 0 || strcmp(s, "endteam") == 0) {
 		lev = -1;
@@ -460,7 +460,7 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 /***************************************/
 // Folding the code
 static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-        Accessor &styler, bool isFixFormat) {
+		Accessor &styler, bool isFixFormat) {
 
 	bool foldComment = styler.GetPropertyInt("fold.comment", 1) != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
@@ -698,22 +698,22 @@ static const char * const FortranWordLists[] = {
 };
 /***************************************/
 static void ColouriseFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-        Accessor &styler) {
+		Accessor &styler) {
 	ColouriseFortranDoc(startPos, length, initStyle, keywordlists, styler, false);
 }
 /***************************************/
 static void ColouriseFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-        Accessor &styler) {
+		Accessor &styler) {
 	ColouriseFortranDoc(startPos, length, initStyle, keywordlists, styler, true);
 }
 /***************************************/
 static void FoldFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length, int initStyle,
-        WordList *[], Accessor &styler) {
+		WordList *[], Accessor &styler) {
 	FoldFortranDoc(startPos, length, initStyle,styler, false);
 }
 /***************************************/
 static void FoldFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length, int initStyle,
-        WordList *[], Accessor &styler) {
+		WordList *[], Accessor &styler) {
 	FoldFortranDoc(startPos, length, initStyle,styler, true);
 }
 /***************************************/

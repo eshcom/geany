@@ -270,7 +270,7 @@ public:
 	}
 	int SCI_METHOD PrimaryStyleFromStyle(int style) override {
 		return MaskActive(style);
- 	}
+	}
 	void SCI_METHOD FreeSubStyles() override {
 		subStyles.Free();
 	}

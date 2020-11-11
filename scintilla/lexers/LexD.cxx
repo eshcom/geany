@@ -508,10 +508,10 @@ void SCI_METHOD LexerD::Fold(Sci_PositionU startPos, Sci_Position length, int in
 		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_D_COMMENTLINE) || options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
- 					levelNext++;
+					levelNext++;
 				} else if (styler.Match(i, options.foldExplicitEnd.c_str())) {
- 					levelNext--;
- 				}
+					levelNext--;
+				}
 			} else {
 				if ((ch == '/') && (chNext == '/')) {
 					char chNext2 = styler.SafeGetCharAt(i + 2);
@@ -521,8 +521,8 @@ void SCI_METHOD LexerD::Fold(Sci_PositionU startPos, Sci_Position length, int in
 						levelNext--;
 					}
 				}
- 			}
- 		}
+			}
+		}
 		if (options.foldSyntaxBased && (style == SCE_D_OPERATOR)) {
 			if (ch == '{') {
 				// Measure the minimum before a '{' to allow

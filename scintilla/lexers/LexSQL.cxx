@@ -48,17 +48,17 @@ static inline bool IsAWordStart(int ch) {
 
 static inline bool IsADoxygenChar(int ch) {
 	return (islower(ch) || ch == '$' || ch == '@' ||
-	        ch == '\\' || ch == '&' || ch == '<' ||
-	        ch == '>' || ch == '#' || ch == '{' ||
-	        ch == '}' || ch == '[' || ch == ']');
+			ch == '\\' || ch == '&' || ch == '<' ||
+			ch == '>' || ch == '#' || ch == '{' ||
+			ch == '}' || ch == '[' || ch == ']');
 }
 
 static inline bool IsANumberChar(int ch, int chPrev) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-	       (isdigit(ch) || toupper(ch) == 'E' ||
-	        ch == '.' || ((ch == '-' || ch == '+') && chPrev < 0x80 && toupper(chPrev) == 'E'));
+		   (isdigit(ch) || toupper(ch) == 'E' ||
+			ch == '.' || ((ch == '-' || ch == '+') && chPrev < 0x80 && toupper(chPrev) == 'E'));
 }
 
 typedef unsigned int sql_state_t;
@@ -277,7 +277,7 @@ struct OptionSetSQL : public OptionSet<OptionsSQL> {
 		DefineProperty("fold", &OptionsSQL::fold);
 
 		DefineProperty("fold.sql.at.else", &OptionsSQL::foldAtElse,
-		               "This option enables SQL folding on a \"ELSE\" and \"ELSIF\" line of an IF statement.");
+					   "This option enables SQL folding on a \"ELSE\" and \"ELSIF\" line of an IF statement.");
 
 		DefineProperty("fold.comment", &OptionsSQL::foldComment);
 
@@ -288,14 +288,14 @@ struct OptionSetSQL : public OptionSet<OptionsSQL> {
 		DefineProperty("lexer.sql.backticks.identifier", &OptionsSQL::sqlBackticksIdentifier);
 
 		DefineProperty("lexer.sql.numbersign.comment", &OptionsSQL::sqlNumbersignComment,
-		               "If \"lexer.sql.numbersign.comment\" property is set to 0 a line beginning with '#' will not be a comment.");
+					   "If \"lexer.sql.numbersign.comment\" property is set to 0 a line beginning with '#' will not be a comment.");
 
 		DefineProperty("sql.backslash.escapes", &OptionsSQL::sqlBackslashEscapes,
-		               "Enables backslash as an escape character in SQL.");
+					   "Enables backslash as an escape character in SQL.");
 
 		DefineProperty("lexer.sql.allow.dotted.word", &OptionsSQL::sqlAllowDottedWord,
-		               "Set to 1 to colourise recognized words with dots "
-		               "(recommended for Oracle PL/SQL objects).");
+					   "Set to 1 to colourise recognized words with dots "
+					   "(recommended for Oracle PL/SQL objects).");
 
 		DefineWordListSets(sqlWordListDesc);
 	}
@@ -352,9 +352,9 @@ public :
 private:
 	bool IsStreamCommentStyle(int style) {
 		return style == SCE_SQL_COMMENT ||
-		       style == SCE_SQL_COMMENTDOC ||
-		       style == SCE_SQL_COMMENTDOCKEYWORD ||
-		       style == SCE_SQL_COMMENTDOCKEYWORDERROR;
+			   style == SCE_SQL_COMMENTDOC ||
+			   style == SCE_SQL_COMMENTDOCKEYWORD ||
+			   style == SCE_SQL_COMMENTDOCKEYWORDERROR;
 	}
 
 	bool IsCommentStyle (int style) {
@@ -594,7 +594,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				sc.SetState(SCE_SQL_QOPERATOR);
 				sc.Forward();
 			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-			          ((sc.ch == '-' || sc.ch == '+') && IsADigit(sc.chNext) && !IsADigit(sc.chPrev))) {
+					  ((sc.ch == '-' || sc.ch == '+') && IsADigit(sc.chNext) && !IsADigit(sc.chPrev))) {
 				sc.SetState(SCE_SQL_NUMBER);
 			} else if (IsAWordStart(sc.ch)) {
 				sc.SetState(SCE_SQL_IDENTIFIER);
@@ -649,11 +649,11 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				   styler.StyleAt(startPos) == SCE_SQL_OPERATOR) {
 				bool isAllClear = true;
 				for (Sci_Position tempPos = startPos + 1;
-				     tempPos < lastNLPos;
-				     ++tempPos) {
+					 tempPos < lastNLPos;
+					 ++tempPos) {
 					int tempStyle = styler.StyleAt(tempPos);
 					if (!IsCommentStyle(tempStyle)
-					    && tempStyle != SCE_SQL_DEFAULT) {
+						&& tempStyle != SCE_SQL_DEFAULT) {
 						isAllClear = false;
 						break;
 					}
@@ -787,7 +787,7 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				s[j] = '\0';
 			}
 			if (!options.foldOnlyBegin &&
-			        strcmp(s, "select") == 0) {
+					strcmp(s, "select") == 0) {
 				sqlStatesCurrentLine = sqlStates.IntoSelectStatementOrAssignment(sqlStatesCurrentLine, true);
 			} else if (strcmp(s, "if") == 0) {
 				if (endFound) {
@@ -807,8 +807,8 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 					}
 				}
 			} else if (!options.foldOnlyBegin &&
-			           strcmp(s, "then") == 0 &&
-			           sqlStates.IsIntoCondition(sqlStatesCurrentLine)) {
+					   strcmp(s, "then") == 0 &&
+					   sqlStates.IsIntoCondition(sqlStatesCurrentLine)) {
 				sqlStatesCurrentLine = sqlStates.IntoCondition(sqlStatesCurrentLine, false);
 				if (!options.foldOnlyBegin) {
 					if (levelCurrent > levelNext) {
@@ -824,7 +824,7 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 					levelCurrent = levelNext;
 				}
 			} else if (strcmp(s, "loop") == 0 ||
-			           strcmp(s, "case") == 0) {
+					   strcmp(s, "case") == 0) {
 				if (endFound) {
 					endFound = false;
 					if (options.foldOnlyBegin && !isUnfoldingIgnored) {
@@ -856,16 +856,16 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 					levelCurrent = levelNext;
 				}
 			} else if ((!options.foldOnlyBegin) && (
-			               // folding for ELSE and ELSIF block only if foldAtElse is set
-			               // and IF or CASE aren't on only one line with ELSE or ELSIF (with flag statementFound)
-			               options.foldAtElse && !statementFound) && strcmp(s, "elsif") == 0) {
+						   // folding for ELSE and ELSIF block only if foldAtElse is set
+						   // and IF or CASE aren't on only one line with ELSE or ELSIF (with flag statementFound)
+						   options.foldAtElse && !statementFound) && strcmp(s, "elsif") == 0) {
 				sqlStatesCurrentLine = sqlStates.IntoCondition(sqlStatesCurrentLine, true);
 				levelCurrent--;
 				levelNext--;
 			} else if ((!options.foldOnlyBegin) && (
-			               // folding for ELSE and ELSIF block only if foldAtElse is set
-			               // and IF or CASE aren't on only one line with ELSE or ELSIF (with flag statementFound)
-			               options.foldAtElse && !statementFound) && strcmp(s, "else") == 0) {
+						   // folding for ELSE and ELSIF block only if foldAtElse is set
+						   // and IF or CASE aren't on only one line with ELSE or ELSIF (with flag statementFound)
+						   options.foldAtElse && !statementFound) && strcmp(s, "else") == 0) {
 				// prevent also ELSE is on the same line (eg. "ELSE ... END IF;")
 				statementFound = true;
 				if (sqlStates.IsIntoCaseBlock(sqlStatesCurrentLine) && sqlStates.IsCaseMergeWithoutWhenFound(sqlStatesCurrentLine)) {
@@ -879,10 +879,10 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				levelNext++;
 				sqlStatesCurrentLine = sqlStates.IntoDeclareBlock(sqlStatesCurrentLine, false);
 			} else if ((strcmp(s, "end") == 0) ||
-			           // SQL Anywhere permits IF ... ELSE ... ENDIF
-			           // will only be active if "endif" appears in the
-			           // keyword list.
-			           (strcmp(s, "endif") == 0)) {
+					   // SQL Anywhere permits IF ... ELSE ... ENDIF
+					   // will only be active if "endif" appears in the
+					   // keyword list.
+					   (strcmp(s, "endif") == 0)) {
 				endFound = true;
 				levelNext--;
 				if (sqlStates.IsIntoSelectStatementOrAssignment(sqlStatesCurrentLine) && !sqlStates.IsCaseMergeWithoutWhenFound(sqlStatesCurrentLine))
@@ -892,13 +892,13 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 					isUnfoldingIgnored = true;
 				}
 			} else if ((!options.foldOnlyBegin) &&
-			           strcmp(s, "when") == 0 &&
-			           !sqlStates.IsIgnoreWhen(sqlStatesCurrentLine) &&
-			           !sqlStates.IsIntoExceptionBlock(sqlStatesCurrentLine) && (
-			               sqlStates.IsIntoCaseBlock(sqlStatesCurrentLine) ||
-			               sqlStates.IsIntoMergeStatement(sqlStatesCurrentLine)
-			               )
-			           ) {
+					   strcmp(s, "when") == 0 &&
+					   !sqlStates.IsIgnoreWhen(sqlStatesCurrentLine) &&
+					   !sqlStates.IsIntoExceptionBlock(sqlStatesCurrentLine) && (
+						   sqlStates.IsIntoCaseBlock(sqlStatesCurrentLine) ||
+						   sqlStates.IsIntoMergeStatement(sqlStatesCurrentLine)
+						   )
+					   ) {
 				sqlStatesCurrentLine = sqlStates.IntoCondition(sqlStatesCurrentLine, true);
 
 				// Don't foldind when CASE and WHEN are on the same line (with flag statementFound) (eg. "CASE selector WHEN expression1 THEN sequence_of_statements1;\n")
@@ -915,13 +915,13 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length, int 
 			} else if ((!options.foldOnlyBegin) && !sqlStates.IsIntoDeclareBlock(sqlStatesCurrentLine) && strcmp(s, "exception") == 0) {
 				sqlStatesCurrentLine = sqlStates.IntoExceptionBlock(sqlStatesCurrentLine, true);
 			} else if ((!options.foldOnlyBegin) &&
-			           (strcmp(s, "declare") == 0 ||
-			            strcmp(s, "function") == 0 ||
-			            strcmp(s, "procedure") == 0 ||
-			            strcmp(s, "package") == 0)) {
+					   (strcmp(s, "declare") == 0 ||
+						strcmp(s, "function") == 0 ||
+						strcmp(s, "procedure") == 0 ||
+						strcmp(s, "package") == 0)) {
 				sqlStatesCurrentLine = sqlStates.IntoDeclareBlock(sqlStatesCurrentLine, true);
 			} else if ((!options.foldOnlyBegin) &&
-			           strcmp(s, "merge") == 0) {
+					   strcmp(s, "merge") == 0) {
 				sqlStatesCurrentLine = sqlStates.IntoMergeStatement(sqlStatesCurrentLine, true);
 				sqlStatesCurrentLine = sqlStates.CaseMergeWithoutWhenFound(sqlStatesCurrentLine, true);
 				levelNext++;

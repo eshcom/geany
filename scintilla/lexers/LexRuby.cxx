@@ -1537,7 +1537,7 @@ static bool keywordIsModifier(const char *word,
 	// continuations immediately above word.
 	while (lineStartPosn > 0) {
 		ch = styler[lineStartPosn-1];
-		if (ch == '\n' || ch == '\r') {
+		if (IsCRLR(ch)) {
 			chPrev  = styler.SafeGetCharAt(lineStartPosn-2);
 			chPrev2 = styler.SafeGetCharAt(lineStartPosn-3);
 			lineStart = styler.GetLine(lineStartPosn-1);
@@ -1560,7 +1560,7 @@ static bool keywordIsModifier(const char *word,
 		if (style == SCE_RB_DEFAULT) {
 			if (IsASpaceOrTab(ch = styler[pos])) {
 				//continue
-			} else if (ch == '\r' || ch == '\n') {
+			} else if (IsCRLR(ch)) {
 				// Scintilla's LineStart() and GetLine() routines aren't
 				// platform-independent, so if we have text prepared with
 				// a different system we can't rely on it.
