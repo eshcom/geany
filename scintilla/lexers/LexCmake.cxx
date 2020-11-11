@@ -210,21 +210,20 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, 
 				bClassicVarInString = false;
 				break;
 			}
-
+			
 			// CMake Variable
 			if (cCurrChar == '$' || isCmakeChar(cCurrChar)) {
 				styler.ColourTo(i-1,state);
 				state = SCE_CMAKE_VARIABLE;
 				
 				// If it is a number, we must check and set style here first...
-				if (isCmakeNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) || cNextChar == '\r' || cNextChar == '\n'))
+				if (isCmakeNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) || IsCRLR(cNextChar)))
 					styler.ColourTo( i, SCE_CMAKE_NUMBER);
 				break;
 			}
-
 			break;
 		case SCE_CMAKE_COMMENT:
-			if ( cCurrChar == '\n' || cCurrChar == '\r' ) {
+			if (IsCRLR(cCurrChar)) {
 				if ( styler.SafeGetCharAt(i-1) == '\\' ) {
 					styler.ColourTo(i-2,state);
 					styler.ColourTo(i-1,SCE_CMAKE_DEFAULT);
@@ -260,7 +259,7 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, 
 				break;
 			}
 
-			if ( cNextChar == '\r' || cNextChar == '\n' ) {
+			if (IsCRLR(cNextChar)) {
 				Sci_Position nCurLine = styler.GetLine(i+1);
 				Sci_Position nBack = i;
 				// We need to check if the previous line has a \ in it...
@@ -415,13 +414,13 @@ static void FoldCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 				bArg1 = false;
 			}
 		}
-
-		if ( chCurr == '\n' ) {
+		
+		if (chCurr == '\n') {
 			if ( bArg1 && foldAtElse) {
 				if ( CmakeNextLineHasElse(i, startPos + length, styler) )
 					levelNext--;
 			}
-
+			
 			// If we are on a new line...
 			int levelUse = levelCurrent;
 			int lev = levelUse | levelNext << 16;
@@ -429,14 +428,14 @@ static void FoldCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 				lev |= SC_FOLDLEVELHEADERFLAG;
 			if (lev != styler.LevelAt(lineCurrent))
 				styler.SetLevel(lineCurrent, lev);
-
+			
 			lineCurrent++;
 			levelCurrent = levelNext;
 			bArg1 = true; // New line, lets look at first argument again
 			nWordStart = -1;
 		}
 	}
-
+	
 	int levelUse = levelCurrent;
 	int lev = levelUse | levelNext << 16;
 	if (levelUse < levelNext)

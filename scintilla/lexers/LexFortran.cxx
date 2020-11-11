@@ -40,12 +40,8 @@ static inline bool IsABlank(unsigned int ch) {
 	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b) ;
 }
 /***************************************/
-static inline bool IsALineEnd(char ch) {
-	return ((ch == '\n') || (ch == '\r')) ;
-}
-/***************************************/
 static Sci_PositionU GetContinuedPos(Sci_PositionU pos, Accessor &styler) {
-	while (!IsALineEnd(styler.SafeGetCharAt(pos++))) continue;
+	while (!IsCRLR(styler.SafeGetCharAt(pos++))) continue;
 	if (styler.SafeGetCharAt(pos) == '\n') pos++;
 	while (IsABlank(styler.SafeGetCharAt(pos++))) continue;
 	char chCur = styler.SafeGetCharAt(pos);
@@ -129,7 +125,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 			if (chTemp == '!') {
 				sc.SetState(SCE_F_CONTINUATION);
 				if (sc.chNext == '!') sc.ForwardSetState(SCE_F_COMMENT);
-			} else if (chTemp == '\r' || chTemp == '\n') {
+			} else if (IsCRLR(chTemp)) {
 				int currentState = sc.state;
 				sc.SetState(SCE_F_CONTINUATION);
 				sc.ForwardSetState(SCE_F_DEFAULT);
@@ -299,7 +295,7 @@ static void GetIfLineComment(Accessor &styler, bool isFixFormat, const Sci_Posit
 			comCol = col;
 			break;
 		}
-		else if (!IsABlank(ch) || IsALineEnd(ch)) {
+		else if (!IsABlank(ch) || IsCRLR(ch)) {
 			break;
 		}
 		pos++;
@@ -526,14 +522,14 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 		chNext = styler.SafeGetCharAt(i + 1);
 		char chNextNonBlank = chNext;
 		bool nextEOL = false;
-		if (IsALineEnd(chNextNonBlank)) {
+		if (IsCRLR(chNextNonBlank)) {
 			nextEOL = true;
 		}
 		Sci_PositionU j=i+1;
 		while(IsABlank(chNextNonBlank) && j<endPos) {
 			j ++ ;
 			chNextNonBlank = styler.SafeGetCharAt(j);
-			if (IsALineEnd(chNextNonBlank)) {
+			if (IsCRLR(chNextNonBlank)) {
 				nextEOL = true;
 			}
 		}
@@ -588,9 +584,9 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 							j++;
 							chAtPos = styler.SafeGetCharAt(j);
 							styAtPos = styler.StyleAt(j);
-							if (!IsALineEnd(chAtPos) && (styAtPos == SCE_F_COMMENT || IsABlank(chAtPos))) continue;
+							if (!IsCRLR(chAtPos) && (styAtPos == SCE_F_COMMENT || IsABlank(chAtPos))) continue;
 							if (isFixFormat) {
-								if (!IsALineEnd(chAtPos)) {
+								if (!IsCRLR(chAtPos)) {
 									break;
 								} else {
 									if (tmpLineCurrent < styler.GetLine(styler.Length()-1)) {
@@ -610,7 +606,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 								if (chAtPos == '&' && styler.StyleAt(j) == SCE_F_CONTINUATION) {
 									j = GetContinuedPos(j+1, styler);
 									continue;
-								} else if (IsALineEnd(chAtPos)) {
+								} else if (IsCRLR(chAtPos)) {
 									levelDeltaNext++;
 									break;
 								} else {

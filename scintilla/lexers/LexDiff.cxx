@@ -47,7 +47,7 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine, Accessor &
 		// In a context diff, --- appears in both the header and the position markers
 		if (lineBuffer[3] == ' ' && atoi(lineBuffer + 4) && !strchr(lineBuffer, '/'))
 			styler.ColourTo(endLine, SCE_DIFF_POSITION);
-		else if (lineBuffer[3] == '\r' || lineBuffer[3] == '\n')
+		else if (IsCRLR(lineBuffer[3]))
 			styler.ColourTo(endLine, SCE_DIFF_POSITION);
 		else if (lineBuffer[3] == ' ')
 			styler.ColourTo(endLine, SCE_DIFF_HEADER);

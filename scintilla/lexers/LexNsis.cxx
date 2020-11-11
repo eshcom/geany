@@ -73,7 +73,7 @@ static bool NsisNextLineHasElse(Sci_PositionU start, Sci_PositionU end, Accessor
 	for( Sci_PositionU i = start; i < end; i++ )
 	{
 		char cNext = styler.SafeGetCharAt( i );
-		if( cNext == '\n' )
+		if (cNext == '\n')
 		{
 			nNextLine = i+1;
 			break;
@@ -103,13 +103,14 @@ static bool NsisNextLineHasElse(Sci_PositionU start, Sci_PositionU end, Accessor
 
 static int NsisCmp( const char *s1, const char *s2, bool bIgnoreCase )
 {
-	if( bIgnoreCase )
-		 return CompareCaseInsensitive( s1, s2);
+	if (bIgnoreCase)
+		return CompareCaseInsensitive( s1, s2);
 
 	return strcmp( s1, s2 );
 }
 
-static int calculateFoldNsis(Sci_PositionU start, Sci_PositionU end, int foldlevel, Accessor &styler, bool bElse, bool foldUtilityCmd )
+static int calculateFoldNsis(Sci_PositionU start, Sci_PositionU end, int foldlevel,
+							 Accessor &styler, bool bElse, bool foldUtilityCmd )
 {
 	int style = styler.StyleAt(end);
 
@@ -333,33 +334,32 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length, int, W
 					bClassicVarInString = false;
 					break;
 				}
-
+				
 				// NSIS KeyWord,Function, Variable, UserDefined:
 				if( cCurrChar == '$' || isNsisChar(cCurrChar) || cCurrChar == '!' )
 				{
 					styler.ColourTo(i-1,state);
 					state = SCE_NSIS_FUNCTION;
-
+					
 					// If it is a number, we must check and set style here first...
 					if (isNsisNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) ||
-													cNextChar == '\r' || cNextChar == '\n' ))
-						styler.ColourTo( i, SCE_NSIS_NUMBER);
+													IsCRLR(cNextChar)))
+							styler.ColourTo( i, SCE_NSIS_NUMBER);
 					break;
 				}
-
-				if( cCurrChar == '/' && cNextChar == '*' )
+				
+				if (cCurrChar == '/' && cNextChar == '*')
 				{
 					styler.ColourTo(i-1,state);
 					state = SCE_NSIS_COMMENTBOX;
 					break;
 				}
-
 				break;
 			case SCE_NSIS_COMMENT:
-				if( cNextChar == '\n' || cNextChar == '\r' )
+				if (IsCRLR(cNextChar))
 				{
 					// Special case:
-					if( cCurrChar == '\\' )
+					if (cCurrChar == '\\')
 					{
 						styler.ColourTo(i-2,state);
 						styler.ColourTo(i,SCE_NSIS_DEFAULT);
@@ -375,31 +375,31 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length, int, W
 			case SCE_NSIS_STRINGLQ:
 			case SCE_NSIS_STRINGRQ:
 
-				if( styler.SafeGetCharAt(i-1) == '\\' && styler.SafeGetCharAt(i-2) == '$' )
+				if (styler.SafeGetCharAt(i-1) == '\\' && styler.SafeGetCharAt(i-2) == '$')
 					break; // Ignore the next character, even if it is a quote of some sort
 
-				if( cCurrChar == '"' && state == SCE_NSIS_STRINGDQ )
+				if (cCurrChar == '"' && state == SCE_NSIS_STRINGDQ)
 				{
 					styler.ColourTo(i,state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 
-				if( cCurrChar == '`' && state == SCE_NSIS_STRINGLQ )
+				if (cCurrChar == '`' && state == SCE_NSIS_STRINGLQ)
 				{
 					styler.ColourTo(i,state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 
-				if( cCurrChar == '\'' && state == SCE_NSIS_STRINGRQ )
+				if (cCurrChar == '\'' && state == SCE_NSIS_STRINGRQ)
 				{
 					styler.ColourTo(i,state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 
-				if( cNextChar == '\r' || cNextChar == '\n' )
+				if (IsCRLR(cNextChar))
 				{
 					Sci_Position nCurLine = styler.GetLine(i+1);
 					Sci_Position nBack = i;
@@ -617,7 +617,7 @@ static void FoldNsisDoc(Sci_PositionU startPos, Sci_Position length, int, WordLi
 			}
 		}
 
-		if( chCurr == '\n' )
+		if (chCurr == '\n')
 		{
 			if( bArg1 && foldAtElse && foldUtilityCmd && !blockComment )
 			{

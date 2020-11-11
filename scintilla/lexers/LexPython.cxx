@@ -717,7 +717,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n')) {
 					sc.Forward();
 				}
-				if (sc.chNext == '\n' || sc.chNext == '\r') {
+				if (IsCRLR(sc.chNext)) {
 					inContinuedString = true;
 				} else {
 					// Don't roll over the newline.
