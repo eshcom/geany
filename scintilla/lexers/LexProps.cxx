@@ -305,14 +305,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 					continue;
 				}
 				if (IsAWordChar(sc.ch) || sc.ch == '.' || sc.ch == '+' || sc.ch == '-') {
-					sc.ChangeState(SCE_PROPS_VALUE);			// bad num
+					sc.ChangeState(SCE_PROPS_VALUE);			// bad num/ip
 				} else {
 					if (numDotCnt == 3 && maybeIpAddr) {		// fixate ip-address
 						sc.ChangeState(SCE_PROPS_IP_VALUE);
 						sc.SetState(SCE_PROPS_VALUE);
 					} else if (numDotCnt < 2) {					// fixate decimal num
 						sc.SetState(SCE_PROPS_VALUE);
-					} else {									// bad num
+					} else {									// bad num/ip
 						sc.ChangeState(SCE_PROPS_VALUE);
 					}
 				}
