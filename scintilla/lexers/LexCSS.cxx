@@ -151,9 +151,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 	
 	// esh:
 	int hexColorLen = 0;
-	int dirMediaState = -1;
-	bool isDirMediaVal = false; // example: @charset "utf-8", @media only screen,
-								// where "utf-8" - is value, only screen - is value
 	bool isSubVar = false;	// example: #{$name}, where $name - var
 							//          #{unique-id()}, where unique-id() - func
 	int beforeSubVarState = -1;
@@ -261,6 +258,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						case SCE_CSS_TAG:
 						case SCE_CSS_MEDIA:
 						case SCE_CSS_DIRECTIVE:
+						case SCE_CSS_VALUE:		// esh: this can be value of directive/media
 							sc.SetState(SCE_CSS_IDENTIFIER);
 							break;
 					}
@@ -460,13 +458,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					wordExists = true;
 			}
 			// set next state for directive/media
-			if (IsCssSelectorOper(ch) || (ch == '{' && wordExists)) {
+			if (IsCssSelectorOper(ch) || (ch == '{' && wordExists))
 				sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
-			} else {
-				dirMediaState = sc.state;
+			else
 				sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
-				isDirMediaVal = true;
-			}
 		}
 		
 		// esh: number, hexadec-color, named-color, dimension, ...
@@ -701,12 +696,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			}
 		}
 		
-		if (sc.state == SCE_CSS_VALUE && isDirMediaVal &&
-			(sc.ch == ';' || sc.ch == '{')) {
-			sc.ChangeState(dirMediaState);
-			isDirMediaVal = false;
-		}
-		
 		if (sc.ch != '.' && sc.ch != ':' && sc.ch != '#' && (
 			sc.state == SCE_CSS_CLASS || sc.state == SCE_CSS_ID ||
 			(sc.ch != '(' && sc.ch != ')' && ( /* This line of the condition makes it possible to extend pseudo-classes with parentheses */
@@ -738,7 +727,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 			
 		} else if (IsCssOperator(sc.ch)
 				   && (sc.state != SCE_CSS_ATTRIBUTE || sc.ch == ']')
-				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '}')
+				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '{' || sc.ch == '}')
 				   && ((sc.state != SCE_CSS_DIRECTIVE && sc.state != SCE_CSS_MEDIA) ||
 					   sc.ch == ';' || sc.ch == '{')) {
 			if (sc.state != SCE_CSS_OPERATOR)
