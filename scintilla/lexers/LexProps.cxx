@@ -33,10 +33,6 @@ static inline bool IsAWordChar(const unsigned int ch) {
 	return isalnum(ch) || ch == '-' || ch == '_';
 }
 
-static inline bool IsSpaceOrTab(int ch) {
-	return ch == ' ' || ch == '\t';
-}
-
 static inline bool IsSubtractOper(StyleContext &sc) {
 	return sc.ch == '-' && !IsAWordChar(sc.chPrev) &&
 						   !IsAWordChar(sc.chNext);
@@ -58,7 +54,7 @@ static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
 	int mailState = 0;
 	for (; pos < endPos; pos++) {
 		if (styler[pos] == '\r' || styler[pos] == '\n') { // end of line
-			while (--pos > 0 && IsSpaceOrTab(styler[pos]));
+			while (--pos > 0 && IsASpaceOrTab(styler[pos]));
 			if (!IsUpperOrLowerCase(styler[pos]))
 				mailState = 0;
 			break;

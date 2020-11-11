@@ -1930,7 +1930,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				styler.ColourTo(i, statePrintForState(SCE_HJ_SYMBOLS, inScriptType));
 				state = SCE_HJ_DEFAULT;
-			} else if ((ch == ' ') || (ch == '\t')) {
+			} else if (IsASpaceOrTab(ch)) {
 				if (state == SCE_HJ_START) {
 					styler.ColourTo(i - 1, StateToPrint);
 					state = SCE_HJ_DEFAULT;
@@ -2062,7 +2062,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				styler.ColourTo(i, statePrintForState(SCE_HB_DEFAULT, inScriptType));
 				state = SCE_HB_DEFAULT;
-			} else if ((ch == ' ') || (ch == '\t')) {
+			} else if (IsASpaceOrTab(ch)) {
 				if (state == SCE_HB_START) {
 					styler.ColourTo(i - 1, StateToPrint);
 					state = SCE_HB_DEFAULT;
@@ -2146,7 +2146,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			} else if (IsOperator(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				styler.ColourTo(i, statePrintForState(SCE_HP_OPERATOR, inScriptType));
-			} else if ((ch == ' ') || (ch == '\t')) {
+			} else if (IsASpaceOrTab(ch)) {
 				if (state == SCE_HP_START) {
 					styler.ColourTo(i - 1, StateToPrint);
 					state = SCE_HP_DEFAULT;
