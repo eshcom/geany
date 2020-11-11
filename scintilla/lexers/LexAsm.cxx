@@ -262,7 +262,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
-			if (sc.chNext == '\n' || sc.chNext == '\r') {
+			if (IsCRLR(sc.chNext)) {
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					sc.Forward();

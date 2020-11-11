@@ -480,7 +480,7 @@ int LexerPerl::InputSymbolScan(StyleContext &sc) {
 	// forward scan for matching > on same line; file handles
 	int c, sLen = 0;
 	while ((c = sc.GetRelativeCharacter(++sLen)) != 0) {
-		if (c == '\r' || c == '\n') {
+		if (IsCRLR(c)) {
 			return 0;
 		} else if (c == '>') {
 			if (sc.Match("<=>"))	// '<=>' case
@@ -966,7 +966,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			sc.Complete();
 			if (HereDoc.DelimiterLength == 0 || sc.Match(HereDoc.Delimiter)) {
 				int c = sc.GetRelative(HereDoc.DelimiterLength);
-				if (c == '\r' || c == '\n') {	// peek first, do not consume match
+				if (IsCRLR(c)) {	// peek first, do not consume match
 					sc.ForwardBytes(HereDoc.DelimiterLength);
 					sc.SetState(SCE_PL_DEFAULT);
 					backFlag = BACK_NONE;
@@ -987,7 +987,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					// scan to break string into segments
 					if (c == '\\') {
 						endType = 1; break;
-					} else if (c == '\r' || c == '\n') {
+					} else if (IsCRLR(c)) {
 						endType = 2; break;
 					}
 					sLen++;
@@ -1675,7 +1675,7 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 		styleNext = styler.StyleAt(i + 1);
 		int stylePrevCh = (i) ? styler.StyleAt(i - 1):SCE_PL_DEFAULT;
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-		bool atLineStart = ((chPrev == '\r') || (chPrev == '\n')) || i == 0;
+		bool atLineStart = IsCRLR(chPrev) || i == 0;
 		// Comment folding
 		if (options.foldComment && atEOL && IsCommentLine(lineCurrent, styler)) {
 			if (!IsCommentLine(lineCurrent - 1, styler)

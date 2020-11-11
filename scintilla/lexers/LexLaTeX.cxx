@@ -227,7 +227,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length, int
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (chNext == '\r' || chNext == '\n') {
+				} else if (IsCRLR(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					styler.ColourTo(i + 1, SCE_L_SHORTCMD);
@@ -345,7 +345,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length, int
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (chNext == '\r' || chNext == '\n') {
+				} else if (IsCRLR(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					if (chNext == ')') {
@@ -387,7 +387,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length, int
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (chNext == '\r' || chNext == '\n') {
+				} else if (IsCRLR(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					if (chNext == ']') {
