@@ -71,7 +71,7 @@ inline bool IsCssOperValue(const int ch) {
 
 inline bool IsCssSelectorOper(const int ch) {
 	return ch == '.' || ch == ':' || ch == '&' ||
-		   ch == '>' || ch == '+' || ch == '[';
+		   ch == '>' || ch == '+' || ch == '[' || ch == ']';
 }
 
 inline bool IsCssOperator(const int ch) {
@@ -608,24 +608,23 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int ini
 		}
 		
 		// check for nested rule selector (SCSS/LESS)
-		if (sc.state == SCE_CSS_IDENTIFIER &&
+		if (sc.state == SCE_CSS_IDENTIFIER && !insideParentheses &&
 			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
-			 (sc.ch == '#' && sc.chNext != '{'))) {		// skip sub-var
+			 (sc.ch == '#' && sc.chNext != '{'))) {				// skip sub-var
 			// look ahead to see whether { comes before next ; and }
-			int ch, chPrev;
+			int ch;
 			int subVarLevel = 0;
 			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 				ch = styler.SafeGetCharAt(i);
 				if (ch == ';' || ch == '}') {
-					if (ch == '}' && subVarLevel > 0) { // skip sub-var
+					if (ch == '}' && subVarLevel > 0) {			// skip sub-var
 						subVarLevel--;
 						continue;
 					}
 					break;
 				}
-				chPrev = styler.SafeGetCharAt(i-1);
 				if (ch == '{') {
-					if (chPrev == '#') {				// skip sub-var
+					if (styler.SafeGetCharAt(i-1) == '#') {		// skip sub-var
 						subVarLevel++;
 					} else if (subVarLevel == 0) {
 						sc.SetState(SCE_CSS_DEFAULT);
