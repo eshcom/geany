@@ -510,7 +510,7 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 	const Sci_Position beginning = i - 1;
 	bool isValidSimpleString = false;
 
-	while (i < lengthDoc && (styler[i] == ' ' || styler[i] == '\t'))
+	while (i < lengthDoc && IsASpaceOrTab(styler[i]))
 		i++;
 	char ch = styler.SafeGetCharAt(i);
 	const char chNext = styler.SafeGetCharAt(i + 1);
