@@ -177,13 +177,9 @@ static int HaskellIndentAmount(Accessor &styler, const Sci_Position line) {
 	
 	indent += SC_FOLDLEVELBASE;
 	// if completely empty line or the start of a comment or preprocessor...
-	if (  styler.LineStart(line) == styler.Length()
-		|| ch == ' '
-		|| ch == '\t'
-		|| ch == '\n'
-		|| ch == '\r'
-		|| IsCommentStyle(style)
-		|| style == SCE_HA_PREPROCESSOR)
+	if (styler.LineStart(line) == styler.Length() ||
+		IsASpaceOrTab(ch) || ch == '\n' || ch == '\r' ||
+		IsCommentStyle(style) || style == SCE_HA_PREPROCESSOR)
 		return indent | SC_FOLDLEVELWHITEFLAG;
 	else
 		return indent;
