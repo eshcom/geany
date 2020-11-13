@@ -176,7 +176,7 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 }
 
 static bool IsWhitespace(int ch) {
-	return IsASpaceOrTab(ch) || IsCRLR(ch);
+	return IsASpaceOrTab(ch) || IsACRLF(ch);
 }
 
 /* This isn't quite right for Unicode identifiers */
@@ -371,7 +371,7 @@ static bool IsValidCharacterEscape(int c) {
 }
 
 static bool IsValidStringEscape(int c) {
-	return IsValidCharacterEscape(c) || IsCRLR(c);
+	return IsValidCharacterEscape(c) || IsACRLF(c);
 }
 
 static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos,

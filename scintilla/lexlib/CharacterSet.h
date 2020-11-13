@@ -101,7 +101,7 @@ public:
 
 // Functions for classifying characters
 
-inline bool IsCRLR(int ch) {
+inline bool IsACRLF(int ch) {
 	return (ch == '\r') || (ch == '\n');
 }
 

@@ -218,7 +218,7 @@ static void ColouriseMatlabOctaveDoc(
 				
 			} else if (commentDepth == 0) {
 				// single line comment
-				if (sc.atLineEnd || IsCRLR(sc.ch)) {
+				if (sc.atLineEnd || IsACRLF(sc.ch)) {
 					sc.SetState(SCE_MATLAB_DEFAULT);
 					transpose = false;
 				}

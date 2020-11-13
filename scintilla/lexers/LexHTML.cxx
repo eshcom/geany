@@ -474,10 +474,10 @@ bool isMakoBlockEnd(const int ch, const int chNext, const std::string &blockType
 			   (blockType == "page")) {
 		return ((ch == '/') && (chNext == '>'));
 	} else if (blockType == "%") {
-		if (ch == '/' && IsCRLR(chNext))
+		if (ch == '/' && IsACRLF(chNext))
 			return true;
 		else
-			return IsCRLR(ch);
+			return IsACRLF(ch);
 	} else if (blockType == "{") {
 		return ch == '}';
 	} else {
@@ -526,9 +526,9 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 	}
 	phpStringDelimiter.push_back(ch);
 	i++;
-	for (j = i; j < lengthDoc && !IsCRLR(styler[j]); j++) {
+	for (j = i; j < lengthDoc && !IsACRLF(styler[j]); j++) {
 		if (!IsPhpWordChar(styler[j])) {
-			if (isSimpleString && (styler[j] == '\'') && IsCRLR(styler.SafeGetCharAt(j + 1))) {
+			if (isSimpleString && (styler[j] == '\'') && IsACRLF(styler.SafeGetCharAt(j + 1))) {
 				isValidSimpleString = true;
 				j++;
 				break;
@@ -937,7 +937,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	}
 	// String can be heredoc, must find a delimiter first. Reread from beginning of line containing the string, to get the correct lineState
 	if (isPHPStringState(state)) {
-		while (startPos > 0 && (isPHPStringState(state) || !IsCRLR(styler[startPos - 1]))) {
+		while (startPos > 0 && (isPHPStringState(state) || !IsACRLF(styler[startPos - 1]))) {
 			startPos--;
 			length++;
 			state = styler.StyleAt(startPos);
@@ -1139,7 +1139,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 
 		// handle end of Mako comment line
-		else if (isMako && makoComment && IsCRLR(ch)) {
+		else if (isMako && makoComment && IsACRLF(ch)) {
 			makoComment = 0;
 			styler.ColourTo(i - 1, StateToPrint);
 			if (scriptLanguage == eScriptPython) {
@@ -1968,7 +1968,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HJ_COMMENTLINE:
-			if (IsCRLR(ch)) {
+			if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, statePrintForState(SCE_HJ_COMMENTLINE, inScriptType));
 				state = SCE_HJ_DEFAULT;
 				ch = ' ';
@@ -1986,7 +1986,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
 				i += 2;
-			} else if (IsCRLR(ch)) {
+			} else if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_STRINGEOL;
 			}
@@ -2003,7 +2003,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
 				i += 2;
-			} else if (IsCRLR(ch)) {
+			} else if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				if (chPrev != '\\' && (chPrev2 != '\\' || chPrev != '\r' || ch != '\n')) {
 					state = SCE_HJ_STRINGEOL;
@@ -2011,16 +2011,16 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HJ_STRINGEOL:
-			if (!IsCRLR(ch)) {
+			if (!IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_DEFAULT;
-			} else if (!IsCRLR(chNext)) {
+			} else if (!IsACRLF(chNext)) {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HJ_DEFAULT;
 			}
 			break;
 		case SCE_HJ_REGEX:
-			if (IsCRLR(ch) || ch == '/') {
+			if (IsACRLF(ch) || ch == '/') {
 				if (ch == '/') {
 					while (IsASCII(chNext) && islower(chNext)) {   // gobble regex flags
 						i++;
@@ -2084,22 +2084,22 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			if (ch == '\"') {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HB_DEFAULT;
-			} else if (IsCRLR(ch)) {
+			} else if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_STRINGEOL;
 			}
 			break;
 		case SCE_HB_COMMENTLINE:
-			if (IsCRLR(ch)) {
+			if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_DEFAULT;
 			}
 			break;
 		case SCE_HB_STRINGEOL:
-			if (!IsCRLR(ch)) {
+			if (!IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HB_DEFAULT;
-			} else if (!IsCRLR(chNext)) {
+			} else if (!IsACRLF(chNext)) {
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HB_DEFAULT;
 			}
@@ -2181,7 +2181,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HP_COMMENTLINE:
-			if (IsCRLR(ch)) {
+			if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HP_DEFAULT;
 			}
@@ -2281,7 +2281,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_HPHP_COMMENTLINE:
-			if (IsCRLR(ch)) {
+			if (IsACRLF(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HPHP_DEFAULT;
 			}
@@ -2301,12 +2301,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				if (phpStringDelimiter == "\"") {
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
-				} else if (IsCRLR(chPrev)) {
+				} else if (IsACRLF(chPrev)) {
 					const int psdLength = static_cast<int>(phpStringDelimiter.length());
 					const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
 					const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-					if (IsCRLR(chAfterPsd) ||
-						(chAfterPsd == ';' && IsCRLR(chAfterPsd2))) {
+					if (IsACRLF(chAfterPsd) ||
+						(chAfterPsd == ';' && IsACRLF(chAfterPsd2))) {
 							i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 						styler.ColourTo(i, StateToPrint);
 						state = SCE_HPHP_DEFAULT;
@@ -2324,12 +2324,12 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
 				}
-			} else if (IsCRLR(chPrev) && styler.Match(i, phpStringDelimiter.c_str())) {
+			} else if (IsACRLF(chPrev) && styler.Match(i, phpStringDelimiter.c_str())) {
 				const int psdLength = static_cast<int>(phpStringDelimiter.length());
 				const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
 				const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-				if (IsCRLR(chAfterPsd) ||
-				(chAfterPsd == ';' && IsCRLR(chAfterPsd2))) {
+				if (IsACRLF(chAfterPsd) ||
+				(chAfterPsd == ';' && IsACRLF(chAfterPsd2))) {
 					i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;

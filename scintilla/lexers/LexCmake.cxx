@@ -217,13 +217,13 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, 
 				state = SCE_CMAKE_VARIABLE;
 				
 				// If it is a number, we must check and set style here first...
-				if (isCmakeNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) || IsCRLR(cNextChar)))
+				if (isCmakeNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) || IsACRLF(cNextChar)))
 					styler.ColourTo( i, SCE_CMAKE_NUMBER);
 				break;
 			}
 			break;
 		case SCE_CMAKE_COMMENT:
-			if (IsCRLR(cCurrChar)) {
+			if (IsACRLF(cCurrChar)) {
 				if ( styler.SafeGetCharAt(i-1) == '\\' ) {
 					styler.ColourTo(i-2,state);
 					styler.ColourTo(i-1,SCE_CMAKE_DEFAULT);
@@ -259,7 +259,7 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length, int, 
 				break;
 			}
 
-			if (IsCRLR(cNextChar)) {
+			if (IsACRLF(cNextChar)) {
 				Sci_Position nCurLine = styler.GetLine(i+1);
 				Sci_Position nBack = i;
 				// We need to check if the previous line has a \ in it...

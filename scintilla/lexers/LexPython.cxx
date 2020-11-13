@@ -642,7 +642,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						} else if (ch == ':') {
 							style = SCE_P_CLASSNAME;
 							break;
-						} else if (IsASpaceOrTab(ch) || IsCRLR(ch)) {
+						} else if (IsASpaceOrTab(ch) || IsACRLF(ch)) {
 							pos++;
 							ch = styler.SafeGetCharAt(pos, '\0');
 						} else {
@@ -705,7 +705,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		} else if ((sc.state == SCE_P_COMMENTLINE) || (sc.state == SCE_P_COMMENTBLOCK)) {
-			if (IsCRLR(sc.ch)) {
+			if (IsACRLF(sc.ch)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_DECORATOR) {
@@ -717,7 +717,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n')) {
 					sc.Forward();
 				}
-				if (IsCRLR(sc.chNext)) {
+				if (IsACRLF(sc.chNext)) {
 					inContinuedString = true;
 				} else {
 					// Don't roll over the newline.

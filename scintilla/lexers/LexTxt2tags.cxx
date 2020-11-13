@@ -44,7 +44,7 @@ static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU e
 	// Skip over whitespace
 	while (IsASpaceOrTab(sc.GetRelative(i)) && sc.currentPos + i < endPos)
 		++i;
-	if (IsCRLR(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
+	if (IsACRLF(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
 		sc.Forward(i);
 		sc.ChangeState(state);
 		sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
@@ -57,10 +57,10 @@ static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU e
 static bool HasPrevLineContent(StyleContext &sc) {
 	Sci_Position i = 0;
 	// Go back to the previous newline
-	while ((--i + sc.currentPos) && !IsCRLR(sc.GetRelative(i)))
+	while ((--i + sc.currentPos) && !IsACRLF(sc.GetRelative(i)))
 		;
 	while (--i + sc.currentPos) {
-		if (IsCRLR(sc.GetRelative(i)))
+		if (IsACRLF(sc.GetRelative(i)))
 			break;
 		if (!IsASpaceOrTab(sc.GetRelative(i)))
 			return true;
@@ -80,7 +80,7 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 		// hit a terminating character
 		else if (!IsASpaceOrTab(c) || sc.currentPos + i == endPos) {
 			// Are we a valid HRULE
-			if ((IsCRLR(c) || sc.currentPos + i == endPos) &&
+			if ((IsACRLF(c) || sc.currentPos + i == endPos) &&
 					count >= 20 && !HasPrevLineContent(sc)) {
 				sc.SetState(SCE_TXT2TAGS_HRULE);
 				sc.Forward(i);
@@ -134,7 +134,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// Conditional state-based actions
 		if (sc.state == SCE_TXT2TAGS_CODE2) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.Match("``") && sc.GetRelative(-2) != ' ') {
 				sc.Forward(2);
@@ -143,14 +143,14 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// Table
 		else if (sc.state == SCE_TXT2TAGS_CODE) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.ch == '|' && sc.chPrev != ' ')
 				sc.ForwardSetState(SCE_TXT2TAGS_DEFAULT);
 		}
 		// Strong
 		else if (sc.state == SCE_TXT2TAGS_STRONG1) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.Match("**") && sc.chPrev != ' ') {
 				sc.Forward(2);
@@ -159,7 +159,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// Emphasis
 		else if (sc.state == SCE_TXT2TAGS_EM1) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.Match("//") && sc.chPrev != ' ') {
 				sc.Forward(2);
@@ -168,7 +168,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// Underline
 		else if (sc.state == SCE_TXT2TAGS_EM2) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.Match("__") && sc.chPrev != ' ') {
 				sc.Forward(2);
@@ -177,11 +177,11 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// codeblock
 		else if (sc.state == SCE_TXT2TAGS_CODEBK) {
-				if (IsCRLR(sc.ch))
+				if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.atLineStart && sc.Match("```")) {
 				Sci_Position i = 1;
-				while (!IsCRLR(sc.GetRelative(i)) && sc.currentPos + i < endPos)
+				while (!IsACRLF(sc.GetRelative(i)) && sc.currentPos + i < endPos)
 					i++;
 				sc.Forward(i);
 				sc.SetState(SCE_TXT2TAGS_DEFAULT);
@@ -189,7 +189,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		// strikeout
 		else if (sc.state == SCE_TXT2TAGS_STRIKEOUT) {
-		if (IsCRLR(sc.ch))
+		if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			if (sc.Match("--") && sc.chPrev != ' ') {
 				sc.Forward(2);
@@ -268,7 +268,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 			else if (sc.Match("+")) {
 				// Catch the special case of an unordered list
 				if (sc.chNext == ' ' && IsASpaceOrTab(sc.GetRelative(1))) {
-				 //    if (IsCRLR(sc.ch)) {
+				 //    if (IsACRLF(sc.ch)) {
 					 	//precharCount = 0;
 				//		sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 						//sc.SetState(SCE_TXT2TAGS_PRECHAR);
@@ -327,7 +327,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 				   sc.Forward(1);
 				   sc.SetState(SCE_TXT2TAGS_PRECHAR);
 			}
-			else if (IsCRLR(sc.ch))
+			else if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 			else {
 				precharCount = 0;
@@ -339,7 +339,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 		else if (sc.state == SCE_TXT2TAGS_HEADER1 || sc.state == SCE_TXT2TAGS_HEADER2 ||
 				sc.state == SCE_TXT2TAGS_HEADER3 || sc.state == SCE_TXT2TAGS_HEADER4 ||
 				sc.state == SCE_TXT2TAGS_HEADER5 || sc.state == SCE_TXT2TAGS_HEADER6) {
-			if (IsCRLR(sc.ch))
+			if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 		}
 
@@ -456,7 +456,7 @@ static void ColorizeTxt2tagsDoc(Sci_PositionU startPos, Sci_Position length, int
 			}
 
 			// Beginning of line
-			else if (IsCRLR(sc.ch))
+			else if (IsACRLF(sc.ch))
 				sc.SetState(SCE_TXT2TAGS_LINE_BEGIN);
 		}
 		// Advance if not holding back the cursor for this iteration.
