@@ -426,7 +426,7 @@ static void FoldNoBoxVHDLDoc(
 								styleAtPos = styler.StyleAt(pos);
 								chAtPos = styler.SafeGetCharAt(pos);
 							}
-							while (pos && (IsASpaceOrTab(chAtPos) || IsCRLR(chAtPos) ||
+							while (pos && (IsASpaceOrTab(chAtPos) || IsACRLF(chAtPos) ||
 										   IsCommentStyle(styleAtPos)));
 							
 							// check for a colon (':') before the instantiated units "entity", "component" or "configuration". Don't fold thereafter.

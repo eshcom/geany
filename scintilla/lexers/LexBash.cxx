@@ -821,7 +821,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			if (sc.ch == '\\') {
 				// Bash can escape any non-newline as a literal
 				sc.SetState(SCE_SH_IDENTIFIER);
-				if (IsCRLR(sc.chNext))
+				if (IsACRLF(sc.chNext))
 					sc.SetState(SCE_SH_OPERATOR);
 			} else if (IsADigit(sc.ch)) {
 				sc.SetState(SCE_SH_NUMBER);

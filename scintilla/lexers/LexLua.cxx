@@ -126,7 +126,7 @@ static void ColouriseLuaDoc(
 		// Handle string line continuation
 		if ((sc.state == SCE_LUA_STRING || sc.state == SCE_LUA_CHARACTER) &&
 				sc.ch == '\\') {
-			if (IsCRLR(sc.chNext)) {
+			if (IsACRLF(sc.chNext)) {
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					sc.Forward();

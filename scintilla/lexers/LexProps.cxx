@@ -175,7 +175,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 				if (!IsAWordChar(sc.chPrev)) {
 					if (sc.Match('#', '{')) {
 						for (Sci_PositionU i = sc.currentPos + 2; i < endPos; i++) {
-							if (IsCRLR(styler[i])) { // end of line
+							if (IsACRLF(styler[i])) { // end of line
 								break;
 							} else if (styler[i] == '}') {
 								sc.SetState(SCE_PROPS_SUBVAR_OPER);
@@ -221,7 +221,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						
 					} else if (sc.ch == '\"') {
 						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
-							if (IsCRLR(styler[i])) { // end of line
+							if (IsACRLF(styler[i])) { // end of line
 								break;
 							} else if (styler[i] == '"') {
 								sc.SetState(SCE_PROPS_DOUBLESTRING);
@@ -230,7 +230,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 						}
 					} else if (sc.ch == '\'') {
 						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
-							if (IsCRLR(styler[i])) { // end of line
+							if (IsACRLF(styler[i])) { // end of line
 								break;
 							} else if (styler[i] == '\'') {
 								sc.SetState(SCE_PROPS_SINGLESTRING);

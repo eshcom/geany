@@ -264,17 +264,17 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 			}
 		} else {
 			if (state == SCE_C_PREPROCESSOR) {
-				if (IsCRLR(ch) && !(chPrev == '\\' || chPrev == '\r')) {
+				if (IsACRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENT) {
-				if (IsCRLR(ch)) {
+				if (IsACRLF(ch)) {
 					ColourTo(styler, i, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENTDOC) {
-				if (IsCRLR(ch)) {
+				if (IsACRLF(ch)) {
 					if (((i > styler.GetStartSegment() + 2) || (
 						(initStyle == SCE_C_COMMENTDOC) &&
 						(styler.GetStartSegment() == static_cast<Sci_PositionU>(startPos))))) {
@@ -283,7 +283,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 					}
 				}
 			} else if (state == SCE_C_COMMENTLINE) {
-				if (IsCRLR(ch)) {
+				if (IsACRLF(ch)) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}

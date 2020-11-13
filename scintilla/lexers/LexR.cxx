@@ -91,7 +91,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_COMMENT) {
-			if (IsCRLR(sc.ch)) {
+			if (IsACRLF(sc.ch)) {
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_STRING) {
