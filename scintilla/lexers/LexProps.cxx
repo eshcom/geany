@@ -160,6 +160,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '=') {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
 					continue;
+				} else if (sc.ch == '{' || sc.ch == '}') {
+					sc.SetState(SCE_PROPS_OPER_VALUE);
+					continue;
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
