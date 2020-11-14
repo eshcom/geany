@@ -33,7 +33,6 @@ static inline bool IsAWordChar(int ch) {
 static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 								   int initStyle, WordList *keywordlists[],
 								   Accessor &styler) {
-
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];

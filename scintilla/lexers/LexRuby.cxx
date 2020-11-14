@@ -1753,8 +1753,9 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
  *  Later offer to fold POD, here-docs, strings, and blocks of comments
  */
 
-static void FoldRbDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-					  WordList *[], Accessor &styler) {
+static void FoldRbDoc(Sci_PositionU startPos, Sci_Position length,
+					  int initStyle, WordList *[], Accessor &styler) {
+	
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	

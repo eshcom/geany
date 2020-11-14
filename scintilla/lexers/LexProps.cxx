@@ -93,8 +93,9 @@ static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
 	return mailState == 4;
 }
 
-static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-							  WordList *keywordlists[], Accessor &styler) {
+static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
+							  int initStyle, WordList *keywordlists[],
+							  Accessor &styler) {
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
 	Sci_PositionU endPos = startPos + length;
@@ -373,6 +374,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length, int i
 // 030721
 static void FoldPropsDoc(Sci_PositionU startPos, Sci_Position length,
 						 int, WordList *[], Accessor &styler) {
+	
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	
 	const Sci_PositionU endPos = startPos + length;

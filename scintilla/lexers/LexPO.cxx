@@ -161,6 +161,7 @@ static int FindNextNonEmptyLineState(Sci_PositionU startPos,
 
 static void FoldPODoc(Sci_PositionU startPos, Sci_Position length,
 					  int, WordList *[], Accessor &styler) {
+	
 	if (! styler.GetPropertyInt("fold"))
 		return;
 	bool foldCompact = styler.GetPropertyInt("fold.compact") != 0;

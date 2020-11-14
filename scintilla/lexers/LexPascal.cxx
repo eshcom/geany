@@ -521,6 +521,7 @@ static void ClassifyPascalWordFoldPoint(int &levelCurrent, int &lineFoldStateCur
 
 static void FoldPascalDoc(Sci_PositionU startPos, Sci_Position length,
 						  int initStyle, WordList *[], Accessor &styler) {
+	
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldPreprocessor = styler.GetPropertyInt("fold.preprocessor") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;

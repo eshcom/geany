@@ -463,7 +463,8 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 /***************************************/
 // Folding the code
 static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
-						   int initStyle, Accessor &styler, bool isFixFormat) {
+						   int initStyle, Accessor &styler,
+						   bool isFixFormat) {
 	
 	bool foldComment = styler.GetPropertyInt("fold.comment", 1) != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;

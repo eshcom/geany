@@ -1517,7 +1517,6 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 
 void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, IDocument *pAccess) {
-	
 	if (!options.fold)
 		return;
 	

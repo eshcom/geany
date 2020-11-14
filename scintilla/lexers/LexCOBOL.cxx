@@ -309,8 +309,9 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 	ColourTo(styler, lengthDoc - 1, state);
 }
 
-static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
-							Accessor &styler) {
+static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
+						 int, WordList *[], Accessor &styler) {
+	
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;

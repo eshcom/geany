@@ -740,8 +740,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	sc.Complete();
 }
 
-static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length, int,
-					   WordList *[], Accessor &styler) {
+static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
+					   int, WordList *[], Accessor &styler) {
+	
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	
