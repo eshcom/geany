@@ -47,6 +47,15 @@ static inline bool IsDimension(const char* s) {
 			strcmp(s, "ms") == 0 || strcmp(s, "turn") == 0);
 }
 
+static inline bool IsUrl(const char *pref, Accessor &styler,
+						 Sci_PositionU pos, Sci_PositionU endPos) {
+	return (pos < endPos - 2) &&
+		   (strcmp(pref, "http") == 0 || strcmp(pref, "https") == 0 ||
+			strcmp(pref, "ftp") == 0 || strcmp(pref, "sftp") == 0) &&
+			styler[pos] == ':' && styler[pos + 1] == '/'
+							   && styler[pos + 2] == '/';
+}
+
 static inline bool IsAWordChar(const unsigned int ch) {
 	/* FIXME:
 	 * The CSS spec allows "ISO 10646 characters U+00A1 and higher" to be treated as word chars.
@@ -64,17 +73,17 @@ static inline bool IsAWordOrSpace(int ch) {
 	return IsAWordChar(ch) || IsASpace(ch);
 }
 
-inline bool IsCssOperValue(const int ch) {
+static inline bool IsCssOperValue(const int ch) {
 	return ch == '(' || ch == ')' || ch == ',' || ch == '/' ||
 		   ch == '*' || ch == '+';
 }
 
-inline bool IsCssSelectorOper(const int ch) {
+static inline bool IsCssSelectorOper(const int ch) {
 	return ch == '.' || ch == ':' || ch == '&' ||
 		   ch == '>' || ch == '+' || ch == '[' || ch == ']';
 }
 
-inline bool IsCssOperator(const int ch) {
+static inline bool IsCssOperator(const int ch) {
 	if (!((ch < 0x80) && isalnum(ch)) &&
 		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
 		 ch == '.' || ch == '#' || ch == '!' || ch == '@' ||
@@ -87,8 +96,8 @@ inline bool IsCssOperator(const int ch) {
 }
 
 //~ esh: CheckSubVar func
-inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
-						int *beforeSubVarState) {
+static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
+							   int *beforeSubVarState) {
 	if (sc.Match('#', '{')) {
 		*beforeSubVarState = sc.state;
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
@@ -110,7 +119,8 @@ inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
 }
 
 // look behind (from start of document to our start position) to determine current nesting level
-inline int NestingLevelLookBehind(Sci_PositionU startPos, Accessor &styler) {
+static inline int NestingLevelLookBehind(Sci_PositionU startPos,
+										 Accessor &styler) {
 	int ch;
 	int nestingLevel = 0;
 	
@@ -532,7 +542,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 						}
 						if (namedColors.InList(word2)) {
 							sc.ChangeState(SCE_CSS_NAMED_COLOR);
-						} else if (insideParentheses && strcmp(word2, "http") == 0) {
+						} else if (insideParentheses &&
+								   IsUrl(word2, styler, sc.currentPos, endPos)) {
 							sc.ChangeState(SCE_CSS_URL_VALUE);
 							continue;
 						} else {

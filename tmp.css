@@ -24,6 +24,7 @@ p {
 @define-color borders shade (solid rgba(14/**/,/**/ 13, 0, 0.03)/**/,/**/ 0.82);
 @define-color unfocused_borders transparent;
 @namespace url(http://www.w3.org/1999/xhtml);
+@namespace url(ftp://www.w3.org/1999/1.png);
 @namespace svg url(http://www.w3.org/2000/svg);
 @namespace var1 /**/ , var2, var3 url(http://www.w3.org/2000/svg);
 @namespace var1, // var1

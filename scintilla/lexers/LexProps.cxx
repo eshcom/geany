@@ -25,7 +25,7 @@
 
 using namespace Scintilla;
 
-static inline bool isassignchar(unsigned char ch) {
+static inline bool IsAssignChar(unsigned char ch) {
 	return (ch == '=') || (ch == ':');
 }
 
@@ -49,8 +49,17 @@ static inline bool IsOperValue(const int ch) {
 		   ch == '\'';
 }
 
-static inline bool IsValidMail(Accessor &styler, Sci_PositionU pos,
-							   Sci_PositionU endPos) {
+static inline bool IsUrl(const char *pref, Accessor &styler,
+						 Sci_PositionU pos, Sci_PositionU endPos) {
+	return (pos < endPos - 2) &&
+		   (strcmp(pref, "http") == 0 || strcmp(pref, "https") == 0 ||
+			strcmp(pref, "ftp") == 0 || strcmp(pref, "sftp") == 0) &&
+			styler[pos] == ':' && styler[pos + 1] == '/'
+							   && styler[pos + 2] == '/';
+}
+
+static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
+						   Sci_PositionU endPos) {
 	int mailState = 0;
 	for (; pos < endPos; pos++) {
 		if (styler[pos] == '\r' || styler[pos] == '\n') { // end of line
@@ -145,7 +154,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_PROPS_SECTION);
 				} else if (sc.ch == '@') {
 					sc.ChangeState(SCE_PROPS_DEFVAL);
-					if (isassignchar(sc.chNext))
+					if (IsAssignChar(sc.chNext))
 						sc.ForwardSetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else if (sc.ch == '=') {
@@ -162,7 +171,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_PROPS_KEY:
-				if (isassignchar(sc.ch)) {
+				if (IsAssignChar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
 					continue;
 				}
@@ -247,16 +256,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.GetCurrentLowered(s, sizeof(s));
 					
 					// check url:
-					if ((strcmp(s, "http") == 0 || strcmp(s, "https") == 0 ||
-						 strcmp(s, "ftp") == 0 || strcmp(s, "sftp") == 0) &&
-							sc.ch == ':' && sc.chNext == '/' &&
-							styler.SafeGetCharAt(sc.currentPos + 2) == '/') {
+					if (IsUrl(s, styler, sc.currentPos, endPos)) {
 						sc.ChangeState(SCE_PROPS_URL_VALUE);
 						goToLineEnd = true;
 						continue;
 					}
 					// check email:
-					if (IsValidMail(styler, sc.currentPos, endPos)) {
+					if (IsEmail(styler, sc.currentPos, endPos)) {
 						sc.ChangeState(SCE_PROPS_MAIL_VALUE);
 						goToLineEnd = true;
 						continue;
