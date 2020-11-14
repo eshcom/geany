@@ -96,7 +96,7 @@ static inline bool IsCssOperator(const int ch) {
 }
 
 //~ esh: CheckSubVar func
-static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
+static inline void CheckSubVar(StyleContext &sc, bool *isSubVar,
 							   int *beforeSubVarState) {
 	if (sc.Match('#', '{')) {
 		*beforeSubVarState = sc.state;
@@ -115,7 +115,6 @@ static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
 		sc.SetState(*beforeSubVarState);
 		*isSubVar = false;
 	}
-	return *isSubVar;
 }
 
 // look behind (from start of document to our start position) to determine current nesting level
