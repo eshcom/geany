@@ -35,29 +35,30 @@ static bool IsAlphabetic(int ch) {
 
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return (styler[i] == '\n') ||
-	       ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
+		   ((styler[i] == '\r') &&
+			(styler.SafeGetCharAt(i + 1) != '\n'));
 }
 
 // Tests for BATCH Operators
 static bool IsBOperator(char ch) {
 	return (ch == '=') || (ch == '+') || (ch == '>') || (ch == '<') ||
-		(ch == '|') || (ch == '?') || (ch == '*');
+		   (ch == '|') || (ch == '?') || (ch == '*');
 }
 
 // Tests for BATCH Separators
 static bool IsBSeparator(char ch) {
 	return (ch == '\\') || (ch == '.') || (ch == ';') ||
-		(ch == '\"') || (ch == '\'') || (ch == '/');
+		   (ch == '\"') || (ch == '\'') || (ch == '/');
 }
 
 static void ColouriseBatchLine(
-    char *lineBuffer,
-    Sci_PositionU lengthLine,
-    Sci_PositionU startLine,
-    Sci_PositionU endPos,
-    WordList *keywordlists[],
-    Accessor &styler) {
-
+	char *lineBuffer,
+	Sci_PositionU lengthLine,
+	Sci_PositionU startLine,
+	Sci_PositionU endPos,
+	WordList *keywordlists[],
+	Accessor &styler) {
+	
 	Sci_PositionU offset = 0;	// Line Buffer Offset
 	Sci_PositionU cmdLoc;		// External Command / Program Location
 	char wordBuffer[81];		// Word Buffer - large to catch long paths
@@ -65,7 +66,7 @@ static void ColouriseBatchLine(
 	Sci_PositionU wbo;		// Word Buffer Offset - also Special Keyword Buffer Length
 	WordList &keywords = *keywordlists[0];      // Internal Commands
 	WordList &keywords2 = *keywordlists[1];     // External Commands (optional)
-
+	
 	// CHOICE, ECHO, GOTO, PROMPT and SET have Default Text that may contain Regular Keywords
 	//   Toggling Regular Keyword Checking off improves readability
 	// Other Regular Keywords and External Commands / Programs might also benefit from toggling
@@ -76,7 +77,7 @@ static void ColouriseBatchLine(
 	// Special Keyword Buffer used to determine if the first n characters is a Keyword
 	char sKeywordBuffer[10];	// Special Keyword Buffer
 	bool sKeywordFound;		// Exit Special Keyword for-loop if found
-
+	
 	// Skip initial spaces
 	while ((offset < lengthLine) && IsASpace(lineBuffer[offset])) {
 		offset++;
@@ -85,7 +86,7 @@ static void ColouriseBatchLine(
 	styler.ColourTo(startLine + offset - 1, SCE_BAT_DEFAULT);
 	// Set External Command / Program Location
 	cmdLoc = offset;
-
+	
 	// Check for Fake Label (Comment) or Real Label - return if found
 	if (lineBuffer[offset] == ':') {
 		if (lineBuffer[offset + 1] == ':') {
@@ -106,7 +107,7 @@ static void ColouriseBatchLine(
 		styler.ColourTo(endPos, SCE_BAT_WORD);
 		return;
 	}
-
+	
 	// Check for Hide Command (@ECHO OFF/ON)
 	if (lineBuffer[offset] == '@') {
 		styler.ColourTo(startLine + offset, SCE_BAT_HIDE);
@@ -116,7 +117,7 @@ static void ColouriseBatchLine(
 	while ((offset < lengthLine) && IsASpace(lineBuffer[offset])) {
 		offset++;
 	}
-
+	
 	// Read remainder of line word-at-a-time or remainder-of-word-at-a-time
 	while (offset < lengthLine) {
 		if (offset > startLine) {
@@ -131,7 +132,7 @@ static void ColouriseBatchLine(
 		}
 		wordBuffer[wbl] = '\0';
 		wbo = 0;
-
+		
 		// Check for Comment - return if found
 		if (CompareCaseInsensitive(wordBuffer, "rem") == 0) {
 			styler.ColourTo(endPos, SCE_BAT_COMMENT);
@@ -213,7 +214,9 @@ static void ColouriseBatchLine(
 			//     Affected Commands are in Length range 2-6
 			//     Good that ERRORLEVEL, EXIST, CALL, DO, LOADHIGH, and LH are unaffected
 			sKeywordFound = false;
-			for (Sci_PositionU keywordLength = 2; keywordLength < wbl && keywordLength < 7 && !sKeywordFound; keywordLength++) {
+			for (Sci_PositionU keywordLength = 2;
+				 keywordLength < wbl && keywordLength < 7 && !sKeywordFound;
+				 keywordLength++) {
 				wbo = 0;
 				// Copy Keyword Length from Word Buffer into Special Keyword Buffer
 				for (; wbo < keywordLength; wbo++) {
@@ -451,14 +454,14 @@ static void ColouriseBatchLine(
 }
 
 static void ColouriseBatchDoc(
-    Sci_PositionU startPos,
-    Sci_Position length,
-    int /*initStyle*/,
-    WordList *keywordlists[],
-    Accessor &styler) {
-
+	Sci_PositionU startPos,
+	Sci_Position length,
+	int /*initStyle*/,
+	WordList *keywordlists[],
+	Accessor &styler) {
+	
 	char lineBuffer[4096];
-
+	
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
 	Sci_PositionU linePos = 0;
@@ -476,7 +479,7 @@ static void ColouriseBatchDoc(
 	if (linePos > 0) {	// Last line does not have ending characters
 		lineBuffer[linePos] = '\0';
 		ColouriseBatchLine(lineBuffer, linePos, startLine, startPos + length - 1,
-		                   keywordlists, styler);
+						   keywordlists, styler);
 	}
 }
 
@@ -486,4 +489,5 @@ static const char *const batchWordListDesc[] = {
 	0
 };
 
-LexerModule lmBatch(SCLEX_BATCH, ColouriseBatchDoc, "batch", 0, batchWordListDesc);
+LexerModule lmBatch(SCLEX_BATCH, ColouriseBatchDoc, "batch",
+					0, batchWordListDesc);

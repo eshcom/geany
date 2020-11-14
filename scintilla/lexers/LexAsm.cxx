@@ -58,7 +58,8 @@ static inline bool IsAsmOperator(const int ch) {
 }
 
 static bool IsStreamCommentStyle(int style) {
-	return style == SCE_ASM_COMMENTDIRECTIVE || style == SCE_ASM_COMMENTBLOCK;
+	return style == SCE_ASM_COMMENTDIRECTIVE ||
+		   style == SCE_ASM_COMMENTBLOCK;
 }
 
 static inline int LowerCase(int c) {
@@ -194,7 +195,8 @@ public:
 	}
 };
 
-Sci_Position SCI_METHOD LexerAsm::PropertySet(const char *key, const char *val) {
+Sci_Position SCI_METHOD LexerAsm::PropertySet(const char *key,
+											  const char *val) {
 	if (osAsm.PropertySet(&options, key, val)) {
 		return 0;
 	}
@@ -281,7 +283,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ASM_DEFAULT);
 			}
 		} else if (sc.state == SCE_ASM_IDENTIFIER) {
-			if (!IsAWordChar(sc.ch) ) {
+			if (!IsAWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				bool IsDirective = false;
@@ -302,7 +304,8 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 				sc.SetState(SCE_ASM_DEFAULT);
 				if (IsDirective && !strcmp(s, "comment")) {
-					char delimiter = options.delimiter.empty() ? '~' : options.delimiter.c_str()[0];
+					char delimiter = options.delimiter.empty() ? '~' :
+												options.delimiter.c_str()[0];
 					while (IsASpaceOrTab(sc.ch) && !sc.atLineEnd) {
 						sc.ForwardSetState(SCE_ASM_DEFAULT);
 					}
@@ -312,20 +315,22 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		} else if (sc.state == SCE_ASM_COMMENTDIRECTIVE) {
-			char delimiter = options.delimiter.empty() ? '~' : options.delimiter.c_str()[0];
+			char delimiter = options.delimiter.empty() ? '~' :
+												options.delimiter.c_str()[0];
 			if (sc.ch == delimiter) {
 				while (!sc.atLineEnd) {
 					sc.Forward();
 				}
 				sc.SetState(SCE_ASM_DEFAULT);
 			}
-		} else if (sc.state == SCE_ASM_COMMENT ) {
+		} else if (sc.state == SCE_ASM_COMMENT) {
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_ASM_DEFAULT);
 			}
 		} else if (sc.state == SCE_ASM_STRING) {
 			if (sc.ch == '\\') {
-				if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+				if (sc.chNext == '\"' || sc.chNext == '\'' ||
+						sc.chNext == '\\') {
 					sc.Forward();
 				}
 			} else if (sc.ch == '\"') {
@@ -336,7 +341,8 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if (sc.state == SCE_ASM_CHARACTER) {
 			if (sc.ch == '\\') {
-				if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+				if (sc.chNext == '\"' || sc.chNext == '\'' ||
+						sc.chNext == '\\') {
 					sc.Forward();
 				}
 			} else if (sc.ch == '\'') {
@@ -349,7 +355,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_ASM_DEFAULT) {
-			if (sc.ch == commentChar){
+			if (sc.ch == commentChar) {
 				sc.SetState(SCE_ASM_COMMENT);
 			} else if (IsASCII(sc.ch) && (isdigit(sc.ch) || (sc.ch == '.' &&
 															 IsASCII(sc.chNext) &&
@@ -439,7 +445,7 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
 				wordlen = 0;
 				if (directives4foldstart.InList(word)) {
 					levelNext++;
-				} else if (directives4foldend.InList(word)){
+				} else if (directives4foldend.InList(word)) {
 					levelNext--;
 				}
 			}
@@ -460,12 +466,15 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
 			levelCurrent = levelNext;
 			if (atEOL && (i == static_cast<Sci_PositionU>(styler.Length() - 1))) {
 				// There is an empty line at end of file so give it same level and empty
-				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) | SC_FOLDLEVELWHITEFLAG);
+				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) |
+											 SC_FOLDLEVELWHITEFLAG);
 			}
 			visibleChars = 0;
 		}
 	}
 }
 
-LexerModule lmAsm(SCLEX_ASM, LexerAsm::LexerFactoryAsm, "asm", asmWordListDesc);
-LexerModule lmAs(SCLEX_AS, LexerAsm::LexerFactoryAs, "as", asmWordListDesc);
+LexerModule lmAsm(SCLEX_ASM, LexerAsm::LexerFactoryAsm,
+				  "asm", asmWordListDesc);
+LexerModule lmAs(SCLEX_AS, LexerAsm::LexerFactoryAs,
+				 "as", asmWordListDesc);

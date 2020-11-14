@@ -90,8 +90,9 @@ static bool keywordIsModifier(const char *word,
 							  Sci_Position pos,
 							  Accessor &styler);
 
-static int ClassifyWordRb(Sci_PositionU start, Sci_PositionU end, WordList &keywords,
-						  Accessor &styler, char *prevWord) {
+static int ClassifyWordRb(Sci_PositionU start, Sci_PositionU end,
+						  WordList &keywords, Accessor &styler,
+						  char *prevWord) {
 	char s[MAX_KEYWORD_LENGTH];
 	Sci_PositionU i, j;
 	Sci_PositionU lim = end - start + 1; // num chars to copy
@@ -167,7 +168,7 @@ static bool lookingAtHereDocDelim(Accessor		&styler,
 		char ch = styler[pos];
 		if (IsACRLF(ch)) {
 			return true;
-		} else if (ch != ' ' && ch != '\t') {
+		} else if (!IsASpaceOrTab(ch)) {
 			return false;
 		}
 	}
@@ -198,7 +199,8 @@ static void redo_char(Sci_Position &i, char &ch, char &chNext, char &chNext2,
 	state = SCE_RB_DEFAULT;
 }
 
-static void advance_char(Sci_Position &i, char &ch, char &chNext, char &chNext2) {
+static void advance_char(Sci_Position &i, char &ch,
+						 char &chNext, char &chNext2) {
 	i++;
 	ch = chNext;
 	chNext = chNext2;
@@ -489,7 +491,8 @@ static bool sureThisIsNotHeredoc(Sci_Position lt2StartPos,
 	}
 	int newStyle = prevStyle;
 	// Some compilers incorrectly warn about uninit newStyle
-	for (firstWordPosn += 1; firstWordPosn <= lt2StartPos; firstWordPosn += 1) {
+	for (firstWordPosn += 1; firstWordPosn <= lt2StartPos;
+							 firstWordPosn += 1) {
 		// Inner loop looks at the name
 		for (; firstWordPosn <= lt2StartPos; firstWordPosn += 1) {
 			newStyle = styler.StyleAt(firstWordPosn);
@@ -521,7 +524,8 @@ static bool sureThisIsNotHeredoc(Sci_Position lt2StartPos,
 	// Skip next batch of white-space
 	firstWordPosn = skipWhitespace(firstWordPosn, lt2StartPos, styler);
 	// possible symbol for an implicit hash argument
-	if (firstWordPosn < lt2StartPos && styler.StyleAt(firstWordPosn) == SCE_RB_SYMBOL) {
+	if (firstWordPosn < lt2StartPos &&
+		styler.StyleAt(firstWordPosn) == SCE_RB_SYMBOL) {
 		for (; firstWordPosn <= lt2StartPos; firstWordPosn += 1) {
 			if (styler.StyleAt(firstWordPosn) != SCE_RB_SYMBOL) {
 				break;
@@ -612,14 +616,17 @@ static bool sureThisIsNotHeredoc(Sci_Position lt2StartPos,
 	if (last_line > lineStart + 50) {
 		last_line = lineStart + 50;
 	}
-	for (Sci_Position line_num = lineStart + 1; line_num <= last_line; line_num++) {
+	for (Sci_Position line_num = lineStart + 1;
+		 line_num <= last_line; line_num++) {
 		if (allow_indent) {
-			j = skipWhitespace(styler.LineStart(line_num), lengthDoc, styler);
+			j = skipWhitespace(styler.LineStart(line_num),
+							   lengthDoc, styler);
 		} else {
 			j = styler.LineStart(line_num);
 		}
 		// target_end is one past the end
-		if (haveTargetMatch(j, lengthDoc, target_start, target_end, styler)) {
+		if (haveTargetMatch(j, lengthDoc, target_start,
+			target_end, styler)) {
 			// We got it
 			return looks_like_a_here_doc;
 		}
@@ -680,8 +687,9 @@ static void synchronizeDocStart(Sci_PositionU &startPos,
 	initStyle = SCE_RB_DEFAULT;
 }
 
-static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-						   WordList *keywordlists[], Accessor &styler) {
+static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
+						   int initStyle, WordList *keywordlists[],
+						   Accessor &styler) {
 	// Lexer for Ruby often has to backtrack to start of current style to determine
 	// which characters are being used as quotes, how deeply nested is the
 	// start position and what the termination string is for here documents
@@ -1685,7 +1693,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (ch != ' ' && ch != '\t')
+		else if (!IsASpaceOrTab(ch))
 			return false;
 	}
 	return false;
@@ -1862,4 +1870,5 @@ static const char *const rubyWordListDesc[] = {
 	0
 };
 
-LexerModule lmRuby(SCLEX_RUBY, ColouriseRbDoc, "ruby", FoldRbDoc, rubyWordListDesc);
+LexerModule lmRuby(SCLEX_RUBY, ColouriseRbDoc, "ruby",
+				   FoldRbDoc, rubyWordListDesc);

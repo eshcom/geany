@@ -201,26 +201,26 @@ static const char * const freebasicWordListDesc[] = {
 struct OptionSetBasic : public OptionSet<OptionsBasic> {
 	OptionSetBasic(const char * const wordListDescriptions[]) {
 		DefineProperty("fold", &OptionsBasic::fold);
-
+		
 		DefineProperty("fold.basic.syntax.based", &OptionsBasic::foldSyntaxBased,
 			"Set this property to 0 to disable syntax based folding.");
-
+		
 		DefineProperty("fold.basic.comment.explicit", &OptionsBasic::foldCommentExplicit,
 			"This option enables folding explicit fold points when using the Basic lexer. "
 			"Explicit fold points allows adding extra folding by placing a ;{ (BB/PB) or '{ (FB) comment at the start "
 			"and a ;} (BB/PB) or '} (FB) at the end of a section that should be folded.");
-
+		
 		DefineProperty("fold.basic.explicit.start", &OptionsBasic::foldExplicitStart,
 			"The string to use for explicit fold start points, replacing the standard ;{ (BB/PB) or '{ (FB).");
-
+		
 		DefineProperty("fold.basic.explicit.end", &OptionsBasic::foldExplicitEnd,
 			"The string to use for explicit fold end points, replacing the standard ;} (BB/PB) or '} (FB).");
-
+		
 		DefineProperty("fold.basic.explicit.anywhere", &OptionsBasic::foldExplicitAnywhere,
 			"Set this property to 1 to enable explicit fold points anywhere, not just in line comments.");
-
+		
 		DefineProperty("fold.compact", &OptionsBasic::foldCompact);
-
+		
 		DefineWordListSets(wordListDescriptions);
 	}
 };
@@ -232,11 +232,11 @@ class LexerBasic : public DefaultLexer {
 	OptionsBasic options;
 	OptionSetBasic osBasic;
 public:
-	LexerBasic(char comment_char_, int (*CheckFoldPoint_)(char const *, int &), const char * const wordListDescriptions[]) :
-						 comment_char(comment_char_),
-						 CheckFoldPoint(CheckFoldPoint_),
-						 osBasic(wordListDescriptions) {
-	}
+	LexerBasic(char comment_char_, int (*CheckFoldPoint_)(char const *, int &),
+			   const char * const wordListDescriptions[]) :
+					comment_char(comment_char_),
+					CheckFoldPoint(CheckFoldPoint_),
+					osBasic(wordListDescriptions) {}
 	virtual ~LexerBasic() {
 	}
 	void SCI_METHOD Release() override {
@@ -259,9 +259,11 @@ public:
 		return osBasic.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
+	
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
@@ -272,7 +274,7 @@ public:
 		return new LexerBasic(';', CheckPureFoldPoint, purebasicWordListDesc);
 	}
 	static ILexer *LexerFactoryFreeBasic() {
-		return new LexerBasic('\'', CheckFreeFoldPoint, freebasicWordListDesc );
+		return new LexerBasic('\'', CheckFreeFoldPoint, freebasicWordListDesc);
 	}
 };
 
@@ -311,15 +313,16 @@ Sci_Position SCI_METHOD LexerBasic::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
+								int initStyle, IDocument *pAccess) {
 	LexAccessor styler(pAccess);
-
+	
 	bool wasfirst = true, isfirst = true; // true if first token in a line
 	styler.StartAt(startPos);
 	int styleBeforeKeyword = SCE_B_DEFAULT;
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	// Can't use sc.More() here else we miss the last character
 	for (; ; sc.Forward()) {
 		if (sc.state == SCE_B_IDENTIFIER) {
@@ -413,10 +416,10 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length, int
 				};
 			}
 		}
-
+		
 		if (sc.atLineStart)
 			isfirst = true;
-
+		
 		if (sc.state == SCE_B_DEFAULT || sc.state == SCE_B_ERROR) {
 			if (isfirst && sc.Match('.') && comment_char != '\'') {
 					sc.SetState(SCE_B_LABEL);
@@ -444,7 +447,8 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length, int
 				sc.SetState(SCE_B_STRING);
 			} else if (IsDigit(sc.ch)) {
 				sc.SetState(SCE_B_NUMBER);
-			} else if (sc.Match('$') || sc.Match("&h") || sc.Match("&H") || sc.Match("&o") || sc.Match("&O")) {
+			} else if (sc.Match('$') || sc.Match("&h") || sc.Match("&H") ||
+					   sc.Match("&o") || sc.Match("&O")) {
 				sc.SetState(SCE_B_HEXNUMBER);
 			} else if (sc.Match('%') || sc.Match("&b") || sc.Match("&B")) {
 				sc.SetState(SCE_B_BINNUMBER);
@@ -459,33 +463,34 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length, int
 				sc.SetState(SCE_B_ERROR);
 			}
 		}
-
+		
 		if (!IsSpace(sc.ch))
 			isfirst = false;
-
+		
 		if (!sc.More())
 			break;
 	}
 	sc.Complete();
 }
 
-
-void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length, int /* initStyle */, IDocument *pAccess) {
-
+void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length,
+								 int /* initStyle */, IDocument *pAccess) {
+	
 	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	Sci_Position line = styler.GetLine(startPos);
 	int level = styler.LevelAt(line);
 	int go = 0, done = 0;
 	Sci_Position endPos = startPos + length;
 	char word[256];
 	int wordlen = 0;
-	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() && !options.foldExplicitEnd.empty();
+	const bool userDefinedFoldMarkers = !options.foldExplicitStart.empty() &&
+										!options.foldExplicitEnd.empty();
 	int cNext = styler[startPos];
-
+	
 	// Scan for tokens at the start of the line (they may include
 	// whitespace, for tokens like "End Function"
 	for (Sci_Position i = startPos; i < endPos; i++) {
@@ -522,7 +527,8 @@ void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length, in
 				}
 			}
 		}
-		if (options.foldCommentExplicit && ((styler.StyleAt(i) == SCE_B_COMMENT) || options.foldExplicitAnywhere)) {
+		if (options.foldCommentExplicit && ((styler.StyleAt(i) == SCE_B_COMMENT) ||
+											options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
  					level |= SC_FOLDLEVELHEADERFLAG;
@@ -558,8 +564,11 @@ void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length, in
 	}
 }
 
-LexerModule lmBlitzBasic(SCLEX_BLITZBASIC, LexerBasic::LexerFactoryBlitzBasic, "blitzbasic", blitzbasicWordListDesc);
+LexerModule lmBlitzBasic(SCLEX_BLITZBASIC, LexerBasic::LexerFactoryBlitzBasic,
+						 "blitzbasic", blitzbasicWordListDesc);
 
-LexerModule lmPureBasic(SCLEX_PUREBASIC, LexerBasic::LexerFactoryPureBasic, "purebasic", purebasicWordListDesc);
+LexerModule lmPureBasic(SCLEX_PUREBASIC, LexerBasic::LexerFactoryPureBasic,
+						"purebasic", purebasicWordListDesc);
 
-LexerModule lmFreeBasic(SCLEX_FREEBASIC, LexerBasic::LexerFactoryFreeBasic, "freebasic", freebasicWordListDesc);
+LexerModule lmFreeBasic(SCLEX_FREEBASIC, LexerBasic::LexerFactoryFreeBasic,
+						"freebasic", freebasicWordListDesc);

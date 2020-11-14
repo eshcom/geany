@@ -30,8 +30,9 @@ static inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
 }
 
-static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-								   WordList *keywordlists[], Accessor &styler) {
+static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
+								   int initStyle, WordList *keywordlists[],
+								   Accessor &styler) {
 
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
@@ -39,13 +40,13 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 	WordList &keywords4 = *keywordlists[3];
 	WordList &keywords5 = *keywordlists[4];
 	WordList &keywords6 = *keywordlists[5];
-
+	
 	styler.StartAt(startPos);
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward()) {
-
+		
 		if (sc.state == SCE_POWERSHELL_COMMENT) {
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
@@ -113,7 +114,7 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 			if (!IsAWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
-
+				
 				if (keywords.InList(s)) {
 					sc.ChangeState(SCE_POWERSHELL_KEYWORD);
 				} else if (keywords2.InList(s)) {
@@ -128,7 +129,7 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
 			}
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_POWERSHELL_DEFAULT) {
 			if (sc.ch == '#') {
@@ -145,7 +146,8 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 				sc.SetState(SCE_POWERSHELL_HERE_CHARACTER);
 			} else if (sc.ch == '$') {
 				sc.SetState(SCE_POWERSHELL_VARIABLE);
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsADigit(sc.ch) || (sc.ch == '.' &&
+										   IsADigit(sc.chNext))) {
 				sc.SetState(SCE_POWERSHELL_NUMBER);
 			} else if (isoperator(static_cast<char>(sc.ch))) {
 				sc.SetState(SCE_POWERSHELL_OPERATOR);
@@ -197,9 +199,11 @@ static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 				levelNext--;
 			}
 		} else if (foldComment && style == SCE_POWERSHELL_COMMENTSTREAM) {
-			if (stylePrev != SCE_POWERSHELL_COMMENTSTREAM && stylePrev != SCE_POWERSHELL_COMMENTDOCKEYWORD) {
+			if (stylePrev != SCE_POWERSHELL_COMMENTSTREAM &&
+				stylePrev != SCE_POWERSHELL_COMMENTDOCKEYWORD) {
 				levelNext++;
-			} else if (styleNext != SCE_POWERSHELL_COMMENTSTREAM && styleNext != SCE_POWERSHELL_COMMENTDOCKEYWORD) {
+			} else if (styleNext != SCE_POWERSHELL_COMMENTSTREAM &&
+					   styleNext != SCE_POWERSHELL_COMMENTDOCKEYWORD) {
 				levelNext--;
 			}
 		} else if (foldComment && style == SCE_POWERSHELL_COMMENT) {
@@ -250,4 +254,3 @@ static const char *const powershellWordLists[] = {
 
 LexerModule lmPowerShell(SCLEX_POWERSHELL, ColourisePowerShellDoc, "powershell",
 						 FoldPowerShellDoc, powershellWordLists);
-

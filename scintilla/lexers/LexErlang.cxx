@@ -73,8 +73,9 @@ static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
 
-static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-							   WordList *keywordlists[], Accessor &styler) {
+static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, WordList *keywordlists[],
+							   Accessor &styler) {
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	WordList &reservedWords = *keywordlists[0];
@@ -567,9 +568,8 @@ static void FoldErlangDoc(
 		}
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later
-	styler.SetLevel(currentLine,
-					previousLevel
-					| (styler.LevelAt(currentLine) & ~SC_FOLDLEVELNUMBERMASK));
+	styler.SetLevel(currentLine, previousLevel | (styler.LevelAt(currentLine) &
+												  ~SC_FOLDLEVELNUMBERMASK));
 }
 
 static const char * const erlangWordListDesc[] = {

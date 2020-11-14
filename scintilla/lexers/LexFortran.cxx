@@ -37,7 +37,7 @@ static inline bool IsAWordStart(const int ch) {
 }
 /***************************************/
 static inline bool IsABlank(unsigned int ch) {
-	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b) ;
+	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b);
 }
 /***************************************/
 static Sci_PositionU GetContinuedPos(Sci_PositionU pos, Accessor &styler) {
@@ -53,8 +53,9 @@ static Sci_PositionU GetContinuedPos(Sci_PositionU pos, Accessor &styler) {
 	}
 }
 /***************************************/
-static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-		WordList *keywordlists[], Accessor &styler, bool isFixFormat) {
+static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
+								int initStyle, WordList *keywordlists[],
+								Accessor &styler, bool isFixFormat) {
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];
@@ -85,14 +86,14 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 		if (isFixFormat && (toLineStart < 6 || toLineStart >= 72)) {
 			if ((toLineStart == 0 && (tolower(sc.ch) == 'c' || sc.ch == '*')) || sc.ch == '!') {
 				if (sc.MatchIgnoreCase("cdec$") || sc.MatchIgnoreCase("*dec$") || sc.MatchIgnoreCase("!dec$") ||
-						sc.MatchIgnoreCase("cdir$") || sc.MatchIgnoreCase("*dir$") || sc.MatchIgnoreCase("!dir$") ||
-						sc.MatchIgnoreCase("cms$")  || sc.MatchIgnoreCase("*ms$")  || sc.MatchIgnoreCase("!ms$")  ||
+					sc.MatchIgnoreCase("cdir$") || sc.MatchIgnoreCase("*dir$") || sc.MatchIgnoreCase("!dir$") ||
+					sc.MatchIgnoreCase("cms$")  || sc.MatchIgnoreCase("*ms$")  || sc.MatchIgnoreCase("!ms$")  ||
 						sc.chNext == '$') {
 					sc.SetState(SCE_F_PREPROCESSOR);
 				} else {
 					sc.SetState(SCE_F_COMMENT);
 				}
-
+				
 				while (!sc.atLineEnd && sc.More()) sc.Forward(); // Until line end
 			} else if (toLineStart >= 72) {
 				sc.SetState(SCE_F_COMMENT);
@@ -104,7 +105,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 					sc.SetState(SCE_F_DEFAULT);
 			} else if (toLineStart == 5) {
 				//if (!IsASpace(sc.ch) && sc.ch != '0') {
-				if (sc.ch != '\r' && sc.ch != '\n') {
+				if (!IsACRLF(sc.ch)) {
 					sc.SetState(SCE_F_CONTINUATION);
 					if (!IsASpace(sc.ch) && sc.ch != '0')
 						sc.ForwardSetState(prevState);
@@ -118,7 +119,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 		if (!isFixFormat && sc.ch == '&' && sc.state != SCE_F_COMMENT) {
 			char chTemp = ' ';
 			Sci_Position j = 1;
-			while (IsABlank(chTemp) && j<132) {
+			while (IsABlank(chTemp) && j < 132) {
 				chTemp = static_cast<char>(sc.GetRelative(j));
 				j++;
 			}
@@ -250,18 +251,18 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 	sc.Complete();
 }
 /***************************************/
-static void CheckLevelCommentLine(const unsigned int nComL,
-				  Sci_Position nComColB[], Sci_Position nComColF[], Sci_Position &nComCur,
-				  bool comLineB[], bool comLineF[], bool &comLineCur,
-				  int &levelDeltaNext) {
+static void CheckLevelCommentLine(const unsigned int nComL, Sci_Position nComColB[],
+								  Sci_Position nComColF[], Sci_Position &nComCur,
+								  bool comLineB[], bool comLineF[],
+								  bool &comLineCur, int &levelDeltaNext) {
 	levelDeltaNext = 0;
 	if (!comLineCur) {
 		return;
 	}
-
+	
 	if (!comLineF[0] || nComColF[0] != nComCur) {
-		unsigned int i=0;
-		for (; i<nComL; i++) {
+		unsigned int i = 0;
+		for (; i < nComL; i++) {
 			if (!comLineB[i] || nComColB[i] != nComCur) {
 				break;
 			}
@@ -271,8 +272,8 @@ static void CheckLevelCommentLine(const unsigned int nComL,
 		}
 	}
 	else if (!comLineB[0] || nComColB[0] != nComCur) {
-		unsigned int i=0;
-		for (; i<nComL; i++) {
+		unsigned int i = 0;
+		for (; i < nComL; i++) {
 			if (!comLineF[i] || nComColF[i] != nComCur) {
 				break;
 			}
@@ -283,14 +284,17 @@ static void CheckLevelCommentLine(const unsigned int nComL,
 	}
 }
 /***************************************/
-static void GetIfLineComment(Accessor &styler, bool isFixFormat, const Sci_Position line, bool &isComLine, Sci_Position &comCol) {
+static void GetIfLineComment(Accessor &styler, bool isFixFormat,
+							 const Sci_Position line, bool &isComLine,
+							 Sci_Position &comCol) {
 	Sci_Position col = 0;
 	isComLine = false;
 	Sci_Position pos = styler.LineStart(line);
 	Sci_Position len = styler.Length();
-	while(pos<len) {
+	while (pos < len) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (ch == '!' || (isFixFormat && col == 0 && (tolower(ch) == 'c' || ch == '*'))) {
+		if (ch == '!' || (isFixFormat && col == 0 &&
+			(tolower(ch) == 'c' || ch == '*'))) {
 			isComLine = true;
 			comCol = col;
 			break;
@@ -303,15 +307,16 @@ static void GetIfLineComment(Accessor &styler, bool isFixFormat, const Sci_Posit
 	}
 }
 /***************************************/
-static void StepCommentLine(Accessor &styler, bool isFixFormat, Sci_Position lineCurrent, const unsigned int nComL,
-				  Sci_Position nComColB[], Sci_Position nComColF[], Sci_Position &nComCur,
-				  bool comLineB[], bool comLineF[], bool &comLineCur) {
-	Sci_Position nLineTotal = styler.GetLine(styler.Length()-1) + 1;
+static void StepCommentLine(Accessor &styler, bool isFixFormat, Sci_Position lineCurrent,
+							const unsigned int nComL, Sci_Position nComColB[],
+							Sci_Position nComColF[], Sci_Position &nComCur,
+							bool comLineB[], bool comLineF[], bool &comLineCur) {
+	Sci_Position nLineTotal = styler.GetLine(styler.Length() - 1) + 1;
 	if (lineCurrent >= nLineTotal) {
 		return;
 	}
 
-	for (int i=nComL-2; i>=0; i--) {
+	for (int i = nComL - 2; i >= 0; i--) {
 		nComColB[i+1] = nComColB[i];
 		comLineB[i+1] = comLineB[i];
 	}
@@ -319,29 +324,31 @@ static void StepCommentLine(Accessor &styler, bool isFixFormat, Sci_Position lin
 	comLineB[0] = comLineCur;
 	nComCur = nComColF[0];
 	comLineCur = comLineF[0];
-	for (unsigned int i=0; i+1<nComL; i++) {
+	for (unsigned int i = 0; i + 1 < nComL; i++) {
 		nComColF[i] = nComColF[i+1];
 		comLineF[i] = comLineF[i+1];
 	}
 	Sci_Position chL = lineCurrent + nComL;
 	if (chL < nLineTotal) {
-		GetIfLineComment(styler, isFixFormat, chL, comLineF[nComL-1], nComColF[nComL-1]);
+		GetIfLineComment(styler, isFixFormat, chL,
+						 comLineF[nComL - 1], nComColF[nComL - 1]);
 	}
 	else {
 		comLineF[nComL-1] = false;
 	}
 }
 /***************************************/
-static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position lineCurrent, const unsigned int nComL,
-				  Sci_Position nComColB[], Sci_Position nComColF[], Sci_Position nComCur,
-				  bool comLineB[], bool comLineF[], bool &comLineCur) {
+static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position lineCurrent,
+							  const unsigned int nComL, Sci_Position nComColB[],
+							  Sci_Position nComColF[], Sci_Position nComCur,
+							  bool comLineB[], bool comLineF[], bool &comLineCur) {
 	unsigned int nLines = nComL + nComL + 1;
 	bool* comL = new bool[nLines];
 	Sci_Position* nComCol = new Sci_Position[nLines];
 	bool comL0;
 	Sci_Position nComCol0;
-	GetIfLineComment(styler, isFixFormat, lineCurrent-nComL-1, comL0, nComCol0);
-	for (unsigned int i=0; i<nComL; i++) {
+	GetIfLineComment(styler, isFixFormat, lineCurrent - nComL - 1, comL0, nComCol0);
+	for (unsigned int i=0; i < nComL; i++) {
 		unsigned copyTo = nComL - i - 1;
 		comL[copyTo]    = comLineB[i];
 		nComCol[copyTo] = nComColB[i];
@@ -349,7 +356,7 @@ static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position l
 	assert(nComL < nLines);
 	comL[nComL] = comLineCur;
 	nComCol[nComL] = nComCur;
-	for (unsigned int i=0; i<nComL; i++) {
+	for (unsigned int i=0; i < nComL; i++) {
 		unsigned copyTo = i + nComL + 1;
 		comL[copyTo]    = comLineF[i];
 		nComCol[copyTo] = nComColF[i];
@@ -367,11 +374,11 @@ static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position l
 	bool levChanged = false;
 	int lev = styler.LevelAt(lineC) & SC_FOLDLEVELNUMBERMASK;
 	
-	for (Sci_PositionU i=iStart; i<=nComL; i++) {
-		if (comL[i] && (!comL[i-1] || nComCol[i] != nComCol[i-1])) {
+	for (Sci_PositionU i = iStart; i <= nComL; i++) {
+		if (comL[i] && (!comL[i - 1] || nComCol[i] != nComCol[i - 1])) {
 			bool increase = true;
 			Sci_PositionU until = i + nComL;
-			for (Sci_PositionU j=i+1; j<=until; j++) {
+			for (Sci_PositionU j = i + 1; j <= until; j++) {
 				if (!comL[j] || nComCol[j] != nComCol[i]) {
 					increase = false;
 					break;
@@ -384,7 +391,7 @@ static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position l
 				if (levH != styler.LevelAt(lineC)) {
 					styler.SetLevel(lineC, levH);
 				}
-				for (Sci_Position j=lineC+1; j<=lineCurrent; j++) {
+				for (Sci_Position j = lineC + 1; j <= lineCurrent; j++) {
 					if (lev != styler.LevelAt(j)) {
 						styler.SetLevel(j, lev);
 					}
@@ -424,7 +431,7 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 			|| strcmp(s, "module") == 0 || strcmp(s, "program") == 0
 			|| strcmp(s, "subroutine") == 0 || strcmp(s, "then") == 0
 			|| (strcmp(s, "type") == 0 && chNextNonBlank != '(')
-		|| strcmp(s, "critical") == 0 || strcmp(s, "submodule") == 0){
+			|| strcmp(s, "critical") == 0 || strcmp(s, "submodule") == 0) {
 		if (strcmp(prevWord, "end") == 0)
 			lev = 0;
 		else
@@ -438,26 +445,26 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 			|| strcmp(s, "endmodule") == 0 || strcmp(s, "endprogram") == 0
 			|| strcmp(s, "endsubroutine") == 0 || strcmp(s, "endtype") == 0
 			|| strcmp(s, "endwhere") == 0 || strcmp(s, "endcritical") == 0
-		|| (strcmp(prevWord, "module") == 0 && strcmp(s, "procedure") == 0)  // Take care of the "module procedure" statement
-		|| strcmp(s, "endsubmodule") == 0 || strcmp(s, "endteam") == 0) {
+			|| (strcmp(prevWord, "module") == 0 && strcmp(s, "procedure") == 0)  // Take care of the "module procedure" statement
+			|| strcmp(s, "endsubmodule") == 0 || strcmp(s, "endteam") == 0) {
 		lev = -1;
-	} else if (strcmp(prevWord, "end") == 0 && strcmp(s, "if") == 0){ // end if
+	} else if (strcmp(prevWord, "end") == 0 && strcmp(s, "if") == 0) { // end if
 		lev = 0;
-	} else if (strcmp(prevWord, "type") == 0 && strcmp(s, "is") == 0){ // type is
+	} else if (strcmp(prevWord, "type") == 0 && strcmp(s, "is") == 0) { // type is
 		lev = -1;
 	} else if ((strcmp(prevWord, "end") == 0 && strcmp(s, "procedure") == 0)
 			   || strcmp(s, "endprocedure") == 0) {
 			lev = 1; // level back to 0, because no folding support for "module procedure" in submodule
-	} else if (strcmp(prevWord, "change") == 0 && strcmp(s, "team") == 0){ // change team
+	} else if (strcmp(prevWord, "change") == 0 && strcmp(s, "team") == 0) { // change team
 		lev = 1;
 	}
 	return lev;
 }
 /***************************************/
 // Folding the code
-static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-		Accessor &styler, bool isFixFormat) {
-
+static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
+						   int initStyle, Accessor &styler, bool isFixFormat) {
+	
 	bool foldComment = styler.GetPropertyInt("fold.comment", 1) != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	Sci_PositionU endPos = startPos + length;
@@ -475,7 +482,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 	int styleNext = styler.StyleAt(startPos);
 	int style = initStyle;
 	int levelDeltaNext = 0;
-
+	
 	const unsigned int nComL = 3; // defines how many comment lines should be before they are folded
 	Sci_Position nComColB[nComL] = {};
 	Sci_Position nComColF[nComL] = {};
@@ -483,36 +490,38 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 	bool comLineB[nComL] = {};
 	bool comLineF[nComL] = {};
 	bool comLineCur;
-	Sci_Position nLineTotal = styler.GetLine(styler.Length()-1) + 1;
+	Sci_Position nLineTotal = styler.GetLine(styler.Length() - 1) + 1;
 	if (foldComment) {
-		for (unsigned int i=0; i<nComL; i++) {
-			Sci_Position chL = lineCurrent-(i+1);
+		for (unsigned int i = 0; i<nComL; i++) {
+			Sci_Position chL = lineCurrent-(i + 1);
 			if (chL < 0) {
 				comLineB[i] = false;
 				break;
 			}
 			GetIfLineComment(styler, isFixFormat, chL, comLineB[i], nComColB[i]);
 			if (!comLineB[i]) {
-				for (unsigned int j=i+1; j<nComL; j++) {
+				for (unsigned int j = i + 1; j < nComL; j++) {
 					comLineB[j] = false;
 				}
 				break;
 			}
 		}
-		for (unsigned int i=0; i<nComL; i++) {
-			Sci_Position chL = lineCurrent+i+1;
+		for (unsigned int i = 0; i < nComL; i++) {
+			Sci_Position chL = lineCurrent + i + 1;
 			if (chL >= nLineTotal) {
 				comLineF[i] = false;
 				break;
 			}
 			GetIfLineComment(styler, isFixFormat, chL, comLineF[i], nComColF[i]);
 		}
-		GetIfLineComment(styler, isFixFormat, lineCurrent, comLineCur, nComCur);
-		CheckBackComLines(styler, isFixFormat, lineCurrent, nComL, nComColB, nComColF, nComCur, 
-				comLineB, comLineF, comLineCur);
+		GetIfLineComment(styler, isFixFormat, lineCurrent,
+						 comLineCur, nComCur);
+		CheckBackComLines(styler, isFixFormat, lineCurrent,
+						  nComL, nComColB, nComColF, nComCur, 
+						  comLineB, comLineF, comLineCur);
 	}
 	int levelCurrent = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
-
+	
 	/***************************************/
 	Sci_Position lastStart = 0;
 	char prevWord[32] = "";
@@ -525,9 +534,9 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 		if (IsACRLF(chNextNonBlank)) {
 			nextEOL = true;
 		}
-		Sci_PositionU j=i+1;
-		while(IsABlank(chNextNonBlank) && j<endPos) {
-			j ++ ;
+		Sci_PositionU j = i + 1;
+		while (IsABlank(chNextNonBlank) && j < endPos) {
+			j++;
 			chNextNonBlank = styler.SafeGetCharAt(j);
 			if (IsACRLF(chNextNonBlank)) {
 				nextEOL = true;
@@ -548,20 +557,21 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 		}
 		/***************************************/
 		if (style == SCE_F_WORD) {
-			if(iswordchar(ch) && !iswordchar(chNext)) {
+			if (iswordchar(ch) && !iswordchar(chNext)) {
 				char s[32];
 				Sci_PositionU k;
-				for(k=0; (k<31 ) && (k<i-lastStart+1 ); k++) {
-					s[k] = static_cast<char>(tolower(styler[lastStart+k]));
+				for (k = 0; (k < 31) && (k < i - lastStart + 1); k++) {
+					s[k] = static_cast<char>(tolower(styler[lastStart + k]));
 				}
 				s[k] = '\0';
 				// Handle the forall and where statement and structure.
-				if (strcmp(s, "forall") == 0 || (strcmp(s, "where") == 0 && strcmp(prevWord, "else") != 0)) {
+				if (strcmp(s, "forall") == 0 || (strcmp(s, "where") == 0 &&
+												 strcmp(prevWord, "else") != 0)) {
 					if (strcmp(prevWord, "end") != 0) {
 						j = i + 1;
 						char chBrace = '(', chSeek = ')', ch1 = styler.SafeGetCharAt(j);
 						// Find the position of the first (
-						while (ch1 != chBrace && j<endPos) {
+						while (ch1 != chBrace && j < endPos) {
 							j++;
 							ch1 = styler.SafeGetCharAt(j);
 						}
@@ -569,7 +579,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 						int depth = 1;
 						char chAtPos;
 						char styAtPos;
-						while (j<endPos) {
+						while (j < endPos) {
 							j++;
 							chAtPos = styler.SafeGetCharAt(j);
 							styAtPos = styler.StyleAt(j);
@@ -580,20 +590,22 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 							}
 						}
 						Sci_Position tmpLineCurrent = lineCurrent;
-						while (j<endPos) {
+						while (j < endPos) {
 							j++;
 							chAtPos = styler.SafeGetCharAt(j);
 							styAtPos = styler.StyleAt(j);
-							if (!IsACRLF(chAtPos) && (styAtPos == SCE_F_COMMENT || IsABlank(chAtPos))) continue;
+							if (!IsACRLF(chAtPos) && (styAtPos == SCE_F_COMMENT ||
+													  IsABlank(chAtPos))) continue;
 							if (isFixFormat) {
 								if (!IsACRLF(chAtPos)) {
 									break;
 								} else {
-									if (tmpLineCurrent < styler.GetLine(styler.Length()-1)) {
+									if (tmpLineCurrent < styler.GetLine(styler.Length() - 1)) {
 										tmpLineCurrent++;
 										j = styler.LineStart(tmpLineCurrent);
-										if (styler.StyleAt(j+5) == SCE_F_CONTINUATION
-											&& !IsABlank(styler.SafeGetCharAt(j+5)) && styler.SafeGetCharAt(j+5) != '0') {
+										if (styler.StyleAt(j + 5) == SCE_F_CONTINUATION
+											&& !IsABlank(styler.SafeGetCharAt(j + 5))
+											&& styler.SafeGetCharAt(j + 5) != '0') {
 											j += 5;
 											continue;
 										} else {
@@ -604,7 +616,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 								}
 							} else {
 								if (chAtPos == '&' && styler.StyleAt(j) == SCE_F_CONTINUATION) {
-									j = GetContinuedPos(j+1, styler);
+									j = GetContinuedPos(j + 1, styler);
 									continue;
 								} else if (IsACRLF(chAtPos)) {
 									levelDeltaNext++;
@@ -619,30 +631,36 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 					int wordLevelDelta = classifyFoldPointFortran(s, prevWord, chNextNonBlank);
 					levelDeltaNext += wordLevelDelta;
 					if (((strcmp(s, "else") == 0) && (nextEOL || chNextNonBlank == '!')) ||
-						(strcmp(prevWord, "else") == 0 && strcmp(s, "where") == 0) || strcmp(s, "elsewhere") == 0) {
+							(strcmp(prevWord, "else") == 0 && strcmp(s, "where") == 0) ||
+							strcmp(s, "elsewhere") == 0) {
 						if (!isPrevLine) {
 							levelCurrent--;
 						}
 						levelDeltaNext++;
-					} else if ((strcmp(prevWord, "else") == 0 && strcmp(s, "if") == 0) || strcmp(s, "elseif") == 0) {
+					} else if ((strcmp(prevWord, "else") == 0 && strcmp(s, "if") == 0) ||
+							   strcmp(s, "elseif") == 0) {
 						if (!isPrevLine) {
 							levelCurrent--;
 						}
-					} else if ((strcmp(prevWord, "select") == 0 && strcmp(s, "case") == 0) || strcmp(s, "selectcase") == 0 ||
-							   (strcmp(prevWord, "select") == 0 && strcmp(s, "type") == 0) || strcmp(s, "selecttype") == 0) {
+					} else if ((strcmp(prevWord, "select") == 0 && strcmp(s, "case") == 0) ||
+							   strcmp(s, "selectcase") == 0 ||
+							   (strcmp(prevWord, "select") == 0 && strcmp(s, "type") == 0) ||
+							   strcmp(s, "selecttype") == 0) {
 						levelDeltaNext += 2;
-					} else if ((strcmp(s, "case") == 0 && chNextNonBlank == '(') || (strcmp(prevWord, "case") == 0 && strcmp(s, "default") == 0) ||
+					} else if ((strcmp(s, "case") == 0 && chNextNonBlank == '(') ||
+							   (strcmp(prevWord, "case") == 0 && strcmp(s, "default") == 0) ||
 							   (strcmp(prevWord, "type") == 0 && strcmp(s, "is") == 0) ||
 							   (strcmp(prevWord, "class") == 0 && strcmp(s, "is") == 0) ||
-							   (strcmp(prevWord, "class") == 0 && strcmp(s, "default") == 0) ) {
+							   (strcmp(prevWord, "class") == 0 && strcmp(s, "default") == 0)) {
 						if (!isPrevLine) {
 							levelCurrent--;
 						}
 						levelDeltaNext++;
-					} else if ((strcmp(prevWord, "end") == 0 && strcmp(s, "select") == 0) || strcmp(s, "endselect") == 0) {
+					} else if ((strcmp(prevWord, "end") == 0 && strcmp(s, "select") == 0) ||
+							   strcmp(s, "endselect") == 0) {
 						levelDeltaNext -= 2;
 					}
-
+					
 					// There are multiple forms of "do" loop. The older form with a label "do 100 i=1,10" would require matching
 					// labels to ensure the folding level does not decrease too far when labels are used for other purposes.
 					// Since this is difficult, do-label constructs are not folded.
@@ -657,7 +675,8 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 		if (atEOL) {
 			if (foldComment) {
 				int ldNext;
-				CheckLevelCommentLine(nComL, nComColB, nComColF, nComCur, comLineB, comLineF, comLineCur, ldNext);
+				CheckLevelCommentLine(nComL, nComColB, nComColF, nComCur,
+									  comLineB, comLineF, comLineCur, ldNext);
 				levelDeltaNext += ldNext;
 			}
 			int lev = levelCurrent;
@@ -667,17 +686,17 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 				lev |= SC_FOLDLEVELHEADERFLAG;
 			if (lev != styler.LevelAt(lineCurrent))
 				styler.SetLevel(lineCurrent, lev);
-
+			
 			lineCurrent++;
 			levelCurrent += levelDeltaNext;
 			levelDeltaNext = 0;
 			visibleChars = 0;
 			strcpy(prevWord, "");
 			isPrevLine = false;
-
+			
 			if (foldComment) {
-				StepCommentLine(styler, isFixFormat, lineCurrent, nComL, nComColB, nComColF, nComCur,
-						comLineB, comLineF, comLineCur);
+				StepCommentLine(styler, isFixFormat, lineCurrent, nComL, nComColB,
+								nComColF, nComCur, comLineB, comLineF, comLineCur);
 			}
 		}
 		/***************************************/
@@ -693,25 +712,29 @@ static const char * const FortranWordLists[] = {
 	0,
 };
 /***************************************/
-static void ColouriseFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
+static void ColouriseFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length,
+										  int initStyle, WordList *keywordlists[],
 		Accessor &styler) {
 	ColouriseFortranDoc(startPos, length, initStyle, keywordlists, styler, false);
 }
 /***************************************/
-static void ColouriseFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
+static void ColouriseFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length,
+										 int initStyle, WordList *keywordlists[],
 		Accessor &styler) {
 	ColouriseFortranDoc(startPos, length, initStyle, keywordlists, styler, true);
 }
 /***************************************/
-static void FoldFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length, int initStyle,
-		WordList *[], Accessor &styler) {
+static void FoldFortranDocFreeFormat(Sci_PositionU startPos, Sci_Position length,
+									 int initStyle, WordList *[], Accessor &styler) {
 	FoldFortranDoc(startPos, length, initStyle,styler, false);
 }
 /***************************************/
-static void FoldFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length, int initStyle,
-		WordList *[], Accessor &styler) {
+static void FoldFortranDocFixFormat(Sci_PositionU startPos, Sci_Position length,
+									int initStyle, WordList *[], Accessor &styler) {
 	FoldFortranDoc(startPos, length, initStyle,styler, true);
 }
 /***************************************/
-LexerModule lmFortran(SCLEX_FORTRAN, ColouriseFortranDocFreeFormat, "fortran", FoldFortranDocFreeFormat, FortranWordLists);
-LexerModule lmF77(SCLEX_F77, ColouriseFortranDocFixFormat, "f77", FoldFortranDocFixFormat, FortranWordLists);
+LexerModule lmFortran(SCLEX_FORTRAN, ColouriseFortranDocFreeFormat,
+					  "fortran", FoldFortranDocFreeFormat, FortranWordLists);
+LexerModule lmF77(SCLEX_F77, ColouriseFortranDocFixFormat, "f77",
+				  FoldFortranDocFixFormat, FortranWordLists);

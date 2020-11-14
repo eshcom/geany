@@ -529,7 +529,8 @@ static void ResumeBlockComment(Accessor &styler, Sci_Position& pos,
 			pos++;
 		}
 		if (pos >= max) {
-			if (state == DocComment || (state == UnknownComment && maybe_doc_comment))
+			if (state == DocComment || (state == UnknownComment &&
+										maybe_doc_comment))
 				styler.ColourTo(pos - 1, SCE_RUST_COMMENTBLOCKDOC);
 			else
 				styler.ColourTo(pos - 1, SCE_RUST_COMMENTBLOCK);
@@ -566,7 +567,8 @@ static void ResumeLineComment(Accessor &styler, Sci_Position& pos,
 		c = styler.SafeGetCharAt(pos, '\0');
 	}
 	
-	if (state == DocComment || (state == UnknownComment && maybe_doc_comment))
+	if (state == DocComment || (state == UnknownComment &&
+								maybe_doc_comment))
 		styler.ColourTo(pos - 1, SCE_RUST_COMMENTLINEDOC);
 	else
 		styler.ColourTo(pos - 1, SCE_RUST_COMMENTLINE);
@@ -632,7 +634,8 @@ static void ResumeString(Accessor &styler, Sci_Position& pos,
 	}
 	if (!error)
 		pos++;
-	styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTESTRING : SCE_RUST_STRING);
+	styler.ColourTo(pos - 1, ascii_only ? SCE_RUST_BYTESTRING :
+										  SCE_RUST_STRING);
 }
 
 static void ResumeRawString(Accessor &styler, Sci_Position& pos,
@@ -645,7 +648,8 @@ static void ResumeRawString(Accessor &styler, Sci_Position& pos,
 		if (c == '"') {
 			pos++;
 			int trailing_num_hashes = 0;
-			while (styler.SafeGetCharAt(pos, '\0') == '#' && trailing_num_hashes < num_hashes) {
+			while (styler.SafeGetCharAt(pos, '\0') == '#' &&
+				   trailing_num_hashes < num_hashes) {
 				trailing_num_hashes++;
 				pos++;
 			}
@@ -691,12 +695,14 @@ void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length,
 	styler.StartAt(pos);
 	styler.StartSegment(pos);
 	
-	if (initStyle == SCE_RUST_COMMENTBLOCK || initStyle == SCE_RUST_COMMENTBLOCKDOC) {
+	if (initStyle == SCE_RUST_COMMENTBLOCK ||
+			initStyle == SCE_RUST_COMMENTBLOCKDOC) {
 		ResumeBlockComment(styler, pos, max,
 						   initStyle == SCE_RUST_COMMENTBLOCKDOC ? DocComment :
 																   NotDocComment,
 						   styler.GetLineState(styler.GetLine(pos) - 1));
-	} else if (initStyle == SCE_RUST_COMMENTLINE || initStyle == SCE_RUST_COMMENTLINEDOC) {
+	} else if (initStyle == SCE_RUST_COMMENTLINE ||
+			   initStyle == SCE_RUST_COMMENTLINEDOC) {
 		ResumeLineComment(styler, pos, max,
 						  initStyle == SCE_RUST_COMMENTLINEDOC ? DocComment :
 																 NotDocComment);

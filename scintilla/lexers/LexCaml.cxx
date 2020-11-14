@@ -61,7 +61,7 @@ using namespace Scintilla;
 #include "ExternalLexer.h"
 
 #undef EXT_LEXER_DECL
-#define EXT_LEXER_DECL __declspec( dllexport ) __stdcall
+#define EXT_LEXER_DECL __declspec(dllexport) __stdcall
 
 #if PLAT_WIN
 #include <windows.h>
@@ -79,8 +79,9 @@ static void FoldCamlDoc(
 	WordList *keywordlists[],
 	Accessor &styler);
 
-static void InternalLexOrFold(int lexOrFold, Sci_PositionU startPos, Sci_Position length,
-	int initStyle, char *words[], WindowID window, char *props);
+static void InternalLexOrFold(int lexOrFold, Sci_PositionU startPos,
+							  Sci_Position length, int initStyle,
+							  char *words[], WindowID window, char *props);
 
 static const char* LexerName = "caml";
 
@@ -102,23 +103,25 @@ bool Platform::IsDBCSLeadByte(int codePage, char ch) {
 	return ::IsDBCSLeadByteEx(codePage, ch) != 0;
 }
 
-long Platform::SendScintilla(WindowID w, unsigned int msg, unsigned long wParam, long lParam) {
+long Platform::SendScintilla(WindowID w, unsigned int msg,
+							 unsigned long wParam, long lParam) {
 	return ::SendMessage(reinterpret_cast<HWND>(w), msg, wParam, lParam);
 }
 
-long Platform::SendScintillaPointer(WindowID w, unsigned int msg, unsigned long wParam, void *lParam) {
+long Platform::SendScintillaPointer(WindowID w, unsigned int msg,
+									unsigned long wParam, void *lParam) {
 	return ::SendMessage(reinterpret_cast<HWND>(w), msg, wParam,
 		reinterpret_cast<LPARAM>(lParam));
 }
 
-void EXT_LEXER_DECL Fold(unsigned int lexer, Sci_PositionU startPos, Sci_Position length,
-	int initStyle, char *words[], WindowID window, char *props)
+void EXT_LEXER_DECL Fold(unsigned int lexer, Sci_PositionU startPos,
+						 Sci_Position length, int initStyle,
+						 char *words[], WindowID window, char *props)
 {
 	// below useless evaluation(s) to supress "not used" warnings
 	lexer;
 	// build expected data structures and do the Fold
 	InternalLexOrFold(1, startPos, length, initStyle, words, window, props);
-
 }
 
 int EXT_LEXER_DECL GetLexerCount()
@@ -140,8 +143,9 @@ void EXT_LEXER_DECL GetLexerName(unsigned int Index, char *name, int buflength)
 	}
 }
 
-void EXT_LEXER_DECL Lex(unsigned int lexer, Sci_PositionU startPos, Sci_Position length,
-	int initStyle, char *words[], WindowID window, char *props)
+void EXT_LEXER_DECL Lex(unsigned int lexer, Sci_PositionU startPos,
+						Sci_Position length, int initStyle,
+						char *words[], WindowID window, char *props)
 {
 	// below useless evaluation(s) to supress "not used" warnings
 	lexer;
@@ -149,8 +153,9 @@ void EXT_LEXER_DECL Lex(unsigned int lexer, Sci_PositionU startPos, Sci_Position
 	InternalLexOrFold(0, startPos, length, initStyle, words, window, props);
 }
 
-static void InternalLexOrFold(int foldOrLex, Sci_PositionU startPos, Sci_Position length,
-	int initStyle, char *words[], WindowID window, char *props)
+static void InternalLexOrFold(int foldOrLex, Sci_PositionU startPos,
+							  Sci_Position length, int initStyle,
+							  char *words[], WindowID window, char *props)
 {
 	// create and initialize a WindowAccessor (including contained PropSet)
 	PropSetSimple ps;
@@ -189,7 +194,7 @@ void ColouriseCamlDoc(
 {
 	// initialize styler
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	Sci_PositionU chToken = 0;
 	int chBase = 0, chLit = 0;
 	WordList& keywords  = *keywordlists[0];
@@ -197,21 +202,21 @@ void ColouriseCamlDoc(
 	WordList& keywords3 = *keywordlists[2];
 	const bool isSML = keywords.InList("andalso");
 	const int useMagic = styler.GetPropertyInt("lexer.caml.magic", 0);
-
+	
 	// set up [initial] state info (terminating states that shouldn't "bleed")
 	const int state_ = sc.state & 0x0f;
 	if (state_ <= SCE_CAML_CHAR
 		|| (isSML && state_ == SCE_CAML_STRING))
 		sc.state = SCE_CAML_DEFAULT;
 	int nesting = (state_ >= SCE_CAML_COMMENT)? (state_ - SCE_CAML_COMMENT): 0;
-
+	
 	// foreach char in range...
 	while (sc.More()) {
 		// set up [per-char] state info
 		int state2 = -1;				// (ASSUME no state change)
 		Sci_Position chColor = sc.currentPos - 1;// (ASSUME standard coloring range)
 		bool advance = true;			// (ASSUME scanner "eats" 1 char)
-
+		
 		// step state machine
 		switch (sc.state & 0x0f) {
 		case SCE_CAML_DEFAULT:
@@ -253,7 +258,7 @@ void ColouriseCamlDoc(
 				|| (isSML && (sc.Match('\\') || sc.Match('`'))))
 				state2 = SCE_CAML_OPERATOR;
 			break;
-
+		
 		case SCE_CAML_IDENTIFIER:
 			// [try to] interpret as [additional] identifier char
 			if (!(iscaml(sc.ch) || sc.Match('\''))) {
@@ -275,13 +280,13 @@ void ColouriseCamlDoc(
 				state2 = SCE_CAML_DEFAULT, advance = false;
 			}
 			break;
-
+		
 		case SCE_CAML_TAGNAME:
 			// [try to] interpret as [additional] tagname char
 			if (!(iscaml(sc.ch) || sc.Match('\'')))
 				state2 = SCE_CAML_DEFAULT, advance = false;
 			break;
-
+		
 		/*case SCE_CAML_KEYWORD:
 		case SCE_CAML_KEYWORD2:
 		case SCE_CAML_KEYWORD3:
@@ -289,13 +294,13 @@ void ColouriseCamlDoc(
 			if (!iscaml(ch))
 				state2 = SCE_CAML_DEFAULT, advance = false;
 			break;*/
-
+		
 		case SCE_CAML_LINENUM:
 			// [try to] interpret as [additional] linenum directive char
 			if (!isdigit(sc.ch))
 				state2 = SCE_CAML_DEFAULT, advance = false;
 			break;
-
+		
 		case SCE_CAML_OPERATOR: {
 			// [try to] interpret as [additional] operator char
 			const char* o = 0;
@@ -318,7 +323,7 @@ void ColouriseCamlDoc(
 			}
 			break;
 		}
-
+		
 		case SCE_CAML_NUMBER:
 			// [try to] interpret as [additional] numeric literal char
 			if ((!isSML && sc.Match('_')) || IsADigit(sc.ch, chBase))
@@ -348,7 +353,7 @@ void ColouriseCamlDoc(
 			// it looks like we have run out of number
 			state2 = SCE_CAML_DEFAULT, advance = false;
 			break;
-
+		
 		case SCE_CAML_CHAR:
 			if (!isSML) {
 				// [try to] interpret as [additional] char literal char
@@ -371,7 +376,7 @@ void ColouriseCamlDoc(
 			}/* else
 				// fall through for SML char literal (handle like string) */
 			// Falls through.
-
+		
 		case SCE_CAML_STRING:
 			// [try to] interpret as [additional] [SML char/] string literal char
 			if (isSML && sc.Match('\\') && sc.chPrev != '\\' && isspace(sc.chNext))
@@ -386,7 +391,7 @@ void ColouriseCamlDoc(
 					chColor++;
 			}
 			break;
-
+		
 		case SCE_CAML_WHITE:
 			// [try to] interpret as [additional] SML embedded whitespace char
 			if (sc.Match('\\')) {
@@ -402,7 +407,7 @@ void ColouriseCamlDoc(
 				sc.ChangeState(state2), state2 = -1;
 			}
 			break;
-
+		
 		case SCE_CAML_COMMENT:
 		case SCE_CAML_COMMENT1:
 		case SCE_CAML_COMMENT2:
@@ -424,7 +429,7 @@ void ColouriseCamlDoc(
 				sc.state |= 0x10;	// (switch to read-only comment style)
 			break;
 		}
-
+		
 		// handle state change and char coloring AS REQUIRED
 		if (state2 >= 0)
 			styler.ColourTo(chColor, sc.state), sc.ChangeState(state2);
@@ -432,7 +437,6 @@ void ColouriseCamlDoc(
 		if (advance)
 			sc.Forward();
 	}
-
 	// do any required terminal char coloring (JIC)
 	sc.Complete();
 }
@@ -445,8 +449,7 @@ void FoldCamlDoc(
 	int,
 	WordList *[],
 	Accessor &)
-{
-}
+{}
 
 static const char * const camlWordListDesc[] = {
 	"Keywords",		// primary Objective Caml keywords
@@ -456,5 +459,6 @@ static const char * const camlWordListDesc[] = {
 };
 
 #ifndef BUILD_AS_EXTERNAL_LEXER
-LexerModule lmCaml(SCLEX_CAML, ColouriseCamlDoc, "caml", FoldCamlDoc, camlWordListDesc);
+LexerModule lmCaml(SCLEX_CAML, ColouriseCamlDoc, "caml",
+				   FoldCamlDoc, camlWordListDesc);
 #endif	/* BUILD_AS_EXTERNAL_LEXER */

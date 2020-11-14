@@ -74,7 +74,8 @@ using namespace Scintilla;
 // we also assume SCE_PL_STRING_VAR is the interpolated style with the smallest value
 #define	INTERPOLATE_SHIFT	(SCE_PL_STRING_VAR - SCE_PL_STRING)
 
-static bool isPerlKeyword(Sci_PositionU start, Sci_PositionU end, WordList &keywords, LexAccessor &styler) {
+static bool isPerlKeyword(Sci_PositionU start, Sci_PositionU end,
+						  WordList &keywords, LexAccessor &styler) {
 	// old-style keyword matcher; needed because GetCurrent() needs
 	// current segment to be committed, but we may abandon early...
 	char s[100];
@@ -85,8 +86,9 @@ static bool isPerlKeyword(Sci_PositionU start, Sci_PositionU end, WordList &keyw
 	return keywords.InList(s);
 }
 
-static int disambiguateBareword(LexAccessor &styler, Sci_PositionU bk, Sci_PositionU fw,
-		int backFlag, Sci_PositionU backPos, Sci_PositionU endPos) {
+static int disambiguateBareword(LexAccessor &styler, Sci_PositionU bk,
+								Sci_PositionU fw, int backFlag,
+								Sci_PositionU backPos, Sci_PositionU endPos) {
 	// identifiers are recognized by Perl as barewords under some
 	// conditions, the following attempts to do the disambiguation
 	// by looking backward and forward; result in 2 LSB
@@ -213,7 +215,8 @@ static int styleCheckIdentifier(LexAccessor &styler, Sci_PositionU bk) {
 	return 0;
 }
 
-static int podLineScan(LexAccessor &styler, Sci_PositionU &pos, Sci_PositionU endPos) {
+static int podLineScan(LexAccessor &styler, Sci_PositionU &pos,
+					   Sci_PositionU endPos) {
 	// forward scan the current line to classify line for POD style
 	int state = -1;
 	while (pos < endPos) {
@@ -256,7 +259,7 @@ static bool styleCheckSubPrototype(LexAccessor &styler, Sci_PositionU bk) {
 		int len1 = findPrevLexeme(styler, pos1, style1);
 		if (len1 == 0 || len2 == 0)		// lexeme pair must exist
 			break;
-
+		
 		// match parts of syntax, if invalid subroutine syntax, break off
 		if (style1 == SCE_PL_OPERATOR && len1 == 1 &&
 			styler.SafeGetCharAt(pos1) == ':') {	// ':'
@@ -295,7 +298,8 @@ static bool styleCheckSubPrototype(LexAccessor &styler, Sci_PositionU bk) {
 }
 
 static int actualNumStyle(int numberStyle) {
-	if (numberStyle == PERLNUM_VECTOR || numberStyle == PERLNUM_V_VECTOR) {
+	if (numberStyle == PERLNUM_VECTOR ||
+		numberStyle == PERLNUM_V_VECTOR) {
 		return SCE_PL_STRING;
 	} else if (numberStyle == PERLNUM_BAD) {
 		return SCE_PL_ERROR;
@@ -354,11 +358,11 @@ struct OptionsPerl {
 	// Enable folding Pod blocks when using the Perl lexer.
 	bool foldPackage;        // fold.perl.package
 	// Enable folding packages when using the Perl lexer.
-
+	
 	bool foldCommentExplicit;
-
+	
 	bool foldAtElse;
-
+	
 	OptionsPerl() {
 		fold = false;
 		foldComment = false;
@@ -378,23 +382,23 @@ static const char *const perlWordListDesc[] = {
 struct OptionSetPerl : public OptionSet<OptionsPerl> {
 	OptionSetPerl() {
 		DefineProperty("fold", &OptionsPerl::fold);
-
+		
 		DefineProperty("fold.comment", &OptionsPerl::foldComment);
-
+		
 		DefineProperty("fold.compact", &OptionsPerl::foldCompact);
-
+		
 		DefineProperty("fold.perl.pod", &OptionsPerl::foldPOD,
 				"Set to 0 to disable folding Pod blocks when using the Perl lexer.");
-
+		
 		DefineProperty("fold.perl.package", &OptionsPerl::foldPackage,
 				"Set to 0 to disable folding packages when using the Perl lexer.");
-
+		
 		DefineProperty("fold.perl.comment.explicit", &OptionsPerl::foldCommentExplicit,
 				"Set to 0 to disable explicit folding.");
-
+		
 		DefineProperty("fold.perl.at.else", &OptionsPerl::foldAtElse,
 					   "This option enables Perl folding on a \"} else {\" line of an if statement.");
-
+		
 		DefineWordListSets(perlWordListDesc);
 	}
 };
@@ -436,13 +440,15 @@ public:
 		return osPerl.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
+	
 	void *SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
-
+	
 	static ILexer *LexerFactoryPerl() {
 		return new LexerPerl();
 	}
@@ -579,13 +585,14 @@ void LexerPerl::InterpolateSegment(StyleContext &sc, int maxSeg, bool isPattern)
 		sc.SetState(sc.state - INTERPOLATE_SHIFT);
 }
 
-void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, IDocument *pAccess) {
 	LexAccessor styler(pAccess);
-
+	
 	// keywords that forces /PATTERN/ at all times; should track vim's behaviour
 	WordList reWords;
 	reWords.Set("elsif if split while");
-
+	
 	// charset classes
 	CharacterSet setSingleCharOp(CharacterSet::setNone, "rwxoRWXOezsfdlpSbctugkTBMAC");
 	// lexing of "%*</" operators is non-trivial; these are missing in the set below
@@ -606,11 +613,11 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	// for format identifiers
 	CharacterSet setFormatStart(CharacterSet::setAlpha, "_=");
 	CharacterSet &setFormat = setHereDocDelim;
-
+	
 	// Lexer for perl often has to backtrack to start of current style to determine
 	// which characters are being used as quotes, how deeply nested is the
 	// start position and what the termination string is for HERE documents.
-
+	
 	class HereDocCls {	// Class to manage HERE doc sequence
 	public:
 		int State;
@@ -636,7 +643,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 	};
 	HereDocCls HereDoc;		// TODO: FIFO for stacked here-docs
-
+	
 	class QuoteCls {	// Class to manage quote pairs
 	public:
 		int Rep;
@@ -658,13 +665,13 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 	};
 	QuoteCls Quote;
-
+	
 	// additional state for number lexing
 	int numState = PERLNUM_DECIMAL;
 	int dotCount = 0;
-
+	
 	Sci_PositionU endPos = startPos + length;
-
+	
 	// Backtrack to beginning of style if required...
 	// If in a long distance lexical state, backtrack to find quote characters.
 	// Includes strings (may be multi-line), numbers (additional state), format
@@ -740,7 +747,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			initStyle = SCE_PL_DEFAULT;
 		}
 	}
-
+	
 	// backFlag, backPos are additional state to aid identifier corner cases.
 	// Look backwards past whitespace and comments in order to detect either
 	// operator or keyword. Later updated as we go along.
@@ -755,11 +762,10 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			backFlag = BACK_KEYWORD;
 		backPos++;
 	}
-
+	
 	StyleContext sc(startPos, endPos - startPos, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward()) {
-
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 		case SCE_PL_OPERATOR:
@@ -941,7 +947,8 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 						if (sc.ch != '\r') {	// skip CR if CRLF
 							int i = 0;			// else append char, possibly an extended char
 							while (i < sc.width) {
-								HereDoc.Append(static_cast<unsigned char>(styler.SafeGetCharAt(sc.currentPos + i)));
+								HereDoc.Append(static_cast<unsigned char>
+											   (styler.SafeGetCharAt(sc.currentPos + i)));
 								i++;
 							}
 						}
@@ -1103,7 +1110,8 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 						// For '#', if no whitespace in between, it's a delimiter.
 						if (IsASpace(c)) {
 							// Keep going
-						} else if (c == '#' && IsASpaceOrTab(sc.GetRelativeCharacter(sLen - 1))) {
+						} else if (c == '#' &&
+								   IsASpaceOrTab(sc.GetRelativeCharacter(sLen - 1))) {
 							endType = 3;
 						} else
 							Quote.Open(c);
@@ -1248,7 +1256,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			backFlag = BACK_NONE;
 			break;
 		}
-
+		
 		// Must check end of HereDoc states here before default state is handled
 		if (HereDoc.State == 1 && sc.atLineEnd) {
 			// Begin of here-doc (the line after the here-doc delimiter):
@@ -1284,7 +1292,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			HereDoc.State = 0;
 			sc.SetState(SCE_PL_FORMAT);
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_PL_DEFAULT) {
 			if (IsADigit(sc.ch) ||
@@ -1505,7 +1513,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 								preferRE = false;
 						}
 						break;
-
+						
 						// other styles uses the default, preferRE=false
 					case SCE_PL_POD:
 					case SCE_PL_HERE_Q:
@@ -1600,7 +1608,8 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					sc.SetState(SCE_PL_OPERATOR);
 				}
 				// force to bareword for hash key => or {variable literal} cases
-				if (disambiguateBareword(styler, bk, bk + fw, backFlag, backPos, endPos) & 2) {
+				if (disambiguateBareword(styler, bk, bk + fw, backFlag,
+										 backPos, endPos) & 2) {
 					sc.ChangeState(SCE_PL_IDENTIFIER);
 				}
 				backFlag = BACK_NONE;
@@ -1639,17 +1648,18 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 #define PERL_HEADFOLD_SHIFT		4
 #define PERL_HEADFOLD_MASK		0xF0
 
-void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int /* initStyle */, IDocument *pAccess) {
-
+void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length,
+								int /* initStyle */, IDocument *pAccess) {
+	
 	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
-
+	
 	// Backtrack to previous line in case need to fix its fold status
 	if (startPos > 0) {
 		if (lineCurrent > 0) {
@@ -1657,7 +1667,7 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 			startPos = styler.LineStart(lineCurrent);
 		}
 	}
-
+	
 	int levelPrev = SC_FOLDLEVELBASE;
 	if (lineCurrent > 0)
 		levelPrev = styler.LevelAt(lineCurrent - 1) >> 16;
@@ -1730,7 +1740,7 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 					&& !IsPackageLine(lineCurrent + 1, styler))
 				isPackageLine = true;
 		}
-
+		
 		//heredoc folding
 		switch (style) {
 		case SCE_PL_HERE_QQ :
@@ -1760,22 +1770,24 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 			}
 			break;
 		}
-
+		
 		//explicit folding
-		if (options.foldCommentExplicit && style == SCE_PL_COMMENTLINE && ch == '#') {
+		if (options.foldCommentExplicit && style == SCE_PL_COMMENTLINE &&
+			ch == '#') {
 			if (chNext == '{') {
 				levelCurrent++;
 			} else if (levelCurrent > SC_FOLDLEVELBASE  && chNext == '}') {
 				levelCurrent--;
 			}
 		}
-
+		
 		if (atEOL) {
 			int lev = levelPrev;
 			// POD headings occupy bits 7-4, leaving some breathing room for
 			// non-standard practice -- POD sections stuck in blocks, etc.
 			if (podHeading > 0) {
-				levelCurrent = (lev & ~PERL_HEADFOLD_MASK) | (podHeading << PERL_HEADFOLD_SHIFT);
+				levelCurrent = (lev & ~PERL_HEADFOLD_MASK) |
+							   (podHeading << PERL_HEADFOLD_SHIFT);
 				lev = levelCurrent - 1;
 				lev |= SC_FOLDLEVELHEADERFLAG;
 				podHeading = 0;
@@ -1808,4 +1820,5 @@ void SCI_METHOD LexerPerl::Fold(Sci_PositionU startPos, Sci_Position length, int
 	styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
-LexerModule lmPerl(SCLEX_PERL, LexerPerl::LexerFactoryPerl, "perl", perlWordListDesc);
+LexerModule lmPerl(SCLEX_PERL, LexerPerl::LexerFactoryPerl, "perl",
+				   perlWordListDesc);
