@@ -41,6 +41,7 @@ static inline bool IsASetChar(const int ch) {
 static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, WordList*[] /* *keywordlists[] */,
 							   Accessor &styler) {
+	
 	enum localState { KW_LINE_KW, KW_LINE_COMMA, KW_LINE_PAR, KW_LINE_EQ, KW_LINE_VAL, \
 					  DAT_LINE_VAL, DAT_LINE_COMMA,\
 					  COMMENT_LINE,\
@@ -439,6 +440,7 @@ static void SafeSetLevel(Sci_Position line, int level, Accessor &styler)
 
 static void FoldABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 						  int, WordList *[], Accessor &styler) {
+	
 	Sci_Position startLine = styler.GetLine(startPos);
 	Sci_Position endLine   = styler.GetLine(startPos + length - 1);
 	

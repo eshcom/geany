@@ -78,7 +78,6 @@ static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end,
 static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length,
 							 int initStyle, WordList *keywordlists[],
 							 Accessor &styler) {
-	
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords_kw = *keywordlists[1];
 	

@@ -478,7 +478,6 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 
 void SCI_METHOD LexerD::Fold(Sci_PositionU startPos, Sci_Position length,
 							 int initStyle, IDocument *pAccess) {
-	
 	if (!options.fold)
 		return;
 	

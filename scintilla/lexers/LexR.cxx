@@ -48,10 +48,10 @@ static inline bool IsAnOperator(const int ch) {
 	return false;
 }
 
-static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-						  WordList *keywordlists[], Accessor &styler) {
-	
-	WordList &keywords   = *keywordlists[0];
+static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length,
+						  int initStyle, WordList *keywordlists[],
+						  Accessor &styler) {
+	WordList &keywords  = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];
 	
@@ -146,6 +146,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 // and to make it possible to fiddle the current level for "} else {".
 static void FoldRDoc(Sci_PositionU startPos, Sci_Position length,
 					 int, WordList *[], Accessor &styler) {
+	
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
 	Sci_PositionU endPos = startPos + length;

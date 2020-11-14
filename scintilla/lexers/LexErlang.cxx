@@ -76,8 +76,8 @@ static inline bool IsAWordChar(const int ch) {
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, WordList *keywordlists[],
 							   Accessor &styler) {
-	
 	StyleContext sc(startPos, length, initStyle, styler);
+	
 	WordList &reservedWords = *keywordlists[0];
 	WordList &erlangBIFs = *keywordlists[1];
 	WordList &erlangPreproc = *keywordlists[2];
@@ -85,6 +85,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &erlangDoc = *keywordlists[4];
 	WordList &erlangDocMacro = *keywordlists[5];
 	WordList &erlangAtomSpec = *keywordlists[6];
+	
 	int radix_digits = 0;
 	int exponent_digits = 0;
 	atom_parse_state_t parse_state = STATE_NULL;

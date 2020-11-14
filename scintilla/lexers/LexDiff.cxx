@@ -103,6 +103,7 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine,
 
 static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length,
 							 int, WordList *[], Accessor &styler) {
+	
 	char lineBuffer[DIFF_BUFFER_START_SIZE] = "";
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -130,9 +131,11 @@ static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length,
 
 static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length,
 						int, WordList *[], Accessor &styler) {
+	
 	Sci_Position curLine = styler.GetLine(startPos);
 	Sci_Position curLineStart = styler.LineStart(curLine);
-	int prevLevel = curLine > 0 ? styler.LevelAt(curLine - 1) : SC_FOLDLEVELBASE;
+	int prevLevel = curLine > 0 ? styler.LevelAt(curLine - 1) :
+								  SC_FOLDLEVELBASE;
 	int nextLevel;
 	
 	do {

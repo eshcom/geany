@@ -297,6 +297,7 @@ Sci_Position SCI_METHOD LexerBash::WordListSet(int n, const char *wl) {
 
 void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, IDocument *pAccess) {
+	
 	WordList cmdDelimiter, bashStruct, bashStruct_in;
 	cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 	bashStruct.Set("if elif fi while until else then do done esac eval");

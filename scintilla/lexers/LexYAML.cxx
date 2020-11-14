@@ -242,8 +242,9 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 	return false;
 }
 
-static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length, int /*initStyle - unused*/,
-					  WordList *[], Accessor &styler) {
+static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length,
+						int /*initStyle - unused*/, WordList *[],
+						Accessor &styler) {
 	const Sci_Position maxPos = startPos + length;
 	const Sci_Position maxLines = styler.GetLine(maxPos - 1);             // Requested last line
 	const Sci_Position docLines = styler.GetLine(styler.Length() - 1);  // Available last line
@@ -273,8 +274,8 @@ static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length, int /*initS
 	// Process all characters to end of requested range
 	// or comment that hangs over the end of the range.  Cap processing in all cases
 	// to end of document (in case of unclosed comment at end).
-	while ((lineCurrent <= docLines) && ((lineCurrent <= maxLines) || prevComment)) {
-		
+	while ((lineCurrent <= docLines) &&
+		   ((lineCurrent <= maxLines) || prevComment)) {
 		// Gather info
 		int lev = indentCurrent;
 		Sci_Position lineNext = lineCurrent + 1;
@@ -284,7 +285,8 @@ static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length, int /*initS
 			indentNext = styler.IndentAmount(lineNext, &spaceFlags, NULL);
 		}
 		const int comment = foldComment && IsCommentLine(lineCurrent, styler);
-		const int comment_start = (comment && !prevComment && (lineNext <= docLines) &&
+		const int comment_start = (comment && !prevComment &&
+								   (lineNext <= docLines) &&
 								   IsCommentLine(lineNext, styler) &&
 								   (lev > SC_FOLDLEVELBASE));
 		const int comment_continue = (comment && prevComment);
@@ -315,7 +317,8 @@ static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length, int /*initS
 		}
 		
 		const int levelAfterComments = indentNext & SC_FOLDLEVELNUMBERMASK;
-		const int levelBeforeComments = Maximum(indentCurrentLevel,levelAfterComments);
+		const int levelBeforeComments = Maximum(indentCurrentLevel,
+												levelAfterComments);
 		
 		// Now set all the indent levels on the lines we skipped
 		// Do this from end to start.  Once we encounter one line
