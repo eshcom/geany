@@ -54,7 +54,9 @@
 using namespace Scintilla;
 
 // True if can follow ch down to the end with possibly trailing whitespace
-static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU endPos, StyleContext &sc) {
+static bool FollowToLineEnd(const int ch, const int state,
+							const Sci_PositionU endPos,
+							StyleContext &sc) {
 	Sci_PositionU i = 0;
 	while (sc.GetRelative(++i) == ch)
 		;
@@ -72,7 +74,8 @@ static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU e
 
 // Set the state on text section from current to length characters,
 // then set the rest until the newline to default, except for any characters matching token
-static void SetStateAndZoom(const int state, const Sci_Position length, const int token, StyleContext &sc) {
+static void SetStateAndZoom(const int state, const Sci_Position length,
+							const int token, StyleContext &sc) {
 	sc.SetState(state);
 	sc.Forward(length);
 	sc.SetState(SCE_MARKDOWN_DEFAULT);
@@ -137,8 +140,8 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 	}
 }
 
-static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-							   WordList **, Accessor &styler) {
+static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
+								int initStyle, WordList **, Accessor &styler) {
 	Sci_PositionU endPos = startPos + length;
 	int precharCount = 0;
 	bool isLinkNameDetecting = false;
@@ -146,20 +149,20 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 	// Useful in the corner case of having to start at the beginning file position
 	// in the default state.
 	bool freezeCursor = false;
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	while (sc.More()) {
 		// Skip past escaped characters
 		if (sc.ch == '\\') {
 			sc.Forward();
 			continue;
 		}
-
+		
 		// A blockquotes resets the line semantics
 		if (sc.state == SCE_MARKDOWN_BLOCKQUOTE)
 			sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
-
+		
 		// Conditional state-based actions
 		if (sc.state == SCE_MARKDOWN_CODE2) {
 			if (sc.Match("``") && sc.GetRelative(-2) != ' ') {
@@ -185,7 +188,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 				}
 			}
 			else if (sc.atLineStart) {
-				if (sc.ch != '\t' ) {
+				if (sc.ch != '\t') {
 					for (int i = 0; i < 4; ++i) {
 						if (sc.GetRelative(i) != ' ')
 							d = false;
@@ -262,13 +265,15 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 					sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (sc.ch == '=') {
-				if (HasPrevLineContent(sc) && FollowToLineEnd('=', SCE_MARKDOWN_HEADER1, endPos, sc))
+				if (HasPrevLineContent(sc) && FollowToLineEnd('=', SCE_MARKDOWN_HEADER1,
+															  endPos, sc))
 					;
 				else
 					sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (sc.ch == '-') {
-				if (HasPrevLineContent(sc) && FollowToLineEnd('-', SCE_MARKDOWN_HEADER2, endPos, sc))
+				if (HasPrevLineContent(sc) && FollowToLineEnd('-', SCE_MARKDOWN_HEADER2,
+															  endPos, sc))
 					;
 				else {
 					precharCount = 0;
@@ -282,15 +287,15 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 				sc.SetState(SCE_MARKDOWN_PRECHAR);
 			}
 		}
-
+		
 		// The header lasts until the newline
 		else if (sc.state == SCE_MARKDOWN_HEADER1 || sc.state == SCE_MARKDOWN_HEADER2 ||
-				sc.state == SCE_MARKDOWN_HEADER3 || sc.state == SCE_MARKDOWN_HEADER4 ||
-				sc.state == SCE_MARKDOWN_HEADER5 || sc.state == SCE_MARKDOWN_HEADER6) {
+				 sc.state == SCE_MARKDOWN_HEADER3 || sc.state == SCE_MARKDOWN_HEADER4 ||
+				 sc.state == SCE_MARKDOWN_HEADER5 || sc.state == SCE_MARKDOWN_HEADER6) {
 			if (IsACRLF(sc.ch))
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 		}
-
+		
 		// New state only within the initial whitespace
 		if (sc.state == SCE_MARKDOWN_PRECHAR) {
 			// Blockquote
@@ -303,10 +308,12 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 			*/
 			// HRule - Total of three or more hyphens, asterisks, or underscores
 			// on a line by themselves
-			else if ((sc.ch == '-' || sc.ch == '*' || sc.ch == '_') && IsValidHrule(endPos, sc))
+			else if ((sc.ch == '-' || sc.ch == '*' || sc.ch == '_') &&
+					 IsValidHrule(endPos, sc))
 				;
 			// Unordered list
-			else if ((sc.ch == '-' || sc.ch == '*' || sc.ch == '+') && IsASpaceOrTab(sc.chNext)) {
+			else if ((sc.ch == '-' || sc.ch == '*' || sc.ch == '+') &&
+					 IsASpaceOrTab(sc.chNext)) {
 				sc.SetState(SCE_MARKDOWN_ULIST_ITEM);
 				sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 			}
@@ -323,7 +330,8 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 				}
 			}
 			// Alternate Ordered list
-			else if (sc.ch == '#' && sc.chNext == '.' && IsASpaceOrTab(sc.GetRelative(2))) {
+			else if (sc.ch == '#' && sc.chNext == '.' &&
+					 IsASpaceOrTab(sc.GetRelative(2))) {
 				sc.SetState(SCE_MARKDOWN_OLIST_ITEM);
 				sc.Forward(2);
 				sc.SetState(SCE_MARKDOWN_DEFAULT);
@@ -333,7 +341,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 			else
 				++precharCount;
 		}
-
+		
 		// Any link
 		if (sc.state == SCE_MARKDOWN_LINK) {
 			if (sc.Match("](") && sc.GetRelative(-1) != '\\') {
@@ -344,17 +352,19 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 			  sc.Forward(2);
 			  sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
-			else if (!isLinkNameDetecting && sc.ch == ']' && sc.GetRelative(-1) != '\\') {
+			else if (!isLinkNameDetecting && sc.ch == ']' &&
+					 sc.GetRelative(-1) != '\\') {
 			  sc.Forward();
 			  sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
-			else if (isLinkNameDetecting && sc.ch == ')' && sc.GetRelative(-1) != '\\') {
+			else if (isLinkNameDetecting && sc.ch == ')' &&
+					 sc.GetRelative(-1) != '\\') {
 			  sc.Forward();
 			  sc.SetState(SCE_MARKDOWN_DEFAULT);
 			  isLinkNameDetecting = false;
 			}
 		}
-
+		
 		// New state anywhere in doc
 		if (sc.state == SCE_MARKDOWN_DEFAULT) {
 			if (sc.atLineStart && sc.ch == '#') {
@@ -371,31 +381,38 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
 			  sc.Forward();
 			}
 			// Code - also a special case for alternate inside spacing
-			else if (sc.Match("``") && sc.GetRelative(3) != ' ' && AtTermStart(sc)) {
+			else if (sc.Match("``") && sc.GetRelative(3) != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_CODE2);
 				sc.Forward();
 			}
-			else if (sc.ch == '`' && sc.chNext != ' ' && AtTermStart(sc)) {
+			else if (sc.ch == '`' && sc.chNext != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_CODE);
 			}
 			// Strong
-			else if (sc.Match("**") && sc.GetRelative(2) != ' ' && AtTermStart(sc)) {
+			else if (sc.Match("**") && sc.GetRelative(2) != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_STRONG1);
 				sc.Forward();
 		   }
-			else if (sc.Match("__") && sc.GetRelative(2) != ' ' && AtTermStart(sc)) {
+			else if (sc.Match("__") && sc.GetRelative(2) != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_STRONG2);
 				sc.Forward();
 			}
 			// Emphasis
-			else if (sc.ch == '*' && sc.chNext != ' ' && AtTermStart(sc)) {
+			else if (sc.ch == '*' && sc.chNext != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_EM1);
 			}
-			else if (sc.ch == '_' && sc.chNext != ' ' && AtTermStart(sc)) {
+			else if (sc.ch == '_' && sc.chNext != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_EM2);
 			}
 			// Strikeout
-			else if (sc.Match("~~") && sc.GetRelative(2) != ' ' && AtTermStart(sc)) {
+			else if (sc.Match("~~") && sc.GetRelative(2) != ' ' &&
+					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_STRIKEOUT);
 				sc.Forward();
 			}

@@ -27,26 +27,27 @@ using namespace Scintilla;
 
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return (styler[i] == '\n') ||
-	       ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
+		   ((styler[i] == '\r') &&
+			(styler.SafeGetCharAt(i + 1) != '\n'));
 }
 
 static void ColouriseMakeLine(
-    char *lineBuffer,
-    Sci_PositionU lengthLine,
-    Sci_PositionU startLine,
-    Sci_PositionU endPos,
-    Accessor &styler) {
-
+	char *lineBuffer,
+	Sci_PositionU lengthLine,
+	Sci_PositionU startLine,
+	Sci_PositionU endPos,
+	Accessor &styler) {
+	
 	Sci_PositionU i = 0;
 	Sci_Position lastNonSpace = -1;
 	unsigned int state = SCE_MAKE_DEFAULT;
 	bool bSpecial = false;
-
+	
 	// check for a tab character in column 0 indicating a command
 	bool bCommand = false;
 	if ((lengthLine > 0) && (lineBuffer[0] == '\t'))
 		bCommand = true;
-
+	
 	// Skip initial spaces
 	while ((i < lengthLine) && IsASpace(lineBuffer[i])) {
 		i++;
@@ -73,7 +74,7 @@ static void ColouriseMakeLine(
 				state = SCE_MAKE_DEFAULT;
 			}
 		}
-
+		
 		// skip identifier and target styling if this is a command line
 		if (!bSpecial && !bCommand) {
 			if (lineBuffer[i] == ':') {
@@ -114,7 +115,8 @@ static void ColouriseMakeLine(
 	}
 }
 
-static void ColouriseMakeDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void ColouriseMakeDoc(Sci_PositionU startPos, Sci_Position length,
+							 int, WordList *[], Accessor &styler) {
 	char lineBuffer[4096];
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -131,7 +133,8 @@ static void ColouriseMakeDoc(Sci_PositionU startPos, Sci_Position length, int, W
 		}
 	}
 	if (linePos > 0) {	// Last line does not have ending characters
-		ColouriseMakeLine(lineBuffer, linePos, startLine, startPos + length - 1, styler);
+		ColouriseMakeLine(lineBuffer, linePos, startLine,
+						  startPos + length - 1, styler);
 	}
 }
 
@@ -139,4 +142,5 @@ static const char *const emptyWordListDesc[] = {
 	0
 };
 
-LexerModule lmMake(SCLEX_MAKEFILE, ColouriseMakeDoc, "makefile", 0, emptyWordListDesc);
+LexerModule lmMake(SCLEX_MAKEFILE, ColouriseMakeDoc,
+				   "makefile", 0, emptyWordListDesc);

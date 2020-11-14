@@ -124,8 +124,9 @@ inline int NestingLevelLookBehind(Sci_PositionU startPos, Accessor &styler) {
 	return nestingLevel;
 }
 
-static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-							WordList *keywordlists[], Accessor &styler) {
+static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
+							int initStyle, WordList *keywordlists[],
+							Accessor &styler) {
 	WordList &css1Props = *keywordlists[0];
 	WordList &pseudoClasses = *keywordlists[1];
 	WordList &css2Props = *keywordlists[2];
@@ -806,4 +807,5 @@ static const char * const cssWordListDesc[] = {
 	0
 };
 
-LexerModule lmCss(SCLEX_CSS, ColouriseCssDoc, "css", FoldCSSDoc, cssWordListDesc);
+LexerModule lmCss(SCLEX_CSS, ColouriseCssDoc, "css",
+				  FoldCSSDoc, cssWordListDesc);

@@ -48,33 +48,32 @@ static inline bool IsAnOperator(const int ch) {
 	return false;
 }
 
-static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-							Accessor &styler) {
-
+static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
+						  WordList *keywordlists[], Accessor &styler) {
+	
 	WordList &keywords   = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];
-
-
+	
 	// Do not leak onto next line
 	if (initStyle == SCE_R_INFIXEOL)
 		initStyle = SCE_R_DEFAULT;
-
-
+	
 	StyleContext sc(startPos, length, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward()) {
-
+		
 		if (sc.atLineStart && (sc.state == SCE_R_STRING)) {
 			// Prevent SCE_R_STRINGEOL from leaking back to previous line
 			sc.SetState(SCE_R_STRING);
 		}
-
+		
 		// Determine if the current state should terminate.
 		if (sc.state == SCE_R_OPERATOR) {
 			sc.SetState(SCE_R_DEFAULT);
 		} else if (sc.state == SCE_R_NUMBER) {
-			if (!IsADigit(sc.ch) && !(sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (!IsADigit(sc.ch) && !(sc.ch == '.' &&
+					IsADigit(sc.chNext))) {
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_IDENTIFIER) {
@@ -96,7 +95,8 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 			}
 		} else if (sc.state == SCE_R_STRING) {
 			if (sc.ch == '\\') {
-				if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+				if (sc.chNext == '\"' || sc.chNext == '\'' ||
+						sc.chNext == '\\') {
 					sc.Forward();
 				}
 			} else if (sc.ch == '\"') {
@@ -109,7 +109,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 				sc.ChangeState(SCE_R_INFIXEOL);
 				sc.ForwardSetState(SCE_R_DEFAULT);
 			}
-		}else if (sc.state == SCE_R_STRING2) {
+		} else if (sc.state == SCE_R_STRING2) {
 			if (sc.ch == '\\') {
 				if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
 					sc.Forward();
@@ -118,12 +118,12 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 				sc.ForwardSetState(SCE_R_DEFAULT);
 			}
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_R_DEFAULT) {
 			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 				sc.SetState(SCE_R_NUMBER);
-			} else if (IsAWordStart(sc.ch) ) {
+			} else if (IsAWordStart(sc.ch)) {
 				sc.SetState(SCE_R_IDENTIFIER);
 			} else if (sc.Match('#')) {
 					sc.SetState(SCE_R_COMMENT);
@@ -144,8 +144,8 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initS
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
-					   Accessor &styler) {
+static void FoldRDoc(Sci_PositionU startPos, Sci_Position length,
+					 int, WordList *[], Accessor &styler) {
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
 	Sci_PositionU endPos = startPos + length;
@@ -198,7 +198,6 @@ static void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList 
 			visibleChars++;
 	}
 }
-
 
 static const char * const RWordLists[] = {
 			"Language Keywords",

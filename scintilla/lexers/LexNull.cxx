@@ -25,8 +25,8 @@
 
 using namespace Scintilla;
 
-static void ColouriseNullDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
-                            Accessor &styler) {
+static void ColouriseNullDoc(Sci_PositionU startPos, Sci_Position length,
+							 int, WordList *[], Accessor &styler) {
 	// Null language means all style bytes are 0 so just mark the end - no need to fill in.
 	if (length > 0) {
 		styler.StartAt(startPos + length - 1);

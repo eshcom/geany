@@ -234,7 +234,7 @@ void sci_add_text(ScintillaObject *sci, const gchar *text)
 GEANY_API_SYMBOL
 void sci_set_text(ScintillaObject *sci, const gchar *text)
 {
-	if( text != NULL ){ /* if null text is passed to scintilla will segfault */
+	if (text != NULL) { /* if null text is passed to scintilla will segfault */
 		SSM(sci, SCI_SETTEXT, 0, (sptr_t) text);
 	}
 }

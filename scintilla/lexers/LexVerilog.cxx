@@ -718,7 +718,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 							if (options.updatePreprocessor && !preproc.IsInactive()) {
 								// remove all preprocessor definitions
 								std::map<std::string, SymbolValue>::iterator itDef;
-								for(itDef = preprocessorDefinitions.begin();
+								for (itDef = preprocessorDefinitions.begin();
 										itDef != preprocessorDefinitions.end(); ++itDef) {
 									ppDefineHistory.push_back(PPDefinition(curLine, itDef->first, "", true));
 								}

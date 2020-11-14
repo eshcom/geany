@@ -36,23 +36,22 @@ using namespace Scintilla;
 #define NOT_HEADER 0x10
 
 inline bool isCOBOLoperator(char ch)
-	{
+{
 	return isoperator(ch);
-	}
+}
 
 inline bool isCOBOLwordchar(char ch)
-	{
+{
 	return IsASCII(ch) && (isalnum(ch) || ch == '-');
-
-	}
+}
 
 inline bool isCOBOLwordstart(char ch)
-	{
+{
 	return IsASCII(ch) && isalnum(ch);
-	}
+}
 
 static int CountBits(int nBits)
-	{
+{
 	int count = 0;
 	for (int i = 0; i < 32; ++i)
 		{
@@ -60,7 +59,7 @@ static int CountBits(int nBits)
 		nBits >>= 1;
 		}
 	return count;
-	}
+}
 
 static void getRange(Sci_PositionU start,
 		Sci_PositionU end,
@@ -84,16 +83,16 @@ static int classifyWordCOBOL(Sci_PositionU start, Sci_PositionU end,
 							 /*WordList &keywords*/WordList *keywordlists[],
 							 Accessor &styler, int nContainment, bool *bAarea) {
 	int ret = 0;
-
+	
 	WordList& a_keywords = *keywordlists[0];
 	WordList& b_keywords = *keywordlists[1];
 	WordList& c_keywords = *keywordlists[2];
-
+	
 	char s[100];
 	s[0] = '\0';
 	s[1] = '\0';
 	getRange(start, end, styler, s, sizeof(s));
-
+	
 	char chAttr = SCE_C_IDENTIFIER;
 	if (isdigit(s[0]) || (s[0] == '.') || (s[0] == 'v')) {
 		chAttr = SCE_C_NUMBER;
@@ -142,20 +141,21 @@ static int classifyWordCOBOL(Sci_PositionU start, Sci_PositionU end,
 	return ret;
 }
 
-static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
+static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
+							  int initStyle, WordList *keywordlists[],
 	Accessor &styler) {
-
+	
 	styler.StartAt(startPos);
-
+	
 	int state = initStyle;
 	if (state == SCE_C_CHARACTER)   // Does not leak onto next line
 		state = SCE_C_DEFAULT;
 	char chPrev = ' ';
 	char chNext = styler[startPos];
 	Sci_PositionU lengthDoc = startPos + length;
-
+	
 	int nContainment;
-
+	
 	Sci_Position currentLine = styler.GetLine(startPos);
 	if (currentLine > 0) {
 		styler.SetLineState(currentLine, styler.GetLineState(currentLine-1));
@@ -165,18 +165,18 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 		styler.SetLineState(currentLine, 0);
 		nContainment = 0;
 	}
-
+	
 	styler.StartSegment(startPos);
 	bool bNewLine = true;
 	bool bAarea = !IsASpace(chNext);
 	int column = 0;
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
-
+		
 		chNext = styler.SafeGetCharAt(i + 1);
-
+		
 		++column;
-
+		
 		if (bNewLine) {
 			column = 0;
 		}
@@ -198,14 +198,14 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 			if (nContainment & NOT_HEADER)
 				nContainment &= ~(NOT_HEADER | IN_DECLARATIVES | IN_SECTION);
 		}
-
+		
 		if (styler.IsLeadByte(ch)) {
 			chNext = styler.SafeGetCharAt(i + 2);
 			chPrev = ' ';
 			i += 1;
 			continue;
 		}
-
+		
 		if (state == SCE_C_DEFAULT) {
 			if (isCOBOLwordstart(ch) || (ch == '$' && IsASCII(chNext) && isalpha(chNext))) {
 				ColourTo(styler, i-1, state);
@@ -245,13 +245,15 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 			}
 		} else if (state == SCE_C_IDENTIFIER) {
 			if (!isCOBOLwordchar(ch)) {
-				int lStateChange = classifyWordCOBOL(styler.GetStartSegment(), i - 1, keywordlists, styler, nContainment, &bAarea);
-
-				if(lStateChange != 0) {
+				int lStateChange = classifyWordCOBOL(styler.GetStartSegment(), i - 1,
+													 keywordlists, styler,
+													 nContainment, &bAarea);
+				
+				if (lStateChange != 0) {
 					styler.SetLineState(currentLine, lStateChange);
 					nContainment = lStateChange;
 				}
-
+				
 				state = SCE_C_DEFAULT;
 				chNext = styler.SafeGetCharAt(i + 1);
 				if (ch == '"') {
@@ -302,9 +304,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int i
 		chPrev = ch;
 		bNewLine = bSetNewLine;
 		if (bNewLine)
-			{
 			bAarea = false;
-			}
 	}
 	ColourTo(styler, lengthDoc - 1, state);
 }
@@ -315,9 +315,10 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
-	int levelPrev = lineCurrent > 0 ? styler.LevelAt(lineCurrent - 1) & SC_FOLDLEVELNUMBERMASK : 0xFFF;
+	int levelPrev = lineCurrent > 0 ? styler.LevelAt(lineCurrent - 1) &
+										SC_FOLDLEVELNUMBERMASK : 0xFFF;
 	char chNext = styler[startPos];
-
+	
 	bool bNewLine = true;
 	bool bAarea = !IsASpace(chNext);
 	int column = 0;
@@ -326,7 +327,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
 		++column;
-
+		
 		if (bNewLine) {
 			column = 0;
 			bComment = (ch == '*' || ch == '/' || ch == '?');
@@ -342,12 +343,14 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 				--lev;
 			if (visibleChars == 0 && foldCompact)
 				lev |= SC_FOLDLEVELWHITEFLAG;
-			if ((bAarea) && (visibleChars > 0) && !(nContainment & NOT_HEADER) && !bComment)
+			if ((bAarea) && (visibleChars > 0) &&
+				!(nContainment & NOT_HEADER) && !bComment)
 				lev |= SC_FOLDLEVELHEADERFLAG;
 			if (lev != styler.LevelAt(lineCurrent)) {
 				styler.SetLevel(lineCurrent, lev);
 			}
-			if ((lev & SC_FOLDLEVELNUMBERMASK) <= (levelPrev & SC_FOLDLEVELNUMBERMASK)) {
+			if ((lev & SC_FOLDLEVELNUMBERMASK) <=
+				(levelPrev & SC_FOLDLEVELNUMBERMASK)) {
 				// this level is at the same level or less than the previous line
 				// therefore these is nothing for the previous header to collapse, so remove the header
 				styler.SetLevel(lineCurrent - 1, levelPrev & ~SC_FOLDLEVELHEADERFLAG);
@@ -360,11 +363,11 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length, int, WordL
 		} else {
 			bNewLine = false;
 		}
-
+		
 		if (!IsASpace(ch))
 			visibleChars++;
 	}
-
+	
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later
 	int flagsNext = styler.LevelAt(lineCurrent) & ~SC_FOLDLEVELNUMBERMASK;
 	styler.SetLevel(lineCurrent, levelPrev | flagsNext);
@@ -377,4 +380,5 @@ static const char * const COBOLWordListDesc[] = {
 	0
 };
 
-LexerModule lmCOBOL(SCLEX_COBOL, ColouriseCOBOLDoc, "COBOL", FoldCOBOLDoc, COBOLWordListDesc);
+LexerModule lmCOBOL(SCLEX_COBOL, ColouriseCOBOLDoc, "COBOL",
+					FoldCOBOLDoc, COBOLWordListDesc);

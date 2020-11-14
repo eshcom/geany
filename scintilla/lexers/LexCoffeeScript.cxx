@@ -31,23 +31,23 @@ using namespace Scintilla;
 
 static bool IsSpaceEquiv(int state) {
 	return (state == SCE_COFFEESCRIPT_DEFAULT
-	    || state == SCE_COFFEESCRIPT_COMMENTLINE
-	    || state == SCE_COFFEESCRIPT_COMMENTBLOCK
-	    || state == SCE_COFFEESCRIPT_VERBOSE_REGEX
-	    || state == SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT
-	    || state == SCE_COFFEESCRIPT_WORD
-	    || state == SCE_COFFEESCRIPT_REGEX);
+		|| state == SCE_COFFEESCRIPT_COMMENTLINE
+		|| state == SCE_COFFEESCRIPT_COMMENTBLOCK
+		|| state == SCE_COFFEESCRIPT_VERBOSE_REGEX
+		|| state == SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT
+		|| state == SCE_COFFEESCRIPT_WORD
+		|| state == SCE_COFFEESCRIPT_REGEX);
 }
 
 // Store the current lexer state and brace count prior to starting a new
 // `#{}` interpolation level.
 // Based on LexRuby.cxx.
 static void enterInnerExpression(int  *p_inner_string_types,
-                                 int  *p_inner_expn_brace_counts,
-                                 int&  inner_string_count,
-                                 int   state,
-                                 int&  brace_counts
-                                 ) {
+								 int  *p_inner_expn_brace_counts,
+								 int&  inner_string_count,
+								 int   state,
+								 int&  brace_counts
+								 ) {
 	p_inner_string_types[inner_string_count] = state;
 	p_inner_expn_brace_counts[inner_string_count] = brace_counts;
 	brace_counts = 0;
@@ -60,10 +60,10 @@ static void enterInnerExpression(int  *p_inner_string_types,
 // manually by the StyleContext.
 // Based on LexRuby.cxx.
 static int exitInnerExpression(int  *p_inner_string_types,
-                               int  *p_inner_expn_brace_counts,
-                               int&  inner_string_count,
-                               int&  brace_counts
-                              ) {
+							   int  *p_inner_expn_brace_counts,
+							   int&  inner_string_count,
+							   int&  brace_counts
+							  ) {
 	--inner_string_count;
 	brace_counts = p_inner_expn_brace_counts[inner_string_count];
 	return p_inner_string_types[inner_string_count];
@@ -93,7 +93,7 @@ static bool followsKeyword(StyleContext &sc, Accessor &styler) {
 	Sci_Position lineStartPos = styler.LineStart(currentLine);
 	while (--pos > lineStartPos) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (ch != ' ' && ch != '\t') {
+		if (!IsASpaceOrTab(ch)) {
 			break;
 		}
 	}
@@ -101,22 +101,22 @@ static bool followsKeyword(StyleContext &sc, Accessor &styler) {
 	return styler.StyleAt(pos) == SCE_COFFEESCRIPT_WORD;
 }
 
-static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
-                            Accessor &styler) {
-
+static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length,
+									 int initStyle, WordList *keywordlists[],
+									 Accessor &styler) {
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords4 = *keywordlists[3];
-
+	
 	CharacterSet setOKBeforeRE(CharacterSet::setNone, "([{=,:;!%^&*|?~+-");
 	CharacterSet setCouldBePostOp(CharacterSet::setNone, "+-");
-
+	
 	CharacterSet setWordStart(CharacterSet::setAlpha, "_$@", 0x80, true);
 	CharacterSet setWord(CharacterSet::setAlphaNum, "._$", 0x80, true);
-
+	
 	int chPrevNonWhite = ' ';
 	int visibleChars = 0;
-
+	
 	// String/Regex interpolation variables, based on LexRuby.cxx.
 	// In most cases a value of 2 should be ample for the code the user is
 	// likely to enter. For example,
@@ -137,10 +137,10 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 		inner_string_types[i] = 0;
 		inner_expn_brace_counts[i] = 0;
 	}
-
+	
 	// look back to set chPrevNonWhite properly for better regex colouring
 	Sci_Position endPos = startPos + length;
-        if (startPos > 0 && IsSpaceEquiv(initStyle)) {
+		if (startPos > 0 && IsSpaceEquiv(initStyle)) {
 		Sci_PositionU back = startPos;
 		styler.Flush();
 		while (back > 0 && IsSpaceEquiv(styler.StyleAt(--back)))
@@ -156,17 +156,17 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 		}
 		startPos = back;
 	}
-
+	
 	StyleContext sc(startPos, endPos - startPos, initStyle, styler);
-
+	
 	for (; sc.More();) {
-
+		
 		if (sc.atLineStart) {
 			// Reset states to beginning of colourise so no surprises
 			// if different sets of lines lexed.
 			visibleChars = 0;
 		}
-
+		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 			case SCE_COFFEESCRIPT_OPERATOR:
@@ -214,13 +214,14 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 					}
 				} else if (sc.ch == '\"') {
 					sc.ForwardSetState(SCE_COFFEESCRIPT_DEFAULT);
-				} else if (sc.ch == '#' && sc.chNext == '{' && inner_string_count < INNER_STRINGS_MAX_COUNT) {
+				} else if (sc.ch == '#' && sc.chNext == '{' &&
+						   inner_string_count < INNER_STRINGS_MAX_COUNT) {
 					// process interpolated code #{ ... }
 					enterInnerExpression(inner_string_types,
-					                     inner_expn_brace_counts,
-					                     inner_string_count,
-					                     sc.state,
-					                     brace_counts);
+										 inner_expn_brace_counts,
+										 inner_string_count,
+										 sc.state,
+										 brace_counts);
 					sc.SetState(SCE_COFFEESCRIPT_OPERATOR);
 					sc.ForwardSetState(SCE_COFFEESCRIPT_DEFAULT);
 				}
@@ -280,7 +281,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				}
 				break;
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_COFFEESCRIPT_DEFAULT) {
 			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
@@ -293,9 +294,9 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				sc.Forward();
 			} else if (sc.ch == '/'
 				   && (setOKBeforeRE.Contains(chPrevNonWhite)
-				       || followsKeyword(sc, styler))
+					   || followsKeyword(sc, styler))
 				   && (!setCouldBePostOp.Contains(chPrevNonWhite)
-				       || !FollowsPostfixOperator(sc, styler))) {
+					   || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_COFFEESCRIPT_REGEX);	// JavaScript's RegEx
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_COFFEESCRIPT_STRING);
@@ -319,14 +320,14 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				} else if (sc.ch == '}' && --brace_counts <= 0 && inner_string_count > 0) {
 					// Return to previous state before #{ ... }
 					sc.ForwardSetState(exitInnerExpression(inner_string_types,
-					                                       inner_expn_brace_counts,
-					                                       inner_string_count,
-					                                       brace_counts));
+														   inner_expn_brace_counts,
+														   inner_string_count,
+														   brace_counts));
 					continue; // skip sc.Forward() at loop end
 				}
 			}
 		}
-
+		
 		if (!IsASpace(sc.ch) && !IsSpaceEquiv(sc.state)) {
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
@@ -343,24 +344,24 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (ch != ' ' && ch != '\t')
+		else if (!IsASpaceOrTab(ch))
 			return false;
 	}
 	return false;
 }
 
-static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int,
-				WordList *[], Accessor &styler) {
+static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length,
+								int, WordList *[], Accessor &styler) {
 	// A simplified version of FoldPyDoc
 	const Sci_Position maxPos = startPos + length;
 	const Sci_Position maxLines = styler.GetLine(maxPos - 1);             // Requested last line
 	const Sci_Position docLines = styler.GetLine(styler.Length() - 1);  // Available last line
-
+	
 	// property fold.coffeescript.comment
 	const bool foldComment = styler.GetPropertyInt("fold.coffeescript.comment") != 0;
-
+	
 	const bool foldCompact = styler.GetPropertyInt("fold.compact") != 0;
-
+	
 	// Backtrack to previous non-blank line so we can determine indent level
 	// for any white space lines
 	// and so we can fix any preceding fold level (which is why we go back
@@ -372,21 +373,20 @@ static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int
 		lineCurrent--;
 		indentCurrent = styler.IndentAmount(lineCurrent, &spaceFlags, NULL);
 		if (!(indentCurrent & SC_FOLDLEVELWHITEFLAG)
-		    && !IsCommentLine(lineCurrent, styler))
+			&& !IsCommentLine(lineCurrent, styler))
 			break;
 	}
 	int indentCurrentLevel = indentCurrent & SC_FOLDLEVELNUMBERMASK;
-
+	
 	// Set up initial loop state
 	int prevComment = 0;
 	if (lineCurrent >= 1)
 		prevComment = foldComment && IsCommentLine(lineCurrent - 1, styler);
-
+	
 	// Process all characters to end of requested range
 	// or comment that hangs over the end of the range.  Cap processing in all cases
 	// to end of document (in case of comment at end).
 	while ((lineCurrent <= docLines) && ((lineCurrent <= maxLines) || prevComment)) {
-
 		// Gather info
 		int lev = indentCurrent;
 		Sci_Position lineNext = lineCurrent + 1;
@@ -397,13 +397,14 @@ static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int
 		}
 		const int comment = foldComment && IsCommentLine(lineCurrent, styler);
 		const int comment_start = (comment && !prevComment && (lineNext <= docLines) &&
-		                           IsCommentLine(lineNext, styler) && (lev > SC_FOLDLEVELBASE));
+								   IsCommentLine(lineNext, styler) &&
+								   (lev > SC_FOLDLEVELBASE));
 		const int comment_continue = (comment && prevComment);
 		if (!comment)
 			indentCurrentLevel = indentCurrent & SC_FOLDLEVELNUMBERMASK;
 		if (indentNext & SC_FOLDLEVELWHITEFLAG)
 			indentNext = SC_FOLDLEVELWHITEFLAG | indentCurrentLevel;
-
+		
 		if (comment_start) {
 			// Place fold point at start of a block of comments
 			lev |= SC_FOLDLEVELHEADERFLAG;
@@ -411,60 +412,60 @@ static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int
 			// Add level to rest of lines in the block
 			lev = lev + 1;
 		}
-
+		
 		// Skip past any blank lines for next indent level info; we skip also
 		// comments (all comments, not just those starting in column 0)
 		// which effectively folds them into surrounding code rather
 		// than screwing up folding.
-
+		
 		while ((lineNext < docLines) &&
-		        ((indentNext & SC_FOLDLEVELWHITEFLAG) ||
-		         (lineNext <= docLines && IsCommentLine(lineNext, styler)))) {
-
+				((indentNext & SC_FOLDLEVELWHITEFLAG) ||
+				 (lineNext <= docLines && IsCommentLine(lineNext, styler)))) {
 			lineNext++;
 			indentNext = styler.IndentAmount(lineNext, &spaceFlags, NULL);
 		}
-
+		
 		const int levelAfterComments = indentNext & SC_FOLDLEVELNUMBERMASK;
 		const int levelBeforeComments = std::max(indentCurrentLevel,levelAfterComments);
-
+		
 		// Now set all the indent levels on the lines we skipped
 		// Do this from end to start.  Once we encounter one line
 		// which is indented more than the line after the end of
 		// the comment-block, use the level of the block before
-
+		
 		Sci_Position skipLine = lineNext;
 		int skipLevel = levelAfterComments;
-
+		
 		while (--skipLine > lineCurrent) {
 			int skipLineIndent = styler.IndentAmount(skipLine, &spaceFlags, NULL);
-
+			
 			if (foldCompact) {
 				if ((skipLineIndent & SC_FOLDLEVELNUMBERMASK) > levelAfterComments)
 					skipLevel = levelBeforeComments;
-
+				
 				int whiteFlag = skipLineIndent & SC_FOLDLEVELWHITEFLAG;
-
+				
 				styler.SetLevel(skipLine, skipLevel | whiteFlag);
 			} else {
 				if ((skipLineIndent & SC_FOLDLEVELNUMBERMASK) > levelAfterComments &&
 					!(skipLineIndent & SC_FOLDLEVELWHITEFLAG) &&
 					!IsCommentLine(skipLine, styler))
 					skipLevel = levelBeforeComments;
-
+				
 				styler.SetLevel(skipLine, skipLevel);
 			}
 		}
-
+		
 		// Set fold header on non-comment line
 		if (!comment && !(indentCurrent & SC_FOLDLEVELWHITEFLAG)) {
-			if ((indentCurrent & SC_FOLDLEVELNUMBERMASK) < (indentNext & SC_FOLDLEVELNUMBERMASK))
+			if ((indentCurrent & SC_FOLDLEVELNUMBERMASK) <
+				(indentNext & SC_FOLDLEVELNUMBERMASK))
 				lev |= SC_FOLDLEVELHEADERFLAG;
 		}
-
+		
 		// Keep track of block comment state of previous line
 		prevComment = comment_start || comment_continue;
-
+		
 		// Set fold level for this line and move to next line
 		styler.SetLevel(lineCurrent, lev);
 		indentCurrent = indentNext;
@@ -473,11 +474,12 @@ static void FoldCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length, int
 }
 
 static const char *const csWordLists[] = {
-            "Keywords",
-            "Secondary keywords",
-            "Unused",
-            "Global classes",
-            0,
+			"Keywords",
+			"Secondary keywords",
+			"Unused",
+			"Global classes",
+			0,
 };
 
-LexerModule lmCoffeeScript(SCLEX_COFFEESCRIPT, ColouriseCoffeeScriptDoc, "coffeescript", FoldCoffeeScriptDoc, csWordLists);
+LexerModule lmCoffeeScript(SCLEX_COFFEESCRIPT, ColouriseCoffeeScriptDoc,
+						   "coffeescript", FoldCoffeeScriptDoc, csWordLists);

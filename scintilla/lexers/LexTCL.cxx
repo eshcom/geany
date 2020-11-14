@@ -28,7 +28,7 @@ using namespace Scintilla;
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 ||
-	       (isalnum(ch) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
+		   (isalnum(ch) || ch == '_' || ch == ':' || ch == '.'); // : name space separator
 }
 
 static inline bool IsAWordStart(int ch) {
@@ -39,30 +39,32 @@ static inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-	       (IsADigit(ch, 0x10) || toupper(ch) == 'E' ||
-	        ch == '.' || ch == '-' || ch == '+');
+		   (IsADigit(ch, 0x10) || toupper(ch) == 'E' ||
+			ch == '.' || ch == '-' || ch == '+');
 }
 
-static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , WordList *keywordlists[], Accessor &styler) {
+static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length,
+							int , WordList *keywordlists[], Accessor &styler) {
 #define  isComment(s) (s==SCE_TCL_COMMENT || s==SCE_TCL_COMMENTLINE || s==SCE_TCL_COMMENT_BOX || s==SCE_TCL_BLOCK_COMMENT)
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool commentLevel = false;
 	bool subBrace = false; // substitution begin with a brace ${.....}
-	enum tLineState {LS_DEFAULT, LS_OPEN_COMMENT, LS_OPEN_DOUBLE_QUOTE, LS_COMMENT_BOX, LS_MASK_STATE = 0xf,
-	                 LS_COMMAND_EXPECTED = 16, LS_BRACE_ONLY = 32
-	                } lineState = LS_DEFAULT;
+	enum tLineState {LS_DEFAULT, LS_OPEN_COMMENT, LS_OPEN_DOUBLE_QUOTE,
+					 LS_COMMENT_BOX, LS_MASK_STATE = 0xf,
+					 LS_COMMAND_EXPECTED = 16, LS_BRACE_ONLY = 32
+					} lineState = LS_DEFAULT;
 	bool prevSlash = false;
 	int currentLevel = 0;
 	bool expected = 0;
 	bool subParen = 0;
-
+	
 	Sci_Position currentLine = styler.GetLine(startPos);
 	if (currentLine > 0)
 		currentLine--;
 	length += startPos - styler.LineStart(currentLine);
 	// make sure lines overlap
 	startPos = styler.LineStart(currentLine);
-
+	
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
 	WordList &keywords3 = *keywordlists[2];
@@ -72,7 +74,7 @@ static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , W
 	WordList &keywords7 = *keywordlists[6];
 	WordList &keywords8 = *keywordlists[7];
 	WordList &keywords9 = *keywordlists[8];
-
+	
 	if (currentLine > 0) {
 		int ls = styler.GetLineState(currentLine - 1);
 		lineState = tLineState(ls & LS_MASK_STATE);
@@ -83,7 +85,7 @@ static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , W
 	} else
 		styler.SetLevel(0, SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG);
 	bool visibleChars = false;
-
+	
 	int previousLevel = currentLevel;
 	StyleContext sc(startPos, length, SCE_TCL_DEFAULT, styler);
 	for (; ; sc.Forward()) {
@@ -163,7 +165,7 @@ next:
 					} else if (keywords4.InList(s)) {
 						sc.ChangeState(quote ? SCE_TCL_WORD_IN_QUOTE : SCE_TCL_WORD4);
 					} else if (sc.GetRelative(-static_cast<int>(strlen(s))-1) == '{' &&
-					           keywords5.InList(s) && sc.ch == '}') { // {keyword} exactly no spaces
+							   keywords5.InList(s) && sc.ch == '}') { // {keyword} exactly no spaces
 						sc.ChangeState(SCE_TCL_EXPAND);
 					}
 					if (keywords6.InList(s)) {
@@ -205,7 +207,7 @@ next:
 			if (currentLevel > previousLevel)
 				flag = SC_FOLDLEVELHEADERFLAG;
 			styler.SetLevel(currentLine, flag + previousLevel + SC_FOLDLEVELBASE + (currentLevel << 17) + (commentLevel << 16));
-
+			
 			// Update the line state, so it can be seen by next line
 			if (sc.state == SCE_TCL_IN_QUOTE) {
 				lineState = LS_OPEN_DOUBLE_QUOTE;
@@ -217,8 +219,8 @@ next:
 					lineState = LS_COMMENT_BOX;
 			}
 			styler.SetLineState(currentLine,
-			                    (subBrace ? LS_BRACE_ONLY : 0) |
-			                    (expected ? LS_COMMAND_EXPECTED : 0)  | lineState);
+								(subBrace ? LS_BRACE_ONLY : 0) |
+								(expected ? LS_COMMAND_EXPECTED : 0)  | lineState);
 			if (lineState == LS_COMMENT_BOX)
 				sc.ForwardSetState(SCE_TCL_COMMENT_BOX);
 			else if (lineState == LS_OPEN_DOUBLE_QUOTE)
@@ -229,7 +231,7 @@ next:
 			previousLevel = currentLevel;
 			goto next;
 		}
-
+		
 		if (prevSlash) {
 			prevSlash = false;
 			if (sc.ch == '#' && IsANumberChar(sc.chNext))
@@ -248,7 +250,7 @@ next:
 								IsASpace(static_cast<unsigned char>(sc.ch));
 			}
 		}
-
+		
 		switch (sc.state) {
 		case SCE_TCL_NUMBER:
 			if (!IsANumberChar(sc.ch))
@@ -270,7 +272,7 @@ next:
 			sc.SetState(SCE_TCL_DEFAULT);
 			break;
 		}
-
+		
 		if (sc.ch == '#') {
 			if (visibleChars) {
 				if (sc.state != SCE_TCL_IN_QUOTE && expected)
@@ -283,16 +285,16 @@ next:
 					sc.SetState(SCE_TCL_COMMENT_BOX);
 			}
 		}
-
+		
 		if (!IsASpace(static_cast<unsigned char>(sc.ch))) {
 			visibleChars = true;
 		}
-
+		
 		if (sc.ch == '\\') {
 			prevSlash = true;
 			continue;
 		}
-
+		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_TCL_DEFAULT) {
 			if (IsAWordStart(sc.ch)) {

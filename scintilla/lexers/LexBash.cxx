@@ -136,7 +136,7 @@ bool IsCommentLine(Sci_Position line, LexAccessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (ch != ' ' && ch != '\t')
+		else if (!IsASpaceOrTab(ch))
 			return false;
 	}
 	return false;
@@ -146,7 +146,7 @@ struct OptionsBash {
 	bool fold;
 	bool foldComment;
 	bool foldCompact;
-
+	
 	OptionsBash() {
 		fold = false;
 		foldComment = false;
@@ -162,11 +162,11 @@ const char * const bashWordListDesc[] = {
 struct OptionSetBash : public OptionSet<OptionsBash> {
 	OptionSetBash() {
 		DefineProperty("fold", &OptionsBash::fold);
-
+		
 		DefineProperty("fold.comment", &OptionsBash::foldComment);
-
+		
 		DefineProperty("fold.compact", &OptionsBash::foldCompact);
-
+		
 		DefineWordListSets(bashWordListDesc);
 	}
 };
@@ -226,13 +226,15 @@ public:
 		return osBash.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
 
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
-
+	
 	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override {
 		return subStyles.Allocate(styleBase, numberStyles);
 	}
@@ -261,7 +263,7 @@ public:
 	const char *SCI_METHOD GetSubStyleBases() override {
 		return styleSubable;
 	}
-
+	
 	static ILexer *LexerFactoryBash() {
 		return new LexerBash();
 	}
@@ -293,12 +295,13 @@ Sci_Position SCI_METHOD LexerBash::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
+							   int initStyle, IDocument *pAccess) {
 	WordList cmdDelimiter, bashStruct, bashStruct_in;
 	cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 	bashStruct.Set("if elif fi while until else then do done esac eval");
 	bashStruct_in.Set("for case select");
-
+	
 	CharacterSet setWordStart(CharacterSet::setAlpha, "_");
 	// note that [+-] are often parts of identifiers in shell scripts
 	CharacterSet setWord(CharacterSet::setAlphaNum, "._+-");
@@ -310,7 +313,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	CharacterSet setHereDoc(CharacterSet::setAlpha, "_\\-+!%*,./:?@[]^`{}~");
 	CharacterSet setHereDoc2(CharacterSet::setAlphaNum, "_-+!%*,./:=?@[]^`{}~");
 	CharacterSet setLeftShift(CharacterSet::setDigits, "$");
-
+	
 	class HereDocCls {	// Class to manage HERE document elements
 	public:
 		int State;		// 0: '<<' encountered
@@ -337,7 +340,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 	};
 	HereDocCls HereDoc;
-
+	
 	class QuoteCls {	// Class to manage quote pairs (simplified vs LexPerl)
 		public:
 		int Count;
@@ -358,7 +361,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 	};
 	QuoteCls Quote;
-
+	
 	class QuoteStackCls {	// Class to manage quote pairs that nest
 		public:
 		int Count;
@@ -406,17 +409,19 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		}
 	};
 	QuoteStackCls QuoteStack;
-
-	const WordClassifier &classifierIdentifiers = subStyles.Classifier(SCE_SH_IDENTIFIER);
-	const WordClassifier &classifierScalars = subStyles.Classifier(SCE_SH_SCALAR);
-
+	
+	const WordClassifier &classifierIdentifiers =
+							subStyles.Classifier(SCE_SH_IDENTIFIER);
+	const WordClassifier &classifierScalars =
+							subStyles.Classifier(SCE_SH_SCALAR);
+	
 	int numBase = 0;
 	int digit;
 	Sci_PositionU endPos = startPos + length;
 	int cmdState = BASH_CMD_START;
 	int testExprType = 0;
 	LexAccessor styler(pAccess);
-
+	
 	// Always backtracks to the start of a line that is not a continuation
 	// of the previous line (i.e. start of a bash command segment)
 	Sci_Position ln = styler.GetLine(startPos);
@@ -429,11 +434,10 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		ln--;
 	}
 	initStyle = SCE_SH_DEFAULT;
-
+	
 	StyleContext sc(startPos, endPos - startPos, initStyle, styler);
-
+	
 	for (; sc.More(); sc.Forward()) {
-
 		// handle line continuation, updates per-line stored state
 		if (sc.atLineStart) {
 			ln = styler.GetLine(sc.currentPos);
@@ -447,8 +451,9 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.SetLineState(ln, BASH_CMD_BODY);
 			} else {
 				if (ln > 0) {
-					if ((sc.GetRelative(-3) == '\\' && sc.GetRelative(-2) == '\r' && sc.chPrev == '\n')
-					 || sc.GetRelative(-2) == '\\') {	// handle '\' line continuation
+					if ((sc.GetRelative(-3) == '\\' && sc.GetRelative(-2) == '\r' &&
+							sc.chPrev == '\n') ||
+						sc.GetRelative(-2) == '\\') {	// handle '\' line continuation
 						// retain last line's state
 					} else
 						cmdState = BASH_CMD_START;
@@ -456,15 +461,16 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				styler.SetLineState(ln, cmdState);
 			}
 		}
-
+		
 		// controls change of cmdState at the end of a non-whitespace element
 		// states BODY|TEST|ARITH persist until the end of a command segment
 		// state WORD persist, but ends with 'in' or 'do' construct keywords
 		int cmdStateNew = BASH_CMD_BODY;
-		if (cmdState == BASH_CMD_TEST || cmdState == BASH_CMD_ARITH || cmdState == BASH_CMD_WORD)
+		if (cmdState == BASH_CMD_TEST || cmdState == BASH_CMD_ARITH ||
+				cmdState == BASH_CMD_WORD)
 			cmdStateNew = cmdState;
 		int stylePrev = sc.state;
-
+		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 			case SCE_SH_OPERATOR:
@@ -537,7 +543,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				break;
 			case SCE_SH_IDENTIFIER:
 				if (sc.chPrev == '\\' || !setWord.Contains(sc.ch) ||
-					  (cmdState == BASH_CMD_ARITH && !setWordStart.Contains(sc.ch))) {
+					(cmdState == BASH_CMD_ARITH && !setWordStart.Contains(sc.ch))) {
 					char s[500];
 					sc.GetCurrent(s, sizeof(s));
 					int subStyle = classifierIdentifiers.ValueFor(s);
@@ -652,7 +658,8 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					} else if (HereDoc.Quoted && sc.ch == HereDoc.Quote) {	// closing quote => end of delimiter
 						sc.ForwardSetState(SCE_SH_DEFAULT);
 					} else if (sc.ch == '\\') {
-						if (HereDoc.Quoted && sc.chNext != HereDoc.Quote && sc.chNext != '\\') {
+						if (HereDoc.Quoted && sc.chNext != HereDoc.Quote &&
+							sc.chNext != '\\') {
 							// in quoted prefixes only \ and the quote eat the escape
 							HereDoc.Append(sc.ch);
 						} else {
@@ -786,7 +793,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				}
 				break;
 		}
-
+		
 		// Must check end of HereDoc state 1 before default state is handled
 		if (HereDoc.State == 1 && sc.atLineEnd) {
 			// Begin of here-doc (the line after the here-doc delimiter):
@@ -811,7 +818,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				sc.SetState(SCE_SH_HERE_Q);
 			}
 		}
-
+		
 		// update cmdState about the current command segment
 		if (stylePrev != SCE_SH_DEFAULT && sc.state == SCE_SH_DEFAULT) {
 			cmdState = cmdStateNew;
@@ -991,12 +998,13 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	sc.Complete();
 }
 
-void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument *pAccess) {
-	if(!options.fold)
+void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length,
+								int, IDocument *pAccess) {
+	if (!options.fold)
 		return;
-
+	
 	LexAccessor styler(pAccess);
-
+	
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	int skipHereCh = 0;
@@ -1014,7 +1022,8 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length, int
 		styleNext = styler.StyleAt(i + 1);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		// Comment folding
-		if (options.foldComment && atEOL && IsCommentLine(lineCurrent, styler))
+		if (options.foldComment && atEOL &&
+			IsCommentLine(lineCurrent, styler))
 		{
 			if (!IsCommentLine(lineCurrent - 1, styler)
 				&& IsCommentLine(lineCurrent + 1, styler))
@@ -1029,9 +1038,11 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length, int
 			if (styleNext != style) {
 				word[wordlen] = '\0';
 				wordlen = 0;
-				if (strcmp(word, "if") == 0 || strcmp(word, "case") == 0 || strcmp(word, "do") == 0) {
+				if (strcmp(word, "if") == 0 || strcmp(word, "case") == 0 ||
+						strcmp(word, "do") == 0) {
 					levelCurrent++;
-				} else if (strcmp(word, "fi") == 0 || strcmp(word, "esac") == 0 || strcmp(word, "done") == 0) {
+				} else if (strcmp(word, "fi") == 0 || strcmp(word, "esac") == 0 ||
+						   strcmp(word, "done") == 0) {
 					levelCurrent--;
 				}
 			}
@@ -1056,7 +1067,8 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length, int
 					}
 				}
 			}
-		} else if (style == SCE_SH_HERE_Q && styler.StyleAt(i+1) == SCE_SH_DEFAULT) {
+		} else if (style == SCE_SH_HERE_Q &&
+				   styler.StyleAt(i + 1) == SCE_SH_DEFAULT) {
 			levelCurrent--;
 		}
 		if (atEOL) {
@@ -1080,4 +1092,5 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length, int
 	styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
-LexerModule lmBash(SCLEX_BASH, LexerBash::LexerFactoryBash, "bash", bashWordListDesc);
+LexerModule lmBash(SCLEX_BASH, LexerBash::LexerFactoryBash,
+				   "bash", bashWordListDesc);

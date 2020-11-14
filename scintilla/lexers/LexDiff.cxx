@@ -27,14 +27,16 @@ using namespace Scintilla;
 
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return (styler[i] == '\n') ||
-	       ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
+		   ((styler[i] == '\r') &&
+			(styler.SafeGetCharAt(i + 1) != '\n'));
 }
 
 #define DIFF_BUFFER_START_SIZE 16
 // Note that ColouriseDiffLine analyzes only the first DIFF_BUFFER_START_SIZE
 // characters of each line to classify the line.
 
-static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine, Accessor &styler) {
+static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine,
+							  Accessor &styler) {
 	// It is needed to remember the current state to recognize starting
 	// comment lines before the first "diff " or "--- ". If a real
 	// difference starts then each line starting with ' ' is a whitespace
@@ -99,7 +101,8 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine, Accessor &
 	}
 }
 
-static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length,
+							 int, WordList *[], Accessor &styler) {
 	char lineBuffer[DIFF_BUFFER_START_SIZE] = "";
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -125,12 +128,13 @@ static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length, int, W
 	}
 }
 
-static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length,
+						int, WordList *[], Accessor &styler) {
 	Sci_Position curLine = styler.GetLine(startPos);
 	Sci_Position curLineStart = styler.LineStart(curLine);
 	int prevLevel = curLine > 0 ? styler.LevelAt(curLine - 1) : SC_FOLDLEVELBASE;
 	int nextLevel;
-
+	
 	do {
 		const int lineType = styler.StyleAt(curLineStart);
 		if (lineType == SCE_DIFF_COMMAND)
@@ -143,13 +147,13 @@ static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length, int, WordLi
 			nextLevel = (prevLevel & SC_FOLDLEVELNUMBERMASK) + 1;
 		else
 			nextLevel = prevLevel;
-
+		
 		if ((nextLevel & SC_FOLDLEVELHEADERFLAG) && (nextLevel == prevLevel))
 			styler.SetLevel(curLine-1, prevLevel & ~SC_FOLDLEVELHEADERFLAG);
-
+		
 		styler.SetLevel(curLine, nextLevel);
 		prevLevel = nextLevel;
-
+		
 		curLineStart = styler.LineStart(++curLine);
 	} while (static_cast<Sci_Position>(startPos)+length > curLineStart);
 }
@@ -158,4 +162,5 @@ static const char *const emptyWordListDesc[] = {
 	0
 };
 
-LexerModule lmDiff(SCLEX_DIFF, ColouriseDiffDoc, "diff", FoldDiffDoc, emptyWordListDesc);
+LexerModule lmDiff(SCLEX_DIFF, ColouriseDiffDoc, "diff",
+				   FoldDiffDoc, emptyWordListDesc);

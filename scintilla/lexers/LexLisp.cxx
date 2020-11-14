@@ -40,13 +40,14 @@ static inline bool isLispoperator(char ch) {
 }
 
 static inline bool isLispwordstart(char ch) {
-	return IsASCII(ch) && !IsASpace(ch) && !isLispoperator(ch) &&
-		   ch != ';' && ch != '\n' && ch != '\r' &&  ch != '\"';
+	return IsASCII(ch) && !IsASpace(ch) && !IsACRLF(ch) &&
+		   !isLispoperator(ch) && ch != ';' && ch != '\"';
 }
 
 
-static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &keywords,
-							 WordList &keywords_kw, Accessor &styler) {
+static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end,
+							 WordList &keywords, WordList &keywords_kw,
+							 Accessor &styler) {
 	assert(end >= start);
 	char s[100];
 	Sci_PositionU i;
@@ -57,8 +58,8 @@ static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &k
 		if (!isdigit(s[i]) && (s[i] != '.')) digit_flag = false;
 	}
 	char chAttr = SCE_LISP_IDENTIFIER;
-
-	if(digit_flag) chAttr = SCE_LISP_NUMBER;
+	
+	if (digit_flag) chAttr = SCE_LISP_NUMBER;
 	else {
 		if (keywords.InList(s)) {
 			chAttr = SCE_LISP_KEYWORD;
@@ -74,14 +75,15 @@ static void classifyWordLisp(Sci_PositionU start, Sci_PositionU end, WordList &k
 }
 
 
-static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-							 WordList *keywordlists[], Accessor &styler) {
-
+static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length,
+							 int initStyle, WordList *keywordlists[],
+							 Accessor &styler) {
+	
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords_kw = *keywordlists[1];
-
+	
 	styler.StartAt(startPos);
-
+	
 	int state = initStyle, radix = -1;
 	char chNext = styler[startPos];
 	Sci_PositionU lengthDoc = startPos + length;
@@ -89,15 +91,15 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int in
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
-
+		
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-
+		
 		if (styler.IsLeadByte(ch)) {
 			chNext = styler.SafeGetCharAt(i + 2);
 			i += 1;
 			continue;
 		}
-
+		
 		if (state == SCE_LISP_DEFAULT) {
 			if (ch == '#') {
 				styler.ColourTo(i - 1, state);
@@ -128,7 +130,8 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int in
 		} else if (state == SCE_LISP_IDENTIFIER || state == SCE_LISP_SYMBOL) {
 			if (!isLispwordstart(ch)) {
 				if (state == SCE_LISP_IDENTIFIER) {
-					classifyWordLisp(styler.GetStartSegment(), i - 1, keywords, keywords_kw, styler);
+					classifyWordLisp(styler.GetStartSegment(), i - 1,
+									 keywords, keywords_kw, styler);
 				} else {
 					styler.ColourTo(i - 1, state);
 				}
@@ -233,7 +236,8 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length, int in
 }
 
 static void FoldLispDoc(Sci_PositionU startPos, Sci_Position length,
-						int /* initStyle */, WordList *[], Accessor &styler) {
+						int /* initStyle */, WordList *[],
+						Accessor &styler) {
 	Sci_PositionU lengthDoc = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
@@ -281,4 +285,5 @@ static const char * const lispWordListDesc[] = {
 	0
 };
 
-LexerModule lmLISP(SCLEX_LISP, ColouriseLispDoc, "lisp", FoldLispDoc, lispWordListDesc);
+LexerModule lmLISP(SCLEX_LISP, ColouriseLispDoc, "lisp",
+				   FoldLispDoc, lispWordListDesc);

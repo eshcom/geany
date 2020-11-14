@@ -65,7 +65,7 @@ private:
 		if (static_cast<Sci_Position>(modes.size()) > numLines * 2 + 256)
 			modes.resize(numLines + 128);
 	}
-
+	
 	vector<latexFoldSave> saves;
 	void setSave(Sci_Position line, const latexFoldSave &save) {
 		if (line >= static_cast<Sci_Position>(saves.size())) saves.resize(line + 1);
@@ -86,13 +86,16 @@ public:
 	static ILexer *LexerFactoryLaTeX() {
 		return new LexerLaTeX();
 	}
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
 };
 
 static bool latexIsSpecial(int ch) {
-	return (ch == '#') || (ch == '$') || (ch == '%') || (ch == '&') || (ch == '_') ||
-		   (ch == '{') || (ch == '}') || (ch == ' ');
+	return (ch == '#') || (ch == '$') || (ch == '%') ||
+		   (ch == '&') || (ch == '_') || (ch == ' ') ||
+		   (ch == '{') || (ch == '}');
 }
 
 static bool latexIsBlank(int ch) {
@@ -142,18 +145,19 @@ static bool latexNextNotBlankIs(Sci_Position i, Accessor &styler, char needle) {
 	return false;
 }
 
-static bool latexLastWordIs(Sci_Position start, Accessor &styler, const char *needle) {
+static bool latexLastWordIs(Sci_Position start, Accessor &styler,
+							const char *needle) {
 	Sci_PositionU i = 0;
 	Sci_PositionU l = static_cast<Sci_PositionU>(strlen(needle));
 	Sci_Position ini = start-l+1;
 	char s[32];
-
+	
 	while (i < l && i < 31) {
 		s[i] = styler.SafeGetCharAt(ini + i);
 		i++;
 	}
 	s[i] = '\0';
-
+	
 	return (strcmp(s, needle) == 0);
 }
 
@@ -189,33 +193,35 @@ static inline void latexStateReset(int &mode, int &state) {
 
 // There are cases not handled correctly, like $abcd\textrm{what is $x+y$}z+w$.
 // But I think it's already good enough.
-void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
+								int initStyle, IDocument *pAccess) {
 	// startPos is assumed to be the first character of a line
 	Accessor styler(pAccess, &props);
 	styler.StartAt(startPos);
 	int mode = getMode(styler.GetLine(startPos) - 1);
 	int state = initStyle;
-	if (state == SCE_L_ERROR || state == SCE_L_SHORTCMD || state == SCE_L_SPECIAL)   // should not happen
+	if (state == SCE_L_ERROR || state == SCE_L_SHORTCMD ||
+			state == SCE_L_SPECIAL)   // should not happen
 		latexStateReset(mode, state);
-
+	
 	char chNext = styler.SafeGetCharAt(startPos);
 	char chVerbatimDelim = '\0';
 	styler.StartSegment(startPos);
 	Sci_Position lengthDoc = startPos + length;
-
+	
 	for (Sci_Position i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
-
+		
 		if (styler.IsLeadByte(ch)) {
 			i++;
 			chNext = styler.SafeGetCharAt(i + 1);
 			continue;
 		}
-
+		
 		if (IsACRLF(ch))
 			setMode(styler.GetLine(i), mode);
-
+		
 		switch (state) {
 		case SCE_L_DEFAULT :
 			switch (ch) {
@@ -270,13 +276,14 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length, int
 		case SCE_L_COMMAND :
 			if (!latexIsLetter(chNext)) {
 				styler.ColourTo(i, state);
-				if (latexNextNotBlankIs(i + 1, styler, '[' )) {
+				if (latexNextNotBlankIs(i + 1, styler, '[')) {
 					state = SCE_L_CMDOPT;
 				} else if (latexLastWordIs(i, styler, "\\begin")) {
 					state = SCE_L_TAG;
 				} else if (latexLastWordIs(i, styler, "\\end")) {
 					state = SCE_L_TAG2;
-				} else if (latexLastWordIs(i, styler, "\\verb") && chNext != '*' && chNext != ' ') {
+				} else if (latexLastWordIs(i, styler, "\\verb") &&
+						   chNext != '*' && chNext != ' ') {
 					chVerbatimDelim = chNext;
 					state = SCE_L_VERBATIM;
 				} else {
@@ -477,9 +484,10 @@ static int latexFoldSaveToInt(const latexFoldSave &save) {
 
 // Change folding state while processing a line
 // Return the level before the first relevant command
-void SCI_METHOD LexerLaTeX::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument *pAccess) {
+void SCI_METHOD LexerLaTeX::Fold(Sci_PositionU startPos, Sci_Position length,
+								 int, IDocument *pAccess) {
 	const char *structWords[7] = {"part", "chapter", "section", "subsection",
-		"subsubsection", "paragraph", "subparagraph"};
+								  "subsubsection", "paragraph", "subparagraph"};
 	Accessor styler(pAccess, &props);
 	Sci_PositionU endPos = startPos + length;
 	Sci_Position curLine = styler.GetLine(startPos);
@@ -490,7 +498,8 @@ void SCI_METHOD LexerLaTeX::Fold(Sci_PositionU startPos, Sci_Position length, in
 		Sci_Position i, j;
 		int lev = -1;
 		bool needFold = false;
-		for (i = static_cast<Sci_Position>(startPos); i < static_cast<Sci_Position>(endPos); ++i) {
+		for (i = static_cast<Sci_Position>(startPos);
+			 i < static_cast<Sci_Position>(endPos); ++i) {
 			ch = styler.SafeGetCharAt(i);
 			if (IsACRLF(ch)) break;
 			if (ch != '\\' || styler.StyleAt(i) != SCE_L_COMMAND) continue;
@@ -544,4 +553,5 @@ static const char *const emptyWordListDesc[] = {
 	0
 };
 
-LexerModule lmLatex(SCLEX_LATEX, LexerLaTeX::LexerFactoryLaTeX, "latex", emptyWordListDesc);
+LexerModule lmLatex(SCLEX_LATEX, LexerLaTeX::LexerFactoryLaTeX,
+					"latex", emptyWordListDesc);
