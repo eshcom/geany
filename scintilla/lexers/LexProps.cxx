@@ -62,14 +62,15 @@ static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
 						   Sci_PositionU endPos) {
 	int mailState = 0;
 	for (; pos < endPos; pos++) {
-		if (styler[pos] == '\r' || styler[pos] == '\n') { // end of line
+		if (IsACRLF(styler[pos])) { // end of line
 			while (--pos > 0 && IsASpaceOrTab(styler[pos]));
 			if (!IsUpperOrLowerCase(styler[pos]))
 				mailState = 0;
 			break;
 		} else if (mailState == 0) {
-			if (styler[pos] == '@' && pos > 0 && pos < (endPos - 1) &&
-				isalnum(styler[pos - 1]) && isalnum(styler[pos + 1])) {
+			if (styler[pos] == '@' && pos > 0 && pos < (endPos - 1)
+				&& isalnum(styler[pos - 1])
+				&& isalnum(styler[pos + 1])) {
 				mailState = 1;
 			} else if (!IsAWordChar(styler[pos]) && styler[pos] != '.') {
 				break;
@@ -122,9 +123,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	bool goToLineEnd = false;
 	bool maybeIpAddr = false;
-	bool isSubVar = false;
-	int hexColorLen = 0;
 	int numDotCnt = 0;
+	int hexColorLen = 0;
+	int levelSqBrackets = 0;
+	
+	bool isSubVar = false;
 	
 	for (; sc.More(); sc.Forward()) {
 		
@@ -199,6 +202,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							}
 						}
 					}
+					
 					if (sc.Match('0', 'x') &&
 							IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 						sc.SetState(SCE_PROPS_HEXNUMBER);
@@ -232,20 +236,32 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						hexColorLen = 0;
 						continue;
 						
-					} else if (sc.ch == '\"') {
+					} else if (sc.ch == '\"' && sc.chPrev != '\\') {
+						int levelSqBrcks = 0;
 						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
 							if (IsACRLF(styler[i])) { // end of line
 								break;
-							} else if (styler[i] == '"') {
+							} else if (styler[i] == '[') {
+								levelSqBrcks++;
+							} else if (styler[i] == ']') {
+								levelSqBrcks--;
+							} else if (styler[i] == '\"' && styler[i - 1] != '\\'
+										&& levelSqBrcks == 0) { // exclude regular expression
 								sc.SetState(SCE_PROPS_DOUBLESTRING);
 								break;
 							}
 						}
-					} else if (sc.ch == '\'') {
+					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+						int levelSqBrcks = 0;
 						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
 							if (IsACRLF(styler[i])) { // end of line
 								break;
-							} else if (styler[i] == '\'') {
+							} else if (styler[i] == '[') {
+								levelSqBrcks++;
+							} else if (styler[i] == ']') {
+								levelSqBrcks--;
+							} else if (styler[i] == '\'' && styler[i - 1] != '\\'
+										&& levelSqBrcks == 0) { // exclude regular expression
 								sc.SetState(SCE_PROPS_SINGLESTRING);
 								break;
 							}
@@ -296,11 +312,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_DOUBLESTRING:
-				if (sc.ch == '\"')
+				if (sc.ch == '\"' && sc.chPrev != '\\'
+					&& levelSqBrackets == 0) // exclude regular expression
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_SINGLESTRING:
-				if (sc.ch == '\'')
+				if (sc.ch == '\'' && sc.chPrev != '\\'
+					&& levelSqBrackets == 0) // exclude regular expression
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_NUMBER:
@@ -353,6 +371,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				break;
 		}
+		
 		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
 			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
 			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
@@ -366,6 +385,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		}
+		if (sc.state == SCE_PROPS_DOUBLESTRING ||
+			sc.state == SCE_PROPS_SINGLESTRING) {
+			if (sc.ch == '[')
+				levelSqBrackets++;
+			else if (sc.ch == ']')
+				levelSqBrackets--;
+		}
+		
 		if (sc.atLineEnd) {
 			if (sc.state == SCE_PROPS_HEX_COLOR)
 				// incomplete typed values are changed to SCE_PROPS_VALUE
