@@ -111,8 +111,7 @@ static inline void CheckSubVar(StyleContext &sc, bool *isSubVar,
 		}
 	} else if (*isSubVar && sc.ch == '}') {
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
-		sc.Forward();
-		sc.SetState(*beforeSubVarState);
+		sc.ForwardSetState(*beforeSubVarState);
 		*isSubVar = false;
 	}
 }

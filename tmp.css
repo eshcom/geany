@@ -5,12 +5,16 @@
 p {
 	transition: "dfg";
 	transition: #{a};
-	transition: #{a};
+	transition: #{ a};
+	transition: #{a };
+	transition: #{ a };
 }
 
 .example {
 	unquoted: #{"string"};
-	unquoted: #{"string"};
+	unquoted: #{ "string"};
+	unquoted: #{"string" };
+	unquoted: #{ "string" };
 }
 
 @define-color theme_fg_color /**/ @fg_color;
