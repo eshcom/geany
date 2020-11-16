@@ -15,18 +15,29 @@ p {
 	unquoted: #{ "string"};
 	unquoted: #{"string" };
 	unquoted: #{ "string" };
+	unquoted: #{true};
+	unquoted: #{red};
+	unquoted: #{red };
+	unquoted: #{#ededed};
+	unquoted: #{#eded};
+	unquoted: #{#eded };
+	unquoted: #{5.23};
+	unquoted: #{fun(test)};
 }
 
 @define-color theme_fg_color /**/ @fg_color;
 @define-color theme_fg_color /**/ @fg_color@fg_color;
+@define-color theme_fg_color /**/ @fg_color/**/@fg_color;
 @define-color theme_base_color /**/ #ededed;
 @define-color theme_base_color /**/ #ededed#ededed;
+@define-color theme_base_color /**/ #ededed/**/#ededed;
 @define-color borders shade(/**/@bg_color/**/, /**/ 0.82/**/);
 @define-color borders shade(/**/#ededed/**/, /**/0.82/**/);
 @define-color borders /**/ shade(/**/red/**/, 0.82);
 @define-color borders shade(solid, 0.82);
 @define-color borders shade (solid rgba(14/**/,/**/ 13, 0, 0.03)/**/,/**/ 0.82);
 @define-color unfocused_borders transparent;
+@define-color unfocused_borders/**/ /**/transparent;
 @namespace url(http://www.w3.org/1999/xhtml);
 @namespace url(ftp://www.w3.org/1999/1.png);
 @namespace svg url(http://www.w3.org/2000/svg);
@@ -58,6 +69,7 @@ p {
 										(to bottom, @theme_base_color); border-color: @theme_fg_color; } 
 	90% {background-image: linear-gradient (to bottom, @theme_base_color); border-color: @theme_fg_color; }
 	100% {background-image: linear-gradient( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
+	100% {background-image: linear-gradient/**/( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
 }
 .nautilus-operations-button-needs-attention {
 	animation: needs_attention_keyframes 2s-s ease-in-out;
@@ -352,6 +364,15 @@ p {
 		margin-top: 71px;
 	}
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0);
+@media screen and (-webkit-min-device-pixel-ratio:0/**/);
+@media screen and (-webkit-min-device-pixel-ratio:/**/0);
+@media screen and (-webkit-min-device-pixel-ratio/**/:0);
+@media screen and (/**/-webkit-min-device-pixel-ratio:0);
+@media screen and /**/(-webkit-min-device-pixel-ratio:0);
+@media screen /**/and (-webkit-min-device-pixel-ratio:0);
+@media /**/screen and (-webkit-min-device-pixel-ratio:0);
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px),
 	   only screen and (min-device-width: 320px) and (max-device-width: 568px) {
