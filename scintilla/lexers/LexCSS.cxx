@@ -479,7 +479,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
 				
 				if (!IsAWordChar(sc.chPrev)) {
-					// new typed value state
+					// start a new state of a typed value
 					if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
 															IsADigit(sc.chNext))))) {
@@ -492,12 +492,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 						continue;
 						
 					} else if (IsAWordChar(sc.ch)) {
+						// start of word
 						// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
 						if (sc.state != SCE_CSS_VALUE)	// if current state == oper-val:
 							sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default value state)
 						continue;
 					}
-				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
+				} else if (!IsAWordChar(sc.ch)) {
+					// end of word (here also true condition: IsAWordChar(sc.chPrev))
 					// look ahead to see '('
 					int ch = 0;
 					Sci_PositionU i = sc.currentPos;
