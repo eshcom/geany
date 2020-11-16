@@ -65,11 +65,11 @@ static inline bool IsAWordChar(const unsigned int ch) {
 	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
 }
 
-static inline bool IsAWordOrPercent(int ch) {
+static inline bool IsAWordOrPercent(const int ch) {
 	return IsAWordChar(ch) || ch == '%';
 }
 
-static inline bool IsAWordOrSpace(int ch) {
+static inline bool IsAWordOrSpace(const int ch) {
 	return IsAWordChar(ch) || IsASpace(ch);
 }
 
@@ -479,6 +479,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
 				
 				if (!IsAWordChar(sc.chPrev)) {
+					// new typed value state
 					if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
 															IsADigit(sc.chNext))))) {
@@ -486,14 +487,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 						continue;
 						
 					} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
-						hexColorLen = 0;
 						sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
+						hexColorLen = 0;
 						continue;
 						
 					} else if (IsAWordChar(sc.ch)) {
 						// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
-						if (sc.state != SCE_CSS_VALUE)	// if current state -> oper-val:
-							sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default)
+						if (sc.state != SCE_CSS_VALUE)	// if current state == oper-val:
+							sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default value state)
 						continue;
 					}
 				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
@@ -545,9 +546,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 							sc.ChangeState(SCE_CSS_URL_VALUE);
 							continue;
 						} else {
-							sc.SetState(SCE_CSS_VALUE); // fixate sub-val by sub-val (by default)
+							// fixate sub-val by sub-val (by default value state)
+							sc.SetState(SCE_CSS_VALUE);
 						}
 					}
+				} else {
+					//~ IsAWordChar(sc.chPrev)	is true
+					//~ IsAWordChar(sc.ch)		is true
+					continue;
 				}
 				break;
 			case SCE_CSS_NUMBER:
@@ -600,7 +606,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			 sc.state == SCE_CSS_IMPORTANT)) { // TODO: refactoring: invert conditions
 			
 			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
-				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state by important
+				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state (before sc.currentPos) by important
 				while (sc.currentPos < endPos && IsASpace(sc.chNext))
 					sc.Forward();
 				continue;
@@ -609,11 +615,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 												 insideParentheses)) {
 				if (!sc.Match('/', '*') && !(sc.Match('/', '/') &&
 											 !insideParentheses)) {
-					sc.SetState(SCE_CSS_OPER_VALUE); // fixate current state by oper-val
+					sc.SetState(SCE_CSS_OPER_VALUE); // fixate current state (before sc.currentPos) by oper-val
 					continue;
 				}
 			} else if (sc.state != SCE_CSS_VALUE) {
-				sc.SetState(SCE_CSS_VALUE); // fixate current state by sub-val (by default)
+				// fixate current state (before sc.currentPos) by sub-val (by default value state)
+				sc.SetState(SCE_CSS_VALUE);
 			}
 		}
 		
