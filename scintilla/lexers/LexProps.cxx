@@ -103,6 +103,44 @@ static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
 	return mailState == 4;
 }
 
+//~ esh: CheckSubVar func
+static inline void CheckSubVar(StyleContext &sc, Accessor &styler,
+							   Sci_PositionU endPos, bool *isSubVar,
+							   int *beforeSubVarState) {
+	if ((sc.ch == '#' || sc.ch == '$' || sc.ch == '%')
+		&& sc.chNext == '{') {
+		for (Sci_PositionU i = sc.currentPos + 2; i < endPos; i++) {
+			if (IsACRLF(styler[i])) { // end of line
+				break;
+			} else if (styler[i] == '}') {
+				if (sc.state == SCE_PROPS_DOUBLESTRING ||
+					sc.state == SCE_PROPS_SINGLESTRING)
+					*beforeSubVarState = sc.state;
+				else
+					*beforeSubVarState = SCE_PROPS_VALUE;
+				
+				sc.SetState(SCE_PROPS_SUBVAR_OPER);
+				sc.Forward();
+				sc.Forward();
+				if (sc.ch == '}') {
+					sc.ForwardSetState(*beforeSubVarState);
+				} else {
+					sc.SetState(SCE_PROPS_VALUE);
+					*isSubVar = true;
+				}
+				break;
+			}
+		}
+	}
+}
+
+static inline void CheckSqBrackets(StyleContext &sc, int *levelSqBrackets) {
+	if (sc.ch == '[')
+		(*levelSqBrackets)++;
+	else if (sc.ch == ']')
+		(*levelSqBrackets)--;
+}
+
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, WordList *keywordlists[],
 							  Accessor &styler) {
@@ -128,6 +166,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	int levelSqBrackets = 0;
 	
 	bool isSubVar = false;
+	int beforeSubVarState = -1;
 	
 	for (; sc.More(); sc.Forward()) {
 		
@@ -147,7 +186,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
-				if (IsASpaceOrTab(sc.ch))
+				if (sc.atLineEnd || IsASpaceOrTab(sc.ch))
 					continue;
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
 					sc.ChangeState(SCE_PROPS_COMMENT);
@@ -155,6 +194,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (sc.ch == '[') {
 					sc.ChangeState(SCE_PROPS_SECTION);
+					continue;
 				} else if (sc.ch == '@') {
 					sc.ChangeState(SCE_PROPS_DEFVAL);
 					if (IsAssignChar(sc.chNext))
@@ -162,49 +202,50 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else if (sc.ch == '=') {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
-					continue;
+					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else if (sc.ch == '{' || sc.ch == '}') {
 					sc.SetState(SCE_PROPS_OPER_VALUE);
+					sc.ForwardSetState(SCE_PROPS_DEFAULT);
 					continue;
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
+					continue;
 				}
 				break;
 				
 			case SCE_PROPS_SECTION:
-				if (sc.ch == ']')
+				if (sc.ch == ']') {
 					sc.ForwardSetState(SCE_PROPS_DEFAULT);
-				break;
+				} else if (sc.atLineEnd) {
+					// incomplete section -> changing to SCE_PROPS_DEFAULT
+					sc.ChangeState(SCE_PROPS_DEFAULT);
+				}
+				continue;
 				
 			case SCE_PROPS_KEY:
 				if (IsAssignChar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
+					sc.ForwardSetState(SCE_PROPS_VALUE);
+				} else if (sc.atLineEnd) {
+					// incomplete key -> changing to SCE_PROPS_DEFAULT
+					sc.ChangeState(SCE_PROPS_DEFAULT);
 					continue;
 				}
 				break;
 		}
 		
+		// check sub-var
+		CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState);
+		
 		switch (sc.state) {
-			case SCE_PROPS_ASSIGNMENT:
 			case SCE_PROPS_VALUE:
 			case SCE_PROPS_OPER_VALUE:
+			case SCE_PROPS_SUBVAR_OPER:
+				
 				if (!IsAWordChar(sc.chPrev)) {
-					if (sc.Match('#', '{')) {
-						for (Sci_PositionU i = sc.currentPos + 2; i < endPos; i++) {
-							if (IsACRLF(styler[i])) { // end of line
-								break;
-							} else if (styler[i] == '}') {
-								sc.SetState(SCE_PROPS_SUBVAR_OPER);
-								sc.Forward();
-								sc.ForwardSetState(SCE_PROPS_VALUE);
-								isSubVar = true;
-								break;
-							}
-						}
-					}
-					
-					if (sc.Match('0', 'x') &&
-							IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
+					// start a new state of a typed value
+					if (sc.Match('0', 'x')
+						&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 						sc.SetState(SCE_PROPS_HEXNUMBER);
 						sc.Forward();
 						numDotCnt = 0;
@@ -236,7 +277,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						hexColorLen = 0;
 						continue;
 						
-					} else if (sc.ch == '\"' && sc.chPrev != '\\') {
+					} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
 						int levelSqBrcks = 0;
 						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
 							if (IsACRLF(styler[i])) { // end of line
@@ -245,37 +286,31 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 								levelSqBrcks++;
 							} else if (styler[i] == ']') {
 								levelSqBrcks--;
-							} else if (styler[i] == '\"' && styler[i - 1] != '\\'
+							} else if (styler[i] == sc.ch && styler[i - 1] != '\\'
 										&& levelSqBrcks == 0) { // exclude regular expression
-								sc.SetState(SCE_PROPS_DOUBLESTRING);
-								break;
-							}
-						}
-					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
-						int levelSqBrcks = 0;
-						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
-							if (IsACRLF(styler[i])) { // end of line
-								break;
-							} else if (styler[i] == '[') {
-								levelSqBrcks++;
-							} else if (styler[i] == ']') {
-								levelSqBrcks--;
-							} else if (styler[i] == '\'' && styler[i - 1] != '\\'
-										&& levelSqBrcks == 0) { // exclude regular expression
-								sc.SetState(SCE_PROPS_SINGLESTRING);
+								// start of string
+								sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
+															SCE_PROPS_SINGLESTRING);
+								levelSqBrackets = 0;
 								break;
 							}
 						}
 					} else if (IsAWordChar(sc.ch) && !IsSubtractOper(sc)) {
-						sc.SetState(SCE_PROPS_VALUE);
+						// start of word
+						if (sc.state != SCE_PROPS_VALUE)
+							sc.SetState(SCE_PROPS_VALUE);
 						continue;
 					}
-				} else if (!IsAWordChar(sc.ch)) { // here also true condition: IsAWordChar(sc.chPrev)
-					char s[100];
-					sc.GetCurrentLowered(s, sizeof(s));
+				} else if (!IsAWordChar(sc.ch)) {
+					// end of word (here also true condition: IsAWordChar(sc.chPrev))
+					char word[100];
+					sc.GetCurrentLowered(word, sizeof(word));
+					char *word2 = word;
+					while (*word2 && !IsAWordChar(*word2))
+						word2++;
 					
 					// check url:
-					if (IsUrl(s, styler, sc.currentPos, endPos)) {
+					if (IsUrl(word2, styler, sc.currentPos, endPos)) {
 						sc.ChangeState(SCE_PROPS_URL_VALUE);
 						goToLineEnd = true;
 						continue;
@@ -287,12 +322,15 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						continue;
 					}
 					// find a word to defined lists:
-					if (commonWords.InList(s)) {
+					if (commonWords.InList(word2)) {
 						sc.ChangeState(SCE_PROPS_COMMONWORD);
-					} else if (namedColors.InList(s)) {
+					} else if (namedColors.InList(word2)) {
 						sc.ChangeState(SCE_PROPS_NAMED_COLOR);
 					}
-					sc.SetState(SCE_PROPS_VALUE);
+				} else {
+					//~ IsAWordChar(sc.chPrev)	is true
+					//~ IsAWordChar(sc.ch)		is true
+					continue;
 				}
 				break;
 			
@@ -306,20 +344,29 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					hexColorLen++;
 					continue;
 				}
-				if ((hexColorLen != 3 && hexColorLen != 6) || IsAWordChar(sc.ch))
+				if ((hexColorLen != 3 && hexColorLen != 6)
+					|| IsAWordChar(sc.ch))
 					sc.ChangeState(SCE_PROPS_VALUE);
 				else
 					sc.SetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_DOUBLESTRING:
 				if (sc.ch == '\"' && sc.chPrev != '\\'
-					&& levelSqBrackets == 0) // exclude regular expression
+					&& levelSqBrackets == 0) { // exclude regular expression
+					// end of string
 					sc.ForwardSetState(SCE_PROPS_VALUE);
+				} else {
+					CheckSqBrackets(sc, &levelSqBrackets);
+				}
 				break;
 			case SCE_PROPS_SINGLESTRING:
 				if (sc.ch == '\'' && sc.chPrev != '\\'
-					&& levelSqBrackets == 0) // exclude regular expression
+					&& levelSqBrackets == 0) { // exclude regular expression
+					// end of string
 					sc.ForwardSetState(SCE_PROPS_VALUE);
+				} else {
+					CheckSqBrackets(sc, &levelSqBrackets);
+				}
 				break;
 			case SCE_PROPS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
@@ -333,7 +380,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 					continue;
 				}
-				if (IsAWordChar(sc.ch) || sc.ch == '.' || sc.ch == '+' || sc.ch == '-') {
+				if (IsAWordChar(sc.ch) || sc.ch == '.'
+					|| sc.ch == '+' || sc.ch == '-') {
 					sc.ChangeState(SCE_PROPS_VALUE);			// bad num/ip
 				} else {
 					if (numDotCnt == 3 && maybeIpAddr) {		// fixate ip-address
@@ -372,35 +420,18 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 		}
 		
-		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
-			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
-			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER ||
-			sc.state == SCE_PROPS_ASSIGNMENT) {
-			if (IsOperValue(sc.ch) || IsSubtractOper(sc)) {
-				if (isSubVar && sc.ch == '}') {
-					sc.SetState(SCE_PROPS_SUBVAR_OPER);
-					isSubVar = false;
-				} else {
-					sc.SetState(SCE_PROPS_OPER_VALUE);
-				}
-			}
-		}
-		if (sc.state == SCE_PROPS_DOUBLESTRING ||
-			sc.state == SCE_PROPS_SINGLESTRING) {
-			if (sc.ch == '[')
-				levelSqBrackets++;
-			else if (sc.ch == ']')
-				levelSqBrackets--;
+		if (isSubVar && sc.ch == '}') {
+			sc.SetState(SCE_PROPS_SUBVAR_OPER);
+			sc.ForwardSetState(beforeSubVarState);
+			isSubVar = false;
 		}
 		
-		if (sc.atLineEnd) {
-			if (sc.state == SCE_PROPS_HEX_COLOR)
-				// incomplete typed values are changed to SCE_PROPS_VALUE
-				sc.ChangeState(SCE_PROPS_VALUE);
-			else if (sc.state == SCE_PROPS_SECTION ||
-					 sc.state == SCE_PROPS_KEY)
-				// incomplete section/key are changed to SCE_PROPS_DEFAULT
-				sc.ChangeState(SCE_PROPS_DEFAULT);
+		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
+			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
+			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER) {
+			if (IsOperValue(sc.ch) || IsSubtractOper(sc)) {
+				sc.SetState(SCE_PROPS_OPER_VALUE);
+			}
 		}
 	}
 	sc.Complete();
