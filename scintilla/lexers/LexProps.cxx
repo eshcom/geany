@@ -184,34 +184,31 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		if (goToLineEnd)
 			continue;
 		
+		// start new section/key/assignment state
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
-				if (sc.atLineEnd || IsASpaceOrTab(sc.ch))
-					continue;
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
 					sc.ChangeState(SCE_PROPS_COMMENT);
 					goToLineEnd = true;
-					continue;
 				} else if (sc.ch == '[') {
 					sc.ChangeState(SCE_PROPS_SECTION);
-					continue;
 				} else if (sc.ch == '@') {
 					sc.ChangeState(SCE_PROPS_DEFVAL);
 					if (IsAssignChar(sc.chNext))
 						sc.ForwardSetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
+					break;
 				} else if (sc.ch == '=') {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
+					break;
 				} else if (sc.ch == '{' || sc.ch == '}') {
 					sc.SetState(SCE_PROPS_OPER_VALUE);
 					sc.ForwardSetState(SCE_PROPS_DEFAULT);
-					continue;
 				} else {
 					sc.ChangeState(SCE_PROPS_KEY);
-					continue;
 				}
-				break;
+				continue;
 				
 			case SCE_PROPS_SECTION:
 				if (sc.ch == ']') {
@@ -226,12 +223,12 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				if (IsAssignChar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
+					break;
 				} else if (sc.atLineEnd) {
 					// incomplete key -> changing to SCE_PROPS_DEFAULT
 					sc.ChangeState(SCE_PROPS_DEFAULT);
-					continue;
 				}
-				break;
+				continue;
 		}
 		
 		// check sub-var
@@ -243,7 +240,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_PROPS_SUBVAR_OPER:
 				
 				if (!IsAWordChar(sc.chPrev)) {
-					// start a new state of a typed value
+					// start new typed-value state
 					if (sc.Match('0', 'x')
 						&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 						sc.SetState(SCE_PROPS_HEXNUMBER);
@@ -337,18 +334,17 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_PROPS_VARIABLE:
 				if (IsAWordChar(sc.ch))
 					continue;
-				sc.SetState(SCE_PROPS_VALUE);
+				// end of var
 				break;
 			case SCE_PROPS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexColorLen++;
 					continue;
 				}
+				// end of hex-color
 				if ((hexColorLen != 3 && hexColorLen != 6)
-					|| IsAWordChar(sc.ch))
+					|| IsAWordChar(sc.ch))				// bad hex-color
 					sc.ChangeState(SCE_PROPS_VALUE);
-				else
-					sc.SetState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_DOUBLESTRING:
 				if (sc.ch == '\"' && sc.chPrev != '\\'
@@ -380,19 +376,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 					continue;
 				}
+				// end of number
 				if (IsAWordChar(sc.ch) || sc.ch == '.'
-					|| sc.ch == '+' || sc.ch == '-') {
-					sc.ChangeState(SCE_PROPS_VALUE);			// bad num/ip
-				} else {
-					if (numDotCnt == 3 && maybeIpAddr) {		// fixate ip-address
-						sc.ChangeState(SCE_PROPS_IP_VALUE);
-						sc.SetState(SCE_PROPS_VALUE);
-					} else if (numDotCnt < 2) {					// fixate decimal num
-						sc.SetState(SCE_PROPS_VALUE);
-					} else {									// bad num/ip
-						sc.ChangeState(SCE_PROPS_VALUE);
-					}
-				}
+					|| sc.ch == '+' || sc.ch == '-')	// bad num/ip
+					sc.ChangeState(SCE_PROPS_VALUE);
+				else if (numDotCnt == 3 && maybeIpAddr)	// ip-address
+					sc.ChangeState(SCE_PROPS_IP_VALUE);
+				else if (numDotCnt > 1)					// bad num/ip
+					sc.ChangeState(SCE_PROPS_VALUE);
 				break;
 			case SCE_PROPS_HEXNUMBER:
 				if ((IsADigit(sc.ch, 16)) || (sc.ch == '.' &&
@@ -407,16 +398,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 					continue;
 				}
-				if (IsAWordChar(sc.ch) || sc.ch == '.') {		// bad hexnum
+				// end of hex-number
+				if (IsAWordChar(sc.ch) || sc.ch == '.')	// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
-				} else if (numDotCnt == 3) {					// fixate ip-address
+				else if (numDotCnt == 3)				// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
-					sc.SetState(SCE_PROPS_VALUE);
-				} else if (numDotCnt == 0) {					// fixate hexnum
-					sc.SetState(SCE_PROPS_VALUE);
-				} else {
+				else if (numDotCnt != 0)				// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
-				}
 				break;
 		}
 		
