@@ -25,19 +25,16 @@
 
 using namespace Scintilla;
 
-static inline bool IsAssignChar(unsigned char ch) {
+static inline bool IsAssignChar(const int ch) {
 	return (ch == '=') || (ch == ':');
 }
 
-static inline bool IsAWordChar(const unsigned int ch) {
-	return isalnum(ch) || ch == '-' || ch == '_';
+// symb '-' can be part of word (example: -gtk-icon, value2-0)
+static inline bool IsAWordChar(const int ch) {
+	return isalnum(ch) || ch == '_' || ch == '-';
 }
 
-static inline bool IsSubtractOper(StyleContext &sc) {
-	return sc.ch == '-' && !IsAWordChar(sc.chPrev) &&
-						   !IsAWordChar(sc.chNext);
-}
-
+// exclude symb '-' from oper-value
 static inline bool IsOperValue(const int ch) {
 	return ch == '!' || ch == '#' || ch == '%' || ch == '&' ||
 		   ch == '*' || ch == '+' || ch == ',' || ch == '.' ||
@@ -47,6 +44,22 @@ static inline bool IsOperValue(const int ch) {
 		   ch == '(' || ch == ')' || ch == '<' || ch == '>' ||
 		   ch == '/' || ch == '\\' || ch == '$' || ch == '"' ||
 		   ch == '\'';
+}
+
+// symb '-' can be part of word or subtract-oper
+static inline bool IsSubtractOper(Accessor &styler, Sci_PositionU pos,
+								  Sci_PositionU endPos) {
+	bool isSubtract = false;
+	if (styler[pos++] == '-') {
+		for (; pos < endPos; pos++) {
+			if (styler[pos] == '-' || isdigit(styler[pos]))
+				continue;
+			else if (!isalpha(styler[pos]) && styler[pos] != '_')
+				isSubtract = true;
+			break;
+		}
+	}
+	return isSubtract;
 }
 
 static inline bool IsUrl(const char *pref, Accessor &styler,
@@ -131,6 +144,10 @@ static inline void CheckSubVar(StyleContext &sc, Accessor &styler,
 				break;
 			}
 		}
+	} else if (*isSubVar && sc.ch == '}') {
+		sc.SetState(SCE_PROPS_SUBVAR_OPER);
+		sc.ForwardSetState(*beforeSubVarState);
+		*isSubVar = false;
 	}
 }
 
@@ -205,7 +222,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '{' || sc.ch == '}') {
 					sc.SetState(SCE_PROPS_OPER_VALUE);
 					sc.ForwardSetState(SCE_PROPS_DEFAULT);
-				} else {
+				} else if (!IsASpace(sc.ch)) {
 					sc.ChangeState(SCE_PROPS_KEY);
 				}
 				continue;
@@ -231,111 +248,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				continue;
 		}
 		
-		// check sub-var
-		CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState);
-		
+		// Determine if the current state should terminate.
 		switch (sc.state) {
-			case SCE_PROPS_VALUE:
-			case SCE_PROPS_OPER_VALUE:
-			case SCE_PROPS_SUBVAR_OPER:
-				
-				if (!IsAWordChar(sc.chPrev)) {
-					// start new typed-value state
-					if (sc.Match('0', 'x')
-						&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
-						sc.SetState(SCE_PROPS_HEXNUMBER);
-						sc.Forward();
-						numDotCnt = 0;
-						continue;
-						
-					} else if (sc.chPrev != '.' && sc.chPrev != '+' && sc.chPrev != '-' &&
-							   (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-								((sc.ch == '+' || sc.ch == '-') &&
-								 (sc.chNext == '.' || IsADigit(sc.chNext))))) {
-						sc.SetState(SCE_PROPS_NUMBER);
-						if (sc.ch == '.') {
-							numDotCnt = 1;
-							maybeIpAddr = false;
-						} else if (sc.ch == '+' || sc.ch == '-') {
-							numDotCnt = 0;
-							maybeIpAddr = false;
-						} else {
-							numDotCnt = 0;
-							maybeIpAddr = true;
-						}
-						continue;
-						
-					} else if (sc.ch == '$' && IsUpperOrLowerCase(sc.chNext)) {
-						sc.SetState(SCE_PROPS_VARIABLE);
-						continue;
-						
-					} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
-						sc.SetState(SCE_PROPS_HEX_COLOR);
-						hexColorLen = 0;
-						continue;
-						
-					} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
-						int levelSqBrcks = 0;
-						for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
-							if (IsACRLF(styler[i])) { // end of line
-								break;
-							} else if (styler[i] == '[') {
-								levelSqBrcks++;
-							} else if (styler[i] == ']') {
-								levelSqBrcks--;
-							} else if (styler[i] == sc.ch && styler[i - 1] != '\\'
-										&& levelSqBrcks == 0) { // exclude regular expression
-								// start of string
-								sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
-															SCE_PROPS_SINGLESTRING);
-								levelSqBrackets = 0;
-								break;
-							}
-						}
-					} else if (IsAWordChar(sc.ch) && !IsSubtractOper(sc)) {
-						// start of word
-						if (sc.state != SCE_PROPS_VALUE)
-							sc.SetState(SCE_PROPS_VALUE);
-						continue;
-					}
-				} else if (!IsAWordChar(sc.ch)) {
-					// end of word (here also true condition: IsAWordChar(sc.chPrev))
-					char word[100];
-					sc.GetCurrentLowered(word, sizeof(word));
-					char *word2 = word;
-					while (*word2 && !IsAWordChar(*word2))
-						word2++;
-					
-					// check url:
-					if (IsUrl(word2, styler, sc.currentPos, endPos)) {
-						sc.ChangeState(SCE_PROPS_URL_VALUE);
-						goToLineEnd = true;
-						continue;
-					}
-					// check email:
-					if (IsEmail(styler, sc.currentPos, endPos)) {
-						sc.ChangeState(SCE_PROPS_MAIL_VALUE);
-						goToLineEnd = true;
-						continue;
-					}
-					// find a word to defined lists:
-					if (commonWords.InList(word2)) {
-						sc.ChangeState(SCE_PROPS_COMMONWORD);
-					} else if (namedColors.InList(word2)) {
-						sc.ChangeState(SCE_PROPS_NAMED_COLOR);
-					}
-				} else {
-					//~ IsAWordChar(sc.chPrev)	is true
-					//~ IsAWordChar(sc.ch)		is true
-					continue;
-				}
-				break;
-			
 			case SCE_PROPS_VARIABLE:
 				if (IsAWordChar(sc.ch))
 					continue;
 				// end of var
 				break;
+				
 			case SCE_PROPS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexColorLen++;
@@ -346,6 +266,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					|| IsAWordChar(sc.ch))				// bad hex-color
 					sc.ChangeState(SCE_PROPS_VALUE);
 				break;
+				
 			case SCE_PROPS_DOUBLESTRING:
 				if (sc.ch == '\"' && sc.chPrev != '\\'
 					&& levelSqBrackets == 0) { // exclude regular expression
@@ -353,8 +274,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else {
 					CheckSqBrackets(sc, &levelSqBrackets);
+					continue;
 				}
 				break;
+				
 			case SCE_PROPS_SINGLESTRING:
 				if (sc.ch == '\'' && sc.chPrev != '\\'
 					&& levelSqBrackets == 0) { // exclude regular expression
@@ -362,8 +285,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 				} else {
 					CheckSqBrackets(sc, &levelSqBrackets);
+					continue;
 				}
 				break;
+				
 			case SCE_PROPS_NUMBER:
 				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 					if (sc.ch == '.') {
@@ -377,14 +302,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				// end of number
-				if (IsAWordChar(sc.ch) || sc.ch == '.'
-					|| sc.ch == '+' || sc.ch == '-')	// bad num/ip
+				if ((IsAWordChar(sc.ch) && sc.ch != '-') || sc.ch == '.')	// bad num/ip
 					sc.ChangeState(SCE_PROPS_VALUE);
-				else if (numDotCnt == 3 && maybeIpAddr)	// ip-address
+				else if (numDotCnt == 3 && maybeIpAddr)						// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
-				else if (numDotCnt > 1)					// bad num/ip
+				else if (numDotCnt > 1)										// bad num/ip
 					sc.ChangeState(SCE_PROPS_VALUE);
 				break;
+				
 			case SCE_PROPS_HEXNUMBER:
 				if ((IsADigit(sc.ch, 16)) || (sc.ch == '.' &&
 											  IsADigit(sc.chNext, 16))) {
@@ -399,28 +324,124 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				// end of hex-number
-				if (IsAWordChar(sc.ch) || sc.ch == '.')	// bad hexnum
+				if ((IsAWordChar(sc.ch) && sc.ch != '-') || sc.ch == '.')	// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
-				else if (numDotCnt == 3)				// ip-address
+				else if (numDotCnt == 3)									// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
-				else if (numDotCnt != 0)				// bad hexnum
+				else if (numDotCnt != 0)									// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
 				break;
 		}
 		
-		if (isSubVar && sc.ch == '}') {
-			sc.SetState(SCE_PROPS_SUBVAR_OPER);
-			sc.ForwardSetState(beforeSubVarState);
-			isSubVar = false;
+		// check sub-var
+		//~ CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState);
+		
+		// Determine if a new state should be entered.
+		if (!IsAWordChar(sc.chPrev) || styler.StyleAt(sc.currentPos - 1) ==
+											SCE_PROPS_OPER_VALUE) { // sc.chPrev is subtract-oper
+			// start new typed-value state
+			if (sc.chPrev != '.' && sc.Match('0', 'x')
+				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
+				sc.SetState(SCE_PROPS_HEXNUMBER);
+				sc.Forward();
+				numDotCnt = 0;
+				continue;
+				
+			} else if (sc.chPrev != '.' &&
+					   (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+						((sc.ch == '+' || sc.ch == '-') &&
+						 (sc.chNext == '.' || IsADigit(sc.chNext))))) {
+				sc.SetState(SCE_PROPS_NUMBER);
+				if (sc.ch == '.') {
+					numDotCnt = 1;
+					maybeIpAddr = false;
+				} else if (sc.ch == '+' || sc.ch == '-') {
+					numDotCnt = 0;
+					maybeIpAddr = false;
+				} else {
+					numDotCnt = 0;
+					maybeIpAddr = true;
+				}
+				continue;
+				
+			} else if (sc.ch == '$' && IsUpperOrLowerCase(sc.chNext)) {
+				sc.SetState(SCE_PROPS_VARIABLE);
+				continue;
+				
+			} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+				sc.SetState(SCE_PROPS_HEX_COLOR);
+				hexColorLen = 0;
+				continue;
+				
+			} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
+				int levelSqBrcks = 0;
+				bool isString = false;
+				for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
+					if (IsACRLF(styler[i])) { // end of line
+						break;
+					} else if (styler[i] == '[') {
+						levelSqBrcks++;
+					} else if (styler[i] == ']') {
+						levelSqBrcks--;
+					} else if (styler[i] == sc.ch && styler[i - 1] != '\\'
+								&& levelSqBrcks == 0) { // exclude regular expression
+						// start of string
+						sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
+													SCE_PROPS_SINGLESTRING);
+						levelSqBrackets = 0;
+						isString = true;
+						break;
+					}
+				}
+				if (isString) continue;
+				
+			} else if (IsAWordChar(sc.ch) && /* exclude subtract-oper */
+					   !IsSubtractOper(styler, sc.currentPos, endPos)) {
+				// sc.chPrev != word-char (alnum, '_', '-')
+				// --START OF WORD--
+				if (sc.state != SCE_PROPS_VALUE)
+					sc.SetState(SCE_PROPS_VALUE);
+				continue;
+			}
+			
+		} else if (sc.state == SCE_PROPS_VALUE &&
+				   !IsAWordChar(sc.ch)) {
+			// sc.chPrev == word-char (alnum, '_', '-')
+			// --END OF WORD--
+			char word[100];
+			sc.GetCurrentLowered(word, sizeof(word));
+			char *word2 = word;
+			while (*word2 && !IsAWordChar(*word2))
+				word2++;
+			
+			// check url:
+			if (IsUrl(word2, styler, sc.currentPos, endPos)) {
+				sc.ChangeState(SCE_PROPS_URL_VALUE);
+				goToLineEnd = true;
+				continue;
+			}
+			// check email:
+			if (IsEmail(styler, sc.currentPos, endPos)) {
+				sc.ChangeState(SCE_PROPS_MAIL_VALUE);
+				goToLineEnd = true;
+				continue;
+			}
+			// find a word to defined lists:
+			if (commonWords.InList(word2)) {
+				sc.ChangeState(SCE_PROPS_COMMONWORD);
+			} else if (namedColors.InList(word2)) {
+				sc.ChangeState(SCE_PROPS_NAMED_COLOR);
+			}
+		} else if (IsAWordChar(sc.ch) &&
+				   !IsSubtractOper(styler, sc.currentPos, endPos)) {
+			// --CONTINUATION OF THE WORD--
+			continue;
 		}
 		
-		if (sc.state == SCE_PROPS_VALUE || sc.state == SCE_PROPS_OPER_VALUE ||
-			sc.state == SCE_PROPS_VARIABLE || sc.state == SCE_PROPS_HEX_COLOR ||
-			sc.state == SCE_PROPS_NUMBER || sc.state == SCE_PROPS_HEXNUMBER) {
-			if (IsOperValue(sc.ch) || IsSubtractOper(sc)) {
-				sc.SetState(SCE_PROPS_OPER_VALUE);
-			}
-		}
+		if (IsOperValue(sc.ch) || sc.ch == '-')
+			sc.SetState(SCE_PROPS_OPER_VALUE);
+		else if (sc.state != SCE_PROPS_VALUE)
+			sc.SetState(SCE_PROPS_VALUE);
 	}
 	sc.Complete();
 }
