@@ -448,12 +448,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		// esh: directive, media
 		if (sc.state == SCE_CSS_DIRECTIVE &&
 			!IsAWordChar(sc.ch) && IsAWordChar(sc.chPrev)) {
-			char s[100];
-			sc.GetCurrentLowered(s, sizeof(s));
-			char *s2 = s;
-			while (*s2 && !IsAWordChar(*s2))
-				s2++;
-			if (op == '@' && strcmp(s2, "media") == 0) {
+			char word[100];
+			sc.GetCurrentLowered(word, sizeof(word));
+			char *word2 = word;
+			while (*word2 && !IsAWordChar(*word2))
+				word2++;
+			if (op == '@' && strcmp(word2, "media") == 0) {
 				sc.ChangeState(SCE_CSS_MEDIA);
 			}
 			// determine next state:
@@ -479,7 +479,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
 				
 				if (!IsAWordChar(sc.chPrev)) {
-					// start a new state of a typed value
+					// start new typed-value state
 					if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
 															IsADigit(sc.chNext))))) {
