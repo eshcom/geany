@@ -533,9 +533,22 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 						
 						if (ch == ':' && insideParentheses) {
 							bool isValue = false;
+							isComment = false;
 							for (; i < endPos; i++) {
 								ch = styler.SafeGetCharAt(i);
-								if (ch == ')') {
+								if (!isComment && ch == '/'
+									&& styler.SafeGetCharAt(i + 1) == '*') {
+									isComment = true;
+									i++;
+									continue;
+								} else if (isComment && ch == '*'
+										   && styler.SafeGetCharAt(i + 1) == '/') {
+									isComment = false;
+									i++;
+									continue;
+								} else if (isComment) {
+									continue;
+								} else if (ch == ')') {
 									break;
 								} else if (ch == '/' || ch == ',' || ch == ';') {
 									isValue = true;
