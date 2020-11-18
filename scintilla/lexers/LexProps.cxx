@@ -163,13 +163,6 @@ static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
 	return false;
 }
 
-static inline void CheckSqBrackets(StyleContext &sc, int *levelSqBrackets) {
-	if (sc.ch == '[')
-		(*levelSqBrackets)++;
-	else if (sc.ch == ']')
-		(*levelSqBrackets)--;
-}
-
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, WordList *keywordlists[],
 							  Accessor &styler) {
@@ -301,7 +294,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else {
 					// line continuation
-					CheckSqBrackets(sc, &levelSqBrackets);
+					if (sc.ch == '[')
+						levelSqBrackets++;
+					else if (sc.ch == ']')
+						levelSqBrackets--;
 					continue;
 				}
 				break;
