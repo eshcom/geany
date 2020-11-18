@@ -293,7 +293,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					// begin sub-var inside string
 					continue;
 				} else {
-					// line continuation
+					// string continuation
 					if (sc.ch == '[')
 						levelSqBrackets++;
 					else if (sc.ch == ']')
