@@ -49,25 +49,35 @@ static inline bool IsOperValue(const int ch) {
 // symb '-' can be part of word or subtract-oper
 static inline bool IsSubtractOper(Accessor &styler, Sci_PositionU pos,
 								  Sci_PositionU endPos) {
-	bool isSubtract = false;
 	if (styler[pos++] == '-') {
+		bool isSubtract = true;
+		bool isHexhum = false;
 		while (pos < endPos) {
-			if (pos < (endPos - 2) && pos > 0 && styler[pos - 1] == '-'
+			if (pos < (endPos - 2) && pos > 0
+				&& styler[pos - 1] == '-'
 				&& styler[pos] == '0' && styler[pos + 1] == 'x'
 				&& isxdigit(styler[pos + 2])) {
-				pos = pos + 2;
+				pos = pos + 3;
+				isHexhum = true;
 				continue;
-			} else if (styler[pos] == '-' || styler[pos] == '.'
-					   || isxdigit(styler[pos])) {
+			} else if ((styler[pos] == '.') ||
+					   (!isHexhum && isdigit(styler[pos])) ||
+					   (isHexhum && isxdigit(styler[pos]))) {
 				pos++;
 				continue;
-			} else if (!isalpha(styler[pos]) && styler[pos] != '_') {
-				isSubtract = true;
+			} else if (styler[pos] == '-') {
+				isHexhum = false;
+				pos++;
+				continue;
+			} else if (isalpha(styler[pos]) || styler[pos] == '_') {
+				isSubtract = false;
 			}
 			break;
 		}
+		return isSubtract;
+	} else {
+		return false;
 	}
-	return isSubtract;
 }
 
 static inline bool IsUrl(const char *pref, Accessor &styler,
@@ -186,7 +196,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	bool goToLineEnd = false;
 	bool maybeIpAddr = false;
-	int numDotCnt = 0;
+	int numDigCnt = 0; // for hexnumber
+	int numDotCnt = 0; // for hexnumber/number/IP
 	int hexColorLen = 0;
 	int levelSqBrackets = 0;
 	
@@ -298,7 +309,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_PROPS_NUMBER:
-				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+				if (IsADigit(sc.ch) || (sc.ch == '.' &&
+										IsADigit(sc.chNext))) {
 					if (sc.ch == '.') {
 						if (sc.chPrev == '.') {
 							sc.ChangeState(SCE_PROPS_VALUE);
@@ -310,8 +322,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				// end of number
-				if ((IsAWordChar(sc.ch) && !IsSubtractOper(styler, sc.currentPos, endPos))
-					|| sc.ch == '.')										// bad num/ip
+				if (sc.ch == '.'
+					|| (IsAWordChar(sc.ch) &&
+						!IsSubtractOper(styler, sc.currentPos, endPos)))	// bad num/ip
 					sc.ChangeState(SCE_PROPS_VALUE);
 				else if (numDotCnt == 3 && maybeIpAddr)						// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
@@ -329,12 +342,15 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						} else {
 							numDotCnt++;
 						}
+					} else {
+						numDigCnt++;
 					}
 					continue;
 				}
 				// end of hex-number
-				if ((IsAWordChar(sc.ch) && !IsSubtractOper(styler, sc.currentPos, endPos))
-					|| sc.ch == '.')										// bad hexnum
+				if (sc.ch == '.' || (numDigCnt % 2) != 0
+					|| (IsAWordChar(sc.ch) &&
+						!IsSubtractOper(styler, sc.currentPos, endPos)))	// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
 				else if (numDotCnt == 3)									// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
@@ -353,20 +369,24 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 				sc.SetState(SCE_PROPS_HEXNUMBER);
 				sc.Forward();
+				numDigCnt = 0;
 				numDotCnt = 0;
 				continue;
 				
 			} else if (sc.chPrev != '.' &&
 					   (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 						((sc.ch == '+' || sc.ch == '-') &&
-						 (sc.chNext == '.' || IsADigit(sc.chNext))))) {
+						 (sc.chNext == '.' ||
+						  (IsADigit(sc.chNext) &&
+						   !(sc.chNext == '0' &&
+							 styler.SafeGetCharAt(sc.currentPos + 2) == 'x')))))) {
 				sc.SetState(SCE_PROPS_NUMBER);
 				if (sc.ch == '.') {
 					numDotCnt = 1;
 					maybeIpAddr = false;
 				} else if (sc.ch == '+' || sc.ch == '-') {
 					numDotCnt = 0;
-					maybeIpAddr = false;
+					maybeIpAddr = true;
 				} else {
 					numDotCnt = 0;
 					maybeIpAddr = true;
