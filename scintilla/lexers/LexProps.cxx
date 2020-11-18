@@ -135,7 +135,7 @@ static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
 }
 
 //~ esh: CheckSubVar func
-static inline void CheckSubVar(StyleContext &sc, Accessor &styler,
+static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
 							   Sci_PositionU endPos, bool *isSubVar,
 							   int *beforeSubVarState) {
 	if ((sc.ch == '#' || sc.ch == '$' || sc.ch == '%')
@@ -152,21 +152,16 @@ static inline void CheckSubVar(StyleContext &sc, Accessor &styler,
 				
 				sc.SetState(SCE_PROPS_SUBVAR_OPER);
 				sc.Forward();
-				sc.Forward();
-				if (sc.ch == '}') {
-					sc.ForwardSetState(*beforeSubVarState);
-				} else {
-					sc.SetState(SCE_PROPS_VALUE);
-					*isSubVar = true;
-				}
-				break;
+				*isSubVar = true;
+				return true;
 			}
 		}
 	} else if (*isSubVar && sc.ch == '}') {
 		sc.SetState(SCE_PROPS_SUBVAR_OPER);
-		sc.ForwardSetState(*beforeSubVarState);
 		*isSubVar = false;
+		return true;
 	}
+	return false;
 }
 
 static inline void CheckSqBrackets(StyleContext &sc, int *levelSqBrackets) {
@@ -359,11 +354,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 		}
 		
-		// check sub-var
-		//~ CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState);
-		
 		// Determine if a new state should be entered.
-		if (sc.state == SCE_PROPS_OPER_VALUE || !IsAWordChar(sc.chPrev)) {
+		if (sc.state == SCE_PROPS_OPER_VALUE ||
+			sc.state == SCE_PROPS_SUBVAR_OPER ||
+			!IsAWordChar(sc.chPrev)) {
 			// start new typed-value state
 			if (sc.chPrev != '.' && sc.Match('0', 'x')
 				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
@@ -465,6 +459,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			// --CONTINUATION OF THE WORD--
 			continue;
 		}
+		
+		if (CheckSubVar(sc, styler, endPos, &isSubVar,
+						&beforeSubVarState))
+			continue;
 		
 		if (IsOperValue(sc.ch) || sc.ch == '-')
 			sc.SetState(SCE_PROPS_OPER_VALUE);
