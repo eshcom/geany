@@ -30,7 +30,7 @@ static inline bool IsAssignChar(const int ch) {
 }
 
 // symb '-' can be part of word (example: -gtk-icon, value2-0)
-static inline bool IsAWordChar(const int ch) {
+static inline bool IsAWordChar(const unsigned int ch) {
 	return isalnum(ch) || ch == '_' || ch == '-';
 }
 
@@ -51,11 +51,19 @@ static inline bool IsSubtractOper(Accessor &styler, Sci_PositionU pos,
 								  Sci_PositionU endPos) {
 	bool isSubtract = false;
 	if (styler[pos++] == '-') {
-		for (; pos < endPos; pos++) {
-			if (styler[pos] == '-' || isdigit(styler[pos]))
+		while (pos < endPos) {
+			if (pos < (endPos - 2) && pos > 0 && styler[pos - 1] == '-'
+				&& styler[pos] == '0' && styler[pos + 1] == 'x'
+				&& isxdigit(styler[pos + 2])) {
+				pos = pos + 2;
 				continue;
-			else if (!isalpha(styler[pos]) && styler[pos] != '_')
+			} else if (styler[pos] == '-' || styler[pos] == '.'
+					   || isxdigit(styler[pos])) {
+				pos++;
+				continue;
+			} else if (!isalpha(styler[pos]) && styler[pos] != '_') {
 				isSubtract = true;
+			}
 			break;
 		}
 	}
@@ -302,7 +310,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				// end of number
-				if ((IsAWordChar(sc.ch) && sc.ch != '-') || sc.ch == '.')	// bad num/ip
+				if ((IsAWordChar(sc.ch) && !IsSubtractOper(styler, sc.currentPos, endPos))
+					|| sc.ch == '.')										// bad num/ip
 					sc.ChangeState(SCE_PROPS_VALUE);
 				else if (numDotCnt == 3 && maybeIpAddr)						// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
@@ -324,7 +333,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				// end of hex-number
-				if ((IsAWordChar(sc.ch) && sc.ch != '-') || sc.ch == '.')	// bad hexnum
+				if ((IsAWordChar(sc.ch) && !IsSubtractOper(styler, sc.currentPos, endPos))
+					|| sc.ch == '.')										// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
 				else if (numDotCnt == 3)									// ip-address
 					sc.ChangeState(SCE_PROPS_IP_VALUE);
@@ -337,8 +347,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		//~ CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState);
 		
 		// Determine if a new state should be entered.
-		if (!IsAWordChar(sc.chPrev) || styler.StyleAt(sc.currentPos - 1) ==
-											SCE_PROPS_OPER_VALUE) { // sc.chPrev is subtract-oper
+		if (sc.state == SCE_PROPS_OPER_VALUE || !IsAWordChar(sc.chPrev)) {
 			// start new typed-value state
 			if (sc.chPrev != '.' && sc.Match('0', 'x')
 				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
@@ -432,8 +441,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (namedColors.InList(word2)) {
 				sc.ChangeState(SCE_PROPS_NAMED_COLOR);
 			}
-		} else if (IsAWordChar(sc.ch) &&
-				   !IsSubtractOper(styler, sc.currentPos, endPos)) {
+		} else if (sc.state == SCE_PROPS_VALUE) {
 			// --CONTINUATION OF THE WORD--
 			continue;
 		}
