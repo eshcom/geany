@@ -134,7 +134,6 @@ static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
 	return mailState == 4;
 }
 
-//~ esh: CheckSubVar func
 static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
 							   Sci_PositionU endPos, bool *isSubVar,
 							   int *beforeSubVarState) {
@@ -148,7 +147,7 @@ static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
 					sc.state == SCE_PROPS_SINGLESTRING)
 					*beforeSubVarState = sc.state;
 				else
-					*beforeSubVarState = SCE_PROPS_VALUE;
+					*beforeSubVarState = -1;
 				
 				sc.SetState(SCE_PROPS_SUBVAR_OPER);
 				sc.Forward();
@@ -262,6 +261,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				continue;
 		}
 		
+		if (sc.state == SCE_PROPS_SUBVAR_OPER &&
+			!isSubVar && beforeSubVarState != -1) {
+			// end sub-var inside string
+			// beforeSubVarState is SCE_PROPS_DOUBLESTRING
+			// 					 or SCE_PROPS_SINGLESTRING
+			sc.SetState(beforeSubVarState);
+		}
+		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 			case SCE_PROPS_VARIABLE:
@@ -282,22 +289,18 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_PROPS_DOUBLESTRING:
-				if (sc.ch == '\"' && sc.chPrev != '\\'
-					&& levelSqBrackets == 0) { // exclude regular expression
-					// end of string
-					sc.ForwardSetState(SCE_PROPS_VALUE);
-				} else {
-					CheckSqBrackets(sc, &levelSqBrackets);
-					continue;
-				}
-				break;
-				
 			case SCE_PROPS_SINGLESTRING:
-				if (sc.ch == '\'' && sc.chPrev != '\\'
-					&& levelSqBrackets == 0) { // exclude regular expression
+				if (sc.chPrev != '\\' && levelSqBrackets == 0 &&
+					(sc.ch == (sc.state == SCE_PROPS_DOUBLESTRING ?
+													 '\"' : '\''))) { 
 					// end of string
-					sc.ForwardSetState(SCE_PROPS_VALUE);
+					sc.Forward();
+				} else if (CheckSubVar(sc, styler, endPos, &isSubVar,
+									   &beforeSubVarState)) {
+					// begin sub-var inside string
+					continue;
 				} else {
+					// line continuation
 					CheckSqBrackets(sc, &levelSqBrackets);
 					continue;
 				}
@@ -357,6 +360,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_PROPS_OPER_VALUE ||
 			sc.state == SCE_PROPS_SUBVAR_OPER ||
+			sc.state == SCE_PROPS_DOUBLESTRING ||
+			sc.state == SCE_PROPS_SINGLESTRING ||
 			!IsAWordChar(sc.chPrev)) {
 			// start new typed-value state
 			if (sc.chPrev != '.' && sc.Match('0', 'x')
