@@ -180,12 +180,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				// comments are like whitespace, so we must return to the previous state
 				Sci_PositionU i = startPos;
 				for (; i > 0; i--) {
-					if ((lastStateC = styler.StyleAt(i-1)) != SCE_CSS_COMMENT) {
+					if ((lastStateC = styler.StyleAt(i - 1)) != SCE_CSS_COMMENT) {
 						if (lastStateC == SCE_CSS_OPERATOR) {
-							op = styler.SafeGetCharAt(i-1);
-							opPrev = styler.SafeGetCharAt(i-2);
+							op = styler.SafeGetCharAt(i - 1);
+							opPrev = styler.SafeGetCharAt(i - 2);
 							while (--i) {
-								lastState = styler.StyleAt(i-1);
+								lastState = styler.StyleAt(i - 1);
 								if (lastState != SCE_CSS_OPERATOR && lastState != SCE_CSS_COMMENT)
 									break;
 							}
@@ -216,7 +216,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
 				continue; // esh: continue of string value
 			Sci_PositionU i = sc.currentPos;
-			while (i && styler[i-1] == '\\')
+			while (i && styler[i - 1] == '\\')
 				i--;
 			if ((sc.currentPos - i) % 2 == 1)
 				continue; // esh: continue of string value
@@ -229,10 +229,10 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_CSS_OPERATOR) {
 			if (op == ' ') {
 				Sci_PositionU i = startPos;
-				op = styler.SafeGetCharAt(i-1);
-				opPrev = styler.SafeGetCharAt(i-2);
+				op = styler.SafeGetCharAt(i - 1);
+				opPrev = styler.SafeGetCharAt(i - 2);
 				while (--i) {
-					lastState = styler.StyleAt(i-1);
+					lastState = styler.StyleAt(i - 1);
 					if (lastState != SCE_CSS_OPERATOR && lastState != SCE_CSS_COMMENT)
 						break;
 				}
@@ -503,9 +503,24 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					// look ahead to see '('
 					int ch = 0;
 					Sci_PositionU i = sc.currentPos;
+					bool isComment = false;
 					for (; i < endPos; i++) {
 						ch = styler.SafeGetCharAt(i);
-						if (!IsASpace(ch)) break;
+						if (!isComment && ch == '/'
+							&& styler.SafeGetCharAt(i + 1) == '*') {
+							isComment = true;
+							i++;
+							continue;
+						} else if (isComment && ch == '*'
+								   && styler.SafeGetCharAt(i + 1) == '/') {
+							isComment = false;
+							i++;
+							continue;
+						} else if (isComment) {
+							continue;
+						} else if (!IsASpace(ch)) {
+							break;
+						}
 					}
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
@@ -643,7 +658,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					break;
 				}
 				if (ch == '{') {
-					if (styler.SafeGetCharAt(i-1) == '#') {		// skip sub-var
+					if (styler.SafeGetCharAt(i - 1) == '#') {	// skip sub-var
 						subVarLevel++;
 					} else if (subVarLevel == 0) {
 						sc.SetState(SCE_CSS_DEFAULT);
@@ -771,7 +786,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 	int levelPrev = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
-	bool inComment = (styler.StyleAt(startPos-1) == SCE_CSS_COMMENT);
+	bool inComment = (styler.StyleAt(startPos - 1) == SCE_CSS_COMMENT);
 	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
