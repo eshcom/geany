@@ -166,8 +166,6 @@ static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
 static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, WordList *keywordlists[],
 							  Accessor &styler) {
-	styler.StartAt(startPos);
-	styler.StartSegment(startPos);
 	Sci_PositionU endPos = startPos + length;
 	
 	WordList &commonWords = *keywordlists[0];
