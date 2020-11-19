@@ -192,8 +192,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	for (; sc.More(); sc.Forward()) {
 		
 		if (sc.atLineStart) {
-			sc.SetState(SCE_PROPS_DEFAULT);
-			
 			if (!allowInitialSpaces && IsASpaceOrTab(sc.ch)) {
 				// don't allow initial spaces
 				goToLineEnd = true;
@@ -201,20 +199,22 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			goToLineEnd = false;
 			isSubVar = false;
-		}
-		if (goToLineEnd)
+		} else if (goToLineEnd) {
+			if (sc.atLineEnd)
+				sc.SetState(SCE_PROPS_DEFAULT);
 			continue;
+		}
 		
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
 				// start new section/key/value state
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
-					sc.ChangeState(SCE_PROPS_COMMENT);
+					sc.SetState(SCE_PROPS_COMMENT);
 					goToLineEnd = true;
 				} else if (sc.ch == '[') {
-					sc.ChangeState(SCE_PROPS_SECTION);
+					sc.SetState(SCE_PROPS_SECTION);
 				} else if (sc.ch == '@') {
-					sc.ChangeState(SCE_PROPS_DEFVAL);
+					sc.SetState(SCE_PROPS_DEFVAL);
 					if (IsAssignChar(sc.chNext))
 						sc.ForwardSetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
@@ -227,7 +227,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_PROPS_OPER_VALUE);
 					sc.ForwardSetState(SCE_PROPS_DEFAULT);
 				} else if (!IsASpace(sc.ch)) {
-					sc.ChangeState(SCE_PROPS_KEY);
+					sc.SetState(SCE_PROPS_KEY);
 				}
 				continue;
 				
@@ -463,10 +463,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						&beforeSubVarState))
 			continue;
 		
-		if (IsOperValue(sc.ch) || sc.ch == '-')
+		if (sc.atLineEnd) {
+			if (sc.state != SCE_PROPS_DEFAULT)
+				sc.SetState(SCE_PROPS_DEFAULT);
+		} else if (IsOperValue(sc.ch) || sc.ch == '-') {
 			sc.SetState(SCE_PROPS_OPER_VALUE);
-		else if (sc.state != SCE_PROPS_VALUE)
+		} else if (sc.state != SCE_PROPS_VALUE) {
 			sc.SetState(SCE_PROPS_VALUE);
+		}
 	}
 	sc.Complete();
 }
