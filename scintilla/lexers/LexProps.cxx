@@ -205,9 +205,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		if (goToLineEnd)
 			continue;
 		
-		// start new section/key/assignment state
 		switch (sc.state) {
 			case SCE_PROPS_DEFAULT:
+				// start new section/key/value state
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
 					sc.ChangeState(SCE_PROPS_COMMENT);
 					goToLineEnd = true;
