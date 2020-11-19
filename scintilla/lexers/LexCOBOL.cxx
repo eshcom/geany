@@ -143,7 +143,7 @@ static int classifyWordCOBOL(Sci_PositionU start, Sci_PositionU end,
 
 static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, WordList *keywordlists[],
-	Accessor &styler) {
+							  Accessor &styler) {
 	
 	styler.StartAt(startPos);
 	
