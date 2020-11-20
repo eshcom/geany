@@ -22,11 +22,19 @@ p {
 	unquoted: #{ red};
 	unquoted: #{ red };
 	unquoted: #{#ededed};
-	unquoted: #{#ededed };
-	unquoted: #{ #ededed};
-	unquoted: #{ #ededed };
+	unquoted: #{#ededed } 5.12;
+	unquoted: #{ #ededed}5.12;
+	unquoted: 5.12#{ #ededed};
+	unquoted: #{ #ededed}@test;
+	unquoted: #{ #ededed}@test;
+	unquoted: #{ #ededed} @test;
+	unquoted: #{ #ededed}@test;
+	unquoted: @test#{ #ededed};
+	unquoted: #{ #ededed}red;
 	unquoted: #{#eded};
 	unquoted: #{#eded };
+	unquoted: #{ #eded};
+	unquoted: #{ #eded };
 	unquoted: #{5.23};
 	unquoted:#{fun(test)};
 }

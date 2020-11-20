@@ -95,9 +95,9 @@ static inline bool IsCssOperator(const int ch) {
 	return false;
 }
 
-//~ esh: CheckSubVar func
-static inline void CheckSubVar(StyleContext &sc, bool *isSubVar,
-							   int *beforeSubVarState) {
+//~ esh: CheckBeginSubVar func
+static inline void CheckBeginSubVar(StyleContext &sc, bool *isSubVar,
+									int *beforeSubVarState) {
 	if (sc.Match('#', '{')) {
 		*beforeSubVarState = sc.state;
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
@@ -109,7 +109,13 @@ static inline void CheckSubVar(StyleContext &sc, bool *isSubVar,
 			sc.SetState(SCE_CSS_VALUE);
 			*isSubVar = true;
 		}
-	} else if (*isSubVar && sc.ch == '}') {
+	}
+}
+//~ esh: CheckEndSubVar func
+static inline void CheckEndSubVar(StyleContext &sc, bool *isSubVar,
+								  int *beforeSubVarState) {
+
+	if (*isSubVar && sc.ch == '}') {
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
 		sc.ForwardSetState(*beforeSubVarState);
 		*isSubVar = false;
@@ -209,8 +215,11 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_CSS_COMMENT)
 			continue;
 		
-		// esh: check sub-var
-		CheckSubVar(sc, &isSubVar, &beforeSubVarState);
+		// esh: check begin sub-var, end sub-var
+		CheckBeginSubVar(sc, &isSubVar, &beforeSubVarState);
+		if (sc.state != SCE_CSS_VALUE &&
+			sc.state != SCE_CSS_HEX_COLOR)
+			CheckEndSubVar(sc, &isSubVar, &beforeSubVarState); // for sub-var inside string
 		
 		if (sc.state == SCE_CSS_DOUBLESTRING || sc.state == SCE_CSS_SINGLESTRING) {
 			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
@@ -222,8 +231,6 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				continue; // esh: continue of string value
 			// esh: end of string value
 			sc.ForwardSetState(lastStateS);
-			// esh: string value can be inside sub-var - check sub-var
-			CheckSubVar(sc, &isSubVar, &beforeSubVarState);
 		}
 		
 		if (sc.state == SCE_CSS_OPERATOR) {
@@ -634,6 +641,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERR_VALUE ||
 			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE ||
 			 sc.state == SCE_CSS_IMPORTANT)) { // TODO: refactoring: invert conditions
+			
+			// esh: word-value or string can be inside sub-var -> check end sub-var
+			CheckEndSubVar(sc, &isSubVar, &beforeSubVarState); // for value
 			
 			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state (before sc.currentPos) by important
