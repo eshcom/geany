@@ -1598,6 +1598,10 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 			return (style == SCE_CSS_DOUBLESTRING ||
 				style == SCE_CSS_SINGLESTRING);
 
+		case SCLEX_PROPERTIES:
+			return (style == SCE_PROPS_DOUBLESTRING ||
+				style == SCE_PROPS_SINGLESTRING);
+
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
 				style == SCE_ERLANG_CHARACTER);
@@ -1618,7 +1622,6 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		case SCLEX_LATEX:
 		case SCLEX_MAKEFILE:
 		case SCLEX_MARKDOWN:
-		case SCLEX_PROPERTIES:
 		case SCLEX_TXT2TAGS:
 		case SCLEX_YAML:
 			/* there is no string type in those lexers, listing here just for completeness */
