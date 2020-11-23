@@ -200,7 +200,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			goToLineEnd = false;
 			isSubVar = false;
 		} else if (goToLineEnd) {
-			if (sc.atLineEnd)
+			if (sc.atLineEnd && sc.state != SCE_PROPS_DEFAULT)
 				sc.SetState(SCE_PROPS_DEFAULT);
 			continue;
 		}
