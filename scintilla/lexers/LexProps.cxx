@@ -291,12 +291,12 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						stringState = 2;
 						continue;
 					}
-					// end of single-line string
+					// end of single-line string (stringState == 0)
 					sc.Forward();
 					
 				} else if (stringState == 2 && sc.ch == ';') {
 					// end of multi-line string
-					sc.Forward();
+					stringState = 0;
 					
 				} else if (CheckSubVar(sc, styler, endPos, &isSubVar,
 									   &beforeSubVarState)) {
@@ -433,6 +433,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							sc.SetState(strState == 2 ? SCE_PROPS_DOUBLESTRING:
 									  /*strState == 3*/ SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
+							stringState = 1; // multi-line string
 							break;
 						} else {
 							strState = -1; // bad string
@@ -445,6 +446,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
 														SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
+							stringState = 0; // single-line string
 							strState = 0;
 							break;
 						} else if (strState == 1) {
