@@ -37,6 +37,17 @@ p {
 	unquoted: #{ #eded };
 	unquoted: #{5.23};
 	unquoted:#{fun(test)};
+	test_key: #d8d8d8#{red}#d8d8d8;
+	test_key: #d8d8d8#{red}-7.94;
+	test_key: #{$left-or-right -4.23};
+	test_key: url("#{}");
+	test_key: url("#{}#{}");
+	test_key: url("#{ }");
+	test_key: url("#{ }#{ }");
+	test_key: url("#{$name}");
+	test_key: url("#{$name1}#{$name2}");
+	test_key: url("/icons/#{$name}.svg");
+	test_key: corner-icon("mail", top, left);
 }
 
 @define-color theme_fg_color /**/ @fg_color;
