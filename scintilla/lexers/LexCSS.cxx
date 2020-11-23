@@ -44,7 +44,8 @@ static inline bool IsDimension(const char* s) {
 			strcmp(s, "hz") == 0 || strcmp(s, "khz") == 0 ||
 			strcmp(s, "deg") == 0 || strcmp(s, "rad") == 0 ||
 			strcmp(s, "grad") == 0 || strcmp(s, "s") == 0 ||
-			strcmp(s, "ms") == 0 || strcmp(s, "turn") == 0);
+			strcmp(s, "ms") == 0 || strcmp(s, "turn") == 0 ||
+			strcmp(s, "dpi") == 0);
 }
 
 static inline bool IsUrl(const char *pref, Accessor &styler,
@@ -169,6 +170,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	bool isSubVar = false;	// example: #{$name}, where $name - var
 							//          #{unique-id()}, where unique-id() - func
 	int beforeSubVarState = -1;
+	// esh:
+	bool isMediaFunc = false; // and, not, only
 	
 	// SCSS/LESS/HSS support single-line comments
 	typedef enum _CommentModes { eCommentBlock = 0, eCommentLine = 1} CommentMode;
@@ -509,17 +512,17 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					// end of word (here also true condition: IsAWordChar(sc.chPrev))
 					// look ahead to see '('
 					int ch = 0;
+					int chNext;
 					Sci_PositionU i = sc.currentPos;
 					bool isComment = false;
-					for (; i < endPos; i++) {
+					for (; i < styler.Length(); i++) {
 						ch = styler.SafeGetCharAt(i);
-						if (!isComment && ch == '/'
-							&& styler.SafeGetCharAt(i + 1) == '*') {
+						chNext = styler.SafeGetCharAt(i + 1);
+						if (!isComment && ch == '/' && chNext == '*') {
 							isComment = true;
 							i++;
 							continue;
-						} else if (isComment && ch == '*'
-								   && styler.SafeGetCharAt(i + 1) == '/') {
+						} else if (isComment && ch == '*' && chNext == '/') {
 							isComment = false;
 							i++;
 							continue;
@@ -529,63 +532,39 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 							break;
 						}
 					}
+					
+					char word[100];
+					sc.GetCurrentLowered(word, sizeof(word));
+					char *word2 = word;
+					while (*word2 && !IsAWordChar(*word2))
+						word2++;
+					
 					if (ch == '(') {
 						sc.ChangeState(SCE_CSS_FUNCTION);
+						isMediaFunc = (strcmp(word2, "and") == 0 ||
+									   strcmp(word2, "not") == 0 ||
+									   strcmp(word2, "only") == 0);
+					} else if (ch == ':' && insideParentheses && isMediaFunc) {
+						if (css1Props.InList(word2))
+							sc.ChangeState(SCE_CSS_IDENTIFIER);
+						else if (css2Props.InList(word2))
+							sc.ChangeState(SCE_CSS_IDENTIFIER2);
+						else if (css3Props.InList(word2))
+							sc.ChangeState(SCE_CSS_IDENTIFIER3);
+						else if (exProps.InList(word2))
+							sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
+						else
+							sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
+						break;
+					} else if (namedColors.InList(word2)) {
+						sc.ChangeState(SCE_CSS_NAMED_COLOR);
+					} else if (insideParentheses &&
+							   IsUrl(word2, styler, sc.currentPos, endPos)) {
+						sc.ChangeState(SCE_CSS_URL_VALUE);
+						continue;
 					} else {
-						char word[100];
-						sc.GetCurrentLowered(word, sizeof(word));
-						char *word2 = word;
-						while (*word2 && !IsAWordChar(*word2))
-							word2++;
-						
-						if (ch == ':' && insideParentheses) {
-							bool isValue = false;
-							isComment = false;
-							for (; i < endPos; i++) {
-								ch = styler.SafeGetCharAt(i);
-								if (!isComment && ch == '/'
-									&& styler.SafeGetCharAt(i + 1) == '*') {
-									isComment = true;
-									i++;
-									continue;
-								} else if (isComment && ch == '*'
-										   && styler.SafeGetCharAt(i + 1) == '/') {
-									isComment = false;
-									i++;
-									continue;
-								} else if (isComment) {
-									continue;
-								} else if (ch == ')') {
-									break;
-								} else if (ch == '/' || ch == ',' || ch == ';') {
-									isValue = true;
-									break;
-								}
-							}
-							if (!isValue) {
-								if (css1Props.InList(word2))
-									sc.ChangeState(SCE_CSS_IDENTIFIER);
-								else if (css2Props.InList(word2))
-									sc.ChangeState(SCE_CSS_IDENTIFIER2);
-								else if (css3Props.InList(word2))
-									sc.ChangeState(SCE_CSS_IDENTIFIER3);
-								else if (exProps.InList(word2))
-									sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
-								else
-									sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
-								break;
-							}
-						}
-						if (namedColors.InList(word2)) {
-							sc.ChangeState(SCE_CSS_NAMED_COLOR);
-						} else if (insideParentheses &&
-								   IsUrl(word2, styler, sc.currentPos, endPos)) {
-							sc.ChangeState(SCE_CSS_URL_VALUE);
-							continue;
-						} else {
-							// fixate sub-val by sub-val (by default value state)
-							sc.SetState(SCE_CSS_VALUE);
-						}
+						// fixate sub-val by sub-val (by default value state)
+						sc.SetState(SCE_CSS_VALUE);
 					}
 				} else {
 					//~ IsAWordChar(sc.chPrev)	is true
