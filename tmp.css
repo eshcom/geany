@@ -1,7 +1,6 @@
 /*
  * Some applications depend on these named colors.
  */
-
 p {
 	transition: "dfg";
 	transition: #{a};
@@ -31,6 +30,7 @@ p {
 	unquoted: #{ #ededed}@test;
 	unquoted: @test#{ #ededed};
 	unquoted: #{ #ededed}red;
+	unquoted: #{ #ededed }red;
 	unquoted: #{#eded};
 	unquoted: #{#eded };
 	unquoted: #{ #eded};
@@ -48,7 +48,7 @@ p {
 @define-color borders shade(/**/@bg_color/**/, /**/ 0.82/**/);
 @define-color borders shade(/**/#ededed/**/, /**/0.82/**/);
 @define-color borders /**/ shade(/**/red/**/, 0.82);
-@define-color borders shade(solid, 0.82);
+@define-color borders shade (solid, 0.82);
 @define-color borders shade (solid rgba(14/**/,/**/ 13, 0, 0.03)/**/,/**/ 0.82);
 @define-color unfocused_borders transparent;
 @define-color unfocused_borders/**/ /**/transparent;
@@ -88,6 +88,11 @@ p {
 	100% {background-image: linear-gradient/**/(/**/to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
 	100% {background-image: linear-gradient/**/
 										/**/( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders; }
+	100% {
+			background-image: linear-gradient/**/
+										/**/( to bottom, #fafafa, blue 40%,  #e0e);
+			border-color: @borders;
+		 }
 }
 .nautilus-operations-button-needs-attention {
 	animation: needs_attention_keyframes 2s-s ease-in-out;
@@ -418,6 +423,19 @@ p {
 @media print {div.crosslinks(a, b) {visibility:hidden;}}
 
 @media print { pre { font-size: 60% } }
+
+@media screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px) {
+  div.example {
+    font-size: 50px;
+    padding: 50px;
+    border: 8px solid black;
+    background: yellow;
+  }
+}
+
+@media screen and (max-width: 900px)
+			  not (min-width: 600px)
+			  only (min-width: 1100px);
 
 @keyframes2 url("/icons/#{$name}.svg");
 

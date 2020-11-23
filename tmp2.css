@@ -1,0 +1,131 @@
+
+100% {background-image: linear-gradient/**/
+									/**/( to bottom, #fafafa, blue 40%,  #e0e); border-color: @borders;
+}
+
+@media only screen and /**/(max-width: linear-gradient/**/
+												/**/( to bottom, #fafafa, blue 40%,  #e0e)) {
+	#box {
+		background-color: yellow;
+	}
+	#box(a, b) {
+		background-color: yellow;
+	}
+}
+
+@media screen/**/
+				/**/and/**/(max-width: 900px);
+
+@media all and (not handheld) {}
+@media not all and (color) {}
+@media not (all and (color)) {}
+@media (not all) and (color) {}
+@media only all and (not handheld) {}
+@media all and (orientation: landscape), all and (min-width: 480px) {}
+
+@media screen and (color) { /* Для цветных экранов */
+  body { background: #fc0; }
+}
+
+@media screen and (min-color:3) { /* Минимум 512 цветов */
+  body { background: #ccc; }
+}
+
+@media screen and (min-device-aspect-ratio: 16/9) {
+  body { background: #ccc; }
+}
+
+@media print and (monochrome) {
+ body { font-family: Times, 'Times New Roman', serif; }
+ h1, h2, p { color: black; }
+}
+@media print and (color) { 
+ body { font-family: Arial, Verdana, sans-serif; }
+ h1, h2, p { color: #556b2f; }
+}
+
+@media screen and (orientation: landscape) { 
+  #logo { background: url(logo1.png) no-repeat; }
+}
+@media screen and (orientation: portrait) { 
+  #logo { background: url(logo2.png) no-repeat; }
+}
+
+@media print and (min-resolution: 300dpi) { 
+}
+
+#sidebar ul li a {
+  color: #900;
+  text-decoration: none;
+  padding: 3px 0; 
+  display: block;
+}
+
+@media all and (max-width: 699px) and (min-width: 520px) {
+  #sidebar ul li a {
+	padding-left: 21px;
+	background: url(../images/email.png) left center no-repeat;
+  }
+}
+
+@media all and (min-width: 1001px) {
+  #sidebar ul li a:after {
+	content: " (" attr(data-email) ")";
+	font-size: 11px;
+	font-style: italic;
+	color: #666;
+  }
+}
+
+@media all and (max-width: 1000px) and (min-width: 700px) {
+  #sidebar ul li a:before {
+	content: "Email: ";
+	font-style: italic;
+	color: #666;
+  }
+}
+
+@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {
+  #sidebar ul li a {
+	padding-left: 21px;
+	background: url(../images/email.png) left center no-repeat;
+  }
+}
+
+@media (max-width: 600px) {
+  #sidebar {display: none;}
+}
+
+@media (not (screen and (color))), print and (color);
+
+@media screen {
+	* {
+		background: silver
+	}
+}
+
+.username:after {
+	content:"Insert your user name";
+}
+@media screen and (max-width: 1024px) {
+	.username:before {
+		content:"User name";
+	}
+}
+@media screen and (max-width: 480px) {
+	.username:before {
+		content:"";
+	}
+}
+
+@media screen and (max-width: 1200px) {
+    .menu { 
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .menu {
+        width: 30%;
+    }
+}
