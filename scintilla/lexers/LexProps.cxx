@@ -189,9 +189,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	bool isSubVar = false;
 	int beforeSubVarState = -1;
 	
+	int stringState = 0;
+	
 	for (; sc.More(); sc.Forward()) {
 		
-		if (sc.atLineStart) {
+		if (sc.atLineStart && stringState == 0) {
 			if (!allowInitialSpaces && IsASpaceOrTab(sc.ch)) {
 				// don't allow initial spaces
 				goToLineEnd = true;
@@ -284,8 +286,18 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.chPrev != '\\' && levelSqBrackets == 0 &&
 					(sc.ch == (sc.state == SCE_PROPS_DOUBLESTRING ?
 													 '\"' : '\''))) { 
-					// end of string
+					if (stringState == 1) {
+						// continuation of multi-line string
+						stringState = 2;
+						continue;
+					}
+					// end of single-line string
 					sc.Forward();
+					
+				} else if (stringState == 2 && sc.ch == ';') {
+					// end of multi-line string
+					sc.Forward();
+					
 				} else if (CheckSubVar(sc, styler, endPos, &isSubVar,
 									   &beforeSubVarState)) {
 					// begin sub-var inside string
@@ -397,25 +409,53 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
 				int levelSqBrcks = 0;
-				bool isString = false;
-				for (Sci_PositionU i = sc.currentPos + 1; i < endPos; i++) {
+				int strState = -1;
+				for (Sci_PositionU i = sc.currentPos + 1; i < styler.Length(); i++) {
 					if (IsACRLF(styler[i])) { // end of line
-						break;
+						if (strState == -1) {
+							strState = 1; // multi-line string
+							continue;
+						} else if (strState == 1) {
+							continue;
+						} else {
+							strState = -1; // bad string
+							break;
+						}
 					} else if (styler[i] == '[') {
 						levelSqBrcks++;
 					} else if (styler[i] == ']') {
 						levelSqBrcks--;
+					} else if (strState == 2 || strState == 3) {
+						if (IsASpaceOrTab(styler[i])) {
+							continue;
+						} else if (styler[i] == ';') { // multi-line string value ends with semicolon
+							// start of multi-line string
+							sc.SetState(strState == 2 ? SCE_PROPS_DOUBLESTRING:
+									  /*strState == 3*/ SCE_PROPS_SINGLESTRING);
+							levelSqBrackets = 0;
+							break;
+						} else {
+							strState = -1; // bad string
+							break;
+						}
 					} else if (styler[i] == sc.ch && styler[i - 1] != '\\'
 								&& levelSqBrcks == 0) { // exclude regular expression
-						// start of string
-						sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
-													SCE_PROPS_SINGLESTRING);
-						levelSqBrackets = 0;
-						isString = true;
-						break;
+						if (strState == -1) {
+							// start of single-line string
+							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
+														SCE_PROPS_SINGLESTRING);
+							levelSqBrackets = 0;
+							strState = 0;
+							break;
+						} else if (strState == 1) {
+							strState = sc.ch == '\"' ? 2 : 3;
+						}
 					}
 				}
-				if (isString) continue;
+				//~ strState == 0 - single-line string
+				//~ strState == 2 - multi-line string "text"
+				//~ strState == 3 - multi-line string 'text'
+				if (strState >= 0) continue;
 				
 			} else if (IsAWordChar(sc.ch) && /* exclude subtract-oper */
 					   !IsSubtractOper(styler, sc.currentPos, endPos)) {
