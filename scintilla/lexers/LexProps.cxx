@@ -262,7 +262,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			sc.SetState(beforeSubVarState);
 		}
 		
-		// Determine if the current state should terminate.
+		// Determine if the current value-state should terminate.
 		switch (sc.state) {
 			case SCE_PROPS_VARIABLE:
 				if (IsAWordChar(sc.ch))
@@ -363,13 +363,14 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 		}
 		
-		// Determine if a new state should be entered.
+		// Determine if a new value-state should be entered.
 		if (sc.state == SCE_PROPS_OPER_VALUE ||
 			sc.state == SCE_PROPS_SUBVAR_OPER ||
 			sc.state == SCE_PROPS_DOUBLESTRING ||
 			sc.state == SCE_PROPS_SINGLESTRING ||
 			!IsAWordChar(sc.chPrev)) {
-			// start new typed-value state
+			
+			// start new typed-value states
 			if (sc.chPrev != '.' && sc.Match('0', 'x')
 				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
 				sc.SetState(SCE_PROPS_HEXNUMBER);
@@ -468,6 +469,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				continue;
 			}
 			
+		// Determine if the value-state (word) should terminate.
 		} else if (sc.state == SCE_PROPS_VALUE &&
 				   !IsAWordChar(sc.ch)) {
 			// sc.chPrev == word-char (alnum, '_', '-')
@@ -496,6 +498,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (namedColors.InList(word2)) {
 				sc.ChangeState(SCE_PROPS_NAMED_COLOR);
 			}
+			
+		// Determine if the value-state (word) should continuation.
 		} else if (sc.state == SCE_PROPS_VALUE) {
 			// --CONTINUATION OF THE WORD--
 			continue;
