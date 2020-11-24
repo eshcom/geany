@@ -188,6 +188,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	bool isSubVar = false;
 	int beforeSubVarState = -1;
+	int beforeStringState = -1;
 	
 	int stringState = 0;
 	
@@ -292,7 +293,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						continue;
 					}
 					// end of single-line string (stringState == 0)
-					sc.Forward();
+					sc.ForwardSetState(beforeStringState);
 					
 				} else if (stringState == 2 && sc.ch == ';') {
 					// end of multi-line string
@@ -431,6 +432,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							continue;
 						} else if (styler[i] == ';') { // multi-line string value ends with semicolon
 							// start of multi-line string
+							beforeStringState = sc.state;
 							sc.SetState(strState == 2 ? SCE_PROPS_DOUBLESTRING:
 									  /*strState == 3*/ SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
@@ -444,6 +446,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 								&& levelSqBrcks == 0) { // exclude regular expression
 						if (strState == -1) {
 							// start of single-line string
+							beforeStringState = sc.state;
 							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
 														SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
