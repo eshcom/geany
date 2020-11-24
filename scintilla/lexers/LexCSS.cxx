@@ -96,31 +96,24 @@ static inline bool IsCssOperator(const int ch) {
 	return false;
 }
 
-//~ esh: CheckBeginSubVar func
-static inline void CheckBeginSubVar(StyleContext &sc, bool *isSubVar,
-									int *beforeSubVarState) {
+//~ esh: CheckSubVar func
+static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
+							   int *beforeSubVarState) {
 	if (sc.Match('#', '{')) {
-		*beforeSubVarState = sc.state;
+		if (sc.state != SCE_CSS_SUBVAR_OPER)
+			*beforeSubVarState = sc.state;
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
 		sc.Forward();
-		sc.Forward();
-		if (sc.ch == '}') {
-			sc.ForwardSetState(*beforeSubVarState);
-		} else {
-			sc.SetState(SCE_CSS_VALUE);
-			*isSubVar = true;
-		}
-	}
-}
-//~ esh: CheckEndSubVar func
-static inline void CheckEndSubVar(StyleContext &sc, bool *isSubVar,
-								  int *beforeSubVarState) {
-
-	if (*isSubVar && sc.ch == '}') {
+		*isSubVar = true;
+		return true;
+	} else if (*isSubVar && sc.ch == '}') {
 		sc.SetState(SCE_CSS_SUBVAR_OPER);
 		sc.ForwardSetState(*beforeSubVarState);
 		*isSubVar = false;
+		// check consecutive sub-var
+		return CheckSubVar(sc, isSubVar, beforeSubVarState);
 	}
+	return false;
 }
 
 // look behind (from start of document to our start position) to determine current nesting level
@@ -209,7 +202,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			if (comment_mode == eCommentBlock) {
 				sc.Forward();
-				sc.ForwardSetState(lastStateC);
+				if (lastStateC == SCE_CSS_NUMBER || lastStateC == SCE_CSS_DIMENSION ||
+					lastStateC == SCE_CSS_NAMED_COLOR || lastStateC == SCE_CSS_HEX_COLOR ||
+					lastStateC == SCE_CSS_IMPORTANT || lastStateC == SCE_CSS_ERR_VALUE)
+					sc.ForwardSetState(SCE_CSS_VALUE);
+				else
+					sc.ForwardSetState(lastStateC);
 			} else /* eCommentLine */ {
 				sc.SetState(lastStateC);
 			}
@@ -218,11 +216,15 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_CSS_COMMENT)
 			continue;
 		
-		// esh: check begin sub-var, end sub-var
-		CheckBeginSubVar(sc, &isSubVar, &beforeSubVarState);
+		// esh: check sub-var
 		if (sc.state != SCE_CSS_VALUE &&
-			sc.state != SCE_CSS_HEX_COLOR)
-			CheckEndSubVar(sc, &isSubVar, &beforeSubVarState); // for sub-var inside string
+			sc.state != SCE_CSS_HEX_COLOR &&
+			CheckSubVar(sc, &isSubVar, &beforeSubVarState))
+			continue;
+		else if (sc.state == SCE_CSS_SUBVAR_OPER && !isSubVar &&
+				 (beforeSubVarState == SCE_CSS_DOUBLESTRING ||
+				  beforeSubVarState == SCE_CSS_SINGLESTRING))
+			sc.SetState(beforeSubVarState); // after sub-var inside string
 		
 		if (sc.state == SCE_CSS_DOUBLESTRING || sc.state == SCE_CSS_SINGLESTRING) {
 			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
@@ -429,6 +431,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				case SCE_CSS_VALUE:			// esh: var inside val
 				case SCE_CSS_OPER_VALUE:	// esh: var inside val after oper-val
+				case SCE_CSS_SUBVAR_OPER:	// esh: var inside sub-var
 					beforeVarState = SCE_CSS_VALUE; // esh: oper-val is part of val
 					sc.SetState(SCE_CSS_VARIABLE);
 					continue;
@@ -483,104 +486,19 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
 		}
 		
-		// esh: number, hexadec-color, named-color, dimension, ...
+		// esh: Determine if the current value-state should terminate.
 		switch (sc.state) {
-			case SCE_CSS_VALUE:			// sub-val: solid, linear, transparent, ...
-			case SCE_CSS_OPER_VALUE:	// oper-val: (),/ (see IsCssOperValue func)
-				
-				if (!IsAWordChar(sc.chPrev)) {
-					// start new typed-value state
-					if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-						((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
-															IsADigit(sc.chNext))))) {
-						sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
-						continue;
-						
-					} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
-						sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
-						hexColorLen = 0;
-						continue;
-						
-					} else if (IsAWordChar(sc.ch)) {
-						// start of word
-						// sc.state can be SCE_CSS_VALUE, SCE_CSS_OPER_VALUE
-						if (sc.state != SCE_CSS_VALUE)	// if current state == oper-val:
-							sc.SetState(SCE_CSS_VALUE);	//    fixate oper-val by sub-val (by default value state)
-						continue;
-					}
-				} else if (!IsAWordChar(sc.ch)) {
-					// end of word (here also true condition: IsAWordChar(sc.chPrev))
-					// look ahead to see '('
-					int ch = 0;
-					int chNext;
-					Sci_PositionU i = sc.currentPos;
-					bool isComment = false;
-					for (; i < styler.Length(); i++) {
-						ch = styler.SafeGetCharAt(i);
-						chNext = styler.SafeGetCharAt(i + 1);
-						if (!isComment && ch == '/' && chNext == '*') {
-							isComment = true;
-							i++;
-							continue;
-						} else if (isComment && ch == '*' && chNext == '/') {
-							isComment = false;
-							i++;
-							continue;
-						} else if (isComment) {
-							continue;
-						} else if (!IsASpace(ch)) {
-							break;
-						}
-					}
-					
-					char word[100];
-					sc.GetCurrentLowered(word, sizeof(word));
-					char *word2 = word;
-					while (*word2 && !IsAWordChar(*word2))
-						word2++;
-					
-					if (ch == '(') {
-						sc.ChangeState(SCE_CSS_FUNCTION);
-						isMediaFunc = (strcmp(word2, "and") == 0 ||
-									   strcmp(word2, "not") == 0 ||
-									   strcmp(word2, "only") == 0);
-					} else if (ch == ':' && insideParentheses && isMediaFunc) {
-						if (css1Props.InList(word2))
-							sc.ChangeState(SCE_CSS_IDENTIFIER);
-						else if (css2Props.InList(word2))
-							sc.ChangeState(SCE_CSS_IDENTIFIER2);
-						else if (css3Props.InList(word2))
-							sc.ChangeState(SCE_CSS_IDENTIFIER3);
-						else if (exProps.InList(word2))
-							sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
-						else
-							sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
-						break;
-					} else if (namedColors.InList(word2)) {
-						sc.ChangeState(SCE_CSS_NAMED_COLOR);
-					} else if (insideParentheses &&
-							   IsUrl(word2, styler, sc.currentPos, endPos)) {
-						sc.ChangeState(SCE_CSS_URL_VALUE);
-						continue;
-					} else {
-						// fixate sub-val by sub-val (by default value state)
-						sc.SetState(SCE_CSS_VALUE);
-					}
-				} else {
-					//~ IsAWordChar(sc.chPrev)	is true
-					//~ IsAWordChar(sc.ch)		is true
-					continue;
-				}
-				break;
 			case SCE_CSS_NUMBER:
-				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)))
+				if (IsADigit(sc.ch) || (sc.ch == '.' &&
+										IsADigit(sc.chNext)))
 					continue;
-				
 				if (IsAWordOrPercent(sc.ch)) {
 					sc.SetState(SCE_CSS_DIMENSION);
 					continue;
 				}
+				// end of number
 				break;
+				
 			case SCE_CSS_DIMENSION: {
 				if (IsAWordOrPercent(sc.ch))
 					continue;
@@ -590,14 +508,18 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				if (!IsDimension(dim))
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
 			}	break;
+			
 			case SCE_CSS_HEX_COLOR:
 				if (IsADigit(sc.ch, 16)) {
 					hexColorLen++;
 					continue;
 				}
-				if (hexColorLen != 3 && hexColorLen != 6)
+				// end of hex-color
+				if ((hexColorLen != 3 && hexColorLen != 6)
+					|| IsAWordChar(sc.ch))				// bad hex-color
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
 				break;
+				
 			case SCE_CSS_IMPORTANT: {
 				if (IsAWordChar(sc.ch))
 					continue;
@@ -610,21 +532,132 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				if (strcmp(imp2, "important") != 0)
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
 			}	break;
+			
 			case SCE_CSS_URL_VALUE:
 				if (sc.ch == ')')
 					sc.SetState(SCE_CSS_OPER_VALUE);
 				continue;
 		}
+		
+		// esh: Determine if a new value-state should be entered.
+		if (sc.state == SCE_CSS_OPER_VALUE ||	// oper-val: (),/ (see IsCssOperValue func)
+			sc.state == SCE_CSS_SUBVAR_OPER ||	// sc.ch inside sub-var
+			(sc.state == SCE_CSS_VALUE &&		// sub-val: solid, linear, transparent, ...
+			 !IsAWordChar(sc.chPrev))) {
+			
+			// start new typed-value states
+			// (number, hexadec-color, named-color, dimension, ...)
+			if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+				((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
+													IsADigit(sc.chNext))))) {
+				sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
+				continue;
+				
+			} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+				sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
+				hexColorLen = 0;
+				continue;
+				
+			} else if (IsAWordChar(sc.ch)) {
+				// sc.chPrev != word-char (alnum, '_', '-')
+				// --START OF WORD--
+				if (sc.state != SCE_CSS_VALUE)
+					sc.SetState(SCE_CSS_VALUE);
+				continue;
+			}
+		
+		// Determine if the value-state (word) should terminate.
+		} else if (sc.state == SCE_CSS_VALUE &&
+				   !IsAWordChar(sc.ch)) {
+			// sc.chPrev == word-char (alnum, '_', '-')
+			// --END OF WORD--
+			
+			// look ahead to see oper '(', ':'
+			int ch = 0;
+			int chNext;
+			Sci_PositionU i = sc.currentPos;
+			bool isComment = false;
+			for (; i < styler.Length(); i++) {
+				ch = styler.SafeGetCharAt(i);
+				chNext = styler.SafeGetCharAt(i + 1);
+				if (!isComment && ch == '/' && chNext == '*') {
+					isComment = true;
+					i++;
+					continue;
+				} else if (isComment && ch == '*' && chNext == '/') {
+					isComment = false;
+					i++;
+					continue;
+				} else if (isComment) {
+					continue;
+				} else if (!IsASpace(ch)) {
+					break;
+				}
+			}
+			char word[100];
+			sc.GetCurrentLowered(word, sizeof(word));
+			char *word2 = word;
+			while (*word2 && !IsAWordChar(*word2))
+				word2++;
+			
+			if (ch == '(') {
+				sc.ChangeState(SCE_CSS_FUNCTION);
+				isMediaFunc = (strcmp(word2, "and") == 0 ||
+							   strcmp(word2, "not") == 0 ||
+							   strcmp(word2, "only") == 0);
+				
+			} else if (ch == ':' && insideParentheses && isMediaFunc) {
+				if (css1Props.InList(word2))
+					sc.ChangeState(SCE_CSS_IDENTIFIER);
+				else if (css2Props.InList(word2))
+					sc.ChangeState(SCE_CSS_IDENTIFIER2);
+				else if (css3Props.InList(word2))
+					sc.ChangeState(SCE_CSS_IDENTIFIER3);
+				else if (exProps.InList(word2))
+					sc.ChangeState(SCE_CSS_EXTENDED_IDENTIFIER);
+				else
+					sc.ChangeState(SCE_CSS_UNKNOWN_IDENTIFIER);
+				
+			// find a word to defined list:
+			} else if (namedColors.InList(word2)) {
+				sc.ChangeState(SCE_CSS_NAMED_COLOR);
+			} else if (insideParentheses &&
+					   IsUrl(word2, styler, sc.currentPos, endPos)) {
+				sc.ChangeState(SCE_CSS_URL_VALUE);
+				continue;
+			} else {
+				// fixate sub-val by sub-val (by default value state)
+				sc.SetState(SCE_CSS_VALUE);
+			}
+			
+		// Determine if the value-state (word) should continuation.
+		} else if (sc.state == SCE_CSS_VALUE) {
+			// --CONTINUATION OF THE WORD--
+			continue;
+		}
+		
 		if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_NUMBER ||
 			 sc.state == SCE_CSS_DIMENSION || sc.state == SCE_CSS_HEX_COLOR ||
 			 sc.state == SCE_CSS_NAMED_COLOR || sc.state == SCE_CSS_ERR_VALUE ||
 			 sc.state == SCE_CSS_FUNCTION || sc.state == SCE_CSS_OPER_VALUE ||
-			 sc.state == SCE_CSS_IMPORTANT)) { // TODO: refactoring: invert conditions
+			 sc.state == SCE_CSS_IMPORTANT || sc.state == SCE_CSS_SUBVAR_OPER)) {
+			 // TODO: refactoring: invert conditions
 			
-			// esh: word-value or string can be inside sub-var -> check end sub-var
-			CheckEndSubVar(sc, &isSubVar, &beforeSubVarState); // for value
+			// esh: check sub-var
+			if (sc.Match('#', '{')) {
+				if (sc.state != SCE_CSS_SUBVAR_OPER)
+					beforeSubVarState = sc.state;
+				sc.SetState(SCE_CSS_SUBVAR_OPER);
+				sc.Forward();
+				isSubVar = true;
+				continue;
+			} else if (isSubVar && sc.ch == '}') {
+				sc.SetState(SCE_CSS_SUBVAR_OPER);
+				isSubVar = false;
+				continue;
+			}
 			
-			if (sc.ch == '!' && IsAWordOrSpace(sc.chNext)) {
+			if (sc.ch == '!') {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state (before sc.currentPos) by important
 				while (sc.currentPos < endPos && IsASpace(sc.chNext))
 					sc.Forward();
