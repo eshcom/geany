@@ -219,6 +219,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		// esh: check sub-var
 		if (sc.state != SCE_CSS_VALUE &&
 			sc.state != SCE_CSS_HEX_COLOR &&
+			sc.state != SCE_CSS_IMPORTANT &&
 			CheckSubVar(sc, &isSubVar, &beforeSubVarState))
 			continue;
 		else if (sc.state == SCE_CSS_SUBVAR_OPER && !isSubVar &&
