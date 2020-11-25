@@ -13,10 +13,23 @@
 	}
 }
 
+* {
+	background: silver;
+}
+
 @media screen/**/
 				/**/and/**/(max-width: 900px);
 
+* {
+	background: silver;
+}
+
 @media all and (not handheld) {}
+
+* {
+	background: silver;
+}
+
 @media not all and (color) {}
 @media not (all and (color)) {}
 @media (not all) and (color) {}
@@ -100,7 +113,7 @@
 
 @media screen {
 	* {
-		background: silver
+		background: silver;
 	}
 }
 
