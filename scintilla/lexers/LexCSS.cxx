@@ -123,6 +123,9 @@ static inline int NestingLevelLookBehind(Sci_PositionU startPos,
 	int nestingLevel = 0;
 	
 	for (Sci_PositionU i = 0; i < startPos; i++) {
+		// esh: added check comment style
+		if (styler.StyleAt(i) == SCE_CSS_COMMENT)
+			continue;
 		ch = styler.SafeGetCharAt(i);
 		if (ch == '{')
 			nestingLevel++;
@@ -177,6 +180,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	for (; sc.More(); sc.Forward()) {
 		if (sc.state == SCE_CSS_COMMENT && ((comment_mode == eCommentBlock && sc.Match('*', '/')) ||
 											(comment_mode == eCommentLine && sc.atLineEnd))) {
+			// esh: --END OF COMMENT--
 			if (lastStateC == -1) {
 				// backtrack to get last state:
 				// comments are like whitespace, so we must return to the previous state
@@ -473,17 +477,32 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.ChangeState(SCE_CSS_MEDIA);
 			}
 			// determine next state:
-			int ch = 0;
+			int ch = ' ';
+			int chNext;
 			bool wordExists = false;
+			bool isComment = false;
 			for (Sci_PositionU i = sc.currentPos; i < styler.Length(); i++) {
 				ch = styler.SafeGetCharAt(i);
+				chNext = styler.SafeGetCharAt(i + 1);
+				if (!isComment && ch == '/' && chNext == '*') {
+					isComment = true;
+					i++;
+					continue;
+				} else if (isComment && ch == '*' && chNext == '/') {
+					isComment = false;
+					i++;
+					continue;
+				} else if (isComment) {
+					continue;
+				}
 				if ((IsCssOperator(ch) && ch != ',') || ch == '&')
 					break;
 				else if (IsAWordChar(ch))
 					wordExists = true;
 			}
 			// set next state for directive/media
-			if (IsCssSelectorOper(ch) || (ch == '{' && wordExists))
+			if ((IsCssSelectorOper(ch) && !(ch == '.' && isdigit(chNext)))
+				|| (ch == '{' && wordExists))
 				sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
 			else
 				sc.SetState(SCE_CSS_VALUE);		// fixate directive by val
@@ -576,7 +595,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			// --END OF WORD--
 			
 			// look ahead to see oper '(', ':'
-			int ch = 0;
+			int ch = ' ';
 			int chNext;
 			Sci_PositionU i = sc.currentPos;
 			bool isComment = false;
@@ -684,10 +703,23 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
 			 (sc.ch == '#' && sc.chNext != '{'))) {				// skip sub-var
 			// look ahead to see whether { comes before next ; and }
-			int ch;
+			int ch, chNext;
 			int subVarLevel = 0;
+			bool isComment = false;
 			for (Sci_PositionU i = sc.currentPos; i < styler.Length(); i++) {
 				ch = styler.SafeGetCharAt(i);
+				chNext = styler.SafeGetCharAt(i + 1);
+				if (!isComment && ch == '/' && chNext == '*') {
+					isComment = true;
+					i++;
+					continue;
+				} else if (isComment && ch == '*' && chNext == '/') {
+					isComment = false;
+					i++;
+					continue;
+				} else if (isComment) {
+					continue;
+				}
 				if (ch == ';' || ch == '}') {
 					if (ch == '}' && subVarLevel > 0) {			// skip sub-var
 						subVarLevel--;
