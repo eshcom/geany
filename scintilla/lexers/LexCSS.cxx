@@ -421,7 +421,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// variable name
 		// esh: @ - for LESS, $ - for SCSS/HSS
-		if ((sc.ch == '@' || sc.ch == '$') && IsAWordChar(sc.chNext)) {
+		if ((sc.ch == '@' || sc.ch == '$') && IsAWordChar(sc.chNext) &&
+			!(sc.state == SCE_CSS_VALUE && IsAWordChar(sc.chPrev))) {
 			switch (sc.state) {
 				case SCE_CSS_DEFAULT:
 				case SCE_CSS_IDENTIFIER:
