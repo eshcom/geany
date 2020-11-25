@@ -1394,229 +1394,228 @@ GEANY_API_SYMBOL
 gboolean highlighting_is_string_style(gint lexer, gint style)
 {
 	/* Don't forget STRINGEOL, to prevent completion whilst typing a string with no closing char. */
-
+	
 	switch (lexer)
 	{
 		case SCLEX_CPP:
 			return (style == SCE_C_CHARACTER ||
-				style == SCE_C_STRING ||
-				style == SCE_C_STRINGEOL ||
-				style == SCE_C_STRINGRAW ||
-				style == SCE_C_STRINGJSONKEY ||
-				style == SCE_C_VERBATIM ||
-				style == SCE_C_USERLITERAL ||
-				style == SCE_C_TRIPLEVERBATIM ||
-				style == SCE_C_REGEX ||
-				style == SCE_C_HASHQUOTEDSTRING ||
-				style == SCE_C_ESCAPESEQUENCE);
-
+					style == SCE_C_STRING ||
+					style == SCE_C_STRINGEOL ||
+					style == SCE_C_STRINGRAW ||
+					style == SCE_C_STRINGJSONKEY ||
+					style == SCE_C_VERBATIM ||
+					style == SCE_C_USERLITERAL ||
+					style == SCE_C_TRIPLEVERBATIM ||
+					style == SCE_C_REGEX ||
+					style == SCE_C_HASHQUOTEDSTRING ||
+					style == SCE_C_ESCAPESEQUENCE);
+		
 		case SCLEX_PASCAL:
 			return (style == SCE_PAS_CHARACTER ||
-				style == SCE_PAS_STRING ||
-				style == SCE_PAS_STRINGEOL);
-
+					style == SCE_PAS_STRING ||
+					style == SCE_PAS_STRINGEOL);
+		
 		case SCLEX_D:
 			return (style == SCE_D_STRING ||
-				style == SCE_D_STRINGEOL ||
-				style == SCE_D_CHARACTER ||
-				style == SCE_D_STRINGB ||
-				style == SCE_D_STRINGR);
-
+					style == SCE_D_STRINGEOL ||
+					style == SCE_D_CHARACTER ||
+					style == SCE_D_STRINGB ||
+					style == SCE_D_STRINGR);
+		
 		case SCLEX_PYTHON:
 			return (style == SCE_P_STRING ||
-				style == SCE_P_TRIPLE ||
-				style == SCE_P_TRIPLEDOUBLE ||
-				style == SCE_P_CHARACTER ||
-				style == SCE_P_FSTRING ||
-				style == SCE_P_FCHARACTER ||
-				style == SCE_P_FTRIPLE ||
-				style == SCE_P_FTRIPLEDOUBLE ||
-				style == SCE_P_STRINGEOL);
-
+					style == SCE_P_TRIPLE ||
+					style == SCE_P_TRIPLEDOUBLE ||
+					style == SCE_P_CHARACTER ||
+					style == SCE_P_FSTRING ||
+					style == SCE_P_FCHARACTER ||
+					style == SCE_P_FTRIPLE ||
+					style == SCE_P_FTRIPLEDOUBLE ||
+					style == SCE_P_STRINGEOL);
+		
 		case SCLEX_F77:
 		case SCLEX_FORTRAN:
 			return (style == SCE_F_STRING1 ||
-				style == SCE_F_STRING2 ||
-				style == SCE_F_STRINGEOL);
-
+					style == SCE_F_STRING2 ||
+					style == SCE_F_STRINGEOL);
+		
 		case SCLEX_PERL:
 			return (style == SCE_PL_STRING ||
-				style == SCE_PL_CHARACTER ||
-				style == SCE_PL_HERE_DELIM ||
-				style == SCE_PL_HERE_Q ||
-				style == SCE_PL_HERE_QQ ||
-				style == SCE_PL_HERE_QX ||
-				style == SCE_PL_POD ||
-				style == SCE_PL_STRING_Q ||
-				style == SCE_PL_STRING_QQ ||
-				style == SCE_PL_STRING_QX ||
-				style == SCE_PL_STRING_QR ||
-				style == SCE_PL_STRING_QW ||
-				style == SCE_PL_POD_VERB ||
-				style == SCE_PL_REGEX ||
-				style == SCE_PL_REGEX_VAR ||
-				style == SCE_PL_XLAT
-				/* we don't include any STRING_*_VAR for autocompletion */);
-
+					style == SCE_PL_CHARACTER ||
+					style == SCE_PL_HERE_DELIM ||
+					style == SCE_PL_HERE_Q ||
+					style == SCE_PL_HERE_QQ ||
+					style == SCE_PL_HERE_QX ||
+					style == SCE_PL_POD ||
+					style == SCE_PL_STRING_Q ||
+					style == SCE_PL_STRING_QQ ||
+					style == SCE_PL_STRING_QX ||
+					style == SCE_PL_STRING_QR ||
+					style == SCE_PL_STRING_QW ||
+					style == SCE_PL_POD_VERB ||
+					style == SCE_PL_REGEX ||
+					style == SCE_PL_REGEX_VAR ||
+					style == SCE_PL_XLAT
+					/* we don't include any STRING_*_VAR for autocompletion */);
+		
 		case SCLEX_PO:
 			return (style == SCE_PO_MSGCTXT_TEXT ||
-				style == SCE_PO_MSGCTXT_TEXT_EOL ||
-				style == SCE_PO_MSGID_TEXT ||
-				style == SCE_PO_MSGID_TEXT_EOL ||
-				style == SCE_PO_MSGSTR_TEXT ||
-				style == SCE_PO_MSGSTR_TEXT_EOL);
-
+					style == SCE_PO_MSGCTXT_TEXT_EOL ||
+					style == SCE_PO_MSGID_TEXT ||
+					style == SCE_PO_MSGID_TEXT_EOL ||
+					style == SCE_PO_MSGSTR_TEXT ||
+					style == SCE_PO_MSGSTR_TEXT_EOL);
+		
 		case SCLEX_R:
 			return (style == SCE_R_STRING);
-
+		
 		case SCLEX_RUBY:
 			return (style == SCE_RB_CHARACTER ||
-				style == SCE_RB_STRING ||
-				style == SCE_RB_HERE_DELIM ||
-				style == SCE_RB_HERE_Q ||
-				style == SCE_RB_HERE_QQ ||
-				style == SCE_RB_HERE_QX ||
-				style == SCE_RB_REGEX ||
-				style == SCE_RB_STRING_Q ||
-				style == SCE_RB_STRING_QQ ||
-				style == SCE_RB_STRING_QX ||
-				style == SCE_RB_STRING_QR ||
-				style == SCE_RB_STRING_QW ||
-				style == SCE_RB_POD);
-
+					style == SCE_RB_STRING ||
+					style == SCE_RB_HERE_DELIM ||
+					style == SCE_RB_HERE_Q ||
+					style == SCE_RB_HERE_QQ ||
+					style == SCE_RB_HERE_QX ||
+					style == SCE_RB_REGEX ||
+					style == SCE_RB_STRING_Q ||
+					style == SCE_RB_STRING_QQ ||
+					style == SCE_RB_STRING_QX ||
+					style == SCE_RB_STRING_QR ||
+					style == SCE_RB_STRING_QW ||
+					style == SCE_RB_POD);
+		
 		case SCLEX_BASH:
 			return (style == SCE_SH_STRING);
-
+		
 		case SCLEX_SQL:
 			return (style == SCE_SQL_STRING);
-
+		
 		case SCLEX_TCL:
 			return (style == SCE_TCL_IN_QUOTE);
-
+		
 		case SCLEX_LUA:
 			return (style == SCE_LUA_LITERALSTRING ||
-				style == SCE_LUA_CHARACTER ||
-				style == SCE_LUA_STRINGEOL ||
-				style == SCE_LUA_STRING);
-
+					style == SCE_LUA_CHARACTER ||
+					style == SCE_LUA_STRINGEOL ||
+					style == SCE_LUA_STRING);
+		
 		case SCLEX_HASKELL:
 		case SCLEX_LITERATEHASKELL:
 			return (style == SCE_HA_CHARACTER ||
-				style == SCE_HA_STRINGEOL ||
-				style == SCE_HA_STRING);
-
+					style == SCE_HA_STRINGEOL ||
+					style == SCE_HA_STRING);
+		
 		case SCLEX_FREEBASIC:
 			return (style == SCE_B_STRING ||
-				style == SCE_B_STRINGEOL);
-
+					style == SCE_B_STRINGEOL);
+		
 		case SCLEX_OCTAVE:
 			return (style == SCE_MATLAB_STRING ||
-				style == SCE_MATLAB_DOUBLEQUOTESTRING);
-
+					style == SCE_MATLAB_DOUBLEQUOTESTRING);
+		
 		case SCLEX_XML:
 		case SCLEX_HTML:
 		case SCLEX_PHPSCRIPT:
-			return (
-				style == SCE_HBA_STRING ||
-				style == SCE_HBA_STRINGEOL ||
-				style == SCE_HB_STRING ||
-				style == SCE_HB_STRINGEOL ||
-				style == SCE_H_CDATA ||
-				style == SCE_H_DOUBLESTRING ||
-				style == SCE_HJA_DOUBLESTRING ||
-				style == SCE_HJA_SINGLESTRING ||
-				style == SCE_HJA_STRINGEOL ||
-				style == SCE_HJA_REGEX ||
-				style == SCE_HJ_DOUBLESTRING ||
-				style == SCE_HJ_SINGLESTRING ||
-				style == SCE_HJ_STRINGEOL ||
-				style == SCE_HJ_REGEX ||
-				style == SCE_HPA_CHARACTER ||
-				style == SCE_HPA_STRING ||
-				style == SCE_HPA_TRIPLE ||
-				style == SCE_HPA_TRIPLEDOUBLE ||
-				style == SCE_HP_CHARACTER ||
-				style == SCE_HPHP_HSTRING ||  /* HSTRING is a heredoc */
-				style == SCE_HPHP_HSTRING_VARIABLE ||
-				style == SCE_HPHP_SIMPLESTRING ||
-				style == SCE_HP_STRING ||
-				style == SCE_HP_TRIPLE ||
-				style == SCE_HP_TRIPLEDOUBLE ||
-				style == SCE_H_SGML_DOUBLESTRING ||
-				style == SCE_H_SGML_SIMPLESTRING ||
-				style == SCE_H_SINGLESTRING);
-
+			return (style == SCE_HBA_STRING ||
+					style == SCE_HBA_STRINGEOL ||
+					style == SCE_HB_STRING ||
+					style == SCE_HB_STRINGEOL ||
+					style == SCE_H_CDATA ||
+					style == SCE_H_DOUBLESTRING ||
+					style == SCE_HJA_DOUBLESTRING ||
+					style == SCE_HJA_SINGLESTRING ||
+					style == SCE_HJA_STRINGEOL ||
+					style == SCE_HJA_REGEX ||
+					style == SCE_HJ_DOUBLESTRING ||
+					style == SCE_HJ_SINGLESTRING ||
+					style == SCE_HJ_STRINGEOL ||
+					style == SCE_HJ_REGEX ||
+					style == SCE_HPA_CHARACTER ||
+					style == SCE_HPA_STRING ||
+					style == SCE_HPA_TRIPLE ||
+					style == SCE_HPA_TRIPLEDOUBLE ||
+					style == SCE_HP_CHARACTER ||
+					style == SCE_HPHP_HSTRING ||  /* HSTRING is a heredoc */
+					style == SCE_HPHP_HSTRING_VARIABLE ||
+					style == SCE_HPHP_SIMPLESTRING ||
+					style == SCE_HP_STRING ||
+					style == SCE_HP_TRIPLE ||
+					style == SCE_HP_TRIPLEDOUBLE ||
+					style == SCE_H_SGML_DOUBLESTRING ||
+					style == SCE_H_SGML_SIMPLESTRING ||
+					style == SCE_H_SINGLESTRING);
+		
 		case SCLEX_CMAKE:
 			return (style == SCE_CMAKE_STRINGDQ ||
-				style == SCE_CMAKE_STRINGLQ ||
-				style == SCE_CMAKE_STRINGRQ ||
-				style == SCE_CMAKE_STRINGVAR);
-
+					style == SCE_CMAKE_STRINGLQ ||
+					style == SCE_CMAKE_STRINGRQ ||
+					style == SCE_CMAKE_STRINGVAR);
+		
 		case SCLEX_NSIS:
 			return (style == SCE_NSIS_STRINGDQ ||
-				style == SCE_NSIS_STRINGLQ ||
-				style == SCE_NSIS_STRINGRQ ||
-				style == SCE_NSIS_STRINGVAR);
-
+					style == SCE_NSIS_STRINGLQ ||
+					style == SCE_NSIS_STRINGRQ ||
+					style == SCE_NSIS_STRINGVAR);
+		
 		case SCLEX_ADA:
 			return (style == SCE_ADA_CHARACTER ||
-				style == SCE_ADA_STRING ||
-				style == SCE_ADA_CHARACTEREOL ||
-				style == SCE_ADA_STRINGEOL);
-
+					style == SCE_ADA_STRING ||
+					style == SCE_ADA_CHARACTEREOL ||
+					style == SCE_ADA_STRINGEOL);
+		
 		case SCLEX_ABAQUS:
 			return (style == SCE_ABAQUS_STRING);
-
+		
 		case SCLEX_RUST:
 			return (style == SCE_RUST_CHARACTER ||
-				style == SCE_RUST_BYTECHARACTER ||
-				style == SCE_RUST_STRING ||
-				style == SCE_RUST_STRINGR ||
-				style == SCE_RUST_BYTESTRING ||
-				style == SCE_RUST_BYTESTRINGR ||
-				style == SCE_RUST_LEXERROR);
-
+					style == SCE_RUST_BYTECHARACTER ||
+					style == SCE_RUST_STRING ||
+					style == SCE_RUST_STRINGR ||
+					style == SCE_RUST_BYTESTRING ||
+					style == SCE_RUST_BYTESTRINGR ||
+					style == SCE_RUST_LEXERROR);
+		
 		case SCLEX_COFFEESCRIPT:
 			return (style == SCE_COFFEESCRIPT_CHARACTER ||
-				style == SCE_COFFEESCRIPT_STRING ||
-				style == SCE_COFFEESCRIPT_REGEX ||
-				style == SCE_COFFEESCRIPT_VERBOSE_REGEX ||
-				style == SCE_COFFEESCRIPT_STRINGEOL);
-
+					style == SCE_COFFEESCRIPT_STRING ||
+					style == SCE_COFFEESCRIPT_REGEX ||
+					style == SCE_COFFEESCRIPT_VERBOSE_REGEX ||
+					style == SCE_COFFEESCRIPT_STRINGEOL);
+		
 		case SCLEX_VERILOG:
 			return (style == SCE_V_STRING);
-
+		
 		case SCLEX_VHDL:
 			return (style == SCE_VHDL_STRING ||
-				style == SCE_VHDL_STRINGEOL);
-
+					style == SCE_VHDL_STRINGEOL);
+		
 		case SCLEX_CAML:
 			return (style == SCE_CAML_CHAR ||
-				style == SCE_CAML_STRING);
-
+					style == SCE_CAML_STRING);
+		
 		case SCLEX_CSS:
 			return (style == SCE_CSS_DOUBLESTRING ||
-				style == SCE_CSS_SINGLESTRING);
-
+					style == SCE_CSS_SINGLESTRING);
+		
 		case SCLEX_PROPERTIES:
 			return (style == SCE_PROPS_DOUBLESTRING ||
-				style == SCE_PROPS_SINGLESTRING);
-
+					style == SCE_PROPS_SINGLESTRING);
+		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
-				style == SCE_ERLANG_CHARACTER);
-
+					style == SCE_ERLANG_CHARACTER);
+		
 		case SCLEX_LISP:
 			return (style == SCE_LISP_STRING ||
-				style == SCE_LISP_STRINGEOL);
-
+					style == SCE_LISP_STRINGEOL);
+		
 		case SCLEX_FORTH:
 			return (style == SCE_FORTH_STRING);
-
+		
 		case SCLEX_POWERSHELL:
 			return (style == SCE_POWERSHELL_STRING ||
-				style == SCE_POWERSHELL_CHARACTER);
-
+					style == SCE_POWERSHELL_CHARACTER);
+		
 		case SCLEX_BATCH:
 		case SCLEX_DIFF:
 		case SCLEX_LATEX:
