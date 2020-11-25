@@ -1,6 +1,11 @@
 /*
  * Some applications depend on these named colors.
  */
+ 
+* {
+	background: silver;
+}
+
 p {
 	transition: "dfg";
 	transition: #{a};

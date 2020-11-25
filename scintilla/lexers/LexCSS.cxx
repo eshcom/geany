@@ -408,7 +408,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (sc.ch == '*' && sc.state == SCE_CSS_DEFAULT) {
+		if (sc.ch == '*' && (sc.state == SCE_CSS_DEFAULT ||
+							 sc.state == SCE_CSS_IDENTIFIER)) {
 			sc.SetState(SCE_CSS_TAG);
 			continue;
 		}
