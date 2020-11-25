@@ -229,6 +229,7 @@ struct OptionsPython {
 	bool foldQuotes;
 	bool foldCompact;
 	bool unicodeIdentifiers;
+	bool escapeSequence;
 	
 	OptionsPython() {
 		whingeLevel = 0;
@@ -242,6 +243,7 @@ struct OptionsPython {
 		foldQuotes = false;
 		foldCompact = false;
 		unicodeIdentifiers = true;
+		escapeSequence = false;
 	}
 	
 	literalsAllowed AllowedLiterals() const {
@@ -302,6 +304,9 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 		DefineProperty("lexer.python.unicode.identifiers", &OptionsPython::unicodeIdentifiers,
 				   "Set to 0 to not recognise Python 3 unicode identifiers.");
 		
+		DefineProperty("lexer.python.escape.sequence", &OptionsPython::escapeSequence,
+			"Set to 1 to enable highlighting of escape sequences in strings");
+		
 		DefineWordListSets(pythonWordListDesc);
 	}
 };
@@ -334,6 +339,7 @@ LexicalClass lexicalClasses[] = {
 	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
 	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
 	23, "SCE_P_WORD2_ADD", "identifier", "Highlighted identifiers additional",
+	24, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
 };
 
 }

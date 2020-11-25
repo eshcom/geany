@@ -177,6 +177,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	//	can be used for RFC2822 text where indentation is used for continuation lines.
 	const bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 	
+	// esh: escapesequence highlighting
+	const bool escapeSequence = styler.GetPropertyInt("lexer.props.escape.sequence", 0) != 0;
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	bool goToLineEnd = false;

@@ -404,7 +404,8 @@ static const HLStyle highlighting_styles_CSS[] =
 	{ SCE_CSS_OPER_VALUE,				"oper_value",				FALSE },
 	{ SCE_CSS_URL_VALUE,				"url_value",				FALSE },
 	{ SCE_CSS_FUNCTION,					"function",					FALSE },
-	{ SCE_CSS_SUBVAR_OPER,				"subvar_oper",				FALSE }
+	{ SCE_CSS_SUBVAR_OPER,				"subvar_oper",				FALSE },
+	{ SCE_CSS_ESCAPESEQUENCE,			"escapesequence",			FALSE }
 };
 static const HLKeyword highlighting_keywords_CSS[] =
 {
@@ -437,26 +438,27 @@ static const HLKeyword highlighting_keywords_COBOL[] =
 #define highlighting_lexer_CONF			SCLEX_PROPERTIES
 static const HLStyle highlighting_styles_CONF[] =
 {
-	{ SCE_PROPS_DEFAULT,		"default",		FALSE },
-	{ SCE_PROPS_COMMENT,		"comment",		FALSE },
-	{ SCE_PROPS_SECTION,		"section",		FALSE },
-	{ SCE_PROPS_KEY,			"key",			FALSE },
-	{ SCE_PROPS_VALUE,			"comval",		FALSE },
-	{ SCE_PROPS_ASSIGNMENT,		"assignment",	FALSE },
-	{ SCE_PROPS_DEFVAL,			"defval",		FALSE },
-	{ SCE_PROPS_COMMONWORD,		"commonword",	FALSE },
-	{ SCE_PROPS_DOUBLESTRING,	"doublestring",	FALSE },
-	{ SCE_PROPS_SINGLESTRING,	"singlestring",	FALSE },
-	{ SCE_PROPS_NUMBER,			"number",		FALSE },
-	{ SCE_PROPS_HEXNUMBER,		"hexnumber",	FALSE },
-	{ SCE_PROPS_NAMED_COLOR,	"named_color",	FALSE },
-	{ SCE_PROPS_HEX_COLOR,		"hex_color",	FALSE },
-	{ SCE_PROPS_IP_VALUE,		"ip_value",		FALSE },
-	{ SCE_PROPS_URL_VALUE,		"url_value",	FALSE },
-	{ SCE_PROPS_MAIL_VALUE,		"mail_value",	FALSE },
-	{ SCE_PROPS_OPER_VALUE,		"oper_value",	FALSE },
-	{ SCE_PROPS_VARIABLE,		"variable",		FALSE },
-	{ SCE_PROPS_SUBVAR_OPER,	"subvar_oper",	FALSE }
+	{ SCE_PROPS_DEFAULT,		"default",			FALSE },
+	{ SCE_PROPS_COMMENT,		"comment",			FALSE },
+	{ SCE_PROPS_SECTION,		"section",			FALSE },
+	{ SCE_PROPS_KEY,			"key",				FALSE },
+	{ SCE_PROPS_VALUE,			"comval",			FALSE },
+	{ SCE_PROPS_ASSIGNMENT,		"assignment",		FALSE },
+	{ SCE_PROPS_DEFVAL,			"defval",			FALSE },
+	{ SCE_PROPS_COMMONWORD,		"commonword",		FALSE },
+	{ SCE_PROPS_DOUBLESTRING,	"doublestring",		FALSE },
+	{ SCE_PROPS_SINGLESTRING,	"singlestring",		FALSE },
+	{ SCE_PROPS_NUMBER,			"number",			FALSE },
+	{ SCE_PROPS_HEXNUMBER,		"hexnumber",		FALSE },
+	{ SCE_PROPS_NAMED_COLOR,	"named_color",		FALSE },
+	{ SCE_PROPS_HEX_COLOR,		"hex_color",		FALSE },
+	{ SCE_PROPS_IP_VALUE,		"ip_value",			FALSE },
+	{ SCE_PROPS_URL_VALUE,		"url_value",		FALSE },
+	{ SCE_PROPS_MAIL_VALUE,		"mail_value",		FALSE },
+	{ SCE_PROPS_OPER_VALUE,		"oper_value",		FALSE },
+	{ SCE_PROPS_VARIABLE,		"variable",			FALSE },
+	{ SCE_PROPS_SUBVAR_OPER,	"subvar_oper",		FALSE },
+	{ SCE_PROPS_ESCAPESEQUENCE,	"escapesequence",	FALSE }
 };
 static const HLKeyword highlighting_keywords_CONF[] =
 {
@@ -599,6 +601,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_MODULES,			"modules",				FALSE },
 	{ SCE_ERLANG_MODULES_ATT,		"modules_att",			FALSE },
 	{ SCE_ERLANG_ATOM_SPEC,			"atom_spec",			FALSE },
+	{ SCE_ERLANG_ESCAPESEQUENCE,	"escapesequence",		FALSE },
 	{ SCE_ERLANG_UNKNOWN,			"unknown",				FALSE }
 };
 static const HLKeyword highlighting_keywords_ERLANG[] =
@@ -1312,7 +1315,8 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_COMMONWORD,		"commonword",		FALSE },
 	{ SCE_P_REFCLASSWORD,	"refclassword",		FALSE },
 	{ SCE_P_WORD_ADD,		"word_add",			FALSE },
-	{ SCE_P_WORD2_ADD,		"word2_add",		FALSE }
+	{ SCE_P_WORD2_ADD,		"word2_add",		FALSE },
+	{ SCE_P_ESCAPESEQUENCE,	"escapesequence",	FALSE }
 };
 static const HLKeyword highlighting_keywords_PYTHON[] =
 {
