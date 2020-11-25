@@ -148,6 +148,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &exPseudoElements = *keywordlists[7];
 	WordList &namedColors = *keywordlists[8];
 	
+	// esh: escapesequence highlighting
+	const bool escapeSequence = styler.GetPropertyInt("lexer.css.escape.sequence", 0) != 0;
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	Sci_PositionU endPos = startPos + length;

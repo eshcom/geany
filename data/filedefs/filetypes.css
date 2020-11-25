@@ -34,6 +34,7 @@ oper_value=operator
 url_value=value
 function=value
 subvar_oper=operator
+escapesequence=string_1
 
 [keywords]
 # CSS 1 properties
@@ -48,6 +49,9 @@ browser_css_properties=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
 browser_pseudo_classes=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
 browser_pseudo_elements=^-ms- ^-apple- ^-epub- ^-moz- ^-o- ^-wap- ^-webkit- ^-xv-
 named_colors=aqua black blue fuchsia gray green grey lime maroon navy olive orange purple red silver teal white yellow
+
+[lexer_properties]
+lexer.css.escape.sequence=0
 
 [settings]
 # default extension used when saving files

@@ -76,6 +76,9 @@ static inline bool IsAWordChar(const int ch) {
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, WordList *keywordlists[],
 							   Accessor &styler) {
+	// esh: escapesequence highlighting
+	const bool escapeSequence = styler.GetPropertyInt("lexer.erlang.escape.sequence", 0) != 0;
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	WordList &reservedWords = *keywordlists[0];
@@ -476,11 +479,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	sc.Complete();
 }
 
-static int ClassifyErlangFoldPoint(
-	Accessor &styler,
-	int styleNext,
-	Sci_Position keyword_start
-) {
+static int ClassifyErlangFoldPoint(Accessor &styler, int styleNext,
+								   Sci_Position keyword_start) {
 	int lev = 0;
 	if (styler.Match(keyword_start,"case")
 		|| (
@@ -498,10 +498,9 @@ static int ClassifyErlangFoldPoint(
 	return lev;
 }
 
-static void FoldErlangDoc(
-	Sci_PositionU startPos, Sci_Position length, int initStyle,
-	WordList** /*keywordlists*/, Accessor &styler
-) {
+static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
+						  int initStyle, WordList** /*keywordlists*/,
+						  Accessor &styler) {
 	Sci_PositionU endPos = startPos + length;
 	Sci_Position currentLine = styler.GetLine(startPos);
 	int lev;
@@ -568,7 +567,8 @@ static void FoldErlangDoc(
 			previousLevel = currentLevel;
 		}
 	}
-	// Fill in the real level of the next line, keeping the current flags as they will be filled in later
+	// Fill in the real level of the next line, keeping
+	// the current flags as they will be filled in later
 	styler.SetLevel(currentLine, previousLevel | (styler.LevelAt(currentLine) &
 												  ~SC_FOLDLEVELNUMBERMASK));
 }
