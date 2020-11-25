@@ -1431,7 +1431,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_P_FCHARACTER ||
 					style == SCE_P_FTRIPLE ||
 					style == SCE_P_FTRIPLEDOUBLE ||
-					style == SCE_P_STRINGEOL);
+					style == SCE_P_STRINGEOL ||
+					style == SCE_P_ESCAPESEQUENCE);
 		
 		case SCLEX_F77:
 		case SCLEX_FORTRAN:
@@ -1595,15 +1596,18 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		
 		case SCLEX_CSS:
 			return (style == SCE_CSS_DOUBLESTRING ||
-					style == SCE_CSS_SINGLESTRING);
+					style == SCE_CSS_SINGLESTRING ||
+					style == SCE_CSS_ESCAPESEQUENCE);
 		
 		case SCLEX_PROPERTIES:
 			return (style == SCE_PROPS_DOUBLESTRING ||
-					style == SCE_PROPS_SINGLESTRING);
+					style == SCE_PROPS_SINGLESTRING ||
+					style == SCE_PROPS_ESCAPESEQUENCE);
 		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
-					style == SCE_ERLANG_CHARACTER);
+					style == SCE_ERLANG_CHARACTER ||
+					style == SCE_ERLANG_ESCAPESEQUENCE);
 		
 		case SCLEX_LISP:
 			return (style == SCE_LISP_STRING ||
@@ -1645,202 +1649,201 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 		case SCLEX_COBOL:
 		case SCLEX_CPP:
 			return (style == SCE_C_COMMENT ||
-				style == SCE_C_COMMENTLINE ||
-				style == SCE_C_COMMENTDOC ||
-				style == SCE_C_PREPROCESSORCOMMENT ||
-				style == SCE_C_PREPROCESSORCOMMENTDOC ||
-				style == SCE_C_COMMENTLINEDOC ||
-				style == SCE_C_COMMENTDOCKEYWORD ||
-				style == SCE_C_COMMENTDOCKEYWORDERROR ||
-				style == SCE_C_TASKMARKER);
-
+					style == SCE_C_COMMENTLINE ||
+					style == SCE_C_COMMENTDOC ||
+					style == SCE_C_PREPROCESSORCOMMENT ||
+					style == SCE_C_PREPROCESSORCOMMENTDOC ||
+					style == SCE_C_COMMENTLINEDOC ||
+					style == SCE_C_COMMENTDOCKEYWORD ||
+					style == SCE_C_COMMENTDOCKEYWORDERROR ||
+					style == SCE_C_TASKMARKER);
+		
 		case SCLEX_PASCAL:
 			return (style == SCE_PAS_COMMENT ||
-				style == SCE_PAS_COMMENT2 ||
-				style == SCE_PAS_COMMENTLINE);
-
+					style == SCE_PAS_COMMENT2 ||
+					style == SCE_PAS_COMMENTLINE);
+		
 		case SCLEX_D:
 			return (style == SCE_D_COMMENT ||
-				style == SCE_D_COMMENTLINE ||
-				style == SCE_D_COMMENTDOC ||
-				style == SCE_D_COMMENTNESTED ||
-				style == SCE_D_COMMENTLINEDOC ||
-				style == SCE_D_COMMENTDOCKEYWORD ||
-				style == SCE_D_COMMENTDOCKEYWORDERROR);
-
+					style == SCE_D_COMMENTLINE ||
+					style == SCE_D_COMMENTDOC ||
+					style == SCE_D_COMMENTNESTED ||
+					style == SCE_D_COMMENTLINEDOC ||
+					style == SCE_D_COMMENTDOCKEYWORD ||
+					style == SCE_D_COMMENTDOCKEYWORDERROR);
+		
 		case SCLEX_PYTHON:
 			return (style == SCE_P_COMMENTLINE ||
-				style == SCE_P_COMMENTBLOCK);
-
+					style == SCE_P_COMMENTBLOCK);
+		
 		case SCLEX_F77:
 		case SCLEX_FORTRAN:
 			return (style == SCE_F_COMMENT);
-
+		
 		case SCLEX_PERL:
 			return (style == SCE_PL_COMMENTLINE);
-
+		
 		case SCLEX_PROPERTIES:
 			return (style == SCE_PROPS_COMMENT);
-
+		
 		case SCLEX_PO:
 			return (style == SCE_PO_COMMENT ||
-				style == SCE_PO_PROGRAMMER_COMMENT);
-
+					style == SCE_PO_PROGRAMMER_COMMENT);
+		
 		case SCLEX_LATEX:
 			return (style == SCE_L_COMMENT ||
-				style == SCE_L_COMMENT2);
-
+					style == SCE_L_COMMENT2);
+		
 		case SCLEX_MAKEFILE:
 			return (style == SCE_MAKE_COMMENT);
-
+		
 		case SCLEX_RUBY:
 			return (style == SCE_RB_COMMENTLINE);
-
+		
 		case SCLEX_BASH:
 			return (style == SCE_SH_COMMENTLINE);
-
+		
 		case SCLEX_R:
 			return (style == SCE_R_COMMENT);
-
+		
 		case SCLEX_SQL:
 			return (style == SCE_SQL_COMMENT ||
-				style == SCE_SQL_COMMENTLINE ||
-				style == SCE_SQL_COMMENTDOC ||
-				style == SCE_SQL_COMMENTLINEDOC ||
-				style == SCE_SQL_COMMENTDOCKEYWORD ||
-				style == SCE_SQL_COMMENTDOCKEYWORDERROR);
-
+					style == SCE_SQL_COMMENTLINE ||
+					style == SCE_SQL_COMMENTDOC ||
+					style == SCE_SQL_COMMENTLINEDOC ||
+					style == SCE_SQL_COMMENTDOCKEYWORD ||
+					style == SCE_SQL_COMMENTDOCKEYWORDERROR);
+		
 		case SCLEX_TCL:
 			return (style == SCE_TCL_COMMENT ||
-				style == SCE_TCL_COMMENTLINE ||
-				style == SCE_TCL_COMMENT_BOX ||
-				style == SCE_TCL_BLOCK_COMMENT);
-
+					style == SCE_TCL_COMMENTLINE ||
+					style == SCE_TCL_COMMENT_BOX ||
+					style == SCE_TCL_BLOCK_COMMENT);
+		
 		case SCLEX_OCTAVE:
 			return (style == SCE_MATLAB_COMMENT);
-
+		
 		case SCLEX_LUA:
 			return (style == SCE_LUA_COMMENT ||
-				style == SCE_LUA_COMMENTLINE ||
-				style == SCE_LUA_COMMENTDOC);
-
+					style == SCE_LUA_COMMENTLINE ||
+					style == SCE_LUA_COMMENTDOC);
+		
 		case SCLEX_HASKELL:
 		case SCLEX_LITERATEHASKELL:
 			return (style == SCE_HA_COMMENTLINE ||
-				style == SCE_HA_COMMENTBLOCK ||
-				style == SCE_HA_COMMENTBLOCK2 ||
-				style == SCE_HA_COMMENTBLOCK3 ||
-				style == SCE_HA_LITERATE_COMMENT ||
-				style == SCE_HA_LITERATE_CODEDELIM);
-
+					style == SCE_HA_COMMENTBLOCK ||
+					style == SCE_HA_COMMENTBLOCK2 ||
+					style == SCE_HA_COMMENTBLOCK3 ||
+					style == SCE_HA_LITERATE_COMMENT ||
+					style == SCE_HA_LITERATE_CODEDELIM);
+		
 		case SCLEX_FREEBASIC:
 			return (style == SCE_B_COMMENT ||
-				style == SCE_B_COMMENTBLOCK ||
-				style == SCE_B_DOCLINE ||
-				style == SCE_B_DOCBLOCK ||
-				style == SCE_B_DOCKEYWORD);
-
+					style == SCE_B_COMMENTBLOCK ||
+					style == SCE_B_DOCLINE ||
+					style == SCE_B_DOCBLOCK ||
+					style == SCE_B_DOCKEYWORD);
+		
 		case SCLEX_YAML:
 			return (style == SCE_YAML_COMMENT);
-
+		
 		case SCLEX_XML:
 		case SCLEX_HTML:
 		case SCLEX_PHPSCRIPT:
-			return (
-				style == SCE_HBA_COMMENTLINE ||
-				style == SCE_HB_COMMENTLINE ||
-				style == SCE_H_COMMENT ||
-				style == SCE_HJA_COMMENT ||
-				style == SCE_HJA_COMMENTDOC ||
-				style == SCE_HJA_COMMENTLINE ||
-				style == SCE_HJ_COMMENT ||
-				style == SCE_HJ_COMMENTDOC ||
-				style == SCE_HJ_COMMENTLINE ||
-				style == SCE_HPA_COMMENTLINE ||
-				style == SCE_HP_COMMENTLINE ||
-				style == SCE_HPHP_COMMENT ||
-				style == SCE_HPHP_COMMENTLINE ||
-				style == SCE_H_SGML_COMMENT);
-
+			return (style == SCE_HBA_COMMENTLINE ||
+					style == SCE_HB_COMMENTLINE ||
+					style == SCE_H_COMMENT ||
+					style == SCE_HJA_COMMENT ||
+					style == SCE_HJA_COMMENTDOC ||
+					style == SCE_HJA_COMMENTLINE ||
+					style == SCE_HJ_COMMENT ||
+					style == SCE_HJ_COMMENTDOC ||
+					style == SCE_HJ_COMMENTLINE ||
+					style == SCE_HPA_COMMENTLINE ||
+					style == SCE_HP_COMMENTLINE ||
+					style == SCE_HPHP_COMMENT ||
+					style == SCE_HPHP_COMMENTLINE ||
+					style == SCE_H_SGML_COMMENT);
+		
 		case SCLEX_CMAKE:
 			return (style == SCE_CMAKE_COMMENT);
-
+		
 		case SCLEX_NSIS:
 			return (style == SCE_NSIS_COMMENT ||
-				style == SCE_NSIS_COMMENTBOX);
-
+					style == SCE_NSIS_COMMENTBOX);
+		
 		case SCLEX_ADA:
 			return (style == SCE_ADA_COMMENTLINE);
-
+		
 		case SCLEX_ABAQUS:
 			return (style == SCE_ABAQUS_COMMENT ||
-				 style == SCE_ABAQUS_COMMENTBLOCK);
-
+					style == SCE_ABAQUS_COMMENTBLOCK);
+		
 		case SCLEX_ASM:
 			return (style == SCE_ASM_COMMENT ||
-				style == SCE_ASM_COMMENTBLOCK ||
-				style == SCE_ASM_COMMENTDIRECTIVE);
-
+					style == SCE_ASM_COMMENTBLOCK ||
+					style == SCE_ASM_COMMENTDIRECTIVE);
+		
 		case SCLEX_RUST:
 			return (style == SCE_RUST_COMMENTBLOCK ||
-				style == SCE_RUST_COMMENTLINE ||
-				style == SCE_RUST_COMMENTBLOCKDOC ||
-				style == SCE_RUST_COMMENTLINEDOC);
-
+					style == SCE_RUST_COMMENTLINE ||
+					style == SCE_RUST_COMMENTBLOCKDOC ||
+					style == SCE_RUST_COMMENTLINEDOC);
+		
 		case SCLEX_COFFEESCRIPT:
 			return (style == SCE_COFFEESCRIPT_COMMENTLINE ||
-				style == SCE_COFFEESCRIPT_COMMENTBLOCK ||
-				style == SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT);
-
+					style == SCE_COFFEESCRIPT_COMMENTBLOCK ||
+					style == SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT);
+		
 		case SCLEX_VERILOG:
 			return (style == SCE_V_COMMENT ||
-				style == SCE_V_COMMENTLINE ||
-				style == SCE_V_COMMENTLINEBANG ||
-				style == SCE_V_COMMENT_WORD);
-
+					style == SCE_V_COMMENTLINE ||
+					style == SCE_V_COMMENTLINEBANG ||
+					style == SCE_V_COMMENT_WORD);
+		
 		case SCLEX_VHDL:
 			return (style == SCE_VHDL_COMMENT ||
-				style == SCE_VHDL_COMMENTLINEBANG ||
-				style == SCE_VHDL_BLOCK_COMMENT);
-
+					style == SCE_VHDL_COMMENTLINEBANG ||
+					style == SCE_VHDL_BLOCK_COMMENT);
+		
 		case SCLEX_BATCH:
 			return (style == SCE_BAT_COMMENT);
-
+		
 		case SCLEX_CAML:
 			return (style == SCE_CAML_COMMENT ||
-				style == SCE_CAML_COMMENT1 ||
-				style == SCE_CAML_COMMENT2 ||
-				style == SCE_CAML_COMMENT3);
-
+					style == SCE_CAML_COMMENT1 ||
+					style == SCE_CAML_COMMENT2 ||
+					style == SCE_CAML_COMMENT3);
+		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_COMMENT ||
-				style == SCE_ERLANG_COMMENT_FUNCTION ||
-				style == SCE_ERLANG_COMMENT_MODULE ||
-				style == SCE_ERLANG_COMMENT_DOC ||
-				style == SCE_ERLANG_COMMENT_DOC_MACRO);
-
+					style == SCE_ERLANG_COMMENT_FUNCTION ||
+					style == SCE_ERLANG_COMMENT_MODULE ||
+					style == SCE_ERLANG_COMMENT_DOC ||
+					style == SCE_ERLANG_COMMENT_DOC_MACRO);
+		
 		case SCLEX_FORTH:
 			return (style == SCE_FORTH_COMMENT ||
-				style == SCE_FORTH_COMMENT_ML);
-
+					style == SCE_FORTH_COMMENT_ML);
+		
 		case SCLEX_CSS:
 			return (style == SCE_CSS_COMMENT);
-
+		
 		case SCLEX_DIFF:
 			return (style == SCE_DIFF_COMMENT);
-
+		
 		case SCLEX_LISP:
 			return (style == SCE_LISP_COMMENT ||
-				style == SCE_LISP_MULTI_COMMENT);
-
+					style == SCE_LISP_MULTI_COMMENT);
+		
 		case SCLEX_POWERSHELL:
 			return (style == SCE_POWERSHELL_COMMENT ||
-				style == SCE_POWERSHELL_COMMENTSTREAM ||
-				style == SCE_POWERSHELL_COMMENTDOCKEYWORD);
-
+					style == SCE_POWERSHELL_COMMENTSTREAM ||
+					style == SCE_POWERSHELL_COMMENTDOCKEYWORD);
+		
 		case SCLEX_TXT2TAGS:
 			return (style == SCE_TXT2TAGS_COMMENT);
-
+		
 		case SCLEX_MARKDOWN:
 			/* there is no comment type in those lexers, listing here just for completeness */
 			return FALSE;
