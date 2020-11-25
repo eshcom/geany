@@ -603,7 +603,10 @@ p {
 	#{$left-or-right}: 0;
 }
 
-body-#{$name}, .icon-#{$name} {
+body-#{$name},.icon-#{$name}{
+}
+
+body-#{$name}, .icon-#{$name}/*{test}*/{
 	background-image: url("/icons/#{$name}.svg");
 	position: absolute;
 	#{$top-or-bottom}: 0;
