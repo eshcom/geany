@@ -475,7 +475,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			// determine next state:
 			int ch = 0;
 			bool wordExists = false;
-			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+			for (Sci_PositionU i = sc.currentPos; i < styler.Length(); i++) {
 				ch = styler.SafeGetCharAt(i);
 				if ((IsCssOperator(ch) && ch != ',') || ch == '&')
 					break;
@@ -686,7 +686,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			// look ahead to see whether { comes before next ; and }
 			int ch;
 			int subVarLevel = 0;
-			for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
+			for (Sci_PositionU i = sc.currentPos; i < styler.Length(); i++) {
 				ch = styler.SafeGetCharAt(i);
 				if (ch == ';' || ch == '}') {
 					if (ch == '}' && subVarLevel > 0) {			// skip sub-var
