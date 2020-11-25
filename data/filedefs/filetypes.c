@@ -47,6 +47,7 @@ otherclass=
 [lexer_properties]
 styling.within.preprocessor=1
 lexer.cpp.track.preprocessor=0
+lexer.cpp.escape.sequence=0
 
 [settings]
 # default extension used when saving files
