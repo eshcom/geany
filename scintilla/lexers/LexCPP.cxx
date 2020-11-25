@@ -1360,7 +1360,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Skip whitespace between # and preprocessor word
 				do {
 					sc.Forward();
-				} while (IsSpaceOrTab(sc.ch) && sc.More());
+				} while (IsASpaceOrTab(sc.ch) && sc.More());
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.Match("include")) {
