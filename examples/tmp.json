@@ -1,0 +1,87 @@
+{
+    "add\nons": [
+        {
+            "average\rRating": 1.9048,
+            "\377contributionURL": null,
+            "creator": {
+                "name": "Mozilla",
+                "url": "https://add\nons.thunderbird.net/ru/thunderbird/user/mozilla/"
+            },
+            "description": "English\377(GB) Language Pack\r(Thunderbird)",
+            "developers": [],
+            "fullDescription": null,
+            "homepageURL": null,
+            "icons": {
+                "32": "https://addons.thunderbird.net/static/img/addon-icons/default-32.png",
+                "64": "https://addons.thunderbird.net/static/img/addon-icons/default-64.png"
+            },
+            "id": "langpack-en-GB@thunderbird.mozilla.org",
+            "name": "English (GB) Language Pack (Thunderbird)",
+            "reviewCount": 21,
+            "reviewURL": "https://addons.thunderbird.net/ru/thunderbird/addon/english-gb-language-pack-thund/reviews/",
+            "screenshots": [],
+            "sourceURI": "https://addons.thunderbird.net/thunderbird/downloads/file/1015505/english_gb_language_pack_thunderbird-68.0buildid20190909201201-tb.xpi?src=",
+            "supportURL": null,
+            "type": "locale",
+            "updateDate": 1568246103000,
+            "version": "68.0buildid20190909201201",
+            "weeklyDownloads": 1488
+        },
+        {
+            "averageRating": 2.25,
+            "contributionURL": null,
+            "creator": {
+                "name": "Mozilla",
+                "url": "https://addons.thunderbird.net/ru/thunderbird/user/mozilla/"
+            },
+            "description": "Russian (RU) Language Pack (Thunderbird)",
+            "developers": [],
+            "fullDescription": null,
+            "homepageURL": null,
+            "icons": {
+                "32": "https://addons.thunderbird.net/static/img/addon-icons/default-32.png",
+                "64": "https://addons.thunderbird.net/static/img/addon-icons/default-64.png"
+            },
+            "id": "langpack-ru@thunderbird.mozilla.org",
+            "name": "Russian (RU) Language Pack (Thunderbird)",
+            "reviewCount": 4,
+            "reviewURL": "https://addons.thunderbird.net/ru/thunderbird/addon/russian-ru-language-pack-thund/reviews/",
+            "screenshots": [],
+            "sourceURI": "https://addons.thunderbird.net/thunderbird/downloads/file/1015512/russian_ru_language_pack_thunderbird-68.0buildid20190909201201-tb.xpi?src=",
+            "supportURL": null,
+            "type": "locale",
+            "updateDate": 1568251203000,
+            "version": "68.0buildid20190909201201",
+            "weeklyDownloads": 344
+        },
+        {
+            "averageRating": 3.6061,
+            "contributionURL": "",
+            "creator": {
+                "name": "rsjtdrjgfuzkfg",
+                "url": "https://addons.thunderbird.net/ru/thunderbird/user/rsjtdrjgfuzkfg/"
+            },
+            "description": "Causes Thunderbird's main window to minimize instead of closing. You can still close Thunderbird through the menu.",
+            "developers": [],
+            "fullDescription": "Minimizes Thunderbird's main window whenever you attempt to close it. This is helpful if you want to keep Thunderbird open in the Background \u2013 especially in combination with other tools that move minimized windows into the tray area.\n\nClosing the main window will still be permitted in either of the following cases:\n\n    There is another open main window. This permits to close duplicate main windows, for example after opening a folder in a new window.\n    The window is already minimized. This permits you to close Thunderbird without accessing Thunderbird's menu: close the window once (to minimize), then right-click it in the task bar and close it again.\n\n\nIf you want Thunderbird to minimize to the tray, you need to enable the option for that in Thunderbird's settings (Windows-only on Thunderbird 76+) or install an independent application to move Thunderbird to the tray whenever it is minimized. On Linux I'd recommend KDocker (available in many Linux distributions).",
+            "homepageURL": null,
+            "icons": {
+                "32": "https://addons.thunderbird.net/user-media/addon_icons/987/987716-32.png?modified=42fb83a3",
+                "64": "https://addons.thunderbird.net/user-media/addon_icons/987/987716-64.png?modified=42fb83a3"
+            },
+            "id": "minimizeonclose@rsjtdrjgfuzkfg.com",
+            "name": "Minimize on Close",
+            "reviewCount": 33,
+            "reviewURL": "https://addons.thunderbird.net/ru/thunderbird/addon/minimize-on-close/reviews/",
+            "screenshots": [],
+            "sourceURI": "https://addons.thunderbird.net/thunderbird/downloads/file/1016906/minimize_on_close-2.0.0.0-tb.xpi?src=",
+            "supportURL": null,
+            "type": "extension",
+            "updateDate": 1590673866000,
+            "version": "2.0.0.0",
+            "weeklyDownloads": 0
+        }
+    ],
+    "compatOverrides": [],
+    "schema": 5
+}
