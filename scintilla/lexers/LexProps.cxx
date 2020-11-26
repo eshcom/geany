@@ -287,9 +287,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			case SCE_PROPS_DOUBLESTRING:
 			case SCE_PROPS_SINGLESTRING:
-				if (sc.chPrev != '\\' && levelSqBrackets == 0 &&
-					(sc.ch == (sc.state == SCE_PROPS_DOUBLESTRING ?
-													 '\"' : '\''))) { 
+				if (sc.ch == '\\') {
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+				} else if (levelSqBrackets == 0 && (sc.ch ==
+							(sc.state == SCE_PROPS_DOUBLESTRING ? '\"' : '\''))) {
 					if (stringState == 1) {
 						// continuation of multi-line string
 						stringState = 2;
@@ -414,7 +416,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
 				int levelSqBrcks = 0;
 				int strState = -1;
-				for (Sci_PositionU i = sc.currentPos + 1; i < styler.Length(); i++) {
+				for (Sci_PositionU i = sc.currentPos + 1;
+									i < styler.Length(); i++) {
 					if (IsACRLF(styler[i])) { // end of line
 						if (strState == -1) {
 							strState = 1; // multi-line string
@@ -429,6 +432,21 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						levelSqBrcks++;
 					} else if (styler[i] == ']') {
 						levelSqBrcks--;
+					} else if (styler[i] == '\\') {
+						i++; // Skip any character after the backslash
+					} else if (styler[i] == sc.ch && levelSqBrcks == 0) { // exclude regular expression
+						if (strState == -1) {
+							// start of single-line string
+							beforeStringState = sc.state;
+							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
+														SCE_PROPS_SINGLESTRING);
+							levelSqBrackets = 0;
+							stringState = 0; // single-line string
+							strState = 0;
+							break;
+						} else if (strState == 1) {
+							strState = sc.ch == '\"' ? 2 : 3;
+						}
 					} else if (strState == 2 || strState == 3) {
 						if (IsASpaceOrTab(styler[i])) {
 							continue;
@@ -443,20 +461,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						} else {
 							strState = -1; // bad string
 							break;
-						}
-					} else if (styler[i] == sc.ch && styler[i - 1] != '\\'
-								&& levelSqBrcks == 0) { // exclude regular expression
-						if (strState == -1) {
-							// start of single-line string
-							beforeStringState = sc.state;
-							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
-														SCE_PROPS_SINGLESTRING);
-							levelSqBrackets = 0;
-							stringState = 0; // single-line string
-							strState = 0;
-							break;
-						} else if (strState == 1) {
-							strState = sc.ch == '\"' ? 2 : 3;
 						}
 					}
 				}
