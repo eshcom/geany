@@ -542,7 +542,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					break;
 				}
 			}
-			startPos = styler.LineStart(lineCurrent);
+			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+			length += (startPos - newStartPos);
+			startPos = newStartPos;
 		}
 		initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
 	}
@@ -708,7 +710,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					}
 					else if (kwLast != kwCDef && kwLast != kwCPDef)
 						kwLast = kwOther;
-				} else if (kwLast != kwCDef && kwLast != kwCPDef && kwLast != kwImport) {
+				} else if (kwLast != kwCDef && kwLast != kwCPDef &&
+						   kwLast != kwImport) {
 					kwLast = kwOther;
 				}
 			}

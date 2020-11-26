@@ -3,6 +3,10 @@
 #define TEST3 "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
 #define TEST4 '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
 
+TEST5 = "part1 \
+		 part2 \
+		 part3";
+
 int ch;
 if (TRUE) {
 	ch = "t\";
@@ -68,90 +72,90 @@ if (TRUE) {
 	ch = '5.33
 	
 	ch = "5.33     \
-			\ntest";
-	ch = '5.33     \
-			\ntest';
-	
-	ch = "5.33     \
 t			\ntest";
 	ch = '5.33     \
 t			\ntest';
 	
 	ch = "5.33    n\
-			\ntest";
+t			\ntest";
 	ch = '5.33    n\
-			\ntest';
-	
-	ch = "5.33   \n\
-			\ntest";
-	ch = '5.33   \n\
-			\ntest';
-	
-	ch = "5.33   \\\
-			\ntest";
-	ch = '5.33   \\\
-			\ntest';
-	
-	ch = "5.33  \nt\
-			\ntest";
-	ch = '5.33  \nt\
-			\ntest';
+t			\ntest';
 	
 	ch = "5.33   \n\
 t			\ntest";
 	ch = '5.33   \n\
 t			\ntest';
 	
+	ch = "5.33   \\\
+t			\ntest";
+	ch = '5.33   \\\
+t			\ntest';
+	
+	ch = "5.33  \nt\
+t			\ntest";
+	ch = '5.33  \nt\
+t			\ntest';
+	
+	ch = "5.33   \n\
+t			\ntest";
+	ch = '5.33   \n\
+t			\ntest';
+	
+	ch = "5.33   \n
+t			\ntest";
+	ch = '5.33   \n
+t			\ntest';
+	
 	ch = "5.33     \	
-			\ntest";
+t			\ntest";
 	ch = '5.33     \	
-			\ntest';
+t			\ntest';
 	
 	ch = "5.33     \		
-			\ntest";
+t			\ntest";
 	ch = '5.33     \		
-			\ntest';
+t			\ntest';
 	
 	ch = "5.33     \
-			\ntest \
-			\ntest";
+t			\ntest \
+t			\ntest";
 	ch = '5.33     \
-			\ntest \
-			\ntest';
+t			\ntest \
+t			\ntest';
 	
 	ch = "5.33 
-			\ntest \
-			\ntest";
+t			\ntest \
+t			\ntest";
 	ch = '5.33 
-			\ntest \
-			\ntest';
+t			\ntest \
+t			\ntest';
 	
 	ch = "5.33     \
-			\ntest 
-			\ntest";
+t			\ntest 
+t			\ntest";
 	ch = '5.33     \
-			\ntest 
-			\ntest';
+t			\ntest 
+t			\ntest';
 	
 	ch = "5.33     \
-			test\n 
-			test\n";
+t			test\n 
+t			test\n";
 	ch = '5.33     \
-			test\n 
-			test\n';
+t			test\n 
+t			test\n';
 	
 	ch = "5.33   \"
-			\ntest";
+t			\ntest";
 	ch = '5.33   \'
-			\ntest';
+t			\ntest';
 	
 	ch = "5.33   \"
-			"\ntest";
+t			"\ntest";
 	ch = '5.33   \'
-			'\ntest';
+t			'\ntest';
 	
 	ch = "5.33 
-			\ntest";
+t			\ntest";
 	ch = '5.33 
-			\ntest';
+t			\ntest';
 }
