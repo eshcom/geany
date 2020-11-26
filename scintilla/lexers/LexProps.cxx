@@ -376,7 +376,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			// start new typed-value states
 			if (sc.chPrev != '.' && sc.Match('0', 'x')
-				&& IsADigit(styler.SafeGetCharAt(sc.currentPos + 2), 16)) {
+					&& IsADigit(sc.GetRelative(2), 16)) {
 				sc.SetState(SCE_PROPS_HEXNUMBER);
 				sc.Forward();
 				numDigCnt = 0;
@@ -388,8 +388,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						((sc.ch == '+' || sc.ch == '-') &&
 						 (sc.chNext == '.' ||
 						  (IsADigit(sc.chNext) &&
-						   !(sc.chNext == '0' &&
-							 styler.SafeGetCharAt(sc.currentPos + 2) == 'x')))))) {
+						   !(sc.chNext == '0' && sc.GetRelative(2) == 'x')))))) {
 				sc.SetState(SCE_PROPS_NUMBER);
 				if (sc.ch == '.') {
 					numDotCnt = 1;
