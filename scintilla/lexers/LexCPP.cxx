@@ -169,40 +169,6 @@ void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
 	}
 }
 
-struct EscapeSequence {
-	int digitsLeft;
-	CharacterSet setHexDigits;
-	CharacterSet setOctDigits;
-	CharacterSet setNoneNumeric;
-	CharacterSet *escapeSetValid;
-	EscapeSequence() {
-		digitsLeft = 0;
-		escapeSetValid = nullptr;
-		setHexDigits = CharacterSet(CharacterSet::setDigits, "ABCDEFabcdef");
-		setOctDigits = CharacterSet(CharacterSet::setNone, "01234567");
-	}
-	void resetEscapeState(int nextChar) {
-		digitsLeft = 0;
-		escapeSetValid = &setNoneNumeric;
-		if (nextChar == 'U') {
-			digitsLeft = 9;
-			escapeSetValid = &setHexDigits;
-		} else if (nextChar == 'u') {
-			digitsLeft = 5;
-			escapeSetValid = &setHexDigits;
-		} else if (nextChar == 'x') {
-			digitsLeft = 5;
-			escapeSetValid = &setHexDigits;
-		} else if (setOctDigits.Contains(nextChar)) {
-			digitsLeft = 3;
-			escapeSetValid = &setOctDigits;
-		}
-	}
-	bool atEscapeEnd(int currChar) const {
-		return (digitsLeft <= 0) || !escapeSetValid->Contains(currChar);
-	}
-};
-
 std::string GetRestOfLine(LexAccessor &styler, Sci_Position start, bool allowSpace) {
 	std::string restOfLine;
 	Sci_Position line = styler.GetLine(start);
