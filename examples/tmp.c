@@ -7,6 +7,26 @@ TEST5 = "part1 \
 		 part2 \
 		 part3";
 
+TEST5 = "part1 \	
+		 part2 \
+		 part3";
+
+TEST5 = "part1 \		
+		 part2 \
+		 part3";
+
+TEST5 = "part1 \
+		 part2 \	
+		 part3";
+
+TEST5 = "part1 \
+		 part2 \		
+		 part3";
+
+TEST5 = "part1 \	
+		 part2 \	
+		 part3";
+
 int ch;
 if (TRUE) {
 	ch = "t\";
@@ -23,6 +43,9 @@ if (TRUE) {
 	
 	ch = "t\n\";
 	ch = 't\n\';
+	
+	ch = "t\n\"
+	ch = 't\n\'
 	
 	ch = "t\n\r";
 	ch = 't\n\r';

@@ -1130,7 +1130,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
 						escapeSeq.resetEscapeState(sc.chNext);
 					}
-					sc.Forward(); // Skip all characters after the backslash
+					sc.Forward(); // Skip any character after the backslash
 				} else if (sc.ch == '\"') {
 					if (sc.chNext == '_') {
 						sc.ChangeState(SCE_C_USERLITERAL|activitySet);
@@ -1147,7 +1147,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
 						escapeSeq.resetEscapeState(sc.chNext);
 					}
-					sc.Forward(); // Skip all characters after the backslash
+					sc.Forward(); // Skip any character after the backslash
 				} else if (sc.ch == '\'') {
 					if (sc.chNext == '_') {
 						sc.ChangeState(SCE_C_USERLITERAL|activitySet);
@@ -1219,7 +1219,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				break;
 			case SCE_C_VERBATIM:
 				if (options.verbatimStringsAllowEscapes && (sc.ch == '\\')) {
-					sc.Forward(); // Skip all characters after the backslash
+					sc.Forward(); // Skip any character after the backslash
 				} else if (sc.ch == '\"') {
 					if (sc.chNext == '\"') {
 						sc.Forward();
