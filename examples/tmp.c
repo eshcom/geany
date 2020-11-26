@@ -72,40 +72,70 @@ if (TRUE) {
 	ch = '5.33     \
 			\ntest';
 	
+	ch = "5.33     \
+t			\ntest";
+	ch = '5.33     \
+t			\ntest';
+	
+	ch = "5.33    n\
+			\ntest";
+	ch = '5.33    n\
+			\ntest';
+	
 	ch = "5.33   \n\
 			\ntest";
 	ch = '5.33   \n\
 			\ntest';
+	
+	ch = "5.33   \\\
+			\ntest";
+	ch = '5.33   \\\
+			\ntest';
+	
+	ch = "5.33  \nt\
+			\ntest";
+	ch = '5.33  \nt\
+			\ntest';
+	
+	ch = "5.33   \n\
+t			\ntest";
+	ch = '5.33   \n\
+t			\ntest';
 	
 	ch = "5.33     \	
 			\ntest";
 	ch = '5.33     \	
 			\ntest';
 	
+	ch = "5.33     \		
+			\ntest";
+	ch = '5.33     \		
+			\ntest';
+	
 	ch = "5.33     \
 			\ntest \
-			\ntest"
+			\ntest";
 	ch = '5.33     \
 			\ntest \
 			\ntest';
 	
 	ch = "5.33 
 			\ntest \
-			\ntest"
+			\ntest";
 	ch = '5.33 
 			\ntest \
 			\ntest';
 	
 	ch = "5.33     \
 			\ntest 
-			\ntest"
+			\ntest";
 	ch = '5.33     \
 			\ntest 
 			\ntest';
 	
 	ch = "5.33     \
 			test\n 
-			test\n"
+			test\n";
 	ch = '5.33     \
 			test\n 
 			test\n';
