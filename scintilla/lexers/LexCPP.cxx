@@ -839,7 +839,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	int activitySet = preproc.ActiveState();
 	
 	// esh: added stringState, jsonLastOper for highlighting JSON-keys
-	int stringState = SCE_C_STRING;
+	int stringState = -1;
 	int jsonLastOper = '.';
 	if (options.jsonKeyStrings && startPos > 0) {
 		Sci_Position back = startPos;
@@ -876,6 +876,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Prevent SCE_C_STRINGEOL from leaking back to previous line which
 				// ends with a line continuation by locking in the state up to this position.
 				sc.SetState(sc.state);
+				stringState = sc.state;
 			}
 			if ((MaskActive(sc.state) == SCE_C_PREPROCESSOR) &&
 				(!continuationLine)) {
@@ -990,9 +991,11 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 									sc.SetState(SCE_C_DEFAULT|activitySet);
 								} else {
 									sc.ChangeState(SCE_C_STRING|activitySet);
+									stringState = SCE_C_STRING;
 								}
 							} else {
 								sc.ChangeState(SCE_C_CHARACTER|activitySet);
+								stringState = SCE_C_CHARACTER;
 							}
 						} else {
 							sc.SetState(SCE_C_DEFAULT | activitySet);
@@ -1135,7 +1138,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
 					break;
 				}
-				if (sc.ch == '"') {
+				// esh: stringState can be: SCE_C_CHARACTER, SCE_C_STRING, SCE_C_STRINGJSONKEY
+				if (sc.ch == ((stringState == SCE_C_CHARACTER) ? '\'' : '\"')) {
 					sc.SetState(stringState|activitySet);
 					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '\\') {
@@ -1169,9 +1173,11 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (sc.atLineEnd) {
 					sc.ChangeState(SCE_C_STRINGEOL|activitySet);
 				} else if (sc.ch == '\\') {
-					if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
-						sc.Forward();
+					if (options.escapeSequence) {
+						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
+						escapeSeq.resetEscapeState(sc.chNext);
 					}
+					sc.Forward(); // Skip all characters after the backslash
 				} else if (sc.ch == '\'') {
 					if (sc.chNext == '_') {
 						sc.ChangeState(SCE_C_USERLITERAL|activitySet);
@@ -1245,15 +1251,19 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.Match('@', '\"')) {
 				sc.SetState(SCE_C_VERBATIM|activitySet);
 				sc.Forward();
+				
 			} else if (options.triplequotedStrings && sc.Match(R"(""")")) {
 				sc.SetState(SCE_C_TRIPLEVERBATIM|activitySet);
 				sc.Forward(2);
+				
 			} else if (options.hashquotedStrings && sc.Match('#', '\"')) {
 				sc.SetState(SCE_C_HASHQUOTEDSTRING|activitySet);
 				sc.Forward();
+				
 			} else if (options.backQuotedStrings && sc.Match('`')) {
 				sc.SetState(SCE_C_STRINGRAW|activitySet);
 				rawStringTerminator = "`";
+				
 			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 				if (lastWordWasUUID) {
 					sc.SetState(SCE_C_UUID|activitySet);
@@ -1276,12 +1286,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_C_COMMENT|activitySet);
 				}
 				sc.Forward();	// Eat the * so it isn't used for the end of the comment
+				
 			} else if (sc.Match('/', '/')) {
 				if ((sc.Match("///") && !sc.Match("////")) || sc.Match("//!"))
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC|activitySet);
 				else
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
+				
 			} else if (sc.ch == '/'
 				   && (setOKBeforeRE.Contains(chPrevNonWhite)
 					   || followsReturnKeyword(sc, styler))
@@ -1289,6 +1301,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					   || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_C_REGEX|activitySet);	// JavaScript's RegEx
 				inRERange = false;
+				
 			} else if (sc.ch == '\"') {
 				if (sc.chPrev == 'R') {
 					styler.Flush();
@@ -1304,6 +1317,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						rawStringTerminator += '\"';
 					} else {
 						sc.SetState(SCE_C_STRING|activitySet);
+						stringState = SCE_C_STRING;
 					}
 				} else {
 					// esh: added detect JSON-key
@@ -1316,10 +1330,15 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(stringState|activitySet);
 				}
 				isIncludePreprocessor = false;	// ensure that '>' won't end the string
+				
 			} else if (isIncludePreprocessor && sc.ch == '<') {
 				sc.SetState(SCE_C_STRING|activitySet);
+				stringState = SCE_C_STRING;
+				
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_C_CHARACTER|activitySet);
+				stringState = SCE_C_CHARACTER;
+				
 			} else if (sc.ch == '#' && visibleChars == 0) {
 				// Preprocessor commands are alone on their line
 				sc.SetState(SCE_C_PREPROCESSOR|activitySet);
