@@ -1,0 +1,28 @@
+{
+    "devDependencies": {
+        "qunit": "1.14.0",
+        "requirejs": "2.1.10",
+        "sinon": "1.8.1",
+        "sizzle": "2.1.1-jquery.2.1.2"
+    },
+    "ignore": [
+        "**/.*",
+        "build",
+        "dist/cdn",
+        "speed",
+        "test",
+        "*.md",
+        "AUTHORS.txt",
+        "Gruntfile.js",
+        "package.json"
+    ],
+    "keywords": [
+        "jquery",
+        "javascript",
+        "library"
+    ],
+    "license": "MIT",
+    "main": "dist/jquery.js",
+    "name": "jquery",
+    "version": "2.1.4"
+}
