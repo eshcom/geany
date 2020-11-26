@@ -194,6 +194,41 @@ inline T MakeLowerCase(T ch) {
 int CompareCaseInsensitive(const char *a, const char *b);
 int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
 
+// esh: moved from LexCPP.cxx
+struct EscapeSequence {
+	int digitsLeft;
+	CharacterSet setHexDigits;
+	CharacterSet setOctDigits;
+	CharacterSet setNoneNumeric;
+	CharacterSet *escapeSetValid;
+	EscapeSequence() {
+		digitsLeft = 0;
+		escapeSetValid = nullptr;
+		setHexDigits = CharacterSet(CharacterSet::setDigits, "ABCDEFabcdef");
+		setOctDigits = CharacterSet(CharacterSet::setNone, "01234567");
+	}
+	void resetEscapeState(int nextChar) {
+		digitsLeft = 0;
+		escapeSetValid = &setNoneNumeric;
+		if (nextChar == 'U') {
+			digitsLeft = 9;
+			escapeSetValid = &setHexDigits;
+		} else if (nextChar == 'u') {
+			digitsLeft = 5;
+			escapeSetValid = &setHexDigits;
+		} else if (nextChar == 'x') {
+			digitsLeft = 5;
+			escapeSetValid = &setHexDigits;
+		} else if (setOctDigits.Contains(nextChar)) {
+			digitsLeft = 3;
+			escapeSetValid = &setOctDigits;
+		}
+	}
+	bool atEscapeEnd(int currChar) const {
+		return (digitsLeft <= 0) || !escapeSetValid->Contains(currChar);
+	}
+};
+
 }
 
 #endif

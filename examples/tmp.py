@@ -1,5 +1,13 @@
 from __future__ import absolute_import
 
+TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
+TEST2 = "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
+TEST3 = '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
+TEST4 = '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
+TEST5 = "part1 \
+		 part2 \
+		 part3"
+
 __copyright__ = "Copyright 2005 Canonical Ltd."
 __author__    = "Scott James Remnant <scott@ubuntu.com>"
 
