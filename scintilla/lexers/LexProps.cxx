@@ -186,9 +186,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		if (lineCurrent > 0) {
 			lineCurrent--;
 			// Look for backslash-continued lines
+			int eolStyle;
 			while (lineCurrent > 0) {
-				Sci_Position eolPos = styler.LineStart(lineCurrent) - 1;
-				const int eolStyle = styler.StyleAt(eolPos);
+				eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
 				if (eolStyle == SCE_PROPS_DOUBLESTRING
 						|| eolStyle == SCE_PROPS_SINGLESTRING
 						|| eolStyle == SCE_PROPS_ESCAPESEQUENCE) {
