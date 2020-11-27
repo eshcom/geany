@@ -7,8 +7,39 @@ TEST4 = '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
 
 TEST5 = "part1 \n\
 		 part2 \n\
-		 sdfsdf"
-TEST6 = "test"
+		 part3"
+
+TEST5 = "part1 \n
+		 part2 \n\
+		 part3"
+
+TEST5 = "part1 \n\
+		 part2 \n
+		 part3"
+
+TEST5 = "part1 \
+		 part2 \
+		 part3"
+
+TEST5 = "part1 \	
+		 part2 \
+		 part3"
+
+TEST5 = "part1 \		
+		 part2 \
+		 part3"
+
+TEST5 = "part1 \
+		 part2 \	
+		 part3"
+
+TEST5 = "part1 \
+		 part2 \		
+		 part3"
+
+TEST5 = "part1 \	
+		 part2 \	
+		 part3"
 
 if True: 
 	ch = "t\"
@@ -23,8 +54,21 @@ if True:
 	ch = "t\r"
 	ch = 't\r'
 	
+	ch = "t\n\";
+	ch = 't\n\';
+	
 	ch = "t\n\"
 	ch = 't\n\'
+	
+	ch = "t\n\
+	---
+	ch = 't\n\
+	---
+	
+	ch = "t\
+	---
+	ch = 't\
+	---
 	
 	ch = "t\n\r"
 	ch = 't\n\r'
@@ -138,6 +182,13 @@ t			\ntest"
 	ch = '5.33     \
 t			\ntest 
 t			\ntest'
+	
+	ch = "5.33     \
+t			test 
+t			test"
+	ch = '5.33     \
+t			test 
+t			test'
 	
 	ch = "5.33     \
 t			test\n 
