@@ -731,7 +731,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		} else if (IsPySingleQuoteStringState(sc.state)) {
 			if (sc.state == SCE_P_ESCAPESEQUENCE)
 				escapeSeq.digitsLeft--;
-				
+			
 			if (sc.state != SCE_P_ESCAPESEQUENCE || escapeSeq.atEscapeEnd(sc.ch)) {
 				if (sc.ch == '\\') {
 					if (IsACRLF(sc.chNext)) {
