@@ -150,6 +150,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: escapesequence highlighting
 	const bool escapeSequence = styler.GetPropertyInt("lexer.css.escape.sequence", 0) != 0;
+	EscapeSequence escapeSeq = EscapeSequence();
+	int stringState = -1;
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -231,17 +233,43 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			continue;
 		else if (sc.state == SCE_CSS_SUBVAR_OPER && !isSubVar &&
 				 (beforeSubVarState == SCE_CSS_DOUBLESTRING ||
-				  beforeSubVarState == SCE_CSS_SINGLESTRING))
+				  beforeSubVarState == SCE_CSS_SINGLESTRING ||
+				  beforeSubVarState == SCE_CSS_ESCAPESEQUENCE))
 			sc.SetState(beforeSubVarState); // after sub-var inside string
 		
-		if (sc.state == SCE_CSS_DOUBLESTRING || sc.state == SCE_CSS_SINGLESTRING) {
-			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
+		if (sc.state == SCE_CSS_DOUBLESTRING ||
+			sc.state == SCE_CSS_SINGLESTRING ||
+			sc.state == SCE_CSS_ESCAPESEQUENCE) {
+			if (sc.state == SCE_CSS_ESCAPESEQUENCE) {
+				escapeSeq.digitsLeft--;
+				if (!escapeSeq.atEscapeEnd(sc.ch)) {
+					continue; // esh: continue of escape chars
+				}
+			}
+			
+			if (sc.ch == '\\') {
+				if (escapeSequence && sc.state != SCE_CSS_ESCAPESEQUENCE) {
+					sc.SetState(SCE_CSS_ESCAPESEQUENCE);
+					escapeSeq.resetEscapeState(sc.chNext);
+				}
+				sc.Forward(); // Skip any character after the backslash
 				continue; // esh: continue of string value
-			Sci_PositionU i = sc.currentPos;
-			while (i && styler[i - 1] == '\\')
-				i--;
-			if ((sc.currentPos - i) % 2 == 1)
+				
+			} else if (sc.ch != (stringState == SCE_CSS_DOUBLESTRING ? '\"' : '\'')) {
+				if (sc.state == SCE_CSS_ESCAPESEQUENCE)
+					sc.SetState(stringState);
 				continue; // esh: continue of string value
+			}
+			
+			// esh: the block code is commented -  no need to check (check done above)
+			//~ Sci_PositionU i = sc.currentPos;
+			//~ while (i && styler[i - 1] == '\\')
+				//~ i--;
+			//~ if ((sc.currentPos - i) % 2 == 1)
+				//~ continue; // esh: continue of string value
+			
+			if (sc.state == SCE_CSS_ESCAPESEQUENCE)
+				sc.SetState(stringState);
 			// esh: end of string value
 			sc.ForwardSetState(lastStateS);
 		}
@@ -830,6 +858,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				   && (sc.ch == '\"' || sc.ch == '\'')) {
 			lastStateS = sc.state;
 			sc.SetState((sc.ch == '\"' ? SCE_CSS_DOUBLESTRING : SCE_CSS_SINGLESTRING));
+			stringState = sc.state;
 			
 		} else if (IsCssOperator(sc.ch)
 				   && (sc.state != SCE_CSS_ATTRIBUTE || sc.ch == ']')
