@@ -525,8 +525,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	std::vector<SingleFStringExpState> fstringStateStack;
 	SingleFStringExpState *currentFStringExp = NULL;
 	
-	const Sci_Position endPos = startPos + length;
-	
 	// Backtrack to previous line in case need to fix its tab whinging
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	if (startPos > 0) {
@@ -578,6 +576,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const WordClassifier &classifierIdentifiers =
 							subStyles.Classifier(SCE_P_IDENTIFIER);
+	
+	const Sci_Position endPos = startPos + length;
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	

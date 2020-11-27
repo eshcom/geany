@@ -42,7 +42,15 @@ TEST5 = "part1 \
 		 part2 \	
 		 part3"
 
-if True: 
+TEST5 = "part1 
+		 part2 
+		 part3"
+
+TEST5 = "part1 
+		 part2"
+
+
+if True:
 	ch = "t\"
 	ch = 't\'
 	

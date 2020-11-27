@@ -40,7 +40,14 @@ TEST5 = "part1 \
 		 part2 \	
 		 part3";
 
-int ch;
+TEST5 = "part1 
+		 part2 
+		 part3";
+
+TEST5 = "part1 
+		 part2";
+
+
 if (TRUE) {
 	ch = "t\";
 	ch = 't\';

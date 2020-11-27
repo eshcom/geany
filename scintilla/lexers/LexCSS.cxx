@@ -177,9 +177,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		initStyle = startPos == 0 ? SCE_CSS_DEFAULT : styler.StyleAt(startPos - 1);
 	}
 	
-	StyleContext sc(startPos, length, initStyle, styler);
+	const Sci_PositionU endPos = startPos + length;
 	
-	Sci_PositionU endPos = startPos + length;
+	StyleContext sc(startPos, length, initStyle, styler);
 	
 	int lastState = -1; // before operator
 	int lastStateC = -1; // before comment
