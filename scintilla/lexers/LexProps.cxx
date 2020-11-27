@@ -290,6 +290,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			// beforeSubVarState is SCE_PROPS_DOUBLESTRING
 			// 					 or SCE_PROPS_SINGLESTRING
 			sc.SetState(beforeSubVarState);
+			// restore the state of the previous string (if there was a
+			// sub-string inside the sub-var and the stringState was changed)
+			stringState = sc.state;
 		}
 		
 		// Determine if the current value-state should terminate.
