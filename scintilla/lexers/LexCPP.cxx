@@ -873,12 +873,21 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (sc.atLineStart) {
 			// Using MaskActive() is not needed in the following statement.
 			// Inside inactive preprocessor declaration, state will be reset anyway at the end of this block.
-			if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER) ||
-				(sc.state == SCE_C_STRINGJSONKEY)) {
-				// Prevent SCE_C_STRINGEOL from leaking back to previous line which
-				// ends with a line continuation by locking in the state up to this position.
-				sc.SetState(sc.state);
-			}
+			
+			// esh: the block code is commented, because the incorrect highlighting of the construction like:
+			//		ch = "text \
+			//		<empty string>
+			//		<next code statement>
+			// in this case 'ch = "text \' highlighting as good string, but next <empty string> 
+			// highlighting as SCE_C_STRINGEOL but does't contain any symbol,
+			// WE DO NOT SEE THAT THE LINE IS INVALID
+			//~ if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER) ||
+				//~ (sc.state == SCE_C_STRINGJSONKEY)) {
+				//~ // Prevent SCE_C_STRINGEOL from leaking back to previous line which
+				//~ // ends with a line continuation by locking in the state up to this position.
+				//~ sc.SetState(sc.state);
+			//~ }
+			
 			if ((MaskActive(sc.state) == SCE_C_PREPROCESSOR) &&
 				(!continuationLine)) {
 				sc.SetState(SCE_C_DEFAULT|activitySet);
