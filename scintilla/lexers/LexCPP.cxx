@@ -804,7 +804,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			length += (startPos - newStartPos);
 			startPos = newStartPos;
 		}
-		initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
+		initStyle = startPos == 0 ? SCE_C_DEFAULT : styler.StyleAt(startPos - 1);
 	}
 	
 	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
