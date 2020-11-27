@@ -179,6 +179,32 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: escapesequence highlighting
 	const bool escapeSequence = styler.GetPropertyInt("lexer.props.escape.sequence", 0) != 0;
+	EscapeSequence escapeSeq = EscapeSequence();
+	int stringState = -1;
+	
+	// esh: Backtrack to previous line in case need to fix its tab whinging (taken from LexCSS.cxx)
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	if (startPos > 0) {
+		if (lineCurrent > 0) {
+			lineCurrent--;
+			// Look for backslash-continued lines
+			while (lineCurrent > 0) {
+				Sci_Position eolPos = styler.LineStart(lineCurrent) - 1;
+				const int eolStyle = styler.StyleAt(eolPos);
+				if (eolStyle == SCE_PROPS_DOUBLESTRING
+						|| eolStyle == SCE_PROPS_SINGLESTRING
+						|| eolStyle == SCE_PROPS_ESCAPESEQUENCE) {
+					lineCurrent--;
+				} else {
+					break;
+				}
+			}
+			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+			length += (startPos - newStartPos);
+			startPos = newStartPos;
+		}
+		initStyle = startPos == 0 ? SCE_PROPS_DEFAULT : styler.StyleAt(startPos - 1);
+	}
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -193,11 +219,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	int beforeSubVarState = -1;
 	int beforeStringState = -1;
 	
-	int stringState = 0;
+	int stringCode = 0;
 	
 	for (; sc.More(); sc.Forward()) {
 		
-		if (sc.atLineStart && stringState == 0) {
+		if (sc.atLineStart && stringCode == 0) {
 			if (!allowInitialSpaces && IsASpaceOrTab(sc.ch)) {
 				// don't allow initial spaces
 				goToLineEnd = true;
@@ -287,30 +313,51 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			case SCE_PROPS_DOUBLESTRING:
 			case SCE_PROPS_SINGLESTRING:
+			case SCE_PROPS_ESCAPESEQUENCE:
+				
+				if (sc.state == SCE_PROPS_ESCAPESEQUENCE) {
+					escapeSeq.digitsLeft--;
+					if (!escapeSeq.atEscapeEnd(sc.ch)) {
+						continue; // esh: continue of escape chars
+					}
+				}
+				
 				if (sc.ch == '\\') {
+					if (escapeSequence && sc.state != SCE_PROPS_ESCAPESEQUENCE) {
+						sc.SetState(SCE_PROPS_ESCAPESEQUENCE);
+						escapeSeq.resetEscapeState(sc.chNext);
+					}
 					sc.Forward(); // Skip any character after the backslash
-					continue;
+					continue; // esh: continue of string value
+					
 				} else if (levelSqBrackets == 0 && (sc.ch ==
-							(sc.state == SCE_PROPS_DOUBLESTRING ? '\"' : '\''))) {
-					if (stringState == 1) {
-						// continuation of multi-line string
-						stringState = 2;
+							(stringState == SCE_PROPS_DOUBLESTRING ? '\"' : '\''))) {
+					
+					if (sc.state == SCE_PROPS_ESCAPESEQUENCE)
+						sc.SetState(stringState);
+					
+					if (stringCode == 1) {
+						// wait ';' oper as end of multi-line string
+						stringCode = 2;
 						continue;
 					}
-					// end of single-line string (stringState == 0)
+					// end of single-line string (stringCode == 0)
 					sc.ForwardSetState(beforeStringState);
 					
-				} else if (stringState == 2 && sc.ch == ';') {
+				} else if (stringCode == 2 && sc.ch == ';') {
 					// end of multi-line string
-					stringState = 0;
+					stringCode = 0;
 					
-				} else if (CheckSubVar(sc, styler, endPos, &isSubVar,
-									   &beforeSubVarState)) {
-					// begin sub-var inside string
-					continue;
 				} else {
+					if (sc.state == SCE_PROPS_ESCAPESEQUENCE)
+						sc.SetState(stringState);
+					
+					if (CheckSubVar(sc, styler, endPos, &isSubVar,
+									&beforeSubVarState))
+						// begin sub-var inside string
+						continue;
 					// string continuation
-					if (sc.ch == '[')
+					else if (sc.ch == '[')
 						levelSqBrackets++;
 					else if (sc.ch == ']')
 						levelSqBrackets--;
@@ -415,17 +462,17 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
 				int levelSqBrcks = 0;
-				int strState = -1;
+				int strCode = -1;
 				for (Sci_PositionU i = sc.currentPos + 1;
 									i < styler.Length(); i++) {
 					if (IsACRLF(styler[i])) { // end of line
-						if (strState == -1) {
-							strState = 1; // multi-line string
+						if (strCode == -1) {
+							strCode = 1; // multi-line string
 							continue;
-						} else if (strState == 1) {
+						} else if (strCode == 1) {
 							continue;
 						} else {
-							strState = -1; // bad string
+							strCode = -1; // bad string
 							break;
 						}
 					} else if (styler[i] == '[') {
@@ -434,40 +481,54 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						levelSqBrcks--;
 					} else if (styler[i] == '\\') {
 						i++; // Skip any character after the backslash
+						if (i == styler.Length() || IsACRLF(styler[i])) { // end of line
+							if (strCode == -1) {
+								strCode = 1; // multi-line string
+								continue;
+							} else if (strCode == 1) {
+								continue;
+							} else {
+								strCode = -1; // bad string
+								break;
+							}
+						}
 					} else if (styler[i] == sc.ch && levelSqBrcks == 0) { // exclude regular expression
-						if (strState == -1) {
+						if (strCode == -1) {
 							// start of single-line string
 							beforeStringState = sc.state;
 							sc.SetState(sc.ch == '\"' ? SCE_PROPS_DOUBLESTRING:
 														SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
-							stringState = 0; // single-line string
-							strState = 0;
+							stringCode = 0; // single-line string
+							strCode = 0;
 							break;
-						} else if (strState == 1) {
-							strState = sc.ch == '\"' ? 2 : 3;
+						} else if (strCode == 1) {
+							strCode = sc.ch == '\"' ? 2 : 3;
 						}
-					} else if (strState == 2 || strState == 3) {
+					} else if (strCode == 2 || strCode == 3) {
 						if (IsASpaceOrTab(styler[i])) {
 							continue;
 						} else if (styler[i] == ';') { // multi-line string value ends with semicolon
 							// start of multi-line string
 							beforeStringState = sc.state;
-							sc.SetState(strState == 2 ? SCE_PROPS_DOUBLESTRING:
-									  /*strState == 3*/ SCE_PROPS_SINGLESTRING);
+							sc.SetState(strCode == 2 ? SCE_PROPS_DOUBLESTRING:
+									  /*strCode == 3*/ SCE_PROPS_SINGLESTRING);
 							levelSqBrackets = 0;
-							stringState = 1; // multi-line string
+							stringCode = 1; // multi-line string
 							break;
 						} else {
-							strState = -1; // bad string
+							strCode = -1; // bad string
 							break;
 						}
 					}
 				}
-				//~ strState == 0 - single-line string
-				//~ strState == 2 - multi-line string "text"
-				//~ strState == 3 - multi-line string 'text'
-				if (strState >= 0) continue;
+				//~ strCode == 0 - single-line string
+				//~ strCode == 2 - multi-line string "text"
+				//~ strCode == 3 - multi-line string 'text'
+				if (strCode >= 0) {
+					stringState = sc.state;
+					continue;
+				}
 				
 			} else if (IsAWordChar(sc.ch) && /* exclude subtract-oper */
 					   !IsSubtractOper(styler, sc.currentPos, endPos)) {
