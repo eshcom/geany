@@ -783,7 +783,30 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
 	
+	// esh: Backtrack to previous line in case need to fix its tab whinging (taken from LexPython.cxx)
 	Sci_Position lineCurrent = styler.GetLine(startPos);
+	if (startPos > 0) {
+		if (lineCurrent > 0) {
+			lineCurrent--;
+			// Look for backslash-continued lines
+			while (lineCurrent > 0) {
+				Sci_Position eolPos = styler.LineStart(lineCurrent) - 1;
+				const int eolStyle = styler.StyleAt(eolPos);
+				if (eolStyle == SCE_C_STRING
+						|| eolStyle == SCE_C_CHARACTER
+						|| eolStyle == SCE_C_STRINGEOL) {
+					lineCurrent--;
+				} else {
+					break;
+				}
+			}
+			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+			length += (startPos - newStartPos);
+			startPos = newStartPos;
+		}
+		initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
+	}
+	
 	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
 		(MaskActive(initStyle) == SCE_C_COMMENTLINE) ||
 		(MaskActive(initStyle) == SCE_C_COMMENTLINEDOC)) {
@@ -915,16 +938,16 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
-			// esh: fixed highlighting multi-line strings with escape sequences
-			if (sc.state == SCE_C_ESCAPESEQUENCE && IsACRLF(sc.chNext)) {
-				sc.SetState(stringState|activitySet);
-			}
-			if ((sc.currentPos+1) >= lineEndNext) {
+			if ((sc.currentPos+1) >= lineEndNext) { // esh: end of line
 				lineCurrent++;
 				lineEndNext = styler.LineEnd(lineCurrent);
 				vlls.Add(lineCurrent, preproc);
 				if (rawStringTerminator != "") {
 					rawSTNew.Set(lineCurrent-1, rawStringTerminator);
+				}
+				// esh: fixed highlighting multi-line strings with escape sequences
+				if (sc.state == SCE_C_ESCAPESEQUENCE) {
+					sc.SetState(stringState);
 				}
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
