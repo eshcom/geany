@@ -264,6 +264,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_CSS_DOUBLESTRING ||
 			sc.state == SCE_CSS_SINGLESTRING ||
 			sc.state == SCE_CSS_ESCAPESEQUENCE) {
+			
 			if (sc.state == SCE_CSS_ESCAPESEQUENCE) {
 				escapeSeq.digitsLeft--;
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
