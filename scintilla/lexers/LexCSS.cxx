@@ -153,6 +153,30 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	EscapeSequence escapeSeq = EscapeSequence();
 	int stringState = -1;
 	
+	// esh: Backtrack to previous line in case need to fix its tab whinging (taken from LexPython.cxx)
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	if (startPos > 0) {
+		if (lineCurrent > 0) {
+			lineCurrent--;
+			// Look for backslash-continued lines
+			while (lineCurrent > 0) {
+				Sci_Position eolPos = styler.LineStart(lineCurrent) - 1;
+				const int eolStyle = styler.StyleAt(eolPos);
+				if (eolStyle == SCE_CSS_DOUBLESTRING
+						|| eolStyle == SCE_CSS_SINGLESTRING
+						|| eolStyle == SCE_CSS_ESCAPESEQUENCE) {
+					lineCurrent--;
+				} else {
+					break;
+				}
+			}
+			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+			length += (startPos - newStartPos);
+			startPos = newStartPos;
+		}
+		initStyle = startPos == 0 ? SCE_CSS_DEFAULT : styler.StyleAt(startPos - 1);
+	}
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	Sci_PositionU endPos = startPos + length;
