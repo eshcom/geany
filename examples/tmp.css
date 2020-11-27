@@ -15,6 +15,10 @@ p {
 }
 
 .example {
+	unquoted: "te\377st1";
+	unquoted: "test1\
+			   test2\
+			   test3";
 	unquoted: "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x";
 	unquoted: '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x';
 	unquoted: "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0";
