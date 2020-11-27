@@ -878,7 +878,6 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Prevent SCE_C_STRINGEOL from leaking back to previous line which
 				// ends with a line continuation by locking in the state up to this position.
 				sc.SetState(sc.state);
-				stringState = sc.state;
 			}
 			if ((MaskActive(sc.state) == SCE_C_PREPROCESSOR) &&
 				(!continuationLine)) {
