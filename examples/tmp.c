@@ -1,7 +1,19 @@
-#define TEST1 "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
-#define TEST2 '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
-#define TEST3 "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
-#define TEST4 '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
+TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
+TEST2 = '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
+TEST3 = "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
+TEST4 = '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
+
+TEST5 = "part1 \n\
+		 part2 \n\
+		 part3";
+
+TEST5 = "part1 \n
+		 part2 \n\
+		 part3";
+
+TEST5 = "part1 \n\
+		 part2 \n
+		 part3";
 
 TEST5 = "part1 \
 		 part2 \
@@ -46,6 +58,16 @@ if (TRUE) {
 	
 	ch = "t\n\"
 	ch = 't\n\'
+	
+	ch = "t\n\
+	---
+	ch = 't\n\
+	---
+	
+	ch = "t\
+	---
+	ch = 't\
+	---
 	
 	ch = "t\n\r";
 	ch = 't\n\r';
@@ -159,6 +181,13 @@ t			\ntest";
 	ch = '5.33     \
 t			\ntest 
 t			\ntest';
+	
+	ch = "5.33     \
+t			test 
+t			test";
+	ch = '5.33     \
+t			test 
+t			test';
 	
 	ch = "5.33     \
 t			test\n 
