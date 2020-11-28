@@ -253,13 +253,16 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state != SCE_CSS_VALUE &&
 			sc.state != SCE_CSS_HEX_COLOR &&
 			sc.state != SCE_CSS_IMPORTANT &&
-			CheckSubVar(sc, &isSubVar, &beforeSubVarState))
+			CheckSubVar(sc, &isSubVar, &beforeSubVarState)) {
 			continue;
-		else if (sc.state == SCE_CSS_SUBVAR_OPER && !isSubVar &&
-				 (beforeSubVarState == SCE_CSS_DOUBLESTRING ||
-				  beforeSubVarState == SCE_CSS_SINGLESTRING ||
-				  beforeSubVarState == SCE_CSS_ESCAPESEQUENCE))
+		} else if (sc.state == SCE_CSS_SUBVAR_OPER && !isSubVar &&
+				   (beforeSubVarState == SCE_CSS_DOUBLESTRING ||
+					beforeSubVarState == SCE_CSS_SINGLESTRING)) {
 			sc.SetState(beforeSubVarState); // after sub-var inside string
+			// restore the state of the previous string (if there was a
+			// sub-string inside the sub-var and the stringState was changed)
+			stringState = sc.state;
+		}
 		
 		if (sc.state == SCE_CSS_DOUBLESTRING ||
 			sc.state == SCE_CSS_SINGLESTRING ||
