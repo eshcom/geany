@@ -732,7 +732,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			
 			if (sc.state != SCE_P_ESCAPESEQUENCE || escapeSeq.atEscapeEnd(sc.ch)) {
 				if (sc.ch == '\\') {
-					if (IsACRLF(sc.chNext)) {
+					if ((sc.currentPos+1) >= styler.LineEnd(lineCurrent)) {
 						if (sc.state == SCE_P_ESCAPESEQUENCE)
 							sc.SetState(stringState);
 						
