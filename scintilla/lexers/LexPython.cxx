@@ -547,9 +547,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const literalsAllowed allowedLiterals = options.AllowedLiterals();
 	
+	initStyle = initStyle & 31;
 	// esh: in line 770 we added check (sc.state == SCE_P_STRINGEOL),
 	// 		which solves this case better, this block code not actual:
-	//~ initStyle = initStyle & 31;
 	//~ if (initStyle == SCE_P_STRINGEOL) {
 		//~ initStyle = SCE_P_DEFAULT;
 	//~ }
