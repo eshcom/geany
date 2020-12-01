@@ -783,34 +783,73 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
 	
-	// esh: Backtrack to previous line in case need to fix its tab whinging (taken from LexPython.cxx)
-	Sci_Position lineCurrent = styler.GetLine(startPos);
-	if (startPos > 0) {
-		if (lineCurrent > 0) {
-			// Look for backslash-continued lines
-			int eolStyle;
-			while (--lineCurrent > 0) {
-				eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
-				if (eolStyle != SCE_C_STRING
-					&& eolStyle != SCE_C_CHARACTER
-					&& eolStyle != SCE_C_STRINGEOL)
+	// esh: added detect jsonLastOper for highlighting JSON-keys
+	int jsonLastOper = '.';
+	if (options.jsonKeyStrings && startPos > 0) {
+		Sci_Position back = startPos;
+		int foundOper;
+		while (--back)
+			if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
+				foundOper = styler.SafeGetCharAt(back);
+				if (foundOper == ',') {
+					jsonLastOper = foundOper;
+					continue;
+				} else if (foundOper != '[' && jsonLastOper == ',') {
 					break;
+				} else {
+					jsonLastOper = foundOper;
+					break;
+				}
 			}
-			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
-			length += (startPos - newStartPos);
-			startPos = newStartPos;
-		}
-		initStyle = startPos == 0 ? SCE_C_DEFAULT : styler.StyleAt(startPos - 1);
 	}
 	
-	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
-		(MaskActive(initStyle) == SCE_C_COMMENTLINE) ||
-		(MaskActive(initStyle) == SCE_C_COMMENTLINEDOC)) {
+	// esh: added stringState for highlighting JSON-keys and escape sequences
+	// (stringState can be SCE_C_CHARACTER, SCE_C_STRING, SCE_C_STRINGJSONKEY)
+	int stringState = -1;
+	
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	int maskInitStyle = MaskActive(initStyle);
+	if ((maskInitStyle == SCE_C_PREPROCESSOR) ||
+		(maskInitStyle == SCE_C_COMMENTLINE) ||
+		(maskInitStyle == SCE_C_COMMENTLINEDOC)) {
 		// Set continuationLine if last character of previous line is '\'
 		if (lineCurrent > 0) {
 			const Sci_Position endLinePrevious = styler.LineEnd(lineCurrent - 1);
 			if (endLinePrevious > 0) {
 				continuationLine = styler.SafeGetCharAt(endLinePrevious-1) == '\\';
+			}
+		}
+	// esh: added detect stringState
+	} else if ((maskInitStyle == SCE_C_STRING) ||
+			   (maskInitStyle == SCE_C_STRINGJSONKEY) ||
+			   (maskInitStyle == SCE_C_CHARACTER)) {
+		stringState = maskInitStyle;
+		
+	} else if (maskInitStyle == SCE_C_ESCAPESEQUENCE ||
+			   maskInitStyle == SCE_C_STRINGEOL) {
+		Sci_PositionU back = startPos;
+		int backStyle;
+		while (--back) {
+			backStyle = MaskActive(styler.StyleAt(back));
+			if (backStyle != SCE_C_ESCAPESEQUENCE &&
+				backStyle != SCE_C_STRINGEOL) {
+				if ((backStyle == SCE_C_STRING) ||
+					(backStyle == SCE_C_STRINGJSONKEY) ||
+					(backStyle == SCE_C_CHARACTER)) {
+					stringState = backStyle;
+				} else if (styler[++back] == '\'') {
+					stringState = SCE_C_CHARACTER;
+				} else if (options.jsonKeyStrings) {
+					// esh: added detect JSON-key
+					if (jsonLastOper != ':' && jsonLastOper != '[') {
+						stringState = SCE_C_STRINGJSONKEY;
+					} else {
+						stringState = SCE_C_STRING;
+					}
+				} else {
+					stringState = SCE_C_STRING;
+				}
+				break;
 			}
 		}
 	}
@@ -859,27 +898,6 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	int activitySet = preproc.ActiveState();
 	
-	// esh: added stringState, jsonLastOper for highlighting JSON-keys
-	int stringState = -1;
-	int jsonLastOper = '.';
-	if (options.jsonKeyStrings && startPos > 0) {
-		Sci_Position back = startPos;
-		int foundOper;
-		while (--back)
-			if (MaskActive(styler.StyleAt(back) == SCE_C_OPERATOR)) {
-				foundOper = styler.SafeGetCharAt(back);
-				if (foundOper == ',') {
-					jsonLastOper = foundOper;
-					continue;
-				} else if (foundOper != '[' && jsonLastOper == ',') {
-					break;
-				} else {
-					jsonLastOper = foundOper;
-					break;
-				}
-			}
-	}
-	
 	const WordClassifier &classifierIdentifiers =
 								subStyles.Classifier(SCE_C_IDENTIFIER);
 	const WordClassifier &classifierDocKeyWords =
@@ -892,21 +910,12 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (sc.atLineStart) {
 			// Using MaskActive() is not needed in the following statement.
 			// Inside inactive preprocessor declaration, state will be reset anyway at the end of this block.
-			
-			// esh: the block code is commented, because the incorrect highlighting of the construction like:
-			//		ch = "text \
-			//		<empty string>
-			//		<next code statement>
-			// in this case 'ch = "text \' highlighting as good string, but next <empty string> 
-			// highlighting as SCE_C_STRINGEOL but does't contain any symbol,
-			// WE DO NOT SEE THAT THE LINE IS INVALID
-			//~ if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER) ||
-				//~ (sc.state == SCE_C_STRINGJSONKEY)) {
-				//~ // Prevent SCE_C_STRINGEOL from leaking back to previous line which
-				//~ // ends with a line continuation by locking in the state up to this position.
-				//~ sc.SetState(sc.state);
-			//~ }
-			
+			if ((sc.state == SCE_C_STRING) || (sc.state == SCE_C_CHARACTER) ||
+				(sc.state == SCE_C_STRINGJSONKEY)) {
+				// Prevent SCE_C_STRINGEOL from leaking back to previous line which
+				// ends with a line continuation by locking in the state up to this position.
+				sc.SetState(sc.state);
+			}
 			if ((MaskActive(sc.state) == SCE_C_PREPROCESSOR) &&
 				(!continuationLine)) {
 				sc.SetState(SCE_C_DEFAULT|activitySet);
