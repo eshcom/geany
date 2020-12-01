@@ -525,34 +525,66 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	std::vector<SingleFStringExpState> fstringStateStack;
 	SingleFStringExpState *currentFStringExp = NULL;
 	
-	// Backtrack to previous line in case need to fix its tab whinging
 	Sci_Position lineCurrent = styler.GetLine(startPos);
-	if (startPos > 0) {
-		if (lineCurrent > 0) {
-			// Look for backslash-continued lines
-			int eolStyle;
-			while (--lineCurrent > 0) {
-				eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
-				if (eolStyle != SCE_P_STRING
-					&& eolStyle != SCE_P_CHARACTER
-					&& eolStyle != SCE_P_STRINGEOL)
-					break;
-			}
-			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
-			length += (startPos - newStartPos);
-			startPos = newStartPos;
-		}
-		initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
-	}
+	
+	// esh: this block code not actual with new block code with detect stringState (see below)
+	// 		and new check sc.state on string-state in sc.atLineStart case in loop (see below)
+	
+	//~ // Backtrack to previous line in case need to fix its tab whinging
+	//~ if (startPos > 0) {
+		//~ if (lineCurrent > 0) {
+			//~ // Look for backslash-continued lines
+			//~ int eolStyle;
+			//~ while (--lineCurrent > 0) {
+				//~ eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
+				//~ if (eolStyle != SCE_P_STRING
+					//~ && eolStyle != SCE_P_CHARACTER
+					//~ && eolStyle != SCE_P_STRINGEOL)
+					//~ break;
+			//~ }
+			//~ Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+			//~ length += (startPos - newStartPos);
+			//~ startPos = newStartPos;
+		//~ }
+		//~ initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
+	//~ }
 	
 	const literalsAllowed allowedLiterals = options.AllowedLiterals();
 	
 	initStyle = initStyle & 31;
-	// esh: in line 770 we added check (sc.state == SCE_P_STRINGEOL),
+	// esh: in line 806 we added check (sc.state == SCE_P_STRINGEOL),
 	// 		which solves this case better, this block code not actual:
 	//~ if (initStyle == SCE_P_STRINGEOL) {
 		//~ initStyle = SCE_P_DEFAULT;
 	//~ }
+	
+	// esh: added stringState for escape sequences highlighting
+	int stringState = -1;
+	
+	// esh: added detect stringState
+	if ((initStyle == SCE_P_STRING) ||
+		(initStyle == SCE_P_CHARACTER)) {
+		stringState = initStyle;
+		
+	} else if (initStyle == SCE_P_ESCAPESEQUENCE ||
+			   initStyle == SCE_P_STRINGEOL) {
+		Sci_PositionU back = startPos;
+		int backStyle;
+		while (--back) {
+			backStyle = styler.StyleAt(back);
+			if (backStyle != SCE_P_ESCAPESEQUENCE &&
+				backStyle != SCE_P_STRINGEOL) {
+				if ((backStyle == SCE_P_STRING) ||
+					(backStyle == SCE_P_CHARACTER)) {
+					stringState = backStyle;
+				} else {
+					stringState = (styler[++back] == '\"') ? SCE_P_STRING :
+															 SCE_P_CHARACTER;
+				}
+				break;
+			}
+		}
+	}
 	
 	// Set up fstate stack from last line and remove any subsequent ftriple at eol states
 	std::map<Sci_Position, std::vector<SingleFStringExpState> >::iterator it;
@@ -582,8 +614,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool indentGood = true;
 	Sci_Position startIndicator = sc.currentPos;
 	bool inContinuedString = false;
-	// esh: added stringState for escape sequences highlighting
-	int stringState = -1;
 	
 	for (; sc.More(); sc.Forward()) {
 		
@@ -603,6 +633,12 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				styler.IndicatorFill(startIndicator, sc.currentPos,
 									 indicatorWhitespace, 0);
 				startIndicator = sc.currentPos;
+			}
+			// esh: taken from (LexCPP.css)
+			if ((sc.state == SCE_P_STRING) || (sc.state == SCE_P_CHARACTER)) {
+				// Prevent SCE_P_STRINGEOL from leaking back to previous line which
+				// ends with a line continuation by locking in the state up to this position.
+				sc.SetState(sc.state);
 			}
 		}
 		
