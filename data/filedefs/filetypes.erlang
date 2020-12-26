@@ -28,6 +28,7 @@ modules_att=preprocessor
 unknown=default
 atom_spec=default
 escapesequence=string_1
+formatsequence=string_1
 
 [keywords]
 # all items must be in one line
@@ -47,6 +48,7 @@ atom_spec=true false null none undefined
 
 [lexer_properties]
 lexer.erlang.escape.sequence=0
+lexer.erlang.format.sequence=0
 
 [settings]
 # default extension used when saving files

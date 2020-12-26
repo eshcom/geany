@@ -79,6 +79,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	// esh: escapesequence highlighting
 	const bool escapeSequence = styler.GetPropertyInt("lexer.erlang.escape.sequence", 0) != 0;
 	
+	// esh: formatsequence highlighting
+	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	WordList &reservedWords = *keywordlists[0];
