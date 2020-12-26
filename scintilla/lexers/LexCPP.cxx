@@ -314,6 +314,7 @@ struct OptionsCPP {
 	bool hashquotedStrings;
 	bool backQuotedStrings;
 	bool escapeSequence;
+	bool formatSequence;
 	bool jsonKeyStrings;
 	bool fold;
 	bool foldSyntaxBased;
@@ -337,6 +338,7 @@ struct OptionsCPP {
 		hashquotedStrings = false;
 		backQuotedStrings = false;
 		escapeSequence = false;
+		formatSequence = false;
 		jsonKeyStrings = false;
 		fold = false;
 		foldSyntaxBased = true;
@@ -395,6 +397,9 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 		
 		DefineProperty("lexer.cpp.escape.sequence", &OptionsCPP::escapeSequence,
 			"Set to 1 to enable highlighting of escape sequences in strings");
+		
+		DefineProperty("lexer.cpp.format.sequence", &OptionsCPP::formatSequence,
+			"Set to 1 to enable highlighting of format sequences in strings");
 		
 		DefineProperty("lexer.cpp.jsonkey.strings", &OptionsCPP::jsonKeyStrings,
 			"Set to 1 to detect JSON-key strings and highlighting them with a separate style.");
@@ -472,9 +477,10 @@ LexicalClass lexicalClasses[] = {
 	25, "SCE_C_USERLITERAL", "literal", "User defined literals",
 	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
 	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
-	28, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
-	29, "SCE_C_OTHERCLASS", "identifier", "Other classes",
-	30, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
+	28, "SCE_C_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
+	29, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
+	30, "SCE_C_OTHERCLASS", "identifier", "Other classes",
+	31, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
 };
 
 }

@@ -261,6 +261,7 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_GLOBALCLASS,			"globalclass",				FALSE },
 	{ SCE_C_TASKMARKER,				"taskmarker",				FALSE },
 	{ SCE_C_ESCAPESEQUENCE,			"escapesequence",			FALSE },
+	{ SCE_C_FORMATSEQUENCE,			"formatsequence",			FALSE },
 	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
 	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE },
 	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE }
@@ -602,6 +603,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_MODULES_ATT,		"modules_att",			FALSE },
 	{ SCE_ERLANG_ATOM_SPEC,			"atom_spec",			FALSE },
 	{ SCE_ERLANG_ESCAPESEQUENCE,	"escapesequence",		FALSE },
+	{ SCE_ERLANG_FORMATSEQUENCE,	"formatsequence",		FALSE },
 	{ SCE_ERLANG_UNKNOWN,			"unknown",				FALSE }
 };
 static const HLKeyword highlighting_keywords_ERLANG[] =
@@ -1316,7 +1318,8 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_REFCLASSWORD,	"refclassword",		FALSE },
 	{ SCE_P_WORD_ADD,		"word_add",			FALSE },
 	{ SCE_P_WORD2_ADD,		"word2_add",		FALSE },
-	{ SCE_P_ESCAPESEQUENCE,	"escapesequence",	FALSE }
+	{ SCE_P_ESCAPESEQUENCE,	"escapesequence",	FALSE },
+	{ SCE_P_FORMATSEQUENCE,	"formatsequence",	FALSE }
 };
 static const HLKeyword highlighting_keywords_PYTHON[] =
 {

@@ -30,6 +30,7 @@ tripleverbatim=string_2
 hashquotedstring=string_2
 taskmarker=comment
 escapesequence=string_1
+formatsequence=string_1
 commonword=keyword_1
 otherclass=class
 
@@ -48,6 +49,7 @@ otherclass=
 styling.within.preprocessor=1
 lexer.cpp.track.preprocessor=0
 lexer.cpp.escape.sequence=0
+lexer.cpp.format.sequence=0
 
 [settings]
 # default extension used when saving files

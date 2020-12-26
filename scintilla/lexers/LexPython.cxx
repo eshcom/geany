@@ -100,7 +100,8 @@ bool IsPyFStringState(int st) {
 bool IsPySingleQuoteStringState(int st) {
 	return ((st == SCE_P_CHARACTER) || (st == SCE_P_STRING) ||
 			(st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING) ||
-			(st == SCE_P_ESCAPESEQUENCE));
+			(st == SCE_P_ESCAPESEQUENCE) ||
+			(st == SCE_P_FORMATSEQUENCE));
 }
 
 bool IsPyTripleQuoteStringState(int st) {
@@ -231,6 +232,7 @@ struct OptionsPython {
 	bool foldCompact;
 	bool unicodeIdentifiers;
 	bool escapeSequence;
+	bool formatSequence;
 	
 	OptionsPython() {
 		whingeLevel = 0;
@@ -245,6 +247,7 @@ struct OptionsPython {
 		foldCompact = false;
 		unicodeIdentifiers = true;
 		escapeSequence = false;
+		formatSequence = false;
 	}
 	
 	literalsAllowed AllowedLiterals() const {
@@ -308,6 +311,9 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 		DefineProperty("lexer.python.escape.sequence", &OptionsPython::escapeSequence,
 			"Set to 1 to enable highlighting of escape sequences in strings");
 		
+		DefineProperty("lexer.python.format.sequence", &OptionsPython::formatSequence,
+			"Set to 1 to enable highlighting of format sequences in strings");
+		
 		DefineWordListSets(pythonWordListDesc);
 	}
 };
@@ -341,6 +347,7 @@ LexicalClass lexicalClasses[] = {
 	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
 	23, "SCE_P_WORD2_ADD", "identifier", "Highlighted identifiers additional",
 	24, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+	25, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
 };
 
 }

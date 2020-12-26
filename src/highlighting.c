@@ -1408,7 +1408,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_C_TRIPLEVERBATIM ||
 					style == SCE_C_REGEX ||
 					style == SCE_C_HASHQUOTEDSTRING ||
-					style == SCE_C_ESCAPESEQUENCE);
+					style == SCE_C_ESCAPESEQUENCE ||
+					style == SCE_C_FORMATSEQUENCE);
 		
 		case SCLEX_PASCAL:
 			return (style == SCE_PAS_CHARACTER ||
@@ -1432,7 +1433,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_P_FTRIPLE ||
 					style == SCE_P_FTRIPLEDOUBLE ||
 					style == SCE_P_STRINGEOL ||
-					style == SCE_P_ESCAPESEQUENCE);
+					style == SCE_P_ESCAPESEQUENCE ||
+					style == SCE_P_FORMATSEQUENCE);
 		
 		case SCLEX_F77:
 		case SCLEX_FORTRAN:
@@ -1607,7 +1609,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
 					style == SCE_ERLANG_CHARACTER ||
-					style == SCE_ERLANG_ESCAPESEQUENCE);
+					style == SCE_ERLANG_ESCAPESEQUENCE ||
+					style == SCE_ERLANG_FORMATSEQUENCE);
 		
 		case SCLEX_LISP:
 			return (style == SCE_LISP_STRING ||
