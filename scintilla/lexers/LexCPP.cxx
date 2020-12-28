@@ -1170,7 +1170,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '\\') {
 					if (options.escapeSequence) {
 						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
-						escapeSeq.resetEscapeState(sc.chNext);
+						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 				} else if (sc.ch == '\"') {
@@ -1187,7 +1187,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '\\') {
 					if (options.escapeSequence) {
 						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
-						escapeSeq.resetEscapeState(sc.chNext);
+						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 				} else if (sc.ch == '\'') {
@@ -1208,7 +1208,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(stringState|activitySet);
 					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '\\') {
-					escapeSeq.resetEscapeState(sc.chNext);
+					escapeSeq.initEscapeState(sc.chNext);
 					sc.Forward();
 				} else {
 					Sci_PositionU i = sc.currentPos;

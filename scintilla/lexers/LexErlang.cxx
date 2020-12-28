@@ -407,7 +407,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					if (sc.ch == '\\') {
 						if (escapeSequence) {
 							sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
-							escapeSeq.resetEscapeState(sc.chNext);
+							escapeSeq.initEscapeState(sc.chNext);
 						}
 						sc.Forward(); // Skip any character after the backslash
 						continue;
@@ -422,7 +422,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						continue; // esh: continue of escape chars
 					}
 					if (sc.ch == '\\') {
-						escapeSeq.resetEscapeState(sc.chNext);
+						escapeSeq.initEscapeState(sc.chNext);
 						sc.Forward();
 						continue;
 					} else if (sc.ch == '\"') {

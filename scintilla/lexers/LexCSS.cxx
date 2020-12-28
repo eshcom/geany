@@ -274,7 +274,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				if (escapeSequence) {
 					if (sc.state != SCE_CSS_ESCAPESEQUENCE)
 						sc.SetState(SCE_CSS_ESCAPESEQUENCE);
-					escapeSeq.resetEscapeState(sc.chNext);
+					escapeSeq.initEscapeState(sc.chNext);
 				}
 				sc.Forward(); // Skip any character after the backslash
 				continue;
