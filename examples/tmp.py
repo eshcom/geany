@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-print("test %s\n%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n")
+print("test %s%%\n%%%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n%%s")
 
 TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
 TEST2 = '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
