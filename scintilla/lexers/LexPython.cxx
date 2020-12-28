@@ -779,7 +779,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					if (options.escapeSequence) {
 						sc.SetState(SCE_P_ESCAPESEQUENCE);
-						escapeSeq.resetEscapeState(sc.chNext);
+						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 				}
@@ -802,7 +802,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
 							sc.Forward();
 					} else {
-						escapeSeq.resetEscapeState(sc.chNext);
+						escapeSeq.initEscapeState(sc.chNext);
 						sc.Forward();
 					}
 				} else if (sc.ch == '%' && options.formatSequence) {
@@ -832,7 +832,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						if (options.escapeSequence) {
 							sc.SetState(SCE_P_ESCAPESEQUENCE);
-							escapeSeq.resetEscapeState(sc.chNext);
+							escapeSeq.initEscapeState(sc.chNext);
 						}
 						sc.Forward(); // Skip any character after the backslash
 					}

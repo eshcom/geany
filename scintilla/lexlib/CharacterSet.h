@@ -207,7 +207,7 @@ struct EscapeSequence {
 		setHexDigits = CharacterSet(CharacterSet::setDigits, "ABCDEFabcdef");
 		setOctDigits = CharacterSet(CharacterSet::setNone, "01234567");
 	}
-	void resetEscapeState(int nextChar) {
+	void initEscapeState(int nextChar) {
 		digitsLeft = 0;
 		escapeSetValid = &setNoneNumeric;
 		if (nextChar == 'U') {
