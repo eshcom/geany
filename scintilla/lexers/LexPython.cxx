@@ -362,6 +362,7 @@ class LexerPython : public DefaultLexer {
 	OptionsPython options;
 	OptionSetPython osPython;
 	EscapeSequence escapeSeq;
+	FormatSequence formatSeq;
 	enum { ssIdentifier };
 	SubStyles subStyles;
 	std::map<Sci_Position, std::vector<SingleFStringExpState> > ftripleStateAtEol;
@@ -782,6 +783,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					}
 					sc.Forward(); // Skip any character after the backslash
 				}
+			} else if (sc.ch == '%' && options.formatSequence) {
+				sc.SetState(SCE_P_FORMATSEQUENCE);
+				formatSeq.initFormatState();
 			} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
@@ -801,6 +805,39 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.resetEscapeState(sc.chNext);
 						sc.Forward();
 					}
+				} else if (sc.ch == '%' && options.formatSequence) {
+					sc.SetState(SCE_P_FORMATSEQUENCE);
+					formatSeq.initFormatState();
+				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
+					sc.SetState(stringState);
+					sc.ForwardSetState(SCE_P_DEFAULT);
+					needEOLCheck = true;
+				} else {
+					Sci_PositionU i = sc.currentPos;
+					while (i < endPos && IsASpaceOrTab(styler[i]))
+						i++;
+					if (i == endPos || IsACRLF(styler[i]))
+						sc.ChangeState(SCE_P_STRINGEOL);
+					else
+						sc.SetState(stringState);
+				}
+			}
+		} else if (sc.state == SCE_P_FORMATSEQUENCE) {
+			if (formatSeq.atFormatEnd(sc.ch)) {
+				if (sc.ch == '\\') {
+					if (IsACRLF(sc.chNext) || (sc.currentPos+1) == endPos) {
+						inContinuedString = true;
+						if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
+							sc.Forward();
+					} else {
+						if (options.escapeSequence) {
+							sc.SetState(SCE_P_ESCAPESEQUENCE);
+							escapeSeq.resetEscapeState(sc.chNext);
+						}
+						sc.Forward(); // Skip any character after the backslash
+					}
+				} else if (sc.ch == '%') {
+					formatSeq.initFormatState();
 				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
 					sc.SetState(stringState);
 					sc.ForwardSetState(SCE_P_DEFAULT);
