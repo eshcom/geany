@@ -97,11 +97,11 @@ bool IsPyFStringState(int st) {
 			(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
 }
 
-bool IsPySingleQuoteStringState(int st) {
+bool IsPySingleQuoteStringState(int st, bool withNestedStyle) {
 	return ((st == SCE_P_CHARACTER) || (st == SCE_P_STRING) ||
 			(st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING) ||
-			(st == SCE_P_ESCAPESEQUENCE) ||
-			(st == SCE_P_FORMATSEQUENCE));
+			(withNestedStyle && (st == SCE_P_ESCAPESEQUENCE ||
+								 st == SCE_P_FORMATSEQUENCE)));
 }
 
 bool IsPyTripleQuoteStringState(int st) {
@@ -488,7 +488,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	
 	// Find the deepest single quote state because that string will end; no \ continuation in f-string
 	for (i = 0; i < fstringStateStack.size(); i++) {
-		if (IsPySingleQuoteStringState(fstringStateStack[i].state)) {
+		if (IsPySingleQuoteStringState(fstringStateStack[i].state, true)) {
 			deepestSingleStateIndex = i;
 			break;
 		}
@@ -513,7 +513,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		// tab marking to work inside white space and triple quoted strings
 		sc.SetState(sc.state);
 	}
-	if (IsPySingleQuoteStringState(sc.state)) {
+	if (IsPySingleQuoteStringState(sc.state, true)) {
 		if (inContinuedString || options.stringsOverNewline) {
 			inContinuedString = false;
 		} else {
@@ -769,38 +769,43 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (!IsAWordStart(sc.ch, options.unicodeIdentifiers)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
-		} else if (IsPySingleQuoteStringState(sc.state)) {
-			if (sc.state == SCE_P_ESCAPESEQUENCE)
-				escapeSeq.digitsLeft--;
-			
-			if (sc.state != SCE_P_ESCAPESEQUENCE || escapeSeq.atEscapeEnd(sc.ch)) {
-				if (sc.ch == '\\') {
-					if (IsACRLF(sc.chNext) || (sc.currentPos+1) == endPos) {
-						if (sc.state == SCE_P_ESCAPESEQUENCE)
-							sc.SetState(stringState);
-						
-						inContinuedString = true;
-						if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n')) {
-							sc.Forward();
-						}
-						
-					} else if (options.escapeSequence &&
-							   sc.state != SCE_P_ESCAPESEQUENCE) {
+		} else if (IsPySingleQuoteStringState(sc.state, false)) {
+			if (sc.ch == '\\') {
+				if (IsACRLF(sc.chNext) || (sc.currentPos+1) == endPos) {
+					inContinuedString = true;
+					if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
+						sc.Forward();
+				} else {
+					if (options.escapeSequence) {
 						sc.SetState(SCE_P_ESCAPESEQUENCE);
 						escapeSeq.resetEscapeState(sc.chNext);
-						// Skip any character after the backslash
-						sc.Forward();
+					}
+					sc.Forward(); // Skip any character after the backslash
+				}
+			} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
+				sc.ForwardSetState(SCE_P_DEFAULT);
+				needEOLCheck = true;
+			}
+		} else if (sc.state == SCE_P_ESCAPESEQUENCE) {
+			escapeSeq.digitsLeft--;
+			
+			if (escapeSeq.atEscapeEnd(sc.ch)) {
+				if (sc.ch == '\\') {
+					if (IsACRLF(sc.chNext) || (sc.currentPos+1) == endPos) {
+						sc.SetState(stringState);
+						
+						inContinuedString = true;
+						if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
+							sc.Forward();
 					} else {
-						// Don't roll over the newline.
+						escapeSeq.resetEscapeState(sc.chNext);
 						sc.Forward();
 					}
 				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
-					if (sc.state == SCE_P_ESCAPESEQUENCE)
-						sc.SetState(stringState);
+					sc.SetState(stringState);
 					sc.ForwardSetState(SCE_P_DEFAULT);
 					needEOLCheck = true;
-					
-				} else if (sc.state == SCE_P_ESCAPESEQUENCE) {
+				} else {
 					Sci_PositionU i = sc.currentPos;
 					while (i < endPos && IsASpaceOrTab(styler[i]))
 						i++;
@@ -857,7 +862,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				const int stack_state = fstringStateStack[stack_i].state;
 				const char quote = GetPyStringQuoteChar(stack_state);
 				if (sc.ch == quote) {
-					if (IsPySingleQuoteStringState(stack_state)) {
+					if (IsPySingleQuoteStringState(stack_state, true)) {
 						matching_stack_i = stack_i;
 					} else if (quote == '"' ? sc.Match(R"(""")") :
 											  sc.Match("'''")) {
@@ -905,7 +910,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// If in f-string expression, check for }, :, ! to resume f-string state or update nesting count
-		if (currentFStringExp != NULL && !IsPySingleQuoteStringState(sc.state)
+		if (currentFStringExp != NULL && !IsPySingleQuoteStringState(sc.state, true)
 									  && !IsPyTripleQuoteStringState(sc.state)) {
 			if (currentFStringExp->nestingCount == 0 &&
 				(sc.ch == '}' || sc.ch == ':' ||
