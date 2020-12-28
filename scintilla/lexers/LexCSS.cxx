@@ -270,28 +270,20 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					continue; // esh: continue of escape chars
 				}
 			}
-			
 			if (sc.ch == '\\') {
-				if (escapeSequence && sc.state != SCE_CSS_ESCAPESEQUENCE) {
-					sc.SetState(SCE_CSS_ESCAPESEQUENCE);
+				if (escapeSequence) {
+					if (sc.state != SCE_CSS_ESCAPESEQUENCE)
+						sc.SetState(SCE_CSS_ESCAPESEQUENCE);
 					escapeSeq.resetEscapeState(sc.chNext);
 				}
 				sc.Forward(); // Skip any character after the backslash
-				continue; // esh: continue of string value
+				continue;
 				
 			} else if (sc.ch != (stringState == SCE_CSS_DOUBLESTRING ? '\"' : '\'')) {
 				if (sc.state == SCE_CSS_ESCAPESEQUENCE)
 					sc.SetState(stringState);
 				continue; // esh: continue of string value
 			}
-			
-			// esh: the block code is commented -  no need to check (check done above)
-			//~ Sci_PositionU i = sc.currentPos;
-			//~ while (i && styler[i - 1] == '\\')
-				//~ i--;
-			//~ if ((sc.currentPos - i) % 2 == 1)
-				//~ continue; // esh: continue of string value
-			
 			if (sc.state == SCE_CSS_ESCAPESEQUENCE)
 				sc.SetState(stringState);
 			// esh: end of string value
