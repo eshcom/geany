@@ -575,12 +575,14 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		stringState = initStyle;
 		
 	} else if (initStyle == SCE_P_ESCAPESEQUENCE ||
+			   initStyle == SCE_P_FORMATSEQUENCE ||
 			   initStyle == SCE_P_STRINGEOL) {
 		Sci_PositionU back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);
 			if (backStyle != SCE_P_ESCAPESEQUENCE &&
+				backStyle != SCE_P_FORMATSEQUENCE &&
 				backStyle != SCE_P_STRINGEOL) {
 				if ((backStyle == SCE_P_STRING) ||
 					(backStyle == SCE_P_CHARACTER)) {
