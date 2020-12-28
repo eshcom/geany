@@ -78,6 +78,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   Accessor &styler) {
 	// esh: escapesequence highlighting
 	const bool escapeSequence = styler.GetPropertyInt("lexer.erlang.escape.sequence", 0) != 0;
+	EscapeSequence escapeSeq = EscapeSequence();
 	
 	// esh: formatsequence highlighting
 	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
@@ -401,14 +402,42 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					if (!IsAWordChar(sc.ch))
 						sc.SetState(SCE_ERLANG_DEFAULT);
 				} break;
+				
 				case SCE_ERLANG_STRING : {
-					 if (sc.ch == '\"' && sc.chPrev != '\\')
+					if (sc.ch == '\\') {
+						if (escapeSequence) {
+							sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+							escapeSeq.resetEscapeState(sc.chNext);
+						}
+						sc.Forward(); // Skip any character after the backslash
+						continue;
+					} else if (sc.ch == '\"') {
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					}
 				} break;
+				
+				case SCE_ERLANG_ESCAPESEQUENCE : {
+					escapeSeq.digitsLeft--;
+					if (!escapeSeq.atEscapeEnd(sc.ch)) {
+						continue; // esh: continue of escape chars
+					}
+					if (sc.ch == '\\') {
+						escapeSeq.resetEscapeState(sc.chNext);
+						sc.Forward();
+						continue;
+					} else if (sc.ch == '\"') {
+						sc.SetState(SCE_ERLANG_STRING);
+						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					} else {
+						sc.SetState(SCE_ERLANG_STRING);
+					}
+				} break;
+				
 				case SCE_ERLANG_COMMENT : {
-					 if (sc.atLineEnd)
+					if (sc.atLineEnd)
 						sc.SetState(SCE_ERLANG_DEFAULT);
 				} break;
+				
 				case SCE_ERLANG_CHARACTER : {
 					if (sc.chPrev == '\\') {
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
@@ -416,6 +445,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 					}
 				} break;
+				
 				case SCE_ERLANG_OPERATOR : {
 					if (sc.chPrev == '.') {
 						if (sc.ch == '*' || sc.ch == '/' || sc.ch == '\\'
@@ -438,22 +468,27 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			switch (sc.ch) {
 				case '\"' : sc.SetState(SCE_ERLANG_STRING); break;
 				case '$' : sc.SetState(SCE_ERLANG_CHARACTER); break;
+				
 				case '%' : {
 					parse_state = COMMENT;
 					sc.SetState(SCE_ERLANG_COMMENT);
 				} break;
+				
 				case '#' : {
 					parse_state = RECORD_START;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
+				
 				case '?' : {
 					parse_state = MACRO_START;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
+				
 				case '\'' : {
 					parse_state = ATOM_QUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} break;
+				
 				case '-' :
 					if (islower(sc.chNext)) {
 						parse_state = PREPROCESSOR;

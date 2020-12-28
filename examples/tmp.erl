@@ -4,6 +4,8 @@
 
 TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
 TEST2 = "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
+TEST3 = <<"\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0">>
+TEST4 = <<"test123\312546\76875\547sad">>
 
 Var01 = <<"1.0000000000000000000000001">>.
 Var02 = 2.300000 = 2.30000e+0 = 2.3.
