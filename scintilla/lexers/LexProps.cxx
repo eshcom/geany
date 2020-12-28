@@ -322,12 +322,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				
 				if (sc.ch == '\\') {
-					if (escapeSequence && sc.state != SCE_PROPS_ESCAPESEQUENCE) {
-						sc.SetState(SCE_PROPS_ESCAPESEQUENCE);
+					if (escapeSequence) {
+						if (sc.state != SCE_PROPS_ESCAPESEQUENCE)
+							sc.SetState(SCE_PROPS_ESCAPESEQUENCE);
 						escapeSeq.resetEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
-					continue; // esh: continue of string value
+					continue;
 					
 				} else if (levelSqBrackets == 0 && (sc.ch ==
 							(stringState == SCE_PROPS_DOUBLESTRING ? '\"' : '\''))) {
