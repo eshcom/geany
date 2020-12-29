@@ -82,6 +82,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: formatsequence highlighting
 	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
+	FormatSequence formatSeq = FormatSequence();
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
