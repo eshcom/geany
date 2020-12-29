@@ -524,6 +524,7 @@ class LexerCPP : public ILexerWithMetaData {
 	OptionsCPP options;
 	OptionSetCPP osCPP;
 	EscapeSequence escapeSeq;
+	FormatSequence formatSeq;
 	SparseState<std::string> rawStringTerminators;
 	enum { ssIdentifier, ssDocKeyword };
 	SubStyles subStyles;
@@ -832,12 +833,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		stringState = maskInitStyle;
 		
 	} else if (maskInitStyle == SCE_C_ESCAPESEQUENCE ||
+			   maskInitStyle == SCE_C_FORMATSEQUENCE ||
 			   maskInitStyle == SCE_C_STRINGEOL) {
 		Sci_PositionU back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = MaskActive(styler.StyleAt(back));
 			if (backStyle != SCE_C_ESCAPESEQUENCE &&
+				backStyle != SCE_C_FORMATSEQUENCE &&
 				backStyle != SCE_C_STRINGEOL) {
 				if ((backStyle == SCE_C_STRING) ||
 					(backStyle == SCE_C_STRINGJSONKEY) ||
@@ -956,9 +959,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (rawStringTerminator != "") {
 					rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 				}
-				// esh: fixed highlighting multi-line strings with escape sequences
-				if (sc.state == SCE_C_ESCAPESEQUENCE) {
-					sc.SetState(stringState);
+				// esh: fixed highlighting multi-line strings with escape/format sequences
+				if (sc.state == SCE_C_ESCAPESEQUENCE ||
+					sc.state == SCE_C_FORMATSEQUENCE) {
+					sc.SetState(stringState|activitySet);
 				}
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
@@ -1173,6 +1177,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
+				} else if (sc.ch == '%' && options.formatSequence) {
+					sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);
+					formatSeq.initFormatState();
 				} else if (sc.ch == '\"') {
 					if (sc.chNext == '_') {
 						sc.ChangeState(SCE_C_USERLITERAL|activitySet);
@@ -1190,6 +1197,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
+				} else if (sc.ch == '%' && options.formatSequence) {
+					sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);
+					formatSeq.initFormatState();
 				} else if (sc.ch == '\'') {
 					if (sc.chNext == '_') {
 						sc.ChangeState(SCE_C_USERLITERAL|activitySet);
@@ -1210,6 +1220,35 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '\\') {
 					escapeSeq.initEscapeState(sc.chNext);
 					sc.Forward();
+				} else if (sc.ch == '%' && options.formatSequence) {
+					sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);
+					formatSeq.initFormatState();
+				} else {
+					Sci_PositionU i = sc.currentPos;
+					while (i < endPos && IsASpaceOrTab(styler[i]))
+						i++;
+					if (i == endPos || IsACRLF(styler[i]))
+						sc.ChangeState(SCE_C_STRINGEOL|activitySet);
+					else
+						sc.SetState(stringState|activitySet);
+				}
+				break;
+			case SCE_C_FORMATSEQUENCE:
+				if (!formatSeq.atFormatEnd(sc.ch)) {
+					break;
+				}
+				// esh: stringState can be: SCE_C_CHARACTER, SCE_C_STRING, SCE_C_STRINGJSONKEY
+				if (sc.ch == ((stringState == SCE_C_CHARACTER) ? '\'' : '\"')) {
+					sc.SetState(stringState|activitySet);
+					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
+				} else if (sc.ch == '\\') {
+					if (options.escapeSequence) {
+						sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);
+						escapeSeq.initEscapeState(sc.chNext);
+					}
+					sc.Forward(); // Skip any character after the backslash
+				} else if (sc.ch == '%') {
+					formatSeq.initFormatState();
 				} else {
 					Sci_PositionU i = sc.currentPos;
 					while (i < endPos && IsASpaceOrTab(styler[i]))
