@@ -788,6 +788,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '%' && options.formatSequence) {
 				sc.SetState(SCE_P_FORMATSEQUENCE);
 				formatSeq.initFormatState();
+				
 			} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
@@ -810,10 +811,12 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.ch == '%' && options.formatSequence) {
 					sc.SetState(SCE_P_FORMATSEQUENCE);
 					formatSeq.initFormatState();
+					
 				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
 					sc.SetState(stringState);
 					sc.ForwardSetState(SCE_P_DEFAULT);
 					needEOLCheck = true;
+					
 				} else {
 					Sci_PositionU i = sc.currentPos;
 					while (i < endPos && IsASpaceOrTab(styler[i]))
@@ -826,8 +829,13 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if (sc.state == SCE_P_FORMATSEQUENCE) {
 			if (formatSeq.atFormatEnd(sc.ch)) {
+				if (formatSeq.atFormatNone()) {
+					sc.ChangeState(stringState);
+				}
 				if (sc.ch == '\\') {
 					if (IsACRLF(sc.chNext) || (sc.currentPos+1) == endPos) {
+						sc.SetState(stringState);
+						
 						inContinuedString = true;
 						if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
 							sc.Forward();
@@ -839,11 +847,15 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.Forward(); // Skip any character after the backslash
 					}
 				} else if (sc.ch == '%') {
+					if (sc.state != SCE_P_FORMATSEQUENCE)
+						sc.SetState(SCE_P_FORMATSEQUENCE);
 					formatSeq.initFormatState();
+					
 				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {
 					sc.SetState(stringState);
 					sc.ForwardSetState(SCE_P_DEFAULT);
 					needEOLCheck = true;
+					
 				} else {
 					Sci_PositionU i = sc.currentPos;
 					while (i < endPos && IsASpaceOrTab(styler[i]))

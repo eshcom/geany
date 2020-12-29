@@ -234,6 +234,7 @@ struct FormatSequence {
 	{
 		FORMAT_NONE,
 		FORMAT_INIT,
+		FORMAT_END,
 		FORMAT_FULL_SPEC,			// [d i o u x e f g c s %]
 		FORMAT_NUM_BASE_SPEC,		// [d i o u x e f g]
 		FORMAT_NUM_PREC_SPEC,		// [d i o u x]
@@ -319,9 +320,13 @@ struct FormatSequence {
 			case FORMAT_FULL_SPEC:
 			case FORMAT_NUM_BASE_SPEC:
 			case FORMAT_NUM_PREC_SPEC:
-				formatState = FORMAT_NONE;
+				formatState = FORMAT_END;
 				break;
 		}
+		return (formatState == FORMAT_END ||
+				formatState == FORMAT_NONE);
+	}
+	bool atFormatNone() {
 		return (formatState == FORMAT_NONE);
 	}
 };
