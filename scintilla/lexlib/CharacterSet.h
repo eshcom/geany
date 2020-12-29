@@ -244,7 +244,7 @@ struct FormatSequence {
 		FORMAT_NUM_PREC_DOT,		// .
 		FORMAT_NUM_PREC_ASTER		// *
 	};
-	int formatState;
+	int formatState, countFlags;
 	CharacterSet setFullSpec;
 	CharacterSet setNumBaseSpec;
 	CharacterSet setNumPrecSpec;
@@ -253,6 +253,7 @@ struct FormatSequence {
 	CharacterSet setNumPrecDigits;
 	FormatSequence() {
 		formatState = FORMAT_NONE;
+		countFlags = 0;
 		setFullSpec = CharacterSet(CharacterSet::setNone, "diouxefgcs%");
 		setNumBaseSpec = CharacterSet(CharacterSet::setNone, "diouxefg");
 		setNumPrecSpec = CharacterSet(CharacterSet::setNone, "dioux");
@@ -262,6 +263,7 @@ struct FormatSequence {
 	}
 	void initFormatState() {
 		formatState = FORMAT_INIT;
+		countFlags = 0;
 	}
 	bool atFormatEnd(int currChar) {
 		switch (formatState) {
@@ -269,6 +271,7 @@ struct FormatSequence {
 				if (setFullSpec.Contains(currChar)) {
 					formatState = FORMAT_FULL_SPEC;
 				} else if (setNumFlag.Contains(currChar)) {
+					countFlags++;
 					formatState = FORMAT_NUM_FLAG;
 				} else if (setNumBaseDigits.Contains(currChar)) {
 					formatState = FORMAT_NUM_BASE_DIGITS;
@@ -283,7 +286,9 @@ struct FormatSequence {
 					formatState = FORMAT_NUM_BASE_DIGITS;
 				} else if (currChar == '.') {
 					formatState = FORMAT_NUM_PREC_DOT;
-				} else if (!setNumFlag.Contains(currChar)) {
+				} else if (setNumFlag.Contains(currChar) && countFlags < 3) {
+					countFlags++;
+				} else {
 					formatState = FORMAT_NONE;
 				}
 				break;
