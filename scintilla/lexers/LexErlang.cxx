@@ -29,6 +29,132 @@
 
 using namespace Scintilla;
 
+struct ErlFormatSequence {
+	enum
+	{
+		FORMAT_NONE,
+		FORMAT_INIT,
+		FORMAT_END,
+		FORMAT_MOD,					// [t l]
+		FORMAT_SPEC,				// [c f e g s w p b x n i W P B X # +]
+		FORMAT_NUM_SIGN,			// [-+]
+		FORMAT_NUM_BASE_DIGITS,		// [0-9]+
+		FORMAT_NUM_PREC_DIGITS,		// [0-9]+
+		FORMAT_NUM_BASE_ASTER,		// *
+		FORMAT_NUM_PREC_ASTER,		// *
+		FORMAT_NUM_PREC_DOT,		// .
+		FORMAT_NUM_PAD_DOT,			// .
+		FORMAT_NUM_PAD_CHAR			// [<any printable>]
+	};
+	int formatState;
+	CharacterSet setMod;
+	CharacterSet setSpec;
+	CharacterSet setNumSign;
+	CharacterSet setNumDigits;
+	ErlFormatSequence() {
+		formatState = FORMAT_NONE;
+		setMod = CharacterSet(CharacterSet::setNone, "tl");
+		setSpec = CharacterSet(CharacterSet::setNone, "cfegswpbxniWPBX#+");
+		setNumSign = CharacterSet(CharacterSet::setNone, "-+");
+		setNumDigits = CharacterSet(CharacterSet::setDigits);
+	}
+	void initFormatState() {
+		formatState = FORMAT_INIT;
+	}
+	bool atFormatEnd(int currChar) {
+		switch (formatState) {
+			case FORMAT_INIT:
+				if (setSpec.Contains(currChar)) {
+					formatState = FORMAT_SPEC;
+				} else if (setMod.Contains(currChar)) {
+					formatState = FORMAT_MOD;
+				} else if (setNumSign.Contains(currChar)) {
+					formatState = FORMAT_NUM_SIGN;
+				} else if (setNumDigits.Contains(currChar)) {
+					formatState = FORMAT_NUM_BASE_DIGITS;
+				} else if (currChar == '*') {
+					formatState = FORMAT_NUM_BASE_ASTER;
+				} else if (currChar == '.') {
+					formatState = FORMAT_NUM_PREC_DOT;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_NUM_SIGN:
+				if (setNumDigits.Contains(currChar)) {
+					formatState = FORMAT_NUM_BASE_DIGITS;
+				} else if (currChar == '.') {
+					formatState = FORMAT_NUM_PREC_DOT;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_NUM_BASE_DIGITS:
+			case FORMAT_NUM_BASE_ASTER:
+				if (setSpec.Contains(currChar)) {
+					formatState = FORMAT_SPEC;
+				} else if (setMod.Contains(currChar)) {
+					formatState = FORMAT_MOD;
+				} else if (currChar == '.') {
+					formatState = FORMAT_NUM_PREC_DOT;
+				} else if (formatState == FORMAT_NUM_BASE_ASTER ||
+						   !setNumDigits.Contains(currChar)) {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_NUM_PREC_DOT:
+				if (setNumDigits.Contains(currChar)) {
+					formatState = FORMAT_NUM_PREC_DIGITS;
+				} else if (currChar == '*') {
+					formatState = FORMAT_NUM_PREC_ASTER;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_NUM_PREC_DIGITS:
+			case FORMAT_NUM_PREC_ASTER:
+				if (setSpec.Contains(currChar)) {
+					formatState = FORMAT_SPEC;
+				} else if (setMod.Contains(currChar)) {
+					formatState = FORMAT_MOD;
+				} else if (currChar == '.') {
+					formatState = FORMAT_NUM_PAD_DOT;
+				} else if (formatState == FORMAT_NUM_PREC_ASTER ||
+						   !setNumDigits.Contains(currChar)) {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_NUM_PAD_DOT:
+				formatState = FORMAT_NUM_PAD_CHAR;
+				break;
+			case FORMAT_NUM_PAD_CHAR:
+				if (setSpec.Contains(currChar)) {
+					formatState = FORMAT_SPEC;
+				} else if (setMod.Contains(currChar)) {
+					formatState = FORMAT_MOD;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_MOD:
+				if (setSpec.Contains(currChar)) {
+					formatState = FORMAT_SPEC;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_SPEC:
+				formatState = FORMAT_END;
+				break;
+		}
+		return (formatState == FORMAT_END ||
+				formatState == FORMAT_NONE);
+	}
+	bool atFormatNone() {
+		return (formatState == FORMAT_NONE);
+	}
+};
+
 static int is_radix(int radix, int ch) {
 	int digit;
 	
@@ -82,7 +208,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: formatsequence highlighting
 	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
-	FormatSequence formatSeq = FormatSequence();
+	ErlFormatSequence formatSeq = ErlFormatSequence();
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -412,6 +538,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						}
 						sc.Forward(); // Skip any character after the backslash
 						continue;
+						
+					} else if (sc.ch == '~' && formatSequence) {
+						sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						formatSeq.initFormatState();
+						continue;
+						
 					} else if (sc.ch == '\"') {
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 					}
@@ -426,9 +558,46 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 						sc.Forward();
 						continue;
+						
+					} else if (sc.ch == '~' && formatSequence) {
+						sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						formatSeq.initFormatState();
+						continue;
+						
 					} else if (sc.ch == '\"') {
 						sc.SetState(SCE_ERLANG_STRING);
 						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+						
+					} else {
+						sc.SetState(SCE_ERLANG_STRING);
+					}
+				} break;
+				
+				case SCE_ERLANG_FORMATSEQUENCE : {
+					if (!formatSeq.atFormatEnd(sc.ch)) {
+						continue; // esh: continue of format chars
+					}
+					if (formatSeq.atFormatNone()) {
+						sc.ChangeState(SCE_ERLANG_STRING);
+					}
+					if (sc.ch == '\\') {
+						if (escapeSequence) {
+							sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+							escapeSeq.initEscapeState(sc.chNext);
+						}
+						sc.Forward(); // Skip any character after the backslash
+						continue;
+						
+					} else if (sc.ch == '~') {
+						if (sc.state != SCE_ERLANG_FORMATSEQUENCE)
+							sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						formatSeq.initFormatState();
+						continue;
+						
+					} else if (sc.ch == '\"') {
+						sc.SetState(SCE_ERLANG_STRING);
+						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+						
 					} else {
 						sc.SetState(SCE_ERLANG_STRING);
 					}
