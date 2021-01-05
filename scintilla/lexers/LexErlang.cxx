@@ -589,8 +589,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						continue;
 						
 					} else if (sc.ch == '~') {
-						if (sc.state != SCE_ERLANG_FORMATSEQUENCE)
-							sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
 						formatSeq.initFormatState();
 						continue;
 						
