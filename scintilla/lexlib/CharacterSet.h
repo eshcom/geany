@@ -240,9 +240,9 @@ struct FormatSequence {
 		FORMAT_NUM_PREC_SPEC,		// [d i o u x]
 		FORMAT_NUM_FLAG,			// [-+0\s]+
 		FORMAT_NUM_BASE_DIGITS,		// [1-9]+
-		FORMAT_NUM_PREC_DIGITS,		// [0-9]+|*
-		FORMAT_NUM_PREC_DOT,		// .
-		FORMAT_NUM_PREC_ASTER		// *
+		FORMAT_NUM_PREC_DIGITS,		// [0-9]+
+		FORMAT_NUM_PREC_ASTER,		// *
+		FORMAT_NUM_PREC_DOT			// .
 	};
 	int formatState;
 	CharacterSet setFullSpec;
@@ -301,19 +301,16 @@ struct FormatSequence {
 					formatState = FORMAT_NUM_PREC_DIGITS;
 				} else if (currChar == '*') {
 					formatState = FORMAT_NUM_PREC_ASTER;
-				}
-				break;
-			case FORMAT_NUM_PREC_DIGITS:
-				if (setNumPrecSpec.Contains(currChar)) {
-					formatState = FORMAT_NUM_PREC_SPEC;
-				} else if (!setNumPrecDigits.Contains(currChar)) {
+				} else {
 					formatState = FORMAT_NONE;
 				}
 				break;
+			case FORMAT_NUM_PREC_DIGITS:
 			case FORMAT_NUM_PREC_ASTER:
 				if (setNumPrecSpec.Contains(currChar)) {
 					formatState = FORMAT_NUM_PREC_SPEC;
-				} else {
+				} else if (formatState == FORMAT_NUM_PREC_ASTER ||
+						   !setNumPrecDigits.Contains(currChar)) {
 					formatState = FORMAT_NONE;
 				}
 				break;
