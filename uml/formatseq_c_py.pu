@@ -14,16 +14,17 @@ skinparam usecase {
 	'S=40, V=100, H=0	(red)
 	BackgroundColor<<Final State>> #FF9A9A
 }
-usecase (Format\nSpecifications\n[d i o u x e f g c s %]) as format_full_spec <<Init and Final State>>
+
+usecase (Full Format\nSpecifications\n[d i o u x e f g c s %]) as format_full_spec <<Init and Final State>>
 
 usecase (Number Width\nFlags [-+0\s]+) as format_num_flag <<Init State>>
 
 usecase (Number Base\nWidth [1-9]+) as format_num_base_width <<Init or Middle State>>
-usecase (Format\nSpecifications\n[d i o u x e f g]) as format_num_base_spec <<Final State>>
+usecase (Number Base Format\nSpecifications\n[d i o u x e f g]) as format_num_base_spec <<Final State>>
 
 usecase (Number Precision\nDot [.]) as format_num_prec_dot <<Init or Middle State>>
 usecase (Number Precision\nWidth [0-9]+|*) as format_num_prec_width <<Middle State>>
-usecase (Format\nSpecifications\n[d i o u x]) as format_num_prec_spec <<Final State>>
+usecase (Number Prec Format\nSpecifications\n[d i o u x]) as format_num_prec_spec <<Final State>>
 
 format_num_flag --> format_num_base_width
 format_num_flag --> format_num_prec_dot
