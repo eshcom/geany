@@ -6,13 +6,11 @@ skinparam usecase {
 	'S=40, V=100, H=240	(blue)
 	BackgroundColor<<Init State>> #9A9AFF
 	'S=40, V=100, H=300	(purple)
-	BackgroundColor<<Init and Final State>> #FF9AFF
+	BackgroundColor<<Init or Final State>> #FF9AFF
 	'S=40, V=100, H=120	(green)
 	BackgroundColor<<Init or Middle State>> #9AFF9A
 	'S=40, V=100, H=60	(yellow)
 	BackgroundColor<<Middle State>> #FFFF9A
-	'S=40, V=100, H=0	(red)
-	BackgroundColor<<Final State>> #FF9A9A
 }
 
 'Format: ~<F>.<P>.<Pad><Mod><C>
@@ -42,14 +40,27 @@ usecase (Number Base\nWidth [0-9]+|*) as format_num_base_width <<Init or Middle 
 
 usecase (Number Precision\nDot [.]) as format_num_prec_dot <<Init or Middle State>>
 usecase (Number Precision\nWidth [0-9]+|*) as format_num_prec_width <<Middle State>>
+usecase (Number Pad\nDot [.]) as format_num_pad_dot <<Middle State>>
+usecase (Number Pad Char\n[<any printable>]) as format_num_pad_char <<Middle State>>
+usecase (Mod Char [t l]) as format_mod_char <<Init or Middle State>>
 
-usecase (Full Format Specifications\n[c f e g s w p b x n i W P B X # +]) as format_full_spec <<Final State>>
+usecase (Format Specifications\n[c f e g s w p b x n i W P B X # +]) as format_spec <<Init or Final State>>
 
 format_num_sign --> format_num_base_width
 format_num_sign --> format_num_prec_dot
-format_num_base_width --> format_full_spec
+format_num_base_width --> format_spec
 format_num_base_width --> format_num_prec_dot
+format_num_base_width --> format_mod_char
+
 format_num_prec_dot --> format_num_prec_width
-format_num_prec_width --> format_full_spec
+format_num_prec_width --> format_spec
+format_num_prec_width --> format_num_pad_dot
+format_num_prec_width --> format_mod_char
+
+format_num_pad_dot --> format_num_pad_char
+format_num_pad_char --> format_spec
+format_num_pad_char --> format_mod_char
+
+format_mod_char --> format_spec
 
 @enduml
