@@ -847,8 +847,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.Forward(); // Skip any character after the backslash
 					}
 				} else if (sc.ch == '%') {
-					if (sc.state != SCE_P_FORMATSEQUENCE)
-						sc.SetState(SCE_P_FORMATSEQUENCE);
+					sc.SetState(SCE_P_FORMATSEQUENCE);
 					formatSeq.initFormatState();
 					
 				} else if (sc.ch == GetPyStringQuoteChar(stringState)) {

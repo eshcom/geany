@@ -1277,8 +1277,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward(); // Skip any character after the backslash
 					
 				} else if (sc.ch == '%') {
-					if (MaskActive(sc.state) != SCE_C_FORMATSEQUENCE)
-						sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);
+					sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);
 					formatSeq.initFormatState();
 					
 				} else {
