@@ -2,7 +2,7 @@
 # Copyright (C) 2006 The Geany contributors.
 # This file is distributed under the same license as the Geanty package.
 #
-# Peter Scholtens <peter.scholtens@xs4all.nl>, 2009 - 2012, 2014 - 2017.
+# Peter Scholtens <peter.scholtens@freedom.nl>, 2009 - 2012, 2014 - 2017, 2020.
 # Ayke van Laëthem <aykevanlaethem@gmail.com>, 2009, 2010.
 # Kurt De Bree <kdebree@telenet.be>, 2006.
 # Benno Schulenberg <benno@vertaalt.nl>, 2016.
@@ -10,16 +10,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 11:56+0200\n"
-"PO-Revision-Date: 2017-11-06 20:43+0100\n"
-"Last-Translator: Peter Scholtens <peter.scholtens@xs4all.nl>\n"
+"POT-Creation-Date: 2020-10-11 21:34+0200\n"
+"PO-Revision-Date: 2020-10-22 20:40+0200\n"
+"Last-Translator: Peter Scholtens <peter.scholtens@freedom.nl>\n"
 "Language-Team: Dutch <geany-i18n@uvena.de>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: ../geany.desktop.in.h:1 ../data/geany.glade.h:343
 msgid "Geany"
@@ -109,11 +109,11 @@ msgstr "_Zoeken"
 msgid "Open Selected F_ile"
 msgstr "Gesele_cteerd bestand openen"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2618
+#: ../data/geany.glade.h:19 ../src/symbols.c:2632
 msgid "Find _Usage"
 msgstr "_Woord zoeken"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2623
+#: ../data/geany.glade.h:20 ../src/symbols.c:2637
 msgid "Find _Document Usage"
 msgstr "Woord zoeken in _document"
 
@@ -134,7 +134,7 @@ msgstr "Conte_xtactie"
 #. *   [5] = The filetype group constant (GEANY_FILETYPE_GROUP_*)
 #. * --------------------------------------------------------------------------------------------------------------------------
 #. *       [0]         [1]           [2]                 [3]                        [4]          [5]
-#: ../data/geany.glade.h:23 ../src/filetypes.c:127 ../src/filetypes.c:1526
+#: ../data/geany.glade.h:23 ../src/filetypes.c:127 ../src/filetypes.c:1528
 msgid "None"
 msgstr "Geen"
 
@@ -220,7 +220,7 @@ msgstr "Afsluiten bevestigen"
 
 #: ../data/geany.glade.h:43
 msgid "Shows a confirmation dialog on exit"
-msgstr "Toont een bevestigingsvenster bij afsluiten."
+msgstr "Toont een bevestigingsvenster bij afsluiten"
 
 #: ../data/geany.glade.h:44
 msgid "<b>Shutdown</b>"
@@ -243,7 +243,7 @@ msgstr "Projectbestanden:"
 
 #: ../data/geany.glade.h:48
 msgid "Path to start in when opening project files"
-msgstr "Beginpad voor het openen van projectbestanden."
+msgstr "Beginpad voor het openen van projectbestanden"
 
 #: ../data/geany.glade.h:49
 msgid "Extra plugin path:"
@@ -277,7 +277,7 @@ msgid ""
 "finished"
 msgstr ""
 "Of er een pieptoon moet worden gegeven wanneer er een fout optreedt of "
-"wanneer het compilatieproces klaar is."
+"wanneer het compilatieproces klaar is"
 
 #: ../data/geany.glade.h:55
 msgid "Switch to status message list at new message"
@@ -288,8 +288,8 @@ msgid ""
 "Switch to the status message tab (in the notebook window at the bottom) if a "
 "new status message arrives"
 msgstr ""
-"Schakelt naar het statusvenster (onderaan in het berichtenvenster) als er "
-"een nieuw bericht is."
+"Schakelt over naar het statusvenster (onderaan in het berichtenvenster) als "
+"er een nieuw bericht is"
 
 #: ../data/geany.glade.h:57
 msgid "Suppress status messages in the status bar"
@@ -327,7 +327,7 @@ msgid ""
 "default dialogs"
 msgstr ""
 "Bepaalt of de dialogen die eigen zijn aan Windows of de standaard GTK-"
-"dialogen gebruikt worden."
+"dialogen gebruikt worden"
 
 #: ../data/geany.glade.h:63
 msgid "<b>Miscellaneous</b>"
@@ -341,7 +341,7 @@ msgstr "Telkens opnieuw blijven doorzoeken"
 msgid "Always wrap search around the document"
 msgstr ""
 "Blijft een document telkens opnieuw doorzoeken, rondlopend vanaf begin of "
-"eind."
+"eind"
 
 #: ../data/geany.glade.h:66
 msgid "Hide the Find dialog"
@@ -349,7 +349,7 @@ msgstr "Zoekvenster verbergen"
 
 #: ../data/geany.glade.h:67
 msgid "Hide the Find dialog after clicking Find Next/Previous"
-msgstr "Verbergt het zoekvenster na klikken op Volgende/Vorige zoeken."
+msgstr "Verbergt het zoekvenster na klikken op Volgende/Vorige zoeken"
 
 #: ../data/geany.glade.h:68
 msgid "Use the current word under the cursor for Find dialogs"
@@ -361,7 +361,7 @@ msgid ""
 "Replace dialog and there is no selection"
 msgstr ""
 "Gebruikt het huidige woord onder de cursor in de Zoek-, Zoek-in-bestanden- "
-"of Vervangen-dialoog als er geen selectie is."
+"of Vervangen-dialoog als er geen selectie is"
 
 #: ../data/geany.glade.h:70
 msgid "Use the current file's directory for Find in Files"
@@ -381,7 +381,7 @@ msgid ""
 "project"
 msgstr ""
 "Of de sessiebestanden van het project opgeslagen moeten worden en weer "
-"geopend moeten worden als het project heropend wordt."
+"geopend moeten worden als het project heropend wordt"
 
 #: ../data/geany.glade.h:74
 msgid "Store project file inside the project base directory"
@@ -543,7 +543,7 @@ msgid ""
 "of the notebook"
 msgstr ""
 "Of de bestandstabbladen naast het huidige tabblad geplaatst worden, in "
-"plaats van aan de uiteinden van het tabbladvenster."
+"plaats van aan de uiteinden van het tabbladvenster"
 
 #: ../data/geany.glade.h:109
 msgid "Double-clicking hides all additional widgets"
@@ -709,7 +709,7 @@ msgid ""
 msgstr ""
 "Of er markeringen (gegolfde onderstreping) gebruikt moeten worden om de "
 "regels te markeren waarin de compiler een waarschuwing of een fout heeft "
-"gevonden."
+"gevonden"
 
 #: ../data/geany.glade.h:143
 msgid "Newline strips trailing spaces"
@@ -719,7 +719,7 @@ msgstr "Enter verwijdert witruimte aan regeleinde"
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr ""
 "Staat Enter toe om witruimte (tabs en spaties) aan het einde van de vorige "
-"regel te verwijderen."
+"regel te verwijderen"
 
 #: ../data/geany.glade.h:145
 msgid "Line breaking column:"
@@ -817,23 +817,22 @@ msgid ""
 "opened"
 msgstr ""
 "Of het inspringingstype uit de inhoud van het bestand gedetecteerd moet "
-"worden wanneer het geopend wordt."
+"worden wanneer het geopend wordt"
 
 #: ../data/geany.glade.h:164
 msgid "Type:"
 msgstr "Type:"
 
 #: ../data/geany.glade.h:165
-#, fuzzy
 msgid "Tab _key indents"
-msgstr "Tabtoets springt in"
+msgstr "Tab-toets springt in"
 
 #: ../data/geany.glade.h:166
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
-"Drukken op Tab/Shift+Tab springt in/uit in plaats van een tabteken in te "
-"voegen."
+"Drukken op Tab/Shift+Tab springt in/uit in plaats van een tab-teken in te "
+"voegen"
 
 #: ../data/geany.glade.h:167
 msgid "<b>Indentation</b>"
@@ -912,7 +911,7 @@ msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
 msgstr ""
-"Het aantal getypte tekens dat nodig is om de autovoltooiingslijst te tonen."
+"Het aantal getypte tekens dat nodig is om de autovoltooiingslijst te tonen"
 
 #: ../data/geany.glade.h:183
 msgid "Display height in rows for the autocompletion list"
@@ -996,8 +995,8 @@ msgstr "Kleuren van syntaxisaccentuering omdraaien"
 #: ../data/geany.glade.h:201
 msgid "Invert all colors, by default using white text on a black background"
 msgstr ""
-"Draait alle kleuren om, standaard met een witte tekst op een zwarte "
-"achtergrond."
+"Inverteert alle kleuren, standaard met een witte tekst op een zwarte "
+"achtergrond"
 
 #: ../data/geany.glade.h:202
 msgid "Show indentation guides"
@@ -1007,7 +1006,7 @@ msgstr "Inspringingsmarkeringen weergeven"
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr ""
 "Toont kleine stippellijnen om het gebruik van de juiste inspringing te "
-"vergemakkelijken."
+"vergemakkelijken"
 
 #: ../data/geany.glade.h:204
 msgid "Show white space"
@@ -1054,7 +1053,7 @@ msgstr "Met scrollen stoppen bij de laatste regel"
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr ""
 "Of het scrollen moet stoppen zodra de laatste regel van een document in "
-"beeld is."
+"beeld is"
 
 #: ../data/geany.glade.h:214
 msgid "Lines visible _around the cursor:"
@@ -1076,7 +1075,7 @@ msgstr "Kleur:"
 msgid "Sets the color of the long line marker"
 msgstr "Stelt de kleur van de 'lange regel' marker in"
 
-#: ../data/geany.glade.h:219 ../src/toolbar.c:73 ../src/tools.c:831
+#: ../data/geany.glade.h:219 ../src/toolbar.c:73 ../src/tools.c:845
 msgid "Color Chooser"
 msgstr "Kleurkiezer"
 
@@ -1131,7 +1130,7 @@ msgstr "Uitgeschakeld"
 
 #: ../data/geany.glade.h:228
 msgid "Do not show virtual spaces"
-msgstr "Laat virtuele spaties niet zien."
+msgstr "Laat virtuele spaties niet zien"
 
 #: ../data/geany.glade.h:229
 msgid "Only for rectangular selections"
@@ -1143,7 +1142,7 @@ msgid ""
 "selection"
 msgstr ""
 "Laat virtuele spaties voorbij regeleinden alleen zien wanneer een "
-"rechthoekige selectie gemaakt wordt."
+"rechthoekige selectie gemaakt wordt"
 
 #: ../data/geany.glade.h:231
 msgid "Always"
@@ -1151,7 +1150,7 @@ msgstr "Altijd"
 
 #: ../data/geany.glade.h:232
 msgid "Always show virtual spaces beyond the end of lines"
-msgstr "Laat virtuele spaties aan regeleinden altijd zien."
+msgstr "Laat virtuele spaties aan regeleinden altijd zien"
 
 #: ../data/geany.glade.h:233
 msgid "<b>Virtual spaces</b>"
@@ -1172,8 +1171,8 @@ msgstr "Nieuwe bestanden van de opdrachtregel openen"
 #: ../data/geany.glade.h:237
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr ""
-"Opent een nieuw bestand voor elke op de opdrachtregel meegegeven "
-"bestandsnaam die niet bestaat."
+"Maakt een nieuw bestand aan voor elke op de opdrachtregel meegegeven niet-"
+"bestaande bestandsnaam"
 
 #: ../data/geany.glade.h:238
 msgid "Default end of line characters:"
@@ -1212,7 +1211,7 @@ msgstr "Standaard codering (van bestaande niet-Unicode bestanden):"
 #: ../data/geany.glade.h:245
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr ""
-"Stelt de standaard codering in voor het openen van niet-Unicode bestanden."
+"Stelt de standaard codering in voor het openen van niet-Unicode bestanden"
 
 #: ../data/geany.glade.h:246
 msgid "<b>Encodings</b>"
@@ -1238,7 +1237,7 @@ msgid ""
 msgstr ""
 "Zorgt ervoor dat nieuweregeltekens altijd omgezet worden voor het "
 "wegschrijven, om verschillende soorten regeleindes in hetzelfde bestand te "
-"vermijden."
+"vermijden"
 
 #: ../data/geany.glade.h:251
 msgid "Strip trailing spaces and tabs"
@@ -1268,7 +1267,7 @@ msgstr "Lengte van 'laatst geopende bestanden'-lijst:"
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Specificeert het aantal bestanden dat opgeslagen wordt in de 'laatst "
-"geopende bestanden'-lijst."
+"geopende bestanden'-lijst"
 
 #: ../data/geany.glade.h:258
 msgid "Disk check timeout:"
@@ -1490,7 +1489,7 @@ msgstr "De basisnaam van het af te drukken bestand gebruiken"
 
 #: ../data/geany.glade.h:305
 msgid "Print only the basename (without the path) of the printed file"
-msgstr "Drukt alleen de naam van het bestand af (zonder het pad)."
+msgstr "Drukt alleen de naam van het bestand af (zonder het pad)"
 
 #: ../data/geany.glade.h:306 ../src/printing.c:273
 msgid "Date format:"
@@ -1524,7 +1523,7 @@ msgstr "Lettertype:"
 
 #: ../data/geany.glade.h:312
 msgid "Sets the font for the terminal widget"
-msgstr "Stelt het lettertype in voor de terminal."
+msgstr "Stelt het lettertype in voor de terminal"
 
 #: ../data/geany.glade.h:313
 msgid "Choose Terminal Font"
@@ -1634,9 +1633,9 @@ msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
 msgstr ""
-"Voer programma's uit in de virtuele terminal in plaats van een nieuw "
-"terminalvenster te openen. Let wel, programma's uitgevoerd in de virtuele "
-"terminal kunnen niet gestopt worden."
+"Voer programma's uit in de virtuele terminal emulator (VTE) in plaats van "
+"een nieuw terminalvenster te openen. Let wel, programma's uitgevoerd in de "
+"VTE kunnen niet gestopt worden"
 
 #: ../data/geany.glade.h:336
 msgid "Don't use run script"
@@ -1647,8 +1646,8 @@ msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
 msgstr ""
-"Gebruik niet het simpele runscript dat meestal wordt gebruikt om de "
-"afsluitwaarde van een programma weer te geven."
+"Gebruik niet het simpele run-script dat meestal wordt gebruikt om de "
+"afsluitwaarde van een programma weer te geven"
 
 #: ../data/geany.glade.h:338
 msgid "<b>Terminal</b>"
@@ -1820,7 +1819,7 @@ msgstr "V_olgende zoeken"
 msgid "Find _Previous"
 msgstr "Vor_ige zoeken"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2628
+#: ../data/geany.glade.h:381 ../src/symbols.c:2642
 msgid "Find in F_iles..."
 msgstr "Zoeken in _bestanden..."
 
@@ -2069,7 +2068,7 @@ msgid "_Apply Default Indentation"
 msgstr "Standaard inspringing _toepassen"
 
 #. build the code
-#: ../data/geany.glade.h:443 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:443 ../src/build.c:2459 ../src/build.c:2730
 msgid "_Build"
 msgstr "B_ouwen"
 
@@ -2153,7 +2152,7 @@ msgstr "Notities"
 msgid "Project Properties"
 msgstr "Projecteigenschappen"
 
-#: ../data/geany.glade.h:464 ../src/project.c:179
+#: ../data/geany.glade.h:464 ../src/project.c:182
 msgid "Filename:"
 msgstr "Bestandsnaam:"
 
@@ -2172,10 +2171,9 @@ msgstr "Beschrijving:"
 msgid "_Base path:"
 msgstr "Basispad:"
 
-#: ../data/geany.glade.h:468
-#, fuzzy
+#: ../data/geany.glade.h:468 ../src/search.c:897
 msgid "File _patterns:"
-msgstr "Bestandspatronen:"
+msgstr "Bestandnaamspatronen:"
 
 #: ../data/geany.glade.h:469
 msgid ""
@@ -2185,7 +2183,7 @@ msgstr ""
 "Lijst van bestandsnaampatronen voor zoekfunctie in bestandsdialoog (bijv. *."
 "c *.h) gescheiden door spaties"
 
-#: ../data/geany.glade.h:470 ../src/project.c:208
+#: ../data/geany.glade.h:470 ../src/project.c:211
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2293,7 +2291,7 @@ msgstr "(gebouwd op of na %s)"
 #: ../src/about.c:252
 #, c-format
 msgid "Using GTK+ v%u.%u.%u and GLib v%u.%u.%u runtime libraries"
-msgstr ""
+msgstr "Gebruikt de GTK+ v%u.%u.%u en GLib v%u.%u.%u runtime bibliotheken"
 
 #. gtk_container_add(GTK_CONTAINER(info_box), cop_label);
 #: ../src/about.c:285
@@ -2360,7 +2358,7 @@ msgstr "vervangen van %%p is mislukt; er is geen geopend project"
 
 #: ../src/build.c:785
 msgid "Process failed, no working directory"
-msgstr "Proces is mislukt.  Geen werkmap beschikbaar."
+msgstr "Proces is mislukt. Geen werkmap beschikbaar"
 
 #: ../src/build.c:797
 #, c-format
@@ -2398,117 +2396,117 @@ msgid ""
 "Preferences"
 msgstr ""
 "Kan bouwcommando '%s' niet uitvoeren: %s; controleer de terminalinstelling "
-"in Voorkeuren."
+"in Voorkeuren"
 
-#: ../src/build.c:1093
+#: ../src/build.c:1099
 msgid "Compilation failed."
 msgstr "Compilatie is mislukt."
 
-#: ../src/build.c:1107
+#: ../src/build.c:1113
 msgid "Compilation finished successfully."
 msgstr "Compilatie met succes beëindigd."
 
-#: ../src/build.c:1267
+#: ../src/build.c:1273
 msgid "Custom Text"
 msgstr "Aangepaste tekst"
 
-#: ../src/build.c:1268
+#: ../src/build.c:1274
 msgid "Enter custom text here, all entered text is appended to the command."
 msgstr ""
 "Voer hier de aangepaste opties in, alle ingevoerde tekst wordt aan het "
 "commando 'make' doorgegeven."
 
-#: ../src/build.c:1347
+#: ../src/build.c:1353
 msgid "_Next Error"
 msgstr "Volge_nde fout"
 
-#: ../src/build.c:1349
+#: ../src/build.c:1355
 msgid "_Previous Error"
 msgstr "Zoek Vor_ige fout"
 
 #. arguments
-#: ../src/build.c:1359 ../src/build.c:2762
+#: ../src/build.c:1365 ../src/build.c:2770
 msgid "_Set Build Commands"
 msgstr "_Bouwcommando's instellen"
 
-#: ../src/build.c:1634 ../src/toolbar.c:375
+#: ../src/build.c:1642 ../src/toolbar.c:375
 msgid "Build the current file"
 msgstr "Huidig bestand bouwen"
 
-#: ../src/build.c:1645
+#: ../src/build.c:1653
 msgid "Build the current file with Make and the default target"
 msgstr "Bouwt het huidig bestand met 'make' en het standaard doel"
 
-#: ../src/build.c:1647
+#: ../src/build.c:1655
 msgid "Build the current file with Make and the specified target"
 msgstr "Bouwt het huidige bestand met 'make' en het opgegeven doel"
 
-#: ../src/build.c:1649
+#: ../src/build.c:1657
 msgid "Compile the current file with Make"
 msgstr "Huidig bestand met behulp van Make compileren"
 
-#: ../src/build.c:1668
+#: ../src/build.c:1676
 #, c-format
 msgid "Process could not be stopped (%s)."
 msgstr "Proces kon niet gestopt worden (%s)."
 
-#: ../src/build.c:1682 ../src/build.c:1694
+#: ../src/build.c:1690 ../src/build.c:1702
 msgid "No more build errors."
 msgstr "Geen bouwfouten meer."
 
-#: ../src/build.c:1807 ../src/build.c:1809
+#: ../src/build.c:1815 ../src/build.c:1817
 msgid "Set menu item label"
 msgstr "Menu item label instellen"
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:396
+#: ../src/build.c:1842 ../src/symbols.c:522 ../src/tools.c:396
 msgid "Label"
 msgstr "Label"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:381
+#: ../src/build.c:1843 ../src/symbols.c:517 ../src/tools.c:381
 msgid "Command"
 msgstr "Commando"
 
-#: ../src/build.c:1836
+#: ../src/build.c:1844
 msgid "Working directory"
 msgstr "Werkmap"
 
-#: ../src/build.c:1837
+#: ../src/build.c:1845
 msgid "Reset"
 msgstr "Herstellen"
 
-#: ../src/build.c:1894
+#: ../src/build.c:1902
 msgid "Click to set menu item label"
 msgstr "Klik om het label van dit menu-item in te stellen"
 
-#: ../src/build.c:1978 ../src/build.c:1980
+#: ../src/build.c:1986 ../src/build.c:1988
 #, c-format
 msgid "%s commands"
 msgstr "%s commando's"
 
-#: ../src/build.c:1980
+#: ../src/build.c:1988
 msgid "No filetype"
 msgstr "Geen-bestandstype"
 
-#: ../src/build.c:1989 ../src/build.c:2024
+#: ../src/build.c:1997 ../src/build.c:2032
 msgid "Error regular expression:"
 msgstr "Reguliere expressie voor fouten:"
 
-#: ../src/build.c:2017
+#: ../src/build.c:2025
 msgid "Independent commands"
 msgstr "Onafhankelijke commando's"
 
-#: ../src/build.c:2049
+#: ../src/build.c:2057
 msgid "Note: Item 2 opens a dialog and appends the response to the command."
 msgstr ""
 "Opmerking: item 2 opent een dialoogvenster en voegt de respons toe aan het "
 "commando."
 
-#: ../src/build.c:2058
+#: ../src/build.c:2066
 msgid "Execute commands"
 msgstr "Uitvoeringscommando's"
 
-#: ../src/build.c:2070
+#: ../src/build.c:2078
 msgid ""
 "%d, %e, %f, %p, %l are substituted in command and directory fields, see "
 "manual for details."
@@ -2516,34 +2514,34 @@ msgstr ""
 "%d, %e, %f, %p, %l worden in de commando- en mapvelden vervangen; zie de "
 "handleiding voor details."
 
-#: ../src/build.c:2228
+#: ../src/build.c:2236
 msgid "Set Build Commands"
 msgstr "Bouwcommando's instellen"
 
-#: ../src/build.c:2444
+#: ../src/build.c:2452
 msgid "_Compile"
 msgstr "_Compileer"
 
-#: ../src/build.c:2458 ../src/build.c:2488 ../src/build.c:2690
+#: ../src/build.c:2466 ../src/build.c:2496 ../src/build.c:2698
 msgid "_Execute"
 msgstr "_Uitvoeren"
 
 #. build the code with make custom
-#: ../src/build.c:2503 ../src/build.c:2688 ../src/build.c:2742
+#: ../src/build.c:2511 ../src/build.c:2696 ../src/build.c:2750
 msgid "Make Custom _Target..."
 msgstr "_Aangepast doel maken..."
 
 #. build the code with make object
-#: ../src/build.c:2505 ../src/build.c:2689 ../src/build.c:2750
+#: ../src/build.c:2513 ../src/build.c:2697 ../src/build.c:2758
 msgid "Make _Object"
 msgstr "_Object maken"
 
-#: ../src/build.c:2507 ../src/build.c:2687
+#: ../src/build.c:2515 ../src/build.c:2695
 msgid "_Make"
 msgstr "_Maken"
 
 #. build the code with make all
-#: ../src/build.c:2734
+#: ../src/build.c:2742
 msgid "_Make All"
 msgstr "_Make all"
 
@@ -2590,12 +2588,11 @@ msgstr "Controleer padinstellingen bij Voorkeuren."
 #: ../src/callbacks.c:1495
 #, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
-msgstr "Kan situatie specifieke commando '%s' niet uitvoeren (%s. %s)."
+msgstr "Kan situatie specifieke commando '%s' niet uitvoeren: %s. %s"
 
 #: ../src/callbacks.c:1504
-#, fuzzy
 msgid "No context action set."
-msgstr "Contextactie:"
+msgstr "Geen contextactie ingesteld."
 
 #: ../src/dialogs.c:160 ../src/document.c:2302 ../src/document.c:2367
 #: ../src/document.c:2375
@@ -2745,7 +2742,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2432 ../src/symbols.c:2448 ../src/ui_utils.c:288
+#: ../src/symbols.c:2446 ../src/symbols.c:2462 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "onbekend"
 
@@ -2974,8 +2971,8 @@ msgstr "Bestand %s opgeslagen."
 msgid "Wrap search and find again?"
 msgstr "Document opnieuw doorzoeken?"
 
-#: ../src/document.c:2464 ../src/search.c:1367 ../src/search.c:1420
-#: ../src/search.c:2222 ../src/search.c:2223
+#: ../src/document.c:2464 ../src/search.c:1368 ../src/search.c:1421
+#: ../src/search.c:2223 ../src/search.c:2224
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Geen overeenkomsten gevonden voor '%s'."
@@ -2993,7 +2990,7 @@ msgstr "Wenst u het opnieuw te laden?"
 
 #: ../src/editor.c:4461
 msgid "Enter Tab Width"
-msgstr "Tabgrootte:"
+msgstr "Tabgrootte"
 
 #: ../src/editor.c:4462
 msgid "Enter the amount of spaces which should be replaced by a tab character."
@@ -3191,41 +3188,41 @@ msgstr "Makebestand"
 msgid "Cascading Stylesheet"
 msgstr "CSS-stijlblad"
 
-#: ../src/filetypes.c:168
+#: ../src/filetypes.c:169
 msgid "Config"
 msgstr "Configuratiebestand"
 
-#: ../src/filetypes.c:169
+#: ../src/filetypes.c:170
 msgid "Gettext translation"
 msgstr "Gettext-vertalingsbestand"
 
-#: ../src/filetypes.c:430
+#: ../src/filetypes.c:432
 msgid "_Programming Languages"
 msgstr "_Programmeertalen"
 
-#: ../src/filetypes.c:431
+#: ../src/filetypes.c:433
 msgid "_Scripting Languages"
 msgstr "_Scripttalen"
 
-#: ../src/filetypes.c:432
+#: ../src/filetypes.c:434
 msgid "_Markup Languages"
 msgstr "Op_maaktalen"
 
-#: ../src/filetypes.c:433
+#: ../src/filetypes.c:435
 msgid "M_iscellaneous"
 msgstr "_Overige"
 
-#: ../src/filetypes.c:1185 ../src/win32.c:155
+#: ../src/filetypes.c:1187 ../src/win32.c:155
 msgid "All Source"
 msgstr "Alle bronbestanden"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1210 ../src/project.c:349 ../src/win32.c:145
+#: ../src/filetypes.c:1212 ../src/project.c:356 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Alle bestanden"
 
-#: ../src/filetypes.c:1259
+#: ../src/filetypes.c:1261
 #, c-format
 msgid "Bad regex for filetype %s: %s"
 msgstr "Verkeerde reguliere expressie voor bestandstype %s; %s"
@@ -3234,25 +3231,25 @@ msgstr "Verkeerde reguliere expressie voor bestandstype %s; %s"
 msgid "untitled"
 msgstr "naamloos"
 
-#: ../src/highlighting.c:1229 ../src/libmain.c:867 ../src/socket.c:170
+#: ../src/highlighting.c:1252 ../src/libmain.c:895 ../src/socket.c:169
 #: ../src/templates.c:231
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Kon bestand %s niet vinden."
 
-#: ../src/highlighting.c:1299
+#: ../src/highlighting.c:1322
 msgid "Default"
 msgstr "_Standaard"
 
-#: ../src/highlighting.c:1340
+#: ../src/highlighting.c:1363
 msgid "The current filetype overrides the default style."
 msgstr "Het huidige bestandstype overschrijft de standaardstijl."
 
-#: ../src/highlighting.c:1341
+#: ../src/highlighting.c:1364
 msgid "This may cause color schemes to display incorrectly."
 msgstr "Dit kan de kleurenselectie verkeerd weergeven."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1389
 msgid "Color Schemes"
 msgstr "Kleurenschema's"
 
@@ -3294,12 +3291,12 @@ msgstr "Ga naar"
 msgid "View"
 msgstr "Beeld"
 
-#: ../src/keybindings.c:320 ../src/symbols.c:643
+#: ../src/keybindings.c:320 ../src/symbols.c:657
 msgid "Document"
 msgstr "Document"
 
-#: ../src/keybindings.c:322 ../src/keybindings.c:693 ../src/project.c:512
-#: ../src/ui_utils.c:2224
+#: ../src/keybindings.c:322 ../src/keybindings.c:693 ../src/project.c:519
+#: ../src/ui_utils.c:2225
 msgid "Build"
 msgstr "Bouwen"
 
@@ -3339,7 +3336,7 @@ msgstr "Opslaan als"
 msgid "Save all"
 msgstr "Alles opslaan"
 
-#: ../src/keybindings.c:349 ../src/symbols.c:728
+#: ../src/keybindings.c:349 ../src/symbols.c:742
 msgid "Properties"
 msgstr "Eigenschappen"
 
@@ -3807,11 +3804,11 @@ msgstr "Sneltoetsen"
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "De volgende sneltoetsen zijn gedefinieerd:"
 
-#: ../src/keyfile.c:1047
+#: ../src/keyfile.c:1069
 msgid "Type here what you want, use it as a notice/scratch board"
-msgstr "Type hier wat u maar wilt; gebruik het als notitie-/krabbelbord."
+msgstr "Type hier wat u maar wilt; gebruik het als notitie-/krabbelbord"
 
-#: ../src/keyfile.c:1274
+#: ../src/keyfile.c:1296
 msgid "Failed to load one or more session files."
 msgstr "Kan bestanden van vorige sessie niet laden."
 
@@ -3827,11 +3824,9 @@ msgstr ""
 msgid "COLUMN"
 msgstr "KOLOM"
 
-# FIXME: Shouldn't it say '--config=FILENAME"?
 #: ../src/libmain.c:122
-#, fuzzy
 msgid "Use alternate configuration directory DIR"
-msgstr "Een alternatieve configuratiemap gebruiken"
+msgstr "Alternatieve configuratiemap DIR gebruiken"
 
 #: ../src/libmain.c:122
 msgid "DIR"
@@ -3918,33 +3913,33 @@ msgstr "Gedetailleerde uitvoer produceren"
 msgid "Show version and exit"
 msgstr "Versie-informatie tonen en stoppen"
 
-#: ../src/libmain.c:535
+#: ../src/libmain.c:563
 msgid "[FILES...]"
 msgstr "[BESTANDEN...]"
 
-#: ../src/libmain.c:537
+#: ../src/libmain.c:565
 msgid "A fast and lightweight IDE."
 msgstr "Een snel en lichtgewicht IDE."
 
-#: ../src/libmain.c:538
+#: ../src/libmain.c:566
 msgid "Report bugs to https://github.com/geany/geany/issues."
-msgstr "Rapporteer fouten op https://github.com/geany/geany/issues"
+msgstr "Rapporteer fouten op https://github.com/geany/geany/issues."
 
 #. note for translators: library versions are printed after this
-#: ../src/libmain.c:571
+#: ../src/libmain.c:599
 #, c-format
 msgid "built on %s with "
 msgstr "gebouwd op %s m.b.v. "
 
-#: ../src/libmain.c:664
+#: ../src/libmain.c:692
 msgid "Move it now?"
 msgstr "Nu verplaatsen?"
 
-#: ../src/libmain.c:666
+#: ../src/libmain.c:694
 msgid "Geany needs to move your old configuration directory before starting."
 msgstr "Geany moet uw oude configuratiemap verplaatsen voor het starten."
 
-#: ../src/libmain.c:675
+#: ../src/libmain.c:703
 #, c-format
 msgid ""
 "Your configuration directory has been successfully moved from \"%s\" to \"%s"
@@ -3953,7 +3948,7 @@ msgstr "Uw configuratiemap is met succes verplaatst van \"%s\" naar \"%s\"."
 
 #. for translators: the third %s in brackets is the error message which
 #. * describes why moving the dir didn't work
-#: ../src/libmain.c:685
+#: ../src/libmain.c:713
 #, c-format
 msgid ""
 "Your old configuration directory \"%s\" could not be moved to \"%s\" (%s). "
@@ -3962,7 +3957,7 @@ msgstr ""
 "Uw oude configuratiemap \"%s\" kan niet worden verplaatst naar \"%s\" (%s). "
 "Verplaats de map alstublieft naar de nieuwe plaats."
 
-#: ../src/libmain.c:767
+#: ../src/libmain.c:795
 #, c-format
 msgid ""
 "Configuration directory could not be created (%s).\n"
@@ -3974,25 +3969,25 @@ msgstr ""
 "configuratiemap.\n"
 "Geany toch starten?"
 
-#: ../src/libmain.c:1174
+#: ../src/libmain.c:1217
 #, c-format
 msgid "This is Geany %s."
 msgstr "Dit is Geany %s."
 
-#: ../src/libmain.c:1177
+#: ../src/libmain.c:1220
 #, c-format
 msgid "Configuration directory could not be created (%s)."
 msgstr "Configuratiemap kon niet worden aangemaakt (%s)."
 
-#: ../src/libmain.c:1184
+#: ../src/libmain.c:1228
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1413
+#: ../src/libmain.c:1459
 msgid "Do you really want to quit?"
 msgstr "Wilt u Geany werkelijk afsluiten?"
 
-#: ../src/libmain.c:1451
+#: ../src/libmain.c:1497
 msgid "Configuration files reloaded."
 msgstr "Configuratiebestanden zijn opnieuw geladen."
 
@@ -4008,24 +4003,24 @@ msgstr "_Opruimen"
 msgid "Status messages"
 msgstr "Statusberichten"
 
-#: ../src/msgwindow.c:672
+#: ../src/msgwindow.c:668
 msgid "C_opy"
 msgstr "_Kopiëren"
 
-#: ../src/msgwindow.c:681
+#: ../src/msgwindow.c:677
 msgid "Copy _All"
 msgstr "_Alles kopiëren"
 
-#: ../src/msgwindow.c:711
+#: ../src/msgwindow.c:707
 msgid "_Hide Message Window"
 msgstr "_Berichtenvenster verbergen"
 
-#: ../src/msgwindow.c:772
+#: ../src/msgwindow.c:768
 #, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr "Kon bestand '%s' niet vinden -- huidige documentpad wordt geprobeerd."
 
-#: ../src/msgwindow.c:1208
+#: ../src/msgwindow.c:1204
 msgid "The document has been closed."
 msgstr "Het bestand is gesloten."
 
@@ -4038,9 +4033,8 @@ msgid "Open in New _Window"
 msgstr "Openen in nieuw venster"
 
 #: ../src/notebook.c:501
-#, fuzzy
 msgid "Close Documents to the _Right"
-msgstr "Verplaats document naar rechts"
+msgstr "Sluit documenten aan de rechterzijde"
 
 #: ../src/plugins.c:232
 #, c-format
@@ -4078,7 +4072,7 @@ msgstr ""
 
 #: ../src/plugins.c:1679
 msgid "No plugins available."
-msgstr "Geen plugins beschikbaar"
+msgstr "Geen plugins beschikbaar."
 
 #: ../src/plugins.c:1811
 msgid "Active"
@@ -4118,11 +4112,11 @@ msgstr "Toets vastleggen"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Type de combinatie van toetsen die u wenst te gebruiken voor \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2586 ../src/sidebar.c:751
+#: ../src/prefs.c:226 ../src/symbols.c:2600 ../src/sidebar.c:751
 msgid "_Expand All"
 msgstr "_Alles uitvouwen"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2591 ../src/sidebar.c:757
+#: ../src/prefs.c:231 ../src/symbols.c:2605 ../src/sidebar.c:757
 msgid "_Collapse All"
 msgstr "Alles _invouwen"
 
@@ -4257,32 +4251,32 @@ msgstr "Bestand %s is afgedrukt."
 
 #. "projects" is part of the default project base path so be careful when translating
 #. * please avoid special characters and spaces, look at the source for details or ask Frank
-#: ../src/project.c:99
+#: ../src/project.c:100
 msgid "projects"
 msgstr "projecten"
 
-#: ../src/project.c:134
+#: ../src/project.c:123
 msgid "Move the current documents into the new project's session?"
 msgstr "De huidige documenten naar de nieuwe projectsessie verplaatsen?"
 
-#: ../src/project.c:152
+#: ../src/project.c:155
 msgid "New Project"
 msgstr "Nieuw project"
 
-#: ../src/project.c:157
+#: ../src/project.c:160
 msgid "C_reate"
 msgstr "C_reëren"
 
-#: ../src/project.c:168 ../plugins/classbuilder.c:465
+#: ../src/project.c:171 ../plugins/classbuilder.c:465
 #: ../plugins/classbuilder.c:475
 msgid "Name:"
 msgstr "Naam:"
 
-#: ../src/project.c:175
+#: ../src/project.c:178
 msgid "Project name"
 msgstr "Projectnaam"
 
-#: ../src/project.c:187
+#: ../src/project.c:190
 #, c-format
 msgid ""
 "Path of the file representing the project and storing its settings. It "
@@ -4291,108 +4285,108 @@ msgstr ""
 "Pad naar het bestand dat het project representeerd and instellingen bewaard. "
 "Het heeft normaliter de '%s' extensie."
 
-#: ../src/project.c:201
+#: ../src/project.c:204
 msgid "Base path:"
 msgstr "Basispad:"
 
-#: ../src/project.c:211 ../src/project.c:485
+#: ../src/project.c:214 ../src/project.c:492
 msgid "Choose Project Base Path"
 msgstr "Kies basispad van project"
 
-#: ../src/project.c:250 ../src/project.c:622 ../src/project.c:1155
+#: ../src/project.c:249 ../src/project.c:629 ../src/project.c:1162
 msgid "Project file could not be written"
-msgstr "Projectbestand kon niet worden weggeschreven."
+msgstr "Projectbestand kon niet worden weggeschreven"
 
-#: ../src/project.c:255
+#: ../src/project.c:254
 #, c-format
 msgid "Project \"%s\" created."
 msgstr "Project \"%s\" gecreëerd."
 
-#: ../src/project.c:294 ../src/project.c:321 ../src/project.c:1022
+#: ../src/project.c:302 ../src/project.c:328 ../src/project.c:1029
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Projectbestand '%s' kan niet worden geladen."
 
-#: ../src/project.c:315 ../src/project.c:333
+#: ../src/project.c:321 ../src/project.c:340
 msgid "Open Project"
 msgstr "Project openen"
 
-#: ../src/project.c:353
+#: ../src/project.c:360
 msgid "Project files"
 msgstr "Projectbestanden"
 
-#: ../src/project.c:415
+#: ../src/project.c:422
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "Project '%s' is gesloten."
 
-#: ../src/project.c:625
+#: ../src/project.c:632
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "Bestand '%s' is opgeslagen."
 
-#: ../src/project.c:658
+#: ../src/project.c:665
 msgid "Do you want to close it before proceeding?"
 msgstr "Wilt u het sluiten voordat u doorgaat?"
 
-#: ../src/project.c:659
+#: ../src/project.c:666
 #, c-format
 msgid "The '%s' project is open."
 msgstr "Het project '%s' is al geopend."
 
-#: ../src/project.c:708
+#: ../src/project.c:715
 msgid "The specified project name is too short."
 msgstr "De opgegeven projectnaam is te kort."
 
-#: ../src/project.c:714
+#: ../src/project.c:721
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "De opgegeven projectnaam is te lang (max. %d tekens)"
 
-#: ../src/project.c:726
+#: ../src/project.c:733
 msgid "You have specified an invalid project filename."
 msgstr "U hebt een ongeldige bestandsnaam voor het project opgegeven."
 
-#: ../src/project.c:749
+#: ../src/project.c:756
 msgid "Create the project's base path directory?"
 msgstr "Basismap van het project creëren?"
 
-#: ../src/project.c:750
+#: ../src/project.c:757
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "Pad \"%s\" bestaat niet."
 
-#: ../src/project.c:759
+#: ../src/project.c:766
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Projectbasismap kon niet worden aangemaakt (%s)."
 
-#: ../src/project.c:772
+#: ../src/project.c:779
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Projectbestand kon niet worden aangemaakt (%s)."
 
-#: ../src/project.c:778 ../src/search.c:628
+#: ../src/project.c:785 ../src/search.c:628
 msgid "_Replace"
 msgstr "_Vervangen"
 
-#: ../src/project.c:780 ../plugins/export.c:330
+#: ../src/project.c:787 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "Bestand '%s' bestaat al. Wilt u deze overschrijven?"
 
 #. initialise the dialog
-#: ../src/project.c:926 ../src/project.c:937
+#: ../src/project.c:933 ../src/project.c:944
 msgid "Choose Project Filename"
 msgstr "Kies projectbestandsnaam"
 
-#: ../src/project.c:1012
+#: ../src/project.c:1019
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "Project \"%s\" is geopend."
 
 # _r wordt al gebruikt door Vo_rige
-#: ../src/search.c:309 ../src/search.c:961
+#: ../src/search.c:309 ../src/search.c:962
 msgid "_Use regular expressions"
 msgstr "_Reguliere expressies gebruiken"
 
@@ -4414,7 +4408,7 @@ msgid ""
 "corresponding control characters"
 msgstr ""
 "Vervangt \\\\, \\t, \\n, \\r en \\uXXXX (Unicode tekens) door de "
-"bijbehorende stuurtekens."
+"bijbehorende stuurtekens"
 
 #: ../src/search.c:324
 msgid "Use multi-line matchin_g"
@@ -4435,11 +4429,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Achter_uit zoeken"
 
-#: ../src/search.c:348 ../src/search.c:970
+#: ../src/search.c:348 ../src/search.c:971
 msgid "C_ase sensitive"
 msgstr "_Hoofdlettergevoelig"
 
-#: ../src/search.c:352 ../src/search.c:975
+#: ../src/search.c:352 ../src/search.c:976
 msgid "Match only a _whole word"
 msgstr "Alleen op _volledig woord zoeken"
 
@@ -4535,77 +4529,76 @@ msgstr ""
 "projectsinstellingen\n"
 "Aangepast: de bestandspatronen handmatig opgeven"
 
-#: ../src/search.c:897
-msgid "Fi_les:"
-msgstr "Bestanden:"
+# "file" should be "file name"?
+#: ../src/search.c:910
+msgid "Space separated list of file patterns (e.g. *.c *.h)"
+msgstr ""
+"Door spaties gescheiden lijst van bestandsnaampatronen voor zoekfunctie in "
+"bestandsdialoog (bijv. *.c *.h)"
 
-#: ../src/search.c:909
-msgid "File patterns, e.g. *.c *.h"
-msgstr "Bestandspatronen, bijvoorbeeld *.c *.h:"
-
-#: ../src/search.c:921
+#: ../src/search.c:922
 msgid "_Directory:"
 msgstr "_Map:"
 
-#: ../src/search.c:940
+#: ../src/search.c:941
 msgid "E_ncoding:"
 msgstr "Coderin_g:"
 
-#: ../src/search.c:964
+#: ../src/search.c:965
 msgid "See grep's manual page for more information"
 msgstr "Zie greps man-pagina voor meer informatie"
 
-#: ../src/search.c:966
+#: ../src/search.c:967
 msgid "_Recurse in subfolders"
 msgstr "_Daal af in submappen"
 
-#: ../src/search.c:979
+#: ../src/search.c:980
 msgid "_Invert search results"
 msgstr "Zoekresultaten _omkeren"
 
-#: ../src/search.c:983
+#: ../src/search.c:984
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Keert de zoekresultaten om, om niet-overeenkomstige regels te selecteren"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "E_xtra options:"
 msgstr "E_xtra opties:"
 
-#: ../src/search.c:1008
+#: ../src/search.c:1009
 msgid "Other options to pass to Grep"
 msgstr "Andere opties die aan Grep meegegeven moeten worden"
 
-#: ../src/search.c:1370 ../src/search.c:2228 ../src/search.c:2231
+#: ../src/search.c:1371 ../src/search.c:2229 ../src/search.c:2232
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "%d overeenkomst gevonden met '%s'."
 msgstr[1] "%d overeenkomsten gevonden met '%s'."
 
-#: ../src/search.c:1426
+#: ../src/search.c:1427
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "In totaal %u maal vervangen in %u documenten."
 
-#: ../src/search.c:1615
+#: ../src/search.c:1616
 msgid "Invalid directory for find in files."
 msgstr "Ongeldige map voor zoeken in bestanden."
 
-#: ../src/search.c:1632
+#: ../src/search.c:1633
 msgid "No text to find."
 msgstr "Geen tekst te vinden."
 
-#: ../src/search.c:1708
+#: ../src/search.c:1709
 msgid "Searching..."
 msgstr "Zoeken..."
 
-#: ../src/search.c:1710
+#: ../src/search.c:1711
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (in map: %s)"
 
-#: ../src/search.c:1718
+#: ../src/search.c:1719
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4613,33 +4606,33 @@ msgstr ""
 "Kan hulpprogramma grep '%s' niet uitvoeren: %s; controleer de padinstelling "
 "in Voorkeuren."
 
-#: ../src/search.c:1758
+#: ../src/search.c:1759
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Kon de map niet openen (%s)"
 
-#: ../src/search.c:1848
+#: ../src/search.c:1849
 msgid "Search failed."
 msgstr "Zoeken is mislukt."
 
-#: ../src/search.c:1872
+#: ../src/search.c:1873
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Zoeken beëindigd met %d resultaat."
 msgstr[1] "Zoeken beëindigd met %d resultaten."
 
-#: ../src/search.c:1880
+#: ../src/search.c:1881
 msgid "No matches found."
 msgstr "Geen overeenkomsten gevonden."
 
-#: ../src/search.c:1910
+#: ../src/search.c:1911
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Verkeerde reguliere expressie: %s"
 
 #. TODO maybe this message needs a rewording
-#: ../src/socket.c:236
+#: ../src/socket.c:235
 msgid ""
 "Geany tried to access the Unix Domain socket of another instance running as "
 "another user.\n"
@@ -4651,7 +4644,7 @@ msgstr ""
 
 #: ../src/spawn.c:96 ../src/spawn.c:146 ../src/spawn.c:190
 msgid "Text ended before matching quote was found"
-msgstr "Tekst hield op voordat overeenkomstige quote gevonden was."
+msgstr "Tekst hield op voordat overeenkomstige quote gevonden was"
 
 #. TL note: from glib
 #: ../src/spawn.c:132
@@ -4664,11 +4657,11 @@ msgstr "Plaats geciteerd Windows programma geheel binnen de aanhalingstekens"
 
 #: ../src/spawn.c:260
 msgid "Program not found"
-msgstr "Programma is niet gevonden."
+msgstr "Programma niet gevonden"
 
 #: ../src/spawn.c:766
 msgid "Failed to change to the working directory"
-msgstr "Kan niet naar werkmap wijzigen."
+msgstr "Kan niet overschakelen naar de werkmap"
 
 #: ../src/spawn.c:771
 msgid "Unknown error executing child process"
@@ -4678,11 +4671,11 @@ msgstr "Onbekende fout stopt child process"
 msgid "Value"
 msgstr "Waarde"
 
-#: ../src/symbols.c:471 ../src/symbols.c:523 ../src/symbols.c:633
+#: ../src/symbols.c:471 ../src/symbols.c:523 ../src/symbols.c:647
 msgid "Chapter"
 msgstr "Hoofdstuk"
 
-#: ../src/symbols.c:472 ../src/symbols.c:519 ../src/symbols.c:634
+#: ../src/symbols.c:472 ../src/symbols.c:519 ../src/symbols.c:648
 msgid "Section"
 msgstr "Sectie"
 
@@ -4702,21 +4695,22 @@ msgstr "Sect3"
 msgid "Appendix"
 msgstr "Appendix"
 
-#: ../src/symbols.c:477 ../src/symbols.c:524 ../src/symbols.c:549
-#: ../src/symbols.c:565 ../src/symbols.c:580 ../src/symbols.c:591
-#: ../src/symbols.c:692 ../src/symbols.c:703 ../src/symbols.c:716
-#: ../src/symbols.c:731 ../src/symbols.c:743 ../src/symbols.c:755
-#: ../src/symbols.c:772 ../src/symbols.c:801 ../src/symbols.c:833
+#: ../src/symbols.c:477 ../src/symbols.c:524 ../src/symbols.c:538
+#: ../src/symbols.c:563 ../src/symbols.c:579 ../src/symbols.c:594
+#: ../src/symbols.c:605 ../src/symbols.c:706 ../src/symbols.c:717
+#: ../src/symbols.c:730 ../src/symbols.c:745 ../src/symbols.c:757
+#: ../src/symbols.c:769 ../src/symbols.c:786 ../src/symbols.c:815
+#: ../src/symbols.c:847
 msgid "Other"
 msgstr "Andere"
 
-#: ../src/symbols.c:483 ../src/symbols.c:763 ../src/symbols.c:811
+#: ../src/symbols.c:483 ../src/symbols.c:777 ../src/symbols.c:825
 msgid "Module"
 msgstr "Module"
 
-#: ../src/symbols.c:484 ../src/symbols.c:576 ../src/symbols.c:688
-#: ../src/symbols.c:741 ../src/symbols.c:753 ../src/symbols.c:768
-#: ../src/symbols.c:782
+#: ../src/symbols.c:484 ../src/symbols.c:590 ../src/symbols.c:702
+#: ../src/symbols.c:755 ../src/symbols.c:767 ../src/symbols.c:782
+#: ../src/symbols.c:796
 msgid "Types"
 msgstr "Types"
 
@@ -4724,11 +4718,11 @@ msgstr "Types"
 msgid "Type constructors"
 msgstr "Type-constructors"
 
-#: ../src/symbols.c:486 ../src/symbols.c:510 ../src/symbols.c:531
-#: ../src/symbols.c:548 ../src/symbols.c:560 ../src/symbols.c:573
-#: ../src/symbols.c:588 ../src/symbols.c:602 ../src/symbols.c:612
-#: ../src/symbols.c:676 ../src/symbols.c:727 ../src/symbols.c:750
-#: ../src/symbols.c:795 ../src/symbols.c:819
+#: ../src/symbols.c:486 ../src/symbols.c:510 ../src/symbols.c:545
+#: ../src/symbols.c:562 ../src/symbols.c:574 ../src/symbols.c:587
+#: ../src/symbols.c:602 ../src/symbols.c:616 ../src/symbols.c:626
+#: ../src/symbols.c:690 ../src/symbols.c:741 ../src/symbols.c:764
+#: ../src/symbols.c:809 ../src/symbols.c:833
 msgid "Functions"
 msgstr "Functies"
 
@@ -4750,24 +4744,24 @@ msgstr "Alinea"
 
 #: ../src/symbols.c:496
 msgid "Group"
-msgstr "Groep:"
+msgstr "Groep"
 
 #: ../src/symbols.c:497
 msgid "Data"
-msgstr "Data:"
+msgstr "Data"
 
 #: ../src/symbols.c:498
 msgid "Copies"
-msgstr ""
+msgstr "Kopieën"
 
 #: ../src/symbols.c:504
 msgid "Keys"
 msgstr "Sleutels"
 
-#: ../src/symbols.c:511 ../src/symbols.c:562 ../src/symbols.c:578
-#: ../src/symbols.c:604 ../src/symbols.c:677 ../src/symbols.c:702
-#: ../src/symbols.c:729 ../src/symbols.c:742 ../src/symbols.c:751
-#: ../src/symbols.c:767 ../src/symbols.c:802 ../src/symbols.c:831
+#: ../src/symbols.c:511 ../src/symbols.c:576 ../src/symbols.c:592
+#: ../src/symbols.c:618 ../src/symbols.c:691 ../src/symbols.c:716
+#: ../src/symbols.c:743 ../src/symbols.c:756 ../src/symbols.c:765
+#: ../src/symbols.c:781 ../src/symbols.c:816 ../src/symbols.c:845
 msgid "Variables"
 msgstr "Variabelen"
 
@@ -4775,235 +4769,263 @@ msgstr "Variabelen"
 msgid "Environment"
 msgstr "Omgeving"
 
-#: ../src/symbols.c:520 ../src/symbols.c:635
+#: ../src/symbols.c:520 ../src/symbols.c:649
 msgid "Subsection"
 msgstr "Subsectie"
 
-#: ../src/symbols.c:521 ../src/symbols.c:636
+#: ../src/symbols.c:521 ../src/symbols.c:650
 msgid "Subsubsection"
 msgstr "Subsubsectie"
 
-#: ../src/symbols.c:532 ../src/symbols.c:557
+#: ../src/symbols.c:531
+msgid "Articles"
+msgstr "Artikelen"
+
+#: ../src/symbols.c:532
+msgid "Book Chapters"
+msgstr "Hoofdstukken uit boeken"
+
+#: ../src/symbols.c:533
+msgid "Books & Conference Proceedings"
+msgstr "Boeken en conferentienaslagwerken"
+
+#: ../src/symbols.c:534
+msgid "Conference Papers"
+msgstr "Conferentienaslagwerken"
+
+#: ../src/symbols.c:535
+msgid "Theses"
+msgstr ""
+
+#: ../src/symbols.c:536
+msgid "Strings"
+msgstr "Tekenreeksen"
+
+#: ../src/symbols.c:537
+msgid "Unpublished"
+msgstr "Ongepubliceerd"
+
+#: ../src/symbols.c:546 ../src/symbols.c:571
 msgid "Structures"
 msgstr "Structuren"
 
-#: ../src/symbols.c:539
+#: ../src/symbols.c:553
 msgid "Parts"
 msgstr "Onderdelen"
 
-#: ../src/symbols.c:540
+#: ../src/symbols.c:554
 msgid "Assembly"
 msgstr "Machinecode"
 
-#: ../src/symbols.c:541
+#: ../src/symbols.c:555
 msgid "Steps"
 msgstr "Stappen"
 
-#: ../src/symbols.c:556 ../src/symbols.c:654 ../src/symbols.c:700
+#: ../src/symbols.c:570 ../src/symbols.c:668 ../src/symbols.c:714
 msgid "Modules"
 msgstr "Modulen"
 
-#: ../src/symbols.c:558 ../src/symbols.c:605
+#: ../src/symbols.c:572 ../src/symbols.c:619
 msgid "Traits"
 msgstr "Kenmerken"
 
-#: ../src/symbols.c:559
+#: ../src/symbols.c:573
 msgid "Implementations"
 msgstr "Implementaties"
 
-#: ../src/symbols.c:561 ../src/symbols.c:822
+#: ../src/symbols.c:575 ../src/symbols.c:836
 msgid "Typedefs / Enums"
 msgstr "Typedefs / Enums"
 
-#: ../src/symbols.c:563 ../src/symbols.c:780 ../src/symbols.c:789
-#: ../src/symbols.c:828
+#: ../src/symbols.c:577 ../src/symbols.c:794 ../src/symbols.c:803
+#: ../src/symbols.c:842
 msgid "Macros"
 msgstr "Macro's"
 
-#: ../src/symbols.c:564 ../src/symbols.c:657 ../src/symbols.c:666
-#: ../src/symbols.c:675 ../src/symbols.c:713 ../src/symbols.c:740
+#: ../src/symbols.c:578 ../src/symbols.c:671 ../src/symbols.c:680
+#: ../src/symbols.c:689 ../src/symbols.c:727 ../src/symbols.c:754
 msgid "Methods"
 msgstr "Methoden"
 
-#: ../src/symbols.c:572 ../src/symbols.c:587 ../src/symbols.c:685
-#: ../src/symbols.c:710 ../src/symbols.c:724
+#: ../src/symbols.c:586 ../src/symbols.c:601 ../src/symbols.c:699
+#: ../src/symbols.c:724 ../src/symbols.c:738
 msgid "Package"
 msgstr "Pakket"
 
-#: ../src/symbols.c:574 ../src/symbols.c:600 ../src/symbols.c:711
-#: ../src/symbols.c:725 ../src/symbols.c:738 ../src/symbols.c:765
-#: ../src/symbols.c:818
+#: ../src/symbols.c:588 ../src/symbols.c:614 ../src/symbols.c:725
+#: ../src/symbols.c:739 ../src/symbols.c:752 ../src/symbols.c:779
+#: ../src/symbols.c:832
 msgid "Interfaces"
 msgstr "Interfaces"
 
-#: ../src/symbols.c:575 ../src/symbols.c:821
+#: ../src/symbols.c:589 ../src/symbols.c:835
 msgid "Structs"
 msgstr "Constructies"
 
-#: ../src/symbols.c:577 ../src/symbols.c:590 ../src/symbols.c:603
-#: ../src/symbols.c:730 ../src/symbols.c:752
+#: ../src/symbols.c:591 ../src/symbols.c:604 ../src/symbols.c:617
+#: ../src/symbols.c:744 ../src/symbols.c:766
 msgid "Constants"
 msgstr "Constanten"
 
-#: ../src/symbols.c:579 ../src/symbols.c:714 ../src/symbols.c:820
+#: ../src/symbols.c:593 ../src/symbols.c:728 ../src/symbols.c:834
 msgid "Members"
 msgstr "Leden"
 
-#: ../src/symbols.c:589 ../src/symbols.c:754 ../src/symbols.c:779
+#: ../src/symbols.c:603 ../src/symbols.c:768 ../src/symbols.c:793
 msgid "Labels"
 msgstr "Labels"
 
-#: ../src/symbols.c:599 ../src/symbols.c:664 ../src/symbols.c:814
+#: ../src/symbols.c:613 ../src/symbols.c:678 ../src/symbols.c:828
 msgid "Namespaces"
 msgstr "Naamruimtes"
 
-#: ../src/symbols.c:601 ../src/symbols.c:623 ../src/symbols.c:655
-#: ../src/symbols.c:665 ../src/symbols.c:674 ../src/symbols.c:712
-#: ../src/symbols.c:726 ../src/symbols.c:739 ../src/symbols.c:817
+#: ../src/symbols.c:615 ../src/symbols.c:637 ../src/symbols.c:669
+#: ../src/symbols.c:679 ../src/symbols.c:688 ../src/symbols.c:726
+#: ../src/symbols.c:740 ../src/symbols.c:753 ../src/symbols.c:831
 msgid "Classes"
 msgstr "Klassen"
 
-#: ../src/symbols.c:613
+#: ../src/symbols.c:627
 msgid "Anchors"
 msgstr "Ankers"
 
-#: ../src/symbols.c:614
+#: ../src/symbols.c:628
 msgid "H1 Headings"
 msgstr "H1 kopregels"
 
-#: ../src/symbols.c:615
+#: ../src/symbols.c:629
 msgid "H2 Headings"
 msgstr "H2 kopregels"
 
-#: ../src/symbols.c:616
+#: ../src/symbols.c:630
 msgid "H3 Headings"
 msgstr "H3 kopregels"
 
-#: ../src/symbols.c:624
+#: ../src/symbols.c:638
 msgid "ID Selectors"
 msgstr "ID selectors"
 
-#: ../src/symbols.c:625
+#: ../src/symbols.c:639
 msgid "Type Selectors"
 msgstr "Type selectors"
 
-#: ../src/symbols.c:644
+#: ../src/symbols.c:658
 msgid "Section Level 1"
 msgstr "Sectie nivo 1"
 
-#: ../src/symbols.c:645
+#: ../src/symbols.c:659
 msgid "Section Level 2"
 msgstr "Sectie nivo 2"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:660
 msgid "Section Level 3"
 msgstr "Sectie nivo 3"
 
-#: ../src/symbols.c:647
+#: ../src/symbols.c:661
 msgid "Section Level 4"
 msgstr "Sectie nivo 4"
 
-#: ../src/symbols.c:656
+#: ../src/symbols.c:670
 msgid "Singletons"
 msgstr "Singletons"
 
-#: ../src/symbols.c:667 ../src/symbols.c:796
+#: ../src/symbols.c:681 ../src/symbols.c:810
 msgid "Procedures"
 msgstr "Procedures"
 
-#: ../src/symbols.c:678 ../src/symbols.c:723
+#: ../src/symbols.c:692 ../src/symbols.c:737
 msgid "Imports"
 msgstr "Imports"
 
-#: ../src/symbols.c:686
+#: ../src/symbols.c:700
 msgid "Entities"
 msgstr "Entiteiten"
 
-#: ../src/symbols.c:687
+#: ../src/symbols.c:701
 msgid "Architectures"
 msgstr "Architecturen"
 
-#: ../src/symbols.c:689
+#: ../src/symbols.c:703
 msgid "Functions / Procedures"
 msgstr "Functies / Procedures"
 
-#: ../src/symbols.c:690
+#: ../src/symbols.c:704
 msgid "Variables / Signals"
 msgstr "Variabelen / Signalen"
 
-#: ../src/symbols.c:691
+#: ../src/symbols.c:705
 msgid "Processes / Blocks / Components"
 msgstr "Processen / Blokken / Componenten"
 
-#: ../src/symbols.c:699
+#: ../src/symbols.c:713
 msgid "Events"
 msgstr "Gebeurtenissen"
 
-#: ../src/symbols.c:701
+#: ../src/symbols.c:715
 msgid "Functions / Tasks"
 msgstr "Functies / Taken"
 
-#: ../src/symbols.c:715 ../src/symbols.c:771
+#: ../src/symbols.c:729 ../src/symbols.c:785
 msgid "Enums"
 msgstr "Enums"
 
-#: ../src/symbols.c:764
+#: ../src/symbols.c:778
 msgid "Programs"
 msgstr "Programma's"
 
-#: ../src/symbols.c:766
+#: ../src/symbols.c:780
 msgid "Functions / Subroutines"
 msgstr "Functies / Subroutines"
 
-#: ../src/symbols.c:769
+#: ../src/symbols.c:783
 msgid "Components"
 msgstr "Componenten"
 
-#: ../src/symbols.c:770
+#: ../src/symbols.c:784
 msgid "Blocks"
 msgstr "Blokken"
 
-#: ../src/symbols.c:781
+#: ../src/symbols.c:795
 msgid "Defines"
 msgstr "Definities"
 
-#: ../src/symbols.c:788
+#: ../src/symbols.c:802
 msgid "Targets"
 msgstr "Doelen"
 
-#: ../src/symbols.c:797
+#: ../src/symbols.c:811
 msgid "Indexes"
 msgstr "Indices"
 
-#: ../src/symbols.c:798
+#: ../src/symbols.c:812
 msgid "Tables"
 msgstr "Tabellen"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:813
 msgid "Triggers"
 msgstr "Triggers"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:814
 msgid "Views"
 msgstr "Beeld"
 
-#: ../src/symbols.c:832
+#: ../src/symbols.c:846
 msgid "Extern Variables"
 msgstr "Externe variabelen"
 
-#: ../src/symbols.c:1649
+#: ../src/symbols.c:1663
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "Onbekende bestandsextensie \"%s\".\n"
 
-#: ../src/symbols.c:1675
+#: ../src/symbols.c:1689
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr ""
 "Genereren van labelbestand is mislukt, misschien omdat er geen symbolen "
 "gevonden zijn.\n"
 
-#: ../src/symbols.c:1682
+#: ../src/symbols.c:1696
 #, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -5012,7 +5034,7 @@ msgstr ""
 "Gebruik:  %s -g <labelbestand> <bestandenlijst>\n"
 "\n"
 
-#: ../src/symbols.c:1683
+#: ../src/symbols.c:1697
 #, c-format
 msgid ""
 "Example:\n"
@@ -5023,52 +5045,52 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1697
+#: ../src/symbols.c:1711
 msgid "Load Tags File"
 msgstr "Labelbestand laden"
 
-#: ../src/symbols.c:1704
+#: ../src/symbols.c:1718
 msgid "Geany tags file (*.*.tags)"
 msgstr "Geany labelbestanden (*.*.tags)"
 
 #. For translators: the first wildcard is the filetype, the second the filename
-#: ../src/symbols.c:1724
+#: ../src/symbols.c:1738
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "Bestand met %s labels geladen '%s'."
 
-#: ../src/symbols.c:1727
+#: ../src/symbols.c:1741
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Kon labelbestand '%s' niet laden."
 
 #. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1970
+#: ../src/symbols.c:1984
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
 #. For translators: it's the filename and line number of a symbol in the goto-symbol popup menu
-#: ../src/symbols.c:1973
+#: ../src/symbols.c:1987
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2183
+#: ../src/symbols.c:2197
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Declaratie van '%s' is niet gevonden."
 
-#: ../src/symbols.c:2185
+#: ../src/symbols.c:2199
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Definitie van '%s' is niet gevonden."
 
-#: ../src/symbols.c:2601
+#: ../src/symbols.c:2615
 msgid "Sort by _Name"
 msgstr "Sorteer op _naam"
 
-#: ../src/symbols.c:2608
+#: ../src/symbols.c:2622
 msgid "Sort by _Appearance"
 msgstr "Sorteer op _plaats in document"
 
@@ -5298,11 +5320,11 @@ msgstr "Woorden tellen"
 
 #: ../src/tools.c:704
 msgid "selection"
-msgstr "Selectie"
+msgstr "selectie"
 
 #: ../src/tools.c:709
 msgid "whole document"
-msgstr "Volledig document"
+msgstr "volledig document"
 
 #: ../src/tools.c:718
 msgid "Range:"
@@ -5471,27 +5493,27 @@ msgstr "Datumopmaakstring kon niet omgezet worden (waarschijnlijk te lang)."
 msgid "_Set Custom Date Format"
 msgstr "Aangepaste _datumopmaak instellen"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2016
 msgid "Select Folder"
 msgstr "Map selecteren"
 
-#: ../src/ui_utils.c:2015
+#: ../src/ui_utils.c:2016
 msgid "Select File"
 msgstr "Bestand selecteren"
 
-#: ../src/ui_utils.c:2185
+#: ../src/ui_utils.c:2186
 msgid "_Filetype Configuration"
 msgstr "_Bestandstype-configuratie"
 
-#: ../src/ui_utils.c:2222
+#: ../src/ui_utils.c:2223
 msgid "Save All"
 msgstr "Alles opslaan"
 
-#: ../src/ui_utils.c:2223
+#: ../src/ui_utils.c:2224
 msgid "Close All"
 msgstr "Alles sluiten"
 
-#: ../src/ui_utils.c:2455
+#: ../src/ui_utils.c:2456
 msgid "Geany cannot start!"
 msgstr "Geany kan niet starten!"
 
@@ -5798,8 +5820,7 @@ msgstr "_Regelnummers toevoegen"
 
 #: ../plugins/export.c:188
 msgid "Insert line numbers before each line in the exported document"
-msgstr ""
-"Voegt regelnummers toe vooraan elke regel in het geëxporteerde bestand."
+msgstr "Voegt regelnummers toe vooraan elke regel in het geëxporteerde bestand"
 
 #: ../plugins/export.c:198
 msgid "_Use current zoom level"
@@ -6017,7 +6038,7 @@ msgstr "_Alle geopende bestanden opslaan"
 msgid "Instant Save"
 msgstr "Instant opslaan"
 
-# Of nieuw aangemaakte bestanden?
+# Should this not be Newly Created files?
 #: ../plugins/saveactions.c:688
 msgid "_Filetype to use for newly opened files:"
 msgstr "_Bestandstype voor nieuw geopende bestanden:"
@@ -6049,7 +6070,7 @@ msgstr "Splitst de editor in twee delen."
 
 #: ../plugins/splitwindow.c:299
 msgid "Show the current document"
-msgstr "Toon huidige document."
+msgstr "Toon huidige document"
 
 #: ../plugins/splitwindow.c:321 ../plugins/splitwindow.c:454
 #: ../plugins/splitwindow.c:469
@@ -6075,6 +6096,12 @@ msgstr "Zij aan zij"
 #: ../plugins/splitwindow.c:467
 msgid "Top and Bottom"
 msgstr "Boven en Onder"
+
+#~ msgid "Fi_les:"
+#~ msgstr "Bestanden:"
+
+#~ msgid "File patterns, e.g. *.c *.h"
+#~ msgstr "Bestandspatronen, bijvoorbeeld *.c *.h:"
 
 #~ msgid ""
 #~ "Copyright (c) 2005-2019\n"

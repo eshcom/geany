@@ -395,6 +395,26 @@ static void get_line_and_column_from_filename(gchar *filename, gint *line, gint 
 
 
 #ifdef G_OS_WIN32
+static gint get_windows_socket_port(void)
+{
+	/* Read config file early to get TCP port number as we need it for IPC before all
+	 * other settings are read in load_settings() */
+	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
+	GKeyFile *config = g_key_file_new();
+	gint port_number;
+
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	port_number = utils_get_setting_integer(config, PACKAGE, "socket_remote_cmd_port",
+		SOCKET_WINDOWS_REMOTE_CMD_PORT);
+	geany_debug("Using TCP port number %d for IPC", port_number);
+	g_free(configfile);
+	g_key_file_free(config);
+	g_return_val_if_fail(port_number >= 1024 && port_number <= (gint)G_MAXUINT16,
+		SOCKET_WINDOWS_REMOTE_CMD_PORT);
+	return port_number;
+}
+
+
 static void change_working_directory_on_windows(void)
 {
 	gchar *install_dir = win32_get_installation_dir();
@@ -1040,6 +1060,7 @@ gint main_lib(gint argc, gchar **argv)
 	gint config_dir_result;
 	const gchar *locale;
 	gchar *utf8_configdir;
+	gchar *os_info;
 
 #if ! GLIB_CHECK_VERSION(2, 36, 0)
 	g_type_init();
@@ -1089,9 +1110,13 @@ gint main_lib(gint argc, gchar **argv)
 	/* check and create (unix domain) socket for remote operation */
 	if (! socket_info.ignore_socket)
 	{
+		gushort socket_port = 0;
+#ifdef G_OS_WIN32
+		socket_port = (gushort) get_windows_socket_port();
+#endif
 		socket_info.lock_socket = -1;
 		socket_info.lock_socket_tag = 0;
-		socket_info.lock_socket = socket_init(argc, argv);
+		socket_info.lock_socket = socket_init(argc, argv, socket_port);
 		/* Quit if filenames were sent to first instance or the list of open
 		 * documents has been printed */
 		if ((socket_info.lock_socket == -2 /* socket exists */ && argc > 1) ||
@@ -1128,6 +1153,14 @@ gint main_lib(gint argc, gchar **argv)
 	geany_debug(geany_lib_versions,
 		gtk_major_version, gtk_minor_version, gtk_micro_version,
 		glib_major_version, glib_minor_version, glib_micro_version);
+
+	os_info = utils_get_os_info_string();
+	if (os_info != NULL)
+	{
+		geany_debug("OS: %s", os_info);
+		g_free(os_info);
+	}
+
 	geany_debug("System data dir: %s", app->datadir);
 	utf8_configdir = utils_get_utf8_from_locale(app->configdir);
 	geany_debug("User config dir: %s", utf8_configdir);
@@ -1325,6 +1358,7 @@ static gboolean do_main_quit(void)
 	g_free(prefs.default_open_path);
 	g_free(prefs.custom_plugin_path);
 	g_free(ui_prefs.custom_date_format);
+	g_free(ui_prefs.color_picker_palette);
 	g_free(interface_prefs.editor_font);
 	g_free(interface_prefs.tagbar_font);
 	g_free(interface_prefs.msgwin_font);

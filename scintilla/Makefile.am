@@ -42,6 +42,7 @@ lexers/LexPO.cxx \
 lexers/LexR.cxx \
 lexers/LexRuby.cxx \
 lexers/LexRust.cxx \
+lexers/LexSmalltalk.cxx \
 lexers/LexSQL.cxx \
 lexers/LexTCL.cxx \
 lexers/LexTxt2tags.cxx \
@@ -60,6 +61,7 @@ gtk/scintilla-marshal.c \
 gtk/scintilla-marshal.h \
 lexlib/Accessor.cxx \
 lexlib/Accessor.h \
+lexlib/CatalogueModules.h \
 lexlib/CharacterCategory.cxx \
 lexlib/CharacterCategory.h \
 lexlib/CharacterSet.cxx \

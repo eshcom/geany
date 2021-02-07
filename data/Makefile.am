@@ -2,7 +2,7 @@
 colorschemes = \
 	colorschemes/alt.conf
 
-filetypes = \
+filetypes_dist = \
 	filedefs/filetypes.abaqus \
 	filedefs/filetypes.abc \
 	filedefs/filetypes.actionscript \
@@ -60,13 +60,13 @@ filetypes = \
 	filedefs/filetypes.php \
 	filedefs/filetypes.po \
 	filedefs/filetypes.powershell \
-	filedefs/filetypes.python \
 	filedefs/filetypes.r \
 	filedefs/filetypes.restructuredtext \
 	filedefs/filetypes.ruby \
 	filedefs/filetypes.rust \
 	filedefs/filetypes.Scala.conf \
 	filedefs/filetypes.sh \
+	filedefs/filetypes.smalltalk \
 	filedefs/filetypes.sql \
 	filedefs/filetypes.Swift.conf \
 	filedefs/filetypes.TypeScript.conf \
@@ -78,6 +78,10 @@ filetypes = \
 	filedefs/filetypes.xml \
 	filedefs/filetypes.yaml \
 	filedefs/filetypes.zephir
+
+# generated filetypes
+filetypes_nodist = \
+	filedefs/filetypes.python
 
 tagfiles = \
 	tags/std99.c.tags \
@@ -110,7 +114,7 @@ templates = \
 
 nobase_dist_pkgdata_DATA = \
 	$(colorschemes) \
-	$(filetypes) \
+	$(filetypes_dist) \
 	$(tagfiles) \
 	$(template_files) \
 	$(templates) \
@@ -118,6 +122,9 @@ nobase_dist_pkgdata_DATA = \
 	snippets.conf \
 	ui_toolbar.xml \
 	geany.glade
+
+nobase_pkgdata_DATA = \
+	$(filetypes_nodist)
 
 if GTK3
 nobase_dist_pkgdata_DATA += \
