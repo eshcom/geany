@@ -157,7 +157,7 @@ void 				sci_toggle_fold				(ScintillaObject *sci, gint line);
 gint				sci_get_fold_level			(ScintillaObject *sci, gint line);
 gint				sci_get_fold_parent			(ScintillaObject *sci, gint start_line);
 
-void 				sci_set_folding_margin_visible (ScintillaObject *sci, gboolean set);
+void 				sci_set_folding_margin_visible (ScintillaObject *sci, gboolean set, gint width);
 gboolean			sci_get_fold_expanded		(ScintillaObject *sci, gint line);
 
 void				sci_colourise				(ScintillaObject *sci, gint start, gint end);

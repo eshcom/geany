@@ -52,6 +52,7 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft);
 gboolean highlighting_is_string_style(gint lexer, gint style);
 gboolean highlighting_is_comment_style(gint lexer, gint style);
 gboolean highlighting_is_code_style(gint lexer, gint style);
+gint get_folding_margin_width();
 
 
 #ifdef GEANY_PRIVATE
