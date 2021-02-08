@@ -20,7 +20,7 @@ margin_folding=margin_folding
 fold_symbol_highlight=fold_symbol_highlight
 
 # width of the folding margin on the right of the line numbers
-folding_margin_width=12
+folding_margin_width=13
 
 # background colour of the current line, only the second and third argument is interpreted
 # use the third argument to enable or disable the highlighting of the current line (has to be true/false)

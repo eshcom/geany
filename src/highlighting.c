@@ -566,7 +566,7 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 	get_keyfile_ints(config, config_home, "styling", "folding_horiz_line",
 		2, 0, &common_style_set.fold_draw_line, NULL);
 	get_keyfile_ints(config, config_home, "styling", "folding_margin_width",
-		1, 0, &common_style_set.styling[GCS_FOLDING_MARGIN_WIDTH].background, NULL);
+		13, 0, &common_style_set.styling[GCS_FOLDING_MARGIN_WIDTH].background, NULL);
 	get_keyfile_ints(config, config_home, "styling", "caret_width",
 		1, 0, &common_style_set.styling[GCS_CARET].background, NULL); /* caret.foreground used earlier */
 	get_keyfile_int(config, config_home, "styling", "line_wrap_visuals",
