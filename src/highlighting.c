@@ -96,6 +96,7 @@ enum	/* Geany common styling */
 	GCS_LINE_HEIGHT,
 	GCS_CALLTIPS,
 	GCS_INDICATOR_ERROR,
+	GCS_FOLDING_MARGIN_WIDTH,
 	GCS_MAX
 };
 
@@ -564,6 +565,8 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 		1, 1, &common_style_set.fold_marker, &common_style_set.fold_lines);
 	get_keyfile_ints(config, config_home, "styling", "folding_horiz_line",
 		2, 0, &common_style_set.fold_draw_line, NULL);
+	get_keyfile_ints(config, config_home, "styling", "folding_margin_width",
+		1, 0, &common_style_set.styling[GCS_FOLDING_MARGIN_WIDTH].background, NULL);
 	get_keyfile_ints(config, config_home, "styling", "caret_width",
 		1, 0, &common_style_set.styling[GCS_CARET].background, NULL); /* caret.foreground used earlier */
 	get_keyfile_int(config, config_home, "styling", "line_wrap_visuals",
@@ -1889,4 +1892,12 @@ gboolean highlighting_is_code_style(gint lexer, gint style)
 	}
 	return !(highlighting_is_comment_style(lexer, style) ||
 			 highlighting_is_string_style(lexer, style));
+}
+
+
+/* esh: get_folding_margin_width */
+GEANY_API_SYMBOL
+gint get_folding_margin_width()
+{
+	return common_style_set.styling[GCS_FOLDING_MARGIN_WIDTH].background;
 }

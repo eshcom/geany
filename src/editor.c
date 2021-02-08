@@ -5476,7 +5476,9 @@ void editor_apply_update_prefs(GeanyEditor *editor)
 	sci_set_symbol_margin(sci, editor_prefs.show_markers_margin);
 	sci_set_line_numbers(sci, editor_prefs.show_linenumber_margin);
 
-	sci_set_folding_margin_visible(sci, editor_prefs.folding);
+	// esh: passing the width param from filetypes.common/folding_margin_width
+	sci_set_folding_margin_visible(sci, editor_prefs.folding,
+								   get_folding_margin_width());
 
 	/* virtual space */
 	SSM(sci, SCI_SETVIRTUALSPACEOPTIONS, editor_prefs.show_virtual_space, 0);

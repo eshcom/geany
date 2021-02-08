@@ -161,11 +161,11 @@ void sci_set_symbol_margin(ScintillaObject *sci, gboolean set)
 
 
 /* folding margin visibility */
-void sci_set_folding_margin_visible(ScintillaObject *sci, gboolean set)
+void sci_set_folding_margin_visible(ScintillaObject *sci, gboolean set, gint width)
 {
 	if (set)
 	{
-		SSM(sci, SCI_SETMARGINWIDTHN, 2, 12);
+		SSM(sci, SCI_SETMARGINWIDTHN, 2, width);
 		SSM(sci, SCI_SETMARGINSENSITIVEN, 2, TRUE);
 	}
 	else
