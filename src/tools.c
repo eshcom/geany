@@ -202,19 +202,32 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 	GString *output;
 	GString *errors;
 	gint status;
-
+	
 	g_return_if_fail(doc != NULL && command != NULL);
-
-	if (! sci_has_selection(doc->editor->sci))
-		editor_select_lines(doc->editor, FALSE);
-
-	sel = sci_get_selection_contents(doc->editor->sci);
+	
+	gboolean all_text = FALSE;
+	if (!sci_has_selection(doc->editor->sci))
+	{
+		if (sci_get_current_line(doc->editor->sci) == 0) // esh: if first line
+		{
+			all_text = TRUE;
+			sel = sci_get_contents(doc->editor->sci, -1);
+		}
+		else
+		{
+			editor_select_lines(doc->editor, FALSE);
+			sel = sci_get_selection_contents(doc->editor->sci);
+		}
+	}
+	else
+		sel = sci_get_selection_contents(doc->editor->sci);
+	
 	input.ptr = sel;
 	input.size = strlen(sel);
 	output = g_string_sized_new(256);
 	errors = g_string_new(NULL);
 	ui_set_statusbar(TRUE, _("Passing data and executing custom command: %s"), command);
-
+	
 	if (spawn_sync(NULL, command, NULL, NULL, &input, output, errors, &status, &error))
 	{
 		if (errors->len > 0)
@@ -233,7 +246,10 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 		}
 		else
 		{   /* Command completed successfully */
-			sci_replace_sel(doc->editor->sci, output->str);
+			if (all_text) // esh: if all text
+				sci_set_text(doc->editor->sci, output->str);
+			else
+				sci_replace_sel(doc->editor->sci, output->str);
 		}
 	}
 	else
@@ -242,7 +258,7 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 			"Check the path setting in Custom Commands."), command, error->message);
 		g_error_free(error);
 	}
-
+	
 	g_string_free(output, TRUE);
 	g_string_free(errors, TRUE);
 	g_free(sel);
