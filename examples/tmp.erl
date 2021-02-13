@@ -36,4 +36,10 @@ Var19 = 1+1-2 = 1 + 1 - 2.
 --
 
 test(Var) ->
+	_V1 = max(1,3),
+	_V2 = yield(),
+	_V3 = integer_to_list(123),
+	_V4 = erlang:max(1,3),
+	_V5 = erlang:yield(),
+	_V6 = erlang:integer_to_list(123),
 	ok.

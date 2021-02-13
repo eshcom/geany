@@ -334,8 +334,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.GetCurrent(cur, sizeof(cur));
 						if (reservedWords.InList(cur)) {
 							style = SCE_ERLANG_KEYWORD;
-						} else if (erlangBIFs.InList(cur)
-									&& strcmp(cur,"erlang:")) {
+						} else if (erlangBIFs.InList(cur)) {
 							style = SCE_ERLANG_BIFS;
 						} else if (erlangAtomSpec.InList(cur)) {
 							style = SCE_ERLANG_ATOM_SPEC;
