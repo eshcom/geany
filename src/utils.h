@@ -161,6 +161,7 @@ G_BEGIN_DECLS
 
 
 gboolean utils_str_equal(const gchar *a, const gchar *b);
+gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n);
 
 guint utils_string_replace_all(GString *haystack, const gchar *needle, const gchar *replace);
 

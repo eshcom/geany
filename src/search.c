@@ -200,6 +200,8 @@ static void init_prefs(void)
 		"pref_search_always_wrap", FALSE, "check_hide_find_dialog");
 	stash_group_add_toggle_button(group, &search_prefs.use_current_file_dir,
 		"pref_search_current_file_dir", TRUE, "check_fif_current_dir");
+	stash_group_add_toggle_button(group, &search_prefs.use_current_proj_dir,
+		"pref_search_current_proj_dir", TRUE, "check_fif_current_proj_dir");
 	stash_group_add_boolean(group, &find_dlg.all_expanded, "find_all_expanded", FALSE);
 	stash_group_add_boolean(group, &replace_dlg.all_expanded, "replace_all_expanded", FALSE);
 	/* dialog positions */
@@ -1048,7 +1050,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	gchar *sel = NULL;
 	gchar *cur_dir = NULL;
 	GeanyEncodingIndex enc_idx = GEANY_ENCODING_UTF_8;
-
+	
 	if (fif_dlg.dialog == NULL)
 	{
 		create_fif_dialog();
@@ -1057,38 +1059,47 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			sel = editor_get_default_selection(doc->editor, search_prefs.use_current_word, NULL);
 	}
 	stash_group_display(fif_prefs, fif_dlg.dialog);
-
+	
 	if (!text)
 	{
 		/* only set selection if the dialog is not already visible, or has just been created */
 		if (doc && ! sel && ! gtk_widget_get_visible(fif_dlg.dialog))
 			sel = editor_get_default_selection(doc->editor, search_prefs.use_current_word, NULL);
-
+		
 		text = sel;
 	}
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.search_combo));
 	if (text)
 		gtk_entry_set_text(GTK_ENTRY(entry), text);
 	g_free(sel);
-
+	
 	/* add project's base path directory to the dir list, we do this here once
 	 * (in create_fif_dialog() it would fail if a project is opened after dialog creation) */
-	if (app->project != NULL && !EMPTY(app->project->base_path))
+	gboolean proj_base_path = (app->project != NULL && !EMPTY(app->project->base_path));
+	if (proj_base_path)
 	{
 		ui_combo_box_prepend_text_once(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
 			app->project->base_path);
 	}
-
+	
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.dir_combo));
 	if (!EMPTY(dir))
 		cur_dir = g_strdup(dir);	/* custom directory argument passed */
 	else
 	{
-		if (search_prefs.use_current_file_dir)
+		//~ esh: added check new param use_current_proj_dir
+		if (search_prefs.use_current_proj_dir && proj_base_path)
+		{
+			if (!utils_strn_equal(gtk_entry_get_text(GTK_ENTRY(entry)),
+								  app->project->base_path,
+								  strlen(app->project->base_path)))
+				cur_dir = g_strdup(app->project->base_path);
+		}
+		else if (search_prefs.use_current_file_dir)
 		{
 			static gchar *last_cur_dir = NULL;
 			static GeanyDocument *last_doc = NULL;
-
+			
 			/* Only set the directory entry once for the current document */
 			cur_dir = utils_get_current_file_dir_utf8();
 			if (doc == last_doc && cur_dir && utils_str_equal(cur_dir, last_cur_dir))
@@ -1099,7 +1110,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			}
 			else
 				SETPTR(last_cur_dir, g_strdup(cur_dir));
-
+			
 			last_doc = doc;
 		}
 		if (!cur_dir && EMPTY(gtk_entry_get_text(GTK_ENTRY(entry))))
@@ -1117,24 +1128,24 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		gtk_entry_set_text(GTK_ENTRY(entry), cur_dir);
 		g_free(cur_dir);
 	}
-
+	
 	update_fif_file_mode_combo();
 	update_file_patterns(fif_dlg.files_mode_combo, fif_dlg.files_combo);
-
+	
 	/* set the encoding of the current file */
 	if (doc != NULL)
 		enc_idx = encodings_get_idx_from_charset(doc->encoding);
 	ui_encodings_combo_box_set_active_encoding(GTK_COMBO_BOX(fif_dlg.encoding_combo), enc_idx);
-
+	
 	/* put the focus to the directory entry if it is empty */
 	if (utils_str_equal(gtk_entry_get_text(GTK_ENTRY(entry)), ""))
 		gtk_widget_grab_focus(fif_dlg.dir_combo);
 	else
 		gtk_widget_grab_focus(fif_dlg.search_combo);
-
+	
 	/* set dialog window position */
 	set_dialog_position(fif_dlg.dialog, fif_dlg.position);
-
+	
 	gtk_widget_show(fif_dlg.dialog);
 	/* bring the dialog back in the foreground in case it is already open but the focus is away */
 	gtk_window_present(GTK_WINDOW(fif_dlg.dialog));
