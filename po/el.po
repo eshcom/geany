@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.32\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-04 11:05+0300\n"
+"POT-Creation-Date: 2021-02-18 22:19+0300\n"
 "PO-Revision-Date: 2019-01-09 14:45+0200\n"
 "Last-Translator: Vangelis Skarmoutsos <skarmoutsosv@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2\n"
 
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:343
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:344
 msgid "Geany"
 msgstr "Geany"
 
@@ -368,14 +368,19 @@ msgid "Use the current file's directory for Find in Files"
 msgstr "Χρήση του φακέλου του τρέχοντος αρχείου για αναζήτηση σε αρχεία"
 
 #: ../data/geany.glade.h:71
+#, fuzzy
+msgid "Use the current project's directory for Find in Files"
+msgstr "Χρήση του φακέλου του τρέχοντος αρχείου για αναζήτηση σε αρχεία"
+
+#: ../data/geany.glade.h:72
 msgid "<b>Search</b>"
 msgstr "<b>Αναζήτηση</b>"
 
-#: ../data/geany.glade.h:72
+#: ../data/geany.glade.h:73
 msgid "Use project-based session files"
 msgstr "Χρήση αρχείων συνεδρίας βασισμένα στο έργο"
 
-#: ../data/geany.glade.h:73
+#: ../data/geany.glade.h:74
 msgid ""
 "Whether to store a project's session files and open them when re-opening the "
 "project"
@@ -383,11 +388,11 @@ msgstr ""
 "Εάν θα αποθηκεύει τα αρχεία της συνεδρίας ενός έργου και θα τα ανοίγει όταν "
 "θα ξανανοίγει το έργο"
 
-#: ../data/geany.glade.h:74
+#: ../data/geany.glade.h:75
 msgid "Store project file inside the project base directory"
 msgstr "Αποθήκευση αρχείου έργου μέσα στον βασικό φάκελο του έργου"
 
-#: ../data/geany.glade.h:75
+#: ../data/geany.glade.h:76
 msgid ""
 "When enabled, a project file is stored by default inside the project base "
 "directory when creating new projects instead of one directory above the base "
@@ -399,11 +404,11 @@ msgstr ""
 "πάνω από τον βασικό φάκελο. Εξακολουθείτε να έχετε τη δυνατότητα να αλλάξετε "
 "τη διαδρομή του έργου στον διάλογο Νέο έργο."
 
-#: ../data/geany.glade.h:76
+#: ../data/geany.glade.h:77
 msgid "<b>Projects</b>"
 msgstr "<b>Έργα</b>"
 
-#: ../data/geany.glade.h:77 ../src/dialogs.c:231
+#: ../data/geany.glade.h:78 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "Διάφορα"
 
@@ -411,109 +416,109 @@ msgstr "Διάφορα"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:78 ../src/prefs.c:1602
+#: ../data/geany.glade.h:79 ../src/prefs.c:1602
 msgid "General"
 msgstr "Γενικά"
 
-#: ../data/geany.glade.h:79
+#: ../data/geany.glade.h:80
 msgid "Show symbol list"
 msgstr "Εμφάνιση λίστας συμβόλων"
 
-#: ../data/geany.glade.h:80
+#: ../data/geany.glade.h:81
 msgid "Toggle the symbol list on and off"
 msgstr "Ενεργοποίηση/απενεργοποίηση λίστας συμβόλων"
 
-#: ../data/geany.glade.h:81
+#: ../data/geany.glade.h:82
 msgid "Default symbol sorting mode"
 msgstr "Προκαθορισμένη λειτουργία ταξινόμησης συμβόλων"
 
-#: ../data/geany.glade.h:82
+#: ../data/geany.glade.h:83
 msgid "Default sorting mode:"
 msgstr "Προκαθορισμένη λειτουργία ταξινόμησης:"
 
-#: ../data/geany.glade.h:83 ../src/stash.c:1177
+#: ../data/geany.glade.h:84 ../src/stash.c:1177
 msgid "Name"
 msgstr "Όνομα"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:85
 msgid "Appearance"
 msgstr "Εμφάνιση"
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:86
 msgid "Show documents list"
 msgstr "Εμφάνιση λίστας εγγράφων"
 
-#: ../data/geany.glade.h:86
+#: ../data/geany.glade.h:87
 msgid "Toggle the documents list on and off"
 msgstr "Ενεργοποίηση/απενεργοποίηση λίστας εγγράφων"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:88
 msgid "Show sidebar"
 msgstr "Εμφάνιση πλευρικής μπάρας"
 
-#: ../data/geany.glade.h:88
+#: ../data/geany.glade.h:89
 msgid "Position:"
 msgstr "Θέση:"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:90
 msgid "<b>Sidebar</b>"
 msgstr "<b>Πλευρική μπάρα</b>"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:91
 msgid "<b>Message window</b>"
 msgstr "<b>Παράθυρο μηνυμάτων</b>"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:92
 msgid "Symbol list:"
 msgstr "Λίστα συμβόλων:"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:93
 msgid "Message window:"
 msgstr "Παράθυρο μηνυμάτων:"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:94
 msgid "Editor:"
 msgstr "Επεξεργαστής:"
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:95
 msgid "Sets the font for the message window"
 msgstr "Καθορίζει τη γραμματοσειρά για το παράθυρο μηνυμάτων"
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:96
 msgid "Sets the font for the symbol list"
 msgstr "Καθορίζει τη γραμματοσειρά για τη λίστα των συμβόλων"
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:97
 msgid "Sets the editor font"
 msgstr "Καθορίζει τη γραμματοσειρά για τον επεξεργαστή"
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:98
 msgid "<b>Fonts</b>"
 msgstr "<b>Γραμματοσειρές</b>"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:99
 msgid "Show status bar"
 msgstr "Εμφάνιση γραμμής κατάστασης"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:100
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr ""
 "Κατά πόσο θα εμφανίζεται η γραμμή κατάστασης στο κάτω μέρος του κεντρικού "
 "παραθύρου"
 
-#: ../data/geany.glade.h:100 ../src/prefs.c:1604
+#: ../data/geany.glade.h:101 ../src/prefs.c:1604
 msgid "Interface"
 msgstr "Περιβάλλον εργασίας"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:102
 msgid "Show editor tabs"
 msgstr "Εμφάνιση καρτέλων του επεξεργαστή"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:103
 msgid "Show close buttons"
 msgstr "Εμφάνιση κουμπιών κλεισίματος"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:104
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
 "clicking on it (requires restart of Geany)"
@@ -522,23 +527,23 @@ msgstr ""
 "κλείσιμο των αρχείων όταν θα γίνεται κλικ πάνω σ' αυτό (απαιτεί επανεκκίνηση "
 "του Geany)"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:105
 msgid "Placement of new file tabs:"
 msgstr "Τοποθέτηση των νέων καρτέλων αρχείων:"
 
-#: ../data/geany.glade.h:105
+#: ../data/geany.glade.h:106
 msgid "File tabs will be placed on the left of the notebook"
 msgstr "Οι καρτέλες αρχείων θα τοποθετούνται στα αριστερά του σημειωματάριου"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:107
 msgid "File tabs will be placed on the right of the notebook"
 msgstr "Οι καρτέλες αρχείων θα τοποθετούνται στα δεξιά του σημειωματάριου"
 
-#: ../data/geany.glade.h:107
+#: ../data/geany.glade.h:108
 msgid "Next to current"
 msgstr "Επόμενο του τρέχοντος"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:109
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
@@ -546,106 +551,106 @@ msgstr ""
 "Εάν και κατά πόσο να τοποθετούνται καρτέλες αρχείου δίπλα στην τρέχουσα "
 "καρτέλα και όχι στα άκρα του σημειωματάριου"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:110
 msgid "Double-clicking hides all additional widgets"
 msgstr "Διπλό κλικ αποκρύπτει όλα τα επιπρόσθετα Widgets"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:111
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr ""
 "Καλεί την επιλογή Προβολή-> Εναλλαγή Όλων των επιπρόσθετων εντολών Widgets"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:112
 msgid "Switch to last used document after closing a tab"
 msgstr "Μετάβαση στο τελευταίο σε χρήση έγγραφο μετά το κλείσιμο μιας καρτέλας"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:113
 msgid "<b>Editor tabs</b>"
 msgstr "<b>Ετικέτες επεξεργαστή</b>"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:114
 msgid "Sidebar:"
 msgstr "Πλευρική μπάρα:"
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:115
 msgid "<b>Tab positions</b>"
 msgstr "<b>Θέσεις ετικέτας</b>"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:116
 msgid "Notebook tabs"
 msgstr "Ετικέτες σημειωματάριου"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:117
 msgid "Show t_oolbar"
 msgstr "Εμφάνιση μ_πάρας εργαλείων"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:118
 msgid "_Append toolbar to the menu"
 msgstr "_Προσθήκη μπάρας εργαλείων στο μενού"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:119
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr ""
 "Ενσωμάτωση της μπάρας εργαλείων στο κεντρικό μενού για εξοικονόμηση κάθετου "
 "χώρου"
 
-#: ../data/geany.glade.h:119 ../src/toolbar.c:943
+#: ../data/geany.glade.h:120 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "Προσαρμογή _Μπάρας Εργαλείων"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:121
 msgid "System _default"
 msgstr "Προκαθορισμένο _συστήματος"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:122
 msgid "Images _and text"
 msgstr "Εικόνες _και κείμενο"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:123
 msgid "_Images only"
 msgstr "Μόνο _εικόνες"
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:124
 msgid "_Text only"
 msgstr "Μόνο _κείμενο"
 
-#: ../data/geany.glade.h:124
+#: ../data/geany.glade.h:125
 msgid "<b>Icon style</b>"
 msgstr "<b>Στυλ εικονιδίων</b>"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:126
 msgid "S_ystem default"
 msgstr "Π_ροκαθορισμένο συστήματος"
 
-#: ../data/geany.glade.h:126
+#: ../data/geany.glade.h:127
 msgid "_Small icons"
 msgstr "_Μικρά εικονίδια"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:128
 msgid "_Very small icons"
 msgstr "_Πολύ μικρά εικονίδια"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:129
 msgid "_Large icons"
 msgstr "Μ_εγάλα εικονίδια"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:130
 msgid "<b>Icon size</b>"
 msgstr "<b>Μέγεθος εικονιδίων</b>"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:131
 msgid "<b>Toolbar</b>"
 msgstr "<b>Μπάρα εργαλείων</b>"
 
-#: ../data/geany.glade.h:131 ../src/prefs.c:1606
+#: ../data/geany.glade.h:132 ../src/prefs.c:1606
 msgid "Toolbar"
 msgstr "Μπάρα εργαλείων"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:133
 msgid "Line wrapping"
 msgstr "Αναδίπλωση γραμμής"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:134
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
@@ -655,11 +660,11 @@ msgstr ""
 "επόμενη γραμμή. Σημείωση: η αναδίπλωση γραμμής έχει υψηλό κόστος απόδοσης σε "
 "μεγάλα έγγραφα άρα θα πρέπει να απενεργοποιείται σε αργά μηχανήματα."
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:135
 msgid "\"Smart\" home key"
 msgstr "\"Έξυπνο\" πλήκτρο αρχικού καταλόγου"
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:136
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -674,11 +679,11 @@ msgstr ""
 "παράλειψης στην αρχή της τρέχουσας γραμμής, ανεξάρτητα από τη τρέχουσα θέση "
 "του."
 
-#: ../data/geany.glade.h:136
+#: ../data/geany.glade.h:137
 msgid "Disable Drag and Drop"
 msgstr "Απενεργοποίηση του Drag και Drop"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:138
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
 "drop any selections within or outside of the editor window"
@@ -687,15 +692,15 @@ msgstr ""
 "δεν μπορείτε να κάνετε σύρε-άσε οποιεσδήποτε επιλογές μέσα ή έξω από το "
 "παράθυρο του επεξεργαστή"
 
-#: ../data/geany.glade.h:138
+#: ../data/geany.glade.h:139
 msgid "Code folding"
 msgstr "Αναδίπλωση κώδικα"
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:140
 msgid "Fold/unfold all children of a fold point"
 msgstr "Δίπλωση/Αναδίπλωση όλων των παράγωγων ενός σημείου δίπλωσης"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:141
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
 "clicking on a fold symbol the contrary behavior is used."
@@ -704,11 +709,11 @@ msgstr ""
 "πλήκτρο Shift ενώ κάνετε κλικ σε ένα σύμβολο δίπλωσης θα εκτελεστεί η "
 "αντίθετη συμπεριφορά της ενέργειας αυτής."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:142
 msgid "Use indicators to show compile errors"
 msgstr "Χρήση δεικτών για εμφάνιση σφαλμάτων μεταγλωττιστή"
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:143
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
@@ -716,25 +721,25 @@ msgstr ""
 "Εάν θα χρησιμοποιούνται δείκτες (μια κυματιστή υπογράμμιση) για να εστιάζουν "
 "στις γραμμές που ο μεταγλωττιστής βρήκε μια προειδοποίηση ή ένα σφάλμα"
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:144
 msgid "Newline strips trailing spaces"
 msgstr "Το newline αφαιρεί τα ακολουθούμενα κενά"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:145
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr ""
 "Ενεργοποιεί το newline να διαγράφει τα κενά στο τέλος της προηγούμενης "
 "γραμμής"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:146
 msgid "Line breaking column:"
 msgstr "Στήλη αναδίπλωσης γραμμής:"
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:147
 msgid "Comment toggle marker:"
 msgstr "Ενεργοποίηση/απενεργοποίηση δείκτη σχολίων:"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:148
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
 "used to mark the comment as toggled."
@@ -743,15 +748,15 @@ msgstr ""
 "σχόλιο γραμμής σε ένα πηγαίο αρχείο, χρησιμεύει για να μαρκάρει το σχόλιο ως "
 "ενεργοποιημένο/απενεργοποιημένο."
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:149
 msgid "<b>Features</b>"
 msgstr "<b>Χαρακτηριστικά</b>"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:150
 msgid "Features"
 msgstr "Χαρακτηριστικά"
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:151
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
@@ -759,25 +764,25 @@ msgstr ""
 "Σημείωση: Για να εφαρμοστούν αυτές οι ρυθμίσεις σε όλα τα τρέχοντα ανοιχτά "
 "έγγραφα, επιλέξτε <i>Έργο->Εφαρμογή προκαθορισμένης εσοχής</i>."
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:152
 #, fuzzy
 msgid "_Width:"
 msgstr "Πλάτος:"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:153
 msgid "The width in chars of a single indent"
 msgstr "Το πλάτος σε χαρακτήρες τους οποίους θα έχει μια μοναδική εσοχή"
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:154
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "Μέθοδος αυτόματης εσοχής:"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:155
 msgid "Detect type from file"
 msgstr "Ανίχνευση τύπου από το αρχείο"
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:156
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
@@ -785,38 +790,38 @@ msgstr ""
 "Εάν θα ανιχνεύεται ο τύπος της εσοχής από τα περιεχόμενα του αρχείου καθώς "
 "ένα αρχείο ανοίγει"
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:157
 msgid "T_abs and spaces"
 msgstr "T_abs και κενά"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:158
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr ""
 "Χρήση κενών εάν η πλήρης εσοχή είναι μικρότερη από το εύρος του tab, "
 "ειδάλλως να χρησιμοποιηθούν και τα δύο"
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:159
 msgid "_Spaces"
 msgstr "_Κενά"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:160
 msgid "Use spaces when inserting indentation"
 msgstr "Χρήση κενών όταν εισάγεται εσοχή"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:161
 msgid "_Tabs"
 msgstr "_Tabs"
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:162
 msgid "Use one tab per indent"
 msgstr "Χρήση ενός tab ανά εσοχή"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:163
 msgid "Detect width from file"
 msgstr "Ανίχνευση πλάτους από αρχείο"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:164
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
 "opened"
@@ -824,35 +829,35 @@ msgstr ""
 "Εάν θα ανιχνεύεται το πλάτος της εσοχής από τα περιεχόμενα του αρχείου όταν "
 "ένα αρχείο ανοίγει"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:165
 msgid "Type:"
 msgstr "Τύπος:"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:166
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "Εσοχή του πλήκτρου Tab"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:167
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
 "Πατώντας tab/shift-tab προσθέτει ή αφαιρεί εσοχή αντί για εισαγωγή χαρακτήρα "
 "tab"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:168
 msgid "<b>Indentation</b>"
 msgstr "<b>Εσοχοποίηση</b>"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:169
 msgid "Indentation"
 msgstr "Εσοχοποίηση"
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:170
 msgid "Snippet completion"
 msgstr "Συμπλήρωση αποκομμάτων"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:171
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
@@ -860,19 +865,19 @@ msgstr ""
 "Πληκτρολογήστε μια καθορισμένη σύντομη ακολουθία χαρακτήρων και ολοκληρώστε "
 "τη σε μια πιό σύνθετη σειρά χαρακτήρων χρησιμοποιώντας ένα πάτημα πλήκτρου"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:172
 msgid "XML/HTML tag auto-closing"
 msgstr "Αυτόματη ολοκλήρωση XML/HTML ετικετών"
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:173
 msgid "Insert matching closing tag for XML/HTML"
 msgstr "Εισαγωγή αντίστοιχης ετικέτας κλεισίματος για XML/HTML"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:174
 msgid "Automatic continuation of multi-line comments"
 msgstr "Αυτόματη συνέχιση σε σχόλια πολλαπλών γραμμών"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:175
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
 "when a new line is entered inside such a comment"
@@ -880,11 +885,11 @@ msgstr ""
 "Συνεχίζει αυτόματα σχόλια πολλαπλών γραμμών σε γλώσσες όπως C, C++ και Java "
 "όταν εισάγεται μια νέα γραμμή μέσα σε ένα τέτοιο σχόλιο"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:176
 msgid "Autocomplete symbols"
 msgstr "Αυτόματη συμπλήρωση συμβόλων"
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:177
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
@@ -892,27 +897,27 @@ msgstr ""
 "Αυτόματη συμπλήρωση των γνωστών συμβόλων σε ανοιγμένα αρχεία (ονόματα "
 "συναρτήσεων, γενικές μεταβλητές, ...)"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:178
 msgid "Autocomplete all words in document"
 msgstr "Αυτόματη συμπλήρωση όλων των λέξεων στο έγγραφο"
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:179
 msgid "Drop rest of word on completion"
 msgstr "Απόρριψη της υπόλοιπης λέξης κατά την συμπλήρωση"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:180
 msgid "Max. symbol name suggestions:"
 msgstr "Μάξιμουμ προτάσεις ονομάτων συμβόλων:"
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:181
 msgid "Completion list height:"
 msgstr "Ύψος λίστας συμπλήρωσης:"
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:182
 msgid "Characters to type for autocompletion:"
 msgstr "Χαρακτήρες προς πληκτρολόγηση για αυτόματη συμπλήρωση:"
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:183
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
@@ -920,20 +925,20 @@ msgstr ""
 "Το πλήθος των χαρακτήρων που είναι απαραίτητοι για να εμφανιστεί η λίστα "
 "αυτόματης συμπλήρωσης συμβόλων"
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:184
 msgid "Display height in rows for the autocompletion list"
 msgstr "Εμφάνιση ύψους σε γραμμές για τη λίστα αυτόματης συμπλήρωσης"
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:185
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr ""
 "Μέγιστος αριθμός καταχωρήσεων που θα εμφανίζει η λίστα αυτόματης συμπλήρωσης"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:186
 msgid "Symbol list update frequency:"
 msgstr "Συχνότητα ενημέρωσης της λίστας συμβόλων:"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:187
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
@@ -945,107 +950,107 @@ msgstr ""
 "αρχεία. Μια καθυστέρηση σε 0 απενεργοποιεί τις ενημερώσεις πραγματικού "
 "χρόνου."
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:188
 msgid "<b>Completions</b>"
 msgstr "<b>Συμπληρώσεις</b>"
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:189
 msgid "Parenthesis ( )"
 msgstr "Παρενθέσεις ( )"
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:190
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr "Αυτόματο κλείσιμο παρενθέσεων όταν πληκτρολογείται η πρώτη"
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:191
 msgid "Curly brackets { }"
 msgstr "Καμπυλωτές Αγκύλες { }"
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:192
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr "Αυτόματο κλείσιμο καμπυλωτών αγκυλών όταν πληκτρολογείται η πρώτη"
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:193
 msgid "Square brackets [ ]"
 msgstr "Τετράγωνες αγκύλες [ ]"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:194
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr "Αυτόματο κλείσιμο τετράγωνων αγκυλών όταν πληκτρολογείται η πρώτη"
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:195
 msgid "Single quotes ' '"
 msgstr "Μονά εισαγωγικά ' '"
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:196
 msgid "Auto-close single quote when typing an opening one"
 msgstr "Αυτόματο κλείσιμο μονών εισαγωγικών όταν πληκτρολογείται το πρώτο"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:197
 msgid "Double quotes \" \""
 msgstr "Διπλά εισαγωγικά \" \""
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:198
 msgid "Auto-close double quote when typing an opening one"
 msgstr "Αυτόματο κλείσιμο διπλών εισαγωγικών όταν πληκτρολογείται το πρώτο"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:199
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr "<b>Αυτόματο κλείσιμο εισαγωγικών και αγκυλών</b>"
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:200
 msgid "Completions"
 msgstr "Συμπληρώσεις"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:201
 msgid "Invert syntax highlighting colors"
 msgstr "Αντιστροφή των χρωμάτων υπογράμμισης σύνταξης"
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:202
 msgid "Invert all colors, by default using white text on a black background"
 msgstr ""
 "Αναστροφή όλων των χρωμάτων, προκαθορισμένη χρήση λευκού κειμένου σε μαύρο "
 "φόντο"
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:203
 msgid "Show indentation guides"
 msgstr "Εμφάνιση οδηγών εσοχοποίησης"
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:204
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr ""
 "Εμφανίζει μικρές γραμμές με κουκκίδες για να σας βοηθήσει να χρησιμοποιείτε "
 "τη σωστή εσοχή"
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:205
 msgid "Show white space"
 msgstr "Εμφάνιση των κενών"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:206
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr "Μαρκάρει τα κενά με τελείες και τα tab με βελάκια"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:207
 msgid "Show line endings"
 msgstr "Εμφάνιση τέλους γραμμής"
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:208
 msgid "Shows the line ending character"
 msgstr "Εμφανίζει τον χαρακτήρα τέλους γραμμής"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:209
 msgid "Show line numbers"
 msgstr "Εμφάνιση αρίθμησης γραμμών"
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:210
 msgid "Shows or hides the Line Number margin"
 msgstr "Εμφανίζει ή κρύβει το περιθώριο με την αρίθμηση γραμμών"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:211
 msgid "Show markers margin"
 msgstr "Εμφάνιση δεικτών περιθωρίου"
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:212
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
@@ -1053,41 +1058,41 @@ msgstr ""
 "Εμφανίζει ή κρύβει τα μικρά περιθώρια δεξιά από τους αριθμούς των γραμμών, "
 "που χρησιμοποιούνται ως σημειωτές γραμμών"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:213
 msgid "Stop scrolling at last line"
 msgstr "Παύση κύλισης στη τελευταία γραμμή"
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:214
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr ""
 "Εάν θα σταματά η ολίσθηση κατά μια σελίδα μετά τη τελευταία γραμμή ενός "
 "εγγράφου"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:215
 msgid "Lines visible _around the cursor:"
 msgstr "Ορ_ατές γραμμές γύρω από τον δρομέα:"
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:216
 msgid "<b>Display</b>"
 msgstr "<b>Εμφάνιση</b>"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:217
 msgid "Column:"
 msgstr "Στήλη:"
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:218
 msgid "Color:"
 msgstr "Χρώμα:"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:219
 msgid "Sets the color of the long line marker"
 msgstr "Καθορίζει το χρώμα του μεγάλου δείκτη γραμμής"
 
-#: ../data/geany.glade.h:219 ../src/toolbar.c:73 ../src/tools.c:831
+#: ../data/geany.glade.h:220 ../src/toolbar.c:73 ../src/tools.c:847
 msgid "Color Chooser"
 msgstr "Επιλογέας χρώματος"
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:221
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
 "long lines, or as a hint to break the line. Set this value to a value "
@@ -1098,11 +1103,11 @@ msgstr ""
 "σπάσιμο της γραμμής. Θέστε τη τιμή μεγαλύτερη του 0 για να καθορίσετε που θα "
 "εμφανίζεται η στήλη."
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:222
 msgid "Line"
 msgstr "Γραμμή"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:223
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
@@ -1110,11 +1115,11 @@ msgstr ""
 "Τυπώνει μια κάθετη γραμμή στο παράθυρο του επεξεργαστή στη δοθείσα θέση του "
 "δρομέα (δείτε παρακάτω)"
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:224
 msgid "Background"
 msgstr "Φόντο"
 
-#: ../data/geany.glade.h:224
+#: ../data/geany.glade.h:225
 msgid ""
 "The background color of characters after the given cursor position (see "
 "below) changed to the color set below, (this is recommended if you use "
@@ -1124,27 +1129,27 @@ msgstr ""
 "παρακάτω) άλλαξε στο παρακάτω καθορισμένο χρώμα, (προτείνεται εάν "
 "χρησιμοποιείτε ανάλογες γραμματοσειρές)"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:226
 msgid "Enabled"
 msgstr "Ενεργοποιημένο"
 
-#: ../data/geany.glade.h:226
+#: ../data/geany.glade.h:227
 msgid "<b>Long line marker</b>"
 msgstr "<b>Μακρύς σημειωτής γραμμής</b>"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:228
 msgid "Disabled"
 msgstr "Απενεργοποιημένο"
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:229
 msgid "Do not show virtual spaces"
 msgstr "Να μην εμφανίζονται εικονικά κενά"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:230
 msgid "Only for rectangular selections"
 msgstr "Μόνο για ορθογώνιες επιλογές"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:231
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
@@ -1152,57 +1157,57 @@ msgstr ""
 "Εμφάνιση εικονικών κενών μόνο μετά το τέλος των γραμμών όταν σχεδιάζουμε μια "
 "ορθογώνια επιλογή"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:232
 msgid "Always"
 msgstr "Πάντοτε"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:233
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "Προβολή πάντοτε των εικονικών κενών μετά το τέλος των γραμμών"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:234
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>Virtual spaces</b>"
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:235
 msgid "Display"
 msgstr "Εμφάνιση"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
+#: ../data/geany.glade.h:236 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "Επεξεργαστής"
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:237
 msgid "Open new documents from the command-line"
 msgstr "Άνοιγμα νέων αρχείων από τη γραμμή εντολών"
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:238
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr ""
 "Δημιουργία νέου αρχείου για κάθε όνομα αρχείου γραμμής εντολών που δεν "
 "υπάρχει"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:239
 msgid "Default end of line characters:"
 msgstr "Προκαθορισμένοι χαρακτήρες τέλους γραμμής:"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:240
 msgid "<b>New files</b>"
 msgstr "<b>Νέα αρχεία</b>"
 
-#: ../data/geany.glade.h:240
+#: ../data/geany.glade.h:241
 msgid "Default encoding (new files):"
 msgstr "Προκαθορισμένη κωδικοποίηση (νέα αρχεία):"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:242
 msgid "Sets the default encoding for newly created files"
 msgstr "Θέτει την προκαθορισμένη κωδικοποίηση για τα νεοδημιουργημένα αρχεία"
 
-#: ../data/geany.glade.h:242
+#: ../data/geany.glade.h:243
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "Χρήση συγκεκριμένης κωδικοποίησης κατά το άνοιγμα μη Unicode αρχείων"
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:244
 msgid ""
 "This option disables the automatic detection of the file encoding when "
 "opening non-Unicode files and opens the file with the specified encoding "
@@ -1212,33 +1217,33 @@ msgstr ""
 "αρχείου κατά το άνοιγμα αρχείων που δεν είναι Unicode και ανοίγει το αρχείο "
 "με την προσδιορισμένη κωδικοποίηση (συνήθως δεν χρειάζεται)"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:245
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "Προκαθορισμένη κωδικοποίηση (υπάρχοντα μη-Unicode αρχεία):"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:246
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr ""
 "Θέτει τη προκαθορισμένη κωδικοποίηση για το άνοιγμα των υπαρχόντων μη "
 "Unicode αρχείων"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:247
 msgid "<b>Encodings</b>"
 msgstr "<b>Κωδικοποιήσεις</b>"
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:248
 msgid "Ensure new line at file end"
 msgstr "Εξασφάλιση new line στο τέλος αρχείου"
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:249
 msgid "Ensures that at the end of the file is a new line"
 msgstr "Εγγυάται ότι στο τέλος του αρχείου υπάρχει ένας χαρακτήρας new line"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:250
 msgid "Ensure consistent line endings"
 msgstr "Εξασφάλιση για new line στο τέλος των γραμμών"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:251
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
@@ -1247,40 +1252,40 @@ msgstr ""
 "αποθήκευση, αποφεύγοντας ανάμιξη διαφορετικών τελειωμάτων γραμμών στο ίδιο "
 "αρχείο"
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:252
 msgid "Strip trailing spaces and tabs"
 msgstr "Αφαίρεση ακολουθούμενων κενών και tab"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:253
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Διαγράφει τα κενά και τα tab στο τέλος των γραμμών"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:671
+#: ../data/geany.glade.h:254 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "Αντικατάσταση των tab με κενά"
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:255
 msgid "Replaces all tabs in document with spaces"
 msgstr "Αντικαθιστά όλα τα tab στο έγγραφο με κενά"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:256
 msgid "<b>Saving files</b>"
 msgstr "<b>Αποθήκευση αρχείων</b>"
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:257
 msgid "Recent files list length:"
 msgstr "Μήκος λίστας πρόσφατων αρχείων:"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:258
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Καθορίζει τον αριθμό των αρχείων που αποθηκεύονται στη λίστα Πρόσφατα αρχεία"
 
-#: ../data/geany.glade.h:258
+#: ../data/geany.glade.h:259
 msgid "Disk check timeout:"
 msgstr "Χρονική λήξη ελέγχου του δίσκου:"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:260
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1288,20 +1293,20 @@ msgstr ""
 "Πόσο συχνά θα γίνεται έλεγχος για αλλαγές του εγγράφου στον δίσκο, σε "
 "δευτερόλεπτα. Το μηδέν απενεργοποιεί τον έλεγχο."
 
-#: ../data/geany.glade.h:260 ../src/prefs.c:1610 ../src/symbols.c:465
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:465
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Αρχεία"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:262
 msgid "Terminal:"
 msgstr "Τερματικό:"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:263
 msgid "Browser:"
 msgstr "Περιηγητής:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:265
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
@@ -1310,24 +1315,24 @@ msgstr ""
 "Μια εντολή του προσομοιωτή τερματικού (%c έχει αντικατασταθεί με το όνομα "
 "αρχείου του Geany run script)"
 
-#: ../data/geany.glade.h:265
+#: ../data/geany.glade.h:266
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr ""
 "Διαδρομή (και πιθανά πρόσθετες παράμετροι) του αγαπημένου σας περιηγητή"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:267
 msgid "Grep:"
 msgstr "Grep:"
 
-#: ../data/geany.glade.h:267
+#: ../data/geany.glade.h:268
 msgid "<b>Tool paths</b>"
 msgstr "<b>Διαδρομές εργαλείων</b>"
 
-#: ../data/geany.glade.h:268
+#: ../data/geany.glade.h:269
 msgid "Context action:"
 msgstr "Δράση πλαισίου:"
 
-#: ../data/geany.glade.h:270
+#: ../data/geany.glade.h:271
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1338,67 +1343,67 @@ msgstr ""
 "με %s. Μπορεί να εμφανιστεί οπουδήποτε στη δοθείσα εντολή και θα "
 "αντικατασταθεί πριν την εκτέλεση."
 
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:272
 msgid "<b>Commands</b>"
 msgstr "<b>Εντολές</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
+#: ../data/geany.glade.h:273 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "Εργαλεία"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:274
 msgid "Email address of the developer"
 msgstr "Διεύθυνση email του δημιουργού"
 
-#: ../data/geany.glade.h:274
+#: ../data/geany.glade.h:275
 msgid "Initials of the developer name"
 msgstr "Αρχικά του ονόματος του δημιουργού"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:276
 msgid "Initial version:"
 msgstr "Αρχική έκδοση:"
 
-#: ../data/geany.glade.h:276
+#: ../data/geany.glade.h:277
 msgid "Version number, which a new file initially has"
 msgstr "Αριθμός έκδοσης, τον οποίο αρχικά έχει ένα νέο αρχείο"
 
-#: ../data/geany.glade.h:277
+#: ../data/geany.glade.h:278
 msgid "Company name"
 msgstr "Όνομα εταιρίας"
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:279
 msgid "Developer:"
 msgstr "Δημιουργός:"
 
-#: ../data/geany.glade.h:279
+#: ../data/geany.glade.h:280
 msgid "Company:"
 msgstr "Εταιρία:"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:281
 msgid "Mail address:"
 msgstr "Ταχυδρομική διεύθυνση:"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:282
 msgid "Initials:"
 msgstr "Αρχικά:"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:283
 msgid "The name of the developer"
 msgstr "Το όνομα του δημιουργού"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:284
 msgid "Year:"
 msgstr "Έτος:"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:285
 msgid "Date:"
 msgstr "Ημερομηνία:"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:286
 msgid "Date & time:"
 msgstr "Ημερομηνία & ώρα:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:287
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1407,7 +1412,7 @@ msgstr ""
 "οποιουσδήποτε προσδιοριστές μετατροπής που μπορούν να χρησιμοποιηθούν με την "
 "ANSI C strftime συνάρτηση."
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:288
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1416,7 +1421,7 @@ msgstr ""
 "οποιουσδήποτε προσδιοριστές μετατροπής που μπορούν να χρησιμοποιηθούν με την "
 "ANSI C strftime συνάρτηση."
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:289
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1425,66 +1430,66 @@ msgstr ""
 "οποιουσδήποτε προσδιοριστές μετατροπής που μπορούν να χρησιμοποιηθούν με την "
 "ANSI C strftime συνάρτηση."
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:290
 msgid "<b>Template data</b>"
 msgstr "<b>Δεδομένα πρότυπου</b>"
 
-#: ../data/geany.glade.h:290 ../src/prefs.c:1614
+#: ../data/geany.glade.h:291 ../src/prefs.c:1614
 msgid "Templates"
 msgstr "Πρότυπα"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:292
 msgid "C_hange"
 msgstr "Α_λλαγή"
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:293
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>Συντομεύσεις πληκτρολογίου</b>"
 
-#: ../data/geany.glade.h:293 ../src/plugins.c:1950 ../src/plugins.c:1987
+#: ../data/geany.glade.h:294 ../src/plugins.c:1950 ../src/plugins.c:1987
 #: ../src/prefs.c:1616
 msgid "Keybindings"
 msgstr "Συνδυασμοί πλήκτρων"
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:295
 msgid "Command:"
 msgstr "Εντολή:"
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:297
 #, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr ""
 "Διαδρομή της εντολής εκτύπωσης αρχείων (χρησιμοποιείστε %f για το όνομα "
 "αρχείου)"
 
-#: ../data/geany.glade.h:297
+#: ../data/geany.glade.h:298
 msgid "Use an external command for printing"
 msgstr "Χρησιμοποιείστε μια εξωτερική εντολή για εκτύπωση"
 
-#: ../data/geany.glade.h:298 ../src/printing.c:237
+#: ../data/geany.glade.h:299 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "Εκτύπωση αρίθμησης γραμμών"
 
-#: ../data/geany.glade.h:299 ../src/printing.c:239
+#: ../data/geany.glade.h:300 ../src/printing.c:239
 msgid "Add line numbers to the printed page"
 msgstr "Προσθήκη αρίθμησης γραμμών στην εκτυπωμένη σελίδα"
 
-#: ../data/geany.glade.h:300 ../src/printing.c:242
+#: ../data/geany.glade.h:301 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "Εκτύπωση αριθμών σελίδας"
 
-#: ../data/geany.glade.h:301 ../src/printing.c:244
+#: ../data/geany.glade.h:302 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr ""
 "Προσθέτει αριθμούς σελίδας στο τέλος της κάθε σελίδας. Καταλαμβάνει 2 "
 "γραμμές από τη σελίδα."
 
-#: ../data/geany.glade.h:302 ../src/printing.c:247
+#: ../data/geany.glade.h:303 ../src/printing.c:247
 msgid "Print page header"
 msgstr "Εκτύπωση κεφαλίδας σελίδας"
 
-#: ../data/geany.glade.h:303 ../src/printing.c:249
+#: ../data/geany.glade.h:304 ../src/printing.c:249
 msgid ""
 "Add a little header to every page containing the page number, the filename "
 "and the current date (see below). It takes 3 lines of the page."
@@ -1493,20 +1498,20 @@ msgstr ""
 "το όνομα αρχείου και την τρέχουσα ημερομηνία (δείτε παρακάτω). Καταλαμβάνει "
 "3 γραμμές από τη σελίδα."
 
-#: ../data/geany.glade.h:304 ../src/printing.c:265
+#: ../data/geany.glade.h:305 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "Χρήση του βασικού ονόματος του εκτυπώμενου αρχείου"
 
-#: ../data/geany.glade.h:305
+#: ../data/geany.glade.h:306
 msgid "Print only the basename (without the path) of the printed file"
 msgstr ""
 "Εκτυπώνει μόνο το βασικό όνομα (χωρίς τη διαδρομή) του εκτυπώμενου αρχείου"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:273
+#: ../data/geany.glade.h:307 ../src/printing.c:273
 msgid "Date format:"
 msgstr "Μορφή ημερομηνίας:"
 
-#: ../data/geany.glade.h:307 ../src/printing.c:279
+#: ../data/geany.glade.h:308 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1517,56 +1522,56 @@ msgstr ""
 "οποιουσδήποτε προσδιοριστές μετατροπής που μπορούν να χρησιμοποιηθούν με την "
 "ANSI C strftime συνάρτηση."
 
-#: ../data/geany.glade.h:308
+#: ../data/geany.glade.h:309
 msgid "Use native GTK printing"
 msgstr "Χρήση εγγενής εκτύπωσης GTK"
 
-#: ../data/geany.glade.h:309
+#: ../data/geany.glade.h:310
 msgid "<b>Printing</b>"
 msgstr "<b>Γίνεται εκτύπωση</b>"
 
-#: ../data/geany.glade.h:310 ../src/prefs.c:1618
+#: ../data/geany.glade.h:311 ../src/prefs.c:1618
 msgid "Printing"
 msgstr "Γίνεται εκτύπωση"
 
-#: ../data/geany.glade.h:311
+#: ../data/geany.glade.h:312
 msgid "Font:"
 msgstr "Γραμματοσειρά:"
 
-#: ../data/geany.glade.h:312
+#: ../data/geany.glade.h:313
 msgid "Sets the font for the terminal widget"
 msgstr "Καθορίζει την γραμματοσειρά για το πρόσθετο τερματικού"
 
-#: ../data/geany.glade.h:313
+#: ../data/geany.glade.h:314
 msgid "Choose Terminal Font"
 msgstr "Επιλογή γραμματοσειράς τερματικού"
 
-#: ../data/geany.glade.h:314
+#: ../data/geany.glade.h:315
 msgid "Foreground color:"
 msgstr "Χρώμα πρώτου πλάνου:"
 
-#: ../data/geany.glade.h:315
+#: ../data/geany.glade.h:316
 msgid "Background color:"
 msgstr "Χρώμα υπόβαθρου:"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:317
 msgid "Scrollback lines:"
 msgstr "Ιστορικό γραμμών:"
 
-#: ../data/geany.glade.h:317
+#: ../data/geany.glade.h:318
 msgid "Shell:"
 msgstr "Κέλυφος:"
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:319
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr ""
 "Καθορίζει το χρώμα πρώτου πλάνου για το κείμενο στο widget του τερματικού"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:320
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "Καθορίζει το χρώμα φόντου για το κείμενο στο widget τερματικού"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:321
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
@@ -1574,7 +1579,7 @@ msgstr ""
 "Καθορίζει τον αριθμό γραμμών στο ιστορικό, που μπορείτε να γυρίζετε πίσω στο "
 "widget τερματικού"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:322
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
@@ -1582,46 +1587,46 @@ msgstr ""
 "Καθορίζει τη διαδρομή στο κέλυφος από την οποία θα ξεκινά μέσα στην "
 "εξομοίωση τερματικού"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:323
 msgid "Scroll on keystroke"
 msgstr "Σκρολάρισμα σε πάτημα πλήκτρου"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:324
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "Εάν θα σκρολάρει προς τα κάτω όταν ένα πλήκτρο έχει πατηθεί"
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:325
 msgid "Scroll on output"
 msgstr "Σκρολάρισμα στην πηγή εξόδου"
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:326
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "Εάν θα σκρολάρει προς τα κάτω όταν παράγεται output"
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:327
 msgid "Cursor blinks"
 msgstr "Ο δρομέας αναβοσβήνει"
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:328
 msgid "Whether to blink the cursor"
 msgstr "Εάν θα αναβοσβήνει ο κέρσορας"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:329
 msgid "Override Geany keybindings"
 msgstr "Παράκαμψη συντομεύσεων πληκτρολογίου του Geany"
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:330
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr ""
 "Επιτρέπει το VTE να λαμβάνει συντομεύσεις πλήκτρων (εκτός από τις εντολές "
 "εστίασης)"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:331
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "Απενεργοποίηση συντόμευσης του πλήκτρου μενού (προκαθορισμένο το F10)"
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:332
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1631,21 +1636,21 @@ msgstr ""
 "μπάρας του μενού (προκαθορισμένο το F10). Απενεργοποιώντας το μπορεί να "
 "είναι χρήσιμο, για παράδειγμα, στο Midnight Commander μέσα από το VTE."
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:333
 msgid "Follow path of the current file"
 msgstr "Ακολούθησε τη διαδρομή του τρέχοντος αρχείου"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:334
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr ""
 "Εάν θα εκτελείται το \"cd $path\" όταν θα γίνεται εναλλαγή μεταξύ ανοιγμένων "
 "αρχείων"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:335
 msgid "Execute programs in the VTE"
 msgstr "Εκτέλεση προγραμμάτων στο VTE"
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:336
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
@@ -1654,11 +1659,11 @@ msgstr ""
 "τερματικού. Παρακαλώ σημειώστε, προγράμματα που εκτελούνται στο VTE δεν "
 "είναι δυνατόν να σταματήσουν"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:337
 msgid "Don't use run script"
 msgstr "Μη χρήση εκτέλεσης script"
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:338
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
@@ -1667,535 +1672,535 @@ msgstr ""
 "χρησιμοποιείται για να εμφανίζει τη κατάσταση εξόδου του εκτελέσιμου "
 "προγράμματος"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:339
 msgid "<b>Terminal</b>"
 msgstr "<b>Τερματικό</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
 msgid "Terminal"
 msgstr "Τερματικό"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:341
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr ""
 "<i>Προειδοποίηση: διαβάστε το εγχειρίδιο πριν αλλάξετε αυτές τις επιλογές.</"
 "i>"
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:342
 msgid "<b>Various preferences</b>"
 msgstr "<b>Διάφορες ιδιότητες</b>"
 
-#: ../data/geany.glade.h:342 ../src/prefs.c:1620
+#: ../data/geany.glade.h:343 ../src/prefs.c:1620
 msgid "Various"
 msgstr "Διάφορα"
 
-#: ../data/geany.glade.h:344
+#: ../data/geany.glade.h:345
 msgid "_File"
 msgstr "_Αρχείο"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:346
 msgid "New (with _Template)"
 msgstr "Νέο (με _Πρότυπο)"
 
-#: ../data/geany.glade.h:346
+#: ../data/geany.glade.h:347
 msgid "_Open..."
 msgstr "_Άνοιγμα..."
 
-#: ../data/geany.glade.h:347
+#: ../data/geany.glade.h:348
 msgid "Recent _Files"
 msgstr "_Πρόσφατα αρχεία"
 
-#: ../data/geany.glade.h:348
+#: ../data/geany.glade.h:349
 msgid "Save _As..."
 msgstr "Αποθήκευση _ως..."
 
-#: ../data/geany.glade.h:349
+#: ../data/geany.glade.h:350
 msgid "Sa_ve All"
 msgstr "Αποθήκευση όλων"
 
-#: ../data/geany.glade.h:350 ../src/document.c:1655 ../src/document.c:3616
+#: ../data/geany.glade.h:351 ../src/document.c:1655 ../src/document.c:3616
 #: ../src/sidebar.c:717
 msgid "_Reload"
 msgstr "_Επαναφόρτωση"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:352
 msgid "R_eload As"
 msgstr "_Επαναφόρτωση ως"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:353
 msgid "Page Set_up"
 msgstr "Ρύθμιση _σελίδας"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:354
 msgid "_Print..."
 msgstr "_Εκτύπωση..."
 
-#: ../data/geany.glade.h:354 ../src/notebook.c:495
+#: ../data/geany.glade.h:355 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "Κλείσιμο ά_λλων εγγράφων"
 
-#: ../data/geany.glade.h:355 ../src/notebook.c:507
+#: ../data/geany.glade.h:356 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "_Κλείσιμο όλων"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:357
 msgid "Co_mmands"
 msgstr "Εν_τολές"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:437
+#: ../data/geany.glade.h:358 ../src/keybindings.c:437
 msgid "Cu_t Current Line(s)"
 msgstr "Απο_κοπή τρέχουσας γραμμής(ών)"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:434
+#: ../data/geany.glade.h:359 ../src/keybindings.c:434
 msgid "_Copy Current Line(s)"
 msgstr "Α_ντιγραφή τρέχουσας γραμμής(ών)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:387
+#: ../data/geany.glade.h:360 ../src/keybindings.c:387
 msgid "_Delete Current Line(s)"
 msgstr "Διαγραφή τρέχουσας γ_ραμμής(ών)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:384
+#: ../data/geany.glade.h:361 ../src/keybindings.c:384
 msgid "D_uplicate Line or Selection"
 msgstr "Αντίγρα_φο της γραμμής ή της επιλογής"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:447
+#: ../data/geany.glade.h:362 ../src/keybindings.c:447
 msgid "S_elect Current Line(s)"
 msgstr "Επιλο_γή τρέχουσας γραμμής(ών)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:450
+#: ../data/geany.glade.h:363 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr "Επιλογή τρέχο_υσας παραγράφου"
 
-#: ../data/geany.glade.h:363
+#: ../data/geany.glade.h:364
 msgid "_Move Line(s) Up"
 msgstr "_Μετακίνηση γραμμής(ών) πάνω"
 
-#: ../data/geany.glade.h:364
+#: ../data/geany.glade.h:365
 msgid "M_ove Line(s) Down"
 msgstr "Μ_ετακίνηση γραμμής(ών) κάτω"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:501
+#: ../data/geany.glade.h:366 ../src/keybindings.c:501
 msgid "_Send Selection to Terminal"
 msgstr "Απ_οστολή επιλογής στο τερματικό"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:503
+#: ../data/geany.glade.h:367 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr "_Αναδιάταξη γραμμών/μπλοκ"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:461
+#: ../data/geany.glade.h:368 ../src/keybindings.c:461
 msgid "T_oggle Case of Selection"
 msgstr "Ενα_λλαγή πεζών/κεφαλαίων επιλογής"
 
-#: ../data/geany.glade.h:368
+#: ../data/geany.glade.h:369
 msgid "_Comment Line(s)"
 msgstr "_Σχολιασμός γραμμής(ών)"
 
-#: ../data/geany.glade.h:369
+#: ../data/geany.glade.h:370
 msgid "U_ncomment Line(s)"
 msgstr "Α_ποσχολιασμός γραμμής(ών)"
 
-#: ../data/geany.glade.h:370
+#: ../data/geany.glade.h:371
 msgid "_Toggle Line Commentation"
 msgstr "Ενεργοποίηση/απενεργοποίηση γραμμής _σχολιασμού"
 
-#: ../data/geany.glade.h:371
+#: ../data/geany.glade.h:372
 msgid "_Increase Indent"
 msgstr "Αύξηση εσο_χής"
 
-#: ../data/geany.glade.h:372
+#: ../data/geany.glade.h:373
 msgid "_Decrease Indent"
 msgstr "_Μείωση εσοχής"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:480
+#: ../data/geany.glade.h:374 ../src/keybindings.c:480
 msgid "S_mart Line Indent"
 msgstr "Έ_ξυπνη εσοχή γραμμής"
 
-#: ../data/geany.glade.h:374
+#: ../data/geany.glade.h:375
 msgid "_Send Selection to"
 msgstr "Απ_οστολή επιλογής προς"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:376
 msgid "I_nsert Comments"
 msgstr "Εισαγωγή σχολί_ων"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:377
 msgid "Preference_s"
 msgstr "Ιδιότητ_ες"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:527
+#: ../data/geany.glade.h:378 ../src/keybindings.c:527
 msgid "P_lugin Preferences"
 msgstr "Ιδιότητες _πρόσθετων"
 
-#: ../data/geany.glade.h:378
+#: ../data/geany.glade.h:379
 msgid "_Find..."
 msgstr "Ανα_ζήτηση..."
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:380
 msgid "Find _Next"
 msgstr "Αναζήτηση _επόμενου"
 
-#: ../data/geany.glade.h:380
+#: ../data/geany.glade.h:381
 msgid "Find _Previous"
 msgstr "Αναζήτηση _προηγούμενου"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2743
 msgid "Find in F_iles..."
 msgstr "Αναζήτηση στα α_ρχεία..."
 
-#: ../data/geany.glade.h:382
+#: ../data/geany.glade.h:383
 msgid "_Replace..."
 msgstr "Αν_τικατάσταση..."
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:384
 msgid "Next Me_ssage"
 msgstr "Επόμενο _μήνυμα"
 
-#: ../data/geany.glade.h:384
+#: ../data/geany.glade.h:385
 msgid "Pr_evious Message"
 msgstr "Πρ_οηγούμενο μήνυμα"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:576
+#: ../data/geany.glade.h:386 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr "Πήγαινε στον επό_μενο δείκτη"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:579
+#: ../data/geany.glade.h:387 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr "Πήγαινε στον π_ροηγούμενο δείκτη"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:388
 msgid "_Go to Line..."
 msgstr "Πήγαιν_ε στη γραμμή..."
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:539
+#: ../data/geany.glade.h:389 ../src/keybindings.c:539
 msgid "Find Next _Selection"
 msgstr "Αναζήτηση επ_όμενου επιλεγμένου"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:541
+#: ../data/geany.glade.h:390 ../src/keybindings.c:541
 msgid "Find Pre_vious Selection"
 msgstr "Αναζήτηση π_ροηγούμενου επιλεγμένου"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:558
+#: ../data/geany.glade.h:391 ../src/keybindings.c:558
 msgid "_Mark All"
 msgstr "Μαρκάρισμα _όλων"
 
-#: ../data/geany.glade.h:391
+#: ../data/geany.glade.h:392
 msgid "Go to Symbol Decl_aration"
 msgstr "Πήγ_αινε στη δήλωση συμβόλου"
 
-#: ../data/geany.glade.h:392
+#: ../data/geany.glade.h:393
 msgid "_View"
 msgstr "_Προβολή"
 
-#: ../data/geany.glade.h:393
+#: ../data/geany.glade.h:394
 msgid "Change _Font..."
 msgstr "Αλλαγή γραμμα_τοσειράς..."
 
-#: ../data/geany.glade.h:394
+#: ../data/geany.glade.h:395
 msgid "Change _Color Scheme..."
 msgstr "Επιλογέας _χρωμάτων..."
 
-#: ../data/geany.glade.h:395
+#: ../data/geany.glade.h:396
 msgid "Show _Markers Margin"
 msgstr "Εμφάνιση _δεικτών περιθωρίου"
 
-#: ../data/geany.glade.h:396
+#: ../data/geany.glade.h:397
 msgid "Show _Line Numbers"
 msgstr "Εμφάνιση μ_ετρητή γραμμών"
 
-#: ../data/geany.glade.h:397
+#: ../data/geany.glade.h:398
 msgid "Show White S_pace"
 msgstr "Εμφάνιση των κ_ενών"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:399
 msgid "Show Line _Endings"
 msgstr "Εμφάνιση τέλους _γραμμής"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:400
 msgid "Show Indentation _Guides"
 msgstr "Εμφάνιση οδηγών _εσοχής"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:401
 msgid "Full_screen"
 msgstr "Πλήρης _οθόνη"
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:402
 msgid "Toggle All _Additional Widgets"
 msgstr "Ενεργοποίηση/Απενεργοποίηση _Όλων των Επιπρόσθετων Widgets"
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:403
 msgid "Show Message _Window"
 msgstr "Προβολή παράθυρου _μηνυμάτων"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:404
 msgid "Show _Toolbar"
 msgstr "Εμφάνιση _μπάρας εργαλείων"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:405
 msgid "Show Side_bar"
 msgstr "Εμφάνιση πλε_υρικής μπάρας"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:406
 msgid "_Document"
 msgstr "Έγγ_ραφο"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:407
 msgid "_Line Wrapping"
 msgstr "Αναδίπλ_ωση γραμμής"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:408
 msgid "Line _Breaking"
 msgstr "Αποκοπή _γραμμής"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:409
 msgid "_Auto-indentation"
 msgstr "_Αυτόματη εσοχή"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:410
 msgid "In_dent Type"
 msgstr "Τύ_πος εσοχής"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:411
 msgid "_Detect from Content"
 msgstr "Ανί_χνευση από το περιεχόμενο"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:412
 msgid "T_abs and Spaces"
 msgstr "T_ab και κενά"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:413
 msgid "Indent Widt_h"
 msgstr "Εύρος _εσοχής"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:414
 msgid "_1"
 msgstr "_1"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:415
 msgid "_2"
 msgstr "_2"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:416
 msgid "_3"
 msgstr "_3"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:417
 msgid "_4"
 msgstr "_4"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:418
 msgid "_5"
 msgstr "_5"
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:419
 msgid "_6"
 msgstr "_6"
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:420
 msgid "_7"
 msgstr "_7"
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:421
 msgid "_8"
 msgstr "_8"
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:422
 msgid "Read _Only"
 msgstr "Μόνο για ανάγ_νωση"
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:423
 msgid "_Write Unicode BOM"
 msgstr "Εγγραφή _Unicode BOM"
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:424
 msgid "Set File_type"
 msgstr "Καθορισμός _τύπου αρχείου"
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:425
 msgid "Set _Encoding"
 msgstr "Καθορισμός κ_ωδικοποίησης"
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:426
 msgid "Set Line E_ndings"
 msgstr "Καθορισμός κατα_λήξεων γραμμών"
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:427
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "Μετατροπή και καθορισμός σε _CR/LF (Windows)"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:428
 msgid "Convert and Set to _LF (Unix)"
 msgstr "Μετατροπή και καθορισμός σε _LF (Unix)"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:429
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Μετατροπή και καθορισμός σε CR (τυπικό _Mac)"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:667
+#: ../data/geany.glade.h:430 ../src/keybindings.c:667
 msgid "_Clone"
 msgstr "_Κλωνοποίηση"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:669
+#: ../data/geany.glade.h:431 ../src/keybindings.c:669
 msgid "_Strip Trailing Spaces"
 msgstr "_Διαγραφή ακολουθούμενων κενών"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:432
 msgid "Replace Tabs with S_paces"
 msgstr "_Αντικατάσταση των Tab σε κενά"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:433
 msgid "_Replace Spaces with Tabs..."
 msgstr "_Αντικατάσταση των κενών με Tab..."
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:434
 msgid "_Fold All"
 msgstr "Δίπλ_ωση όλων"
 
-#: ../data/geany.glade.h:434
+#: ../data/geany.glade.h:435
 msgid "_Unfold All"
 msgstr "Αναδ_ίπλωση όλων"
 
-#: ../data/geany.glade.h:435
+#: ../data/geany.glade.h:436
 msgid "Remove _Markers"
 msgstr "Απομάκρυνση _δεικτών"
 
-#: ../data/geany.glade.h:436
+#: ../data/geany.glade.h:437
 msgid "Remove Error _Indicators"
 msgstr "Απομάκρυνση _δεικτών σφάλματος"
 
-#: ../data/geany.glade.h:437
+#: ../data/geany.glade.h:438
 msgid "_Project"
 msgstr "Έρ_γο"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:439
 msgid "_New..."
 msgstr "_Νέο..."
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:440
 msgid "_Recent Projects"
 msgstr "_Πρόσφατα έργα"
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:441
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:442
 msgid "Apply the default indentation settings to all documents"
 msgstr "Εφαρμογή των προκαθορισμένων ρυθμίσεων εσοχής σε όλα τα έγγραφα"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:443
 msgid "_Apply Default Indentation"
 msgstr "_Εφαρμογή προκαθορισμένης εσοχοποίησης"
 
 #. build the code
-#: ../data/geany.glade.h:443 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
 msgid "_Build"
 msgstr "_Κατασκευή"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:445
 msgid "_Tools"
 msgstr "_Εργαλεία"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:446
 msgid "_Reload Configuration"
 msgstr "_Επαναφόρτωση ρυθμίσεων"
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:447
 msgid "C_onfiguration Files"
 msgstr "Αρχεία _ρυθμίσεων"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:448
 msgid "_Color Chooser"
 msgstr "Επιλογέας _χρωμάτων"
 
-#: ../data/geany.glade.h:448
+#: ../data/geany.glade.h:449
 msgid "_Word Count"
 msgstr "_Μέτρηση λέξεων"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:450
 msgid "Load Ta_gs File..."
 msgstr "Φόρτωση αρχείου ε_τικετών..."
 
-#: ../data/geany.glade.h:450
+#: ../data/geany.glade.h:451
 msgid "_Help"
 msgstr "_Βοήθεια"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:452
 msgid "Keyboard _Shortcuts"
 msgstr "_Συντομεύσεις πληκτρολογίου"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:453
 msgid "Debug _Messages"
 msgstr "Μηνύματα _αποσφαλμάτωσης"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:454
 msgid "_Website"
 msgstr "_Ιστοσελίδα"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:455
 msgid "Wi_ki"
 msgstr "Wi_ki"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:456
 msgid "Report a _Bug..."
 msgstr "Αναφορά _σφάλματος..."
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:457
 msgid "_Donate..."
 msgstr "_Δωρεά..."
 
-#: ../data/geany.glade.h:457 ../src/sidebar.c:125
+#: ../data/geany.glade.h:458 ../src/sidebar.c:125
 msgid "Symbols"
 msgstr "Σύμβολα"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:459
 msgid "Documents"
 msgstr "Έγγραφα"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:460
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:461
 msgid "Compiler"
 msgstr "Μεταγλωττιστής"
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:462
 msgid "Messages"
 msgstr "Μηνύματα"
 
-#: ../data/geany.glade.h:462
+#: ../data/geany.glade.h:463
 msgid "Scribble"
 msgstr "Σημειωματάριο"
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:464
 msgid "Project Properties"
 msgstr "Ιδιότητες έργου"
 
-#: ../data/geany.glade.h:464 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:179
 msgid "Filename:"
 msgstr "Όνομα αρχείου:"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:466
 #, fuzzy
 msgid "_Name:"
 msgstr "Όνομα:"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:467
 #, fuzzy
 msgid "_Description:"
 msgstr "Περιγραφή:"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:468
 #, fuzzy
 msgid "_Base path:"
 msgstr "Βασική διαδρομή:"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:469
 #, fuzzy
 msgid "File _patterns:"
 msgstr "Πρότυπα αρχείων:"
 
-#: ../data/geany.glade.h:469
+#: ../data/geany.glade.h:470
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
@@ -2203,7 +2208,7 @@ msgstr ""
 "Λίστα πρότυπων αρχείων διαχωρισμένη με κενά για χρήση στο διάλογο αναζήτηση "
 "σε αρχεία (π.χ. *.c *.h)"
 
-#: ../data/geany.glade.h:470 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:208
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2213,79 +2218,79 @@ msgstr ""
 "μια νέα διαδρομή, ή ένας υπάρχον φάκελος. Μπορείτε να χρησιμοποιήσετε "
 "διαδρομές σχετικές με το όνομα του έργου."
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:322
+#: ../data/geany.glade.h:472 ../src/keybindings.c:322
 msgid "Project"
 msgstr "Έργο"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:473
 msgid "Display:"
 msgstr "Εμφάνιση:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:474
 msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:475
 msgid "Use global settings"
 msgstr "Χρήση γενικών ρυθμίσεων"
 
-#: ../data/geany.glade.h:475
+#: ../data/geany.glade.h:476
 msgid "Size:"
 msgstr "Μέγεθος:"
 
-#: ../data/geany.glade.h:476
+#: ../data/geany.glade.h:477
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:478
 msgid "Read-only:"
 msgstr "Μόνο για ανάγνωση:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:479
 msgid "Encoding:"
 msgstr "Kωδικοποίηση:"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:480
 msgid "Modified:"
 msgstr "Τροποποιημένο:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:481
 msgid "Changed:"
 msgstr "Αλλαγμένο:"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:482
 msgid "Accessed:"
 msgstr "Προσπελάστηκε:"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:483
 msgid "(only inside Geany)"
 msgstr "(μόνο εντός Geany)"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:484
 msgid "Permissions:"
 msgstr "Δικαιώματα:"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:485
 msgid "Read:"
 msgstr "Ανάγνωση:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:486
 msgid "Write:"
 msgstr "Εγγραφή:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:487
 msgid "Execute:"
 msgstr "Εκτέλεση:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:488
 msgid "Owner:"
 msgstr "Κάτοχος:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:489
 msgid "Group:"
 msgstr "Ομάδα:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:490
 msgid "Other:"
 msgstr "Άλλοι:"
 
@@ -2482,12 +2487,12 @@ msgstr "Δεν έχει άλλα λάθη στη κατασκευή (build)."
 msgid "Set menu item label"
 msgstr "Καθορισμός ετικέτας του αντικειμένου μενού"
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:396
+#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:412
 msgid "Label"
 msgstr "Ετικέτα"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:381
+#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:397
 msgid "Command"
 msgstr "Εντολή"
 
@@ -2996,8 +3001,8 @@ msgstr "Το αρχείο %s αποθηκεύτηκε."
 msgid "Wrap search and find again?"
 msgstr "Ολοκλήρωση αναζήτησης και εύρεση ξανά;"
 
-#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
-#: ../src/search.c:2229 ../src/search.c:2230
+#: ../src/document.c:2464 ../src/search.c:1385 ../src/search.c:1438
+#: ../src/search.c:2240 ../src/search.c:2241
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Δεν βρέθηκαν αποτελέσματα για \"%s\"."
@@ -3256,25 +3261,25 @@ msgstr "Bad regex για τον τύπο αρχείου %s: %s"
 msgid "untitled"
 msgstr "χωρίς όνομα"
 
-#: ../src/highlighting.c:1229 ../src/libmain.c:867 ../src/socket.c:170
+#: ../src/highlighting.c:1232 ../src/libmain.c:867 ../src/socket.c:170
 #: ../src/templates.c:231
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Δεν ήταν δυνατόν να βρεθεί το αρχείο %s'."
 
-#: ../src/highlighting.c:1299
+#: ../src/highlighting.c:1302
 msgid "Default"
 msgstr "Προκαθορισμένο"
 
-#: ../src/highlighting.c:1340
+#: ../src/highlighting.c:1343
 msgid "The current filetype overrides the default style."
 msgstr "Ο τρέχον τύπος αρχείου αναιρεί το προκαθορισμένο στυλ."
 
-#: ../src/highlighting.c:1341
+#: ../src/highlighting.c:1344
 msgid "This may cause color schemes to display incorrectly."
 msgstr "Αυτό μπορεί να εμφανίσει λάθος τη χρωματική παλέτα."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1369
 msgid "Color Schemes"
 msgstr "Επιλογέας χρωμάτων"
 
@@ -3564,7 +3569,7 @@ msgstr "Εισαγωγή νέας γραμμής πριν την τρέχουσ�
 msgid "Insert New Line After Current"
 msgstr "Εισαγωγή νέας γραμμής μετά την τρέχουσα"
 
-#: ../src/keybindings.c:532 ../src/search.c:467
+#: ../src/keybindings.c:532 ../src/search.c:469
 msgid "Find"
 msgstr "Εύρεση"
 
@@ -3576,11 +3581,11 @@ msgstr "Εύρεση επόμενου"
 msgid "Find Previous"
 msgstr "Εύρεση προηγούμενου"
 
-#: ../src/keybindings.c:543 ../src/search.c:620
+#: ../src/keybindings.c:543 ../src/search.c:622
 msgid "Replace"
 msgstr "Αντικατάσταση"
 
-#: ../src/keybindings.c:545 ../src/search.c:870
+#: ../src/keybindings.c:545 ../src/search.c:872
 msgid "Find in Files"
 msgstr "Εύρεση σε αρχεία"
 
@@ -4402,7 +4407,7 @@ msgstr "Δεν ήταν δυνατόν να δημιουργηθεί ο βασι
 msgid "Project file could not be written (%s)."
 msgstr "Το αρχείο του έργου δεν ήταν δυνατόν να γραφεί (%s)."
 
-#: ../src/project.c:780 ../src/search.c:630
+#: ../src/project.c:780 ../src/search.c:632
 msgid "_Replace"
 msgstr "Αν_τικατάσταση"
 
@@ -4421,11 +4426,11 @@ msgstr "Επιλογή ονόματος αρχείου έργου"
 msgid "Project \"%s\" opened."
 msgstr "Το έργο \"%s\" άνοιξε."
 
-#: ../src/search.c:311 ../src/search.c:963
+#: ../src/search.c:313 ../src/search.c:965
 msgid "_Use regular expressions"
 msgstr "_Χρήση κανονικών εκφράσεων"
 
-#: ../src/search.c:314
+#: ../src/search.c:316
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
@@ -4433,11 +4438,11 @@ msgstr ""
 "Χρήση κανονικών εκφράσεων τύπου Perl. Για λεπτομερείς πληροφορίες σχετικά με "
 "τη χρήση κανονικών εκφράσεων, παρακαλούμε διαβάστε την τεκμηρίωση."
 
-#: ../src/search.c:319
+#: ../src/search.c:321
 msgid "Use _escape sequences"
 msgstr "Χρήση ακολουθιών _διαφυγής"
 
-#: ../src/search.c:323
+#: ../src/search.c:325
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4445,11 +4450,11 @@ msgstr ""
 "Αντικατάσταση \\\\, \\t, \\n, \\r και \\uXXXX (Unicode χαρακτήρες) με τους "
 "αντίστοιχους χαρακτήρες ελέγχου"
 
-#: ../src/search.c:326
+#: ../src/search.c:328
 msgid "Use multi-line matchin_g"
 msgstr "Χρήση ταιριάσματος σε πολλές _γραμμές"
 
-#: ../src/search.c:331
+#: ../src/search.c:333
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4462,98 +4467,98 @@ msgstr ""
 "μέρος της εισόδου και μπορούν να καταγράφονται ως κανονικοί χαρακτήρες από "
 "το πρότυπο αναζήτησης."
 
-#: ../src/search.c:344
+#: ../src/search.c:346
 msgid "Search _backwards"
 msgstr "Αναζήτηση προς τα _πίσω"
 
-#: ../src/search.c:350 ../src/search.c:972
+#: ../src/search.c:352 ../src/search.c:974
 msgid "C_ase sensitive"
 msgstr "Δ_ιάκριση κεφαλαίων/πεζών"
 
-#: ../src/search.c:354 ../src/search.c:977
+#: ../src/search.c:356 ../src/search.c:979
 msgid "Match only a _whole word"
 msgstr "Ταίριασμα μόνο _ολόκληρης λέξης"
 
-#: ../src/search.c:358
+#: ../src/search.c:360
 msgid "Match from s_tart of word"
 msgstr "Ταίριασμα από την _αρχή της λέξης"
 
-#: ../src/search.c:474
+#: ../src/search.c:476
 msgid "_Previous"
 msgstr "_Προηγούμενο"
 
-#: ../src/search.c:479
+#: ../src/search.c:481
 msgid "_Next"
 msgstr "_Επόμενο"
 
-#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
+#: ../src/search.c:485 ../src/search.c:643 ../src/search.c:882
 msgid "_Search for:"
 msgstr "_Αναζήτηση για:"
 
 #. Now add the multiple match options
-#: ../src/search.c:511
+#: ../src/search.c:513
 msgid "_Find All"
 msgstr "Εύρεση όλ_ων"
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 msgid "_Mark"
 msgstr "_Μαρκάρισμα"
 
-#: ../src/search.c:520
+#: ../src/search.c:522
 msgid "Mark all matches in the current document"
 msgstr "Μαρκάρει τα ευρήματα της αναζήτησης στο τρέχον έγγραφο"
 
-#: ../src/search.c:525 ../src/search.c:700
+#: ../src/search.c:527 ../src/search.c:702
 msgid "In Sessi_on"
 msgstr "Στη _συνεδρία"
 
-#: ../src/search.c:530 ../src/search.c:705
+#: ../src/search.c:532 ../src/search.c:707
 msgid "_In Document"
 msgstr "Στο έγγρα_φο"
 
 #. close window checkbox
-#: ../src/search.c:536 ../src/search.c:718
+#: ../src/search.c:538 ../src/search.c:720
 msgid "Close _dialog"
 msgstr "Κλείσιμο διαλόγο_υ"
 
-#: ../src/search.c:540 ../src/search.c:722
+#: ../src/search.c:542 ../src/search.c:724
 msgid "Disable this option to keep the dialog open"
 msgstr "Απενεργοποίηση αυτής της επιλογής για να παραμένει ο διάλογος ανοιχτός"
 
-#: ../src/search.c:635
+#: ../src/search.c:637
 msgid "Replace & Fi_nd"
 msgstr "Αντικατάσταση & εύ_ρεση"
 
-#: ../src/search.c:644
+#: ../src/search.c:646
 msgid "Replace wit_h:"
 msgstr "Αντικα_τάσταση με:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:693
+#: ../src/search.c:695
 msgid "Re_place All"
 msgstr "Αντι_κατάσταση όλων"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "In Se_lection"
 msgstr "Στην επιλο_γή"
 
-#: ../src/search.c:712
+#: ../src/search.c:714
 msgid "Replace all matches found in the currently selected text"
 msgstr "Αντικαθιστά τα ευρήματα της αναζήτησης στο τρέχον επιλεγμένο κείμενο"
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 msgid "all"
 msgstr "όλα"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "project"
 msgstr "έργο"
 
-#: ../src/search.c:833
+#: ../src/search.c:835
 msgid "custom"
 msgstr "προσαρμοσμένο"
 
-#: ../src/search.c:837
+#: ../src/search.c:839
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4563,78 +4568,78 @@ msgstr ""
 "Έργο: χρήση πρότυπων αρχείων που καθορίστηκαν στις ρυθμίσεις έργου\n"
 "Προσαρμοσμένα: καθορισμός πρότυπων αρχείων χειροκίνητα"
 
-#: ../src/search.c:899
+#: ../src/search.c:901
 msgid "Fi_les:"
 msgstr "Α_ρχεία:"
 
-#: ../src/search.c:911
+#: ../src/search.c:913
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Πρότυπα αρχείων, π.χ. *.c *.h"
 
-#: ../src/search.c:923
+#: ../src/search.c:925
 msgid "_Directory:"
 msgstr "Φάκε_λος:"
 
-#: ../src/search.c:942
+#: ../src/search.c:944
 msgid "E_ncoding:"
 msgstr "Κ_ωδικοποίηση:"
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "See grep's manual page for more information"
 msgstr "Δείτε τη τεκμηρίωση για περισσότερες πληροφορίες σχετικά με το grep"
 
-#: ../src/search.c:968
+#: ../src/search.c:970
 msgid "_Recurse in subfolders"
 msgstr "_Επανάληψη στους υποφακέλους"
 
-#: ../src/search.c:981
+#: ../src/search.c:983
 msgid "_Invert search results"
 msgstr "_Αντιστροφή αποτελεσμάτων αναζήτησης"
 
-#: ../src/search.c:985
+#: ../src/search.c:987
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Αντιστροφή των αποτελεσμάτων αναζήτησης, για επιλογή των γραμμών που δεν "
 "είχαν αποτελέσματα αναζήτησης"
 
-#: ../src/search.c:1002
+#: ../src/search.c:1004
 msgid "E_xtra options:"
 msgstr "Έ_ξτρα επιλογές:"
 
-#: ../src/search.c:1010
+#: ../src/search.c:1012
 msgid "Other options to pass to Grep"
 msgstr "Άλλες επιλογές για να προστεθούν στο Grep"
 
-#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
+#: ../src/search.c:1388 ../src/search.c:2246 ../src/search.c:2249
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Βρέθηκαν %d αποτελέσματα αναζήτησης για \"%s\"."
 msgstr[1] "Βρέθηκαν %d αποτελέσματα αναζήτησης για \"%s\"."
 
-#: ../src/search.c:1433
+#: ../src/search.c:1444
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Αντικαταστάθηκαν %u αποτελέσματα σε %u έγγραφα."
 
-#: ../src/search.c:1622
+#: ../src/search.c:1633
 msgid "Invalid directory for find in files."
 msgstr "Ο φάκελος για αναζήτηση σε αρχεία δεν υπάρχει."
 
-#: ../src/search.c:1639
+#: ../src/search.c:1650
 msgid "No text to find."
 msgstr "Δεν υπάρχει κείμενο για αναζήτηση."
 
-#: ../src/search.c:1715
+#: ../src/search.c:1726
 msgid "Searching..."
 msgstr "Αναζήτηση..."
 
-#: ../src/search.c:1717
+#: ../src/search.c:1728
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (στον φάκελο: %s)"
 
-#: ../src/search.c:1725
+#: ../src/search.c:1736
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4642,27 +4647,27 @@ msgstr ""
 "Αδυναμία εκτέλεσης εργαλείου grep \"%s\": %s. Ελέγξτε τη ρύθμιση διαδρομής "
 "στις Ιδιότητες."
 
-#: ../src/search.c:1765
+#: ../src/search.c:1776
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Δεν ήταν δυνατόν να ανοιχτεί ο φάκελος (%s)"
 
-#: ../src/search.c:1855
+#: ../src/search.c:1866
 msgid "Search failed."
 msgstr "Η αναζήτηση απέτυχε."
 
-#: ../src/search.c:1879
+#: ../src/search.c:1890
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Η αναζήτηση ολοκληρώθηκε με %d αποτελέσματα."
 msgstr[1] "Η αναζήτηση ολοκληρώθηκε με %d αποτελέσματα."
 
-#: ../src/search.c:1887
+#: ../src/search.c:1898
 msgid "No matches found."
 msgstr "Δεν υπάρχουν αποτελέσματα αναζήτησης."
 
-#: ../src/search.c:1917
+#: ../src/search.c:1928
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Bad regex: %s"
@@ -5281,12 +5286,12 @@ msgstr "Εμφανιζόμενα αντικείμενα"
 msgid "Invalid command: %s"
 msgstr "Λανθασμένη εντολή: %s"
 
-#: ../src/tools.c:216
+#: ../src/tools.c:229
 #, c-format
 msgid "Passing data and executing custom command: %s"
 msgstr "Πέρασμα των δεδομένων και εκτέλεση προσαρμοσμένης εντολής: %s"
 
-#: ../src/tools.c:224
+#: ../src/tools.c:237
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
@@ -5295,13 +5300,13 @@ msgstr ""
 "Η εκτελεστέα προσαρμοσμένη εντολή επέστρεψε σφάλμα. Η επιλογή σας δεν έχει "
 "αλλάξει. Μήνυμα σφάλματος: %s"
 
-#: ../src/tools.c:232
+#: ../src/tools.c:245
 msgid "The executed custom command exited with an unsuccessful exit code."
 msgstr ""
 "Η εκτελεστέα προσαρμοσμένη εντολή τερματίστηκε με έναν ανεπιτυχή κώδικα "
 "εξόδου (exit code)."
 
-#: ../src/tools.c:241
+#: ../src/tools.c:257
 #, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
@@ -5310,11 +5315,11 @@ msgstr ""
 "Αδυναμία εκτέλεσης προσαρμοσμένης εντολής \"%s\": %s. Ελέγξτε τη ρύθμιση "
 "διαδρομής στις Προσαρμοσμένες Εντολές."
 
-#: ../src/tools.c:356 ../src/tools.c:625
+#: ../src/tools.c:372 ../src/tools.c:641
 msgid "Set Custom Commands"
 msgstr "Ρύθμιση Προσαρμοσμένων Εντολών"
 
-#: ../src/tools.c:364
+#: ../src/tools.c:380
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
@@ -5322,39 +5327,39 @@ msgstr ""
 "Μπορείτε να στείλετε την τρέχουσα επιλογή σε οποιαδήποτε από αυτές τις "
 "εντολές και το αποτέλεσμα της εντολής αντικαθιστά την τρέχουσα επιλογή."
 
-#: ../src/tools.c:378
+#: ../src/tools.c:394
 msgid "ID"
 msgstr "ID"
 
-#: ../src/tools.c:596
+#: ../src/tools.c:612
 msgid "No custom commands defined."
 msgstr "Δεν καθορίστηκαν προσαρμοσμένες εντολές."
 
-#: ../src/tools.c:695
+#: ../src/tools.c:711
 msgid "Word Count"
 msgstr "Μέτρηση λέξεων"
 
-#: ../src/tools.c:704
+#: ../src/tools.c:720
 msgid "selection"
 msgstr "επιλογή"
 
-#: ../src/tools.c:709
+#: ../src/tools.c:725
 msgid "whole document"
 msgstr "ολόκληρο έγγραφο"
 
-#: ../src/tools.c:718
+#: ../src/tools.c:734
 msgid "Range:"
 msgstr "Εύρος:"
 
-#: ../src/tools.c:730
+#: ../src/tools.c:746
 msgid "Lines:"
 msgstr "Γραμμές:"
 
-#: ../src/tools.c:744
+#: ../src/tools.c:760
 msgid "Words:"
 msgstr "Λέξεις:"
 
-#: ../src/tools.c:758
+#: ../src/tools.c:774
 msgid "Characters:"
 msgstr "Χαρακτήρες:"
 
