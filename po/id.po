@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-04 11:05+0300\n"
+"POT-Creation-Date: 2021-02-18 22:19+0300\n"
 "PO-Revision-Date: 2017-05-25 08:18+0700\n"
 "Last-Translator: Samsul Ma'arif <mail@samsul.web.id>\n"
 "Language-Team: Indonesian\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:343
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:344
 msgid "Geany"
 msgstr "Geany"
 
@@ -377,14 +377,21 @@ msgstr ""
 "Berkas"
 
 #: ../data/geany.glade.h:71
+#, fuzzy
+msgid "Use the current project's directory for Find in Files"
+msgstr ""
+"Pakai segera direktori berkas yang sedang dibuka untuk kotak Pencarian pada "
+"Berkas"
+
+#: ../data/geany.glade.h:72
 msgid "<b>Search</b>"
 msgstr "<b>Pencarian</b>"
 
-#: ../data/geany.glade.h:72
+#: ../data/geany.glade.h:73
 msgid "Use project-based session files"
 msgstr "Pakai sesi berkas berdasarkan proyek"
 
-#: ../data/geany.glade.h:73
+#: ../data/geany.glade.h:74
 msgid ""
 "Whether to store a project's session files and open them when re-opening the "
 "project"
@@ -392,11 +399,11 @@ msgstr ""
 "Menentukan apakah ingin menyimpan sesi berkas proyek dan membukanya ketika "
 "membuka-ulang proyek"
 
-#: ../data/geany.glade.h:74
+#: ../data/geany.glade.h:75
 msgid "Store project file inside the project base directory"
 msgstr "Simpan berkas proyek di dalam direktori acuan proyek"
 
-#: ../data/geany.glade.h:75
+#: ../data/geany.glade.h:76
 msgid ""
 "When enabled, a project file is stored by default inside the project base "
 "directory when creating new projects instead of one directory above the base "
@@ -407,11 +414,11 @@ msgstr ""
 "ketika membuat proyek baru. Tenang saja, Anda masih bisa mengganti path "
 "direktori proyeknya di kotak dialog Proyek Baru."
 
-#: ../data/geany.glade.h:76
+#: ../data/geany.glade.h:77
 msgid "<b>Projects</b>"
 msgstr "<b>Proyek</b>"
 
-#: ../data/geany.glade.h:77 ../src/dialogs.c:231
+#: ../data/geany.glade.h:78 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "Lain-lain"
 
@@ -419,108 +426,108 @@ msgstr "Lain-lain"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:78 ../src/prefs.c:1602
+#: ../data/geany.glade.h:79 ../src/prefs.c:1602
 msgid "General"
 msgstr "Umum"
 
-#: ../data/geany.glade.h:79
+#: ../data/geany.glade.h:80
 msgid "Show symbol list"
 msgstr "Tampilkan daftar simbol"
 
-#: ../data/geany.glade.h:80
+#: ../data/geany.glade.h:81
 msgid "Toggle the symbol list on and off"
 msgstr "Apakah menampilkan panel simbol atau tidak"
 
-#: ../data/geany.glade.h:81
+#: ../data/geany.glade.h:82
 msgid "Default symbol sorting mode"
 msgstr ""
 
-#: ../data/geany.glade.h:82
+#: ../data/geany.glade.h:83
 msgid "Default sorting mode:"
 msgstr "Mode pengurutan bawaan:"
 
-#: ../data/geany.glade.h:83 ../src/stash.c:1177
+#: ../data/geany.glade.h:84 ../src/stash.c:1177
 msgid "Name"
 msgstr "Nama"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:85
 msgid "Appearance"
 msgstr "Penampilan"
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:86
 msgid "Show documents list"
 msgstr "Tampilkan daftar dokumen"
 
-#: ../data/geany.glade.h:86
+#: ../data/geany.glade.h:87
 msgid "Toggle the documents list on and off"
 msgstr "Apakah menampilkan panel daftar dokumen atau tidak"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:88
 msgid "Show sidebar"
 msgstr "Tampilkan panel pinggir"
 
-#: ../data/geany.glade.h:88
+#: ../data/geany.glade.h:89
 msgid "Position:"
 msgstr "Posisi:"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:90
 msgid "<b>Sidebar</b>"
 msgstr "<b>Panel pinggir</b>"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:91
 msgid "<b>Message window</b>"
 msgstr "<b>Jendela pesan</b>"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:92
 msgid "Symbol list:"
 msgstr "Daftar simbol:"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:93
 msgid "Message window:"
 msgstr "Kotak pesan:"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:94
 msgid "Editor:"
 msgstr "Editor:"
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:95
 msgid "Sets the font for the message window"
 msgstr "Mengatur font untuk kotak pesan"
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:96
 msgid "Sets the font for the symbol list"
 msgstr "Mengatur font untuk panel daftar simbol"
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:97
 msgid "Sets the editor font"
 msgstr "Mengatur font untuk kotak editor"
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:98
 msgid "<b>Fonts</b>"
 msgstr "<b>Font</b>"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:99
 msgid "Show status bar"
 msgstr "Tampilkan status bar"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:100
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr ""
 "Apakah menampilkan status bar yang ada di sisi bawah jendela aplikasi Geany"
 
-#: ../data/geany.glade.h:100 ../src/prefs.c:1604
+#: ../data/geany.glade.h:101 ../src/prefs.c:1604
 msgid "Interface"
 msgstr "Tampilan"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:102
 msgid "Show editor tabs"
 msgstr "Tampilkan tab editor"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:103
 msgid "Show close buttons"
 msgstr "Tampilkan tombol tutup"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:104
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
 "clicking on it (requires restart of Geany)"
@@ -528,23 +535,23 @@ msgstr ""
 "Tampilkan tombol X kecil di setiap tab di kotak editor (Geany harus di "
 "restart)"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:105
 msgid "Placement of new file tabs:"
 msgstr "Penempatan tab baru:"
 
-#: ../data/geany.glade.h:105
+#: ../data/geany.glade.h:106
 msgid "File tabs will be placed on the left of the notebook"
 msgstr "Tab berkas akan ditaruh di sebelah kiri"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:107
 msgid "File tabs will be placed on the right of the notebook"
 msgstr "Tab berkas akan ditaruh di sebelah kanan"
 
-#: ../data/geany.glade.h:107
+#: ../data/geany.glade.h:108
 msgid "Next to current"
 msgstr "Di samping tab yang aktif"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:109
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
@@ -552,103 +559,103 @@ msgstr ""
 "Menentukan apakah tab yang baru ingin ditaruh di sebelah tab yang aktif "
 "ketimbang di urutan tab paling belakang"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:110
 msgid "Double-clicking hides all additional widgets"
 msgstr "Sembunyikan semua widget tambahan dengan dobel-klik"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:111
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr "Cara singkat dari menu View->Kedipkan Semua Widget Tambahan"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:112
 msgid "Switch to last used document after closing a tab"
 msgstr "Berganti ke dokumen terakhir setelah menutup tab"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:113
 msgid "<b>Editor tabs</b>"
 msgstr "<b>Tab editor</b>"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:114
 msgid "Sidebar:"
 msgstr "Panel samping:"
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:115
 msgid "<b>Tab positions</b>"
 msgstr "<b>Posisi tab</b>"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:116
 msgid "Notebook tabs"
 msgstr "Tab-nya panel bawah"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:117
 msgid "Show t_oolbar"
 msgstr "Tampilkan t_oolbar"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:118
 msgid "_Append toolbar to the menu"
 msgstr "Sempilkan tool_bar ke menu"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:119
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr "Mampatkan toolbar ke menu utama untuk memperbesar ruang vertikal"
 
-#: ../data/geany.glade.h:119 ../src/toolbar.c:943
+#: ../data/geany.glade.h:120 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "Modifikasi Toolbar"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:121
 msgid "System _default"
 msgstr "Sistem stan_dar"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:122
 msgid "Images _and text"
 msgstr "Gambar d_an teks"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:123
 msgid "_Images only"
 msgstr "Gambar sa_ja"
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:124
 msgid "_Text only"
 msgstr "_Teks saja"
 
-#: ../data/geany.glade.h:124
+#: ../data/geany.glade.h:125
 msgid "<b>Icon style</b>"
 msgstr "<b>Model ikon</b>"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:126
 msgid "S_ystem default"
 msgstr "S_istem standar"
 
-#: ../data/geany.glade.h:126
+#: ../data/geany.glade.h:127
 msgid "_Small icons"
 msgstr "Ikon _kecil"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:128
 msgid "_Very small icons"
 msgstr "Ikon super ke_cil"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:129
 msgid "_Large icons"
 msgstr "Ikon _besar"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:130
 msgid "<b>Icon size</b>"
 msgstr "<b>Ukuran ikon</b>"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:131
 msgid "<b>Toolbar</b>"
 msgstr "<b>Toolbar</b>"
 
-#: ../data/geany.glade.h:131 ../src/prefs.c:1606
+#: ../data/geany.glade.h:132 ../src/prefs.c:1606
 msgid "Toolbar"
 msgstr "Toolbar"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:133
 msgid "Line wrapping"
 msgstr "Bungkus baris"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:134
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
@@ -658,11 +665,11 @@ msgstr ""
 "Catatan: fitur ini memerlukan beban kinerja yang besar untuk dokumen yang "
 "besar, jadi untuk komputer yang lambat seharusnya fitur ini dimatikan."
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:135
 msgid "\"Smart\" home key"
 msgstr "\"Smart\" home key"
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:136
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -675,11 +682,11 @@ msgstr ""
 "awal baris. Ketika fitur ini dinonaktifkan, tombol HOME selalu memindahkan "
 "tanda sisipan ke permulaan baris saat ini, tergantung posisi saat ini."
 
-#: ../data/geany.glade.h:136
+#: ../data/geany.glade.h:137
 msgid "Disable Drag and Drop"
 msgstr "Matikan fitur Drag and Drop"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:138
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
 "drop any selections within or outside of the editor window"
@@ -687,15 +694,15 @@ msgstr ""
 "Mematikan fitur drag and drop sepenuhnya jadi Anda tidak bisa menyeret blok-"
 "blokan teks ke luar Geany maupun di dalam Geany sendiri"
 
-#: ../data/geany.glade.h:138
+#: ../data/geany.glade.h:139
 msgid "Code folding"
 msgstr "Fold baris"
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:140
 msgid "Fold/unfold all children of a fold point"
 msgstr "Fold/unfold semua subpoint fold"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:141
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
 "clicking on a fold symbol the contrary behavior is used."
@@ -703,11 +710,11 @@ msgstr ""
 "Fold atau unfold semua sub poin yang difold. Dengan menekan tombol Shift "
 "ketika mengklik pada simbol fold digunakan tingkah yang berlawanan."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:142
 msgid "Use indicators to show compile errors"
 msgstr "Pakai indikator untuk menampilkan kesalahan kompilasi"
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:143
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
@@ -716,25 +723,25 @@ msgstr ""
 "bergelombang) untuk menandai baris yang mengeluarkan peringatan atau "
 "kesalahan"
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:144
 msgid "Newline strips trailing spaces"
 msgstr "Karakter newline menggantikan spasi berlebih"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:145
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr ""
 "Mengaktifkan karakter newline untuk menghapus spasi berlebih pada baris "
 "sebelumnya"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:146
 msgid "Line breaking column:"
 msgstr "Line breaking column:"
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:147
 msgid "Comment toggle marker:"
 msgstr "Komentar toggle penanda:"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:148
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
 "used to mark the comment as toggled."
@@ -742,15 +749,15 @@ msgstr ""
 "String yang ditambahkan ketika toggling baris komentar pada sumber berkas, "
 "digunakan untuk menandai komentar sebagai ter-toggle."
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:149
 msgid "<b>Features</b>"
 msgstr "<b>Fitur</b>"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:150
 msgid "Features"
 msgstr "Fitur"
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:151
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
@@ -758,25 +765,25 @@ msgstr ""
 "Catatan: untuk menerapkan pengaturan ini ke semua dokumen yang sedang "
 "dibuka, gunakan <i>Proyek->Terapkan Indentasi Standar</i>."
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:152
 #, fuzzy
 msgid "_Width:"
 msgstr "Lebar:"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:153
 msgid "The width in chars of a single indent"
 msgstr "Banyaknya karakter yang mengindikasikan lebarnya indent tunggal"
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:154
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "Mode indent-otomatis:"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:155
 msgid "Detect type from file"
 msgstr "Deteksi tipe dari berkas"
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:156
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
@@ -784,38 +791,38 @@ msgstr ""
 "Menentukan apakah ingin mendeteksi tipe indentasi dari isi berkas ketika "
 "membuka berkas"
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:157
 msgid "T_abs and spaces"
 msgstr "T_ab dan spasi"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:158
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr ""
 "Pakai spasi bila total indent lebih sedikit daripada lebar tab, jika tidak "
 "pakai dua-duanya"
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:159
 msgid "_Spaces"
 msgstr "_Spasi"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:160
 msgid "Use spaces when inserting indentation"
 msgstr "Pakai spasi ketika menyelipkan indentasi"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:161
 msgid "_Tabs"
 msgstr "_Tab"
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:162
 msgid "Use one tab per indent"
 msgstr "Pakai satu tab per indent"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:163
 msgid "Detect width from file"
 msgstr "Deteksi lebar dari berkas"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:164
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
 "opened"
@@ -823,34 +830,34 @@ msgstr ""
 "Menentukan apakah ingin mendeteksi lebar indentasi dari isi berkas ketika "
 "membuka berkas"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:165
 msgid "Type:"
 msgstr "Tipe:"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:166
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "Tombol tab indentasi"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:167
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
 "Menekan tab/shift-tab indents/unindents ketimbang menyisipkan karakter tab"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:168
 msgid "<b>Indentation</b>"
 msgstr "<b>Indentasi</b>"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:169
 msgid "Indentation"
 msgstr "Indentasi"
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:170
 msgid "Snippet completion"
 msgstr "Penerusan koding"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:171
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
@@ -860,19 +867,19 @@ msgstr ""
 "ketik yang bisa langsung Anda pakai, jadi Anda tidak perlu repot-repot "
 "mengetik perintah secara lengkap"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:172
 msgid "XML/HTML tag auto-closing"
 msgstr "Tutup otomatis tag XML/HTML"
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:173
 msgid "Insert matching closing tag for XML/HTML"
 msgstr "Selipkan tag penutup XML/HTML segara setelah tag pembukanya"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:174
 msgid "Automatic continuation of multi-line comments"
 msgstr "Kebersambungan otomatis untuk komentar multi-baris"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:175
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
 "when a new line is entered inside such a comment"
@@ -880,11 +887,11 @@ msgstr ""
 "Lanjutkan secara otomatis komentar multi-baris dalam bahasa seperti C, C++ "
 "dan java ketika baris baru dimasukkan di dalam komentar"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:176
 msgid "Autocomplete symbols"
 msgstr "Pelengkapan otomatis simbol"
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:177
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
@@ -892,27 +899,27 @@ msgstr ""
 "Pelengkapan otomatis simbol yang diketahui pada berkas dibuka (nama fungsi, "
 "variabel global, ...)"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:178
 msgid "Autocomplete all words in document"
 msgstr "Pelengkapan otomatis seluruh kata dalam dokumen"
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:179
 msgid "Drop rest of word on completion"
 msgstr "Buang seluruh kata pada pelengkapan"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:180
 msgid "Max. symbol name suggestions:"
 msgstr "Jumlah sugesti maksimal untuk nama simbol:"
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:181
 msgid "Completion list height:"
 msgstr "Tinggi daftar pelengkapan:"
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:182
 msgid "Characters to type for autocompletion:"
 msgstr "Tipe karakter untuk pelengkapan otomatis:"
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:183
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
@@ -920,19 +927,19 @@ msgstr ""
 "Jumlah karakter yang diperlukan untuk menampilkan daftar simbol pelengkapan "
 "otomatis"
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:184
 msgid "Display height in rows for the autocompletion list"
 msgstr "Tampilkan tinggi dalam baris untuk daftar pelengkapan otomatis"
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:185
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr "Jumlah entri maksimum untuk ditampilkan di daftar pelengkapan otomatis"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:186
 msgid "Symbol list update frequency:"
 msgstr "Frekuensi update daftar simbol:"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:187
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
@@ -942,117 +949,117 @@ msgstr ""
 "list. Note that a too short delay may have performance impact, especially "
 "with large berkas. A delay of 0 disables real-time updates."
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:188
 msgid "<b>Completions</b>"
 msgstr "<b>Completions</b>"
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:189
 msgid "Parenthesis ( )"
 msgstr "Tanda kurung ( )"
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:190
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr ""
 "Geany akan memberikan tanda kurung tutup, segera setelah tanda kurung buka "
 "diketik"
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:191
 msgid "Curly brackets { }"
 msgstr "Kurung kurawal { }"
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:192
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr ""
 "Geany akan memberikan tanda kurung kurawal tutup, segera setelah tanda "
 "kurung kurawal buka diketik"
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:193
 msgid "Square brackets [ ]"
 msgstr "Kurung siku [ ]"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:194
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr ""
 "Geany akan memberikan tanda kurung siku tutup, segera setelah tanda kurung "
 "siku buka diketik"
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:195
 msgid "Single quotes ' '"
 msgstr "Petik tunggal ' '"
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:196
 msgid "Auto-close single quote when typing an opening one"
 msgstr ""
 "Geany akan memberikan tanda petik tunggal penutup, segera setelah tanda "
 "petik tunggal pertama diketik"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:197
 msgid "Double quotes \" \""
 msgstr "Petik ganda \" \""
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:198
 msgid "Auto-close double quote when typing an opening one"
 msgstr ""
 "Geany akan memberikan tanda petik ganda penutup, segera setelah tanda petik "
 "ganda pertama diketik"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:199
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr "<b>Tutup-otomatis tanda petik dan kurung</b>"
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:200
 msgid "Completions"
 msgstr "Pelengkapan"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:201
 msgid "Invert syntax highlighting colors"
 msgstr "Balikkan warna syntax highlighting"
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:202
 msgid "Invert all colors, by default using white text on a black background"
 msgstr "Invert all colours, by default using white text on a black background"
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:203
 msgid "Show indentation guides"
 msgstr "Tampilkan penanda indentasi"
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:204
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr ""
 "Menampilkan titik-titik kecil untuk mewakili bentuk indentasi sehingga Anda "
 "bisa mengetahui dengan tepat banyaknya indentasi yang dipakai"
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:205
 msgid "Show white space"
 msgstr "Tampilkan penanda spasi"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:206
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr ""
 "Spasi akan diwakili oleh tanda titik kecil, sedangkan tab akan diwaliki oleh "
 "tanda panah"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:207
 msgid "Show line endings"
 msgstr "Tampilkan perwakilan akhir baris"
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:208
 msgid "Shows the line ending character"
 msgstr "Menggunakan suatu simbol untuk menandai akhir baris"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:209
 msgid "Show line numbers"
 msgstr "Tampilkan nomor baris"
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:210
 msgid "Shows or hides the Line Number margin"
 msgstr "Opsi ini akan menampilkan nomor urut baris"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:211
 msgid "Show markers margin"
 msgstr "Tampilkan penanda margin"
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:212
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
@@ -1060,41 +1067,41 @@ msgstr ""
 "Opsi ini memberikan margin sedikit di kanannya nomor baris, yang bisa "
 "dipakai untuk membantu menandai baris"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:213
 msgid "Stop scrolling at last line"
 msgstr "Hentikan scrolling pada baris terakhir"
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:214
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr ""
 "Antara menghentikan scrolling satu halaman terdahulu pada baris terakhir "
 "dokumen"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:215
 msgid "Lines visible _around the cursor:"
 msgstr ""
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:216
 msgid "<b>Display</b>"
 msgstr "<b>Tampilan</b>"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:217
 msgid "Column:"
 msgstr "Kolom:"
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:218
 msgid "Color:"
 msgstr "Warna:"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:219
 msgid "Sets the color of the long line marker"
 msgstr "Menentukan warna untuk penanda baris panjang"
 
-#: ../data/geany.glade.h:219 ../src/toolbar.c:73 ../src/tools.c:831
+#: ../data/geany.glade.h:220 ../src/toolbar.c:73 ../src/tools.c:847
 msgid "Color Chooser"
 msgstr "Pelet Warna"
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:221
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
 "long lines, or as a hint to break the line. Set this value to a value "
@@ -1105,11 +1112,11 @@ msgstr ""
 "pemenggalan baris. Isilah dengan nilai lebih dari 0 (nol) untuk menentukan "
 "pada spasi ke berapa garis ini akan ditampilkan."
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:222
 msgid "Line"
 msgstr "Baris"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:223
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
@@ -1117,11 +1124,11 @@ msgstr ""
 "Cetak sebuah garis vertikal di panel editor pada posisi kursor yang "
 "diberikan (lihat di bawah)"
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:224
 msgid "Background"
 msgstr "Latar belakang"
 
-#: ../data/geany.glade.h:224
+#: ../data/geany.glade.h:225
 msgid ""
 "The background color of characters after the given cursor position (see "
 "below) changed to the color set below, (this is recommended if you use "
@@ -1131,27 +1138,27 @@ msgstr ""
 "warnanya di bawah, (direkomendasikan jika Anda menggunakan font yang "
 "proporsional)"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:226
 msgid "Enabled"
 msgstr "Diaktifkan"
 
-#: ../data/geany.glade.h:226
+#: ../data/geany.glade.h:227
 msgid "<b>Long line marker</b>"
 msgstr "<b>Penanda baris panjang</b>"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:228
 msgid "Disabled"
 msgstr "Di-non-aktifkan"
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:229
 msgid "Do not show virtual spaces"
 msgstr "Jangan tampilkan spasi palsu"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:230
 msgid "Only for rectangular selections"
 msgstr "Hanya untuk seleksi kotak"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:231
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
@@ -1159,57 +1166,57 @@ msgstr ""
 "Hanya menampilkan spasi palsu melewati akhir baris ketika melakukan seleksi "
 "kotak"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:232
 msgid "Always"
 msgstr "Selalu"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:233
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "Selalu menampilkan spasi palsu melewati akhir baris"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:234
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>Spasi palsu</b>"
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:235
 msgid "Display"
 msgstr "Tampilan"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
+#: ../data/geany.glade.h:236 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "Editor"
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:237
 msgid "Open new documents from the command-line"
 msgstr "Buka dokumen baru dari terminal"
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:238
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr ""
 "Buat berkas baru untuk masing-masing nama berkas baris-perintah yang tidak "
 "ada"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:239
 msgid "Default end of line characters:"
 msgstr "Karakter penanda akhir baris standar:"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:240
 msgid "<b>New files</b>"
 msgstr "<b>Berkas baru</b>"
 
-#: ../data/geany.glade.h:240
+#: ../data/geany.glade.h:241
 msgid "Default encoding (new files):"
 msgstr "Encoding standar (berkas baru):"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:242
 msgid "Sets the default encoding for newly created files"
 msgstr "Tetapkan encoding standar untuk berkas yang baru dibuat"
 
-#: ../data/geany.glade.h:242
+#: ../data/geany.glade.h:243
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "Gunakan encoding persisten ketika membuka berkas non-Unicode"
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:244
 msgid ""
 "This option disables the automatic detection of the file encoding when "
 "opening non-Unicode files and opens the file with the specified encoding "
@@ -1219,32 +1226,32 @@ msgstr ""
 "membuka berkas non-Unicode dan membuka berkas dengan encoding yang telah "
 "ditentukan (biasanya tidak diperlukan)"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:245
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "Encoding standar (berkas non-Unicode yang telah terbuka):"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:246
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr ""
 "Tetapkan encoding standar untuk membuka berkas non-Unicoding yang telah ada"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:247
 msgid "<b>Encodings</b>"
 msgstr "<b>Encoding</b>"
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:248
 msgid "Ensure new line at file end"
 msgstr "Pastikan baris baru di akhir berkas"
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:249
 msgid "Ensures that at the end of the file is a new line"
 msgstr "Memastikan adanya baris baru di penghujung akhir dari berkas"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:250
 msgid "Ensure consistent line endings"
 msgstr "Pastikan akhiran baris yang konsisten"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:251
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
@@ -1252,40 +1259,40 @@ msgstr ""
 "Memastikan karakter baris-baru selalu dikonversi sebelum disimpan, untuk "
 "menghindari penutupan baris yang tercampur pada berkas yang sama"
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:252
 msgid "Strip trailing spaces and tabs"
 msgstr "Hilangkan spasi dan tab ikutan"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:253
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Menghilangkan spasi dan tab pada akhir suatu baris"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:671
+#: ../data/geany.glade.h:254 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "Ubah tab menjadi spasi"
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:255
 msgid "Replaces all tabs in document with spaces"
 msgstr "Mengganti semua bentuk tab di dokumen dengan karakter spasi"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:256
 msgid "<b>Saving files</b>"
 msgstr "<b>Menyimpan berkas</b>"
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:257
 msgid "Recent files list length:"
 msgstr "Jumlah daftar riwayat berkas:"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:258
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Menentukan jumlah berkas yang akan ditampilkan pada Daftar riwayat berkas"
 
-#: ../data/geany.glade.h:258
+#: ../data/geany.glade.h:259
 msgid "Disk check timeout:"
 msgstr "Timeout pemeriksaan disk:"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:260
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1294,20 +1301,20 @@ msgstr ""
 "(satuan detik). Jika diisi 0 (nol), Geany akan menganggap pemeriksaan "
 "dinonaktifkan."
 
-#: ../data/geany.glade.h:260 ../src/prefs.c:1610 ../src/symbols.c:465
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:465
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Berkas"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:262
 msgid "Terminal:"
 msgstr "Terminal:"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:263
 msgid "Browser:"
 msgstr "Browser:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:265
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
@@ -1316,25 +1323,25 @@ msgstr ""
 "Sebuah perintah emulator termnal (%c digantikan dengan nama berkas yang "
 "dijalankan Geany)"
 
-#: ../data/geany.glade.h:265
+#: ../data/geany.glade.h:266
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr ""
 "Lokasi (dan bisa juga ditambahkan argumen lain) ke aplikasi penjelahah "
 "favorit Anda"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:267
 msgid "Grep:"
 msgstr "Grep:"
 
-#: ../data/geany.glade.h:267
+#: ../data/geany.glade.h:268
 msgid "<b>Tool paths</b>"
 msgstr "<b>Lokasi alat</b>"
 
-#: ../data/geany.glade.h:268
+#: ../data/geany.glade.h:269
 msgid "Context action:"
 msgstr "Operasi konteks:"
 
-#: ../data/geany.glade.h:270
+#: ../data/geany.glade.h:271
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1345,67 +1352,67 @@ msgstr ""
 "Operasi ini bisa muncul dimana saja pada command yang diberikan dan akan "
 "diganti sebelum dieksekusi."
 
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:272
 msgid "<b>Commands</b>"
 msgstr "<b>Command</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
+#: ../data/geany.glade.h:273 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "Tool"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:274
 msgid "Email address of the developer"
 msgstr "Alamat email pengembang"
 
-#: ../data/geany.glade.h:274
+#: ../data/geany.glade.h:275
 msgid "Initials of the developer name"
 msgstr "Nama inisial pengembang"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:276
 msgid "Initial version:"
 msgstr "Versi inisial:"
 
-#: ../data/geany.glade.h:276
+#: ../data/geany.glade.h:277
 msgid "Version number, which a new file initially has"
 msgstr "Nomor versi yang secara inisial dimiliki oleh berkas baru"
 
-#: ../data/geany.glade.h:277
+#: ../data/geany.glade.h:278
 msgid "Company name"
 msgstr "Nama perusahaan"
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:279
 msgid "Developer:"
 msgstr "Pengembang:"
 
-#: ../data/geany.glade.h:279
+#: ../data/geany.glade.h:280
 msgid "Company:"
 msgstr "Perusahaan:"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:281
 msgid "Mail address:"
 msgstr "Alamat email:"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:282
 msgid "Initials:"
 msgstr "Inisial:"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:283
 msgid "The name of the developer"
 msgstr "Nama pengembang"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:284
 msgid "Year:"
 msgstr "Tahun:"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:285
 msgid "Date:"
 msgstr "Tanggal:"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:286
 msgid "Date & time:"
 msgstr "Tanggal & waktu:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:287
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1413,7 +1420,7 @@ msgstr ""
 "Menentukan format tampilan untuk {datetime} wildcard. Anda dapat memakai "
 "specifier konversi apapun yang dipakai pula oleh fungsi strftime ANSI C."
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:288
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1421,7 +1428,7 @@ msgstr ""
 "Menentukan format tampilan untuk {year} wildcard. Anda dapat memakai "
 "specifier konversi apapun yang dipakai pula oleh fungsi strftime ANSI C."
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:289
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1429,64 +1436,64 @@ msgstr ""
 "Menentukan format tampilan untuk {date} wildcard. Anda dapat memakai "
 "specifier konversi apapun yang dipakai pula oleh fungsi strftime ANSI C."
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:290
 msgid "<b>Template data</b>"
 msgstr "<b>Template data</b>"
 
-#: ../data/geany.glade.h:290 ../src/prefs.c:1614
+#: ../data/geany.glade.h:291 ../src/prefs.c:1614
 msgid "Templates"
 msgstr "Template"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:292
 msgid "C_hange"
 msgstr "_Ubah"
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:293
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>Tombol singkat keyboard</b>"
 
-#: ../data/geany.glade.h:293 ../src/plugins.c:1950 ../src/plugins.c:1987
+#: ../data/geany.glade.h:294 ../src/plugins.c:1950 ../src/plugins.c:1987
 #: ../src/prefs.c:1616
 msgid "Keybindings"
 msgstr "Keybinding"
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:295
 msgid "Command:"
 msgstr "Command:"
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:297
 #, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr "Lokasi perintah untuk mencetak berkas (gunakan %f untuk nama berkas)"
 
-#: ../data/geany.glade.h:297
+#: ../data/geany.glade.h:298
 msgid "Use an external command for printing"
 msgstr "Pakai command eksternal untuk mencetak"
 
-#: ../data/geany.glade.h:298 ../src/printing.c:237
+#: ../data/geany.glade.h:299 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "Cetak nomor baris"
 
-#: ../data/geany.glade.h:299 ../src/printing.c:239
+#: ../data/geany.glade.h:300 ../src/printing.c:239
 msgid "Add line numbers to the printed page"
 msgstr "Tambahkan nomor baris ke halaman yang dicetak"
 
-#: ../data/geany.glade.h:300 ../src/printing.c:242
+#: ../data/geany.glade.h:301 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "Cetak nomor halaman"
 
-#: ../data/geany.glade.h:301 ../src/printing.c:244
+#: ../data/geany.glade.h:302 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr ""
 "Tambahkan nomor halaman di bagian bawah masing-masing halaman. Nomor halaman "
 "memakan tempat 2 baris."
 
-#: ../data/geany.glade.h:302 ../src/printing.c:247
+#: ../data/geany.glade.h:303 ../src/printing.c:247
 msgid "Print page header"
 msgstr "Cetak header halaman"
 
-#: ../data/geany.glade.h:303 ../src/printing.c:249
+#: ../data/geany.glade.h:304 ../src/printing.c:249
 msgid ""
 "Add a little header to every page containing the page number, the filename "
 "and the current date (see below). It takes 3 lines of the page."
@@ -1495,21 +1502,21 @@ msgstr ""
 "berkas, dan tanggal sekarang (lihat di bawah). Header ini memakan tempat 3 "
 "baris."
 
-#: ../data/geany.glade.h:304 ../src/printing.c:265
+#: ../data/geany.glade.h:305 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "Gunakan basename berkas yang dicetak"
 
-#: ../data/geany.glade.h:305
+#: ../data/geany.glade.h:306
 msgid "Print only the basename (without the path) of the printed file"
 msgstr ""
 "Hanya cetak base name saja (tanpa lokasi direktorinya) dari berkas yang "
 "dicetak"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:273
+#: ../data/geany.glade.h:307 ../src/printing.c:273
 msgid "Date format:"
 msgstr "Format tanggal:"
 
-#: ../data/geany.glade.h:307 ../src/printing.c:279
+#: ../data/geany.glade.h:308 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1519,106 +1526,106 @@ msgstr ""
 "halaman. Anda dapat menggunakan specifier konversi apapun yang dipakai pula "
 "oleh fungsi strftime ANSI C."
 
-#: ../data/geany.glade.h:308
+#: ../data/geany.glade.h:309
 msgid "Use native GTK printing"
 msgstr "Gunakan metode pencetakan milik GTK"
 
-#: ../data/geany.glade.h:309
+#: ../data/geany.glade.h:310
 msgid "<b>Printing</b>"
 msgstr "<b>Mencetak</b>"
 
-#: ../data/geany.glade.h:310 ../src/prefs.c:1618
+#: ../data/geany.glade.h:311 ../src/prefs.c:1618
 msgid "Printing"
 msgstr "Mencetak"
 
-#: ../data/geany.glade.h:311
+#: ../data/geany.glade.h:312
 msgid "Font:"
 msgstr "Font:"
 
-#: ../data/geany.glade.h:312
+#: ../data/geany.glade.h:313
 msgid "Sets the font for the terminal widget"
 msgstr "Mengatur font untuk panel terminal"
 
-#: ../data/geany.glade.h:313
+#: ../data/geany.glade.h:314
 msgid "Choose Terminal Font"
 msgstr "Pilih Font Terminal"
 
-#: ../data/geany.glade.h:314
+#: ../data/geany.glade.h:315
 msgid "Foreground color:"
 msgstr "Warna latar depan:"
 
-#: ../data/geany.glade.h:315
+#: ../data/geany.glade.h:316
 msgid "Background color:"
 msgstr "Warna latar belakang:"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:317
 msgid "Scrollback lines:"
 msgstr "Scrollback lines:"
 
-#: ../data/geany.glade.h:317
+#: ../data/geany.glade.h:318
 msgid "Shell:"
 msgstr "Shell:"
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:319
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr "Mengatur warna latar depan teks pada panel terminal"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:320
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "Mengatur warna latar belakang teks pada panel terminal"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:321
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
 msgstr ""
 "Tentukan histori pada baris, yang dapat discroll kembali pada panel terminal"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:322
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
 msgstr "Mengatur lokasi shell yang akan dijalankan di dalam emulasi terminal"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:323
 msgid "Scroll on keystroke"
 msgstr "Gulung sesuai pencetan keyboard"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:324
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "Apakah inging menggulung hingga ke bawah bila sebuah tombol ditekan"
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:325
 msgid "Scroll on output"
 msgstr "Gulung sesuai output"
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:326
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "Apakah ingin menggulung hingga ke bawah ketika output ditampilkan"
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:327
 msgid "Cursor blinks"
 msgstr "Kelap-kelipkan kursor"
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:328
 msgid "Whether to blink the cursor"
 msgstr "Apakah ingin mengkelap-kelipkan kursor"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:329
 msgid "Override Geany keybindings"
 msgstr "Abaikan keybinding Geany"
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:330
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr ""
 "Izinkan VTE untuk menerima shortcut keyboard (salin dari perintah fokus)"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:331
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "Nonaktifkan shortcut key menu (bawaan: F10)"
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:332
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1628,21 +1635,21 @@ msgstr ""
 "adalah F10). Menonaktifkannya akan berguna bila Anda menggunakan, sebagai "
 "contoh, Midnight Commander di dalam VTE."
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:333
 msgid "Follow path of the current file"
 msgstr "Ikuti lokasi path dari berkas yang sekarang"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:334
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr ""
 "Menentukan apakah mengeksekusi \"cd $path\" ketika Anda berpindah antar "
 "berkas yang terbuka"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:335
 msgid "Execute programs in the VTE"
 msgstr "Eksekusi program di VTE"
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:336
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
@@ -1650,11 +1657,11 @@ msgstr ""
 "Jalankan program di dalam VTE ketimbang membuka terminal emulasi baru. "
 "Perhatikan, program yang dijalankan di dalam VTE tidak dapat dihentikan"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:337
 msgid "Don't use run script"
 msgstr "Jangan memakai run-script"
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:338
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
@@ -1662,533 +1669,533 @@ msgstr ""
 "Tidak memakai run-script sederhana yang biasanya dipakai untuk menampilkan "
 "status keluar dari program yang dieksekusi"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:339
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminal</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
 msgid "Terminal"
 msgstr "Terminal"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:341
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr "<i>Peringatan: baca buku petunjuk sebelum mengubah preferensi ini.</i>"
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:342
 msgid "<b>Various preferences</b>"
 msgstr "<b>Preferensi lain-lain</b>"
 
-#: ../data/geany.glade.h:342 ../src/prefs.c:1620
+#: ../data/geany.glade.h:343 ../src/prefs.c:1620
 msgid "Various"
 msgstr "Lain-lain"
 
-#: ../data/geany.glade.h:344
+#: ../data/geany.glade.h:345
 msgid "_File"
 msgstr "_Berkas"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:346
 msgid "New (with _Template)"
 msgstr "Buat (pakai _Template)"
 
-#: ../data/geany.glade.h:346
+#: ../data/geany.glade.h:347
 msgid "_Open..."
 msgstr "B_uka"
 
-#: ../data/geany.glade.h:347
+#: ../data/geany.glade.h:348
 msgid "Recent _Files"
 msgstr "Riwayat _Berkas"
 
-#: ../data/geany.glade.h:348
+#: ../data/geany.glade.h:349
 msgid "Save _As..."
 msgstr "Simpan S_ebagai..."
 
-#: ../data/geany.glade.h:349
+#: ../data/geany.glade.h:350
 msgid "Sa_ve All"
 msgstr "Sim_pan Semua"
 
-#: ../data/geany.glade.h:350 ../src/document.c:1655 ../src/document.c:3616
+#: ../data/geany.glade.h:351 ../src/document.c:1655 ../src/document.c:3616
 #: ../src/sidebar.c:717
 msgid "_Reload"
 msgstr "_Reload"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:352
 msgid "R_eload As"
 msgstr "Muat Ulang S_ebagai"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:353
 msgid "Page Set_up"
 msgstr "At_ur Kertas"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:354
 msgid "_Print..."
 msgstr "Ceta_k..."
 
-#: ../data/geany.glade.h:354 ../src/notebook.c:495
+#: ../data/geany.glade.h:355 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "Tutup _Dokumen Lainnya"
 
-#: ../data/geany.glade.h:355 ../src/notebook.c:507
+#: ../data/geany.glade.h:356 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "Tu_tup Semua"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:357
 msgid "Co_mmands"
 msgstr "Perinta_h"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:437
+#: ../data/geany.glade.h:358 ../src/keybindings.c:437
 msgid "Cu_t Current Line(s)"
 msgstr "Po_tong Baris"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:434
+#: ../data/geany.glade.h:359 ../src/keybindings.c:434
 msgid "_Copy Current Line(s)"
 msgstr "_Gandakan Baris"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:387
+#: ../data/geany.glade.h:360 ../src/keybindings.c:387
 msgid "_Delete Current Line(s)"
 msgstr "_Hapus Baris"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:384
+#: ../data/geany.glade.h:361 ../src/keybindings.c:384
 msgid "D_uplicate Line or Selection"
 msgstr "D_uplikat Baris atau Pilihan"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:447
+#: ../data/geany.glade.h:362 ../src/keybindings.c:447
 msgid "S_elect Current Line(s)"
 msgstr "S_eleksi Baris"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:450
+#: ../data/geany.glade.h:363 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr "B_lok Paragraf"
 
-#: ../data/geany.glade.h:363
+#: ../data/geany.glade.h:364
 msgid "_Move Line(s) Up"
 msgstr "_Pindahkan baris ke atas"
 
-#: ../data/geany.glade.h:364
+#: ../data/geany.glade.h:365
 msgid "M_ove Line(s) Down"
 msgstr "Pin_dahkan baris ke bawah"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:501
+#: ../data/geany.glade.h:366 ../src/keybindings.c:501
 msgid "_Send Selection to Terminal"
 msgstr "_Kirim Seleksi ke Terminal"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:503
+#: ../data/geany.glade.h:367 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr "_Tata Ulang Baris/Blok"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:461
+#: ../data/geany.glade.h:368 ../src/keybindings.c:461
 msgid "T_oggle Case of Selection"
 msgstr "G_anti Huruf Kapital"
 
-#: ../data/geany.glade.h:368
+#: ../data/geany.glade.h:369
 msgid "_Comment Line(s)"
 msgstr "_Komentari Baris"
 
-#: ../data/geany.glade.h:369
+#: ../data/geany.glade.h:370
 msgid "U_ncomment Line(s)"
 msgstr "Diskome_ntari Baris"
 
-#: ../data/geany.glade.h:370
+#: ../data/geany.glade.h:371
 msgid "_Toggle Line Commentation"
 msgstr "Gan_ti Komentasi Baris"
 
-#: ../data/geany.glade.h:371
+#: ../data/geany.glade.h:372
 msgid "_Increase Indent"
 msgstr "Tambah _Indent"
 
-#: ../data/geany.glade.h:372
+#: ../data/geany.glade.h:373
 msgid "_Decrease Indent"
 msgstr "Kuran_gi Indent"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:480
+#: ../data/geany.glade.h:374 ../src/keybindings.c:480
 msgid "S_mart Line Indent"
 msgstr "Indent A_jaib"
 
-#: ../data/geany.glade.h:374
+#: ../data/geany.glade.h:375
 msgid "_Send Selection to"
 msgstr "Kirim Seleksi ke"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:376
 msgid "I_nsert Comments"
 msgstr "Selipka_n Komentar"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:377
 msgid "Preference_s"
 msgstr "Preferen_si"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:527
+#: ../data/geany.glade.h:378 ../src/keybindings.c:527
 msgid "P_lugin Preferences"
 msgstr "Preferensi Plug_in"
 
-#: ../data/geany.glade.h:378
+#: ../data/geany.glade.h:379
 msgid "_Find..."
 msgstr "_Cari..."
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:380
 msgid "Find _Next"
 msgstr "Cari _Selanjutnya"
 
-#: ../data/geany.glade.h:380
+#: ../data/geany.glade.h:381
 msgid "Find _Previous"
 msgstr "Cari Se_belumnya"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2743
 msgid "Find in F_iles..."
 msgstr "Cari di F_ile..."
 
-#: ../data/geany.glade.h:382
+#: ../data/geany.glade.h:383
 msgid "_Replace..."
 msgstr "_Ganti..."
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:384
 msgid "Next Me_ssage"
 msgstr "Pe_san Berikutnya"
 
-#: ../data/geany.glade.h:384
+#: ../data/geany.glade.h:385
 msgid "Pr_evious Message"
 msgstr "P_esan Sebelumnya"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:576
+#: ../data/geany.glade.h:386 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr "Lompat ke Pa_tokan Berikutnya"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:579
+#: ../data/geany.glade.h:387 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr "Lompat ke Pato_kan Sebelumnya"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:388
 msgid "_Go to Line..."
 msgstr "Lompat ke _Baris..."
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:539
+#: ../data/geany.glade.h:389 ../src/keybindings.c:539
 msgid "Find Next _Selection"
 msgstr "Cari Seleksi _Selanjutnya"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:541
+#: ../data/geany.glade.h:390 ../src/keybindings.c:541
 msgid "Find Pre_vious Selection"
 msgstr "Cari Seleksi Sei_belumnya"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:558
+#: ../data/geany.glade.h:391 ../src/keybindings.c:558
 msgid "_Mark All"
 msgstr "Tandai _Semua"
 
-#: ../data/geany.glade.h:391
+#: ../data/geany.glade.h:392
 msgid "Go to Symbol Decl_aration"
 msgstr "Lompat ke Deklarasi Simbol"
 
-#: ../data/geany.glade.h:392
+#: ../data/geany.glade.h:393
 msgid "_View"
 msgstr "Tam_pilan"
 
-#: ../data/geany.glade.h:393
+#: ../data/geany.glade.h:394
 msgid "Change _Font..."
 msgstr "Ganti _Font..."
 
-#: ../data/geany.glade.h:394
+#: ../data/geany.glade.h:395
 msgid "Change _Color Scheme..."
 msgstr "Ganti _Skema Warna..."
 
-#: ../data/geany.glade.h:395
+#: ../data/geany.glade.h:396
 msgid "Show _Markers Margin"
 msgstr "Tampilkan Penanda _Margin"
 
-#: ../data/geany.glade.h:396
+#: ../data/geany.glade.h:397
 msgid "Show _Line Numbers"
 msgstr "Tampi_lkan Nomor Baris"
 
-#: ../data/geany.glade.h:397
+#: ../data/geany.glade.h:398
 msgid "Show White S_pace"
 msgstr "Tampilkan White S_pace"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:399
 msgid "Show Line _Endings"
 msgstr "Tampilkan _Akhiran Baris"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:400
 msgid "Show Indentation _Guides"
 msgstr "Tampilkan Petunjuk _Indentasi"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:401
 msgid "Full_screen"
 msgstr "Layar _penuh"
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:402
 msgid "Toggle All _Additional Widgets"
 msgstr "Balik Semua Widget _Tambahan"
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:403
 msgid "Show Message _Window"
 msgstr "Tampilkan _Jendela Pesan"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:404
 msgid "Show _Toolbar"
 msgstr "Tampilkan _Toolbar"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:405
 msgid "Show Side_bar"
 msgstr "Tampilkan Side_bar"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:406
 msgid "_Document"
 msgstr "_Dokument"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:407
 msgid "_Line Wrapping"
 msgstr "_Lipet Baris"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:408
 msgid "Line _Breaking"
 msgstr "Penggal _Baris"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:409
 msgid "_Auto-indentation"
 msgstr "_Indentasi otomatis"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:410
 msgid "In_dent Type"
 msgstr "Tipe In_dent"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:411
 msgid "_Detect from Content"
 msgstr "_Deteksi dari Konten"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:412
 msgid "T_abs and Spaces"
 msgstr "T_ab dan Spasi"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:413
 msgid "Indent Widt_h"
 msgstr "Leba_r Indent"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:414
 msgid "_1"
 msgstr "_1"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:415
 msgid "_2"
 msgstr "_2"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:416
 msgid "_3"
 msgstr "_3"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:417
 msgid "_4"
 msgstr "_4"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:418
 msgid "_5"
 msgstr "_5"
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:419
 msgid "_6"
 msgstr "_6"
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:420
 msgid "_7"
 msgstr "_7"
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:421
 msgid "_8"
 msgstr "_8"
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:422
 msgid "Read _Only"
 msgstr "Hanya _Baca"
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:423
 msgid "_Write Unicode BOM"
 msgstr "_Tulis Unicode BOM"
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:424
 msgid "Set File_type"
 msgstr "Teta_pkan Tipe Berkas"
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:425
 msgid "Set _Encoding"
 msgstr "Tetapkan _Encoding"
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:426
 msgid "Set Line E_ndings"
 msgstr "Tetapkan Akhira_n Baris"
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:427
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "Konversi dan Permanenkan ke mode _CR/LF (Windows)"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:428
 msgid "Convert and Set to _LF (Unix)"
 msgstr "Konversi dan Permanenkan ke _LF (Unix)"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:429
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Konversi dan Permanenkan ke CR (_Mac Klasik)"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:667
+#: ../data/geany.glade.h:430 ../src/keybindings.c:667
 msgid "_Clone"
 msgstr "_Klon"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:669
+#: ../data/geany.glade.h:431 ../src/keybindings.c:669
 msgid "_Strip Trailing Spaces"
 msgstr "_Buang Spasi Berlebih"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:432
 msgid "Replace Tabs with S_paces"
 msgstr "Ganti Tab dengan S_pasi"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:433
 msgid "_Replace Spaces with Tabs..."
 msgstr "Ganti Spa_si dengan Tab..."
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:434
 msgid "_Fold All"
 msgstr "_Fold Semua"
 
-#: ../data/geany.glade.h:434
+#: ../data/geany.glade.h:435
 msgid "_Unfold All"
 msgstr "_Unfold Semua"
 
-#: ../data/geany.glade.h:435
+#: ../data/geany.glade.h:436
 msgid "Remove _Markers"
 msgstr "Hilangkan _Marker"
 
-#: ../data/geany.glade.h:436
+#: ../data/geany.glade.h:437
 msgid "Remove Error _Indicators"
 msgstr "Hilangkan _Indikasi Kesalahan"
 
-#: ../data/geany.glade.h:437
+#: ../data/geany.glade.h:438
 msgid "_Project"
 msgstr "_Proyek"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:439
 msgid "_New..."
 msgstr "_Baru..."
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:440
 msgid "_Recent Projects"
 msgstr "Proyek _Terkini"
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:441
 msgid "_Close"
 msgstr "_Tutup"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:442
 msgid "Apply the default indentation settings to all documents"
 msgstr "Terapkan pengaturan indentasi standar ke semua dokumen"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:443
 msgid "_Apply Default Indentation"
 msgstr "Te_rapkan Indentasi Standar"
 
 #. build the code
-#: ../data/geany.glade.h:443 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
 msgid "_Build"
 msgstr "_Build"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:445
 msgid "_Tools"
 msgstr "_Tools"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:446
 msgid "_Reload Configuration"
 msgstr "Muat-_Ulang Konfigurasi"
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:447
 msgid "C_onfiguration Files"
 msgstr "Berkas K_onfigurasi"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:448
 msgid "_Color Chooser"
 msgstr "Palet _Warna"
 
-#: ../data/geany.glade.h:448
+#: ../data/geany.glade.h:449
 msgid "_Word Count"
 msgstr "_Jumlah Kata"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:450
 msgid "Load Ta_gs File..."
 msgstr "Muat Berkas Ta_g..."
 
-#: ../data/geany.glade.h:450
+#: ../data/geany.glade.h:451
 msgid "_Help"
 msgstr "_Bantuan"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:452
 msgid "Keyboard _Shortcuts"
 msgstr "Tombol _Singkat Keyboard"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:453
 msgid "Debug _Messages"
 msgstr "Pesan _Debug"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:454
 msgid "_Website"
 msgstr "Situs _web"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:455
 msgid "Wi_ki"
 msgstr "Wi_ki"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:456
 msgid "Report a _Bug..."
 msgstr "Laporkan _Kutu..."
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:457
 msgid "_Donate..."
 msgstr "_Donasi..."
 
-#: ../data/geany.glade.h:457 ../src/sidebar.c:125
+#: ../data/geany.glade.h:458 ../src/sidebar.c:125
 msgid "Symbols"
 msgstr "Simbol"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:459
 msgid "Documents"
 msgstr "Dokumen"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:460
 msgid "Status"
 msgstr "Status"
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:461
 msgid "Compiler"
 msgstr "Kompiler"
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:462
 msgid "Messages"
 msgstr "Pesan"
 
-#: ../data/geany.glade.h:462
+#: ../data/geany.glade.h:463
 msgid "Scribble"
 msgstr "Catatan"
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:464
 msgid "Project Properties"
 msgstr "Atribut Proyek"
 
-#: ../data/geany.glade.h:464 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:179
 msgid "Filename:"
 msgstr "Nama berkas:"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:466
 #, fuzzy
 msgid "_Name:"
 msgstr "Nama:"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:467
 #, fuzzy
 msgid "_Description:"
 msgstr "Deskripsi:"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:468
 #, fuzzy
 msgid "_Base path:"
 msgstr "Base path:"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:469
 #, fuzzy
 msgid "File _patterns:"
 msgstr "Pola berkas:"
 
-#: ../data/geany.glade.h:469
+#: ../data/geany.glade.h:470
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
@@ -2196,7 +2203,7 @@ msgstr ""
 "Daftar pola berkas yang dipisahkan oleh tanda spasi digunakan untuk dialog "
 "cari di berkas (contoh *.c *.h)"
 
-#: ../data/geany.glade.h:470 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:208
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2206,79 +2213,79 @@ msgstr ""
 "lokasi baru, atau direktori yang sudah ada. Anda dapat menggunakan lokasi "
 "yang relatif terhadap nama berkas proyek."
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:322
+#: ../data/geany.glade.h:472 ../src/keybindings.c:322
 msgid "Project"
 msgstr "Proyek"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:473
 msgid "Display:"
 msgstr "Tampilan:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:474
 msgid "Custom"
 msgstr "Custom"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:475
 msgid "Use global settings"
 msgstr "Pakai pengaturan global"
 
-#: ../data/geany.glade.h:475
+#: ../data/geany.glade.h:476
 msgid "Size:"
 msgstr "Ukuran:"
 
-#: ../data/geany.glade.h:476
+#: ../data/geany.glade.h:477
 msgid "Location:"
 msgstr "Lokasi:"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:478
 msgid "Read-only:"
 msgstr "Hanya-baca:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:479
 msgid "Encoding:"
 msgstr "Encoding:"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:480
 msgid "Modified:"
 msgstr "Dimodifikasi:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:481
 msgid "Changed:"
 msgstr "Berubah:"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:482
 msgid "Accessed:"
 msgstr "Diakses:"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:483
 msgid "(only inside Geany)"
 msgstr "(hanya di dalam Geany)"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:484
 msgid "Permissions:"
 msgstr "Perizinan:"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:485
 msgid "Read:"
 msgstr "Baca:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:486
 msgid "Write:"
 msgstr "Tulis:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:487
 msgid "Execute:"
 msgstr "Eksekusi:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:488
 msgid "Owner:"
 msgstr "Pemilik:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:489
 msgid "Group:"
 msgstr "Grup:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:490
 msgid "Other:"
 msgstr "Lainnya:"
 
@@ -2474,12 +2481,12 @@ msgstr "Tidak ada lagi kesalahan untuk Build."
 msgid "Set menu item label"
 msgstr "Tetapkan label menu item"
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:396
+#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:412
 msgid "Label"
 msgstr "Label"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:381
+#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:397
 msgid "Command"
 msgstr "Command"
 
@@ -2984,8 +2991,8 @@ msgstr "Berkas %s tersimpan."
 msgid "Wrap search and find again?"
 msgstr "Ulangi pencarian?"
 
-#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
-#: ../src/search.c:2229 ../src/search.c:2230
+#: ../src/document.c:2464 ../src/search.c:1385 ../src/search.c:1438
+#: ../src/search.c:2240 ../src/search.c:2241
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Kesamaan tidak ditemukan untuk pencarian \"%s\"."
@@ -3242,25 +3249,25 @@ msgstr "Regex payah untuk tipe-berkas %s: %s"
 msgid "untitled"
 msgstr "tanpa judul"
 
-#: ../src/highlighting.c:1229 ../src/libmain.c:867 ../src/socket.c:170
+#: ../src/highlighting.c:1232 ../src/libmain.c:867 ../src/socket.c:170
 #: ../src/templates.c:231
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Tidak bisa menemukan berkas '%s'."
 
-#: ../src/highlighting.c:1299
+#: ../src/highlighting.c:1302
 msgid "Default"
 msgstr "Standar"
 
-#: ../src/highlighting.c:1340
+#: ../src/highlighting.c:1343
 msgid "The current filetype overrides the default style."
 msgstr "Tipe-berkas sekarang mengabaikan style bawaan."
 
-#: ../src/highlighting.c:1341
+#: ../src/highlighting.c:1344
 msgid "This may cause color schemes to display incorrectly."
 msgstr "Dapat mengakibatkan skema warna tampil tidak sempurna."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1369
 msgid "Color Schemes"
 msgstr "Skema Warna"
 
@@ -3550,7 +3557,7 @@ msgstr "Sisipkan Baris Baru di Atas Baris Sekarang"
 msgid "Insert New Line After Current"
 msgstr "Sisipkan Baris Baru di Bawah Baris Sekarang"
 
-#: ../src/keybindings.c:532 ../src/search.c:467
+#: ../src/keybindings.c:532 ../src/search.c:469
 msgid "Find"
 msgstr "Cari"
 
@@ -3562,11 +3569,11 @@ msgstr "Cari Berikutnya"
 msgid "Find Previous"
 msgstr "Cari Sebelumnya"
 
-#: ../src/keybindings.c:543 ../src/search.c:620
+#: ../src/keybindings.c:543 ../src/search.c:622
 msgid "Replace"
 msgstr "Ganti"
 
-#: ../src/keybindings.c:545 ../src/search.c:870
+#: ../src/keybindings.c:545 ../src/search.c:872
 msgid "Find in Files"
 msgstr "Cari di dalam Berkas"
 
@@ -4385,7 +4392,7 @@ msgstr "Direktori dasar proyek tidak bisa dibuat (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Proyek tidak bisa ditulis (%s)."
 
-#: ../src/project.c:780 ../src/search.c:630
+#: ../src/project.c:780 ../src/search.c:632
 msgid "_Replace"
 msgstr "Cari-_Ganti"
 
@@ -4404,11 +4411,11 @@ msgstr "Pilih Nama Berkas Proyek"
 msgid "Project \"%s\" opened."
 msgstr "Proyek \"%s\" terbuka."
 
-#: ../src/search.c:311 ../src/search.c:963
+#: ../src/search.c:313 ../src/search.c:965
 msgid "_Use regular expressions"
 msgstr "_Pakai ekspresi regular"
 
-#: ../src/search.c:314
+#: ../src/search.c:316
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
@@ -4417,11 +4424,11 @@ msgstr ""
 "Pakai regex yang berbasiskan POSIX. Untuk informasi lebih lengkap tentang "
 "penggunaan regex, silakan membaca dokumentasi terkait."
 
-#: ../src/search.c:319
+#: ../src/search.c:321
 msgid "Use _escape sequences"
 msgstr "Gunakan _escape sequences"
 
-#: ../src/search.c:323
+#: ../src/search.c:325
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4429,11 +4436,11 @@ msgstr ""
 "Ganti  \\\\, \\t, \\n, \\r dan \\uXXXX (Karakter Unicode) dengan karakter "
 "kontrol penggantinya"
 
-#: ../src/search.c:326
+#: ../src/search.c:328
 msgid "Use multi-line matchin_g"
 msgstr "Gunakan ke_cocokan multi-baris"
 
-#: ../src/search.c:331
+#: ../src/search.c:333
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4445,98 +4452,98 @@ msgstr ""
 "Dalam mode ini, karakter baris baru merupakan bagian dari masukan dan "
 "ditangkap sebagai karakter biasa oleh pola tersebut."
 
-#: ../src/search.c:344
+#: ../src/search.c:346
 msgid "Search _backwards"
 msgstr "Cari mun_dur"
 
-#: ../src/search.c:350 ../src/search.c:972
+#: ../src/search.c:352 ../src/search.c:974
 msgid "C_ase sensitive"
 msgstr "Sensitif huruf bes_ar-kecil"
 
-#: ../src/search.c:354 ../src/search.c:977
+#: ../src/search.c:356 ../src/search.c:979
 msgid "Match only a _whole word"
 msgstr "_Hanya cocok seluruh kata"
 
-#: ../src/search.c:358
+#: ../src/search.c:360
 msgid "Match from s_tart of word"
 msgstr "Cocok dari permulaan ka_ta"
 
-#: ../src/search.c:474
+#: ../src/search.c:476
 msgid "_Previous"
 msgstr "_Sebelumnya"
 
-#: ../src/search.c:479
+#: ../src/search.c:481
 msgid "_Next"
 msgstr "_Berikutnya"
 
-#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
+#: ../src/search.c:485 ../src/search.c:643 ../src/search.c:882
 msgid "_Search for:"
 msgstr "_Cari untuk:"
 
 #. Now add the multiple match options
-#: ../src/search.c:511
+#: ../src/search.c:513
 msgid "_Find All"
 msgstr "_Cari Semua"
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 msgid "_Mark"
 msgstr "_Tandai"
 
-#: ../src/search.c:520
+#: ../src/search.c:522
 msgid "Mark all matches in the current document"
 msgstr "Tandai semua kesamaan di dokumen ini"
 
-#: ../src/search.c:525 ../src/search.c:700
+#: ../src/search.c:527 ../src/search.c:702
 msgid "In Sessi_on"
 msgstr "Dalam S_esi"
 
-#: ../src/search.c:530 ../src/search.c:705
+#: ../src/search.c:532 ../src/search.c:707
 msgid "_In Document"
 msgstr "Dalam Do_kumen"
 
 #. close window checkbox
-#: ../src/search.c:536 ../src/search.c:718
+#: ../src/search.c:538 ../src/search.c:720
 msgid "Close _dialog"
 msgstr "Tutup _dialog"
 
-#: ../src/search.c:540 ../src/search.c:722
+#: ../src/search.c:542 ../src/search.c:724
 msgid "Disable this option to keep the dialog open"
 msgstr "Nonaktifkan opsi ini untuk membuat dialog tetap terbuka"
 
-#: ../src/search.c:635
+#: ../src/search.c:637
 msgid "Replace & Fi_nd"
 msgstr "Ga_nti & Cari"
 
-#: ../src/search.c:644
+#: ../src/search.c:646
 msgid "Replace wit_h:"
 msgstr "Ganti _dengan:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:693
+#: ../src/search.c:695
 msgid "Re_place All"
 msgstr "Ganti S_emua"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "In Se_lection"
 msgstr "Dalam Se_leksi"
 
-#: ../src/search.c:712
+#: ../src/search.c:714
 msgid "Replace all matches found in the currently selected text"
 msgstr "Ganti seluruh kata yang cocok pada teks yang sedang dipilih"
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 msgid "all"
 msgstr "semua"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "project"
 msgstr "proyek"
 
-#: ../src/search.c:833
+#: ../src/search.c:835
 msgid "custom"
 msgstr "custom"
 
-#: ../src/search.c:837
+#: ../src/search.c:839
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4546,75 +4553,75 @@ msgstr ""
 "Proyek: gunakan pola berkas yang telah ditentukan pada pengaturan proyek\n"
 "Custom: menentukan pola berkas secara manual"
 
-#: ../src/search.c:899
+#: ../src/search.c:901
 msgid "Fi_les:"
 msgstr "Ber_kas:"
 
-#: ../src/search.c:911
+#: ../src/search.c:913
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Pola berkas, contoh *.c *.h"
 
-#: ../src/search.c:923
+#: ../src/search.c:925
 msgid "_Directory:"
 msgstr "_Direktori:"
 
-#: ../src/search.c:942
+#: ../src/search.c:944
 msgid "E_ncoding:"
 msgstr "E_ncoding:"
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "See grep's manual page for more information"
 msgstr "Lihatlah panduan grep untuk informasi lebih lanjut"
 
-#: ../src/search.c:968
+#: ../src/search.c:970
 msgid "_Recurse in subfolders"
 msgstr "_Rekursi subfolder"
 
-#: ../src/search.c:981
+#: ../src/search.c:983
 msgid "_Invert search results"
 msgstr "Bal_ik hasil pencarian"
 
-#: ../src/search.c:985
+#: ../src/search.c:987
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Balikkan sensi kecocokan, untuk memilih baris tak cocok"
 
-#: ../src/search.c:1002
+#: ../src/search.c:1004
 msgid "E_xtra options:"
 msgstr "Opsi e_kstra:"
 
-#: ../src/search.c:1010
+#: ../src/search.c:1012
 msgid "Other options to pass to Grep"
 msgstr "Opsi lain untuk diberikan pada Grep"
 
-#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
+#: ../src/search.c:1388 ../src/search.c:2246 ../src/search.c:2249
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Ditemukan %d untuk \"%s\"."
 
-#: ../src/search.c:1433
+#: ../src/search.c:1444
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Mengganti %u item yang ditemukan pada %u dokumen."
 
-#: ../src/search.c:1622
+#: ../src/search.c:1633
 msgid "Invalid directory for find in files."
 msgstr "Direktori tidak valid untuk fitur cari di berkas."
 
-#: ../src/search.c:1639
+#: ../src/search.c:1650
 msgid "No text to find."
 msgstr "Tidak ada teks yang akan dicari."
 
-#: ../src/search.c:1715
+#: ../src/search.c:1726
 msgid "Searching..."
 msgstr "Sedang mencari..."
 
-#: ../src/search.c:1717
+#: ../src/search.c:1728
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (pada direktori: %s)"
 
-#: ../src/search.c:1725
+#: ../src/search.c:1736
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4622,26 +4629,26 @@ msgstr ""
 "Tidak bisa mengeksekusi alat grep \"%s\": %s. Periksalah pengaturan "
 "lokasinya pada Preferensi."
 
-#: ../src/search.c:1765
+#: ../src/search.c:1776
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Tidak dapat membuka dierektori (%s)"
 
-#: ../src/search.c:1855
+#: ../src/search.c:1866
 msgid "Search failed."
 msgstr "Pencarian gagal."
 
-#: ../src/search.c:1879
+#: ../src/search.c:1890
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Pencarian selesai, ada %d yang ditemukan."
 
-#: ../src/search.c:1887
+#: ../src/search.c:1898
 msgid "No matches found."
 msgstr "Kesamaan tidak ditemukan."
 
-#: ../src/search.c:1917
+#: ../src/search.c:1928
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Regex buruk: %s"
@@ -5256,12 +5263,12 @@ msgstr "Item yang Ditampilkan"
 msgid "Invalid command: %s"
 msgstr "Perintah tidak valid: %s"
 
-#: ../src/tools.c:216
+#: ../src/tools.c:229
 #, c-format
 msgid "Passing data and executing custom command: %s"
 msgstr "Berikan data dan eksekusi perintah custom: %s"
 
-#: ../src/tools.c:224
+#: ../src/tools.c:237
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
@@ -5270,13 +5277,13 @@ msgstr ""
 "Perintah custom yang tereksekusi mengeluarkan kesalahan. Seleksi Anda tidak "
 "berubah. Pesan kesalahan: %s"
 
-#: ../src/tools.c:232
+#: ../src/tools.c:245
 msgid "The executed custom command exited with an unsuccessful exit code."
 msgstr ""
 "Perintah custom yang tereksekusi telah berakhir bersama dengan kode "
 "pengakhiran yang tidak berhasil."
 
-#: ../src/tools.c:241
+#: ../src/tools.c:257
 #, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
@@ -5285,11 +5292,11 @@ msgstr ""
 "Tidak bisa mengeksekusi perintah pilihan \"%s\": %s. Periksalah pengaturan "
 "lokasinya pada Perintah Pilihan."
 
-#: ../src/tools.c:356 ../src/tools.c:625
+#: ../src/tools.c:372 ../src/tools.c:641
 msgid "Set Custom Commands"
 msgstr "Tetapkan Perintah Custom"
 
-#: ../src/tools.c:364
+#: ../src/tools.c:380
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
@@ -5297,39 +5304,39 @@ msgstr ""
 "Anda dapat mengirim seleksi yang sekarang ke semua perintah ini dan hasil "
 "keluaran perintahnya mengganti seleksi saat ini."
 
-#: ../src/tools.c:378
+#: ../src/tools.c:394
 msgid "ID"
 msgstr "ID"
 
-#: ../src/tools.c:596
+#: ../src/tools.c:612
 msgid "No custom commands defined."
 msgstr "Perintah custom tidak didefinisi."
 
-#: ../src/tools.c:695
+#: ../src/tools.c:711
 msgid "Word Count"
 msgstr "Jumlah Kata"
 
-#: ../src/tools.c:704
+#: ../src/tools.c:720
 msgid "selection"
 msgstr "seleksi"
 
-#: ../src/tools.c:709
+#: ../src/tools.c:725
 msgid "whole document"
 msgstr "seluruh dokumen"
 
-#: ../src/tools.c:718
+#: ../src/tools.c:734
 msgid "Range:"
 msgstr "Rentang:"
 
-#: ../src/tools.c:730
+#: ../src/tools.c:746
 msgid "Lines:"
 msgstr "Baris:"
 
-#: ../src/tools.c:744
+#: ../src/tools.c:760
 msgid "Words:"
 msgstr "Kata:"
 
-#: ../src/tools.c:758
+#: ../src/tools.c:774
 msgid "Characters:"
 msgstr "Karakter:"
 

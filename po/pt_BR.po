@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-04 11:05+0300\n"
+"POT-Creation-Date: 2021-02-18 22:19+0300\n"
 "PO-Revision-Date: 2015-05-17 18:43-0200\n"
 "Last-Translator: Felipe Braga <fbobraga@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Virtaal 0.7.1\n"
 
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:343
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:344
 msgid "Geany"
 msgstr "Geany"
 
@@ -370,14 +370,19 @@ msgid "Use the current file's directory for Find in Files"
 msgstr "Usar o diretório do arquivo atual para Localizar em Arquivos"
 
 #: ../data/geany.glade.h:71
+#, fuzzy
+msgid "Use the current project's directory for Find in Files"
+msgstr "Usar o diretório do arquivo atual para Localizar em Arquivos"
+
+#: ../data/geany.glade.h:72
 msgid "<b>Search</b>"
 msgstr "<b>Pesquisar</b>"
 
-#: ../data/geany.glade.h:72
+#: ../data/geany.glade.h:73
 msgid "Use project-based session files"
 msgstr "Usar arquivos de sessão baseados em projeto"
 
-#: ../data/geany.glade.h:73
+#: ../data/geany.glade.h:74
 msgid ""
 "Whether to store a project's session files and open them when re-opening the "
 "project"
@@ -385,11 +390,11 @@ msgstr ""
 "Salvar ou não os arquivos de sessão de um projeto e abri-los quando o "
 "projeto for reaberto"
 
-#: ../data/geany.glade.h:74
+#: ../data/geany.glade.h:75
 msgid "Store project file inside the project base directory"
 msgstr "Armazenar arquivo de projeto dentro do diretório base do projeto"
 
-#: ../data/geany.glade.h:75
+#: ../data/geany.glade.h:76
 msgid ""
 "When enabled, a project file is stored by default inside the project base "
 "directory when creating new projects instead of one directory above the base "
@@ -401,11 +406,11 @@ msgstr ""
 "diretório base. Você pode ainda alterar o caminho do arquivo de projeto no "
 "diálogo Novo Projeto."
 
-#: ../data/geany.glade.h:76
+#: ../data/geany.glade.h:77
 msgid "<b>Projects</b>"
 msgstr "<b>Projetos</b>"
 
-#: ../data/geany.glade.h:77 ../src/dialogs.c:231
+#: ../data/geany.glade.h:78 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "Miscelânea"
 
@@ -413,109 +418,109 @@ msgstr "Miscelânea"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:78 ../src/prefs.c:1602
+#: ../data/geany.glade.h:79 ../src/prefs.c:1602
 msgid "General"
 msgstr "Geral"
 
-#: ../data/geany.glade.h:79
+#: ../data/geany.glade.h:80
 msgid "Show symbol list"
 msgstr "Exibir lista de símbolos"
 
-#: ../data/geany.glade.h:80
+#: ../data/geany.glade.h:81
 msgid "Toggle the symbol list on and off"
 msgstr "Exibe ou esconde a lista de símbolos"
 
-#: ../data/geany.glade.h:81
+#: ../data/geany.glade.h:82
 msgid "Default symbol sorting mode"
 msgstr ""
 
-#: ../data/geany.glade.h:82
+#: ../data/geany.glade.h:83
 #, fuzzy
 msgid "Default sorting mode:"
 msgstr "Codificação padrão (arquivos novos):"
 
-#: ../data/geany.glade.h:83 ../src/stash.c:1177
+#: ../data/geany.glade.h:84 ../src/stash.c:1177
 msgid "Name"
 msgstr "Nome"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:85
 #, fuzzy
 msgid "Appearance"
 msgstr "<b>Aparência</b>"
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:86
 msgid "Show documents list"
 msgstr "Exibir lista de documentos"
 
-#: ../data/geany.glade.h:86
+#: ../data/geany.glade.h:87
 msgid "Toggle the documents list on and off"
 msgstr "Exibe ou esconde a lista de documentos"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:88
 msgid "Show sidebar"
 msgstr "Exibir barra lateral"
 
-#: ../data/geany.glade.h:88
+#: ../data/geany.glade.h:89
 msgid "Position:"
 msgstr "Posição:"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:90
 msgid "<b>Sidebar</b>"
 msgstr "<b>Barra Lateral</b>"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:91
 msgid "<b>Message window</b>"
 msgstr "<b>Janela de mensagens:</b>"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:92
 msgid "Symbol list:"
 msgstr "Lista de Símbolos:"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:93
 msgid "Message window:"
 msgstr "Janela de Mensagens:"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:94
 msgid "Editor:"
 msgstr "Editor:"
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:95
 msgid "Sets the font for the message window"
 msgstr "Define a fonte para a janela de mensagens"
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:96
 msgid "Sets the font for the symbol list"
 msgstr "Define a fonte para a lista de símbolos"
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:97
 msgid "Sets the editor font"
 msgstr "Define a fonte do editor"
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:98
 msgid "<b>Fonts</b>"
 msgstr "<b>Fontes</b>"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:99
 msgid "Show status bar"
 msgstr "Exibir barra de estado"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:100
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr "Exibe ou oculta a barra de estado na base da janela principal"
 
-#: ../data/geany.glade.h:100 ../src/prefs.c:1604
+#: ../data/geany.glade.h:101 ../src/prefs.c:1604
 msgid "Interface"
 msgstr "Interface"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:102
 msgid "Show editor tabs"
 msgstr "Exibir abas do editor"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:103
 msgid "Show close buttons"
 msgstr "Exibir botões de fechar"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:104
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
 "clicking on it (requires restart of Geany)"
@@ -523,23 +528,23 @@ msgstr ""
 "Mostra um pequeno botão de cruz na aba de arquivos para fechar arquivos "
 "facilmente quando for clicado (exige que o Geany seja reiniciado)"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:105
 msgid "Placement of new file tabs:"
 msgstr "Localização das abas de novo arquivo:"
 
-#: ../data/geany.glade.h:105
+#: ../data/geany.glade.h:106
 msgid "File tabs will be placed on the left of the notebook"
 msgstr "Abas de arquivos serão colocadas à esquerda do bloco de notas"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:107
 msgid "File tabs will be placed on the right of the notebook"
 msgstr "Abas de arquivos serão colocadas à direita do bloco de notas"
 
-#: ../data/geany.glade.h:107
+#: ../data/geany.glade.h:108
 msgid "Next to current"
 msgstr "Próximo ao anterior"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:109
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
@@ -547,105 +552,105 @@ msgstr ""
 "Colocar ou não as tabulações de arquivo próximas da tabulação atual em vez "
 "de nas bordas da agenda"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:110
 msgid "Double-clicking hides all additional widgets"
 msgstr "Duplo clique oculta todos os painéis adicionais"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:111
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr "Chama o comando Exibir->Alternar Todos os Painéis Adicionais"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:112
 msgid "Switch to last used document after closing a tab"
 msgstr "Ir para o último documento usado após fechar uma aba"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:113
 msgid "<b>Editor tabs</b>"
 msgstr "<b>Abas do editor</b>"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:114
 msgid "Sidebar:"
 msgstr "Barra Lateral:"
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:115
 msgid "<b>Tab positions</b>"
 msgstr "<b>Posições das abas</b>"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:116
 msgid "Notebook tabs"
 msgstr "Abas do Bloco de Notas"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:117
 msgid "Show t_oolbar"
 msgstr "Exibir barra de ferramen_tas"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:118
 msgid "_Append toolbar to the menu"
 msgstr "_Anexar barra de ferramentas ao menu"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:119
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr ""
 "Empacota a barra de ferramentas no menu principal, para economizar espaço "
 "vertical"
 
-#: ../data/geany.glade.h:119 ../src/toolbar.c:943
+#: ../data/geany.glade.h:120 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "Personalizar Barra de Ferramentas"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:121
 msgid "System _default"
 msgstr "_Default do sistema"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:122
 msgid "Images _and text"
 msgstr "Im_agens e texto"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:123
 msgid "_Images only"
 msgstr "Apenas _imagens"
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:124
 msgid "_Text only"
 msgstr "Apenas _texto"
 
-#: ../data/geany.glade.h:124
+#: ../data/geany.glade.h:125
 msgid "<b>Icon style</b>"
 msgstr "<b>Estilo do ícone</b>"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:126
 msgid "S_ystem default"
 msgstr "Default do s_istema"
 
-#: ../data/geany.glade.h:126
+#: ../data/geany.glade.h:127
 msgid "_Small icons"
 msgstr "Ícone_s pequenos"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:128
 msgid "_Very small icons"
 msgstr "Ícones _muito pequenos"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:129
 msgid "_Large icons"
 msgstr "Ícones _grandes"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:130
 msgid "<b>Icon size</b>"
 msgstr "<b>Tamanho do ícone</b>"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:131
 msgid "<b>Toolbar</b>"
 msgstr "<b>Barra de ferramentas</b>"
 
-#: ../data/geany.glade.h:131 ../src/prefs.c:1606
+#: ../data/geany.glade.h:132 ../src/prefs.c:1606
 msgid "Toolbar"
 msgstr "Barra de Ferramentas"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:133
 msgid "Line wrapping"
 msgstr "Quebrar linhas"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:134
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
@@ -655,11 +660,11 @@ msgstr ""
 "quebra de linha possui um custo elevado de desempenho para documentos "
 "grandes, e deveria ser desabilitada em máquinas lentas."
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:135
 msgid "\"Smart\" home key"
 msgstr "Habilitar tecla home \"inteligente\""
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:136
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -673,11 +678,11 @@ msgstr ""
 "desabilitado, a tecla HOME sempre move o cursor para o início da linha "
 "atual, independente da sua posição."
 
-#: ../data/geany.glade.h:136
+#: ../data/geany.glade.h:137
 msgid "Disable Drag and Drop"
 msgstr "Desabilitar Arrastar e Soltar"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:138
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
 "drop any selections within or outside of the editor window"
@@ -686,15 +691,15 @@ msgstr ""
 "impossível arrastar e soltar qualquer seleção dentro ou fora da janela do "
 "editor"
 
-#: ../data/geany.glade.h:138
+#: ../data/geany.glade.h:139
 msgid "Code folding"
 msgstr "Habilitar agrupamento de código"
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:140
 msgid "Fold/unfold all children of a fold point"
 msgstr "Dobrar/Desdobrar todos os filhos de um ponto de dobra"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:141
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
 "clicking on a fold symbol the contrary behavior is used."
@@ -703,11 +708,11 @@ msgstr ""
 "tecla Shift quando clicar em um símbolo de dobra, o comportamento inverso "
 "será utilizado."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:142
 msgid "Use indicators to show compile errors"
 msgstr "Usar indicadores para mostrar erros de compilação"
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:143
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
@@ -715,23 +720,23 @@ msgstr ""
 "Usar ou não indicadores (um sublinhado irregular) para destacar as linhas "
 "onde o compilador encontrou um aviso ou um erro"
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:144
 msgid "Newline strips trailing spaces"
 msgstr "Nova linha remove espaços no final"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:145
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr "Habilita a nova linha a remover os espaços no final da linha anterior"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:146
 msgid "Line breaking column:"
 msgstr "Coluna de quebra de linha:"
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:147
 msgid "Comment toggle marker:"
 msgstr "Comentar marcador de alternar:"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:148
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
 "used to mark the comment as toggled."
@@ -739,15 +744,15 @@ msgstr ""
 "Um texto que é adicionado ao alternar um comentário de linha em um arquivo "
 "fonte, é usado para marcar o comentário como alternado."
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:149
 msgid "<b>Features</b>"
 msgstr "<b>Características</b>"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:150
 msgid "Features"
 msgstr "Características"
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:151
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
@@ -755,25 +760,25 @@ msgstr ""
 "Observação: Para aplicar essa configuração a todos os documentos abertos no "
 "momento, use <i>Projeto->Aplicar Indentação Padrão</i>."
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:152
 #, fuzzy
 msgid "_Width:"
 msgstr "Largura:"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:153
 msgid "The width in chars of a single indent"
 msgstr "Largura em caracteres de uma única indentação"
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:154
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "Modo de indentação automática:"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:155
 msgid "Detect type from file"
 msgstr "Detectar tipo do arquivo"
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:156
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
@@ -781,38 +786,38 @@ msgstr ""
 "Detectar ou não o tipo de indentação a partir do conteúdo de um arquivo "
 "quando ele for aberto"
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:157
 msgid "T_abs and spaces"
 msgstr "T_abs e espaços"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:158
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr ""
 "Usar espaços se a indentação total for menor do que a largura da tabulação, "
 "senão usa ambos"
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:159
 msgid "_Spaces"
 msgstr "E_spaços"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:160
 msgid "Use spaces when inserting indentation"
 msgstr "Usar espaços quando inserir indentação"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:161
 msgid "_Tabs"
 msgstr "_Tabs"
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:162
 msgid "Use one tab per indent"
 msgstr "Usar um tab por indentação"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:163
 msgid "Detect width from file"
 msgstr "Detectar largura do arquivo"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:164
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
 "opened"
@@ -820,35 +825,35 @@ msgstr ""
 "Detectar ou não a largura da ententação a partir do conteúdo quando um "
 "arquivo for aberto"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:165
 msgid "Type:"
 msgstr "Tipo:"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:166
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "Indentações da tecla Tab"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:167
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
 "Pressionar tab/shift-tab insere/remove indentação em vez de inserir um "
 "caracter de tabulação"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:168
 msgid "<b>Indentation</b>"
 msgstr "<b>Indentação</b>"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:169
 msgid "Indentation"
 msgstr "Indentação"
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:170
 msgid "Snippet completion"
 msgstr "Completar fragmento"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:171
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
@@ -856,19 +861,19 @@ msgstr ""
 "Digite uma dada sequência curta de caracteres e ela será completada para uma "
 "sequência mais complexa pressionando-se uma única tecla"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:172
 msgid "XML/HTML tag auto-closing"
 msgstr "Fechamento automático de tags XML/HTML"
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:173
 msgid "Insert matching closing tag for XML/HTML"
 msgstr "Inserir tag de fechamento correspondente para XML/HTML"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:174
 msgid "Automatic continuation of multi-line comments"
 msgstr "Continuação automática de comentários multi-linha"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:175
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
 "when a new line is entered inside such a comment"
@@ -876,11 +881,11 @@ msgstr ""
 "Continua automaticamente comentários multi-linha em linguagens como C, C++ e "
 "Java quando uma nova linha for inserida dentro de um comentário deste tipo"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:176
 msgid "Autocomplete symbols"
 msgstr "Auto-completar símbolos"
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:177
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
@@ -888,27 +893,27 @@ msgstr ""
 "Auto-completar símbolos conhecidos em arquivos abertos (nomes de função, "
 "variáveis globais, ...)"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:178
 msgid "Autocomplete all words in document"
 msgstr "Completa automaticamente todas as palavras no documeto"
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:179
 msgid "Drop rest of word on completion"
 msgstr "Perder resto da palavra ao completar"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:180
 msgid "Max. symbol name suggestions:"
 msgstr "Máx. sugestões de nomes de símbolos:"
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:181
 msgid "Completion list height:"
 msgstr "Altura da lista de completamento:"
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:182
 msgid "Characters to type for autocompletion:"
 msgstr "Caracteres a digitar para auto-completar:"
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:183
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
@@ -916,19 +921,19 @@ msgstr ""
 "A quantidade de caracteres necessários para exibir a lista deauto-"
 "completamento de símbolos"
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:184
 msgid "Display height in rows for the autocompletion list"
 msgstr "Exibir altura em linhas para a lista de auto-completamento"
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:185
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr "Número máximo de entradas para exibir na lista de auto-completamento"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:186
 msgid "Symbol list update frequency:"
 msgstr "Frequência de atualização da lista de símbolos:"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:187
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
@@ -939,105 +944,105 @@ msgstr ""
 "desempenho, especialmente para arquivos grandes. Um atraso de 0 desabilita "
 "atualizações em tempo real."
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:188
 msgid "<b>Completions</b>"
 msgstr "<b>Completamento</b>"
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:189
 msgid "Parenthesis ( )"
 msgstr "Parênteses ( )"
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:190
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr "Fechar parênteses automaticamente quando um for aberto"
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:191
 msgid "Curly brackets { }"
 msgstr "Chaves { }"
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:192
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr "Fechar chaves automaticamente quando uma for aberta"
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:193
 msgid "Square brackets [ ]"
 msgstr "Colchetes [ ]"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:194
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr "Fechar colchetes automaticamente ao digitar um colchete de abertura"
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:195
 msgid "Single quotes ' '"
 msgstr "Aspas simples ' '"
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:196
 msgid "Auto-close single quote when typing an opening one"
 msgstr "Fechar aspas simples automaticamente quando uma for aberta"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:197
 msgid "Double quotes \" \""
 msgstr "Aspas duplas \" \""
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:198
 msgid "Auto-close double quote when typing an opening one"
 msgstr "Fechar aspas duplas automaticamente quando uma for aberta"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:199
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr "<b>Fechar automaticamente aspas e delimitadores</b>"
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:200
 msgid "Completions"
 msgstr "Completações"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:201
 msgid "Invert syntax highlighting colors"
 msgstr "Inverter as cores da destacação sintática"
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:202
 msgid "Invert all colors, by default using white text on a black background"
 msgstr ""
 "Inverter todas as cores, por padrão usar texto branco sobre um fundo preto"
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:203
 msgid "Show indentation guides"
 msgstr "Exibir guias de indentação"
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:204
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr ""
 "Exibir pequenas linhas pontilhadas para ajudar no uso da indentação correta"
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:205
 msgid "Show white space"
 msgstr "Exibir espaços em branco"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:206
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr "Marca espaços com pontos e tabulações com setas"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:207
 msgid "Show line endings"
 msgstr "Exibir final de linha"
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:208
 msgid "Shows the line ending character"
 msgstr "Exibe o caracter de fim de linha"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:209
 msgid "Show line numbers"
 msgstr "Exibir números de linha"
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:210
 msgid "Shows or hides the Line Number margin"
 msgstr "Exibe ou esconde a margem de Números de Linhas"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:211
 msgid "Show markers margin"
 msgstr "Exibir margem de marcadores"
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:212
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
@@ -1045,39 +1050,39 @@ msgstr ""
 "Exibe ou oculta a pequena margem à direita dos números de linhas, que é "
 "usada para marcar linhas"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:213
 msgid "Stop scrolling at last line"
 msgstr "Parar a rolagem na última linha"
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:214
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr "Parar ou não de rolar uma página após a última linha de um documento"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:215
 msgid "Lines visible _around the cursor:"
 msgstr ""
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:216
 msgid "<b>Display</b>"
 msgstr "<b>Exibição</b>"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:217
 msgid "Column:"
 msgstr "Coluna:"
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:218
 msgid "Color:"
 msgstr "Cor:"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:219
 msgid "Sets the color of the long line marker"
 msgstr "Define a cor do marcador de linha longa"
 
-#: ../data/geany.glade.h:219 ../src/toolbar.c:73 ../src/tools.c:831
+#: ../data/geany.glade.h:220 ../src/toolbar.c:73 ../src/tools.c:847
 msgid "Color Chooser"
 msgstr "Seletor de Cores"
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:221
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
 "long lines, or as a hint to break the line. Set this value to a value "
@@ -1087,11 +1092,11 @@ msgstr ""
 "marcar as linhas longas, ou serve como dica para quebrar a linha. Definir um "
 "valor maior do que 0 especifica a coluna onde ele deve aparecer."
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:222
 msgid "Line"
 msgstr "Linha"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:223
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
@@ -1099,11 +1104,11 @@ msgstr ""
 "Imprime uma linha vertical na janela do editor na posição do cursor "
 "informada (ver abaixo)"
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:224
 msgid "Background"
 msgstr "Fundo"
 
-#: ../data/geany.glade.h:224
+#: ../data/geany.glade.h:225
 msgid ""
 "The background color of characters after the given cursor position (see "
 "below) changed to the color set below, (this is recommended if you use "
@@ -1113,27 +1118,27 @@ msgstr ""
 "abaixo) alterada para a cor definida abaixo (isso é recomendado se forem "
 "usadas fontes proporcionais)"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:226
 msgid "Enabled"
 msgstr "Habilitar"
 
-#: ../data/geany.glade.h:226
+#: ../data/geany.glade.h:227
 msgid "<b>Long line marker</b>"
 msgstr "<b>Marcador de linha longa</b>"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:228
 msgid "Disabled"
 msgstr "Desabilitado"
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:229
 msgid "Do not show virtual spaces"
 msgstr "Não exibir espaços virtuais"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:230
 msgid "Only for rectangular selections"
 msgstr "Somente para seleções retangulares"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:231
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
@@ -1141,57 +1146,57 @@ msgstr ""
 "Somente exibe espaços virtuais além do fim da linha quando estiver "
 "desenhando uma seleção retangular"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:232
 msgid "Always"
 msgstr "Sempre"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:233
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "Exibir sempre espaços virtuais além do final das linhas"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:234
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>Espaços virtuais</b>"
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:235
 msgid "Display"
 msgstr "Exibição"
 
-#: ../data/geany.glade.h:235 ../src/keybindings.c:312 ../src/prefs.c:1608
+#: ../data/geany.glade.h:236 ../src/keybindings.c:312 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "Editor"
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:237
 msgid "Open new documents from the command-line"
 msgstr "Abrir novos documentos a partir da linha de comando"
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:238
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr ""
 "Criar um novo arquivo para cada nome de arquivo da linha de comando que não "
 "existe"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:239
 msgid "Default end of line characters:"
 msgstr "Caracteres padrão de fim de linha:"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:240
 msgid "<b>New files</b>"
 msgstr "<b>Novo arquivo</b>"
 
-#: ../data/geany.glade.h:240
+#: ../data/geany.glade.h:241
 msgid "Default encoding (new files):"
 msgstr "Codificação padrão (arquivos novos):"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:242
 msgid "Sets the default encoding for newly created files"
 msgstr "Define a codificação padrão para arquivos novos"
 
-#: ../data/geany.glade.h:242
+#: ../data/geany.glade.h:243
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "Usar codificação fixa quando abrir arquivos não Unicode"
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:244
 msgid ""
 "This option disables the automatic detection of the file encoding when "
 "opening non-Unicode files and opens the file with the specified encoding "
@@ -1201,31 +1206,31 @@ msgstr ""
 "abrir arquivos não Unicode e abre o arquivo com a codificação especificada "
 "(normalmente não necessário)"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:245
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "Codificação padrão (arquivos não Unicode existentes):"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:246
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr "Define a codificação padrão para abrir arquivos não Unicode existentes"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:247
 msgid "<b>Encodings</b>"
 msgstr "<b>Codificações</b>"
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:248
 msgid "Ensure new line at file end"
 msgstr "Garantir nova linha no final do arquivo"
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:249
 msgid "Ensures that at the end of the file is a new line"
 msgstr "Garante que o final do arquivo é uma nova linha"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:250
 msgid "Ensure consistent line endings"
 msgstr "Garantir consistência de marcação de fim de linha"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:251
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
@@ -1233,42 +1238,42 @@ msgstr ""
 "Garante que caracteres de linha nova sempre sejam convertidos antes de "
 "salvar,evitando arquivos com caracteres de fim de linha misturados"
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:252
 msgid "Strip trailing spaces and tabs"
 msgstr "Remover espaços e tabs no final"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:253
 #, fuzzy
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Remove espaços e tabulações e finais de linha"
 
-#: ../data/geany.glade.h:253 ../src/keybindings.c:671
+#: ../data/geany.glade.h:254 ../src/keybindings.c:671
 msgid "Replace tabs with space"
 msgstr "Substituir tabs por espaços"
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:255
 msgid "Replaces all tabs in document with spaces"
 msgstr "Substitui todas as tabulações no documento por espaços"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:256
 msgid "<b>Saving files</b>"
 msgstr "<b>Salvando arquivos</b>"
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:257
 msgid "Recent files list length:"
 msgstr "Tamanho da lista de arquivos recentes:"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:258
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Especifica o número de arquivos que são armazenados na lista de arquivos "
 "Recentes"
 
-#: ../data/geany.glade.h:258
+#: ../data/geany.glade.h:259
 msgid "Disk check timeout:"
 msgstr "Timeout de verificação de disco:"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:260
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1276,20 +1281,20 @@ msgstr ""
 "Frequência de verificação de mudanças em arquivos de documentos no disco, em "
 "segundos. Zero desabilita a verificação."
 
-#: ../data/geany.glade.h:260 ../src/prefs.c:1610 ../src/symbols.c:465
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:465
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Arquivos"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:262
 msgid "Terminal:"
 msgstr "Terminal:"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:263
 msgid "Browser:"
 msgstr "Navegador:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:265
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
@@ -1298,24 +1303,24 @@ msgstr ""
 "Comando do emulador de terminais (%c será substituído pelo nome de arquivo "
 "do script de execução do Geany)"
 
-#: ../data/geany.glade.h:265
+#: ../data/geany.glade.h:266
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr ""
 "Caminho (e possivelmente argumentos adicionais) para o seu navegador favorito"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:267
 msgid "Grep:"
 msgstr "Grep:"
 
-#: ../data/geany.glade.h:267
+#: ../data/geany.glade.h:268
 msgid "<b>Tool paths</b>"
 msgstr "<b>Caminhos de ferramentas</b>"
 
-#: ../data/geany.glade.h:268
+#: ../data/geany.glade.h:269
 msgid "Context action:"
 msgstr "Ação Contextual:"
 
-#: ../data/geany.glade.h:270
+#: ../data/geany.glade.h:271
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1326,67 +1331,67 @@ msgstr ""
 "com %s. Ela pode estar em qualquer lugar do comando informado e será "
 "substituída antes da execução."
 
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:272
 msgid "<b>Commands</b>"
 msgstr "<b>Comandos</b>"
 
-#: ../data/geany.glade.h:272 ../src/keybindings.c:324 ../src/prefs.c:1612
+#: ../data/geany.glade.h:273 ../src/keybindings.c:324 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "Ferramentas"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:274
 msgid "Email address of the developer"
 msgstr "Endereço de e-mail do desenvolvedor"
 
-#: ../data/geany.glade.h:274
+#: ../data/geany.glade.h:275
 msgid "Initials of the developer name"
 msgstr "Iniciais do nome do desenvolvedor"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:276
 msgid "Initial version:"
 msgstr "Versão Inicial:"
 
-#: ../data/geany.glade.h:276
+#: ../data/geany.glade.h:277
 msgid "Version number, which a new file initially has"
 msgstr "Número de versão que um novo arquivo possui inicialmente"
 
-#: ../data/geany.glade.h:277
+#: ../data/geany.glade.h:278
 msgid "Company name"
 msgstr "Nome da empresa"
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:279
 msgid "Developer:"
 msgstr "Desenvolvedor:"
 
-#: ../data/geany.glade.h:279
+#: ../data/geany.glade.h:280
 msgid "Company:"
 msgstr "Empresa:"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:281
 msgid "Mail address:"
 msgstr "Endereço:"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:282
 msgid "Initials:"
 msgstr "Iniciais:"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:283
 msgid "The name of the developer"
 msgstr "O nome do desenvolvedor"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:284
 msgid "Year:"
 msgstr "Ano:"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:285
 msgid "Date:"
 msgstr "Data:"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:286
 msgid "Date & time:"
 msgstr "Data & hora:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:287
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1395,7 +1400,7 @@ msgstr ""
 "especificador de conversão que pode ser usado com a função strftime do C "
 "ANSI."
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:288
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1404,7 +1409,7 @@ msgstr ""
 "especificador de conversão que pode ser usado com a função strftime do C "
 "ANSI."
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:289
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1413,64 +1418,64 @@ msgstr ""
 "especificador de conversão que pode ser usado com a função strftime do C "
 "ANSI."
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:290
 msgid "<b>Template data</b>"
 msgstr "<b>Dados de templates</b>"
 
-#: ../data/geany.glade.h:290 ../src/prefs.c:1614
+#: ../data/geany.glade.h:291 ../src/prefs.c:1614
 msgid "Templates"
 msgstr "Templates"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:292
 msgid "C_hange"
 msgstr "_Alterar"
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:293
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>Atalhos de teclado</b>"
 
-#: ../data/geany.glade.h:293 ../src/plugins.c:1950 ../src/plugins.c:1987
+#: ../data/geany.glade.h:294 ../src/plugins.c:1950 ../src/plugins.c:1987
 #: ../src/prefs.c:1616
 msgid "Keybindings"
 msgstr "Ligações de teclas"
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:295
 msgid "Command:"
 msgstr "Comando:"
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:297
 #, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr ""
 "Caminho para o comando de imprimir arquivos (usar %f para o nome do arquivo)"
 
-#: ../data/geany.glade.h:297
+#: ../data/geany.glade.h:298
 msgid "Use an external command for printing"
 msgstr "Usar um comando externo para imprimir"
 
-#: ../data/geany.glade.h:298 ../src/printing.c:237
+#: ../data/geany.glade.h:299 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "Imprimir números de linhas"
 
-#: ../data/geany.glade.h:299 ../src/printing.c:239
+#: ../data/geany.glade.h:300 ../src/printing.c:239
 msgid "Add line numbers to the printed page"
 msgstr "Inclui números de linha à página impressa"
 
-#: ../data/geany.glade.h:300 ../src/printing.c:242
+#: ../data/geany.glade.h:301 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "Imprimir o número da página"
 
-#: ../data/geany.glade.h:301 ../src/printing.c:244
+#: ../data/geany.glade.h:302 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr ""
 "Incluir números de páginas na base de cada página. Ocupa 2 linhas por página."
 
-#: ../data/geany.glade.h:302 ../src/printing.c:247
+#: ../data/geany.glade.h:303 ../src/printing.c:247
 msgid "Print page header"
 msgstr "Imprimir o cabeçalho da página"
 
-#: ../data/geany.glade.h:303 ../src/printing.c:249
+#: ../data/geany.glade.h:304 ../src/printing.c:249
 msgid ""
 "Add a little header to every page containing the page number, the filename "
 "and the current date (see below). It takes 3 lines of the page."
@@ -1478,19 +1483,19 @@ msgstr ""
 "Inclui um cabeçalho em cada página contendo o número da página, o nome do "
 "arquivo e a data atual (ver abaixo). Ocupa 3 linhas da página."
 
-#: ../data/geany.glade.h:304 ../src/printing.c:265
+#: ../data/geany.glade.h:305 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "Usar o nome básico do arquivo impresso"
 
-#: ../data/geany.glade.h:305
+#: ../data/geany.glade.h:306
 msgid "Print only the basename (without the path) of the printed file"
 msgstr "Imprimir apenas o nome básico (sem o caminho) do arquivo impresso"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:273
+#: ../data/geany.glade.h:307 ../src/printing.c:273
 msgid "Date format:"
 msgstr "Formato de Data:"
 
-#: ../data/geany.glade.h:307 ../src/printing.c:279
+#: ../data/geany.glade.h:308 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1500,62 +1505,62 @@ msgstr ""
 "cabeçalho de cada página. Você pode usar qualquer especificador de conversão "
 "que pode ser usado com a função strftime do C ANSI."
 
-#: ../data/geany.glade.h:308
+#: ../data/geany.glade.h:309
 msgid "Use native GTK printing"
 msgstr "Usar impressão nativa do GTK"
 
-#: ../data/geany.glade.h:309
+#: ../data/geany.glade.h:310
 msgid "<b>Printing</b>"
 msgstr "<b>Impressão</b>"
 
-#: ../data/geany.glade.h:310 ../src/prefs.c:1618
+#: ../data/geany.glade.h:311 ../src/prefs.c:1618
 msgid "Printing"
 msgstr "Impressão"
 
-#: ../data/geany.glade.h:311
+#: ../data/geany.glade.h:312
 msgid "Font:"
 msgstr "Fonte:"
 
-#: ../data/geany.glade.h:312
+#: ../data/geany.glade.h:313
 msgid "Sets the font for the terminal widget"
 msgstr "Define a fonte do terminal"
 
-#: ../data/geany.glade.h:313
+#: ../data/geany.glade.h:314
 msgid "Choose Terminal Font"
 msgstr "Escolher Fonte do terminal"
 
-#: ../data/geany.glade.h:314
+#: ../data/geany.glade.h:315
 msgid "Foreground color:"
 msgstr "Cor do texto:"
 
-#: ../data/geany.glade.h:315
+#: ../data/geany.glade.h:316
 msgid "Background color:"
 msgstr "Cor do fundo:"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:317
 msgid "Scrollback lines:"
 msgstr "Linhas que podem ser roladas para trás:"
 
-#: ../data/geany.glade.h:317
+#: ../data/geany.glade.h:318
 msgid "Shell:"
 msgstr "Shell:"
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:319
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr "Define a cor do texto do terminal"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:320
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "Define a cor de fundo do texto no painel do terminal"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:321
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
 msgstr ""
 "Especifica o histórico em linhas que você pode rolar para trás no terminal"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:322
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
@@ -1563,45 +1568,45 @@ msgstr ""
 "Define o caminho para o shell que será iniciado dentro da emulação de "
 "terminal"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:323
 msgid "Scroll on keystroke"
 msgstr "Rolar ao pressionar tecla"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:324
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "Habilita/desabilita a rolagem para a base se uma tecla foi pressionada"
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:325
 msgid "Scroll on output"
 msgstr "Rolar quando saída for gerada"
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:326
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "Habilita/desabilita a rolagem para a base quando uma saída é gerada"
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:327
 msgid "Cursor blinks"
 msgstr "Piscar o cursor"
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:328
 msgid "Whether to blink the cursor"
 msgstr "Habilita ou desabilita cursor piscante"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:329
 msgid "Override Geany keybindings"
 msgstr "Sobrepor as ligações de tecla do Geany"
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:330
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr ""
 "Permite que o VTE receba atalhos de teclado (além dos comandos de foco)"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:331
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "Desabilita a tecla de atalho do menu (F10 por padrão)"
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:332
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1611,22 +1616,22 @@ msgstr ""
 "F10). Isto pode ser útil se você usar, por exemplo, o Midnight Commander "
 "dentro do VTE."
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:333
 msgid "Follow path of the current file"
 msgstr "Seguir o caminho do arquivo atual"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:334
 #, fuzzy
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr ""
 "Habilita/desabilita a execução de \\\"cd $caminho\\\" quando você alterna "
 "entre arquivos abertos"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:335
 msgid "Execute programs in the VTE"
 msgstr "Executar programas no VTE"
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:336
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
@@ -1635,11 +1640,11 @@ msgstr ""
 "terminal. Lembre-se que programas executados em VTE não podem ser "
 "interrompidos"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:337
 msgid "Don't use run script"
 msgstr "Não usar o script de execução"
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:338
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
@@ -1647,535 +1652,535 @@ msgstr ""
 "Não usa o script de execução simples que normalmente é usado para exibir o "
 "estado de saída do programa executado"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:339
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminal</b>"
 
-#: ../data/geany.glade.h:339 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
 msgid "Terminal"
 msgstr "Terminal"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:341
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr "<i>Atenção: leia o manual antes de alterar essas preferências.</i>"
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:342
 msgid "<b>Various preferences</b>"
 msgstr "<b>Preferências variadas</b>"
 
-#: ../data/geany.glade.h:342 ../src/prefs.c:1620
+#: ../data/geany.glade.h:343 ../src/prefs.c:1620
 msgid "Various"
 msgstr "Váriadas"
 
-#: ../data/geany.glade.h:344
+#: ../data/geany.glade.h:345
 msgid "_File"
 msgstr "_Arquivo"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:346
 msgid "New (with _Template)"
 msgstr "No_vo (com Template)"
 
-#: ../data/geany.glade.h:346
+#: ../data/geany.glade.h:347
 msgid "_Open..."
 msgstr "_Abrir..."
 
-#: ../data/geany.glade.h:347
+#: ../data/geany.glade.h:348
 msgid "Recent _Files"
 msgstr "Arquivos _Recentes"
 
-#: ../data/geany.glade.h:348
+#: ../data/geany.glade.h:349
 msgid "Save _As..."
 msgstr "Salvar _Como..."
 
-#: ../data/geany.glade.h:349
+#: ../data/geany.glade.h:350
 msgid "Sa_ve All"
 msgstr "Sa_lvar Tudo"
 
-#: ../data/geany.glade.h:350 ../src/document.c:1655 ../src/document.c:3616
+#: ../data/geany.glade.h:351 ../src/document.c:1655 ../src/document.c:3616
 #: ../src/sidebar.c:717
 msgid "_Reload"
 msgstr "Recarre_gar"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:352
 msgid "R_eload As"
 msgstr "R_ecarregar Como"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:353
 msgid "Page Set_up"
 msgstr "Config_urar página"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:354
 msgid "_Print..."
 msgstr "_Imprimir..."
 
-#: ../data/geany.glade.h:354 ../src/notebook.c:495
+#: ../data/geany.glade.h:355 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "Fec_har Outros Documentos"
 
-#: ../data/geany.glade.h:355 ../src/notebook.c:507
+#: ../data/geany.glade.h:356 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "Fechar T_udo"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:357
 msgid "Co_mmands"
 msgstr "_Comandos"
 
-#: ../data/geany.glade.h:357 ../src/keybindings.c:437
+#: ../data/geany.glade.h:358 ../src/keybindings.c:437
 msgid "Cu_t Current Line(s)"
 msgstr "Re_cortar Linha(s) Atual(is)"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:434
+#: ../data/geany.glade.h:359 ../src/keybindings.c:434
 msgid "_Copy Current Line(s)"
 msgstr "_Copiar Linha(s) Atual(is)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:387
+#: ../data/geany.glade.h:360 ../src/keybindings.c:387
 msgid "_Delete Current Line(s)"
 msgstr "_Deletar Linha(s) Atual(is)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:384
+#: ../data/geany.glade.h:361 ../src/keybindings.c:384
 msgid "D_uplicate Line or Selection"
 msgstr "_Duplicar Linha ou Seleção"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:447
+#: ../data/geany.glade.h:362 ../src/keybindings.c:447
 msgid "S_elect Current Line(s)"
 msgstr "_Selecionar Linha(s) Atual(is)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:450
+#: ../data/geany.glade.h:363 ../src/keybindings.c:450
 msgid "Se_lect Current Paragraph"
 msgstr "_Selecionar Parágrafo Atual"
 
-#: ../data/geany.glade.h:363
+#: ../data/geany.glade.h:364
 msgid "_Move Line(s) Up"
 msgstr "_Mover Linha(s) Para Cima"
 
-#: ../data/geany.glade.h:364
+#: ../data/geany.glade.h:365
 msgid "M_ove Line(s) Down"
 msgstr "_Mover Linha(s) Para Baixo"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:501
+#: ../data/geany.glade.h:366 ../src/keybindings.c:501
 msgid "_Send Selection to Terminal"
 msgstr "_Enviar Seleção para o Terminal"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:503
+#: ../data/geany.glade.h:367 ../src/keybindings.c:503
 msgid "_Reflow Lines/Block"
 msgstr "_Refluir Linhas/Bloco"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:461
+#: ../data/geany.glade.h:368 ../src/keybindings.c:461
 msgid "T_oggle Case of Selection"
 msgstr "A_lterar maiúsculas/minúsculas da seleção"
 
-#: ../data/geany.glade.h:368
+#: ../data/geany.glade.h:369
 msgid "_Comment Line(s)"
 msgstr "_Comentar Linha(s)"
 
-#: ../data/geany.glade.h:369
+#: ../data/geany.glade.h:370
 msgid "U_ncomment Line(s)"
 msgstr "_Descomentar Linha(s)"
 
-#: ../data/geany.glade.h:370
+#: ../data/geany.glade.h:371
 msgid "_Toggle Line Commentation"
 msgstr "A_lternar Comentário de Linha"
 
-#: ../data/geany.glade.h:371
+#: ../data/geany.glade.h:372
 msgid "_Increase Indent"
 msgstr "Aumen_tar Indentação"
 
-#: ../data/geany.glade.h:372
+#: ../data/geany.glade.h:373
 msgid "_Decrease Indent"
 msgstr "Dimi_nuir Indentação"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:480
+#: ../data/geany.glade.h:374 ../src/keybindings.c:480
 msgid "S_mart Line Indent"
 msgstr "Indentação Inteligente de Linha_s"
 
-#: ../data/geany.glade.h:374
+#: ../data/geany.glade.h:375
 msgid "_Send Selection to"
 msgstr "_Enviar Seleção para"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:376
 msgid "I_nsert Comments"
 msgstr "I_nserir Comentários"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:377
 msgid "Preference_s"
 msgstr "Preferência_s"
 
-#: ../data/geany.glade.h:377 ../src/keybindings.c:527
+#: ../data/geany.glade.h:378 ../src/keybindings.c:527
 msgid "P_lugin Preferences"
 msgstr "Preferências de P_lugins"
 
-#: ../data/geany.glade.h:378
+#: ../data/geany.glade.h:379
 msgid "_Find..."
 msgstr "_Localizar..."
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:380
 msgid "Find _Next"
 msgstr "Localizar _Próximo"
 
-#: ../data/geany.glade.h:380
+#: ../data/geany.glade.h:381
 msgid "Find _Previous"
 msgstr "Localizar _Prévio"
 
-#: ../data/geany.glade.h:381 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2743
 msgid "Find in F_iles..."
 msgstr "Localizar em Arqu_ivos..."
 
-#: ../data/geany.glade.h:382
+#: ../data/geany.glade.h:383
 msgid "_Replace..."
 msgstr "Substitui_r..."
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:384
 msgid "Next Me_ssage"
 msgstr "Próxima _Mensagem"
 
-#: ../data/geany.glade.h:384
+#: ../data/geany.glade.h:385
 msgid "Pr_evious Message"
 msgstr "M_ensagem anterior"
 
-#: ../data/geany.glade.h:385 ../src/keybindings.c:576
+#: ../data/geany.glade.h:386 ../src/keybindings.c:576
 msgid "Go to Ne_xt Marker"
 msgstr "Ir Para o _Próximo Marcador"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:579
+#: ../data/geany.glade.h:387 ../src/keybindings.c:579
 msgid "Go to Pre_vious Marker"
 msgstr "Ir para o Marcador _Anterior"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:388
 msgid "_Go to Line..."
 msgstr "_Ir para linha..."
 
-#: ../data/geany.glade.h:388 ../src/keybindings.c:539
+#: ../data/geany.glade.h:389 ../src/keybindings.c:539
 msgid "Find Next _Selection"
 msgstr "Localizar Próxima _Seleção"
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:541
+#: ../data/geany.glade.h:390 ../src/keybindings.c:541
 msgid "Find Pre_vious Selection"
 msgstr "Localizar Seleção Pré_via"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:558
+#: ../data/geany.glade.h:391 ../src/keybindings.c:558
 msgid "_Mark All"
 msgstr "_Marcar Tudo"
 
-#: ../data/geany.glade.h:391
+#: ../data/geany.glade.h:392
 #, fuzzy
 msgid "Go to Symbol Decl_aration"
 msgstr "Ir para a Declaração do Rótulo"
 
-#: ../data/geany.glade.h:392
+#: ../data/geany.glade.h:393
 msgid "_View"
 msgstr "E_xibir"
 
-#: ../data/geany.glade.h:393
+#: ../data/geany.glade.h:394
 msgid "Change _Font..."
 msgstr "Mudar _Fonte..."
 
-#: ../data/geany.glade.h:394
+#: ../data/geany.glade.h:395
 msgid "Change _Color Scheme..."
 msgstr "Mudar Esquemas de _Cores..."
 
-#: ../data/geany.glade.h:395
+#: ../data/geany.glade.h:396
 msgid "Show _Markers Margin"
 msgstr "Exibir Margem de _Marcadores"
 
-#: ../data/geany.glade.h:396
+#: ../data/geany.glade.h:397
 msgid "Show _Line Numbers"
 msgstr "Exibir _Números de Linhas"
 
-#: ../data/geany.glade.h:397
+#: ../data/geany.glade.h:398
 msgid "Show White S_pace"
 msgstr "Exibir Espaços em _Branco"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:399
 msgid "Show Line _Endings"
 msgstr "_Exibir Fim de Linha"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:400
 msgid "Show Indentation _Guides"
 msgstr "Ex_ibir Guias de Indentação"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:401
 msgid "Full_screen"
 msgstr "_Tela Cheia"
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:402
 msgid "Toggle All _Additional Widgets"
 msgstr "Exibir/ocultar Todos os _Painéis Adicionais"
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:403
 msgid "Show Message _Window"
 msgstr "Exibir _Janela de Mensagens"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:404
 msgid "Show _Toolbar"
 msgstr "Exibir _Barra de Ferramentas"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:405
 msgid "Show Side_bar"
 msgstr "Exibir Barra _Lateral"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:406
 msgid "_Document"
 msgstr "_Documento"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:407
 msgid "_Line Wrapping"
 msgstr "_Quebrar Linhas"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:408
 msgid "Line _Breaking"
 msgstr "Que_bra de Linha"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:409
 msgid "_Auto-indentation"
 msgstr "Indentação _Automática"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:410
 msgid "In_dent Type"
 msgstr "Tipo de in_dentação"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:411
 msgid "_Detect from Content"
 msgstr "_Detectar do Conteúdo"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:412
 msgid "T_abs and Spaces"
 msgstr "T_abs e Espaços"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:413
 msgid "Indent Widt_h"
 msgstr "_Largura da Indentação"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:414
 msgid "_1"
 msgstr "_1"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:415
 msgid "_2"
 msgstr "_2"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:416
 msgid "_3"
 msgstr "_3"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:417
 msgid "_4"
 msgstr "_4"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:418
 msgid "_5"
 msgstr "_5"
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:419
 msgid "_6"
 msgstr "_6"
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:420
 msgid "_7"
 msgstr "_7"
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:421
 msgid "_8"
 msgstr "_8"
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:422
 msgid "Read _Only"
 msgstr "Somente _Leitura"
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:423
 msgid "_Write Unicode BOM"
 msgstr "Gravar _Unicode BOM"
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:424
 msgid "Set File_type"
 msgstr "Definir _Tipo de Arquivo"
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:425
 msgid "Set _Encoding"
 msgstr "Definir _Codificação"
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:426
 msgid "Set Line E_ndings"
 msgstr "Definir _Fim de Linha"
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:427
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "Converter e Definir para _CR/LF (Windows)"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:428
 msgid "Convert and Set to _LF (Unix)"
 msgstr "Converter e Definir para _LF (Unix)"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:429
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Converter e Definir para CR (_Mac)"
 
-#: ../data/geany.glade.h:429 ../src/keybindings.c:667
+#: ../data/geany.glade.h:430 ../src/keybindings.c:667
 msgid "_Clone"
 msgstr "_Clonar"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:669
+#: ../data/geany.glade.h:431 ../src/keybindings.c:669
 msgid "_Strip Trailing Spaces"
 msgstr "_Remover espaços no final"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:432
 msgid "Replace Tabs with S_paces"
 msgstr "_Substituir Tabs por Espaços"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:433
 msgid "_Replace Spaces with Tabs..."
 msgstr "Substituir Es_paços por Tabs..."
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:434
 msgid "_Fold All"
 msgstr "_Dobrar Todos"
 
-#: ../data/geany.glade.h:434
+#: ../data/geany.glade.h:435
 msgid "_Unfold All"
 msgstr "D_esdobrar Todos"
 
-#: ../data/geany.glade.h:435
+#: ../data/geany.glade.h:436
 msgid "Remove _Markers"
 msgstr "Remover _Marcadores"
 
-#: ../data/geany.glade.h:436
+#: ../data/geany.glade.h:437
 msgid "Remove Error _Indicators"
 msgstr "Remover I_ndicadores de Erro"
 
-#: ../data/geany.glade.h:437
+#: ../data/geany.glade.h:438
 msgid "_Project"
 msgstr "_Projeto"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:439
 msgid "_New..."
 msgstr "_Novo..."
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:440
 msgid "_Recent Projects"
 msgstr "Projetos _Recentes"
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:441
 msgid "_Close"
 msgstr "_Fechar"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:442
 msgid "Apply the default indentation settings to all documents"
 msgstr "Aplicar configuração de indentação padrão a todos os documentos"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:443
 msgid "_Apply Default Indentation"
 msgstr "_Aplicar indentação padrão"
 
 #. build the code
-#: ../data/geany.glade.h:443 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
 msgid "_Build"
 msgstr "C_onstruir"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:445
 msgid "_Tools"
 msgstr "_Ferramentas"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:446
 msgid "_Reload Configuration"
 msgstr "_Recarregar configuração"
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:447
 msgid "C_onfiguration Files"
 msgstr "Arquivos de c_onfiguração"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:448
 msgid "_Color Chooser"
 msgstr "_Seletor de Cores"
 
-#: ../data/geany.glade.h:448
+#: ../data/geany.glade.h:449
 msgid "_Word Count"
 msgstr "_Contar Palavras"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:450
 #, fuzzy
 msgid "Load Ta_gs File..."
 msgstr "Carregar Ta_gs..."
 
-#: ../data/geany.glade.h:450
+#: ../data/geany.glade.h:451
 msgid "_Help"
 msgstr "_Ajuda"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:452
 msgid "Keyboard _Shortcuts"
 msgstr "Atalhos de _Teclado"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:453
 msgid "Debug _Messages"
 msgstr "_Mensagens de Depuração"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:454
 msgid "_Website"
 msgstr "Sítio na _Web"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:455
 msgid "Wi_ki"
 msgstr "Wi_ki"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:456
 msgid "Report a _Bug..."
 msgstr "Relatar um _Bug..."
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:457
 msgid "_Donate..."
 msgstr "_Doar..."
 
-#: ../data/geany.glade.h:457 ../src/sidebar.c:125
+#: ../data/geany.glade.h:458 ../src/sidebar.c:125
 msgid "Symbols"
 msgstr "Símbolos"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:459
 msgid "Documents"
 msgstr "Documentos"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:460
 msgid "Status"
 msgstr "Estado"
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:461
 msgid "Compiler"
 msgstr "Compilador"
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:462
 msgid "Messages"
 msgstr "Mensagens"
 
-#: ../data/geany.glade.h:462
+#: ../data/geany.glade.h:463
 msgid "Scribble"
 msgstr "Rascunho"
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:464
 msgid "Project Properties"
 msgstr "Propriedades do Projeto"
 
-#: ../data/geany.glade.h:464 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:179
 msgid "Filename:"
 msgstr "Nome do Arquivo:"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:466
 #, fuzzy
 msgid "_Name:"
 msgstr "Nome:"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:467
 #, fuzzy
 msgid "_Description:"
 msgstr "Descrição:"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:468
 #, fuzzy
 msgid "_Base path:"
 msgstr "Caminho base:"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:469
 #, fuzzy
 msgid "File _patterns:"
 msgstr "Padrões de arquivo:"
 
-#: ../data/geany.glade.h:469
+#: ../data/geany.glade.h:470
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
@@ -2183,7 +2188,7 @@ msgstr ""
 "Lista separada com espaços de padrões de arquivo usados para o diálogo "
 "Localizar em Arquivos (como *.c *.h)"
 
-#: ../data/geany.glade.h:470 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:208
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2193,79 +2198,79 @@ msgstr ""
 "novo caminho, ou uma árvore de diretório já existente. Você pode usar "
 "caminhos relativos ao nome de arquivo do projeto."
 
-#: ../data/geany.glade.h:471 ../src/keybindings.c:322
+#: ../data/geany.glade.h:472 ../src/keybindings.c:322
 msgid "Project"
 msgstr "Projeto"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:473
 msgid "Display:"
 msgstr "Exibir:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:474
 msgid "Custom"
 msgstr "Personalizado"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:475
 msgid "Use global settings"
 msgstr "Usar definições globais"
 
-#: ../data/geany.glade.h:475
+#: ../data/geany.glade.h:476
 msgid "Size:"
 msgstr "Tamanho:"
 
-#: ../data/geany.glade.h:476
+#: ../data/geany.glade.h:477
 msgid "Location:"
 msgstr "Localização:"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:478
 msgid "Read-only:"
 msgstr "Somente-leitura:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:479
 msgid "Encoding:"
 msgstr "Codificação:"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:480
 msgid "Modified:"
 msgstr "Modificado:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:481
 msgid "Changed:"
 msgstr "Alterado:"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:482
 msgid "Accessed:"
 msgstr "Acessado:"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:483
 msgid "(only inside Geany)"
 msgstr "(apenas dentro do Geany)"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:484
 msgid "Permissions:"
 msgstr "Permissões:"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:485
 msgid "Read:"
 msgstr "Leitura:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:486
 msgid "Write:"
 msgstr "Escrita:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:487
 msgid "Execute:"
 msgstr "Executar:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:488
 msgid "Owner:"
 msgstr "Dono:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:489
 msgid "Group:"
 msgstr "Grupo:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:490
 msgid "Other:"
 msgstr "Outros:"
 
@@ -2459,12 +2464,12 @@ msgstr "Não há mais erros de construção."
 msgid "Set menu item label"
 msgstr "Definir rótulo de item de menu"
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:396
+#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:412
 msgid "Label"
 msgstr "Rótulo"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:381
+#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:397
 msgid "Command"
 msgstr "Comando"
 
@@ -2970,8 +2975,8 @@ msgstr "Arquivo %s salvo."
 msgid "Wrap search and find again?"
 msgstr "Circular pesquisa e procurar novamente?"
 
-#: ../src/document.c:2464 ../src/search.c:1374 ../src/search.c:1427
-#: ../src/search.c:2229 ../src/search.c:2230
+#: ../src/document.c:2464 ../src/search.c:1385 ../src/search.c:1438
+#: ../src/search.c:2240 ../src/search.c:2241
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Nenhuma ocorrência encontrada para \"%s\"."
@@ -3231,26 +3236,26 @@ msgstr "Regex ruim para o tipo de arquivo %s: %s"
 msgid "untitled"
 msgstr "sem título"
 
-#: ../src/highlighting.c:1229 ../src/libmain.c:867 ../src/socket.c:170
+#: ../src/highlighting.c:1232 ../src/libmain.c:867 ../src/socket.c:170
 #: ../src/templates.c:231
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Não foi possível procurar o arquivo '%s'."
 
-#: ../src/highlighting.c:1299
+#: ../src/highlighting.c:1302
 msgid "Default"
 msgstr "Default"
 
-#: ../src/highlighting.c:1340
+#: ../src/highlighting.c:1343
 msgid "The current filetype overrides the default style."
 msgstr "O tipo de arquivo atual substitui o estilo padrão."
 
-#: ../src/highlighting.c:1341
+#: ../src/highlighting.c:1344
 msgid "This may cause color schemes to display incorrectly."
 msgstr ""
 "Isso pode fazer com que os esquemas de cores sejam exibidos incorretamente."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1369
 msgid "Color Schemes"
 msgstr "Esquemas de Cores"
 
@@ -3547,7 +3552,7 @@ msgstr "Inserir linha nova antes da atual"
 msgid "Insert New Line After Current"
 msgstr "Inserir linha nova depois da atual"
 
-#: ../src/keybindings.c:532 ../src/search.c:467
+#: ../src/keybindings.c:532 ../src/search.c:469
 msgid "Find"
 msgstr "Localizar"
 
@@ -3559,11 +3564,11 @@ msgstr "Localizar Próxima"
 msgid "Find Previous"
 msgstr "Localizar Anterior"
 
-#: ../src/keybindings.c:543 ../src/search.c:620
+#: ../src/keybindings.c:543 ../src/search.c:622
 msgid "Replace"
 msgstr "Substituir"
 
-#: ../src/keybindings.c:545 ../src/search.c:870
+#: ../src/keybindings.c:545 ../src/search.c:872
 msgid "Find in Files"
 msgstr "Pesquisar em Arquivos"
 
@@ -4386,7 +4391,7 @@ msgstr "O diretório base do projeto não pôde ser criado (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "O arquivo de projeto não pôde ser gravado (%s)."
 
-#: ../src/project.c:780 ../src/search.c:630
+#: ../src/project.c:780 ../src/search.c:632
 msgid "_Replace"
 msgstr "Substitui_r"
 
@@ -4405,11 +4410,11 @@ msgstr "Escolher Nome de Arquivo do Projeto"
 msgid "Project \"%s\" opened."
 msgstr "Projeto \"%s\" aberto."
 
-#: ../src/search.c:311 ../src/search.c:963
+#: ../src/search.c:313 ../src/search.c:965
 msgid "_Use regular expressions"
 msgstr "_Usar expressões regulares"
 
-#: ../src/search.c:314
+#: ../src/search.c:316
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
@@ -4418,11 +4423,11 @@ msgstr ""
 "Usar expressões regulares do tipo POSIX. Para informações detalhadas sobre o "
 "uso de expressões regulares, por favor leia a documentação."
 
-#: ../src/search.c:319
+#: ../src/search.c:321
 msgid "Use _escape sequences"
 msgstr "Usar sequências de _escape"
 
-#: ../src/search.c:323
+#: ../src/search.c:325
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4430,11 +4435,11 @@ msgstr ""
 "Substituir \\\\, \\t, \\n, \\r e \\uXXXX (caracteres Unicode) com os "
 "caracteres de controle correspondentes"
 
-#: ../src/search.c:326
+#: ../src/search.c:328
 msgid "Use multi-line matchin_g"
 msgstr "Utilizar casamento multi_linhas"
 
-#: ../src/search.c:331
+#: ../src/search.c:333
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4446,99 +4451,99 @@ msgstr ""
 "múltiplas linhas. Nesse modo, caracteres de nova linha são parte da entrada "
 "e podem ser capturados pelo padrão como caracteres normais."
 
-#: ../src/search.c:344
+#: ../src/search.c:346
 msgid "Search _backwards"
 msgstr "_Pesquisar para trás"
 
-#: ../src/search.c:350 ../src/search.c:972
+#: ../src/search.c:352 ../src/search.c:974
 msgid "C_ase sensitive"
 msgstr "_Diferenciar maiúsculas/minúsculas"
 
-#: ../src/search.c:354 ../src/search.c:977
+#: ../src/search.c:356 ../src/search.c:979
 msgid "Match only a _whole word"
 msgstr "_Palavra inteira"
 
-#: ../src/search.c:358
+#: ../src/search.c:360
 msgid "Match from s_tart of word"
 msgstr "Do _início da palavra"
 
-#: ../src/search.c:474
+#: ../src/search.c:476
 msgid "_Previous"
 msgstr "_Anterior"
 
-#: ../src/search.c:479
+#: ../src/search.c:481
 msgid "_Next"
 msgstr "_Próximo"
 
-#: ../src/search.c:483 ../src/search.c:641 ../src/search.c:880
+#: ../src/search.c:485 ../src/search.c:643 ../src/search.c:882
 msgid "_Search for:"
 msgstr "P_esquisar por:"
 
 #. Now add the multiple match options
-#: ../src/search.c:511
+#: ../src/search.c:513
 msgid "_Find All"
 msgstr "_Encontrar Todas"
 
-#: ../src/search.c:518
+#: ../src/search.c:520
 msgid "_Mark"
 msgstr "_Marcar"
 
-#: ../src/search.c:520
+#: ../src/search.c:522
 msgid "Mark all matches in the current document"
 msgstr "Marcar todas as ocorrências no documento atual"
 
-#: ../src/search.c:525 ../src/search.c:700
+#: ../src/search.c:527 ../src/search.c:702
 msgid "In Sessi_on"
 msgstr "Na _Sessão"
 
-#: ../src/search.c:530 ../src/search.c:705
+#: ../src/search.c:532 ../src/search.c:707
 msgid "_In Document"
 msgstr "No _Documento"
 
 #. close window checkbox
-#: ../src/search.c:536 ../src/search.c:718
+#: ../src/search.c:538 ../src/search.c:720
 msgid "Close _dialog"
 msgstr "_Fechar diálogo"
 
-#: ../src/search.c:540 ../src/search.c:722
+#: ../src/search.c:542 ../src/search.c:724
 msgid "Disable this option to keep the dialog open"
 msgstr "Desabilite essa opção para manter o diálogo aberto"
 
-#: ../src/search.c:635
+#: ../src/search.c:637
 msgid "Replace & Fi_nd"
 msgstr "Localiza e _Substituir"
 
-#: ../src/search.c:644
+#: ../src/search.c:646
 msgid "Replace wit_h:"
 msgstr "S_ubstituir com:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:693
+#: ../src/search.c:695
 msgid "Re_place All"
 msgstr "_Substituir Todos"
 
-#: ../src/search.c:710
+#: ../src/search.c:712
 msgid "In Se_lection"
 msgstr "Na Se_leção"
 
-#: ../src/search.c:712
+#: ../src/search.c:714
 msgid "Replace all matches found in the currently selected text"
 msgstr ""
 "Substituir todas as ocorrências encontradas no texto atualmente selecionado"
 
-#: ../src/search.c:829
+#: ../src/search.c:831
 msgid "all"
 msgstr "todos"
 
-#: ../src/search.c:831
+#: ../src/search.c:833
 msgid "project"
 msgstr "project"
 
-#: ../src/search.c:833
+#: ../src/search.c:835
 msgid "custom"
 msgstr "personalizado"
 
-#: ../src/search.c:837
+#: ../src/search.c:839
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4548,78 +4553,78 @@ msgstr ""
 "Projeto: usa padrões de arquivo definidos nas configurações do projeto\n"
 "Personalizado: especifica manualmente os padrões de arquivo"
 
-#: ../src/search.c:899
+#: ../src/search.c:901
 msgid "Fi_les:"
 msgstr "Ar_quivos:"
 
-#: ../src/search.c:911
+#: ../src/search.c:913
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Padrões de arquivo, p.ex. *.c, *.h"
 
-#: ../src/search.c:923
+#: ../src/search.c:925
 msgid "_Directory:"
 msgstr "_Diretório:"
 
-#: ../src/search.c:942
+#: ../src/search.c:944
 msgid "E_ncoding:"
 msgstr "_Codificação:"
 
-#: ../src/search.c:966
+#: ../src/search.c:968
 msgid "See grep's manual page for more information"
 msgstr "Veja a página do manual do grep para mais informações"
 
-#: ../src/search.c:968
+#: ../src/search.c:970
 msgid "_Recurse in subfolders"
 msgstr "_Recursivo nas sub-pastas"
 
-#: ../src/search.c:981
+#: ../src/search.c:983
 msgid "_Invert search results"
 msgstr "_Inverter resultados da pesquisa"
 
-#: ../src/search.c:985
+#: ../src/search.c:987
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Inverte o sentido da correspondência, para selecionar linhas que não "
 "corresponderam"
 
-#: ../src/search.c:1002
+#: ../src/search.c:1004
 msgid "E_xtra options:"
 msgstr "Opções e_xtra:"
 
-#: ../src/search.c:1010
+#: ../src/search.c:1012
 msgid "Other options to pass to Grep"
 msgstr "Outras opções para passar para o Grep"
 
-#: ../src/search.c:1377 ../src/search.c:2235 ../src/search.c:2238
+#: ../src/search.c:1388 ../src/search.c:2246 ../src/search.c:2249
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "%d ocorrência encontrada para \"%s\"."
 msgstr[1] "%d ocorrências encontradas para \"%s\"."
 
-#: ../src/search.c:1433
+#: ../src/search.c:1444
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "%u ocorrências substituídas em %u documentos."
 
-#: ../src/search.c:1622
+#: ../src/search.c:1633
 msgid "Invalid directory for find in files."
 msgstr "Diretório de pesquisa de arquivos inválido."
 
-#: ../src/search.c:1639
+#: ../src/search.c:1650
 msgid "No text to find."
 msgstr "Nenhum texto para procurar."
 
-#: ../src/search.c:1715
+#: ../src/search.c:1726
 msgid "Searching..."
 msgstr "Pesquisando..."
 
-#: ../src/search.c:1717
+#: ../src/search.c:1728
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (no diretório: %s)"
 
-#: ../src/search.c:1725
+#: ../src/search.c:1736
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4627,27 +4632,27 @@ msgstr ""
 "Não foi possível executar a ferramenta de grep '%s'. Verifique a "
 "configuração do caminho nas Preferências."
 
-#: ../src/search.c:1765
+#: ../src/search.c:1776
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Não foi possível abrir diretório (%s)"
 
-#: ../src/search.c:1855
+#: ../src/search.c:1866
 msgid "Search failed."
 msgstr "Pesquisa falhou."
 
-#: ../src/search.c:1879
+#: ../src/search.c:1890
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Pesquisa completada com %d ocorrência."
 msgstr[1] "Pesquisa completada com %d ocorrências."
 
-#: ../src/search.c:1887
+#: ../src/search.c:1898
 msgid "No matches found."
 msgstr "Nenhuma ocorrência encontrada."
 
-#: ../src/search.c:1917
+#: ../src/search.c:1928
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Expressão regular ruim: %s"
@@ -5267,12 +5272,12 @@ msgstr "Itens Exibidos"
 msgid "Invalid command: %s"
 msgstr "Comando inválido: %s"
 
-#: ../src/tools.c:216
+#: ../src/tools.c:229
 #, c-format
 msgid "Passing data and executing custom command: %s"
 msgstr "Enviando dados e executando comando personalizado: %s"
 
-#: ../src/tools.c:224
+#: ../src/tools.c:237
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
@@ -5281,13 +5286,13 @@ msgstr ""
 "O comando personalizado executado retornou um erro. A sua seleção não foi "
 "alterada. Mensagem de erro: %s"
 
-#: ../src/tools.c:232
+#: ../src/tools.c:245
 msgid "The executed custom command exited with an unsuccessful exit code."
 msgstr ""
 "O comando personalizado executado terminou com um código de saída mal-"
 "sucedido."
 
-#: ../src/tools.c:241
+#: ../src/tools.c:257
 #, fuzzy, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
@@ -5296,11 +5301,11 @@ msgstr ""
 "Não foi possível executar a ferramenta de grep '%s'. Verifique a "
 "configuração do caminho nas Preferências."
 
-#: ../src/tools.c:356 ../src/tools.c:625
+#: ../src/tools.c:372 ../src/tools.c:641
 msgid "Set Custom Commands"
 msgstr "Definir Comandos Personalizados"
 
-#: ../src/tools.c:364
+#: ../src/tools.c:380
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
@@ -5308,39 +5313,39 @@ msgstr ""
 "Você pode enviar a seleção atual para qualquer um destes comandos e a saída "
 "do comando substitui a seleção atual."
 
-#: ../src/tools.c:378
+#: ../src/tools.c:394
 msgid "ID"
 msgstr "ID"
 
-#: ../src/tools.c:596
+#: ../src/tools.c:612
 msgid "No custom commands defined."
 msgstr "Nenhum comando personalizado definido."
 
-#: ../src/tools.c:695
+#: ../src/tools.c:711
 msgid "Word Count"
 msgstr "Contar Palavras"
 
-#: ../src/tools.c:704
+#: ../src/tools.c:720
 msgid "selection"
 msgstr "seleção"
 
-#: ../src/tools.c:709
+#: ../src/tools.c:725
 msgid "whole document"
 msgstr "documento inteiro"
 
-#: ../src/tools.c:718
+#: ../src/tools.c:734
 msgid "Range:"
 msgstr "Intervalo:"
 
-#: ../src/tools.c:730
+#: ../src/tools.c:746
 msgid "Lines:"
 msgstr "Linhas:"
 
-#: ../src/tools.c:744
+#: ../src/tools.c:760
 msgid "Words:"
 msgstr "Palavras:"
 
-#: ../src/tools.c:758
+#: ../src/tools.c:774
 msgid "Characters:"
 msgstr "Caracteres:"
 
