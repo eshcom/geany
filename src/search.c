@@ -49,6 +49,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #include <gdk/gdkkeysyms.h>
 
@@ -1043,6 +1044,18 @@ void search_show_find_in_files_dialog(const gchar *dir)
 }
 
 
+gint min_len_str(const gchar *str1, const gchar *str2)
+{
+	if (EMPTY(str1) && EMPTY(str2))
+		return 0;
+	else if (!EMPTY(str1) && EMPTY(str2))
+		return strlen(str1);
+	else if (!EMPTY(str2) && EMPTY(str1))
+		return strlen(str2);
+	else
+		return fmin(strlen(str1), strlen(str2));
+}
+
 void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 {
 	GtkWidget *entry; /* for child GtkEntry of a GtkComboBoxEntry */
@@ -1079,7 +1092,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	if (proj_base_path)
 	{
 		ui_combo_box_prepend_text_once(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
-			app->project->base_path);
+									   app->project->base_path);
 	}
 	
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.dir_combo));
@@ -1090,10 +1103,18 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		//~ esh: added check new param use_current_proj_dir
 		if (search_prefs.use_current_proj_dir && proj_base_path)
 		{
-			if (!utils_strn_equal(gtk_entry_get_text(GTK_ENTRY(entry)),
-								  app->project->base_path,
-								  strlen(app->project->base_path)))
+			const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
+			if (!utils_strn_equal(entry_text, app->project->base_path,
+								  min_len_str(entry_text, app->project->base_path)))
 				cur_dir = g_strdup(app->project->base_path);
+			else
+			{
+				gchar *cur_file_dir = utils_get_current_file_dir_utf8();
+				if (!utils_strn_equal(cur_file_dir, entry_text,
+									  min_len_str(cur_file_dir, entry_text)))
+					cur_dir = g_strdup(app->project->base_path);
+				g_free(cur_file_dir);
+			}
 		}
 		else if (search_prefs.use_current_file_dir)
 		{
