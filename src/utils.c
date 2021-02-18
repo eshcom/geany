@@ -604,6 +604,15 @@ gboolean utils_str_equal(const gchar *a, const gchar *b)
 
 	return strcmp(a, b) == 0;
 }
+GEANY_API_SYMBOL
+gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n)
+{
+	/* (taken from libexo from os-cillation) */
+	if (a == NULL && b == NULL) return TRUE;
+	else if (a == NULL || b == NULL) return FALSE;
+
+	return strncmp(a, b, n) == 0;
+}
 
 
 /**
