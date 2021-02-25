@@ -182,6 +182,7 @@ void msgwin_finalize(void)
 
 static gboolean on_msgwin_key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+	// esh: kb-key pressed
 	gboolean enter_or_return = ui_is_keyval_enter_or_return(event->keyval);
 
 	if (enter_or_return || event->keyval == GDK_space)
@@ -1183,6 +1184,7 @@ static void msgwin_parse_generic_line(const gchar *string, gchar **filename, gin
 
 gboolean msgwin_goto_messages_file_line(gboolean focus_editor)
 {
+	// esh: call by Enter in msgwindow-tab, example, tree_msg tab (Messages)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	GtkTreeSelection *selection;
@@ -1243,6 +1245,7 @@ gboolean msgwin_goto_messages_file_line(gboolean focus_editor)
 static gboolean on_msgwin_button_press_event(GtkWidget *widget, GdkEventButton *event,
 											 gpointer user_data)
 {
+	// esh: mouse-key pressed
 	/* user_data might be NULL, GPOINTER_TO_INT returns 0 if called with NULL */
 	gboolean double_click = event->type == GDK_2BUTTON_PRESS;
 
