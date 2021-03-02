@@ -278,7 +278,7 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 				   "3 checks whether any spaces are in the indentation, and "
 				   "4 checks for any tab characters in the indentation. "
 				   "1 is a good level to use.");
-	
+		
 		DefineProperty("lexer.python.literals.binary", &OptionsPython::base2or8Literals,
 				   "Set to 0 to not recognise Python 3 binary and octal literals: 0b1011 0o712.");
 		
@@ -309,10 +309,10 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 				   "Set to 0 to not recognise Python 3 unicode identifiers.");
 		
 		DefineProperty("lexer.python.escape.sequence", &OptionsPython::escapeSequence,
-			"Set to 1 to enable highlighting of escape sequences in strings");
+					"Set to 1 to enable highlighting of escape sequences in strings");
 		
 		DefineProperty("lexer.python.format.sequence", &OptionsPython::formatSequence,
-			"Set to 1 to enable highlighting of format sequences in strings");
+					"Set to 1 to enable highlighting of format sequences in strings");
 		
 		DefineWordListSets(pythonWordListDesc);
 	}
@@ -570,8 +570,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	int stringState = -1;
 	
 	// esh: added detect stringState
-	if ((initStyle == SCE_P_STRING) ||
-		(initStyle == SCE_P_CHARACTER)) {
+	if (IsPySingleQuoteStringState(initStyle, false)
+		|| IsPyTripleQuoteStringState(initStyle)) {
 		stringState = initStyle;
 		
 	} else if (initStyle == SCE_P_ESCAPESEQUENCE ||
@@ -584,12 +584,13 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (backStyle != SCE_P_ESCAPESEQUENCE &&
 				backStyle != SCE_P_FORMATSEQUENCE &&
 				backStyle != SCE_P_STRINGEOL) {
-				if ((backStyle == SCE_P_STRING) ||
-					(backStyle == SCE_P_CHARACTER)) {
+				if (IsPySingleQuoteStringState(backStyle, false)
+					|| IsPyTripleQuoteStringState(backStyle)) {
 					stringState = backStyle;
 				} else {
-					stringState = (styler[++back] == '\"') ? SCE_P_STRING :
-															 SCE_P_CHARACTER;
+					Sci_PositionU nextIndex = 0;
+					stringState = GetPyStringState(styler, ++back, &nextIndex,
+												   allowedLiterals);
 				}
 				break;
 			}

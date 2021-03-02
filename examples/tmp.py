@@ -45,6 +45,10 @@ TEST5 = f"part1 \
 		  part2 \
 		  part3"
 
+TEST5 = f"part1 \n\
+		  part2 \n\
+		  part3"
+
 TEST5 = "part1 \n\
 		 part2 \n\
 		 part3"
