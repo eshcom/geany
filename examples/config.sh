@@ -32,6 +32,9 @@ echo "${#alpha[@]}"   #  3  # number of elements
 echo "${alpha[1]}"    #  temp/foobar.txt # second element
 echo "${#alpha[1]}"    #  15 # length of second element
 
+eval echo \${$n}
+grep '^LIBC' | sed 's, ,,g'
+
 VAR=$alpha
 VAR=${alpha}
 VAR=${alpha[@]}
@@ -55,6 +58,9 @@ dir_contents=$(ls)
 date_directory=`ls `date '+%Y-%m-%d'`` # Makes no sense
 date_directory=$(ls $(date '+%Y-%m-%d')) # Much better
 
+ls $(date '+%Y-%m-%d')
+date '+%Y-%m-%d'
+cat /etc/hosts
 
 if [ $(grep not_there /dev/null) = '' ]
 then
@@ -77,6 +83,22 @@ if [ -n "$PS1" ] ; then                       # are we interactive?
    [ -r ~/.bash_login ] && . ~/.bash_login    # any at-login tasks for login shell only
 fi
 
+
+# Gentoo (/etc/bash/bashrc)
+if [[ ${EUID} == 0 ]] ; then
+    PS1='\[\033[01;31m\]\h\[\033[01;34m\] \W \$\[\033[00m\] '
+else
+    PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] '
+fi
+
+# CentOS or Fedora (/etc/bashrc)
+[ "$PS1" = "\\s-\\v\\\$ " ] && PS1="[\u@\h \W]\\$ "
+
+# Debian (/etc/bash.bashrc)
+PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+
+
+#--------------------------------------------------------------------------------------------
 timestamp='2015-08-20'
 
 # This file is free software; you can redistribute it and/or modify it

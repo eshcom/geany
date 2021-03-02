@@ -230,7 +230,7 @@ public:
 						int initStyle, IDocument *pAccess) override;
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
 						 int initStyle, IDocument *pAccess) override;
-
+	
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
@@ -535,8 +535,8 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.ChangeState(identifierStyle);
 					}
 					// disambiguate keywords and identifiers
-					else if (cmdState != BASH_CMD_START
-						  || !(keywords.InList(s) && keywordEnds)) {
+					else if (cmdState != BASH_CMD_START ||
+							 !(keywords.InList(s) && keywordEnds)) {
 						sc.ChangeState(identifierStyle);
 					}
 					sc.SetState(SCE_SH_DEFAULT);
