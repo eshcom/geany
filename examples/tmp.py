@@ -22,12 +22,28 @@ from __future__ import absolute_import
               (f'Очередь ответа\t{"-"*8}\trabbit_send', self.rabbit_send)])
         return '\n'.join([f'{k}\t{"-"*8}\t{v}' for k, v in d.items()])
 
+message = f"""
+			Hi {name}. 
+			You are a {profession}. 
+			You were in {affiliation}.
+		   """
+test = f"{'Eric Idle'}"
+test = f'{"Eric Idle"}'
+test = f"""Eric Idle"""
+test = f'''Eric Idle'''
+test = f"{{{70 + 4}}}"
+test = f"The \"comedian\" is {name}, aged {age}."
+
 print("tes%t %s%%\n%%%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n%%s")
 
 TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
 TEST2 = '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
 TEST3 = "\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0"
 TEST4 = '\u00d0x\u00a8x\u00d0x\u00b0x\u00d0x\u00b1x\u00d0x\u00bbx\u00d0'
+
+TEST5 = f"part1 \
+		  part2 \
+		  part3"
 
 TEST5 = "part1 \n\
 		 part2 \n\
