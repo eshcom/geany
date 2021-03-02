@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+
 [print(f'{"="*120}\n{job}') for job in db.filter(Jobs)]
 [print('\n'.join(f'{"="*120}\n{job}'.split('\n')[0:5])) for job in db.filter(Jobs)]
 [print(f'{"="*120}\n{task}') for task in db.filter(Tasks)]
@@ -27,12 +28,30 @@ message = f"""
 			You are a {profession}. 
 			You were in {affiliation}.
 		   """
+
+timeit.timeit("""name = "Eric"
+				 age = 74
+				 '%s is %s.' % (name, age)""", number = 10000)
+
+timeit.timeit("""name = "Eric"
+				 age = 74
+				 '{} is {}.'.format(name, age)""", number = 10000)
+
+timeit.timeit("""name = "Eric"
+				 age = 74
+				 f'{name} is {age}.'""", number = 10000)
+
+test = f"{{70 + 4}}"		# '{70 + 4}'
+test = f"{{{70 + 4}}}"		# '{74}'
+test = f"{{{{70 + 4}}}}"	# '{{70 + 4}}'
+
 test = f"{'Eric Idle'}"
 test = f'{"Eric Idle"}'
 test = f"""Eric Idle"""
 test = f'''Eric Idle'''
-test = f"{{{70 + 4}}}"
 test = f"The \"comedian\" is {name}, aged {age}."
+test = f"{new_comedian!r}"
+test = f"{name.lower()} is funny."
 
 print("tes%t %s%%\n%%%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n%%s")
 
