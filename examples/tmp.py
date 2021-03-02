@@ -1,6 +1,28 @@
 from __future__ import absolute_import
 
- print("tes%t %s%%\n%%%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n%%s")
+[print(f'{"="*120}\n{job}') for job in db.filter(Jobs)]
+[print('\n'.join(f'{"="*120}\n{job}'.split('\n')[0:5])) for job in db.filter(Jobs)]
+[print(f'{"="*120}\n{task}') for task in db.filter(Tasks)]
+[print('\n'.join(f'{"="*120}\n{job}'.split('\n')[0:12])) for job in db.filter(Tasks)]
+[print(f'{"="*150}\n{task}') for task in db.exe_stack()]
+
+    def __repr__(self):
+        d = OrderedDict(
+            [ ('Последний PID', self.pidnum), ('Заблокирован', self.is_blocked),
+              ('Путь к PID', self.abd_pid), ('Путь к сокету', self.abd_sock),
+              ('Настраиваемые параметры:', f'{"+"*80}'),
+              (f'ТПС включено\t{"-"*8}\trabbit_use', self.rabbit_use),
+              (f'Файл работ\t{"-"*8}\tjobs_json', self.jobs_json),
+              (f'Отчёты\t\t{"-"*8}\tlogpath\t', self.logpath),
+              (f'Krb principal\t{"-"*8}\tkrb_principal', self.krb_principal),
+              (f'Очередь IN\t{"-"*8}\trabbit_listen', self.rabbit_listen),
+              (f'Имя сервиса ТПС\t{"-"*8}\trabbit_name', self.rabbit_name),
+              (f'Имя хоста ТПС\t{"-"*8}\trabbit_server', self.rabbit_server),
+              (f'Номер порта ТПС\t{"-"*8}\trabbit_port', self.rabbit_port),
+              (f'Очередь ответа\t{"-"*8}\trabbit_send', self.rabbit_send)])
+        return '\n'.join([f'{k}\t{"-"*8}\t{v}' for k, v in d.items()])
+
+print("tes%t %s%%\n%%%d\n%5d%.7d\n%5.7d\n%5.*d\n%-+05d\n%%s")
 
 TEST1 = "\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x"
 TEST2 = '\ \sx\tx\nx\rxx\"x\'x\!x\@x\#x\$x\%x\6x'
