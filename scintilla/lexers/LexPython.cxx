@@ -92,9 +92,15 @@ bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
 	return false;
 }
 
-bool IsPyFStringState(int st) {
-	return ((st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING) ||
-			(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
+int GetSaveStringState(int st, int stringState) {
+	return (st == SCE_P_ESCAPESEQUENCE ||
+			st == SCE_P_FORMATSEQUENCE) ? stringState : st;
+}
+
+bool IsPyFStringState(int st, int stringState) {
+	int saveSt = GetSaveStringState(st, stringState);
+	return ((saveSt == SCE_P_FCHARACTER) || (saveSt == SCE_P_FSTRING) ||
+			(saveSt == SCE_P_FTRIPLE) || (saveSt == SCE_P_FTRIPLEDOUBLE));
 }
 
 bool IsPySingleQuoteStringState(int st, bool withNestedStyle) {
@@ -438,7 +444,8 @@ public:
 
 private:
 	void ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpState> &fstringStateStack,
-						SingleFStringExpState *&currentFStringExp, bool &inContinuedString);
+						SingleFStringExpState *&currentFStringExp, bool &inContinuedString,
+						int &stringState);
 };
 
 Sci_Position SCI_METHOD LexerPython::PropertySet(const char *key, const char *val) {
@@ -483,7 +490,8 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 }
 
 void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpState> &fstringStateStack,
-								 SingleFStringExpState *&currentFStringExp, bool &inContinuedString) {
+								 SingleFStringExpState *&currentFStringExp, bool &inContinuedString,
+								 int &stringState) {
 	long deepestSingleStateIndex = -1;
 	unsigned long i;
 	
@@ -497,6 +505,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	
 	if (deepestSingleStateIndex != -1) {
 		sc.SetState(fstringStateStack[deepestSingleStateIndex].state);
+		stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
 		while (fstringStateStack.size() > static_cast<unsigned long>(deepestSingleStateIndex)) {
 			PopFromStateStack(fstringStateStack, currentFStringExp);
 		}
@@ -509,7 +518,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		ftripleStateAtEol.insert(val);
 	}
 	if ((sc.state == SCE_P_DEFAULT)
-			|| IsPyTripleQuoteStringState(sc.state)) {
+		|| IsPyTripleQuoteStringState(sc.state)) {
 		// Perform colourisation of white space and triple quoted strings at end of each line to allow
 		// tab marking to work inside white space and triple quoted strings
 		sc.SetState(sc.state);
@@ -655,7 +664,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		if (sc.atLineEnd) {
 			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
-						   inContinuedString);
+						   inContinuedString, stringState);
 			lineCurrent++;
 			if (!sc.More())
 				break;
@@ -870,7 +879,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineStart) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
-		} else if ((sc.state == SCE_P_TRIPLE) || (sc.state == SCE_P_FTRIPLE)) {
+		} else if ((sc.state == SCE_P_TRIPLE) ||
+				   (sc.state == SCE_P_FTRIPLE)) {
 			if (sc.ch == '\\') {
 				sc.Forward();
 			} else if (sc.Match(R"(''')")) {
@@ -893,11 +903,12 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Note if used and not if else because string states also match
 		// some of the above clauses
-		if (IsPyFStringState(sc.state) && sc.ch == '{') {
+		if (IsPyFStringState(sc.state, stringState) && sc.ch == '{') {
 			if (sc.chNext == '{') {
 				sc.Forward();
 			} else {
-				PushStateToStack(sc.state, fstringStateStack, currentFStringExp);
+				PushStateToStack(GetSaveStringState(sc.state, stringState),
+								 fstringStateStack, currentFStringExp);
 				sc.ForwardSetState(SCE_P_DEFAULT);
 			}
 			needEOLCheck = true;
@@ -923,7 +934,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 			if (matching_stack_i != -1) {
 				sc.SetState(fstringStateStack[matching_stack_i].state);
-				if (IsPyTripleQuoteStringState(fstringStateStack[matching_stack_i].state)) {
+				stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
+				if (IsPyTripleQuoteStringState(
+						fstringStateStack[matching_stack_i].state)) {
 					sc.Forward();
 					sc.Forward();
 				}
@@ -953,7 +966,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		// State exit code may have moved on to end of line
 		if (needEOLCheck && sc.atLineEnd) {
 			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
-						   inContinuedString);
+						   inContinuedString, stringState);
 			lineCurrent++;
 			styler.IndentAmount(lineCurrent, &spaceFlags, IsPyComment);
 			if (!sc.More())
@@ -967,6 +980,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				(sc.ch == '}' || sc.ch == ':' ||
 					(sc.ch == '!' && sc.chNext != '='))) {
 				sc.SetState(PopFromStateStack(fstringStateStack, currentFStringExp));
+				stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
 			} else {
 				if (sc.ch == '{' || sc.ch == '[' || sc.ch == '(') {
 					currentFStringExp->nestingCount++;
@@ -1011,7 +1025,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				Sci_PositionU nextIndex = 0;
 				sc.SetState(GetPyStringState(styler, sc.currentPos,
 											 &nextIndex, allowedLiterals));
-				// esh: save string state for escape sequences highlighting
+				// esh: save string state for escape/format sequences highlighting
 				stringState = sc.state;
 				while (nextIndex > (sc.currentPos + 1) && sc.More()) {
 					sc.Forward();
