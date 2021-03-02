@@ -46,8 +46,17 @@ commonword=None True False
 refclassword=
 
 [lexer_properties]
+fold=0
+fold.compact=0
 fold.quotes.python=1
+tab.timmy.whinge.level=0
 lexer.python.keywords2.no.sub.identifiers=1
+lexer.python.literals.binary=1
+lexer.python.strings.u=1
+lexer.python.strings.b=1
+lexer.python.strings.f=1
+lexer.python.strings.over.newline=0
+lexer.python.unicode.identifiers=1
 lexer.python.escape.sequence=0
 lexer.python.format.sequence=0
 
