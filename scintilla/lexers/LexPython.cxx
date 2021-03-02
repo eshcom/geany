@@ -655,7 +655,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				startIndicator = sc.currentPos;
 			}
 			// esh: taken from (LexCPP.css)
-			if ((sc.state == SCE_P_STRING) || (sc.state == SCE_P_CHARACTER)) {
+			if (IsPySingleQuoteStringState(sc.state, true)) {
 				// Prevent SCE_P_STRINGEOL from leaking back to previous line which
 				// ends with a line continuation by locking in the state up to this position.
 				sc.SetState(sc.state);
