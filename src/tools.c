@@ -208,7 +208,9 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 	gboolean all_text = FALSE;
 	if (!sci_has_selection(doc->editor->sci))
 	{
-		if (sci_get_current_line(doc->editor->sci) == 0) // esh: if first line
+		// esh: if first line or last line: process all text
+		gint line = sci_get_current_line(doc->editor->sci);
+		if (line == 0 || line == (sci_get_line_count(doc->editor->sci) - 1))
 		{
 			all_text = TRUE;
 			sel = sci_get_contents(doc->editor->sci, -1);
