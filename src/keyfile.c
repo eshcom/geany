@@ -373,7 +373,7 @@ static void remove_session_files(GKeyFile *config)
 {
 	gchar **ptr;
 	gchar **keys = g_key_file_get_keys(config, "files", NULL, NULL);
-
+	
 	foreach_strv(ptr, keys)
 	{
 		if (g_str_has_prefix(*ptr, "FILE_NAME_"))
@@ -388,23 +388,23 @@ void configuration_save_session_files(GKeyFile *config)
 	gint npage;
 	gchar entry[16];
 	guint i = 0, j = 0, max;
-
+	
 	npage = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_widgets.notebook));
 	g_key_file_set_integer(config, "files", "current_page", npage);
-
+	
 	// clear existing entries first as they might not all be overwritten
 	remove_session_files(config);
-
+	
 	/* store the filenames in the notebook tab order to reopen them the next time */
 	max = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
 	for (i = 0; i < max; i++)
 	{
 		GeanyDocument *doc = document_get_from_page(i);
-
+		
 		if (doc != NULL && doc->real_path != NULL)
 		{
 			gchar *fname;
-
+			
 			g_snprintf(entry, sizeof(entry), "FILE_NAME_%d", j);
 			fname = get_session_file_string(doc);
 			g_key_file_set_string(config, "files", entry, fname);
@@ -412,12 +412,25 @@ void configuration_save_session_files(GKeyFile *config)
 			j++;
 		}
 	}
-
+	
 #ifdef HAVE_VTE
 	if (vte_info.have_vte)
 	{
 		vte_get_working_directory();	/* refresh vte_info.dir */
-		g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);
+		
+		// esh: fixed overwriting VTE/last_dir of the current project from the previous project
+		//		in case there was an incomplete command in the terminal in the previous project
+		if (app->project != NULL && !EMPTY(app->project->base_path))
+		{
+			gint len = strlen(app->project->base_path);
+			if (app->project->base_path[len - 1] == '/'
+				|| app->project->base_path[len - 1] == '\\')
+				len--;
+			if (utils_strn_equal(vte_info.dir, app->project->base_path, len))
+				g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);
+		}
+		else
+			g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);
 	}
 #endif
 }
@@ -980,10 +993,8 @@ static void load_dialog_prefs(GKeyFile *config)
 	#endif
 	}
 	else
-	{
 		tmp_string = g_strdup("");
-	}
-
+	
 	printing_prefs.external_print_cmd = utils_get_setting_string(config, "printing", "print_cmd", tmp_string);
 	g_free(tmp_string);
 	g_free(tmp_string2);
