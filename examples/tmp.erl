@@ -42,6 +42,7 @@ test(Var) ->
 	_V4 = erlang:max(1,3),
 	_V5 = erlang:yield(),
 	_V6 = erlang:integer_to_list(123),
+	_V7 = os_stat_mem:default(),
 	ok.
 
 info() ->
@@ -56,3 +57,4 @@ info() ->
   Info#'RuntimeInfo'.cpu - 0 > 0 orelse error([bad_cpu,Info#'RuntimeInfo'.cpu]),
   Info#'RuntimeInfo'.memory - 0 > 0 orelse error([bad_memory,Info#'RuntimeInfo'.memory]),
   ok.
+
