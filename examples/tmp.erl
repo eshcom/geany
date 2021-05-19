@@ -43,3 +43,16 @@ test(Var) ->
 	_V5 = erlang:yield(),
 	_V6 = erlang:integer_to_list(123),
 	ok.
+
+info() ->
+  Info#'RuntimeInfo'.duration - 0 > 0 orelse error([bad_duration,Info#'RuntimeInfo'.duration]),
+  Info#'RuntimeInfo'.startedAt - 1600000000 > 0 andalso Info#'RuntimeInfo'.startedAt - 1800000000 < 0 orelse error([bad_startedAt,Info#'RuntimeInfo'.startedAt]),
+  Info#'RuntimeInfo'.medias - 0 > 0 orelse error([bad_medias,Info#'RuntimeInfo'.medias]),
+  Info#'RuntimeInfo'.sessions - 0 > 0 orelse error([bad_sessions,Info#'RuntimeInfo'.sessions]),
+  % Info#'RuntimeInfo'.inMediaBandwidth - 0 > 0 orelse error([bad_inMediaBandwidth,Info#'RuntimeInfo'.inMediaBandwidth]),
+  % Info#'RuntimeInfo'.outMediaBandwidth - 0 > 0 orelse error([bad_outMediaBandwidth,Info#'RuntimeInfo'.outMediaBandwidth]),
+  % Info#'RuntimeInfo'.inSystemBandwidth - 0 > 0 orelse error([bad_inSystemBandwidth,Info#'RuntimeInfo'.inSystemBandwidth]),
+  % Info#'RuntimeInfo'.outSystemBandwidth - 0 > 0 orelse error([bad_outSystemBandwidth,Info#'RuntimeInfo'.outSystemBandwidth]),
+  Info#'RuntimeInfo'.cpu - 0 > 0 orelse error([bad_cpu,Info#'RuntimeInfo'.cpu]),
+  Info#'RuntimeInfo'.memory - 0 > 0 orelse error([bad_memory,Info#'RuntimeInfo'.memory]),
+  ok.
