@@ -152,10 +152,10 @@ static void load_color(const gchar *color_name, GdkColor *color)
 void msgwin_init(void)
 {
 	msgwindow.notebook = ui_lookup_widget(main_widgets.window, "notebook_info");
-	msgwindow.tree_status = ui_lookup_widget(main_widgets.window, "treeview3");
-	msgwindow.tree_msg = ui_lookup_widget(main_widgets.window, "treeview4");
-	msgwindow.tree_compiler = ui_lookup_widget(main_widgets.window, "treeview5");
-	msgwindow.scribble = ui_lookup_widget(main_widgets.window, "textview_scribble");
+	msgwindow.tree_status = ui_lookup_widget(main_widgets.window, "treeview3");			// "Status" tab
+	msgwindow.tree_msg = ui_lookup_widget(main_widgets.window, "treeview4");			// "Messages" tab
+	msgwindow.tree_compiler = ui_lookup_widget(main_widgets.window, "treeview5");		// "Compiler" tab
+	msgwindow.scribble = ui_lookup_widget(main_widgets.window, "textview_scribble");	// "Scribble" tab
 	msgwindow.messages_dir = NULL;
 
 	prepare_status_tree_view();
