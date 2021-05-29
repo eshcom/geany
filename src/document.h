@@ -211,7 +211,7 @@ void document_rename_file(GeanyDocument *doc, const gchar *new_filename);
 const GdkColor *document_get_status_color(GeanyDocument *doc);
 
 gchar *document_get_basename_for_display(GeanyDocument *doc, gint length);
-gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean fullpath);
+gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem, gboolean fullpath);
 
 gint document_get_notebook_page(GeanyDocument *doc);
 
