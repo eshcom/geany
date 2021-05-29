@@ -17,8 +17,12 @@ here_delim=here_doc
 here_q=here_doc
 
 [keywords]
-primary=break case continue do done elif else esac eval exit export fi for function goto if in integer return set shift then until while
-
+# Bash keywords
+primary=case do done elif else esac fi for function goto if in integer then until while
+# Special Builtins (POSIX)
+secondary=break continue eval exec exit export readonly return set shift trap unset
+# Builtin Commands (minus ones in secondary)
+builtin=alias bind builtin caller cd command declare echo enable getopts hash help let local logout mapfile printf pwd read readarray shopt source test times type typeset ulimit umask unalias
 
 [settings]
 # default extension used when saving files
