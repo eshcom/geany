@@ -428,8 +428,7 @@ gchar *document_get_basename_for_display(GeanyDocument *doc, gint length)
 }
 
 /**
- *  esh:
- *  Returns the last part of the filename or full path of the given GeanyDocument
+ *  esh: Returns the last part of the filename or full path of the given GeanyDocument
  *
  *  @param doc The document to use.
  *  @param fullpath Returns full path.
@@ -438,14 +437,17 @@ gchar *document_get_basename_for_display(GeanyDocument *doc, gint length)
  *          should be freed when no longer needed.
  */
 GEANY_API_SYMBOL
-gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean fullpath)
+gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem, gboolean fullpath)
 {
-	gchar *name;
+	gchar *path, *name;
 	
 	g_return_val_if_fail(doc != NULL, NULL);
 	
-	name = fullpath ? g_strdup(DOC_FILENAME(doc)):
-					  g_path_get_basename(DOC_FILENAME(doc));
+	path = parentitem ? g_path_get_dirname(DOC_FILENAME(doc)):
+						g_strdup(DOC_FILENAME(doc));
+	
+	name = fullpath ? g_strdup(path): g_path_get_basename(path);
+	g_free(path);
 	
 	return name;
 }

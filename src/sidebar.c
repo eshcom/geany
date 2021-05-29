@@ -830,15 +830,15 @@ void sidebar_select_openfiles_item(GeanyDocument *doc)
 
 
 /* callbacks */
-static void copy_name_to_clipboard(GeanyDocument *doc, gboolean fullpath)
+static void copy_name_to_clipboard(GeanyDocument *doc, gboolean parentitem, gboolean fullpath)
 {
-	gchar *name = document_get_name_or_fullpath(doc, fullpath);
+	gchar *name = document_get_name_or_fullpath(doc, parentitem, fullpath);
 	GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	gtk_clipboard_set_text(cb, name, -1);
 	g_free(name);
 }
 
-static void document_action(GeanyDocument *doc, gint action)
+static void document_action(GeanyDocument *doc, gint action, gboolean parentitem)
 {
 	if (! DOC_VALID(doc))
 		return;
@@ -862,12 +862,12 @@ static void document_action(GeanyDocument *doc, gint action)
 		}
 		case OPENFILES_ACTION_COPY_NAME:
 		{
-			copy_name_to_clipboard(doc, FALSE);
+			copy_name_to_clipboard(doc, parentitem, FALSE);
 			break;
 		}
 		case OPENFILES_ACTION_COPY_FULLPATH:
 		{
-			copy_name_to_clipboard(doc, TRUE);
+			copy_name_to_clipboard(doc, parentitem, TRUE);
 			break;
 		}
 	}
@@ -881,26 +881,37 @@ static void on_openfiles_document_action(GtkMenuItem *menuitem, gpointer user_da
 	GtkTreeModel *model;
 	GeanyDocument *doc;
 	gint action = GPOINTER_TO_INT(user_data);
-
+	
 	if (gtk_tree_selection_get_selected(selection, &model, &iter))
 	{
 		gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc, -1);
 		if (doc)
 		{
-			document_action(doc, action);
+			document_action(doc, action, FALSE);
 		}
 		else
 		{
 			/* parent item selected */
 			GtkTreeIter child;
 			gint i = gtk_tree_model_iter_n_children(model, &iter) - 1;
-
-			while (i >= 0 && gtk_tree_model_iter_nth_child(model, &child, &iter, i))
+			
+			if (action == OPENFILES_ACTION_COPY_NAME ||
+				action == OPENFILES_ACTION_COPY_FULLPATH)
 			{
-				gtk_tree_model_get(model, &child, DOCUMENTS_DOCUMENT, &doc, -1);
-
-				document_action(doc, action);
-				i--;
+				if (i >= 0 && gtk_tree_model_iter_nth_child(model, &child, &iter, i))
+				{
+					gtk_tree_model_get(model, &child, DOCUMENTS_DOCUMENT, &doc, -1);
+					document_action(doc, action, TRUE);
+				}
+			}
+			else
+			{
+				while (i >= 0 && gtk_tree_model_iter_nth_child(model, &child, &iter, i))
+				{
+					gtk_tree_model_get(model, &child, DOCUMENTS_DOCUMENT, &doc, -1);
+					document_action(doc, action, FALSE);
+					i--;
+				}
 			}
 		}
 	}
@@ -1099,6 +1110,10 @@ static void documents_menu_update(GtkTreeSelection *selection)
 	gtk_widget_set_sensitive(doc_items.save, (doc && doc->real_path) || path);
 	gtk_widget_set_sensitive(doc_items.reload, doc && doc->real_path);
 	gtk_widget_set_sensitive(doc_items.find_in_files, sel);
+	//~ esh: set sensitive for new items
+	gtk_widget_set_sensitive(doc_items.copy_name, (doc && doc->real_path) || path);
+	gtk_widget_set_sensitive(doc_items.copy_fullpath, (doc && doc->real_path) || path);
+	//~ esh: ---------------------------
 	g_free(shortname);
 	
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(doc_items.show_paths), documents_show_paths);
