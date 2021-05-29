@@ -413,18 +413,41 @@ GEANY_API_SYMBOL
 gchar *document_get_basename_for_display(GeanyDocument *doc, gint length)
 {
 	gchar *base_name, *short_name;
-
+	
 	g_return_val_if_fail(doc != NULL, NULL);
-
+	
 	if (length < 0)
 		length = 30;
-
+	
 	base_name = g_path_get_basename(DOC_FILENAME(doc));
 	short_name = utils_str_middle_truncate(base_name, (guint)length);
-
+	
 	g_free(base_name);
-
+	
 	return short_name;
+}
+
+/**
+ *  esh:
+ *  Returns the last part of the filename or full path of the given GeanyDocument
+ *
+ *  @param doc The document to use.
+ *  @param fullpath Returns full path.
+ *
+ *  @return The ellipsized last part of the filename or full path of @a doc,
+ *          should be freed when no longer needed.
+ */
+GEANY_API_SYMBOL
+gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean fullpath)
+{
+	gchar *name;
+	
+	g_return_val_if_fail(doc != NULL, NULL);
+	
+	name = fullpath ? g_strdup(DOC_FILENAME(doc)):
+					  g_path_get_basename(DOC_FILENAME(doc));
+	
+	return name;
 }
 
 

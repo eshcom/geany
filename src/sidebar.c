@@ -60,8 +60,10 @@ static struct
 	GtkWidget *find_in_files;
 	GtkWidget *expand_all;
 	GtkWidget *collapse_all;
+	GtkWidget *copy_name;
+	GtkWidget *copy_fullpath;
 }
-doc_items = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+doc_items = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 enum
 {
@@ -73,7 +75,9 @@ enum
 {
 	OPENFILES_ACTION_REMOVE = 0,
 	OPENFILES_ACTION_SAVE,
-	OPENFILES_ACTION_RELOAD
+	OPENFILES_ACTION_RELOAD,
+	OPENFILES_ACTION_COPY_NAME,
+	OPENFILES_ACTION_COPY_FULLPATH
 };
 
 /* documents tree model columns */
@@ -693,27 +697,27 @@ static void on_openfiles_expand_collapse(GtkMenuItem *menuitem, gpointer user_da
 static void create_openfiles_popup_menu(void)
 {
 	GtkWidget *item;
-
+	
 	openfiles_popup_menu = gtk_menu_new();
-
+	
 	item = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLOSE, NULL);
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
 	g_signal_connect(item, "activate",
 			G_CALLBACK(on_openfiles_document_action), GINT_TO_POINTER(OPENFILES_ACTION_REMOVE));
 	doc_items.close = item;
-
+	
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
-
+	
 	item = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
 	g_signal_connect(item, "activate",
 			G_CALLBACK(on_openfiles_document_action), GINT_TO_POINTER(OPENFILES_ACTION_SAVE));
 	doc_items.save = item;
-
+	
 	item = gtk_image_menu_item_new_with_mnemonic(_("_Reload"));
 	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(item),
 		gtk_image_new_from_stock(GTK_STOCK_REVERT_TO_SAVED, GTK_ICON_SIZE_MENU));
@@ -722,44 +726,64 @@ static void create_openfiles_popup_menu(void)
 	g_signal_connect(item, "activate",
 			G_CALLBACK(on_openfiles_document_action), GINT_TO_POINTER(OPENFILES_ACTION_RELOAD));
 	doc_items.reload = item;
-
+	
+	//~ esh: added new menu items
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
-
+	
+	item = ui_image_menu_item_new(GTK_STOCK_COPY, _("_Copy Name to Clipboard"));
+	gtk_widget_show(item);
+	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
+	g_signal_connect(item, "activate",
+			G_CALLBACK(on_openfiles_document_action), GINT_TO_POINTER(OPENFILES_ACTION_COPY_NAME));
+	doc_items.copy_name = item;
+	
+	item = ui_image_menu_item_new(GTK_STOCK_COPY, _("_Copy Full Path to Clipboard"));
+	gtk_widget_show(item);
+	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
+	g_signal_connect(item, "activate",
+			G_CALLBACK(on_openfiles_document_action), GINT_TO_POINTER(OPENFILES_ACTION_COPY_FULLPATH));
+	doc_items.copy_fullpath = item;
+	//~ esh: --------------------
+	
+	item = gtk_separator_menu_item_new();
+	gtk_widget_show(item);
+	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
+	
 	item = ui_image_menu_item_new(GTK_STOCK_FIND, _("_Find in Files..."));
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
 	g_signal_connect(item, "activate", G_CALLBACK(on_find_in_files), NULL);
 	doc_items.find_in_files = item;
-
+	
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
-
+	
 	doc_items.show_paths = gtk_check_menu_item_new_with_mnemonic(_("Show _Paths"));
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(doc_items.show_paths), documents_show_paths);
 	gtk_widget_show(doc_items.show_paths);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), doc_items.show_paths);
 	g_signal_connect(doc_items.show_paths, "activate",
 			G_CALLBACK(on_openfiles_show_paths_activate), NULL);
-
+	
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
-
+	
 	doc_items.expand_all = ui_image_menu_item_new(GTK_STOCK_ADD, _("_Expand All"));
 	gtk_widget_show(doc_items.expand_all);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), doc_items.expand_all);
 	g_signal_connect(doc_items.expand_all, "activate",
 					 G_CALLBACK(on_openfiles_expand_collapse), GINT_TO_POINTER(TRUE));
-
+	
 	doc_items.collapse_all = ui_image_menu_item_new(GTK_STOCK_REMOVE, _("_Collapse All"));
 	gtk_widget_show(doc_items.collapse_all);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), doc_items.collapse_all);
 	g_signal_connect(doc_items.collapse_all, "activate",
 					 G_CALLBACK(on_openfiles_expand_collapse), GINT_TO_POINTER(FALSE));
-
+	
 	sidebar_add_common_menu_items(GTK_MENU(openfiles_popup_menu));
 }
 
@@ -806,12 +830,19 @@ void sidebar_select_openfiles_item(GeanyDocument *doc)
 
 
 /* callbacks */
+static void copy_name_to_clipboard(GeanyDocument *doc, gboolean fullpath)
+{
+	gchar *name = document_get_name_or_fullpath(doc, fullpath);
+	GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text(cb, name, -1);
+	g_free(name);
+}
 
 static void document_action(GeanyDocument *doc, gint action)
 {
 	if (! DOC_VALID(doc))
 		return;
-
+	
 	switch (action)
 	{
 		case OPENFILES_ACTION_REMOVE:
@@ -827,6 +858,16 @@ static void document_action(GeanyDocument *doc, gint action)
 		case OPENFILES_ACTION_RELOAD:
 		{
 			document_reload_prompt(doc, NULL);
+			break;
+		}
+		case OPENFILES_ACTION_COPY_NAME:
+		{
+			copy_name_to_clipboard(doc, FALSE);
+			break;
+		}
+		case OPENFILES_ACTION_COPY_FULLPATH:
+		{
+			copy_name_to_clipboard(doc, TRUE);
 			break;
 		}
 	}
@@ -1041,7 +1082,7 @@ static void documents_menu_update(GtkTreeSelection *selection)
 	gboolean sel, path;
 	gchar *shortname = NULL;
 	GeanyDocument *doc = NULL;
-
+	
 	/* maybe no selection e.g. if ctrl-click deselected */
 	sel = gtk_tree_selection_get_selected(selection, &model, &iter);
 	if (sel)
@@ -1052,14 +1093,14 @@ static void documents_menu_update(GtkTreeSelection *selection)
 	path = !EMPTY(shortname) &&
 		(g_path_is_absolute(shortname) ||
 		(app->project && g_str_has_prefix(shortname, app->project->name)));
-
+	
 	/* can close all, save all (except shortname), but only reload individually ATM */
 	gtk_widget_set_sensitive(doc_items.close, sel);
 	gtk_widget_set_sensitive(doc_items.save, (doc && doc->real_path) || path);
 	gtk_widget_set_sensitive(doc_items.reload, doc && doc->real_path);
 	gtk_widget_set_sensitive(doc_items.find_in_files, sel);
 	g_free(shortname);
-
+	
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(doc_items.show_paths), documents_show_paths);
 	gtk_widget_set_sensitive(doc_items.expand_all, documents_show_paths);
 	gtk_widget_set_sensitive(doc_items.collapse_all, documents_show_paths);
