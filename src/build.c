@@ -2319,10 +2319,11 @@ static void build_load_menu_grp(GKeyFile *config, GeanyBuildCommand **dst, gint 
 		set_key_grp(key, groups[grp]);
 		set_key_cmd(key, cmdbuf);
 		set_key_fld(key, "LB");
-		if (loc)
-			label = g_key_file_get_locale_string(config, build_grp_name, key, NULL, NULL);
-		else
-			label = g_key_file_get_string(config, build_grp_name, key, NULL);
+		//~ esh: changed logic for setting label (loc param is not needed)
+		//~ label = loc ? g_key_file_get_locale_string(config, build_grp_name, key, NULL, NULL):
+					  //~ g_key_file_get_string(config, build_grp_name, key, NULL);
+		label = g_key_file_get_locale_string(config, build_grp_name, key, NULL, NULL);
+		//~ esh: -------------
 		if (label != NULL)
 		{
 			dstcmd[cmd].exists = TRUE;
@@ -2370,7 +2371,7 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 	{
 		switch (src)
 		{
-			case GEANY_BCS_FT:
+			case GEANY_BCS_FT:			/**< System filetype values. */
 				ft = (GeanyFiletype*)p;
 				if (ft == NULL)
 					return;
@@ -2380,7 +2381,7 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 				SETPTR(ft->error_regex_string,
 						g_key_file_get_string(config, build_grp_name, "error_regex", NULL));
 				break;
-			case GEANY_BCS_HOME_FT:
+			case GEANY_BCS_HOME_FT:		/**< Filetypes in ~/.config/geany/filedefs */
 				ft = (GeanyFiletype*)p;
 				if (ft == NULL)
 					return;
@@ -2389,12 +2390,12 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 				SETPTR(ft->priv->homeerror_regex_string,
 						g_key_file_get_string(config, build_grp_name, "error_regex", NULL));
 				break;
-			case GEANY_BCS_PREF:
+			case GEANY_BCS_PREF:		/**< Preferences file ~/.config/geany/geany.conf */
 				build_load_menu_grp(config, &non_ft_pref, GEANY_GBG_NON_FT, NULL, FALSE);
 				build_load_menu_grp(config, &exec_pref, GEANY_GBG_EXEC, NULL, FALSE);
 				SETPTR(regex_pref, g_key_file_get_string(config, build_grp_name, "error_regex", NULL));
 				break;
-			case GEANY_BCS_PROJ:
+			case GEANY_BCS_PROJ:		/**< Project file if open. */
 				build_load_menu_grp(config, &non_ft_proj, GEANY_GBG_NON_FT, NULL, FALSE);
 				build_load_menu_grp(config, &exec_proj, GEANY_GBG_EXEC, NULL, FALSE);
 				SETPTR(regex_proj, g_key_file_get_string(config, build_grp_name, "error_regex", NULL));
