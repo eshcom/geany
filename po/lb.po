@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-18 22:19+0300\n"
+"POT-Creation-Date: 2021-05-29 23:50+0300\n"
 "PO-Revision-Date: 2009-05-31 13:56+0100\n"
 "Last-Translator: Laurent HOELTGEN <laurent.hoeltgen@googlemail.com>\n"
 "Language-Team: Letzebuergesch\n"
@@ -1120,7 +1120,7 @@ msgstr ""
 msgid "Sets the color of the long line marker"
 msgstr "Stellt d'Faarf vun der Ëmbrochhëllef fir laang Zeilen an"
 
-#: ../data/geany.glade.h:220 ../src/toolbar.c:73 ../src/tools.c:847
+#: ../data/geany.glade.h:220 ../src/toolbar.c:73 ../src/tools.c:849
 msgid "Color Chooser"
 msgstr "Faarf auswielen"
 
@@ -1754,8 +1754,8 @@ msgstr "Späicheren als"
 msgid "Sa_ve All"
 msgstr "A_ll späicheren"
 
-#: ../data/geany.glade.h:351 ../src/document.c:1655 ../src/document.c:3616
-#: ../src/sidebar.c:717
+#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3641
+#: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Nei lueden"
 
@@ -2218,7 +2218,7 @@ msgstr ""
 msgid "_Donate..."
 msgstr "_Net späicheren"
 
-#: ../data/geany.glade.h:458 ../src/sidebar.c:125
+#: ../data/geany.glade.h:458 ../src/sidebar.c:129
 msgid "Symbols"
 msgstr "Symboler"
 
@@ -2561,12 +2561,12 @@ msgstr "Keng weider Feelermeldungen"
 msgid "Set menu item label"
 msgstr ""
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:412
+#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:414
 msgid "Label"
 msgstr "Label"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:397
+#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:399
 msgid "Command"
 msgstr "Commande"
 
@@ -2707,8 +2707,8 @@ msgstr "Konnt dei agestallten extern Commande '%s' (%s) net ausféieren."
 msgid "No context action set."
 msgstr "Kontext Aktioun:"
 
-#: ../src/dialogs.c:160 ../src/document.c:2302 ../src/document.c:2367
-#: ../src/document.c:2375
+#: ../src/dialogs.c:160 ../src/document.c:2327 ../src/document.c:2392
+#: ../src/document.c:2400
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "\"%s\" konnt net fonnt ginn."
@@ -2795,7 +2795,7 @@ msgstr ""
 "Mëscht den Fichier am schreifgeschützten Modus op. Wann méi wei een Fichier "
 "opgemaach gëtt, dann sinn se all Schreifgeschützt."
 
-#: ../src/dialogs.c:535 ../src/document.c:2053
+#: ../src/dialogs.c:535 ../src/document.c:2078
 #, fuzzy
 msgid "Overwrite?"
 msgstr "I_wwerschreiwen"
@@ -2877,27 +2877,27 @@ msgstr "(mat BOM)"
 msgid "(without BOM)"
 msgstr "(ouni BOM)"
 
-#: ../src/document.c:734
+#: ../src/document.c:759
 #, c-format
 msgid "File %s closed."
 msgstr "Den Fichier %s as zou"
 
-#: ../src/document.c:890
+#: ../src/document.c:915
 #, c-format
 msgid "New file \"%s\" opened."
 msgstr "Neien Fichier \"%s\" opgemaach."
 
-#: ../src/document.c:964
+#: ../src/document.c:989
 #, c-format
 msgid "Could not open file %s (%s)"
 msgstr "Konnt den fichier %s (%s) net opmaachen"
 
-#: ../src/document.c:1013
+#: ../src/document.c:1038
 #, c-format
 msgid "The file \"%s\" is not valid %s."
 msgstr "Den Fichier \"%s\" as keen gültegen %s."
 
-#: ../src/document.c:1019
+#: ../src/document.c:1044
 #, c-format
 msgid ""
 "The file \"%s\" does not look like a text file or the file encoding is not "
@@ -2906,7 +2906,7 @@ msgstr ""
 "Den Fichier \"%s\" ass keen Text Fichier oder d'Zeechencodéierung gëtt net "
 "ënnerstetzt"
 
-#: ../src/document.c:1029
+#: ../src/document.c:1054
 #, c-format
 msgid ""
 "The file \"%s\" could not be opened properly and has been truncated. This "
@@ -2919,31 +2919,31 @@ msgstr ""
 "den Fichier elo späichert, kinnt dier Donnéeën verléieren. Den Fichier gouf "
 "als schreifgeschützt agestallt."
 
-#: ../src/document.c:1241
+#: ../src/document.c:1266
 msgid "Spaces"
 msgstr "Espacen"
 
-#: ../src/document.c:1244
+#: ../src/document.c:1269
 msgid "Tabs"
 msgstr "Tabs"
 
-#: ../src/document.c:1247
+#: ../src/document.c:1272
 msgid "Tabs and Spaces"
 msgstr "Tabs an Espacen"
 
 #. For translators: first wildcard is the indentation mode (Spaces, Tabs, Tabs
 #. * and Spaces), the second one is the filename
-#: ../src/document.c:1252
+#: ../src/document.c:1277
 #, c-format
 msgid "Setting %s indentation mode for %s."
 msgstr "Stellt den Aréckungsmodus %s fir %s an."
 
-#: ../src/document.c:1263
+#: ../src/document.c:1288
 #, fuzzy, c-format
 msgid "Setting indentation width to %d for %s."
 msgstr "Stellt den Aréckungsmodus %s fir %s an."
 
-#: ../src/document.c:1487
+#: ../src/document.c:1512
 #, c-format
 msgid "File %s reloaded."
 msgstr "Fichier %s nei gelueden"
@@ -2951,20 +2951,20 @@ msgstr "Fichier %s nei gelueden"
 #. For translators: this is the status window message for opening a file. %d is the number
 #. * of the newly opened file, %s indicates whether the file is opened read-only
 #. * (it is replaced with the string ", read-only").
-#: ../src/document.c:1495
+#: ../src/document.c:1520
 #, fuzzy, c-format
 msgid "File %s opened (%d%s)."
 msgstr "Fichier %s opgemach(%d%s)"
 
-#: ../src/document.c:1497
+#: ../src/document.c:1522
 msgid ", read-only"
 msgstr ", schreifgeschützt"
 
-#: ../src/document.c:1621
+#: ../src/document.c:1646
 msgid "Discard history"
 msgstr ""
 
-#: ../src/document.c:1622
+#: ../src/document.c:1647
 msgid ""
 "The buffer's previous state is stored in the history and undoing restores "
 "it. You can disable this by discarding the history upon reload. This message "
@@ -2972,30 +2972,30 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: ../src/document.c:1626
+#: ../src/document.c:1651
 #, fuzzy
 msgid "The file has been reloaded."
 msgstr "Fichier %s nei gelueden"
 
-#: ../src/document.c:1656
+#: ../src/document.c:1681
 msgid "Any unsaved changes will be lost."
 msgstr "All net gespäichert Ännerungen ginn verluer."
 
-#: ../src/document.c:1657
+#: ../src/document.c:1682
 #, fuzzy
 msgid "Undo history will be lost."
 msgstr "All net gespäichert Ännerungen ginn verluer."
 
-#: ../src/document.c:1658
+#: ../src/document.c:1683
 #, c-format
 msgid "Are you sure you want to reload '%s'?"
 msgstr "Well dier wierklech '%s' nei lueden?"
 
-#: ../src/document.c:1764
+#: ../src/document.c:1789
 msgid "Error renaming file."
 msgstr "Feeler beim ëmbenennen vum Fichier"
 
-#: ../src/document.c:1885
+#: ../src/document.c:1910
 #, c-format
 msgid ""
 "An error occurred while converting the file from UTF-8 in \"%s\". The file "
@@ -3004,7 +3004,7 @@ msgstr ""
 "Et ass en Feeler geschitt beim konvertéiren vum Fichier vun UTF-8 an \"%s\". "
 "Den Fichier ass net gespäichert."
 
-#: ../src/document.c:1906
+#: ../src/document.c:1931
 #, c-format
 msgid ""
 "Error message: %s\n"
@@ -3013,58 +3013,58 @@ msgstr ""
 "Feelermeldung: %s\n"
 "Et as en Feeler em  \"%s\" (Zeil: %d, Kolonn: %d) geschitt."
 
-#: ../src/document.c:1910
+#: ../src/document.c:1935
 #, c-format
 msgid "Error message: %s."
 msgstr "Feelermeldung: %s."
 
-#: ../src/document.c:1970
+#: ../src/document.c:1995
 #, c-format
 msgid "Failed to open file '%s' for writing: fopen() failed: %s"
 msgstr ""
 
-#: ../src/document.c:1988
+#: ../src/document.c:2013
 #, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2002
+#: ../src/document.c:2027
 #, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2052 ../src/document.c:3617
+#: ../src/document.c:2077 ../src/document.c:3642
 #, fuzzy
 msgid "_Overwrite"
 msgstr "I_wwerschreiwen"
 
-#: ../src/document.c:2054 ../src/document.c:3620
+#: ../src/document.c:2079 ../src/document.c:3645
 #, fuzzy, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr ""
 "Den Fichier '%s' um Disque ass manner al wei\n"
 "déi Versioun déi am Moment op ass."
 
-#: ../src/document.c:2062 ../src/document.c:3669
+#: ../src/document.c:2087 ../src/document.c:3694
 msgid "Try to resave the file?"
 msgstr "Probéieren den Fichier nach eng kéier ze späicheren?"
 
-#: ../src/document.c:2063 ../src/document.c:3670
+#: ../src/document.c:2088 ../src/document.c:3695
 #, fuzzy, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "Den Fichier \"%s\" konnt net fonnt gin!"
 
-#: ../src/document.c:2126
+#: ../src/document.c:2151
 #, c-format
 msgid "Cannot save read-only document '%s'!"
 msgstr ""
 
-#: ../src/document.c:2194
+#: ../src/document.c:2219
 #, c-format
 msgid "Error saving file (%s)."
 msgstr "Feeler beim späicheren vum Fichier (%s)."
 
-#: ../src/document.c:2199
+#: ../src/document.c:2224
 #, c-format
 msgid ""
 "%s\n"
@@ -3072,33 +3072,33 @@ msgid ""
 "The file on disk may now be truncated!"
 msgstr ""
 
-#: ../src/document.c:2201
+#: ../src/document.c:2226
 msgid "Error saving file."
 msgstr "Feeler beim späicheren vum Fichier"
 
-#: ../src/document.c:2225
+#: ../src/document.c:2250
 #, c-format
 msgid "File %s saved."
 msgstr "Fichier %s gespäichert."
 
-#: ../src/document.c:2375
+#: ../src/document.c:2400
 msgid "Wrap search and find again?"
 msgstr "D'Sich um Ufank resp. Enn vum Dokument weiderféieren?"
 
-#: ../src/document.c:2464 ../src/search.c:1385 ../src/search.c:1438
-#: ../src/search.c:2240 ../src/search.c:2241
+#: ../src/document.c:2489 ../src/search.c:1406 ../src/search.c:1459
+#: ../src/search.c:2261 ../src/search.c:2262
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Keng Iwwerteneestëmmung fond fir \"%s\"."
 
-#: ../src/document.c:2470
+#: ../src/document.c:2495
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] "%s: %d mol gouf \"%s\" duerch \"%s\" ersaat."
 msgstr[1] "%s: %d mol gouf \"%s\" duerch \"%s\" ersaat."
 
-#: ../src/document.c:3619
+#: ../src/document.c:3644
 msgid "Do you want to reload it?"
 msgstr "Wierklech nei lueden?"
 
@@ -3679,7 +3679,7 @@ msgstr ""
 msgid "Insert New Line After Current"
 msgstr ""
 
-#: ../src/keybindings.c:532 ../src/search.c:469
+#: ../src/keybindings.c:532 ../src/search.c:470
 msgid "Find"
 msgstr "Fannen"
 
@@ -3691,11 +3691,11 @@ msgstr "Nächsten fannen"
 msgid "Find Previous"
 msgstr "Viregen fannen"
 
-#: ../src/keybindings.c:543 ../src/search.c:622
+#: ../src/keybindings.c:543 ../src/search.c:623
 msgid "Replace"
 msgstr "Ersetzen"
 
-#: ../src/keybindings.c:545 ../src/search.c:872
+#: ../src/keybindings.c:545 ../src/search.c:873
 msgid "Find in Files"
 msgstr "An den Fichieren fannen"
 
@@ -3955,11 +3955,11 @@ msgstr "Tastatur Kierzel"
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Déi folgend Kierzel kënnen agestallt ginn:"
 
-#: ../src/keyfile.c:1050
+#: ../src/keyfile.c:1061
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "Hei kënnt dier aginn wat dier wëllt, benotzt et wei en Notizbuch"
 
-#: ../src/keyfile.c:1277
+#: ../src/keyfile.c:1288
 msgid "Failed to load one or more session files."
 msgstr "Konnt verschidden Sëtzungsfichieren net lueden."
 
@@ -4156,29 +4156,29 @@ msgstr "Debug Messagen"
 msgid "Cl_ear"
 msgstr "_Sichen"
 
-#: ../src/msgwindow.c:218
+#: ../src/msgwindow.c:219
 msgid "Status messages"
 msgstr "Status Messagen"
 
-#: ../src/msgwindow.c:672
+#: ../src/msgwindow.c:673
 #, fuzzy
 msgid "C_opy"
 msgstr "Kopéieren"
 
-#: ../src/msgwindow.c:681
+#: ../src/msgwindow.c:682
 msgid "Copy _All"
 msgstr "_Alles kopeiren"
 
-#: ../src/msgwindow.c:711
+#: ../src/msgwindow.c:712
 msgid "_Hide Message Window"
 msgstr "Noriic_htenfënster verstoppen"
 
-#: ../src/msgwindow.c:772
+#: ../src/msgwindow.c:773
 #, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr ""
 
-#: ../src/msgwindow.c:1208
+#: ../src/msgwindow.c:1210
 msgid "The document has been closed."
 msgstr ""
 
@@ -4265,11 +4265,11 @@ msgstr "Knäppchen drécken"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Dréckt den Kierzel den dier fir \"%s\" wëllt benotzen."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:751
+#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "Alles _erausklappen"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:757
+#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "Alles eran_klappen"
 
@@ -4520,7 +4520,7 @@ msgstr "Den Projetsordner konnt net erstallt ginn (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Projetsfichier konnt net geschriwwen ginn (%s)."
 
-#: ../src/project.c:780 ../src/search.c:632
+#: ../src/project.c:780 ../src/search.c:633
 msgid "_Replace"
 msgstr "E_rsetzen"
 
@@ -4539,11 +4539,11 @@ msgstr "Fichiersnumm vum Projet wielen"
 msgid "Project \"%s\" opened."
 msgstr "Den Projet \"%s\" ass op."
 
-#: ../src/search.c:313 ../src/search.c:965
+#: ../src/search.c:314 ../src/search.c:966
 msgid "_Use regular expressions"
 msgstr "Reg_ulär Ausdréck benotzen"
 
-#: ../src/search.c:316
+#: ../src/search.c:317
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
@@ -4552,11 +4552,11 @@ msgstr ""
 "POSIX-ähnlech regulär Ausdréck benotzen. Fir weider Informatiounen iwwert "
 "regulär Ausdréck kuckt w.e.g. an d'Dokumentatioun."
 
-#: ../src/search.c:321
+#: ../src/search.c:322
 msgid "Use _escape sequences"
 msgstr "_Escape Sequenzen benotzen"
 
-#: ../src/search.c:325
+#: ../src/search.c:326
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4564,11 +4564,11 @@ msgstr ""
 "Ersetzt \\\\, \\t, \\n, \\r an \\uXXXX (Unicode Zeechen) duerch déi "
 "entspriechend Zeechen"
 
-#: ../src/search.c:328
+#: ../src/search.c:329
 msgid "Use multi-line matchin_g"
 msgstr ""
 
-#: ../src/search.c:333
+#: ../src/search.c:334
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4576,179 +4576,179 @@ msgid ""
 "the pattern."
 msgstr ""
 
-#: ../src/search.c:346
+#: ../src/search.c:347
 msgid "Search _backwards"
 msgstr "_Hannerzeg sichen"
 
-#: ../src/search.c:352 ../src/search.c:974
+#: ../src/search.c:353 ../src/search.c:975
 msgid "C_ase sensitive"
 msgstr "Grouss _an Klengschreiwung ënnerscheeden"
 
-#: ../src/search.c:356 ../src/search.c:979
+#: ../src/search.c:357 ../src/search.c:980
 msgid "Match only a _whole word"
 msgstr "Nëmmen ganz _Wierder fannen"
 
-#: ../src/search.c:360
+#: ../src/search.c:361
 msgid "Match from s_tart of word"
 msgstr "Wuert_ufank fannen"
 
-#: ../src/search.c:476
+#: ../src/search.c:477
 msgid "_Previous"
 msgstr "V_ireg"
 
-#: ../src/search.c:481
+#: ../src/search.c:482
 msgid "_Next"
 msgstr "_Nächsten"
 
-#: ../src/search.c:485 ../src/search.c:643 ../src/search.c:882
+#: ../src/search.c:486 ../src/search.c:644 ../src/search.c:883
 msgid "_Search for:"
 msgstr "_Sichen:"
 
 #. Now add the multiple match options
-#: ../src/search.c:513
+#: ../src/search.c:514
 msgid "_Find All"
 msgstr "Alles _fannen"
 
-#: ../src/search.c:520
+#: ../src/search.c:521
 msgid "_Mark"
 msgstr "_Markéieren"
 
-#: ../src/search.c:522
+#: ../src/search.c:523
 msgid "Mark all matches in the current document"
 msgstr "All d'Iwwerteneestëmmungen am aktuellen Dokument markéieren"
 
-#: ../src/search.c:527 ../src/search.c:702
+#: ../src/search.c:528 ../src/search.c:703
 msgid "In Sessi_on"
 msgstr "An der Sët_zung"
 
-#: ../src/search.c:532 ../src/search.c:707
+#: ../src/search.c:533 ../src/search.c:708
 msgid "_In Document"
 msgstr "Am _Dokument"
 
 #. close window checkbox
-#: ../src/search.c:538 ../src/search.c:720
+#: ../src/search.c:539 ../src/search.c:721
 msgid "Close _dialog"
 msgstr "_Dialog zoumaachen"
 
-#: ../src/search.c:542 ../src/search.c:724
+#: ../src/search.c:543 ../src/search.c:725
 msgid "Disable this option to keep the dialog open"
 msgstr "Dës Optioun deaktivéieren fir den Dialog net zouzemaachen"
 
-#: ../src/search.c:637
+#: ../src/search.c:638
 msgid "Replace & Fi_nd"
 msgstr "Ersetzen & Fa_nnen"
 
-#: ../src/search.c:646
+#: ../src/search.c:647
 msgid "Replace wit_h:"
 msgstr "Ersetzen duerc_h:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:695
+#: ../src/search.c:696
 msgid "Re_place All"
 msgstr "A_lleguer ersetzen"
 
-#: ../src/search.c:712
+#: ../src/search.c:713
 msgid "In Se_lection"
 msgstr "An der Sé_lectioun"
 
-#: ../src/search.c:714
+#: ../src/search.c:715
 msgid "Replace all matches found in the currently selected text"
 msgstr "All Iwwerteneestëmmungen am momentan ausgewielten Text ersetzen"
 
-#: ../src/search.c:831
+#: ../src/search.c:832
 msgid "all"
 msgstr ""
 
-#: ../src/search.c:833
+#: ../src/search.c:834
 #, fuzzy
 msgid "project"
 msgstr "Projeten"
 
-#: ../src/search.c:835
+#: ../src/search.c:836
 #, fuzzy
 msgid "custom"
 msgstr "Ausschneiden"
 
-#: ../src/search.c:839
+#: ../src/search.c:840
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:901
+#: ../src/search.c:902
 msgid "Fi_les:"
 msgstr ""
 
-#: ../src/search.c:913
+#: ../src/search.c:914
 #, fuzzy
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Muster vum Fichiersnumm:"
 
-#: ../src/search.c:925
+#: ../src/search.c:926
 msgid "_Directory:"
 msgstr "Or_dner:"
 
-#: ../src/search.c:944
+#: ../src/search.c:945
 msgid "E_ncoding:"
 msgstr "E_ncodage:"
 
-#: ../src/search.c:968
+#: ../src/search.c:969
 msgid "See grep's manual page for more information"
 msgstr "Consultéiert d'grep Benotzerhandbuch fir weider Informatiounen"
 
-#: ../src/search.c:970
+#: ../src/search.c:971
 msgid "_Recurse in subfolders"
 msgstr "_An den Ënnerordneren"
 
-#: ../src/search.c:983
+#: ../src/search.c:984
 msgid "_Invert search results"
 msgstr "S_ichmuster emdreinen."
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Changéiert d'Iwwerteneestëmmungen sou dass net ausgewielten Zeilen "
 "ausgewielt ginn"
 
-#: ../src/search.c:1004
+#: ../src/search.c:1005
 msgid "E_xtra options:"
 msgstr "E_xtra Optiounen:"
 
-#: ../src/search.c:1012
+#: ../src/search.c:1013
 msgid "Other options to pass to Grep"
 msgstr "Aner Optioune fir un grep weiderzeginn"
 
-#: ../src/search.c:1388 ../src/search.c:2246 ../src/search.c:2249
+#: ../src/search.c:1409 ../src/search.c:2267 ../src/search.c:2270
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "%d Iwwerteneestëmmung fonnt fir \"%s\"."
 msgstr[1] "%d Iwwerteneestëmmungen fonnt fir \"%s\"."
 
-#: ../src/search.c:1444
+#: ../src/search.c:1465
 #, fuzzy, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "All d'Iwwerteneestëmmungen am aktuellen Dokument markéieren"
 
-#: ../src/search.c:1633
+#: ../src/search.c:1654
 msgid "Invalid directory for find in files."
 msgstr "Ongültegen Ordner"
 
-#: ../src/search.c:1650
+#: ../src/search.c:1671
 msgid "No text to find."
 msgstr "Keen Text fir ze fannen."
 
-#: ../src/search.c:1726
+#: ../src/search.c:1747
 msgid "Searching..."
 msgstr "Am gaang ze sichen..."
 
-#: ../src/search.c:1728
+#: ../src/search.c:1749
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (am Ordner: %s)"
 
-#: ../src/search.c:1736
+#: ../src/search.c:1757
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4756,28 +4756,28 @@ msgstr ""
 "Kann den Programm grep '%s' net ausféieren; kontrolléiert den Pad an den "
 "Astellungen."
 
-#: ../src/search.c:1776
+#: ../src/search.c:1797
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Konnt den Ordner net opmaachen (%s)"
 
-#: ../src/search.c:1866
+#: ../src/search.c:1887
 #, fuzzy
 msgid "Search failed."
 msgstr "_Sichen:"
 
-#: ../src/search.c:1890
+#: ../src/search.c:1911
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "%d Iwwerteneestëmmung bei der Sich fonnt."
 msgstr[1] "%d Iwwerteneestëmmungen bei der Sich fonnt."
 
-#: ../src/search.c:1898
+#: ../src/search.c:1919
 msgid "No matches found."
 msgstr "Keng Iwwerteneestëmmungen fonnt."
 
-#: ../src/search.c:1928
+#: ../src/search.c:1949
 #, fuzzy, c-format
 msgid "Bad regex: %s"
 msgstr "Schlechten regulären Ausdrock fir den Typ vun Fichier %s: %s"
@@ -5415,14 +5415,14 @@ msgstr "Uweisen"
 msgid "Invalid command: %s"
 msgstr "Commande ausféieren:"
 
-#: ../src/tools.c:229
+#: ../src/tools.c:231
 #, c-format
 msgid "Passing data and executing custom command: %s"
 msgstr ""
 "Donnéeën ginn weidergeleet an déi benotzerdefinéiert Commande '%s' gëtt "
 "ausgefouert."
 
-#: ../src/tools.c:237
+#: ../src/tools.c:239
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
@@ -5431,11 +5431,11 @@ msgstr ""
 "Dei ausgefouert benotzerdefinéiert Commande huet eng Feelermeldung erëmginn "
 "D'Auswiel gouf net geännert. Feelermeldung: %s"
 
-#: ../src/tools.c:245
+#: ../src/tools.c:247
 msgid "The executed custom command exited with an unsuccessful exit code."
 msgstr "Déi benotzerdefinéiert Commande huet mat engem Feeler opgehaalen."
 
-#: ../src/tools.c:257
+#: ../src/tools.c:259
 #, fuzzy, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
@@ -5444,11 +5444,11 @@ msgstr ""
 "Kann den Programm grep '%s' net ausféieren; kontrolléiert den Pad an den "
 "Astellungen."
 
-#: ../src/tools.c:372 ../src/tools.c:641
+#: ../src/tools.c:374 ../src/tools.c:643
 msgid "Set Custom Commands"
 msgstr "Benotzerdefinéiert Commanden setzen"
 
-#: ../src/tools.c:380
+#: ../src/tools.c:382
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
@@ -5456,65 +5456,73 @@ msgstr ""
 "Dier kënnt déi aktuell Auswiel un all dës Commanden schécken. Déi aktuell "
 "Auswiel gëtt dann duerch d'Ausgab vum Programm ersat."
 
-#: ../src/tools.c:394
+#: ../src/tools.c:396
 msgid "ID"
 msgstr ""
 
-#: ../src/tools.c:612
+#: ../src/tools.c:614
 msgid "No custom commands defined."
 msgstr "Keng Benotzerdefinéiert Commanden definéiert."
 
-#: ../src/tools.c:711
+#: ../src/tools.c:713
 msgid "Word Count"
 msgstr "Wierder zielen"
 
-#: ../src/tools.c:720
+#: ../src/tools.c:722
 msgid "selection"
 msgstr "Sélectioun"
 
-#: ../src/tools.c:725
+#: ../src/tools.c:727
 msgid "whole document"
 msgstr "ganzt Dokument"
 
-#: ../src/tools.c:734
+#: ../src/tools.c:736
 msgid "Range:"
 msgstr "Beräich:"
 
-#: ../src/tools.c:746
+#: ../src/tools.c:748
 msgid "Lines:"
 msgstr "Zeilen:"
 
-#: ../src/tools.c:760
+#: ../src/tools.c:762
 msgid "Words:"
 msgstr "Wierder:"
 
-#: ../src/tools.c:774
+#: ../src/tools.c:776
 msgid "Characters:"
 msgstr "Buschtawen:"
 
-#: ../src/sidebar.c:177
+#: ../src/sidebar.c:181
 #, fuzzy
 msgid "No symbols found"
 msgstr "Keng Tags fonnt."
 
-#: ../src/sidebar.c:601
+#: ../src/sidebar.c:605
 msgid "Show S_ymbol List"
 msgstr "Lescht mat den S_ymboler uweisen"
 
-#: ../src/sidebar.c:613
+#: ../src/sidebar.c:617
 msgid "Show _Document List"
 msgstr "Lescht mat den _Dokumenter uweisen"
 
-#: ../src/sidebar.c:625 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:629 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "Sa_itenleescht verstoppen"
 
-#: ../src/sidebar.c:730 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:735
+msgid "_Copy Name to Clipboard"
+msgstr ""
+
+#: ../src/sidebar.c:742
+msgid "_Copy Full Path to Clipboard"
+msgstr ""
+
+#: ../src/sidebar.c:754 ../plugins/filebrowser.c:678
 #, fuzzy
 msgid "_Find in Files..."
 msgstr "An den _Fichieren fannen"
 
-#: ../src/sidebar.c:740
+#: ../src/sidebar.c:764
 #, fuzzy
 msgid "Show _Paths"
 msgstr "Statusleescht uweisen"
