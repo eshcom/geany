@@ -54,9 +54,11 @@ run_cmd=abaqus job="%f" interactive datacheck
 
 [build-menu]
 FT_00_LB=Datacheck
+FT_00_LB[ru]=_Проверить данные
 FT_00_CM=abaqus job="%f" interactive datacheck
 FT_00_BD=false
 FT_01_LB=Run Job
+FT_01_LB[ru]=_Выполнить задание
 FT_01_CM=abaqus job="%f" interactive
 FT_01_BD=false
 

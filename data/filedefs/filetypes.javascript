@@ -51,6 +51,7 @@ context_action_cmd=
 # %e will be replaced by the filename without extension
 # (use only one of it at one time)
 FT_02_LB=_Lint
+FT_02_LB[ru]=_Проверить код
 FT_02_CM=jshint "%f"
 FT_02_WD=
 error_regex=([^:]+): line ([0-9]+), col ([0-9]+)
