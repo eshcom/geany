@@ -41,9 +41,11 @@ globalclass=Array Boolean Date Error EvalError Function Math Number Object Range
 
 [build-menu]
 FT_00_LB=Compile into _Javascript
+FT_00_LB[ru]=_Скомпилировать в Javascript
 FT_00_CM=coffee --compile "%f"
 FT_01_LB=View compiled _Javascript
+FT_01_LB[ru]=_Просмотреть скомпилированный Javascript
 FT_01_CM=coffee -p "%f"
 EX_00_LB=Run
+EX_00_LB[ru]=_Запустить
 EX_00_CM=coffee "%f"
-
