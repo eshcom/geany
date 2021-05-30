@@ -2170,12 +2170,16 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			if (last_tag != NULL && last_tag->file == tmtag->file &&
 				last_tag->type != tm_tag_typedef_t && tmtag->type == tm_tag_typedef_t)
 			{
+				ui_set_statusbar(TRUE, "tmtag1: scope = %s, name = %s, type = %d, "
+										"var_type = %s, file = %s, arglist = %s",
+								 tmtag->scope, tmtag->name, tmtag->type, tmtag->var_type,
+								 tmtag->file->short_name, tmtag->arglist); // esh: log
 				if (last_tag == current_tag)
 					g_ptr_array_add(filtered_tags, tmtag);
 			}
 			else if (tmtag != current_tag)
 			{
-				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, "
+				ui_set_statusbar(TRUE, "tmtag2: scope = %s, name = %s, type = %d, "
 										"var_type = %s, file = %s, arglist = %s",
 								 tmtag->scope, tmtag->name, tmtag->type, tmtag->var_type,
 								 tmtag->file->short_name, tmtag->arglist); // esh: log
