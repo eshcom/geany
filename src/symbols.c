@@ -2152,7 +2152,6 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, gboolean definition, TMParserType lang)
 {
-	ui_set_statusbar(TRUE, "filter_tags, scope = %s, definition = %d", scope, definition); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
@@ -2210,6 +2209,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 
 static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definition)
 {
+	ui_set_statusbar(TRUE, "goto_tag: scope = %s, name = %s", scope, name); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *current_tag = NULL;
 	GeanyDocument *old_doc = document_get_current();
