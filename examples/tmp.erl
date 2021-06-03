@@ -58,3 +58,19 @@ info() ->
   Info#'RuntimeInfo'.memory - 0 > 0 orelse error([bad_memory,Info#'RuntimeInfo'.memory]),
   ok.
 
+call(Call) ->
+  try gen_server:call(?MODULE, Call, 60000)
+  catch
+    exit:{timeout,_} ->
+      {Dict,ST} = case whereis(?MODULE) of
+        undefined -> {[],[]};
+        Pid ->
+          case process_info(Pid, [dictionary, current_stacktrace]) of
+            [{dictionary, Dict_},{_,ST_}] -> {Dict_,ST_};
+            undefined -> {[],[]}
+          end
+      end,
+      State = proplists:get_value(state, Dict, false),
+      events:info("config2_server in state ~p calling timeout: ~p\n~p", [State, Call, ST]),
+      {error, timeout}
+  end.
