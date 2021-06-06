@@ -43,7 +43,12 @@ test(Var) ->
 	_V5 = erlang:yield(),
 	_V6 = erlang:integer_to_list(123),
 	_V7 = os_stat_mem:default(),
+	_V8 = os_stat_mem:'L6Proto'(Var),
+	_V9 = os_stat_mem:'L6Proto'(test_atom),
 	ok.
+
+'L6Proto'(Param) ->
+	Param.
 
 info() ->
   Info#'RuntimeInfo'.duration - 0 > 0 orelse error([bad_duration,Info#'RuntimeInfo'.duration]),

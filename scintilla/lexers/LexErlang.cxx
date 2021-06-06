@@ -324,12 +324,16 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							parse_state = STATE_NULL;
 						} else {
 							sc.Forward();
-							// esh: func name is atom, atom can be in single quotes
-							if (isalnum(sc.ch) || sc.ch == '\'') {
-								sc.GetCurrent(cur, sizeof(cur));
+							if (isalnum(sc.ch))  {
+								//~ sc.GetCurrent(cur, sizeof(cur)); // esh: cur is not used
 								sc.ChangeState(SCE_ERLANG_MODULES);
-								sc.ch == '\'' ? sc.SetState(SCE_ERLANG_DEFAULT):
-												sc.SetState(SCE_ERLANG_MODULES);
+								sc.SetState(SCE_ERLANG_MODULES);
+							// esh: sc.ch == '\'', func name is atom, atom can be quoted
+							// esh: sc.ch == '{', after module can be tuple, example: exit:{timeout,_}
+							} else if (sc.ch == '\'' || sc.ch == '{') {
+								sc.ChangeState(SCE_ERLANG_MODULES);
+								sc.SetState(SCE_ERLANG_DEFAULT);
+								parse_state = STATE_NULL;
 							}
 						}
 					} else if (!IsAWordChar(sc.ch)) {
