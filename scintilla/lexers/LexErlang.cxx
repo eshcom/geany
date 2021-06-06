@@ -342,10 +342,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							style = SCE_ERLANG_KEYWORD;
 						} else if (erlangBIFs.InList(cur)) {
 							style = SCE_ERLANG_BIFS;
+						} else if (sc.ch == '(' || sc.ch == '/') {
+							style = SCE_ERLANG_FUNCTION_NAME;
 						} else if (erlangAtomSpec.InList(cur)) {
 							style = SCE_ERLANG_ATOM_SPEC;
-						} else if (sc.ch == '(' || '/' == sc.ch) {
-							style = SCE_ERLANG_FUNCTION_NAME;
 						} else {
 							style = SCE_ERLANG_ATOM;
 						}
