@@ -226,6 +226,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	atom_parse_state_t old_parse_state = STATE_NULL;
 	bool to_late_to_comment = false;
 	char cur[100];
+	char module_name[100];
 	int old_style = SCE_ERLANG_DEFAULT;
 	
 	styler.StartAt(startPos);
@@ -323,9 +324,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							sc.ChangeState(SCE_ERLANG_UNKNOWN);
 							parse_state = STATE_NULL;
 						} else {
+							sc.GetCurrent(module_name, sizeof(module_name));
 							sc.Forward();
 							if (isalnum(sc.ch))  {
-								//~ sc.GetCurrent(cur, sizeof(cur)); // esh: cur is not used
 								sc.ChangeState(SCE_ERLANG_MODULES);
 								sc.SetState(SCE_ERLANG_MODULES);
 							// esh: sc.ch == '\'', func name is atom, atom can be quoted
@@ -340,7 +341,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.GetCurrent(cur, sizeof(cur));
 						if (reservedWords.InList(cur)) {
 							style = SCE_ERLANG_KEYWORD;
-						} else if (erlangBIFs.InList(cur)) {
+						} else if ((module_name[0] == '\0' || strcmp(module_name, "erlang") == 0)
+									&& erlangBIFs.InList(cur)) {
 							style = SCE_ERLANG_BIFS;
 						} else if (sc.ch == '(' || sc.ch == '/') {
 							style = SCE_ERLANG_FUNCTION_NAME;
@@ -681,6 +683,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (isalpha(sc.ch)) {
 					parse_state = ATOM_UNQUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
+					module_name[0] = '\0';
 				} else if (isoperator(static_cast<char>(sc.ch))
 							|| sc.ch == '\\') {
 					sc.SetState(SCE_ERLANG_OPERATOR);

@@ -40,6 +40,7 @@ test(Var) ->
 	_V2 = yield(),
 	_V3 = integer_to_list(123),
 	_V4 = erlang:max(1,3),
+	_V42 = test:max(1,3),
 	_V5 = erlang:yield(),
 	_V6 = erlang:integer_to_list(123),
 	_V7 = os_stat_mem:default(),
