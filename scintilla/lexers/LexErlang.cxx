@@ -317,7 +317,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				case ATOM_UNQUOTED : {
 					if ('@' == sc.ch) {
 						parse_state = NODE_NAME_UNQUOTED;
-					} else if (sc.ch == ':') {
+					// esh: exclude map-key updates, example: #{data:=test}
+					} else if (sc.ch == ':' && sc.chNext != '=') {
 						// Searching for module name
 						if (sc.chNext == ' ') {
 							// error

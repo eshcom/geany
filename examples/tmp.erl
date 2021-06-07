@@ -80,3 +80,41 @@ call(Call) ->
       events:info("config2_server in state ~p calling timeout: ~p\n~p", [State, Call, ST]),
       {error, timeout}
   end.
+
+domain4(<<":", I, _/binary>>, Acc) when I >= $0 andalso I =< $9 orelse I == $/ -> Acc.
+	[{<<"v2">>,
+	  #{data:= <<_, $P, $N, $G, _/binary>>,
+		path:= <<"@logo.png">>,
+		type:= logo,
+		x := 10,
+		y := 10}} = S1] = streamcoder:get_tracks_logo_binary_spec(logo, Options).
+
+config(<<C, Bin/binary>>, L, R) when C >= $a andalso C =< $z ->
+  command(Bin, L, R, R+1, <<C>>);
+config(<<C, Rest/binary>>, L, R) ->
+  [{error, #{error => invalid_symbol,
+			 line => L,
+			 col => R,
+			 what => <<C>>,
+			 rest => Rest}}].
+
+command(<<C, Bin/binary>>, L, R0, R, Acc)
+		when C == $\t orelse C == $\r orelse C == $\s -> 
+  [{command, L, R0, Acc} | params(Bin, L, R+1, Acc == <<"url">> orelse
+											   Acc == <<"dvr">> orelse
+											   Acc == <<"root">> orelse
+											   Acc == <<"path">> orelse
+											   Acc == <<"backend">> orelse
+											   Acc == <<"push">> orelse
+											   Acc == <<"sink">> orelse
+											   Acc == <<"auth">>)];
+
+quoted_string(<<"\n", Bin/binary>>, L0, R0, L, _R, Acc) ->
+	quoted_string(Bin, L0, R0, L+1, 1, <<Acc/binary,"\n">>);
+quoted_string(<<$\\,$", Bin/binary>>, L0, R0, L, R, Acc) ->
+	quoted_string(Bin, L0, R0, L, R+1, <<Acc/binary,$">>);
+quoted_string(<<$\\,$\\, Bin/binary>>, L0, R0, L, R, Acc) ->
+	quoted_string(Bin, L0, R0, L, R+1, <<Acc/binary,$\\>>).
+
+to_int3(<<I, Bin/binary>>, Base, Num) when I >= $0 andalso I =< $9 ->
+  to_int3(Bin, Base, Num*Base + I - $0).
