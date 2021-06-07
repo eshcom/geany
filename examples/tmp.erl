@@ -36,16 +36,16 @@ Var19 = 1+1-2 = 1 + 1 - 2.
 --
 
 test(Var) ->
-	_V1 = max(1,3),
-	_V2 = yield(),
-	_V3 = integer_to_list(123),
-	_V4 = erlang:max(1,3),
-	_V42 = test:max(1,3),
-	_V5 = erlang:yield(),
-	_V6 = erlang:integer_to_list(123),
-	_V7 = os_stat_mem:default(),
-	_V8 = os_stat_mem:'L6Proto'(Var),
-	_V9 = os_stat_mem:'L6Proto'(test_atom),
+	_V10 = yield(),
+	_V20 = integer_to_list(123),
+	_V30 = max(1,3),		% this is a bif-func
+	_V31 = erlang:max(1,3),	% this is a bif-func
+	_V32 = test:max(1,3),	% this is a not bif-func
+	_V33 = erlang:yield(),
+	_V34 = erlang:integer_to_list(123),
+	_V40 = os_stat_mem:default(),
+	_V50 = os_stat_mem:'L6Proto'(Var),
+	_V51 = os_stat_mem:'L6Proto'(test_atom),
 	ok.
 
 'L6Proto'(Param) ->
