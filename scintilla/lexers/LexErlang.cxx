@@ -342,8 +342,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.GetCurrent(cur, sizeof(cur));
 						if (reservedWords.InList(cur)) {
 							style = SCE_ERLANG_KEYWORD;
-						} else if ((module_name[0] == '\0' || strcmp(module_name, "erlang") == 0)
-									&& erlangBIFs.InList(cur)) {
+						} else if (((module_name[0] == '\0' && sc.ch == '(')
+									|| strcmp(module_name, "erlang") == 0)
+								   && erlangBIFs.InList(cur)) {
 							style = SCE_ERLANG_BIFS;
 						} else if (sc.ch == '(' || sc.ch == '/') {
 							style = SCE_ERLANG_FUNCTION_NAME;
