@@ -118,3 +118,9 @@ quoted_string(<<$\\,$\\, Bin/binary>>, L0, R0, L, R, Acc) ->
 
 to_int3(<<I, Bin/binary>>, Base, Num) when I >= $0 andalso I =< $9 ->
   to_int3(Bin, Base, Num*Base + I - $0).
+
+activate_from_file() ->
+  try activate_from_file0()
+  catch
+    throw:R -> R
+  end.
