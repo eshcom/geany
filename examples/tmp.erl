@@ -124,3 +124,5 @@ activate_from_file() ->
   catch
     throw:R -> R
   end.
+
+Values = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ].
