@@ -46,6 +46,8 @@ test(Var) ->
 	_V40 = os_stat_mem:default(),
 	_V50 = os_stat_mem:'L6Proto'(Var),
 	_V51 = os_stat_mem:'L6Proto'(test_atom),
+	_V52 = server_config:'$mapper_record'(tc_decoder),
+	_V60 = 'L6proto':decode('PresenceMessage', Bin),
 	ok.
 
 'L6Proto'(Param) ->
@@ -126,3 +128,41 @@ activate_from_file() ->
   end.
 
 Values = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ].
+
+ok = Mod:send(Socket, Request).
+
+dec_FastStartToken(Bytes) ->
+'H235-SECURITY-MESSAGES':dec_ClearToken(Bytes).
+
+'enc_FastStartToken'(Val) ->
+  'H235-SECURITY-MESSAGES':'enc_ClearToken'(Val).
+
+case Module:'$mapper_record'(RecName) of
+  undefined -> undefined;
+  Oth -> Oth
+end,
+
+case ?CONFIG_MODULE:'$mapper_type'(TName) of
+  undefined -> undefined;
+  Oth -> Oth
+end,
+
+Records = ?MODULE:'$mapper_records'().
+
+capabilities(Cs) ->
+  lists:foldl(fun erlang:'bor'/2, 0, Cs).
+
+yeccpars0(Tokens, Tzr, State, States, Vstack) ->
+    try yeccpars1(Tokens, Tzr, State, States, Vstack)
+    catch 
+        error: Error: Stacktrace ->
+            try yecc_error_type(Error, Stacktrace) of
+                Desc ->
+                    erlang:raise(error, {yecc_bug, ?CODE_VERSION, Desc},
+                                 Stacktrace)
+            catch _:_ -> erlang:raise(error, Error, Stacktrace)
+            end;
+        %% Probably thrown from return_error/2:
+        throw: {error, {_Line, ?MODULE, _M}} = Error ->
+            Error
+    end.
