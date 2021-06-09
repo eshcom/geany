@@ -1,9 +1,10 @@
 -module(tmp2).
 
--export([test1/0, test2/0, test3/0, test4/0, test5/0]).
+-export([test1/0, test2/0, test3/0, test4/0, test5/0, test6/1]).
 
 %~ tmp2:test1().
 test1() ->
+  io:format("test1", []),
   try throw(123)
   catch
     throw:123 = Val -> Val
@@ -35,4 +36,11 @@ test5() ->
   try throw(#{})
   catch
     throw:#{} = Val -> Val
+  end.
+
+%~ tmp2:test6(test_err6).
+test6(Var) ->
+  try throw({error, Var})
+  catch
+    throw:{error, Err} -> Err
   end.
