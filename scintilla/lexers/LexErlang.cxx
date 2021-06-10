@@ -319,7 +319,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						parse_state = NODE_NAME_UNQUOTED;
 					// esh: exclude map-key updates, example: #{data:=test}
 					} else if (sc.ch == ':' && sc.chNext != '=') {
-						// Searching for module name
 						sc.GetCurrent(module_name, sizeof(module_name));
 						sc.Forward();
 						sc.ChangeState(SCE_ERLANG_MODULES);
@@ -351,9 +350,13 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				case ATOM_QUOTED : {
 					if ('@' == sc.ch) {
 						parse_state = NODE_NAME_QUOTED;
-					} else if ('\'' == sc.ch && '\\' != sc.chPrev) {
+					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+						sc.Forward();
+						if (sc.ch == ':' && sc.chNext != '=') {
+							sc.GetCurrent(module_name, sizeof(module_name));
+						}
 						sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
-						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+						sc.SetState(SCE_ERLANG_DEFAULT);
 						parse_state = STATE_NULL;
 					}
 				} break;
