@@ -127,7 +127,9 @@ activate_from_file() ->
     throw:R -> R
   end.
 
-Values = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ].
+Val1 = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ].
+Val2 = <<UnitId:8, UnitSize:8, Unit0:UnitSize/binary, Rest/binary>>.
+Val3 = io_lib:format("~2..0B~2..0B~2..0B~2..0B", [Major, Minor, Patch, Build]).
 
 ok = Mod:send(Socket, Request).
 

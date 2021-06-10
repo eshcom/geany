@@ -227,6 +227,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	bool to_late_to_comment = false;
 	char cur[100];
 	char module_name[100];
+	module_name[0] = '\0';
 	int old_style = SCE_ERLANG_DEFAULT;
 	
 	styler.StartAt(startPos);
@@ -319,24 +320,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					// esh: exclude map-key updates, example: #{data:=test}
 					} else if (sc.ch == ':' && sc.chNext != '=') {
 						// Searching for module name
-						if (sc.chNext == ' ') {
-							// error
-							sc.ChangeState(SCE_ERLANG_UNKNOWN);
-							parse_state = STATE_NULL;
-						} else {
-							sc.GetCurrent(module_name, sizeof(module_name));
-							sc.Forward();
-							if (isalnum(sc.ch))  {
-								sc.ChangeState(SCE_ERLANG_MODULES);
-								sc.SetState(SCE_ERLANG_MODULES);
-							// esh: sc.ch == '\'', func name is atom, atom can be quoted
-							// esh: sc.ch == '{', after module can be tuple, example: exit:{timeout,_}
-							} else if (sc.ch == '\'' || sc.ch == '{') {
-								sc.ChangeState(SCE_ERLANG_MODULES);
-								sc.SetState(SCE_ERLANG_DEFAULT);
-								parse_state = STATE_NULL;
-							}
-						}
+						sc.GetCurrent(module_name, sizeof(module_name));
+						sc.Forward();
+						sc.ChangeState(SCE_ERLANG_MODULES);
+						
 					} else if (!IsAWordChar(sc.ch)) {
 						sc.GetCurrent(cur, sizeof(cur));
 						if (reservedWords.InList(cur)) {
@@ -353,9 +340,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							style = SCE_ERLANG_ATOM;
 						}
 						sc.ChangeState(style);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
+						module_name[0] = '\0';
+					} else {
+						continue;
 					}
+					sc.SetState(SCE_ERLANG_DEFAULT);
+					parse_state = STATE_NULL;
 				} break;
 				
 				case ATOM_QUOTED : {
@@ -684,7 +674,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (islower(sc.ch)) {
 					parse_state = ATOM_UNQUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
-					module_name[0] = '\0';
 				} else if (isoperator(static_cast<char>(sc.ch))
 							|| sc.ch == '\\') {
 					sc.SetState(SCE_ERLANG_OPERATOR);
