@@ -235,7 +235,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		int style = SCE_ERLANG_DEFAULT;
 		if (STATE_NULL != parse_state) {
 			switch (parse_state) {
-				case STATE_NULL : sc.SetState(SCE_ERLANG_DEFAULT); break;
 				
 			/* COMMENTS ------------------------------------------------------*/
 				case COMMENT : {
@@ -398,7 +397,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				case RECORD_START : {
 					if ('\'' == sc.ch) {
 						parse_state = RECORD_QUOTED;
-					} else if (isalpha(sc.ch) && islower(sc.ch)) {
+					} else if (islower(sc.ch)) {
 						parse_state = RECORD_UNQUOTED;
 					} else { // error
 						sc.SetState(SCE_ERLANG_DEFAULT);
@@ -682,7 +681,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 				} else if (isupper(sc.ch) || '_' == sc.ch) {
 					sc.SetState(SCE_ERLANG_VARIABLE);
-				} else if (isalpha(sc.ch)) {
+				} else if (islower(sc.ch)) {
 					parse_state = ATOM_UNQUOTED;
 					sc.SetState(SCE_ERLANG_UNKNOWN);
 					module_name[0] = '\0';
