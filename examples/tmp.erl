@@ -53,6 +53,8 @@ test(Var) ->
 	_V53 = server_config:'$mapper_record'(tc_decoder),
 	_V61 = 'L6proto':decode('PresenceMessage', Bin),
 	_V62 = 'L6proto':'decode'('PresenceMessage', Bin),
+	_V71 = nonode@nohost,
+	_V71 = 'nonode@nohost',
 	ok.
 
 'L6Proto'(Param) ->

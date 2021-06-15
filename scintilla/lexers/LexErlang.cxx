@@ -315,8 +315,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			/* -------------------------------------------------------------- */
 			/* Atoms ---------------------------------------------------------*/
 				case ATOM_UNQUOTED : {
-					if ('@' == sc.ch) {
+					if (sc.ch == '@') {
 						parse_state = NODE_NAME_UNQUOTED;
+						continue;
 					// esh: exclude map-key updates, example: #{data:=test}
 					} else if (sc.ch == ':' && sc.chNext != '=') {
 						sc.GetCurrent(module_name, sizeof(module_name));
@@ -347,8 +348,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				} break;
 				
 				case ATOM_QUOTED : {
-					if ('@' == sc.ch) {
+					if (sc.ch == '@') {
 						parse_state = NODE_NAME_QUOTED;
+						continue;
 					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
 						sc.Forward();
 						if (sc.ch == ':' && sc.chNext != '=') {
