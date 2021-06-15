@@ -36,19 +36,23 @@ Var19 = 1+1-2 = 1 + 1 - 2.
 --
 
 test(Var) ->
-	_V10 = yield(),
-	_V20 = integer_to_list(123),
-	_V30 = max(1,3),				% this is a bif-func
-	_V31 = erlang:max(1,3),			% this is a bif-func
-	_V32 = test:max(1,3),			% this is a not bif-func
-	_V33 = 'erlang':max(1,3),		% this is a not bif-func
-	_V34 = erlang:yield(),
-	_V35 = erlang:integer_to_list(123),
-	_V40 = os_stat_mem:default(),
-	_V50 = os_stat_mem:'L6Proto'(Var),
-	_V51 = os_stat_mem:'L6Proto'(test_atom),
-	_V52 = server_config:'$mapper_record'(tc_decoder),
-	_V60 = 'L6proto':decode('PresenceMessage', Bin),
+	throw:123 = Val -> max(1, Val)			% this is a bif-func
+	_V11 = max(1,3),						% this is a bif-func
+	_V12 = erlang:max(1,3),					% this is a bif-func
+	_V13 = test:max(1,3),					% this is a not bif-func
+	_V14 = 'erlang':max(1,3),				% this is a not bif-func
+	_V15 = Mod:max(1,3),					% this is a not bif-func
+	_V21 = yield(),							% this is a bif-func
+	_V22 = erlang:yield(),					% this is a bif-func
+	_V31 = integer_to_list(123),			% this is a bif-func
+	_V32 = erlang:integer_to_list(123),		% this is a bif-func
+	_V41 = default(),						% this is a not atom-spec
+	_V42 = os_stat_mem:default(),			% this is a not atom-spec
+	_V51 = os_stat_mem:'L6Proto'(Var),
+	_V52 = os_stat_mem:'L6Proto'(test_atom),
+	_V53 = server_config:'$mapper_record'(tc_decoder),
+	_V61 = 'L6proto':decode('PresenceMessage', Bin),
+	_V62 = 'L6proto':'decode'('PresenceMessage', Bin),
 	ok.
 
 'L6Proto'(Param) ->
@@ -132,7 +136,7 @@ Val1 = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ].
 Val2 = <<UnitId:8, UnitSize:8, Unit0:UnitSize/binary, Rest/binary>>.
 Val3 = io_lib:format("~2..0B~2..0B~2..0B~2..0B", [Major, Minor, Patch, Build]).
 
-ok = Mod:send(Socket, Request).
+ok = Mod:send(Socket, Request).		% this is a not bif-func
 
 dec_FastStartToken(Bytes) ->
 'H235-SECURITY-MESSAGES':dec_ClearToken(Bytes).
