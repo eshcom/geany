@@ -315,8 +315,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			/* -------------------------------------------------------------- */
 			/* Atoms ---------------------------------------------------------*/
 				case ATOM_UNQUOTED : {
-					if ('@' == sc.ch) {
+					if (sc.ch == '@') {
 						parse_state = NODE_NAME_UNQUOTED;
+						continue;
 					// esh: exclude map-key updates, example: #{data:=test}
 					} else if (sc.ch == ':' && sc.chNext != '=') {
 						sc.GetCurrent(module_name, sizeof(module_name));
@@ -339,7 +340,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							style = SCE_ERLANG_ATOM;
 						}
 						sc.ChangeState(style);
-						module_name[0] = '\0';
 					} else {
 						continue;
 					}
@@ -348,8 +348,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				} break;
 				
 				case ATOM_QUOTED : {
-					if ('@' == sc.ch) {
+					if (sc.ch == '@') {
 						parse_state = NODE_NAME_QUOTED;
+						continue;
 					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
 						sc.Forward();
 						if (sc.ch == ':' && sc.chNext != '=') {
@@ -527,8 +528,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		{
 			switch (sc.state) {
 				case SCE_ERLANG_VARIABLE : {
-					if (!IsAWordChar(sc.ch))
+					if (!IsAWordChar(sc.ch)) {
+						if (sc.ch == ':' && sc.chNext != '=') {
+							sc.GetCurrent(module_name, sizeof(module_name));
+						}
 						sc.SetState(SCE_ERLANG_DEFAULT);
+					}
 				} break;
 				
 				case SCE_ERLANG_STRING : {
@@ -682,6 +687,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_ERLANG_OPERATOR);
 				}
 			}
+			if (parse_state != ATOM_UNQUOTED && sc.ch != ':')
+				module_name[0] = '\0';
 		}
 	}
 	sc.Complete();
