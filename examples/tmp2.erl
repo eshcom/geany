@@ -6,7 +6,7 @@
 test1() ->
   try throw(123)
   catch
-    throw:123 = Val -> Val
+    throw:123 = Val -> max(1, Val) % this is a bif-func
   end.
 
 %~ tmp2:test2().
