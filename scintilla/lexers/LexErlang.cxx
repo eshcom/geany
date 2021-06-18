@@ -155,18 +155,18 @@ struct ErlFormatSequence {
 	}
 };
 
-static int is_radix(int radix, int ch) {
+static bool is_radix(int radix, int ch) {
 	int digit;
 	
-	if (36 < radix || 2 > radix)
-		return 0;
+	if (radix < 2 || radix > 36)
+		return false;
 	
 	if (isdigit(ch)) {
 		digit = ch - '0';
 	} else if (isalnum(ch)) {
 		digit = toupper(ch) - 'A' + 10;
 	} else {
-		return 0;
+		return false;
 	}
 	return (digit < radix);
 }
@@ -178,22 +178,14 @@ typedef enum {
 	COMMENT_MODULE,
 	COMMENT_DOC,
 	COMMENT_DOC_MACRO,
-	ATOM_UNQUOTED,
-	ATOM_QUOTED,
-	NODE_NAME_UNQUOTED,
-	NODE_NAME_QUOTED,
-	MACRO_START,
-	MACRO_UNQUOTED,
-	MACRO_QUOTED,
-	RECORD_START,
-	RECORD_UNQUOTED,
-	RECORD_QUOTED,
+} atom_parse_state_t;
+
+typedef enum {
 	NUMERAL_START,
 	NUMERAL_BASE_VALUE,
 	NUMERAL_FLOAT,
-	NUMERAL_EXPONENT,
-	PREPROCESSOR
-} atom_parse_state_t;
+	NUMERAL_EXPONENT
+} number_parse_state_t;
 
 static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
@@ -222,6 +214,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
+	number_parse_state_t number_state;
+	
 	atom_parse_state_t parse_state = STATE_NULL;
 	atom_parse_state_t old_parse_state = STATE_NULL;
 	bool to_late_to_comment = false;
@@ -230,13 +224,13 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	module_name[0] = '\0';
 	int old_style = SCE_ERLANG_DEFAULT;
 	
+	bool is_at_symb = false; // esh: "at" - is "@" symb (for node name)
+	
 	styler.StartAt(startPos);
 	
 	for (; sc.More(); sc.Forward()) {
-		int style = SCE_ERLANG_DEFAULT;
 		if (STATE_NULL != parse_state) {
 			switch (parse_state) {
-				
 			/* COMMENTS ------------------------------------------------------*/
 				case COMMENT : {
 					if (sc.ch != '%') {
@@ -269,9 +263,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						// Search for comment documentation
 						if (sc.chNext == '@') {
 							old_parse_state = parse_state;
-							parse_state = ('{' == sc.ch)
-											? COMMENT_DOC_MACRO
-											: COMMENT_DOC;
+							parse_state = (sc.ch == '{') ? COMMENT_DOC_MACRO
+														 : COMMENT_DOC;
 							sc.ForwardSetState(sc.state);
 						}
 					}
@@ -311,224 +304,184 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						parse_state = STATE_NULL;
 					}
 				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Atoms ---------------------------------------------------------*/
-				case ATOM_UNQUOTED : {
-					if (sc.ch == '@') {
-						parse_state = NODE_NAME_UNQUOTED;
-						continue;
-					// esh: exclude map-key updates, example: #{data:=test}
-					} else if (sc.ch == ':' && sc.chNext != '=') {
-						sc.GetCurrent(module_name, sizeof(module_name));
-						sc.Forward();
-						sc.ChangeState(SCE_ERLANG_MODULES);
-						
-					} else if (!IsAWordChar(sc.ch)) {
-						sc.GetCurrent(cur, sizeof(cur));
-						if (reservedWords.InList(cur)) {
-							style = SCE_ERLANG_KEYWORD;
-						} else if (((module_name[0] == '\0' && sc.ch == '(')
-									|| strcmp(module_name, "erlang") == 0)
-								   && erlangBIFs.InList(cur)) {
-							style = SCE_ERLANG_BIFS;
-						} else if (sc.ch == '(' || sc.ch == '/') {
-							style = SCE_ERLANG_FUNCTION_NAME;
-						} else if (erlangAtomSpec.InList(cur)) {
-							style = SCE_ERLANG_ATOM_SPEC;
-						} else {
-							style = SCE_ERLANG_ATOM;
-						}
-						sc.ChangeState(style);
-					} else {
-						continue;
-					}
-					sc.SetState(SCE_ERLANG_DEFAULT);
-					parse_state = STATE_NULL;
-				} break;
-				
-				case ATOM_QUOTED : {
-					if (sc.ch == '@') {
-						parse_state = NODE_NAME_QUOTED;
-						continue;
-					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
-						sc.Forward();
-						if (sc.ch == ':' && sc.chNext != '=') {
-							sc.GetCurrent(module_name, sizeof(module_name));
-						}
-						sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Node names ----------------------------------------------------*/
-				case NODE_NAME_UNQUOTED : {
-					if ('@' == sc.ch) {
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					} else if (!IsAWordChar(sc.ch)) {
-						sc.ChangeState(SCE_ERLANG_NODE_NAME);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-				case NODE_NAME_QUOTED : {
-					if ('@' == sc.ch) {
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					} else if ('\'' == sc.ch && '\\' != sc.chPrev) {
-						sc.ChangeState(SCE_ERLANG_NODE_NAME_QUOTED);
-						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Records -------------------------------------------------------*/
-				case RECORD_START : {
-					if ('\'' == sc.ch) {
-						parse_state = RECORD_QUOTED;
-					} else if (islower(sc.ch)) {
-						parse_state = RECORD_UNQUOTED;
-					} else { // error
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-				case RECORD_UNQUOTED : {
-					if (!IsAWordChar(sc.ch)) {
-						sc.ChangeState(SCE_ERLANG_RECORD);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-				case RECORD_QUOTED : {
-					if ('\'' == sc.ch && '\\' != sc.chPrev) {
-						sc.ChangeState(SCE_ERLANG_RECORD_QUOTED);
-						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Macros --------------------------------------------------------*/
-				case MACRO_START : {
-					if ('\'' == sc.ch) {
-						parse_state = MACRO_QUOTED;
-					} else if (isalpha(sc.ch)) {
-						parse_state = MACRO_UNQUOTED;
-					} else { // error
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-				case MACRO_UNQUOTED : {
-					if (!IsAWordChar(sc.ch)) {
-						sc.ChangeState(SCE_ERLANG_MACRO);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-				case MACRO_QUOTED : {
-					if ('\'' == sc.ch && '\\' != sc.chPrev) {
-						sc.ChangeState(SCE_ERLANG_MACRO_QUOTED);
-						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Numerics ------------------------------------------------------*/
-			/* Simple integer */
-				case NUMERAL_START : {
-					if (isdigit(sc.ch)) {
-						radix_digits *= 10;
-						radix_digits += sc.ch - '0'; // Assuming ASCII here!
-					} else if ('#' == sc.ch) {
-						if (2 > radix_digits || 36 < radix_digits) {
-							sc.SetState(SCE_ERLANG_DEFAULT);
-							parse_state = STATE_NULL;
-						} else {
-							parse_state = NUMERAL_BASE_VALUE;
-						}
-					} else if ('.' == sc.ch && isdigit(sc.chNext)) {
-						radix_digits = 0;
-						parse_state = NUMERAL_FLOAT;
-					} else if ('e' == sc.ch || 'E' == sc.ch) {
-						exponent_digits = 0;
-						parse_state = NUMERAL_EXPONENT;
-					} else {
-						radix_digits = 0;
-						sc.ChangeState(SCE_ERLANG_NUMBER);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-			/* Integer in other base than 10 (x#yyy) */
-				case NUMERAL_BASE_VALUE : {
-					if (!is_radix(radix_digits,sc.ch)) {
-						radix_digits = 0;
-						if (!isalnum(sc.ch))
-							sc.ChangeState(SCE_ERLANG_NUMBER);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-			/* Float (x.yyy) */
-				case NUMERAL_FLOAT : {
-					if ('e' == sc.ch || 'E' == sc.ch) {
-						exponent_digits = 0;
-						parse_state = NUMERAL_EXPONENT;
-					} else if (!isdigit(sc.ch)) {
-						sc.ChangeState(SCE_ERLANG_NUMBER);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
-			/* Exponent, either integer or float (xEyy, x.yyEzzz) */
-				case NUMERAL_EXPONENT : {
-					if (('-' == sc.ch || '+' == sc.ch)
-							&& (isdigit(sc.chNext))) {
-						continue;
-					} else if (!isdigit(sc.ch)) {
-						if (0 < exponent_digits)
-							sc.ChangeState(SCE_ERLANG_NUMBER);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					} else {
-						++exponent_digits;
-					}
-				} break;
-				
-			/* -------------------------------------------------------------- */
-			/* Preprocessor --------------------------------------------------*/
-				case PREPROCESSOR : {
-					if (!IsAWordChar(sc.ch)) {
-						sc.GetCurrent(cur, sizeof(cur));
-						if (erlangPreproc.InList(cur)) {
-							style = SCE_ERLANG_PREPROC;
-						} else if (erlangModulesAtt.InList(cur)) {
-							style = SCE_ERLANG_MODULES_ATT;
-						}
-						sc.ChangeState(style);
-						sc.SetState(SCE_ERLANG_DEFAULT);
-						parse_state = STATE_NULL;
-					}
-				} break;
 			}
 		} /* End of : STATE_NULL != parse_state */
 		else
 		{
 			switch (sc.state) {
+				/* Numerics ------------------------------------------------------*/
+				case SCE_ERLANG_NUMBER : {
+					switch (number_state) {
+						
+						/* Simple integer */
+						case NUMERAL_START : {
+							if (isdigit(sc.ch)) {
+								radix_digits *= 10;
+								radix_digits += sc.ch - '0'; // Assuming ASCII here!
+								continue;
+							} else if (sc.ch == '#') {
+								if (radix_digits < 2 || radix_digits > 36) {
+									sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+								} else {
+									number_state = NUMERAL_BASE_VALUE;
+									continue;
+								}
+							} else if (sc.ch == '.' && isdigit(sc.chNext)) {
+								number_state = NUMERAL_FLOAT;
+								continue;
+							} else if (sc.ch == 'e' || sc.ch == 'E') {
+								exponent_digits = 0;
+								number_state = NUMERAL_EXPONENT;
+								continue;
+							} else if (isalpha(sc.ch)) {
+								sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+							}
+						} break;
+						
+						/* Integer in other base than 10 (x#yyy) */
+						case NUMERAL_BASE_VALUE : {
+							if (is_radix(radix_digits, sc.ch)) {
+								continue;
+							} else if (isalnum(sc.ch)) {
+								sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+							}
+						} break;
+						
+						/* Float (x.yyy) */
+						case NUMERAL_FLOAT : {
+							if (sc.ch == 'e' || sc.ch == 'E') {
+								exponent_digits = 0;
+								number_state = NUMERAL_EXPONENT;
+								continue;
+							} else if (isdigit(sc.ch)) {
+								continue;
+							} else if (isalpha(sc.ch)) {
+								sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+							}
+						} break;
+						
+						/* Exponent, either integer or float (xEyy, x.yyEzzz) */
+						case NUMERAL_EXPONENT : {
+							if ((sc.ch == '-' || sc.ch == '+')
+									&& isdigit(sc.chNext)) {
+								continue;
+							} else if (isdigit(sc.ch)) {
+								exponent_digits++;
+								continue;
+							} else if (exponent_digits == 0 || isalpha(sc.ch)) {
+								sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+							}
+						} break;
+					}
+					sc.SetState(SCE_ERLANG_DEFAULT);
+				} break;
+				/* -------------------------------------------------------------- */
+				
+				/* Preprocessor --------------------------------------------------*/
+				case SCE_ERLANG_PREPROC : {
+					if (IsAWordChar(sc.ch)) {
+						continue;
+					}
+					sc.GetCurrent(cur, sizeof(cur));
+					if (erlangModulesAtt.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_MODULES_ATT);
+					} else if (!erlangPreproc.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+					}
+					sc.SetState(SCE_ERLANG_DEFAULT);
+				} break;
+				/* -------------------------------------------------------------- */
+				
+				/* Atoms ---------------------------------------------------------*/
+				case SCE_ERLANG_ATOM : {
+					if (sc.ch == '@' && !is_at_symb) {
+						is_at_symb = true;
+						sc.ChangeState(SCE_ERLANG_NODE_NAME);
+						continue;
+					} else if (IsAWordChar(sc.ch)) {
+						continue;
+					}
+					sc.GetCurrent(cur, sizeof(cur));
+					while (sc.More() && IsASpaceOrTab(sc.ch))
+						sc.Forward();
+					
+					if (sc.ch == ':' && sc.chNext != '=') {
+						// esh: set module name, exclude map-key updates, example: #{data:=test}
+						strcpy(module_name, cur);
+						sc.Forward();
+						sc.ChangeState(SCE_ERLANG_MODULES);
+					} else {
+						if (reservedWords.InList(cur)) {
+							sc.ChangeState(SCE_ERLANG_KEYWORD);
+							
+						} else if (((module_name[0] == '\0' && sc.ch == '(')
+									|| strcmp(module_name, "erlang") == 0)
+								   && erlangBIFs.InList(cur)) {
+							sc.ChangeState(SCE_ERLANG_BIFS);
+							
+						} else if (sc.ch == '(' || sc.ch == '/') {
+							sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+							
+						} else if (erlangAtomSpec.InList(cur)) {
+							sc.ChangeState(SCE_ERLANG_ATOM_SPEC);
+						}
+					}
+					sc.SetState(SCE_ERLANG_DEFAULT);
+				} break;
+				
+				case SCE_ERLANG_ATOM_QUOTED : {
+					if (sc.ch == '@' && !is_at_symb) {
+						is_at_symb = true;
+						sc.ChangeState(SCE_ERLANG_NODE_NAME_QUOTED);
+						
+					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+						sc.Forward();
+						if (sc.ch == ':' && sc.chNext != '=') {
+							sc.GetCurrent(module_name, sizeof(module_name));
+						}
+						sc.SetState(SCE_ERLANG_DEFAULT);
+					}
+				} break;
+				/* -------------------------------------------------------------- */
+				
+				/* Node names ----------------------------------------------------*/
+				case SCE_ERLANG_NODE_NAME : {
+					if (sc.ch == '@') {
+						sc.ChangeState(SCE_ERLANG_ATOM);
+						
+					} else if (!IsAWordChar(sc.ch)) {
+						sc.SetState(SCE_ERLANG_DEFAULT);
+					}
+				} break;
+				
+				case SCE_ERLANG_NODE_NAME_QUOTED : {
+					if (sc.ch == '@') {
+						sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
+						
+					} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					}
+				} break;
+				/* -------------------------------------------------------------- */
+				
+				/* Macros/Records-------------------------------------------------*/
+				case SCE_ERLANG_MACRO  :
+				case SCE_ERLANG_RECORD : {
+					if (!IsAWordChar(sc.ch) && sc.ch != '@') {
+						sc.SetState(SCE_ERLANG_DEFAULT);
+					}
+				} break;
+				
+				case SCE_ERLANG_MACRO_QUOTED  :
+				case SCE_ERLANG_RECORD_QUOTED : {
+					if (sc.ch == '\'' && sc.chPrev != '\\') {
+						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					}
+				} break;
+				/* -------------------------------------------------------------- */
+				
 				case SCE_ERLANG_VARIABLE : {
-					if (!IsAWordChar(sc.ch)) {
+					if (!IsAWordChar(sc.ch) && sc.ch != '@') {
 						if (sc.ch == ':' && sc.chNext != '=') {
 							sc.GetCurrent(module_name, sizeof(module_name));
 						}
@@ -638,56 +591,72 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (sc.state == SCE_ERLANG_DEFAULT) {
+		if (sc.state == SCE_ERLANG_DEFAULT ||
+			sc.state == SCE_ERLANG_UNKNOWN) {
 			bool no_new_state = false;
 			switch (sc.ch) {
-				case '\"' : sc.SetState(SCE_ERLANG_STRING); break;
-				case '$' : sc.SetState(SCE_ERLANG_CHARACTER); break;
-				
 				case '%' : {
 					parse_state = COMMENT;
 					sc.SetState(SCE_ERLANG_COMMENT);
 				} break;
-				
-				case '#' : {
-					parse_state = RECORD_START;
-					sc.SetState(SCE_ERLANG_UNKNOWN);
-				} break;
-				
-				case '?' : {
-					parse_state = MACRO_START;
-					sc.SetState(SCE_ERLANG_UNKNOWN);
-				} break;
-				
-				case '\'' : {
-					parse_state = ATOM_QUOTED;
-					sc.SetState(SCE_ERLANG_UNKNOWN);
-				} break;
-				
-				case '-' :
-					if (islower(sc.chNext)) {
-						parse_state = PREPROCESSOR;
-						sc.SetState(SCE_ERLANG_UNKNOWN);
-						break;
-					}
 				default : no_new_state = true;
 			}
 			if (no_new_state) {
-				if (isdigit(sc.ch)) {
-					parse_state = NUMERAL_START;
+				if (sc.ch == '\'') {
+					is_at_symb = false;
+					sc.SetState(SCE_ERLANG_ATOM_QUOTED);
+					
+				} else if (sc.ch == '\"') {
+					sc.SetState(SCE_ERLANG_STRING);
+					
+				} else if (sc.ch == '$') {
+					sc.SetState(SCE_ERLANG_CHARACTER);
+					
+				} else if (sc.ch == '-' && islower(sc.chNext)) {
+					sc.SetState(SCE_ERLANG_PREPROC);
+					
+				} else if (sc.ch == '?') {
+					sc.SetState(SCE_ERLANG_UNKNOWN);
+					while (sc.More() && IsASpaceOrTab(sc.chNext))
+						sc.Forward();
+					if (sc.chNext == '\'') {
+						sc.ChangeState(SCE_ERLANG_MACRO_QUOTED);
+						sc.Forward();
+					} else if (isalpha(sc.chNext)) {
+						sc.ChangeState(SCE_ERLANG_MACRO);
+					}
+					
+				} else if (sc.ch == '#') {
+					sc.SetState(SCE_ERLANG_UNKNOWN);
+					while (sc.More() && IsASpaceOrTab(sc.chNext))
+						sc.Forward();
+					if (sc.chNext == '\'') {
+						sc.ChangeState(SCE_ERLANG_RECORD_QUOTED);
+						sc.Forward();
+					} else if (sc.chNext == '{') {
+						sc.ChangeState(SCE_ERLANG_OPERATOR); // TODO: need new SCE_ERLANG_MAP 
+					} else if (islower(sc.chNext)) {
+						sc.ChangeState(SCE_ERLANG_RECORD);
+					}
+					
+				} else if (isdigit(sc.ch)) {
+					number_state = NUMERAL_START;
 					radix_digits = sc.ch - '0';
-					sc.SetState(SCE_ERLANG_UNKNOWN);
-				} else if (isupper(sc.ch) || '_' == sc.ch) {
+					sc.SetState(SCE_ERLANG_NUMBER);
+					
+				} else if (isupper(sc.ch) || sc.ch == '_') {
 					sc.SetState(SCE_ERLANG_VARIABLE);
+					
 				} else if (islower(sc.ch)) {
-					parse_state = ATOM_UNQUOTED;
-					sc.SetState(SCE_ERLANG_UNKNOWN);
+					is_at_symb = false;
+					sc.SetState(SCE_ERLANG_ATOM);
+					
 				} else if (isoperator(static_cast<char>(sc.ch))
 							|| sc.ch == '\\') {
 					sc.SetState(SCE_ERLANG_OPERATOR);
 				}
 			}
-			if (parse_state != ATOM_UNQUOTED && sc.ch != ':')
+			if (sc.state != SCE_ERLANG_ATOM && sc.ch != ':')
 				module_name[0] = '\0';
 		}
 	}
