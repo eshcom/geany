@@ -107,6 +107,7 @@ inline bool IsACRLF(int ch) {
 }
 
 inline bool IsASpace(int ch) {
+	// esh: equal (IsASpaceOrTab(..) || IsACRLF(..))
 	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
