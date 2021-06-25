@@ -588,6 +588,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.SetState(SCE_ERLANG_DEFAULT);
 					}
 				} break;
+				
+				case SCE_ERLANG_MAP_OPER : {
+					sc.SetState(SCE_ERLANG_DEFAULT);
+				} break;
 			}
 		}
 		
@@ -634,7 +638,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ERLANG_RECORD_QUOTED);
 						sc.Forward();
 					} else if (sc.chNext == '{') {
-						sc.ChangeState(SCE_ERLANG_OPERATOR); // TODO: need new SCE_ERLANG_MAP 
+						sc.ChangeState(SCE_ERLANG_MAP_OPER);
 					} else if (islower(sc.chNext)) {
 						sc.ChangeState(SCE_ERLANG_RECORD);
 					}
