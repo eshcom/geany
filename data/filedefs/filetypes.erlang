@@ -29,6 +29,7 @@ unknown=default
 atom_spec=default
 escapesequence=string_1
 formatsequence=string_1
+map_oper=operator
 
 [keywords]
 # all items must be in one line

@@ -604,6 +604,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_ATOM_SPEC,			"atom_spec",			FALSE },
 	{ SCE_ERLANG_ESCAPESEQUENCE,	"escapesequence",		FALSE },
 	{ SCE_ERLANG_FORMATSEQUENCE,	"formatsequence",		FALSE },
+	{ SCE_ERLANG_MAP_OPER,			"map_oper",				FALSE },
 	{ SCE_ERLANG_UNKNOWN,			"unknown",				FALSE }
 };
 static const HLKeyword highlighting_keywords_ERLANG[] =
