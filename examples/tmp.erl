@@ -27,6 +27,12 @@
   schedulerLoadDIO
 }).
 
+-record(forward_ports_config, {
+  name :: binary(),
+  handler = undefined :: atom(),
+  options = undefined :: any()
+}).
+
 tmp() ->
 	io:format("test ~s~n~c\n~5f\n~5.7f\n~5.*f\n~-5f\n~ts~lp\n~n",
 			  ["test", $a, 2, 3.5, 2.3e-10, 78, $\377, 5, 2]),
@@ -91,6 +97,7 @@ default() -> ok.
 yield() -> ok.
 
 test(Var) ->
+	_Rec = #forward_ports_config{},
 	try throw(123)
 	catch
 		throw:123 = Val -> max(1, Val) % this is a bif-func
