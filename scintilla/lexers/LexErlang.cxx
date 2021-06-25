@@ -405,8 +405,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					while (sc.More() && IsASpaceOrTab(sc.ch))
 						sc.Forward();
 					
-					if (sc.ch == ':' && sc.chNext != '=') {
-						// esh: set module name, exclude map-key updates, example: #{data:=test}
+					if (sc.ch == ':' && sc.chNext != '=' && sc.chNext != ':') {
+						// esh: set module name,
+						//		exclude map-key updates, example: #{data:=test}
+						//		exclude record field type, example: handler = none :: atom()
 						strcpy(module_name, cur);
 						sc.Forward();
 						sc.ChangeState(SCE_ERLANG_MODULES);
