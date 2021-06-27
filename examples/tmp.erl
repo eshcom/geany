@@ -27,6 +27,11 @@
   schedulerLoadDIO
 }).
 
+%%test comment @author @copyright { @copyright} @copyright}
+%%test comment {@link edoc:file/2} {@docRoot} { @docRoot} @docRoot} {@docRoot
+%%%test comment @author @copyright { @copyright} @copyright}
+%%%test comment {@link edoc:file/2} {@docRoot} { @docRoot} @docRoot} {@docRoot
+
 -record(forward_ports_config, {
   name :: binary(),
   handler = undefined :: atom(),
@@ -201,8 +206,8 @@ activate_from_file0() -> ok.
 activate_from_file() ->
   try activate_from_file0()
   catch
-    throw:R -> R
-  end.
+    throw:_R -> $
+end. % edit this line - fails highlighting
 
 dec_FastStartToken(Bytes) ->
 	'H235-SECURITY-MESSAGES':dec_ClearToken(Bytes).
