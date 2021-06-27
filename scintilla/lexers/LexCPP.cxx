@@ -875,6 +875,11 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const Sci_PositionU endPos = startPos + length;
 	
+	//~ esh: logs are written to a file ~/.cache/upstart/unity7.log (ubuntu 16)
+	//~ printf("!!!LexCPP: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
+		   //~ styler.GetLine(startPos) + 1, styler[startPos],
+		   //~ styler[startPos + length - 2], initStyle);
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	LinePPState preproc = vlls.ForLine(lineCurrent);
 	
