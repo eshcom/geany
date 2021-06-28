@@ -236,88 +236,144 @@ struct FormatSequence {
 		FORMAT_NONE,
 		FORMAT_INIT,
 		FORMAT_END,
-		FORMAT_FULL_SPEC,			// [d i o u x e f g c s %]
-		FORMAT_NUM_BASE_SPEC,		// [d i o u x e f g]
-		FORMAT_NUM_PREC_SPEC,		// [d i o u x]
-		FORMAT_NUM_FLAG,			// [-+0\s]+
-		FORMAT_NUM_BASE_DIGITS,		// [1-9]+
-		FORMAT_NUM_PREC_DIGITS,		// [0-9]+
-		FORMAT_NUM_PREC_ASTER,		// *
-		FORMAT_NUM_PREC_DOT			// .
+		FORMAT_LEN_PREF,		// [h hh l ll j z t L]
+		FORMAT_FULL_SPEC,		// [d i u o x X f F e E g G a A c s p n]
+		FORMAT_WIDTH_SPEC,		// [d i o u x X f F e E g G]
+		FORMAT_FLAG_WIDTH,		// [- + 0 # \s]+
+		FORMAT_BASE_WIDTH,		// [1-9]+
+		FORMAT_BASE_ASTER,		// *
+		FORMAT_PREC_WIDTH,		// [0-9]+
+		FORMAT_PREC_ASTER,		// *
+		FORMAT_PREC_DOT			// .
 	};
-	int formatState;
+	int formatState, lastState;
+	int lastLenChar;
+	CharacterSet setLenPref;
 	CharacterSet setFullSpec;
-	CharacterSet setNumBaseSpec;
-	CharacterSet setNumPrecSpec;
-	CharacterSet setNumFlag;
-	CharacterSet setNumBaseDigits;
-	CharacterSet setNumPrecDigits;
+	CharacterSet setWidthSpec;
+	CharacterSet setFlagWidth;
+	CharacterSet setBaseWidth;
+	CharacterSet setPrecWidth;
 	FormatSequence() {
-		formatState = FORMAT_NONE;
-		setFullSpec = CharacterSet(CharacterSet::setNone, "diouxefgcs%");
-		setNumBaseSpec = CharacterSet(CharacterSet::setNone, "diouxefg");
-		setNumPrecSpec = CharacterSet(CharacterSet::setNone, "dioux");
-		setNumFlag = CharacterSet(CharacterSet::setNone, "-+0 ");
-		setNumBaseDigits = CharacterSet(CharacterSet::setNone, "123456789");
-		setNumPrecDigits = CharacterSet(CharacterSet::setDigits);
+		//~ https://ru.wikipedia.org/wiki/Printf
+		//~ https://www.cplusplus.com/reference/cstdio/printf/
+		//~ https://www.dummies.com/programming/cpp/using-printf-for-output/
+		//~ https://www.tutorialspoint.com/c_standard_library/c_function_printf.htm
+		
+		//~ A format specifier follows this prototype:
+		//~ %[flags][width][.precision][length]specifier
+		
+		formatState  = FORMAT_NONE;
+		setLenPref   = CharacterSet(CharacterSet::setNone, "hljztL");
+		setFullSpec  = CharacterSet(CharacterSet::setNone, "diuoxXfFeEgGaAscpn");
+		setWidthSpec = CharacterSet(CharacterSet::setNone, "diuoxXfFeEgGaAs");
+		setFlagWidth = CharacterSet(CharacterSet::setNone, "-+0# ");
+		setBaseWidth = CharacterSet(CharacterSet::setNone, "123456789");
+		setPrecWidth = CharacterSet(CharacterSet::setDigits);
 	}
 	void initFormatState() {
 		formatState = FORMAT_INIT;
+		lastLenChar = ' ';
 	}
 	bool atFormatEnd(int currChar) {
 		switch (formatState) {
 			case FORMAT_INIT:
-				if (setFullSpec.Contains(currChar)) {
+				if (setLenPref.Contains(currChar)) {
+					lastState = formatState;
+					lastLenChar = currChar;
+					formatState = FORMAT_LEN_PREF;
+				} else if (setFullSpec.Contains(currChar)
+							|| currChar == '%') {
 					formatState = FORMAT_FULL_SPEC;
-				} else if (setNumFlag.Contains(currChar)) {
-					formatState = FORMAT_NUM_FLAG;
-				} else if (setNumBaseDigits.Contains(currChar)) {
-					formatState = FORMAT_NUM_BASE_DIGITS;
-				} else if (currChar == '.') {
-					formatState = FORMAT_NUM_PREC_DOT;
-				} else {
-					formatState = FORMAT_NONE;
-				}
-				break;
-			case FORMAT_NUM_FLAG:
-				if (setNumBaseDigits.Contains(currChar)) {
-					formatState = FORMAT_NUM_BASE_DIGITS;
-				} else if (currChar == '.') {
-					formatState = FORMAT_NUM_PREC_DOT;
-				} else if (!setNumFlag.Contains(currChar)) {
-					formatState = FORMAT_NONE;
-				}
-				break;
-			case FORMAT_NUM_BASE_DIGITS:
-				if (setNumBaseSpec.Contains(currChar)) {
-					formatState = FORMAT_NUM_BASE_SPEC;
-				} else if (currChar == '.') {
-					formatState = FORMAT_NUM_PREC_DOT;
-				} else if (!setNumBaseDigits.Contains(currChar)) {
-					formatState = FORMAT_NONE;
-				}
-				break;
-			case FORMAT_NUM_PREC_DOT:
-				if (setNumPrecDigits.Contains(currChar)) {
-					formatState = FORMAT_NUM_PREC_DIGITS;
+				} else if (setFlagWidth.Contains(currChar)) {
+					formatState = FORMAT_FLAG_WIDTH;
+				} else if (setBaseWidth.Contains(currChar)) {
+					formatState = FORMAT_BASE_WIDTH;
 				} else if (currChar == '*') {
-					formatState = FORMAT_NUM_PREC_ASTER;
+					formatState = FORMAT_BASE_ASTER;
+				} else if (currChar == '.') {
+					formatState = FORMAT_PREC_DOT;
 				} else {
 					formatState = FORMAT_NONE;
 				}
 				break;
-			case FORMAT_NUM_PREC_DIGITS:
-			case FORMAT_NUM_PREC_ASTER:
-				if (setNumPrecSpec.Contains(currChar)) {
-					formatState = FORMAT_NUM_PREC_SPEC;
-				} else if (formatState == FORMAT_NUM_PREC_ASTER ||
-						   !setNumPrecDigits.Contains(currChar)) {
+			case FORMAT_FLAG_WIDTH:
+				if (setLenPref.Contains(currChar)) {
+					lastState = formatState;
+					lastLenChar = currChar;
+					formatState = FORMAT_LEN_PREF;
+				} else if (setWidthSpec.Contains(currChar)) {
+					formatState = FORMAT_WIDTH_SPEC;
+				} else if (setBaseWidth.Contains(currChar)) {
+					formatState = FORMAT_BASE_WIDTH;
+				} else if (currChar == '*') {
+					formatState = FORMAT_BASE_ASTER;
+				} else if (currChar == '.') {
+					formatState = FORMAT_PREC_DOT;
+				} else if (!setFlagWidth.Contains(currChar)) {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_BASE_WIDTH:
+			case FORMAT_BASE_ASTER:
+				if (setLenPref.Contains(currChar)) {
+					lastState = formatState;
+					lastLenChar = currChar;
+					formatState = FORMAT_LEN_PREF;
+				} else if (setWidthSpec.Contains(currChar)) {
+					formatState = FORMAT_WIDTH_SPEC;
+				} else if (currChar == '.') {
+					formatState = FORMAT_PREC_DOT;
+				} else if (formatState == FORMAT_BASE_ASTER ||
+							(!setBaseWidth.Contains(currChar)
+								&& currChar != '0')) {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_PREC_DOT:
+				if (setLenPref.Contains(currChar)) {
+					lastState = formatState;
+					lastLenChar = currChar;
+					formatState = FORMAT_LEN_PREF;
+				} else if (setWidthSpec.Contains(currChar)) {
+					formatState = FORMAT_WIDTH_SPEC;
+				} else if (setPrecWidth.Contains(currChar)) {
+					formatState = FORMAT_PREC_WIDTH;
+				} else if (currChar == '*') {
+					formatState = FORMAT_PREC_ASTER;
+				} else {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_PREC_WIDTH:
+			case FORMAT_PREC_ASTER:
+				if (setLenPref.Contains(currChar)) {
+					lastState = formatState;
+					lastLenChar = currChar;
+					formatState = FORMAT_LEN_PREF;
+				} else if (setWidthSpec.Contains(currChar)) {
+					formatState = FORMAT_WIDTH_SPEC;
+				} else if (formatState == FORMAT_PREC_ASTER ||
+							!setPrecWidth.Contains(currChar)) {
+					formatState = FORMAT_NONE;
+				}
+				break;
+			case FORMAT_LEN_PREF:
+				if (lastLenChar == currChar &&
+					(currChar == 'h' || currChar == 'l')) { // hh ll
+					lastLenChar = ' ';
+				} else if (lastState == FORMAT_INIT &&
+							setFullSpec.Contains(currChar)) {
+					formatState = FORMAT_FULL_SPEC;
+				} else if (lastState != FORMAT_INIT &&
+							setWidthSpec.Contains(currChar)) {
+					formatState = FORMAT_WIDTH_SPEC;
+				} else {
 					formatState = FORMAT_NONE;
 				}
 				break;
 			case FORMAT_FULL_SPEC:
-			case FORMAT_NUM_BASE_SPEC:
-			case FORMAT_NUM_PREC_SPEC:
+			case FORMAT_WIDTH_SPEC:
 				formatState = FORMAT_END;
 				break;
 		}

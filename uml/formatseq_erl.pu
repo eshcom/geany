@@ -44,7 +44,7 @@ usecase (Number Pad\nDot [.]) as format_num_pad_dot <<Middle State>>
 usecase (Number Pad Char\n[<any printable>]) as format_num_pad_char <<Middle State>>
 usecase (Mod Char [t l]) as format_mod_char <<Init or Middle State>>
 
-usecase (Format Specifications\n[c f e g s w p b x n i W P B X # +]) as format_spec <<Init or Final State>>
+usecase (Format Specifications\n[c f e g s w W p P b B x X n i # +]) as format_spec <<Init or Final State>>
 
 format_num_sign --> format_num_base_width
 format_num_sign --> format_num_prec_dot
