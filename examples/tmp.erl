@@ -8,6 +8,24 @@
 %~ -define
 %~ -defin
 
+-define(ZIP3(RecordName, Record),
+  lists:zip3(
+    record_info(fields, RecordName),
+    tl(tuple_to_list(#RecordName{})),
+    tl(tuple_to_list(Record))
+  )
+).
+
+-record(tmp, {t1, t2}).
+get(#?MODULE{} = Media, Key) -> 
+  case record_info(fields, ?MODULE) of
+    undefined ->
+      Props = Media#?MODULE.t1,
+      proplists:get_value(Key, Props);
+    Pos ->  
+      element(Pos, Media)
+  end.
+
 -record('RuntimeInfo', {
   duration,
   startedAt,
@@ -256,3 +274,44 @@ add_conf(Stream, Acc) ->
     {ok, null} -> Acc#{Stream => null};
     undefined -> Acc#{Stream => null}
   end.
+
+-define(STUN_ATTR_SOFTWARE, 16#8022).
+-define(STUN_ATTR_ALTERNATE_SERVER, 16#8023).
+-define(STUN_ATTR_FINGERPRINT, 16#8028).
+-define(STUN_ATTR_XOR_MAPPED_ADDRESS, 16#8028).
+-define(STUN_ATTR_DATA, 16#8028).
+-record(stun, {class = request :: request | response | error | indication,
+	       trid = 0 :: non_neg_integer(),
+	       raw = <<>> :: binary(),
+	       'ALTERNATE-SERVER',
+	       'DATA',
+	       'ERROR-CODE',
+	       'MAPPED-ADDRESS',
+	       'SOFTWARE',
+	       'UNKNOWN-ATTRIBUTES' = [],
+	       'XOR-MAPPED-ADDRESS'}).
+enc_attr(_Attr, undefined) ->
+    <<>>;
+enc_attr(Attr, Val) ->
+    Len = size(Val),
+    PaddLen = length(Len),
+    <<Attr:16, Len:16, Val/binary, 0:PaddLen>>.
+
+enc_addr(_Type, undefined) ->
+    <<>>;
+enc_addr(Type, {{A1, A2, A3, A4}, Port}) ->
+    enc_attr(Type, <<0, 1, Port:16, A1, A2, A3, A4>>);
+enc_addr(Type, {{A1, A2, A3, A4, A5, A6, A7, A8}, Port}) ->
+    enc_attr(Type, <<0, 2, Port:16, A1:16, A2:16, A3:16,
+		    A4:16, A5:16, A6:16, A7:16, A8:16>>).
+enc_addr(_, _, _, _) -> ok.
+enc_attrs(Msg) ->
+    iolist_to_binary(
+      [enc_attr(?STUN_ATTR_SOFTWARE, Msg#stun.'SOFTWARE'),
+       enc_addr(?STUN_ATTR_FINGERPRINT, Msg#stun.'MAPPED-ADDRESS'),
+       enc_addr(?STUN_ATTR_XOR_MAPPED_ADDRESS,
+		Msg#stun.raw, Msg#stun.trid,
+		Msg#stun.'XOR-MAPPED-ADDRESS'),
+       enc_attr(?STUN_ATTR_DATA, Msg#stun.'DATA'),
+       enc_addr(?STUN_ATTR_ALTERNATE_SERVER, Msg#stun.'ALTERNATE-SERVER'),
+       enc_attr(test, Msg#stun.'UNKNOWN-ATTRIBUTES')]).
