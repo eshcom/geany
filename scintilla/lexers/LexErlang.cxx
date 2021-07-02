@@ -178,6 +178,12 @@ typedef enum {
 	NUMERAL_EXPONENT
 } number_parse_state_t;
 
+typedef enum {
+	NONE_MODULE,
+	OTHER_MODULE,
+	ERLANG_MODULE
+} module_type_t;
+
 static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
@@ -212,9 +218,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	int exponent_digits = 0;
 	number_parse_state_t number_state;
 	
+	module_type_t module_type = NONE_MODULE;
+	
 	char cur[100];
-	char module_name[100];
-	module_name[0] = '\0';
 	int last_state;
 	
 	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
@@ -378,18 +384,19 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				
 				if (sc.ch == ':' && sc.chNext != '=' && sc.chNext != ':') {
-					// esh: set module name,
+					// esh: set module type,
 					//		exclude map-key updates, example: #{data:=test}
 					//		exclude record field type, example: handler = none :: atom()
-					strcpy(module_name, cur);
+					module_type = (strcmp(cur, "erlang") == 0) ? ERLANG_MODULE:
+																 OTHER_MODULE;
 					sc.Forward();
 					sc.ChangeState(SCE_ERLANG_MODULES);
 				} else {
 					if (reservedWords.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_KEYWORD);
 						
-					} else if (((module_name[0] == '\0' && sc.ch == '(')
-								|| strcmp(module_name, "erlang") == 0)
+					} else if (((module_type == NONE_MODULE && sc.ch == '(')
+								|| module_type == ERLANG_MODULE)
 							   && erlangBIFs.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_BIFS);
 						
@@ -410,9 +417,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					
 				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
 					sc.Forward();
-					if (sc.ch == ':' && sc.chNext != '=') {
-						sc.GetCurrent(module_name, sizeof(module_name));
-					}
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
@@ -460,9 +464,6 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			case SCE_ERLANG_VARIABLE : {
 				if (!IsAWordChar(sc.ch) && sc.ch != '@') {
-					if (sc.ch == ':' && sc.chNext != '=') {
-						sc.GetCurrent(module_name, sizeof(module_name));
-					}
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
@@ -636,9 +637,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (isoperator(static_cast<char>(sc.ch))
 						|| sc.ch == '\\') {
 				sc.SetState(SCE_ERLANG_OPERATOR);
+				module_type = (sc.ch == ':' && sc.chNext != '=' &&
+							   sc.chNext != ':') ? OTHER_MODULE:
+												   NONE_MODULE;
 			}
-			if (sc.state != SCE_ERLANG_ATOM && sc.ch != ':')
-				module_name[0] = '\0';
 		}
 	}
 	sc.Complete();
