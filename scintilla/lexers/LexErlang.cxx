@@ -217,7 +217,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	module_name[0] = '\0';
 	int last_state;
 	
-	bool is_at_symb = false; // esh: "at" - is "@" symb (for node name)
+	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
+	bool is_var_record_name = false;	// esh: #RecordName{}, #?MODULE{}
 	
 	styler.StartAt(startPos);
 	
@@ -438,15 +439,19 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			/* -------------------------------------------------------------- */
 			
 			/* Macros/Records-------------------------------------------------*/
-			case SCE_ERLANG_MACRO  :
-			case SCE_ERLANG_RECORD : {
+			case SCE_ERLANG_RECORD :
+				if (is_var_record_name) {
+					sc.SetState(SCE_ERLANG_DEFAULT);
+					break;
+				}
+			case SCE_ERLANG_MACRO : {
 				if (!IsAWordChar(sc.ch) && sc.ch != '@') {
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			
-			case SCE_ERLANG_MACRO_QUOTED  :
-			case SCE_ERLANG_RECORD_QUOTED : {
+			case SCE_ERLANG_RECORD_QUOTED :
+			case SCE_ERLANG_MACRO_QUOTED  : {
 				if (sc.ch == '\'' && sc.chPrev != '\\') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
@@ -545,7 +550,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_OPERATOR : {
 				if ((sc.chPrev == '.') &&
 					(sc.ch == '*' || sc.ch == '/' || sc.ch == '\\'
-					 || sc.ch == '^' || sc.ch == '\'')) {
+					 || sc.ch == '^')) {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				} else {
 					sc.SetState(SCE_ERLANG_DEFAULT);
@@ -585,6 +590,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (sc.ch == '-' && islower(sc.chNext)) {
 				sc.SetState(SCE_ERLANG_PREPROC);
+				sc.Forward();
 				
 			} else if (sc.ch == '?') {
 				sc.SetState(SCE_ERLANG_UNKNOWN);
@@ -595,6 +601,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				} else if (isalpha(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_MACRO);
+					sc.Forward();
 				}
 			} else if (sc.ch == '#') {
 				sc.SetState(SCE_ERLANG_UNKNOWN);
@@ -607,6 +614,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ERLANG_MAP_OPER);
 				} else if (islower(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_RECORD);
+					sc.Forward();
+					is_var_record_name = false;
+				} else if (isupper(sc.chNext) || sc.chNext == '?') {
+					//~ examples: #RecordName{}, #?MODULE{}
+					sc.ChangeState(SCE_ERLANG_RECORD);
+					is_var_record_name = true;
 				}
 			} else if (isdigit(sc.ch)) {
 				number_state = NUMERAL_START;
