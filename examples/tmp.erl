@@ -50,10 +50,11 @@ get(#?MODULE{} = Media, Key) ->
 %%%test comment @author @copyright { @copyright} @copyright}
 %%%test comment {@link edoc:file/2} {@docRoot} { @docRoot} @docRoot} {@docRoot
 
--record(forward_ports_config, {
+-record(tstrec, {
   name :: binary(),
   handler = undefined :: atom(),
-  options = undefined :: any()
+  options = undefined :: any(),
+  erlang = test_module
 }).
 
 tmp() ->
@@ -120,17 +121,33 @@ default() -> ok.
 yield() -> ok.
 
 test(Var) ->
-	_Rec = #forward_ports_config{},
+	Rec = #tstrec{},
 	try throw(123)
 	catch
 		throw:123 = Val -> max(1, Val) % this is a bif-func
 	end,
 	_V11 = max(1,3),						% this is a bif-func
 	_V12 = erlang:max(1,3),					% this is a bif-func
+	_V12 = erlang: max(1,3),				% this is a bif-func
+	_V12 = erlang :max(1,3),				% this is a bif-func
 	_V13 = test:max(1,3),					% this is a not bif-func
+	_V13 = test: max(1,3),					% this is a not bif-func
+	_V13 = test :max(1,3),					% this is a not bif-func
 	_V14 = 'erlang':max(1,3),				% this is a not bif-func
+	_V14 = 'erlang': max(1,3),				% this is a not bif-func
+	_V14 = 'erlang' :max(1,3),				% this is a not bif-func
 	Mod = ?MODULE,
 	_V15 = Mod:max(1,3),					% this is a not bif-func
+	_V15 = Mod: max(1,3),					% this is a not bif-func
+	_V15 = Mod :max(1,3),					% this is a not bif-func
+	_V15 = (Rec#tstrec.erlang):max(1,3),	% this is a not bif-func
+	_V15 = (Rec#tstrec.erlang): max(1,3),	% this is a not bif-func
+	_V15 = (Rec#tstrec.erlang) :max(1,3),	% this is a not bif-func
+	_V15 = ?MODULE: max(1,3),				% this is a not bif-func
+	_V15 = ?MODULE :max(1,3),				% this is a not bif-func
+	_V15 = ?MODULE:max(1,3),				% this is a not bif-func
+	_V15 = ?MODULE: max(1,3),				% this is a not bif-func
+	_V15 = ?MODULE :max(1,3),				% this is a not bif-func
 	_V21 = yield(),							% this is a bif-func
 	_V22 = erlang:yield(),					% this is a bif-func
 	_V31 = integer_to_list(123),			% this is a bif-func
