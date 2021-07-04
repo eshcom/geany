@@ -239,12 +239,13 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				// Try to match documentation comment
 				sc.GetCurrent(cur, sizeof(cur));
 				if (sc.state == SCE_ERLANG_COMMENT_DOC) {
-					if (!erlangDoc.InList(cur)) {
+					if (!erlangDoc.InList(cur))
 						sc.ChangeState(last_state);
-					}
 				} else {
 					if (!erlangDocMacro.InList(cur)) {
-						sc.ChangeState(last_state);
+						sc.ChangeState(erlangDoc.InList(cur) ?
+										SCE_ERLANG_COMMENT_DOC:
+										last_state);
 					} else {
 						while (sc.ch != '}' && !sc.atLineEnd)
 							sc.Forward();
