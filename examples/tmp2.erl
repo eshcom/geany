@@ -1,3 +1,9 @@
+%%% @author     esh <test@test.ru> [http://test.org]
+%%% @copyright  2010-2019 esh
+%%% @doc        demuxer module
+%%% @reference  See <a href="http://test.org" target="_top">http://test.org</a> for more information
+%%% @end
+%%%---------------------------------------------------------------------------------------
 -module(tmp2).
 -compile(nowarn_export_all).
 -compile(export_all).

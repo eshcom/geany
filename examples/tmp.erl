@@ -143,8 +143,6 @@ test(Var) ->
 	_V15 = (Rec#tstrec.erlang):max(1,3),	% this is a not bif-func
 	_V15 = (Rec#tstrec.erlang): max(1,3),	% this is a not bif-func
 	_V15 = (Rec#tstrec.erlang) :max(1,3),	% this is a not bif-func
-	_V15 = ?MODULE: max(1,3),				% this is a not bif-func
-	_V15 = ?MODULE :max(1,3),				% this is a not bif-func
 	_V15 = ?MODULE:max(1,3),				% this is a not bif-func
 	_V15 = ?MODULE: max(1,3),				% this is a not bif-func
 	_V15 = ?MODULE :max(1,3),				% this is a not bif-func

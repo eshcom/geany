@@ -203,6 +203,18 @@ constexpr bool IsStreamCommentStyle(int style) noexcept {
 		   style == SCE_C_COMMENTDOCKEYWORDERROR;
 }
 
+constexpr bool IsNestedStringStyle(int style) noexcept {
+	return (style == SCE_C_ESCAPESEQUENCE ||
+			style == SCE_C_FORMATSEQUENCE ||
+			style == SCE_C_STRINGEOL);
+}
+
+constexpr bool IsQuoteStringStyle(int style) noexcept {
+	return (style == SCE_C_STRING ||
+			style == SCE_C_STRINGJSONKEY ||
+			style == SCE_C_CHARACTER);
+}
+
 struct PPDefinition {
 	Sci_Position line;
 	std::string key;
@@ -827,24 +839,16 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 	// esh: added detect stringState
-	} else if ((maskInitStyle == SCE_C_STRING) ||
-			   (maskInitStyle == SCE_C_STRINGJSONKEY) ||
-			   (maskInitStyle == SCE_C_CHARACTER)) {
+	} else if (IsQuoteStringStyle(maskInitStyle)) {
 		stringState = maskInitStyle;
 		
-	} else if (maskInitStyle == SCE_C_ESCAPESEQUENCE ||
-			   maskInitStyle == SCE_C_FORMATSEQUENCE ||
-			   maskInitStyle == SCE_C_STRINGEOL) {
+	} else if (IsNestedStringStyle(maskInitStyle)) {
 		Sci_PositionU back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = MaskActive(styler.StyleAt(back));
-			if (backStyle != SCE_C_ESCAPESEQUENCE &&
-				backStyle != SCE_C_FORMATSEQUENCE &&
-				backStyle != SCE_C_STRINGEOL) {
-				if ((backStyle == SCE_C_STRING) ||
-					(backStyle == SCE_C_STRINGJSONKEY) ||
-					(backStyle == SCE_C_CHARACTER)) {
+			if (!IsNestedStringStyle(backStyle)) {
+				if (IsQuoteStringStyle(backStyle)) {
 					stringState = backStyle;
 				} else if (styler[++back] == '\'') {
 					stringState = SCE_C_CHARACTER;

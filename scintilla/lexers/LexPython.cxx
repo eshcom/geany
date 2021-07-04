@@ -92,7 +92,7 @@ bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
 	return false;
 }
 
-bool IsPyNestedStyleString(int st) {
+bool IsPyNestedStringState(int st) {
 	return (st == SCE_P_ESCAPESEQUENCE ||
 			st == SCE_P_FORMATSEQUENCE ||
 			st == SCE_P_STRINGEOL);
@@ -589,12 +589,12 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		|| IsPyTripleQuoteStringState(initStyle)) {
 		stringState = initStyle;
 		
-	} else if (IsPyNestedStyleString(initStyle)) {
+	} else if (IsPyNestedStringState(initStyle)) {
 		Sci_PositionU back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);
-			if (!IsPyNestedStyleString(backStyle)) {
+			if (!IsPyNestedStringState(backStyle)) {
 				if (IsPySingleQuoteStringState(backStyle, false)
 					|| IsPyTripleQuoteStringState(backStyle)) {
 					stringState = backStyle;
