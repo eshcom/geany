@@ -155,8 +155,7 @@ static void ColouriseVHDLDoc(
 					if (sc.chNext != '(' || sc.GetRelative(4) != '\'') {
 						// Can only be a character literal
 						sc.SetState(SCE_VHDL_STRING);
-						sc.Forward();
-						sc.Forward();
+						sc.Forward(2);
 						sc.ForwardSetState(SCE_VHDL_DEFAULT);
 						advance = false;
 					} // else can be a tick or a character literal, need more context, eg.: identifier'('x')

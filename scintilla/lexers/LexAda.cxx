@@ -79,8 +79,7 @@ static void ColouriseCharacter(StyleContext& sc, bool& apostropheStartsAttribute
 	
 	// Skip the apostrophe and one more character (so that '' is shown as non-terminated and '''
 	// is handled correctly)
-	sc.Forward();
-	sc.Forward();
+	sc.Forward(2);
 	
 	ColouriseContext(sc, '\'', SCE_ADA_CHARACTEREOL);
 }
@@ -122,8 +121,7 @@ static void ColouriseLabel(StyleContext& sc, WordList& keywords,
 	sc.SetState(SCE_ADA_LABEL);
 	
 	// Skip "<<"
-	sc.Forward();
-	sc.Forward();
+	sc.Forward(2);
 	
 	std::string identifier;
 	
@@ -134,8 +132,7 @@ static void ColouriseLabel(StyleContext& sc, WordList& keywords,
 	
 	// Skip ">>"
 	if (sc.Match('>', '>')) {
-		sc.Forward();
-		sc.Forward();
+		sc.Forward(2);
 	} else {
 		sc.ChangeState(SCE_ADA_ILLEGAL);
 	}
