@@ -52,6 +52,8 @@ int main()
 	printf ("Width trick: %*d \n", 5, 10);
 	printf ("%s \n", "A string");
 	
+	printf("config2_server in state ~p calling timeout: %s\n%d", "test", 15);
+	
 	return 0;
 }
 

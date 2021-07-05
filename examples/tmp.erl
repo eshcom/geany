@@ -110,7 +110,6 @@ tmp() ->
 %~ --
 
 tmp2(Body, Major, Minor, Patch, Build, Mod, Socket, Request) ->
-	
 	_Val1 = io_lib:format("~2..0B~2..0B~2..0B~2..0B", [Major, Minor, Patch, Build]),
 	_Val2 = [ Y || <<_:16, Y:16/unsigned-little-integer>> <= Body ],
 	<<_UnitId:8, UnitSize:8, _Unit0:UnitSize/binary, _Rest/binary>> = _Val2,
@@ -236,11 +235,32 @@ to_int3(<<I, Bin/binary>>, Base, Num) when I >= $0 andalso I =< $9 ->
   to_int3(Bin, Base, Num*Base + I - $0).
 
 activate_from_file0() -> ok.
-activate_from_file() ->
+activate_from_file1() ->
   try activate_from_file0()
   catch
     throw:_R -> $
 end. % edit this line - fails highlighting
+
+activate_from_file2() ->
+  try activate_from_file0()
+  catch  % edit this line - fails highlighting
+    throw:_R -> $\
+end.
+
+activate_from_file3() ->
+  try activate_from_file0()
+  catch
+    throw:_R -> $\ end.
+
+activate_from_file4() ->
+  try activate_from_file0()
+  catch
+    throw:_R -> $\\end.
+
+activate_from_file5() ->
+  try activate_from_file0()
+  catch
+    throw:_R -> $\377end.
 
 dec_FastStartToken(Bytes) ->
 	'H235-SECURITY-MESSAGES':dec_ClearToken(Bytes).

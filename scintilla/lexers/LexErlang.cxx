@@ -226,7 +226,28 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
 	bool is_var_record_name = false;	// esh: #RecordName{}, #?MODULE{}
 	
-	styler.StartAt(startPos);
+	// esh: for escape sequences highlighting for SCE_ERLANG_CHARACTER
+	bool is_char_escape = false;
+	// esh: added detect is_char_escape
+	if (initStyle == SCE_ERLANG_ESCAPESEQUENCE) {
+		Sci_PositionU back = startPos;
+		int backStyle;
+		while (--back) {
+			backStyle = styler.StyleAt(back);
+			if (backStyle != SCE_ERLANG_ESCAPESEQUENCE) {
+				if (backStyle == SCE_ERLANG_CHARACTER) {
+					is_char_escape = true;
+				} else if (backStyle == SCE_ERLANG_STRING) {
+					is_char_escape = false;
+				} else if (styler[++back] == '$') {
+					is_char_escape = true;
+				} else {
+					is_char_escape = false;
+				}
+				break;
+			}
+		}
+	}
 	
 	for (; sc.More(); sc.Forward()) {
 		// Determine if the current state should terminate.
@@ -417,8 +438,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ERLANG_NODE_NAME_QUOTED);
 					
 				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
-					sc.Forward();
-					sc.SetState(SCE_ERLANG_DEFAULT);
+					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			/* -------------------------------------------------------------- */
@@ -472,6 +492,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_STRING : {
 				if (sc.ch == '\\') {
 					if (escapeSequence) {
+						is_char_escape = false;
 						sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
 						escapeSeq.initEscapeState(sc.chNext);
 					}
@@ -488,27 +509,51 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			} break;
 			
+			case SCE_ERLANG_CHARACTER : {
+				if (sc.ch == '\\') {
+					// esh: we will check the escapeSequence parameter later,
+					//		set SCE_ERLANG_ESCAPESEQUENCE for validation
+					is_char_escape = true;
+					sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+					escapeSeq.initEscapeState(sc.chNext);
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+					
+				} else if (sc.atLineEnd) {
+					sc.SetState(SCE_ERLANG_DEFAULT);
+				} else {
+					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+				}
+			} break;
+			
 			case SCE_ERLANG_ESCAPESEQUENCE : {
 				escapeSeq.digitsLeft--;
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
 					continue; // esh: continue of escape chars
 				}
-				if (sc.ch == '\\') {
-					escapeSeq.initEscapeState(sc.chNext);
-					sc.Forward();
-					continue;
-					
-				} else if (sc.ch == '~' && formatSequence) {
-					sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
-					formatSeq.initFormatState();
-					continue;
-					
-				} else if (sc.ch == '\"') {
-					sc.SetState(SCE_ERLANG_STRING);
-					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-					
+				if (is_char_escape) {
+					if (!sc.atLineStart && isdigit(sc.ch)) {
+						sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
+					} else if (!escapeSequence) {
+						sc.ChangeState(SCE_ERLANG_CHARACTER);
+					}
+					sc.SetState(SCE_ERLANG_DEFAULT);
 				} else {
-					sc.SetState(SCE_ERLANG_STRING);
+					if (sc.ch == '\\') {
+						escapeSeq.initEscapeState(sc.chNext);
+						sc.Forward();
+						continue;
+						
+					} else if (sc.ch == '~' && formatSequence) {
+						sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						formatSeq.initFormatState();
+						continue;
+						
+					} else {
+						sc.SetState(SCE_ERLANG_STRING);
+						if (sc.ch == '\"')
+							sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					}
 				}
 			} break;
 			
@@ -532,20 +577,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					formatSeq.initFormatState();
 					continue;
 					
-				} else if (sc.ch == '\"') {
-					sc.SetState(SCE_ERLANG_STRING);
-					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-					
 				} else {
 					sc.SetState(SCE_ERLANG_STRING);
-				}
-			} break;
-			
-			case SCE_ERLANG_CHARACTER : {
-				if (sc.chPrev == '\\') {
-					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-				} else if (sc.ch != '\\') {
-					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+					if (sc.ch == '\"')
+						sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			

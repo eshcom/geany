@@ -355,13 +355,11 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			else if (!isLinkNameDetecting && sc.ch == ']' &&
 					 sc.GetRelative(-1) != '\\') {
-			  sc.Forward();
-			  sc.SetState(SCE_MARKDOWN_DEFAULT);
+			  sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (isLinkNameDetecting && sc.ch == ')' &&
 					 sc.GetRelative(-1) != '\\') {
-			  sc.Forward();
-			  sc.SetState(SCE_MARKDOWN_DEFAULT);
+			  sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 			  isLinkNameDetecting = false;
 			}
 		}
