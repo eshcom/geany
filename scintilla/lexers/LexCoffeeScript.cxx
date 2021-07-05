@@ -257,8 +257,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				break;
 			case SCE_COFFEESCRIPT_COMMENTBLOCK:
 				if (sc.Match("###")) {
-					sc.Forward();
-					sc.Forward();
+					sc.Forward(2);
 					sc.ForwardSetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.ch == '\\') {
 					sc.Forward();
@@ -266,8 +265,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				break;
 			case SCE_COFFEESCRIPT_VERBOSE_REGEX:
 				if (sc.Match("///")) {
-					sc.Forward();
-					sc.Forward();
+					sc.Forward(2);
 					sc.ForwardSetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.Match('#')) {
 					sc.SetState(SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT);
@@ -290,8 +288,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				sc.SetState(SCE_COFFEESCRIPT_IDENTIFIER);
 			} else if (sc.Match("///")) {
 				sc.SetState(SCE_COFFEESCRIPT_VERBOSE_REGEX);
-				sc.Forward();
-				sc.Forward();
+				sc.Forward(2);
 			} else if (sc.ch == '/'
 				   && (setOKBeforeRE.Contains(chPrevNonWhite)
 					   || followsKeyword(sc, styler))
@@ -305,8 +302,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 			} else if (sc.ch == '#') {
 				if (sc.Match("###")) {
 					sc.SetState(SCE_COFFEESCRIPT_COMMENTBLOCK);
-					sc.Forward();
-					sc.Forward();
+					sc.Forward(2);
 				} else {
 					sc.SetState(SCE_COFFEESCRIPT_COMMENTLINE);
 				}

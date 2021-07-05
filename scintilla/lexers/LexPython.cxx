@@ -886,8 +886,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.ch == '\\') {
 				sc.Forward();
 			} else if (sc.Match(R"(''')")) {
-				sc.Forward();
-				sc.Forward();
+				sc.Forward(2);
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
 			}
@@ -896,8 +895,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.ch == '\\') {
 				sc.Forward();
 			} else if (sc.Match(R"(""")")) {
-				sc.Forward();
-				sc.Forward();
+				sc.Forward(2);
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
 			}
@@ -939,8 +937,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
 				if (IsPyTripleQuoteStringState(
 						fstringStateStack[matching_stack_i].state)) {
-					sc.Forward();
-					sc.Forward();
+					sc.Forward(2);
 				}
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
