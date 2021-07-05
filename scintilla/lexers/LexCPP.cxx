@@ -852,13 +852,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					stringState = backStyle;
 				} else if (styler[++back] == '\'') {
 					stringState = SCE_C_CHARACTER;
-				} else if (options.jsonKeyStrings) {
-					// esh: added detect JSON-key
-					if (jsonLastOper != ':' && jsonLastOper != '[') {
-						stringState = SCE_C_STRINGJSONKEY;
-					} else {
-						stringState = SCE_C_STRING;
-					}
+				} else if (options.jsonKeyStrings && // esh: added detect JSON-key
+							jsonLastOper != ':' && jsonLastOper != '[') {
+					stringState = SCE_C_STRINGJSONKEY;
 				} else {
 					stringState = SCE_C_STRING;
 				}

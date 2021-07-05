@@ -11,6 +11,11 @@
 -record(rmq@obj_, {f1@1, f1_2}).
 -record(rmq@obj@, {f21@, f22_}).
 -record('@rmq@obj@', {f21@, f22_}).
+-record('rmq\nobj\n', {f21@, f22_}).
+-record('rmq\
+          obj\n', {f21@, f22_}).
+-record('rmq\n
+          obj\n', {f21@, f22_}).
 
 -define(CALL@_TIMEOUT, 1000).
 -define(CALL_TIMEOUT@, 2000).
@@ -18,6 +23,11 @@
 %~ -define(call@_timeout, 3000). % equal 'call@_timeout'
 -define('@call_timeout@', 4000).
 -define(call@_timeout@, 5000).
+-define('call\n_timeout\n', 6000).
+-define('call\
+          timeout\n', 7000).
+-define('call\n
+          timeout\n', 8000).
 
 %~ tmp2:test1().
 test1() ->
@@ -112,6 +122,13 @@ test11() ->
   Record5 = #'@rmq@obj@'{f21@ = val_1, f22_ = val@2},
   Record6 = # '@rmq@obj@'{f21@ = val_1, f22_ = val@2},
   Record7 = #	'@rmq@obj@'{f21@ = val_1, f22_ = val@2},
+  Record8 = #	'rmq\nobj\n'{f21@ = val_1, f22_ = val@2},
+  Record9 = #	'rmq
+          obj\n'{f21@ = val_1, f22_ = val@2} =
+            #	'rmq\
+          obj\n'{f21@ = val_1, f22_ = val@2},
+  Record10 = #	'rmq\n
+          obj\n'{f21@ = val_1, f22_ = val@2},
   io:format("~p is atom = ~p~n", [Node1, is_atom(Node1)]),
   io:format("~p is atom = ~p~n", [Node2, is_atom(Node2)]),
   io:format("~p is atom = ~p~n", [Node3, is_atom(Node3)]),
@@ -131,6 +148,13 @@ test11() ->
   io:format("Macro5 = ~p~n", [?call@_timeout@]),
   io:format("Macro5 = ~p~n", [? call@_timeout@]),
   io:format("Macro5 = ~p~n", [?	call@_timeout@]),
+  io:format("Macro6 = ~p~n", [?	'call\n_timeout\n']),
+  io:format("Macro7 = ~p~n", [?	'call
+          timeout\n' =
+                              ?	'call\
+          timeout\n']),
+  io:format("Macro8 = ~p~n", [?	'call\n
+          timeout\n']),
   io:format("Record1 = ~p~n", [Record1]),
   io:format("Record2 = ~p~n", [Record2]),
   io:format("Record3 = ~p~n", [Record3]),
@@ -139,4 +163,7 @@ test11() ->
   io:format("Record6 = ~p~n", [Record6]),
   io:format("Record7 = ~p~n", [Record7]),
   io:format("Record7.f21@ = ~p~n", [Record7#'@rmq@obj@'.f21@]),
+  io:format("Record8 = ~p~n", [Record8]),
+  io:format("Record9 = ~p~n", [Record9]),
+  io:format("Record10 = ~p~n", [Record10]),
   ok.
