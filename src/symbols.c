@@ -2192,10 +2192,11 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 		new_tags = filter_tags_by_scope(filtered_tags, scope);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
-	const TMTagType def_func_types = tm_tag_function_t | tm_tag_method_t;
+	// esh: if struct/record has the same name as func - tm_tag_struct_t is needed
+	const TMTagType def_types = tm_tag_function_t | tm_tag_method_t | tm_tag_struct_t;
 	if (filtered_tags->len > 1 && definition)
 	{
-		new_tags = filter_tags_by_type(filtered_tags, def_func_types);
+		new_tags = filter_tags_by_type(filtered_tags, def_types);
 		filter_tags_check(&filtered_tags, &new_tags);
 	}
 	if (filtered_tags->len > 1 && current_file && lang != TM_PARSER_ERLANG)
