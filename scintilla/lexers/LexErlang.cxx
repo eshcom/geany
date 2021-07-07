@@ -222,6 +222,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	char cur[100];
 	int last_state;
+	int last_oper = ' ';
 	
 	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
 	bool is_var_record_name = false;	// esh: #RecordName{}, #?MODULE{}
@@ -399,6 +400,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ERLANG_NODE_NAME);
 					continue;
 				} else if (IsAWordChar(sc.ch)) {
+					continue;
+				} else if (sc.ch == '-' && last_oper == '/'
+							&& islower(sc.chNext)) {
+					sc.Forward();
 					continue;
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -672,6 +677,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (isoperator(static_cast<char>(sc.ch))
 						|| sc.ch == '\\') {
+				last_oper = sc.ch;
 				sc.SetState(SCE_ERLANG_OPERATOR);
 				module_type = (sc.ch == ':' && sc.chNext != '=' &&
 							   sc.chNext != ':') ? OTHER_MODULE:
