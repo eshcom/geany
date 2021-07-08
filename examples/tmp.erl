@@ -2,6 +2,9 @@
 -compile(nowarn_export_all).
 -compile(export_all).
 
+-author(esh).
+-version(1.0).
+
 -define(CONFIG_MODULE, server_config).
 -define(CODE_VERSION, "1.4").
 -define(CALL@_TIMEOUT, 1000).
