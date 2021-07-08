@@ -210,9 +210,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &erlangBIFs = *keywordlists[1];
 	WordList &erlangPreproc = *keywordlists[2];
 	WordList &erlangModulesAtt = *keywordlists[3];
-	WordList &erlangDoc = *keywordlists[4];
-	WordList &erlangDocMacro = *keywordlists[5];
-	WordList &erlangAtomSpec = *keywordlists[6];
+	WordList &erlangOtherAtt = *keywordlists[4];
+	WordList &erlangDoc = *keywordlists[5];
+	WordList &erlangDocMacro = *keywordlists[6];
+	WordList &erlangAtomSpec = *keywordlists[7];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
@@ -386,6 +387,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(cur, sizeof(cur));
 				if (erlangModulesAtt.InList(cur)) {
 					sc.ChangeState(SCE_ERLANG_MODULES_ATT);
+				} else if (erlangOtherAtt.InList(cur)) {
+					sc.ChangeState(SCE_ERLANG_OTHER_ATT);
 				} else if (!erlangPreproc.InList(cur)) {
 					sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 				}
