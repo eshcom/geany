@@ -184,6 +184,15 @@ typedef enum {
 	ERLANG_MODULE
 } module_type_t;
 
+constexpr bool IsSpaceEquiv(int state) noexcept {
+	return (state == SCE_ERLANG_DEFAULT) ||
+		   (state == SCE_ERLANG_COMMENT) ||
+		   (state == SCE_ERLANG_COMMENT_FUNCTION) ||
+		   (state == SCE_ERLANG_COMMENT_MODULE) ||
+		   (state == SCE_ERLANG_COMMENT_DOC) ||
+		   (state == SCE_ERLANG_COMMENT_DOC_MACRO);
+}
+
 static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
@@ -222,7 +231,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	module_type_t module_type = NONE_MODULE;
 	
 	char cur[100];
-	int last_state;
+	int last_comment_state;
+	int last_state = SCE_ERLANG_DEFAULT;
 	int last_oper = ' ';
 	
 	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
@@ -249,6 +259,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 			}
 		}
+	} else if (startPos > 0) {
+		// esh: added detect last_state, last_oper
+		Sci_PositionU back = startPos;
+		while (--back && IsSpaceEquiv(styler.StyleAt(back)))
+			;
+		last_state = styler.StyleAt(back);
+		if (last_state == SCE_ERLANG_OPERATOR) {
+			last_oper = styler.SafeGetCharAt(back);
+		}
 	}
 	
 	for (; sc.More(); sc.Forward()) {
@@ -263,24 +282,24 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(cur, sizeof(cur));
 				if (sc.state == SCE_ERLANG_COMMENT_DOC) {
 					if (!erlangDoc.InList(cur))
-						sc.ChangeState(last_state);
+						sc.ChangeState(last_comment_state);
 				} else {
 					if (!erlangDocMacro.InList(cur)) {
 						sc.ChangeState(erlangDoc.InList(cur) ?
 										SCE_ERLANG_COMMENT_DOC:
-										last_state);
+										last_comment_state);
 					} else {
 						while (sc.ch != '}' && !sc.atLineEnd)
 							sc.Forward();
 						if (sc.ch != '}')
-							sc.ChangeState(last_state);
+							sc.ChangeState(last_comment_state);
 					}
 				}
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_ERLANG_DEFAULT);
 					break;
 				} else {
-					sc.SetState(last_state);
+					sc.SetState(last_comment_state);
 				}
 			}
 			// V--- Falling through!
@@ -294,12 +313,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					while (!sc.atLineEnd && IsASpaceOrTab(sc.ch))
 						sc.Forward();
 					if (sc.ch == '@' && isalnum(sc.chNext)) {
-						last_state = sc.state;
+						last_comment_state = sc.state;
 						sc.SetState(SCE_ERLANG_COMMENT_DOC_MACRO);
 						sc.Forward();
 					}
 				} else if (sc.ch == '@' && isalnum(sc.chNext)) {
-					last_state = sc.state;
+					last_comment_state = sc.state;
 					sc.SetState(SCE_ERLANG_COMMENT_DOC);
 					sc.Forward();
 				}
@@ -633,7 +652,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '$') {
 				sc.SetState(SCE_ERLANG_CHARACTER);
 				
-			} else if (sc.ch == '-' && islower(sc.chNext)) {
+			} else if ((last_state == SCE_ERLANG_DEFAULT ||
+						last_state == SCE_ERLANG_OPERATOR) &&
+					   (last_oper == ' ' || last_oper == '.') &&
+					   sc.ch == '-' && islower(sc.chNext)) {
 				sc.SetState(SCE_ERLANG_PREPROC);
 				sc.Forward();
 				
@@ -686,6 +708,9 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   sc.chNext != ':') ? OTHER_MODULE:
 												   NONE_MODULE;
 			}
+		}
+		if (last_state != sc.state && !IsSpaceEquiv(sc.state)) {
+			last_state = sc.state;
 		}
 	}
 	sc.Complete();
