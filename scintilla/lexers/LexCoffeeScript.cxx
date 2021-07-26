@@ -140,7 +140,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 	
 	// look back to set chPrevNonWhite properly for better regex colouring
 	Sci_Position endPos = startPos + length;
-		if (startPos > 0 && IsSpaceEquiv(initStyle)) {
+	if (startPos > 0 && IsSpaceEquiv(initStyle)) {
 		Sci_PositionU back = startPos;
 		styler.Flush();
 		while (back > 0 && IsSpaceEquiv(styler.StyleAt(--back)))

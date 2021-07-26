@@ -353,3 +353,7 @@ enc_attrs(Msg) ->
        enc_attr(?STUN_ATTR_DATA, Msg#stun.'DATA'),
        enc_addr(?STUN_ATTR_ALTERNATE_SERVER, Msg#stun.'ALTERNATE-SERVER'),
        enc_attr(test, Msg#stun.'UNKNOWN-ATTRIBUTES')]).
+
+fun1(SessionId) ->
+  Headers = <<"#!::t=",SessionId/binary,",a=",(base:version(describe))/binary>>,
+  binary:copy(<<0>>, 184-1-size(Headers)).
