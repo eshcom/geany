@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-29 23:50+0300\n"
+"POT-Creation-Date: 2021-08-04 15:28+0300\n"
 "PO-Revision-Date: 2015-03-31 07:10+0200\n"
 "Last-Translator: Frank Lanitz <frank@frank.uvena.de>\n"
 "Language-Team: German <geany-i18n@uvena.de>\n"
@@ -112,11 +112,11 @@ msgstr "_Suchen"
 msgid "Open Selected F_ile"
 msgstr "_Markierte Datei öffnen"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2733
+#: ../data/geany.glade.h:19 ../src/symbols.c:2738
 msgid "Find _Usage"
 msgstr "A_uftreten finden"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2738
+#: ../data/geany.glade.h:20 ../src/symbols.c:2743
 msgid "Find _Document Usage"
 msgstr "_Auftreten im Dokument finden"
 
@@ -1838,7 +1838,7 @@ msgstr "_Nächstes"
 msgid "Find _Previous"
 msgstr "_Vorheriges"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2748
 msgid "Find in F_iles..."
 msgstr "In _Dateien suchen…"
 
@@ -2087,7 +2087,7 @@ msgid "_Apply Default Indentation"
 msgstr "_Standardeinrückung anwenden"
 
 #. build the code
-#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2452 ../src/build.c:2723
 msgid "_Build"
 msgstr "_Erstellen"
 
@@ -2444,7 +2444,7 @@ msgid "_Previous Error"
 msgstr "_Vorheriger Fehler"
 
 #. arguments
-#: ../src/build.c:1359 ../src/build.c:2762
+#: ../src/build.c:1359 ../src/build.c:2763
 msgid "_Set Build Commands"
 msgstr "_Kommandos zum Erstellen konfigurieren"
 
@@ -2537,30 +2537,30 @@ msgstr ""
 msgid "Set Build Commands"
 msgstr "Kommandos zum Erstellen konfigurieren"
 
-#: ../src/build.c:2444
+#: ../src/build.c:2445
 msgid "_Compile"
 msgstr "_Kompilieren"
 
-#: ../src/build.c:2458 ../src/build.c:2488 ../src/build.c:2690
+#: ../src/build.c:2459 ../src/build.c:2489 ../src/build.c:2691
 msgid "_Execute"
 msgstr "_Ausführen"
 
 #. build the code with make custom
-#: ../src/build.c:2503 ../src/build.c:2688 ../src/build.c:2742
+#: ../src/build.c:2504 ../src/build.c:2689 ../src/build.c:2743
 msgid "Make Custom _Target..."
 msgstr "Make (eigenes _Target)…"
 
 #. build the code with make object
-#: ../src/build.c:2505 ../src/build.c:2689 ../src/build.c:2750
+#: ../src/build.c:2506 ../src/build.c:2690 ../src/build.c:2751
 msgid "Make _Object"
 msgstr "Make _Objekt-Datei"
 
-#: ../src/build.c:2507 ../src/build.c:2687
+#: ../src/build.c:2508 ../src/build.c:2688
 msgid "_Make"
 msgstr "_Make"
 
 #. build the code with make all
-#: ../src/build.c:2734
+#: ../src/build.c:2735
 msgid "_Make All"
 msgstr "_Make all"
 
@@ -2758,7 +2758,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
+#: ../src/symbols.c:2552 ../src/symbols.c:2568 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "unbekannt"
 
@@ -3318,7 +3318,7 @@ msgid "Document"
 msgstr "Dokument"
 
 #: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
-#: ../src/ui_utils.c:2226
+#: ../src/ui_utils.c:2240
 msgid "Build"
 msgstr "Erstellen"
 
@@ -4150,11 +4150,11 @@ msgstr "Tasten festlegen"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Welche Tastenkombination soll für »%s« genutzt werden?"
 
-#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2706 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "Alle a_usklappen"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2711 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "Alle _einklappen"
 
@@ -5100,21 +5100,21 @@ msgstr "%s: %lu"
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2298
+#: ../src/symbols.c:2303
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "(Vorwärts-)Deklaration von »%s« nicht gefunden."
 
-#: ../src/symbols.c:2300
+#: ../src/symbols.c:2305
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Definition von »%s« nicht gefunden."
 
-#: ../src/symbols.c:2716
+#: ../src/symbols.c:2721
 msgid "Sort by _Name"
 msgstr "Nach _Namen sortieren"
 
-#: ../src/symbols.c:2723
+#: ../src/symbols.c:2728
 msgid "Sort by _Appearance"
 msgstr "Nach _Auftreten sortieren"
 
@@ -5441,68 +5441,68 @@ msgstr "T/L"
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:407
-msgid " (new instance)"
-msgstr " (neue Instanz)"
+#: ../src/ui_utils.c:381
+msgid "(new instance) "
+msgstr "(neue Instanz) "
 
-#: ../src/ui_utils.c:437
+#: ../src/ui_utils.c:451
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Schriftart gewechselt (%s)."
 
-#: ../src/ui_utils.c:688
+#: ../src/ui_utils.c:702
 msgid "C Standard Library"
 msgstr "C Standard Bibliothek"
 
-#: ../src/ui_utils.c:689
+#: ../src/ui_utils.c:703
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:690
+#: ../src/ui_utils.c:704
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C Standard Bibliothek)"
 
-#: ../src/ui_utils.c:691
+#: ../src/ui_utils.c:705
 msgid "C++ Standard Library"
 msgstr "C++ Standard Bibliothek"
 
-#: ../src/ui_utils.c:692
+#: ../src/ui_utils.c:706
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:714 ../src/ui_utils.c:792
+#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
 msgid "dd.mm.yyyy"
 msgstr "TT.MM.JJJJ"
 
-#: ../src/ui_utils.c:716 ../src/ui_utils.c:793
+#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
 msgid "mm.dd.yyyy"
 msgstr "MM.TT.JJJJ"
 
-#: ../src/ui_utils.c:718 ../src/ui_utils.c:794
+#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
 msgid "yyyy/mm/dd"
 msgstr "JJJJ/MM/TT"
 
-#: ../src/ui_utils.c:720 ../src/ui_utils.c:803
+#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "TT.MM.JJJJ HH:MM:SS"
 
-#: ../src/ui_utils.c:722 ../src/ui_utils.c:804
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "MM.TT.JJJJ HH:MM:SS"
 
-#: ../src/ui_utils.c:724 ../src/ui_utils.c:805
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "JJJJ/MM/TT HH:MM:SS"
 
-#: ../src/ui_utils.c:726 ../src/ui_utils.c:814
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
 msgid "_Use Custom Date Format"
 msgstr "Benutze selbst erstelltes _Datumsformat"
 
-#: ../src/ui_utils.c:730
+#: ../src/ui_utils.c:744
 msgid "Custom Date Format"
 msgstr "Benutzerdefiniertes Datumsformat"
 
-#: ../src/ui_utils.c:731
+#: ../src/ui_utils.c:745
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5510,36 +5510,36 @@ msgstr ""
 "Hier kann ein benutzerdefiniertes Datumsformat eingegeben werden. Dabei "
 "funktionieren alle Platzhalter der ANSI-C-Funktion »strftime«."
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:766
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 "Das Datenformat konnte nicht umgewandelt werden. Eventuell ist es zu lang."
 
-#: ../src/ui_utils.c:827
+#: ../src/ui_utils.c:841
 msgid "_Set Custom Date Format"
 msgstr "_Benutzerdefiniertes Datumsformat einstellen"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select Folder"
 msgstr "Ordner wählen"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select File"
 msgstr "Datei wählen"
 
-#: ../src/ui_utils.c:2187
+#: ../src/ui_utils.c:2201
 msgid "_Filetype Configuration"
 msgstr "_Dateityp-Einstellungen"
 
-#: ../src/ui_utils.c:2224
+#: ../src/ui_utils.c:2238
 msgid "Save All"
 msgstr "Alle speichern"
 
-#: ../src/ui_utils.c:2225
+#: ../src/ui_utils.c:2239
 msgid "Close All"
 msgstr "Alle schließen"
 
-#: ../src/ui_utils.c:2457
+#: ../src/ui_utils.c:2471
 msgid "Geany cannot start!"
 msgstr "Geany kann nicht starten!"
 

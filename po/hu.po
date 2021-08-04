@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-29 23:50+0300\n"
+"POT-Creation-Date: 2021-08-04 15:28+0300\n"
 "PO-Revision-Date: 2018-06-17 19:41+0200\n"
 "Last-Translator: Meskó Balázs <mesko.balazs@fsf.hu>\n"
 "Language-Team: Hungarian\n"
@@ -106,11 +106,11 @@ msgstr "_Keresés"
 msgid "Open Selected F_ile"
 msgstr "K_ijelölt fájl megnyitása"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2733
+#: ../data/geany.glade.h:19 ../src/symbols.c:2738
 msgid "Find _Usage"
 msgstr "_Használat keresése"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2738
+#: ../data/geany.glade.h:20 ../src/symbols.c:2743
 msgid "Find _Document Usage"
 msgstr "_Dokumentum használat keresése"
 
@@ -1810,7 +1810,7 @@ msgstr "Kö_vetkező találat"
 msgid "Find _Previous"
 msgstr "Elő_ző találat"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2748
 msgid "Find in F_iles..."
 msgstr "Keresés _fájlokban…"
 
@@ -2059,7 +2059,7 @@ msgid "_Apply Default Indentation"
 msgstr "Alapértelmezett _behúzás alkalmazása"
 
 #. build the code
-#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2452 ../src/build.c:2723
 msgid "_Build"
 msgstr "Össz_eállítás"
 
@@ -2417,7 +2417,7 @@ msgid "_Previous Error"
 msgstr "Elő_ző hiba"
 
 #. arguments
-#: ../src/build.c:1359 ../src/build.c:2762
+#: ../src/build.c:1359 ../src/build.c:2763
 msgid "_Set Build Commands"
 msgstr "Összeállítási parancsok _megadása"
 
@@ -2511,30 +2511,30 @@ msgstr ""
 msgid "Set Build Commands"
 msgstr "Összeállításai parancsok megadása"
 
-#: ../src/build.c:2444
+#: ../src/build.c:2445
 msgid "_Compile"
 msgstr "_Fordítás"
 
-#: ../src/build.c:2458 ../src/build.c:2488 ../src/build.c:2690
+#: ../src/build.c:2459 ../src/build.c:2489 ../src/build.c:2691
 msgid "_Execute"
 msgstr "_Futtatás"
 
 #. build the code with make custom
-#: ../src/build.c:2503 ../src/build.c:2688 ../src/build.c:2742
+#: ../src/build.c:2504 ../src/build.c:2689 ../src/build.c:2743
 msgid "Make Custom _Target..."
 msgstr "Make egyéni _céllal…"
 
 #. build the code with make object
-#: ../src/build.c:2505 ../src/build.c:2689 ../src/build.c:2750
+#: ../src/build.c:2506 ../src/build.c:2690 ../src/build.c:2751
 msgid "Make _Object"
 msgstr "Make _objektumra"
 
-#: ../src/build.c:2507 ../src/build.c:2687
+#: ../src/build.c:2508 ../src/build.c:2688
 msgid "_Make"
 msgstr "_Make"
 
 #. build the code with make all
-#: ../src/build.c:2734
+#: ../src/build.c:2735
 msgid "_Make All"
 msgstr "_Make All"
 
@@ -2733,7 +2733,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
+#: ../src/symbols.c:2552 ../src/symbols.c:2568 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "ismeretlen"
 
@@ -3283,7 +3283,7 @@ msgid "Document"
 msgstr "Dokumentum"
 
 #: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
-#: ../src/ui_utils.c:2226
+#: ../src/ui_utils.c:2240
 msgid "Build"
 msgstr "Összeállítás"
 
@@ -4107,11 +4107,11 @@ msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 "Üsse le a billentyűkombinációt, amit a(z) „%s” parancshoz használni szeretne."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2706 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "Összes ki_bontása"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2711 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "Összes összecsu_kása"
 
@@ -5051,21 +5051,21 @@ msgstr "%s: %lu"
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2298
+#: ../src/symbols.c:2303
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "A(z) „%s” előzetes deklarációja nem található."
 
-#: ../src/symbols.c:2300
+#: ../src/symbols.c:2305
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "A(z) „%s” definíciója nem található."
 
-#: ../src/symbols.c:2716
+#: ../src/symbols.c:2721
 msgid "Sort by _Name"
 msgstr "Rendezés _név alapján"
 
-#: ../src/symbols.c:2723
+#: ../src/symbols.c:2728
 msgid "Sort by _Appearance"
 msgstr "Rendezés megjelenés _alapján"
 
@@ -5393,68 +5393,68 @@ msgstr "T/S"
 msgid "MOD"
 msgstr "MÓDOSÍT"
 
-#: ../src/ui_utils.c:407
-msgid " (new instance)"
-msgstr " (új példány)"
+#: ../src/ui_utils.c:381
+msgid "(new instance) "
+msgstr "(új példány) "
 
-#: ../src/ui_utils.c:437
+#: ../src/ui_utils.c:451
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Betűtípus frissítve (%s)."
 
-#: ../src/ui_utils.c:688
+#: ../src/ui_utils.c:702
 msgid "C Standard Library"
 msgstr "C Standard Library"
 
-#: ../src/ui_utils.c:689
+#: ../src/ui_utils.c:703
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:690
+#: ../src/ui_utils.c:704
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C Standard Library)"
 
-#: ../src/ui_utils.c:691
+#: ../src/ui_utils.c:705
 msgid "C++ Standard Library"
 msgstr "C++ Standard Library"
 
-#: ../src/ui_utils.c:692
+#: ../src/ui_utils.c:706
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:714 ../src/ui_utils.c:792
+#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
 msgid "dd.mm.yyyy"
 msgstr "nn.hh.éééé"
 
-#: ../src/ui_utils.c:716 ../src/ui_utils.c:793
+#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
 msgid "mm.dd.yyyy"
 msgstr "hh.nn.éééé"
 
-#: ../src/ui_utils.c:718 ../src/ui_utils.c:794
+#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
 msgid "yyyy/mm/dd"
 msgstr "éééé/hh/nn"
 
-#: ../src/ui_utils.c:720 ../src/ui_utils.c:803
+#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "nn.hh.éééé óó:pp:mm"
 
-#: ../src/ui_utils.c:722 ../src/ui_utils.c:804
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "hh.nn.éééé óó:pp:mm"
 
-#: ../src/ui_utils.c:724 ../src/ui_utils.c:805
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "éééé/hh/nn óó:pp:mm"
 
-#: ../src/ui_utils.c:726 ../src/ui_utils.c:814
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
 msgid "_Use Custom Date Format"
 msgstr "Egyedi dát_umformátum használata"
 
-#: ../src/ui_utils.c:730
+#: ../src/ui_utils.c:744
 msgid "Custom Date Format"
 msgstr "Egyedi dátumformátum"
 
-#: ../src/ui_utils.c:731
+#: ../src/ui_utils.c:745
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5462,37 +5462,37 @@ msgstr ""
 "Adja meg itt az egyedi dátum és idő formátumot. Minden olyan konverziós "
 "jelölés használható, amit az ANSI C strftime függvénnyel használni lehet."
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:766
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 "A dátumformátum karakterláncot nem lehetett átalakítani (feltehetően túl "
 "hosszú)."
 
-#: ../src/ui_utils.c:827
+#: ../src/ui_utils.c:841
 msgid "_Set Custom Date Format"
 msgstr "E_gyedi dátumformátum megadása"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select Folder"
 msgstr "Könyvtár kiválasztása"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select File"
 msgstr "Fájl kiválasztása"
 
-#: ../src/ui_utils.c:2187
+#: ../src/ui_utils.c:2201
 msgid "_Filetype Configuration"
 msgstr "Fájltípus beállítása"
 
-#: ../src/ui_utils.c:2224
+#: ../src/ui_utils.c:2238
 msgid "Save All"
 msgstr "Összes mentése"
 
-#: ../src/ui_utils.c:2225
+#: ../src/ui_utils.c:2239
 msgid "Close All"
 msgstr "Összes bezárása"
 
-#: ../src/ui_utils.c:2457
+#: ../src/ui_utils.c:2471
 msgid "Geany cannot start!"
 msgstr "A Geany nem tud elindulni!"
 

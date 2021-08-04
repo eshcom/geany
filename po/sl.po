@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-29 23:50+0300\n"
+"POT-Creation-Date: 2021-08-04 15:28+0300\n"
 "PO-Revision-Date: 2014-06-09 17:49+0100\n"
 "Last-Translator: Jože Klepec <joze.klepec@siol.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -110,11 +110,11 @@ msgstr "_Išči"
 msgid "Open Selected F_ile"
 msgstr "Odpri _izbrano datoteko"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2733
+#: ../data/geany.glade.h:19 ../src/symbols.c:2738
 msgid "Find _Usage"
 msgstr "Najdi _uporabo"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2738
+#: ../data/geany.glade.h:20 ../src/symbols.c:2743
 msgid "Find _Document Usage"
 msgstr "Najdi uporabo _dokumenta"
 
@@ -1815,7 +1815,7 @@ msgstr "Išči _naslednje"
 msgid "Find _Previous"
 msgstr "Išči _predhodno"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2748
 msgid "Find in F_iles..."
 msgstr "Išči v _datoteki"
 
@@ -2071,7 +2071,7 @@ msgstr "Uporabi _privzeto zamikanje"
 
 # zgradi izvorno kodo
 #. build the code
-#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2452 ../src/build.c:2723
 msgid "_Build"
 msgstr "_Zgradi"
 
@@ -2431,7 +2431,7 @@ msgid "_Previous Error"
 msgstr "_Predhodna napaka"
 
 #. arguments
-#: ../src/build.c:1359 ../src/build.c:2762
+#: ../src/build.c:1359 ../src/build.c:2763
 msgid "_Set Build Commands"
 msgstr "_Nastavi ukaze za gradnjo"
 
@@ -2524,33 +2524,33 @@ msgstr ""
 msgid "Set Build Commands"
 msgstr "Nastavi ukaze za gradnjo"
 
-#: ../src/build.c:2444
+#: ../src/build.c:2445
 msgid "_Compile"
 msgstr "_Prevedi"
 
-#: ../src/build.c:2458 ../src/build.c:2488 ../src/build.c:2690
+#: ../src/build.c:2459 ../src/build.c:2489 ../src/build.c:2691
 msgid "_Execute"
 msgstr "_Izvedi:"
 
 # zgradi izvorno kodo z make custom
 #. build the code with make custom
-#: ../src/build.c:2503 ../src/build.c:2688 ../src/build.c:2742
+#: ../src/build.c:2504 ../src/build.c:2689 ../src/build.c:2743
 msgid "Make Custom _Target..."
 msgstr "Zgradi _tarčo po meri"
 
 # zgradi izvorno kodo z make object
 #. build the code with make object
-#: ../src/build.c:2505 ../src/build.c:2689 ../src/build.c:2750
+#: ../src/build.c:2506 ../src/build.c:2690 ../src/build.c:2751
 msgid "Make _Object"
 msgstr "Zgradi _objekt"
 
-#: ../src/build.c:2507 ../src/build.c:2687
+#: ../src/build.c:2508 ../src/build.c:2688
 msgid "_Make"
 msgstr "_Zgradi:"
 
 # zgradi izvorno kodo z make all
 #. build the code with make all
-#: ../src/build.c:2734
+#: ../src/build.c:2735
 msgid "_Make All"
 msgstr "Zgradi _vse"
 
@@ -2762,7 +2762,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
+#: ../src/symbols.c:2552 ../src/symbols.c:2568 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "neznano"
 
@@ -3323,7 +3323,7 @@ msgid "Document"
 msgstr "Dokument"
 
 #: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
-#: ../src/ui_utils.c:2226
+#: ../src/ui_utils.c:2240
 msgid "Build"
 msgstr "Zgradi"
 
@@ -4149,11 +4149,11 @@ msgstr "Zagrabi tipko"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Pritisnite kombinacijo tipk, ki jo želite uporabiti za \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2706 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Razširi vse"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2711 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Zloži vse"
 
@@ -5118,21 +5118,21 @@ msgstr ""
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2298
+#: ../src/symbols.c:2303
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Navedba \"forward\"  \"%s\" ni najdena."
 
-#: ../src/symbols.c:2300
+#: ../src/symbols.c:2305
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Opredelitev  \"%s\" ni najdena."
 
-#: ../src/symbols.c:2716
+#: ../src/symbols.c:2721
 msgid "Sort by _Name"
 msgstr "Uredi po _imenu"
 
-#: ../src/symbols.c:2723
+#: ../src/symbols.c:2728
 msgid "Sort by _Appearance"
 msgstr "Uredi po _videzu"
 
@@ -5464,68 +5464,68 @@ msgstr "R/P"
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:407
-msgid " (new instance)"
-msgstr "(nov izvod)"
+#: ../src/ui_utils.c:381
+msgid "(new instance) "
+msgstr "(nov izvod) "
 
-#: ../src/ui_utils.c:437
+#: ../src/ui_utils.c:451
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Nabor znakov osvežen (%s)."
 
-#: ../src/ui_utils.c:688
+#: ../src/ui_utils.c:702
 msgid "C Standard Library"
 msgstr "C standardna knjižnica"
 
-#: ../src/ui_utils.c:689
+#: ../src/ui_utils.c:703
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:690
+#: ../src/ui_utils.c:704
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C standardna knjižnica)"
 
-#: ../src/ui_utils.c:691
+#: ../src/ui_utils.c:705
 msgid "C++ Standard Library"
 msgstr "C++ standardna knjižnica"
 
-#: ../src/ui_utils.c:692
+#: ../src/ui_utils.c:706
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:714 ../src/ui_utils.c:792
+#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.llll"
 
-#: ../src/ui_utils.c:716 ../src/ui_utils.c:793
+#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.lllll"
 
-#: ../src/ui_utils.c:718 ../src/ui_utils.c:794
+#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
 msgid "yyyy/mm/dd"
 msgstr "llll/mm/dd"
 
-#: ../src/ui_utils.c:720 ../src/ui_utils.c:803
+#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.llll uu:mm:ss"
 
-#: ../src/ui_utils.c:722 ../src/ui_utils.c:804
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.llll uu:mm:ss"
 
-#: ../src/ui_utils.c:724 ../src/ui_utils.c:805
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "llll/mm/dd uu:mm:ss"
 
-#: ../src/ui_utils.c:726 ../src/ui_utils.c:814
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
 msgid "_Use Custom Date Format"
 msgstr "_Uporabi obliko datuma po meri"
 
-#: ../src/ui_utils.c:730
+#: ../src/ui_utils.c:744
 msgid "Custom Date Format"
 msgstr "Oblika datuma po meri"
 
-#: ../src/ui_utils.c:731
+#: ../src/ui_utils.c:745
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5533,36 +5533,36 @@ msgstr ""
 "Tu vnesite obliko datuma in časa po meri. Uporabite lahko vse oblike, ki jih "
 "sprejme ANSI C strftime funkcija."
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:766
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Datumski oblični niz ni bil pretvorjen (verjetno predolg)."
 
-#: ../src/ui_utils.c:827
+#: ../src/ui_utils.c:841
 msgid "_Set Custom Date Format"
 msgstr "_Nastavi prilagojeno obliko datuma"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select Folder"
 msgstr "Izberite mapo"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select File"
 msgstr "Izberite datoteko"
 
-#: ../src/ui_utils.c:2187
+#: ../src/ui_utils.c:2201
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "_Osveži nastavitve"
 
-#: ../src/ui_utils.c:2224
+#: ../src/ui_utils.c:2238
 msgid "Save All"
 msgstr "Shrani vse"
 
-#: ../src/ui_utils.c:2225
+#: ../src/ui_utils.c:2239
 msgid "Close All"
 msgstr "Zapri vse"
 
-#: ../src/ui_utils.c:2457
+#: ../src/ui_utils.c:2471
 msgid "Geany cannot start!"
 msgstr "Geany se ne more zagnati!"
 
