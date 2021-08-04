@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-29 23:50+0300\n"
+"POT-Creation-Date: 2021-08-04 15:28+0300\n"
 "PO-Revision-Date: 2015-06-23 19:16+0300\n"
 "Last-Translator: Yury Siamashka <yurand2@gmail.com>\n"
 "Language-Team: Belarusian <geany-i18n@uvena.de>\n"
@@ -109,11 +109,11 @@ msgstr "Шукаць"
 msgid "Open Selected F_ile"
 msgstr "Адкрыць вылучаны файл"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2733
+#: ../data/geany.glade.h:19 ../src/symbols.c:2738
 msgid "Find _Usage"
 msgstr "Знайсці ўжыванне"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2738
+#: ../data/geany.glade.h:20 ../src/symbols.c:2743
 msgid "Find _Document Usage"
 msgstr "Знайсці ўжыванне дакумента"
 
@@ -1800,7 +1800,7 @@ msgstr "Шукаць наступны"
 msgid "Find _Previous"
 msgstr "Шукаць папярэдні"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2743
+#: ../data/geany.glade.h:382 ../src/symbols.c:2748
 msgid "Find in F_iles..."
 msgstr "Шукаць у файлах"
 
@@ -2050,7 +2050,7 @@ msgid "_Apply Default Indentation"
 msgstr "Прымяніць прадвызначаныя водступы"
 
 #. build the code
-#: ../data/geany.glade.h:444 ../src/build.c:2451 ../src/build.c:2722
+#: ../data/geany.glade.h:444 ../src/build.c:2452 ../src/build.c:2723
 msgid "_Build"
 msgstr "Зборка"
 
@@ -2402,7 +2402,7 @@ msgid "_Previous Error"
 msgstr "Папярэдняя памылка"
 
 #. arguments
-#: ../src/build.c:1359 ../src/build.c:2762
+#: ../src/build.c:1359 ../src/build.c:2763
 msgid "_Set Build Commands"
 msgstr "Усталяваць каманды зборкі"
 
@@ -2494,30 +2494,30 @@ msgstr ""
 msgid "Set Build Commands"
 msgstr "Усталяваць каманды зборкі"
 
-#: ../src/build.c:2444
+#: ../src/build.c:2445
 msgid "_Compile"
 msgstr "Скампіляваць"
 
-#: ../src/build.c:2458 ../src/build.c:2488 ../src/build.c:2690
+#: ../src/build.c:2459 ../src/build.c:2489 ../src/build.c:2691
 msgid "_Execute"
 msgstr "Выканаць"
 
 #. build the code with make custom
-#: ../src/build.c:2503 ../src/build.c:2688 ../src/build.c:2742
+#: ../src/build.c:2504 ../src/build.c:2689 ../src/build.c:2743
 msgid "Make Custom _Target..."
 msgstr "Сабраць указанную мэту"
 
 #. build the code with make object
-#: ../src/build.c:2505 ../src/build.c:2689 ../src/build.c:2750
+#: ../src/build.c:2506 ../src/build.c:2690 ../src/build.c:2751
 msgid "Make _Object"
 msgstr "Сабраць аб'ектны файл"
 
-#: ../src/build.c:2507 ../src/build.c:2687
+#: ../src/build.c:2508 ../src/build.c:2688
 msgid "_Make"
 msgstr "Сабраць "
 
 #. build the code with make all
-#: ../src/build.c:2734
+#: ../src/build.c:2735
 msgid "_Make All"
 msgstr "Сабраць усе"
 
@@ -2720,7 +2720,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2547 ../src/symbols.c:2563 ../src/ui_utils.c:288
+#: ../src/symbols.c:2552 ../src/symbols.c:2568 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "невядомы"
 
@@ -3267,7 +3267,7 @@ msgid "Document"
 msgstr "Дакумент"
 
 #: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
-#: ../src/ui_utils.c:2226
+#: ../src/ui_utils.c:2240
 msgid "Build"
 msgstr "Зборка"
 
@@ -4097,11 +4097,11 @@ msgstr "Захапіць клавішу"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Укажыце спалучэнне клавіш для \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2701 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2706 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "Разгарнуць усё"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2706 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2711 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "Згарнуць усё"
 
@@ -5042,21 +5042,21 @@ msgstr ""
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2298
+#: ../src/symbols.c:2303
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Папярэдняя аб'ява\"%s\" не знойдзена."
 
-#: ../src/symbols.c:2300
+#: ../src/symbols.c:2305
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Вызначэнне \"%s\" не знойдзена."
 
-#: ../src/symbols.c:2716
+#: ../src/symbols.c:2721
 msgid "Sort by _Name"
 msgstr "Сартаваць па імені"
 
-#: ../src/symbols.c:2723
+#: ../src/symbols.c:2728
 msgid "Sort by _Appearance"
 msgstr "Сартаваць па з'яўленні"
 
@@ -5380,68 +5380,68 @@ msgstr "ТАБ/ПРБ"
 msgid "MOD"
 msgstr "Рэжым"
 
-#: ../src/ui_utils.c:407
-msgid " (new instance)"
-msgstr "(новы асобнік)"
+#: ../src/ui_utils.c:381
+msgid "(new instance) "
+msgstr "(новы асобнік) "
 
-#: ../src/ui_utils.c:437
+#: ../src/ui_utils.c:451
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Шрыфт абноўлены (%s)."
 
-#: ../src/ui_utils.c:688
+#: ../src/ui_utils.c:702
 msgid "C Standard Library"
 msgstr "Стандартная бібліятэка C"
 
-#: ../src/ui_utils.c:689
+#: ../src/ui_utils.c:703
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:690
+#: ../src/ui_utils.c:704
 msgid "C++ (C Standard Library)"
 msgstr "C++ (Стандартная бібліятэка)"
 
-#: ../src/ui_utils.c:691
+#: ../src/ui_utils.c:705
 msgid "C++ Standard Library"
 msgstr "C++ Стандартная бібліятэка"
 
-#: ../src/ui_utils.c:692
+#: ../src/ui_utils.c:706
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:714 ../src/ui_utils.c:792
+#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
 msgid "dd.mm.yyyy"
 msgstr "дд.мм.гггг"
 
-#: ../src/ui_utils.c:716 ../src/ui_utils.c:793
+#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
 msgid "mm.dd.yyyy"
 msgstr "мм.дд.гггг"
 
-#: ../src/ui_utils.c:718 ../src/ui_utils.c:794
+#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
 msgid "yyyy/mm/dd"
 msgstr "гггг/мм/дддд"
 
-#: ../src/ui_utils.c:720 ../src/ui_utils.c:803
+#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "дд.мм.гггг чч:мм:сс"
 
-#: ../src/ui_utils.c:722 ../src/ui_utils.c:804
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "мм.дд.гггг чч:мм:сс"
 
-#: ../src/ui_utils.c:724 ../src/ui_utils.c:805
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "гггг/мм/дддд чч:мм:сс"
 
-#: ../src/ui_utils.c:726 ../src/ui_utils.c:814
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
 msgid "_Use Custom Date Format"
 msgstr "Выкарыстоўваць свой фармат даты"
 
-#: ../src/ui_utils.c:730
+#: ../src/ui_utils.c:744
 msgid "Custom Date Format"
 msgstr "Свой фармат даты"
 
-#: ../src/ui_utils.c:731
+#: ../src/ui_utils.c:745
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5449,36 +5449,36 @@ msgstr ""
 "Увядзіце свой фармат даты і часу. Вы можаце выкарыстоўваць любыя "
 "падстаноўкі, прыдатныя да функцыі strftime ANSI C."
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:766
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 "Не атрымалася сканвертаваць радок фармату даты (магчыма радок надта доўгі)."
 
-#: ../src/ui_utils.c:827
+#: ../src/ui_utils.c:841
 msgid "_Set Custom Date Format"
 msgstr "Усталяваць свой фармат даты"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select Folder"
 msgstr "Выбраць каталог"
 
-#: ../src/ui_utils.c:2017
+#: ../src/ui_utils.c:2031
 msgid "Select File"
 msgstr "Выбраць файл"
 
-#: ../src/ui_utils.c:2187
+#: ../src/ui_utils.c:2201
 msgid "_Filetype Configuration"
 msgstr "Налады тыпу файлаў "
 
-#: ../src/ui_utils.c:2224
+#: ../src/ui_utils.c:2238
 msgid "Save All"
 msgstr "Захаваць усё"
 
-#: ../src/ui_utils.c:2225
+#: ../src/ui_utils.c:2239
 msgid "Close All"
 msgstr "Закрыць усё"
 
-#: ../src/ui_utils.c:2457
+#: ../src/ui_utils.c:2471
 msgid "Geany cannot start!"
 msgstr "Geany не можа запусціцца!"
 

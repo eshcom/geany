@@ -368,43 +368,57 @@ void ui_set_window_title(GeanyDocument *doc)
 {
 	GString *str;
 	GeanyProject *project = app->project;
-
+	
 	g_return_if_fail(doc == NULL || doc->is_valid);
-
+	
 	if (doc == NULL)
 		doc = document_get_current();
-
+	
 	str = g_string_new(NULL);
-
-	if (doc != NULL)
-	{
-		g_string_append(str, doc->changed ? "*" : "");
-
-		if (doc->file_name == NULL)
-			g_string_append(str, DOC_FILENAME(doc));
-		else
-		{
-			gchar *short_name = document_get_basename_for_display(doc, 30);
-			gchar *dirname = g_path_get_dirname(DOC_FILENAME(doc));
-
-			g_string_append(str, short_name);
-			g_string_append(str, " - ");
-			g_string_append(str, dirname ? dirname : "");
-			g_free(short_name);
-			g_free(dirname);
-		}
-		g_string_append(str, " - ");
-	}
-	if (project)
-	{
-		g_string_append_c(str, '[');
-		g_string_append(str, project->name);
-		g_string_append(str, "] - ");
-	}
-	g_string_append(str, "Geany");
+	
+	//~ esh: changed the logic for generating the title of the main window
 	if (cl_options.new_instance)
+		g_string_append(str, _("(new instance) "));
+	
+	if (project == NULL && doc == NULL)
+		g_string_append(str, "Geany");
+	else
 	{
-		g_string_append(str, _(" (new instance)"));
+		if (project != NULL)
+		{
+			g_string_append_c(str, '[');
+			g_string_append(str, project->name);
+			g_string_append(str, "]");
+		}
+		if (doc != NULL)
+		{
+			if (project != NULL)
+				g_string_append(str, " - ");
+			
+			if (doc->file_name == NULL)
+			{
+				if (doc->changed)
+					g_string_append(str, "*");
+				g_string_append(str, DOC_FILENAME(doc));
+			}
+			else
+			{
+				gchar *short_name = document_get_basename_for_display(doc, 30);
+				gchar *dirname = g_path_get_dirname(DOC_FILENAME(doc));
+				
+				if (dirname)
+				{
+					g_string_append(str, dirname);
+					g_string_append(str, "/");
+				}
+				if (doc->changed)
+					g_string_append(str, "*");
+				g_string_append(str, short_name);
+				
+				g_free(short_name);
+				g_free(dirname);
+			}
+		}
 	}
 	gtk_window_set_title(GTK_WINDOW(main_widgets.window), str->str);
 	g_string_free(str, TRUE);
