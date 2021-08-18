@@ -299,7 +299,8 @@ void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
 
 void editor_find_custom_words_chunk(gchar *chunk, const gchar separator,
 									gchar *word1, gsize wordlen1, const gchar *wordchars1,
-									gchar *word2, gsize wordlen2, const gchar *wordchars2);
+									gchar *word2, gsize wordlen2, const gchar *wordchars2,
+									TMParserType lang);
 
 void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
 							  gsize wordlen, const gchar *wc);
