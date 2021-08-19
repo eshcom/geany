@@ -2114,13 +2114,14 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	guint i;
 	
-	const TMTagType include_types = tm_tag_attr_file_t | tm_tag_attr_pos_t |
-									tm_tag_attr_inheritance_t | tm_tag_attr_impl_t |
-									tm_tag_attr_inactive_t | tm_tag_attr_pointer_t;
+	const TMTagType search_types = tm_tag_enumerator_t | tm_tag_function_t |
+								   tm_tag_member_t | tm_tag_typedef_t |
+								   tm_tag_variable_t | tm_tag_externvar_t |
+								   tm_tag_struct_t | tm_tag_macro_t;
 	
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		if ((tmtag->type & include_types) &&
+		if ((tmtag->type & search_types) &&
 			g_strcmp0(tmtag->file->file_name, file->file_name) == 0)
 			g_ptr_array_add(filtered_tags, tmtag);
 	}
@@ -2129,7 +2130,7 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 		gchar *dir = g_path_get_dirname(file->file_name);
 		foreach_ptr_array(tmtag, i, tags)
 		{
-			if ((tmtag->type & include_types) &&
+			if ((tmtag->type & search_types) &&
 				g_str_has_prefix(tmtag->file->file_name, dir))
 				g_ptr_array_add(filtered_tags, tmtag);
 		}
