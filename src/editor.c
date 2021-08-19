@@ -1718,8 +1718,8 @@ static WordBound read_current_word(GeanyEditor *editor, gint pos, gchar *word, g
 	if (wc == NULL)
 		wc = GEANY_WORDCHARS;
 	
-	read_word(chunk, &startword, &endword, word, wordlen, wc, stem,
-			  editor->document->file_type->lang);
+	read_word(chunk, &startword, &endword, word, wordlen,
+			  wc, stem, editor->document->file_type->lang);
 	g_free(chunk);
 	
 	if (startword != endword)
@@ -1969,10 +1969,9 @@ void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
 
 /* esh: Reads custom word1 and word2 by selection.
  * 		(based on editor_find_custom_words/editor_find_word_and_scope_chunk) */
-void editor_find_custom_words_chunk(gchar *chunk, const gchar separator,
+void editor_find_custom_words_chunk(gchar *chunk, TMParserType lang, const gchar separator,
 									gchar *word1, gsize wordlen1, const gchar *wordchars1,
-									gchar *word2, gsize wordlen2, const gchar *wordchars2,
-									TMParserType lang)
+									gchar *word2, gsize wordlen2, const gchar *wordchars2)
 {
 	g_return_if_fail(chunk != NULL);
 	
@@ -4372,10 +4371,9 @@ void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
 	{
 		gchar *selection = sci_get_selection_contents(editor->sci);
 		
-		editor_find_custom_words_chunk(selection, separator,
+		editor_find_custom_words_chunk(selection, editor->document->file_type->lang, separator,
 									   custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
-									   custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2,
-									   editor->document->file_type->lang);
+									   custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
 		g_free(selection);
 	}
 	else
