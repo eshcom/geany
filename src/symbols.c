@@ -2139,9 +2139,10 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 	return filtered_tags;
 }
 
-static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
+static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags,
+							  gboolean force_replace)
 {
-	if ((*new_tags)->len > 0)
+	if ((*new_tags)->len > 0 || force_replace)
 	{
 		g_ptr_array_free(*old_tags, TRUE);
 		*old_tags = *new_tags;
@@ -2151,7 +2152,7 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags)
 }
 
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
-							  const gchar *scope, gboolean definition, TMParserType lang)
+							  const gchar *scope, TMTagType type, gboolean definition)
 {
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
@@ -2202,29 +2203,41 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 				}
 			}
 		}
-		filter_tags_check(&filtered_tags, &new_tags);
+		filter_tags_check(&filtered_tags, &new_tags, FALSE);
 	}
 	if (filtered_tags->len > 1 && definition)
 	{
-		// esh: if struct/record/macro has the same name as func -
-		//		tm_tag_struct_t/tm_tag_macro_t is needed
-		const TMTagType def_types = tm_tag_function_t | tm_tag_method_t |
-									tm_tag_struct_t | tm_tag_macro_t;
-		new_tags = filter_tags_by_type(filtered_tags, def_types);
-		filter_tags_check(&filtered_tags, &new_tags);
+		TMTagType search_types;
+		gboolean force_replace;
+		if (type == tm_tag_undef_t)
+		{
+			// esh: if struct/record/macro has the same name as func -
+			//		tm_tag_struct_t/tm_tag_macro_t is needed
+			search_types = tm_tag_function_t | tm_tag_method_t |
+						   tm_tag_struct_t | tm_tag_macro_t;
+			force_replace = FALSE;
+		}
+		else
+		{
+			search_types = type;
+			force_replace = TRUE;
+		}
+		new_tags = filter_tags_by_type(filtered_tags, search_types);
+		filter_tags_check(&filtered_tags, &new_tags, force_replace);
 	}
 	if (filtered_tags->len > 1 && current_file)
 	{
 		new_tags = filter_tags_by_file(filtered_tags, current_file);
-		filter_tags_check(&filtered_tags, &new_tags);
+		filter_tags_check(&filtered_tags, &new_tags, FALSE);
 	}
 	return filtered_tags;
 }
 
 
-static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definition)
+static gboolean goto_tag(const gchar *name, const gchar *scope,
+						 TMTagType type, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "goto_tag: scope = %s, name = %s", scope, name); // esh: log
+	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s", type, scope, name); // esh: log
 	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *current_tag = NULL;
 	GeanyDocument *old_doc = document_get_current();
@@ -2252,14 +2265,14 @@ static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definit
 		/* swap definition/declaration search */
 		definition = current_tag->type & forward_types;
 	
-	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope,
-								definition, old_doc->file_type->lang);
+	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file,
+								scope, type, definition);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file, scope,
-									!definition, old_doc->file_type->lang);
+		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file,
+									scope, type, !definition);
 	}
 	g_ptr_array_free(tags, TRUE);
 	tags = filtered_tags;
@@ -2305,9 +2318,10 @@ static gboolean goto_tag(const gchar *name, const gchar *scope, gboolean definit
 }
 
 
-gboolean symbols_goto_tag(const gchar *name, const gchar *scope, gboolean definition)
+gboolean symbols_goto_tag(const gchar *name, const gchar *scope,
+						  TMTagType type, gboolean definition)
 {
-	if (goto_tag(name, scope, definition))
+	if (goto_tag(name, scope, type, definition))
 		return TRUE;
 	
 	/* if we are here, there was no match and we are beeping ;-) */

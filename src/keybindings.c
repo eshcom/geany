@@ -78,7 +78,8 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *event, gpoint
 static gboolean check_current_word(GeanyDocument *doc, gboolean sci_word);
 static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word);
 static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word);
-static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope);
+static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope,
+									   TMTagType *type);
 
 static gboolean cb_func_file_action(guint key_id);
 static gboolean cb_func_project_action(guint key_id);
@@ -1810,7 +1811,8 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 
 
 /* esh: (based on get_current_word_or_sel/read_current_word) */
-static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope)
+static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar **scope,
+									   TMTagType *type)
 {
 	ScintillaObject *sci = doc->editor->sci;
 	
@@ -1822,9 +1824,10 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 		static gchar current_word[GEANY_MAX_WORD_LENGTH];
 		
 		editor_find_word_and_scope_chunk(selection,
-			doc->editor->document->file_type->lang,
-			current_word, GEANY_MAX_WORD_LENGTH,
-			current_scope, GEANY_MAX_WORD_LENGTH);
+										 doc->editor->document->file_type->lang,
+										 current_word, GEANY_MAX_WORD_LENGTH,
+										 current_scope, GEANY_MAX_WORD_LENGTH,
+										 type);
 		if (*current_word)
 		{
 			*word = g_strdup(current_word);
@@ -1836,8 +1839,9 @@ static void get_current_word_and_scope(GeanyDocument *doc, gchar **word, gchar *
 	else
 	{
 		editor_find_word_and_scope(doc->editor, -1,
-			editor_info.current_word, GEANY_MAX_WORD_LENGTH,
-			current_scope, GEANY_MAX_WORD_LENGTH);
+								   editor_info.current_word, GEANY_MAX_WORD_LENGTH,
+								   current_scope, GEANY_MAX_WORD_LENGTH,
+								   type);
 		if (*editor_info.current_word)
 		{
 			*word = g_strdup(editor_info.current_word);
@@ -2118,11 +2122,12 @@ static void goto_tag(GeanyDocument *doc, gboolean definition)
 {
 	gchar *word = NULL;
 	gchar *scope = NULL;
+	TMTagType type = tm_tag_undef_t;
 	//~ word = get_current_word_or_sel(doc, FALSE); // esh: it was
-	get_current_word_and_scope(doc, &word, &scope); // esh: it is
+	get_current_word_and_scope(doc, &word, &scope, &type); // esh: it is
 	
 	if (word)
-		symbols_goto_tag(word, scope, definition);
+		symbols_goto_tag(word, scope, type, definition);
 	else
 		utils_beep();
 	
