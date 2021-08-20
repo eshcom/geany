@@ -57,7 +57,8 @@ gint symbols_generate_global_tags(gint argc, gchar **argv, gboolean want_preproc
 
 void symbols_show_load_tags_dialog(void);
 
-gboolean symbols_goto_tag(const gchar *name, const gchar *scope, gboolean definition);
+gboolean symbols_goto_tag(const gchar *name, const gchar *scope,
+						  TMTagType type, gboolean definition);
 
 gint symbols_get_current_function(GeanyDocument *doc, const gchar **tagname);
 

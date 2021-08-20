@@ -322,11 +322,13 @@ static gboolean on_editor_button_press_event(GtkWidget *widget, GdkEventButton *
 			sci_set_current_position(editor->sci, editor_info.click_pos, FALSE);
 			
 			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
+			TMTagType type = tm_tag_undef_t;
 			editor_find_word_and_scope(editor, editor_info.click_pos,
-				current_word, sizeof current_word,
-				current_scope, sizeof current_scope);
+									   current_word, sizeof current_word,
+									   current_scope, sizeof current_scope,
+									   &type);
 			if (*current_word)
-				return symbols_goto_tag(current_word, current_scope, TRUE);
+				return symbols_goto_tag(current_word, current_scope, type, TRUE);
 			else
 				keybindings_send_command(GEANY_KEY_GROUP_GOTO, GEANY_KEYS_GOTO_MATCHINGBRACE);
 			return TRUE;
@@ -1820,7 +1822,8 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword, gchar
  * 		 with the addition of a scope search) */
 void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 								gchar *word, gsize wordlen,
-								gchar *scope, gsize scopelen)
+								gchar *scope, gsize scopelen,
+								TMTagType *type)
 {
 	g_return_if_fail(editor != NULL);
 	ScintillaObject *sci = editor->sci;
@@ -1834,7 +1837,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	
 	if (pos > 0)
 	{
-		const gchar *context_sep = tm_parser_context_separator(editor->document->file_type->lang);
+		TMParserType lang = editor->document->file_type->lang;
+		const gchar *context_sep = tm_parser_context_separator(lang);
 		
 		if (match_last_chars(sci, pos, context_sep))
 		{
@@ -1860,6 +1864,13 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				}
 			}
 		}
+		else if (lang == TM_PARSER_ERLANG)
+		{
+			if (match_last_chars(sci, pos, "?"))
+				*type = tm_tag_macro_t;
+			else if (match_last_chars(sci, pos, "#"))
+				*type = tm_tag_struct_t;
+		}
 	}
 	*scope = '\0';
 }
@@ -1869,7 +1880,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
  * 		(based on editor_find_word_and_scope) */
 void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 									  gchar *word, gsize wordlen,
-									  gchar *scope, gsize scopelen)
+									  gchar *scope, gsize scopelen,
+									  TMTagType *type)
 {
 	g_return_if_fail(chunk != NULL);
 	
@@ -1921,6 +1933,13 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 					return;
 				}
 			}
+		}
+		else if (lang == TM_PARSER_ERLANG)
+		{
+			if (match_last_chars_chunk(chunk, startword, "?"))
+				*type = tm_tag_macro_t;
+			else if (match_last_chars_chunk(chunk, startword, "#"))
+				*type = tm_tag_struct_t;
 		}
 	}
 	*scope = '\0';
