@@ -358,7 +358,7 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 {
 	gchar buf[BUFSIZ];
 	gchar *p, *tab;
-
+	
 	tag->refcount = 1;
 	tag->type = tm_tag_function_t; /* default type is function if no kind is specified */
 	do
@@ -367,17 +367,17 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 			return FALSE;
 	}
 	while (strncmp(buf, "!_TAG_", 6) == 0); /* skip !_TAG_ lines */
-
+	
 	p = buf;
-
+	
 	/* tag name */
-	if (! (tab = strchr(p, '\t')) || p == tab)
+	if (!(tab = strchr(p, '\t')) || p == tab)
 		return FALSE;
 	tag->name = g_strndup(p, (gsize)(tab - p));
 	p = tab + 1;
-
+	
 	/* tagfile, unused */
-	if (! (tab = strchr(p, '\t')))
+	if (!(tab = strchr(p, '\t')))
 	{
 		g_free(tag->name);
 		tag->name = NULL;
@@ -405,14 +405,14 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 		{
 			gchar *end;
 			const gchar *key, *value = NULL;
-
+			
 			/* skip leading tabulations */
 			while (*p && *p == '\t') p++;
 			/* find the separator (:) and end (\t) */
 			key = end = p;
 			while (*end && *end != '\t' && *end != '\n' && *end != '\r')
 			{
-				if (*end == ':' && ! value)
+				if (*end == ':' && !value)
 				{
 					*end = 0; /* terminate the key */
 					value = end + 1;
@@ -422,11 +422,11 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 			/* move p paste the so we won't stop parsing by setting *end=0 below */
 			p = *end ? end + 1 : end;
 			*end = 0; /* terminate the value (or key if no value) */
-
-			if (! value || 0 == strcmp(key, "kind")) /* tag kind */
+			
+			if (!value || 0 == strcmp(key, "kind")) /* tag kind */
 			{
 				const gchar *kind = value ? value : key;
-
+				
 				if (kind[0] && kind[1])
 					tag->type = tm_parser_get_tag_type(ctagsGetKindFromName(kind, lang), lang);
 				else
@@ -447,7 +447,8 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 					 0 == strcmp(key, "enum") ||
 					 0 == strcmp(key, "function") ||
 					 0 == strcmp(key, "struct") ||
-					 0 == strcmp(key, "union")) /* Name of the class/enum/function/struct/union in which this tag is a member */
+					 0 == strcmp(key, "union") ||
+					 0 == strcmp(key, "module")) /* Name of the class/enum/function/struct/union/module in which this tag is a member */
 			{
 				g_free(tag->scope);
 				tag->scope = g_strdup(value);
@@ -461,7 +462,6 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 			}
 		}
 	}
-
 	tag->file = file;
 	return TRUE;
 }
@@ -470,7 +470,7 @@ static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType 
 {
 	TMTag *tag = tm_tag_new();
 	gboolean result = FALSE;
-
+	
 	switch (format)
 	{
 		case TM_FILE_FORMAT_TAGMANAGER:
@@ -483,8 +483,7 @@ static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType 
 			result = init_tag_from_file_ctags(tag, file, fp, mode);
 			break;
 	}
-
-	if (! result)
+	if (!result)
 	{
 		tm_tag_unref(tag);
 		return NULL;
