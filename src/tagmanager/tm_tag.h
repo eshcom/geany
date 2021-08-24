@@ -89,7 +89,7 @@ typedef struct TMTag
 	char *name; /**< Name of tag */
 	TMTagType type; /**< Tag Type */
 	gint refcount; /* the reference count of the tag */
-
+	
 	/** These are tag attributes */
 	TMSourceFile *file; /**< File in which the tag occurs; NULL for global tags */
 	gulong line; /**< Line number of the tag */
@@ -116,23 +116,25 @@ TMTag *tm_tag_new(void);
 void tm_tags_remove_file_tags(TMSourceFile *source_file, GPtrArray *tags_array);
 
 GPtrArray *tm_tags_merge(GPtrArray *big_array, GPtrArray *small_array,
-	TMTagAttrType *sort_attributes, gboolean unref_duplicates);
+						 TMTagAttrType *sort_attributes, gboolean unref_duplicates);
 
 void tm_tags_sort(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
-	gboolean dedup, gboolean unref_duplicates);
+				  gboolean dedup, gboolean unref_duplicates);
 
 GPtrArray *tm_tags_extract(GPtrArray *tags_array, guint tag_types);
 
 void tm_tags_prune(GPtrArray *tags_array);
 
-void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes, gboolean unref_duplicates);
+void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
+				   gboolean unref_duplicates);
 
 TMTag **tm_tags_find(const GPtrArray *tags_array, const char *name,
-		gboolean partial, guint * tagCount);
+					 gboolean partial, guint *tagCount);
 
 void tm_tags_array_free(GPtrArray *tags_array, gboolean free_all);
 
-const TMTag *tm_get_current_tag(GPtrArray *file_tags, const gulong line, const TMTagType tag_types);
+const TMTag *tm_get_current_tag(GPtrArray *file_tags, const gulong line,
+								const TMTagType tag_types);
 
 void tm_tag_unref(TMTag *tag);
 
@@ -146,7 +148,7 @@ gboolean tm_tag_is_anon(const TMTag *tag);
 
 const char *tm_tag_type_name(const TMTag *tag);
 
-TMTagType tm_tag_name_type(const char* tag_name);
+TMTagType tm_tag_name_type(const char *tag_name);
 
 void tm_tag_print(TMTag *tag, FILE *fp);
 
