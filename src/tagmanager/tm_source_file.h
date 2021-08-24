@@ -55,8 +55,8 @@ const gchar *tm_source_file_get_lang_name(TMParserType lang);
 
 TMParserType tm_source_file_get_named_lang(const gchar *name);
 
-gboolean tm_source_file_parse(TMSourceFile *source_file, guchar* text_buf, gsize buf_size,
-	gboolean use_buffer);
+gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
+							  gsize buf_size, gboolean use_buffer);
 
 GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mode);
 

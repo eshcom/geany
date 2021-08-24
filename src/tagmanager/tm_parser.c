@@ -26,8 +26,8 @@
 
 typedef struct
 {
-    const gchar kind;
-    TMTagType type;
+	const gchar kind;
+	TMTagType type;
 } TMParserMapEntry;
 
 /* Allows remapping a subparser tag type to another type if there's a clash with
@@ -37,8 +37,8 @@ typedef struct
  * subparsers. */
 typedef struct
 {
-    TMTagType orig_type;
-    TMTagType new_type;
+	TMTagType orig_type;
+	TMTagType new_type;
 } TMSubparserMapEntry;
 
 
@@ -109,8 +109,8 @@ static TMParserMapEntry map_PYTHON[] = {
 	{'f', tm_tag_function_t},
 	{'m', tm_tag_method_t},
 	{'v', tm_tag_variable_t},
-    /* defined as externvar to get those excluded as forward type in symbols.c:goto_tag()
-     * so we can jump to the real implementation (if known) instead of to the import statement */
+	/* defined as externvar to get those excluded as forward type in symbols.c:goto_tag()
+	 * so we can jump to the real implementation (if known) instead of to the import statement */
 	{'x', tm_tag_externvar_t},
 };
 
@@ -514,8 +514,8 @@ static TMParserMapEntry map_POWERSHELL[] = {
 
 typedef struct
 {
-    TMParserMapEntry *entries;
-    guint size;
+	TMParserMapEntry *entries;
+	guint size;
 } TMParserMap;
 
 #define MAP_ENTRY(lang) [TM_PARSER_##lang] = {map_##lang, G_N_ELEMENTS(map_##lang)}
@@ -582,11 +582,11 @@ TMTagType tm_parser_get_tag_type(gchar kind, TMParserType lang)
 {
 	TMParserMap *map = &parser_map[lang];
 	guint i;
-
+	
 	for (i = 0; i < map->size; i++)
 	{
 		TMParserMapEntry *entry = &map->entries[i];
-
+		
 		if (entry->kind == kind)
 			return entry->type;
 	}
@@ -598,11 +598,11 @@ gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang)
 {
 	TMParserMap *map = &parser_map[lang];
 	guint i;
-
+	
 	for (i = 0; i < map->size; i++)
 	{
 		TMParserMapEntry *entry = &map->entries[i];
-
+		
 		if (entry->type == type)
 			return entry->kind;
 	}
@@ -616,17 +616,17 @@ static void add_subparser(TMParserType lang, TMParserType sublang,
 	guint i;
 	GPtrArray *mapping;
 	GHashTable *lang_map = g_hash_table_lookup(subparser_map, GINT_TO_POINTER(lang));
-
+	
 	if (!lang_map)
 	{
 		lang_map = g_hash_table_new(g_direct_hash, g_direct_equal);
 		g_hash_table_insert(subparser_map, GINT_TO_POINTER(lang), lang_map);
 	}
-
+	
 	mapping = g_ptr_array_new();
 	for (i = 0; i < map_size; i++)
 		g_ptr_array_add(mapping, &map[i]);
-
+	
 	g_hash_table_insert(lang_map, GINT_TO_POINTER(sublang), mapping);
 }
 
@@ -639,33 +639,33 @@ static void init_subparser_map(void)
 }
 
 
-TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang, TMTagType type)
+TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang,
+									   TMTagType type)
 {
 	guint i;
 	GHashTable *lang_map;
 	GPtrArray *mapping;
-
+	
 	if (!subparser_map)
 	{
 		subparser_map = g_hash_table_new(g_direct_hash, g_direct_equal);
 		init_subparser_map();
 	}
-
+	
 	lang_map = g_hash_table_lookup(subparser_map, GINT_TO_POINTER(lang));
 	if (!lang_map)
 		return tm_tag_undef_t;
-
+	
 	mapping = g_hash_table_lookup(lang_map, GINT_TO_POINTER(sublang));
 	if (!mapping)
 		return tm_tag_undef_t;
-
+	
 	for (i = 0; i < mapping->len; i++)
 	{
 		TMSubparserMapEntry *entry = mapping->pdata[i];
 		if (entry->orig_type == type)
 			return entry->new_type;
 	}
-
 	return tm_tag_undef_t;
 }
 
@@ -673,37 +673,37 @@ TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang, 
 void tm_parser_verify_type_mappings(void)
 {
 	TMParserType lang;
-
+	
 	if (TM_PARSER_COUNT > ctagsGetLangCount())
 		g_error("More parsers defined in Geany than in ctags");
-
+	
 	for (lang = 0; lang < TM_PARSER_COUNT; lang++)
 	{
 		const gchar *kinds = ctagsGetLangKinds(lang);
 		TMParserMap *map = &parser_map[lang];
 		gchar presence_map[256];
 		guint i;
-
-		if (! map->entries || map->size < 1)
+		
+		if (!map->entries || map->size < 1)
 			g_error("No tag types in TM for %s, is the language listed in parser_map?",
 					ctagsGetLangName(lang));
-
+		
 		/* TODO: check also regex parser mappings. At the moment there's no way
 		 * to access regex parser definitions in ctags */
 		if (ctagsIsUsingRegexParser(lang))
 			continue;
-
+		
 		if (map->size != strlen(kinds))
 			g_error("Different number of tag types in TM (%d) and ctags (%d) for %s",
-				map->size, (int)strlen(kinds), ctagsGetLangName(lang));
-
+					map->size, (int)strlen(kinds), ctagsGetLangName(lang));
+		
 		memset(presence_map, 0, sizeof(presence_map));
 		for (i = 0; i < map->size; i++)
 		{
 			gboolean ctags_found = FALSE;
 			gboolean tm_found = FALSE;
 			guint j;
-
+			
 			for (j = 0; j < map->size; j++)
 			{
 				/* check that for every type in TM there's a type in ctags */
@@ -717,19 +717,19 @@ void tm_parser_verify_type_mappings(void)
 			}
 			if (!ctags_found)
 				g_error("Tag type '%c' found in TM but not in ctags for %s",
-					map->entries[i].kind, ctagsGetLangName(lang));
+						map->entries[i].kind, ctagsGetLangName(lang));
 			if (!tm_found)
 				g_error("Tag type '%c' found in ctags but not in TM for %s",
-					kinds[i], ctagsGetLangName(lang));
-
+						kinds[i], ctagsGetLangName(lang));
+			
 			presence_map[(unsigned char) map->entries[i].kind]++;
 		}
-
+		
 		for (i = 0; i < sizeof(presence_map); i++)
 		{
 			if (presence_map[i] > 1)
 				g_error("Duplicate tag type '%c' found for %s",
-					(gchar)i, ctagsGetLangName(lang));
+						(gchar)i, ctagsGetLangName(lang));
 		}
 	}
 }
@@ -794,7 +794,7 @@ gboolean tm_parser_has_full_context(TMParserType lang)
 		case TM_PARSER_VALA:
 		case TM_PARSER_ZEPHIR:
 			return TRUE;
-
+		
 		/* These make use of the scope, but don't include nested hierarchy
 		 * (either as a parser limitation or a language semantic) */
 		case TM_PARSER_ASCIIDOC:
@@ -823,6 +823,6 @@ gboolean tm_parser_langs_compatible(TMParserType lang, TMParserType other)
 		return TRUE;
 	else if (lang == TM_PARSER_CPP && other == TM_PARSER_C)
 		return TRUE;
-
+	
 	return FALSE;
 }
