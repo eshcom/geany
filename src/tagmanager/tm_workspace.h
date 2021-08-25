@@ -32,6 +32,7 @@ typedef struct TMWorkspace
 								the tag objects are owned by the source files). @elementtype{TMTag} */
 	GPtrArray *typename_array; /* Typename tags for syntax highlighting (pointers owned by source files) */
 	GPtrArray *global_typename_array; /* Like above for global tags */
+	GPtrArray *project_tags; /**< esh: Project tags loaded for a project on demand. @elementtype{TMTag} */
 } TMWorkspace;
 
 
@@ -42,6 +43,9 @@ void tm_workspace_remove_source_file(TMSourceFile *source_file);
 void tm_workspace_add_source_files(GPtrArray *source_files);
 
 void tm_workspace_remove_source_files(GPtrArray *source_files);
+
+//~ esh: for symbols.c/goto_tag, also for geanyctags plugin
+gboolean tm_workspace_load_project_tags(const char *tags_file, const char *source_path);
 
 
 #ifdef GEANY_PRIVATE
@@ -56,6 +60,8 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 
 GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type,
 							 TMTagAttrType *attrs, TMParserType lang);
+//~ esh: for symbols.c/goto_tag
+GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType lang);
 
 GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang, guint max_num);
 
@@ -70,6 +76,7 @@ void tm_workspace_update_source_file_buffer(TMSourceFile *source_file,
 											guchar *text_buf, gsize buf_size);
 
 void tm_workspace_free(void);
+void tm_workspace_free_prj(void); // esh: for project.c/project_close
 
 
 #ifdef TM_DEBUG

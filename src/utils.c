@@ -2415,3 +2415,19 @@ gchar *utils_get_real_path(const gchar *file_name)
 {
 	return tm_get_real_path(file_name);
 }
+
+
+//~ esh: for tm_source_file_new_prj
+TMParserType utils_detect_lang_from_extension(const gchar *file_name)
+{
+	g_return_val_if_fail(file_name != NULL, TM_PARSER_NONE);
+	
+	gchar *utf8_fname = utils_get_utf8_from_locale(file_name);
+	GeanyFiletype *ft = filetypes_detect_from_extension(utf8_fname);
+	g_free(utf8_fname);
+	
+	if (ft->id != GEANY_FILETYPES_NONE)
+		return ft->lang;
+	else
+		return TM_PARSER_NONE;
+}

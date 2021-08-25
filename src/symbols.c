@@ -73,6 +73,8 @@ typedef struct
 
 static GPtrArray *top_level_iter_names = NULL;
 
+static const TMTagType tm_forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
+
 enum
 {
 	ICON_CLASS,
@@ -2154,7 +2156,6 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags,
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile *current_file,
 							  const gchar *scope, TMTagType type, gboolean definition)
 {
-	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	GPtrArray *new_tags;
@@ -2162,8 +2163,8 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 	
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		if ((definition && !(tmtag->type & forward_types)) ||
-			(!definition && (tmtag->type & forward_types)))
+		if ((definition && !(tmtag->type & tm_forward_types)) ||
+			(!definition && (tmtag->type & tm_forward_types)))
 		{
 			/* If there are typedefs of e.g. a struct such as
 			 * "typedef struct Foo {} Foo;", filter out the typedef unless
@@ -2171,7 +2172,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			if (last_tag != NULL && last_tag->file == tmtag->file &&
 				last_tag->type != tm_tag_typedef_t && tmtag->type == tm_tag_typedef_t)
 			{
-				ui_set_statusbar(TRUE, "tmtag1: scope = %s, name = %s, type = %d, "
+				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, "
 										"var_type = %s, file = %s, arglist = %s",
 								 tmtag->scope, tmtag->name, tmtag->type, tmtag->var_type,
 								 tmtag->file->short_name, tmtag->arglist); // esh: log
@@ -2180,7 +2181,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			}
 			else if (tmtag != current_tag)
 			{
-				ui_set_statusbar(TRUE, "tmtag2: scope = %s, name = %s, type = %d, "
+				ui_set_statusbar(TRUE, "tmtag: scope = %s, name = %s, type = %d, "
 										"var_type = %s, file = %s, arglist = %s",
 								 tmtag->scope, tmtag->name, tmtag->type, tmtag->var_type,
 								 tmtag->file->short_name, tmtag->arglist); // esh: log
@@ -2233,21 +2234,13 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 	return filtered_tags;
 }
 
-
-static gboolean goto_tag(const gchar *name, const gchar *scope,
-						 TMTagType type, gboolean definition)
+static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_line,
+								   const GPtrArray *all_tags, const gchar *scope,
+								   TMTagType type, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s", type, scope, name); // esh: log
-	const TMTagType forward_types = tm_tag_prototype_t | tm_tag_externvar_t;
 	TMTag *tmtag, *current_tag = NULL;
-	GeanyDocument *old_doc = document_get_current();
-	gboolean found = FALSE;
-	const GPtrArray *all_tags;
 	GPtrArray *tags, *filtered_tags;
 	guint i;
-	guint current_line = sci_get_current_line(old_doc->editor->sci) + 1;
-	
-	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL, old_doc->file_type->lang);
 	
 	/* get rid of global tags and find tag at current line */
 	tags = g_ptr_array_new();
@@ -2256,32 +2249,68 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		if (tmtag->file)
 		{
 			g_ptr_array_add(tags, tmtag);
-			if (tmtag->file == old_doc->tm_file && tmtag->line == current_line)
+			if (tmtag->file == current_file && tmtag->line == current_line)
 				current_tag = tmtag;
 		}
 	}
 	
 	if (current_tag)
 		/* swap definition/declaration search */
-		definition = current_tag->type & forward_types;
+		definition = current_tag->type & tm_forward_types;
 	
-	filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file,
+	filtered_tags = filter_tags(tags, current_tag, current_file,
 								scope, type, definition);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, old_doc->tm_file,
+		filtered_tags = filter_tags(tags, current_tag, current_file,
 									scope, type, !definition);
 	}
 	g_ptr_array_free(tags, TRUE);
-	tags = filtered_tags;
+	return filtered_tags;
+}
+
+
+static gboolean goto_tag(const gchar *name, const gchar *scope,
+						 TMTagType type, gboolean definition)
+{
+	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s", type, scope, name); // esh: log
+	GeanyDocument *old_doc = document_get_current();
+	gboolean found = FALSE;
+	GPtrArray *all_tags, *tags;
+	guint current_line = sci_get_current_line(old_doc->editor->sci) + 1;
+	
+	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
+								 old_doc->file_type->lang);
+	
+	tags = wrap_filter_tags(old_doc->tm_file, current_line,
+							all_tags, scope, type, definition);
+	g_ptr_array_free(all_tags, TRUE);
+	
+	if (tags->len == 0 && app->project)
+	{
+		if (!app->tm_workspace->project_tags)
+		{
+			gchar *base_path = project_get_base_path();
+			gchar *tags_file = project_get_tags_file();
+			tm_workspace_load_project_tags(tags_file, base_path);
+			g_free(base_path);
+			g_free(tags_file);
+		}
+		all_tags = tm_workspace_find_prj(name, tm_tag_max_t,
+										 old_doc->file_type->lang);
+		
+		tags = wrap_filter_tags(old_doc->tm_file, current_line,
+								all_tags, scope, type, definition);
+		g_ptr_array_free(all_tags, TRUE);
+	}
 	
 	if (tags->len == 1)
 	{
 		GeanyDocument *new_doc;
 		
-		tmtag = tags->pdata[0];
+		TMTag *tmtag = tags->pdata[0];
 		new_doc = document_find_by_real_path(tmtag->file->file_name);
 		
 		if (!new_doc)
@@ -2294,6 +2323,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	{
 		GPtrArray *tag_list;
 		TMTag *tag, *best_tag;
+		guint i;
 		
 		g_ptr_array_sort(tags, compare_tags_by_name_line);
 		best_tag = find_best_goto_tag(old_doc, tags);
@@ -2301,6 +2331,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		tag_list = g_ptr_array_new();
 		if (best_tag)
 			g_ptr_array_add(tag_list, best_tag);
+		
 		foreach_ptr_array(tag, i, tags)
 		{
 			if (tag != best_tag)

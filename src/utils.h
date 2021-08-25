@@ -32,6 +32,8 @@
 #include <glib.h>
 #include <gdk/gdk.h> /* for GdkColor */
 
+#include "tm_source_file.h" // esh: for utils_detect_lang_from_extension
+
 G_BEGIN_DECLS
 
 /** Returns @c TRUE if @a ptr is @c NULL or @c *ptr is @c FALSE. */
@@ -214,6 +216,9 @@ const gchar *utils_find_open_xml_tag_pos(const gchar sel[], gint size);
 gchar *utils_get_real_path(const gchar *file_name);
 
 gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len);
+
+//~ esh: for tm_source_file_new_prj
+TMParserType utils_detect_lang_from_extension(const gchar *file_name);
 
 #ifdef GEANY_PRIVATE
 
