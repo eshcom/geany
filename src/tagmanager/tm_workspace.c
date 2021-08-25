@@ -79,6 +79,7 @@ static gboolean tm_create_workspace(void)
 	theWorkspace->source_files = g_ptr_array_new();
 	theWorkspace->typename_array = g_ptr_array_new();
 	theWorkspace->global_typename_array = g_ptr_array_new();
+	theWorkspace->project_tags = NULL; // esh: on demand init by tm_workspace_load_project_tags
 	
 	ctagsInit();
 	tm_parser_verify_type_mappings();
@@ -106,9 +107,19 @@ void tm_workspace_free(void)
 	g_ptr_array_free(theWorkspace->tags_array, TRUE);
 	g_ptr_array_free(theWorkspace->typename_array, TRUE);
 	g_ptr_array_free(theWorkspace->global_typename_array, TRUE);
+	tm_tags_array_free_prj(theWorkspace->project_tags); // esh: free the project tags
 	
 	g_free(theWorkspace);
 	theWorkspace = NULL;
+}
+
+
+/* esh: Frees the project tags.
+ * 		Use only when closing a project.
+*/
+void tm_workspace_free_prj(void)
+{
+	tm_tags_array_free_prj(theWorkspace->project_tags);
 }
 
 
@@ -357,7 +368,7 @@ gboolean tm_workspace_load_global_tags(const char *tags_file, TMParserType mode)
 {
 	GPtrArray *file_tags, *new_tags;
 	
-	file_tags = tm_source_file_read_tags_file(tags_file, mode);
+	file_tags = tm_source_file_read_tags_file(tags_file, mode, NULL);
 	if (!file_tags)
 		return FALSE;
 	
@@ -372,6 +383,28 @@ gboolean tm_workspace_load_global_tags(const char *tags_file, TMParserType mode)
 	
 	g_ptr_array_free(theWorkspace->global_typename_array, TRUE);
 	theWorkspace->global_typename_array = tm_tags_extract(new_tags, TM_GLOBAL_TYPE_MASK);
+	
+	return TRUE;
+}
+
+
+/* esh: Loads the project tag list from the specified file.
+ * 		(based on tm_workspace_load_global_tags)
+ * 		added GEANY_API_SYMBOL - for geanyctags plugin
+*/
+GEANY_API_SYMBOL
+gboolean tm_workspace_load_project_tags(const char *tags_file, const char *source_path)
+{
+	GPtrArray *file_tags;
+	
+	file_tags = tm_source_file_read_tags_file(tags_file, TM_PARSER_NONE, source_path);
+	if (!file_tags)
+		return FALSE;
+	
+	tm_tags_sort(file_tags, workspace_tags_sort_attrs, FALSE, FALSE);
+	
+	tm_tags_array_free_prj(theWorkspace->project_tags); // free the current project tags
+	theWorkspace->project_tags = file_tags;
 	
 	return TRUE;
 }
@@ -682,6 +715,18 @@ GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type
 	if (attrs)
 		tm_tags_sort(tags, attrs, TRUE, FALSE);
 	
+	return tags;
+}
+
+
+/* esh: Returns all matching tags found in the project tags.
+ * 		(based on tm_workspace_find)
+*/
+GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType lang)
+{
+	GPtrArray *tags = g_ptr_array_new();
+	
+	fill_find_tags_array(tags, theWorkspace->project_tags, name, NULL, type, lang);
 	return tags;
 }
 

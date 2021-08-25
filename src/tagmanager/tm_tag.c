@@ -546,6 +546,26 @@ void tm_tags_array_free(GPtrArray *tags_array, gboolean free_all)
 	}
 }
 
+/*
+ esh: Completely frees an array of project tags.
+ *    (based on tm_tags_array_free)
+*/
+void tm_tags_array_free_prj(GPtrArray *tags_array)
+{
+	if (tags_array)
+	{
+		guint i;
+		for (i = 0; i < tags_array->len; ++i)
+		{
+			TMTag *tag = TM_TAG(tags_array->pdata[i]);
+			tm_source_file_free_prj(tag->file);
+			tm_tag_destroy(tag);
+			g_slice_free(TMTag, tag);
+		}
+		g_ptr_array_free(tags_array, TRUE);
+	}
+}
+
 /* copy/pasted bsearch() from libc extended with user_data for comparison function
  * and using glib types */
 static gpointer binary_search(gpointer key, gpointer base, size_t nmemb,

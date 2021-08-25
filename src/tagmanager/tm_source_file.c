@@ -32,6 +32,7 @@
 #include "tm_tag.h"
 #include "tm_parser.h"
 #include "ctags-api.h"
+#include "../utils.h"
 
 typedef struct
 {
@@ -197,6 +198,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
 	tag->local = tag_entry->isFileScope;
 	tag->pointerOrder = 0;	/* backward compatibility (use var_type instead) */
 	tag->line = tag_entry->lineNumber;
+	
 	if (NULL != tag_entry->signature)
 		tag->arglist = g_strdup(tag_entry->signature);
 	if ((NULL != tag_entry->scopeName) &&
@@ -212,6 +214,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
 		tag->impl = get_tag_impl(tag_entry->implementation);
 	if ((tm_tag_macro_t == tag->type) && (NULL != tag->arglist))
 		tag->type = tm_tag_macro_with_arg_t;
+	
 	tag->file = file;
 	/* redefine lang also for subparsers because the rest of Geany assumes that
 	 * tags from a single file are from a single language */
@@ -227,7 +230,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
  @param fp FILE pointer from where the tag line is read
  @return TRUE on success, FALSE on FAILURE
 */
-static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp)
+static gboolean init_tag_from_file(TMTag *tag, FILE *fp, TMParserType lang)
 {
 	guchar buf[BUFSIZ];
 	guchar *start, *end;
@@ -303,13 +306,15 @@ static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp)
 	}
 	if (NULL == tag->name)
 		return FALSE;
-	tag->file = file;
+	
+	tag->file = NULL;
+	tag->lang = lang;
 	return TRUE;
 }
 
 /* alternative parser for Pascal and LaTeX global tags files with the following format
  * tagname|return value|arglist|description\n */
-static gboolean init_tag_from_file_alt(TMTag *tag, TMSourceFile *file, FILE *fp)
+static gboolean init_tag_from_file_alt(TMTag *tag, FILE *fp, TMParserType lang)
 {
 	guchar buf[BUFSIZ];
 	guchar *start, *end;
@@ -346,16 +351,20 @@ static gboolean init_tag_from_file_alt(TMTag *tag, TMSourceFile *file, FILE *fp)
 	}
 	if (NULL == tag->name)
 		return FALSE;
-	tag->file = file;
+	
+	tag->file = NULL;
+	tag->lang = lang;
 	return TRUE;
 }
 
 /*
  CTags tag file format (http://ctags.sourceforge.net/FORMAT)
 */
-static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *fp,
-										 TMParserType lang)
+static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp, TMParserType lang,
+										 const gchar *source_path)
 {
+	TMSourceFile *file = NULL;
+	
 	gchar buf[BUFSIZ];
 	gchar *p, *tab;
 	
@@ -376,14 +385,22 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 	tag->name = g_strndup(p, (gsize)(tab - p));
 	p = tab + 1;
 	
-	/* tagfile, unused */
+	/* tag file */
 	if (!(tab = strchr(p, '\t')))
 	{
 		g_free(tag->name);
 		tag->name = NULL;
 		return FALSE;
 	}
+	if (source_path && tab > p)
+	{
+		gchar *fname = g_strndup(p, (gsize)(tab - p));
+		if (file = tm_source_file_new_prj(fname, source_path))
+			lang = file->lang;
+		g_free(fname);
+	}
 	p = tab + 1;
+	
 	/* Ex command, unused */
 	if (*p == '/' || *p == '?')
 	{
@@ -463,11 +480,12 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *f
 		}
 	}
 	tag->file = file;
+	tag->lang = lang;
 	return TRUE;
 }
 
-static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType mode,
-									 TMFileFormat format)
+static TMTag *new_tag_from_tags_file(FILE *fp, TMParserType mode, TMFileFormat format,
+									 const gchar *source_path)
 {
 	TMTag *tag = tm_tag_new();
 	gboolean result = FALSE;
@@ -475,13 +493,13 @@ static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType 
 	switch (format)
 	{
 		case TM_FILE_FORMAT_TAGMANAGER:
-			result = init_tag_from_file(tag, file, fp);
+			result = init_tag_from_file(tag, fp, mode);
 			break;
 		case TM_FILE_FORMAT_PIPE:
-			result = init_tag_from_file_alt(tag, file, fp);
+			result = init_tag_from_file_alt(tag, fp, mode);
 			break;
 		case TM_FILE_FORMAT_CTAGS:
-			result = init_tag_from_file_ctags(tag, file, fp, mode);
+			result = init_tag_from_file_ctags(tag, fp, mode, source_path);
 			break;
 	}
 	if (!result)
@@ -489,7 +507,6 @@ static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType 
 		tm_tag_unref(tag);
 		return NULL;
 	}
-	tag->lang = mode;
 	return tag;
 }
 
@@ -530,7 +547,8 @@ static gboolean write_tag(TMTag *tag, FILE *fp, TMTagAttrType attrs)
 		return FALSE;
 }
 
-GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mode)
+GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mode,
+										 const gchar *source_path)
 {
 	guchar buf[BUFSIZ];
 	FILE *fp;
@@ -577,7 +595,7 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 	}
 	
 	file_tags = g_ptr_array_new();
-	while (NULL != (tag = new_tag_from_tags_file(NULL, fp, mode, format)))
+	while (NULL != (tag = new_tag_from_tags_file(fp, mode, format, source_path)))
 		g_ptr_array_add(file_tags, tag);
 	fclose(fp);
 	
@@ -733,6 +751,27 @@ TMSourceFile *tm_source_file_new(const char *file_name, const char *name)
 	return &priv->public;
 }
 
+/* esh: Initializes a TMSourceFile structure from a file name.
+ * 		(based on tm_source_file_new/tm_source_file_init) */
+TMSourceFile *tm_source_file_new_prj(const char *file_name, const char *source_path)
+{
+	g_return_val_if_fail(file_name && source_path, NULL);
+	
+	if (strncmp(file_name, "./", 2) == 0)
+		file_name += 2;
+	
+	TMSourceFile *source_file = g_slice_new0(TMSourceFile);
+	source_file->file_name = g_build_filename(source_path, file_name, NULL);
+	source_file->short_name = strrchr(source_file->file_name, '/');
+	if (source_file->short_name)
+		++source_file->short_name;
+	else
+		source_file->short_name = source_file->file_name;
+	
+	source_file->lang = utils_detect_lang_from_extension(source_file->short_name);
+	return source_file;
+}
+
 
 static TMSourceFile *tm_source_file_dup(TMSourceFile *source_file)
 {
@@ -776,6 +815,17 @@ void tm_source_file_free(TMSourceFile *source_file)
 	{
 		tm_source_file_destroy(source_file);
 		SOURCE_FILE_FREE(priv);
+	}
+}
+
+/* esh: Free the TMSourceFile struct.
+ * 		(based on tm_source_file_free) */
+void tm_source_file_free_prj(TMSourceFile *source_file)
+{
+	if (source_file != NULL)
+	{
+		tm_source_file_destroy(source_file);
+		g_slice_free(TMSourceFile, source_file);
 	}
 }
 

@@ -49,6 +49,12 @@ GeanyProject;
 
 void project_write_config(void);
 
+//~ esh: also for geanyctags plugin
+gchar *project_get_base_path(void);
+
+//~ esh: for symbols.c/goto_tag, also for geanyctags plugin
+gchar *project_get_tags_file(void);
+
 
 #ifdef GEANY_PRIVATE
 
@@ -84,9 +90,6 @@ gboolean project_load_file(const gchar *locale_file_name, gboolean save_default_
 
 gboolean project_load_file_with_session(const gchar *locale_file_name,
 										gboolean save_default_session);
-
-gchar *project_get_base_path(void);
-
 
 const struct GeanyFilePrefs *project_get_file_prefs(void);
 

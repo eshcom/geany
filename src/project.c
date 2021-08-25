@@ -403,11 +403,11 @@ static void remove_foreach_project_filetype(gpointer data, gpointer user_data)
 gboolean project_close(gboolean open_default)
 {
 	g_return_val_if_fail(app->project != NULL, FALSE);
-
+	
 	/* save project session files, etc */
 	if (!write_config())
 		g_warning("Project file \"%s\" could not be written", app->project->file_name);
-
+	
 	if (project_prefs.project_session)
 	{
 		/* close all existing tabs first */
@@ -416,6 +416,8 @@ gboolean project_close(gboolean open_default)
 	}
 	ui_set_statusbar(TRUE, _("Project \"%s\" closed."), app->project->name);
 	destroy_project(open_default);
+	
+	tm_workspace_free_prj(); // esh: free the project tags
 	return TRUE;
 }
 
@@ -1170,10 +1172,12 @@ void project_write_config(void)
  * base path if it is absolute or it is built out of project file name's dir and base_path.
  * If there is no project or project's base_path is invalid, NULL will be returned.
  * The returned string should be freed when no longer needed. */
+//~ esh: added GEANY_API_SYMBOL - for geanyctags plugin
+GEANY_API_SYMBOL
 gchar *project_get_base_path(void)
 {
 	GeanyProject *project = app->project;
-
+	
 	if (project && !EMPTY(project->base_path))
 	{
 		if (g_path_is_absolute(project->base_path))
@@ -1182,14 +1186,29 @@ gchar *project_get_base_path(void)
 		{	/* build base_path out of project file name's dir and base_path */
 			gchar *path;
 			gchar *dir = g_path_get_dirname(project->file_name);
-
+			
 			if (utils_str_equal(project->base_path, "./"))
 				return dir;
-
+			
 			path = g_build_filename(dir, project->base_path, NULL);
 			g_free(dir);
 			return path;
 		}
+	}
+	return NULL;
+}
+
+
+//~ esh: for symbols.c/goto_tag
+//~ esh: added GEANY_API_SYMBOL - for geanyctags plugin
+GEANY_API_SYMBOL
+gchar *project_get_tags_file(void)
+{
+	if (app->project)
+	{
+		gchar *tags_file = utils_remove_ext_from_filename(app->project->file_name);
+		SETPTR(tags_file, g_strconcat(tags_file, ".tags", NULL));
+		return tags_file;
 	}
 	return NULL;
 }
