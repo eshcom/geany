@@ -1752,7 +1752,7 @@ static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
 			(*endword)++;
 	}
 	
-	if (lang == TM_PARSER_ERLANG)
+	if (tm_parser_has_quoted_identifiers(lang))
 	{
 		gint startword2 = *startword;
 		gint endword2 = *endword;
@@ -1849,8 +1849,10 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			
 			if (pos > 0)
 			{
+				gboolean brackets = FALSE;
 				if (sci_get_char_at(sci, pos - 1) == ')')
 				{
+					brackets = TRUE;
 					pos = find_start_bracket(sci, pos - 2);
 					/* skip whitespaces */
 					while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
@@ -1859,17 +1861,30 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				if (pos > 0)
 				{
 					//~ scope search:
-					read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
+					wordBound = read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
+					pos = wordBound.start;
+					
+					gchar prefix = ' ';
+					gchar first = sci_get_char_at(sci, pos);
+					
+					/* skip whitespaces */
+					while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
+						pos--;
+					
+					if (pos > 0)
+						prefix = sci_get_char_at(sci, pos - 1);
+					
+					if (tm_parser_undefined_scope(lang, prefix, first, brackets))
+						*scope = '\0';
+					
 					return;
 				}
 			}
 		}
-		else if (lang == TM_PARSER_ERLANG)
+		else // esh: define the type by prefix
 		{
-			if (match_last_chars(sci, pos, "?"))
-				*type = tm_tag_macro_t;
-			else if (match_last_chars(sci, pos, "#"))
-				*type = tm_tag_struct_t;
+			gchar prefix = sci_get_char_at(sci, pos - 1);
+			tm_parser_define_type_by_prefix(lang, prefix, type);
 		}
 	}
 	*scope = '\0';
@@ -1917,8 +1932,10 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 			
 			if (startword > 0)
 			{
+				gboolean brackets = FALSE;
 				if (chunk[startword - 1] == ')')
 				{
+					brackets = TRUE;
 					startword = find_start_bracket_chunk(chunk, startword - 2);
 					/* skip whitespaces */
 					while (startword > 0 && isspace(chunk[startword - 1]))
@@ -1930,16 +1947,28 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 					//~ scope search:
 					read_word(chunk, &startword, &endword, scope, scopelen,
 							  GEANY_WORDCHARS, FALSE, lang);
+					
+					gchar prefix = ' ';
+					gchar first = chunk[startword];
+					
+					/* skip whitespaces */
+					while (startword > 0 && isspace(chunk[startword - 1]))
+						startword--;
+					
+					if (startword > 0)
+						prefix = chunk[startword - 1];
+					
+					if (tm_parser_undefined_scope(lang, prefix, first, brackets))
+						*scope = '\0';
+					
 					return;
 				}
 			}
 		}
-		else if (lang == TM_PARSER_ERLANG)
+		else // esh: define the type by prefix
 		{
-			if (match_last_chars_chunk(chunk, startword, "?"))
-				*type = tm_tag_macro_t;
-			else if (match_last_chars_chunk(chunk, startword, "#"))
-				*type = tm_tag_struct_t;
+			gchar prefix = chunk[startword - 1];
+			tm_parser_define_type_by_prefix(lang, prefix, type);
 		}
 	}
 	*scope = '\0';
