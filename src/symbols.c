@@ -2294,7 +2294,10 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		{
 			gchar *base_path = project_get_base_path();
 			gchar *tags_file = project_get_tags_file();
-			tm_workspace_load_project_tags(tags_file, base_path);
+			
+			if (tm_workspace_load_project_tags(tags_file, base_path))
+				ui_set_statusbar(TRUE, _("Project tags loaded"));
+			
 			g_free(base_path);
 			g_free(tags_file);
 		}
