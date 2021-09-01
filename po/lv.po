@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 15:28+0300\n"
+"POT-Creation-Date: 2021-09-01 18:30+0300\n"
 "PO-Revision-Date: 2019-09-24 18:41+0300\n"
 "Last-Translator: Ingmārs Dīriņš <melhiors14@gmail.com>\n"
 "Language-Team: \n"
@@ -95,7 +95,7 @@ msgstr "neredzams"
 msgid "_Insert \"include <...>\""
 msgstr "_Ievietot \"include <...>\""
 
-#: ../data/geany.glade.h:16 ../src/keybindings.c:514
+#: ../data/geany.glade.h:16 ../src/keybindings.c:515
 msgid "Insert Alternative _White Space"
 msgstr "Ievietot alternatīvo _baltstarpu"
 
@@ -107,11 +107,11 @@ msgstr "_Meklēt"
 msgid "Open Selected F_ile"
 msgstr "Atvērt atlasīto datn_i"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2738
+#: ../data/geany.glade.h:19 ../src/symbols.c:2800
 msgid "Find _Usage"
 msgstr "Atrast lietoj_umu"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2743
+#: ../data/geany.glade.h:20 ../src/symbols.c:2805
 msgid "Find _Document Usage"
 msgstr "Atrast _dokumenta lietojumu"
 
@@ -132,7 +132,7 @@ msgstr "_Konteksta darbība"
 #. *   [5] = The filetype group constant (GEANY_FILETYPE_GROUP_*)
 #. * --------------------------------------------------------------------------------------------------------------------------
 #. *       [0]         [1]           [2]                 [3]                        [4]          [5]
-#: ../data/geany.glade.h:23 ../src/filetypes.c:127 ../src/filetypes.c:1526
+#: ../data/geany.glade.h:23 ../src/filetypes.c:127 ../src/filetypes.c:1527
 msgid "None"
 msgstr "Nekas"
 
@@ -164,7 +164,7 @@ msgstr "Augša"
 msgid "Bottom"
 msgstr "Apakša"
 
-#: ../data/geany.glade.h:31 ../src/keybindings.c:524
+#: ../data/geany.glade.h:31 ../src/keybindings.c:525
 msgid "Preferences"
 msgstr "Iestatījumi"
 
@@ -1145,7 +1145,7 @@ msgstr "<b>Virtuālās atstarpes</b>"
 msgid "Display"
 msgstr "Attēlotājs"
 
-#: ../data/geany.glade.h:236 ../src/keybindings.c:312 ../src/prefs.c:1608
+#: ../data/geany.glade.h:236 ../src/keybindings.c:313 ../src/prefs.c:1608
 msgid "Editor"
 msgstr "Redaktors"
 
@@ -1228,7 +1228,7 @@ msgstr "Noņemt beigu atstarpes un tabulācijas"
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Noņem beigu atstarpes un tabulācijas rindu beigās"
 
-#: ../data/geany.glade.h:254 ../src/keybindings.c:671
+#: ../data/geany.glade.h:254 ../src/keybindings.c:672
 msgid "Replace tabs with space"
 msgstr "Aizstāt tabulācijas ar atstarpēm"
 
@@ -1261,7 +1261,7 @@ msgstr ""
 "Cik bieži pārbaudīt pēc izmaiņām uz diska esošajās dokumentu datnēs, "
 "sekundēs. Nulle izslēdz pārbaudīšanu."
 
-#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:465
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:467
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Datnes"
@@ -1313,7 +1313,7 @@ msgstr ""
 msgid "<b>Commands</b>"
 msgstr "<b>Komandas</b>"
 
-#: ../data/geany.glade.h:273 ../src/keybindings.c:324 ../src/prefs.c:1612
+#: ../data/geany.glade.h:273 ../src/keybindings.c:325 ../src/prefs.c:1612
 msgid "Tools"
 msgstr "Rīki"
 
@@ -1697,27 +1697,27 @@ msgstr "_Aizvērt visu"
 msgid "Co_mmands"
 msgstr "Ko_mandas"
 
-#: ../data/geany.glade.h:358 ../src/keybindings.c:437
+#: ../data/geany.glade.h:358 ../src/keybindings.c:438
 msgid "Cu_t Current Line(s)"
 msgstr "Izgriez_t pašreizējo(-ās) rindu(-as)"
 
-#: ../data/geany.glade.h:359 ../src/keybindings.c:434
+#: ../data/geany.glade.h:359 ../src/keybindings.c:435
 msgid "_Copy Current Line(s)"
 msgstr "_Kopēt pašreizējo(-ās) rindu(-as)"
 
-#: ../data/geany.glade.h:360 ../src/keybindings.c:387
+#: ../data/geany.glade.h:360 ../src/keybindings.c:388
 msgid "_Delete Current Line(s)"
 msgstr "_Dzēst pašreizējo(-ās) rindu(-as)"
 
-#: ../data/geany.glade.h:361 ../src/keybindings.c:384
+#: ../data/geany.glade.h:361 ../src/keybindings.c:385
 msgid "D_uplicate Line or Selection"
 msgstr "D_ublicēt rindu vai atlasi"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:447
+#: ../data/geany.glade.h:362 ../src/keybindings.c:448
 msgid "S_elect Current Line(s)"
 msgstr "Atlasīt pašr_eizējo(-ās) rindu(-as)"
 
-#: ../data/geany.glade.h:363 ../src/keybindings.c:450
+#: ../data/geany.glade.h:363 ../src/keybindings.c:451
 msgid "Se_lect Current Paragraph"
 msgstr "At_lasīt pašreizējo rindkopu"
 
@@ -1729,15 +1729,15 @@ msgstr "_Pārvietot rindu(-as) augšup"
 msgid "M_ove Line(s) Down"
 msgstr "Pārviet_ot rindu(-as) lejup"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:501
+#: ../data/geany.glade.h:366 ../src/keybindings.c:502
 msgid "_Send Selection to Terminal"
 msgstr "_Sūtīt atlasi uz termināli"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:503
+#: ../data/geany.glade.h:367 ../src/keybindings.c:504
 msgid "_Reflow Lines/Block"
 msgstr "Sakā_rtot plūdumu rindām/blokam"
 
-#: ../data/geany.glade.h:368 ../src/keybindings.c:461
+#: ../data/geany.glade.h:368 ../src/keybindings.c:462
 msgid "T_oggle Case of Selection"
 msgstr "_Pārslēgt atlases burteni"
 
@@ -1761,7 +1761,7 @@ msgstr "Pal_ielināt atkāpi"
 msgid "_Decrease Indent"
 msgstr "_Samazināt atkāpi"
 
-#: ../data/geany.glade.h:374 ../src/keybindings.c:480
+#: ../data/geany.glade.h:374 ../src/keybindings.c:481
 msgid "S_mart Line Indent"
 msgstr "_Gudrā rindas atkāpe"
 
@@ -1777,7 +1777,7 @@ msgstr "Ievietot kome_ntārus"
 msgid "Preference_s"
 msgstr "Ie_statījumi"
 
-#: ../data/geany.glade.h:378 ../src/keybindings.c:527
+#: ../data/geany.glade.h:378 ../src/keybindings.c:528
 msgid "P_lugin Preferences"
 msgstr "_Spraudņu iestatījumi"
 
@@ -1793,7 +1793,7 @@ msgstr "Atrast _nākošo"
 msgid "Find _Previous"
 msgstr "Atrast ie_priekšējo"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2748
+#: ../data/geany.glade.h:382 ../src/symbols.c:2810
 msgid "Find in F_iles..."
 msgstr "Atrast _datnēs..."
 
@@ -1809,11 +1809,11 @@ msgstr "Nākošais ziņojum_s"
 msgid "Pr_evious Message"
 msgstr "I_epriekšējais ziņojums"
 
-#: ../data/geany.glade.h:386 ../src/keybindings.c:576
+#: ../data/geany.glade.h:386 ../src/keybindings.c:577
 msgid "Go to Ne_xt Marker"
 msgstr "Iet uz _nākošo marķieri"
 
-#: ../data/geany.glade.h:387 ../src/keybindings.c:579
+#: ../data/geany.glade.h:387 ../src/keybindings.c:580
 msgid "Go to Pre_vious Marker"
 msgstr "Iet uz _iepriekšējo marķieri"
 
@@ -1821,15 +1821,15 @@ msgstr "Iet uz _iepriekšējo marķieri"
 msgid "_Go to Line..."
 msgstr "_Iet uz rindu..."
 
-#: ../data/geany.glade.h:389 ../src/keybindings.c:539
+#: ../data/geany.glade.h:389 ../src/keybindings.c:540
 msgid "Find Next _Selection"
 msgstr "Atra_st nākošo atlasi"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:541
+#: ../data/geany.glade.h:390 ../src/keybindings.c:542
 msgid "Find Pre_vious Selection"
 msgstr "Atrast _iepriekšējo atlasi"
 
-#: ../data/geany.glade.h:391 ../src/keybindings.c:558
+#: ../data/geany.glade.h:391 ../src/keybindings.c:559
 msgid "_Mark All"
 msgstr "Atzī_mēt visu"
 
@@ -1985,11 +1985,11 @@ msgstr "Pārveidot un iestatīt uz _LF (Unix)"
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Pārveidot un iestatīt uz CR (klasiskā _Mac)"
 
-#: ../data/geany.glade.h:430 ../src/keybindings.c:667
+#: ../data/geany.glade.h:430 ../src/keybindings.c:668
 msgid "_Clone"
 msgstr "_Klonēt"
 
-#: ../data/geany.glade.h:431 ../src/keybindings.c:669
+#: ../data/geany.glade.h:431 ../src/keybindings.c:670
 msgid "_Strip Trailing Spaces"
 msgstr "Noņemt beigu at_starpes"
 
@@ -2164,7 +2164,7 @@ msgstr ""
 "ceļš vai pastāvošs datņu kataloga koks. Jūs varat lietot ceļus, relatīvus "
 "pret projekta datnes nosaukumu."
 
-#: ../data/geany.glade.h:472 ../src/keybindings.c:322
+#: ../data/geany.glade.h:472 ../src/keybindings.c:323
 msgid "Project"
 msgstr "Projekts"
 
@@ -2428,12 +2428,12 @@ msgstr "Būvēšanas kļūdu vairāk nav."
 msgid "Set menu item label"
 msgstr "Iestatīt izvēlnes vienuma etiķeti"
 
-#: ../src/build.c:1834 ../src/symbols.c:522 ../src/tools.c:414
+#: ../src/build.c:1834 ../src/symbols.c:524 ../src/tools.c:414
 msgid "Label"
 msgstr "Etiķete"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:517 ../src/tools.c:399
+#: ../src/build.c:1835 ../src/symbols.c:519 ../src/tools.c:399
 msgid "Command"
 msgstr "Komanda"
 
@@ -2521,7 +2521,7 @@ msgstr[0] "%d datne saglabāta."
 msgstr[1] "%d datnes saglabātas."
 msgstr[2] "%d datņu saglabātas."
 
-#: ../src/callbacks.c:899 ../src/keybindings.c:567
+#: ../src/callbacks.c:899 ../src/keybindings.c:568
 msgid "Go to Line"
 msgstr "Iet uz rindu"
 
@@ -2710,7 +2710,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2552 ../src/symbols.c:2568 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
 msgid "unknown"
 msgstr "nezināms"
 
@@ -2954,16 +2954,16 @@ msgstr[2] "%s: aizstāja %d \"%s\" atgadīšanos ar \"%s\"."
 msgid "Do you want to reload it?"
 msgstr "Vai jūs vēlaties pārlādēt to?"
 
-#: ../src/editor.c:4748
+#: ../src/editor.c:4858
 msgid "Enter Tab Width"
 msgstr "Ievadiet tabulācijas platumu"
 
-#: ../src/editor.c:4749
+#: ../src/editor.c:4859
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr ""
 "Ievadiet atstarpju skaitu, kuras aizstāt ar vienu tabulācijas rakstzīmi."
 
-#: ../src/editor.c:4955
+#: ../src/editor.c:5065
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Brīdinājums: nestandarta stingrās tabulācijas platums: %d != 8!"
@@ -3178,17 +3178,17 @@ msgstr "Iezī_mēšanas valodas"
 msgid "M_iscellaneous"
 msgstr "Dažād_i"
 
-#: ../src/filetypes.c:1185 ../src/win32.c:155
+#: ../src/filetypes.c:1186 ../src/win32.c:155
 msgid "All Source"
 msgstr "Pirmkods"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1210 ../src/project.c:351 ../src/win32.c:145
+#: ../src/filetypes.c:1211 ../src/project.c:351 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Visas datnes"
 
-#: ../src/filetypes.c:1259
+#: ../src/filetypes.c:1260
 #, c-format
 msgid "Bad regex for filetype %s: %s"
 msgstr "Slikta regulārā izteiksme priekš datnes tipa %s: %s"
@@ -3220,552 +3220,552 @@ msgid "Color Schemes"
 msgstr "Krāsu shēmas"
 
 #. visual group order
-#: ../src/keybindings.c:311 ../src/symbols.c:492
+#: ../src/keybindings.c:312 ../src/symbols.c:494
 msgid "File"
 msgstr "Datne"
 
-#: ../src/keybindings.c:313
+#: ../src/keybindings.c:314
 msgid "Clipboard"
 msgstr "Starpliktuve"
 
-#: ../src/keybindings.c:314
+#: ../src/keybindings.c:315
 msgid "Select"
 msgstr "Atlasīt"
 
-#: ../src/keybindings.c:315
+#: ../src/keybindings.c:316
 msgid "Format"
 msgstr "Formatēt"
 
-#: ../src/keybindings.c:316
+#: ../src/keybindings.c:317
 msgid "Insert"
 msgstr "Ievietot"
 
-#: ../src/keybindings.c:317
+#: ../src/keybindings.c:318
 msgid "Settings"
 msgstr "Iestatījumi"
 
-#: ../src/keybindings.c:318
+#: ../src/keybindings.c:319
 msgid "Search"
 msgstr "Meklēt"
 
-#: ../src/keybindings.c:319
+#: ../src/keybindings.c:320
 msgid "Go to"
 msgstr "Iet uz"
 
-#: ../src/keybindings.c:320
+#: ../src/keybindings.c:321
 msgid "View"
 msgstr "Skats"
 
-#: ../src/keybindings.c:321 ../src/symbols.c:643
+#: ../src/keybindings.c:322 ../src/symbols.c:645
 msgid "Document"
 msgstr "Dokuments"
 
-#: ../src/keybindings.c:323 ../src/keybindings.c:694 ../src/project.c:514
+#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
 #: ../src/ui_utils.c:2240
 msgid "Build"
 msgstr "Būvēt"
 
-#: ../src/keybindings.c:325 ../src/keybindings.c:719
+#: ../src/keybindings.c:326 ../src/keybindings.c:720
 msgid "Help"
 msgstr "Palīdzība"
 
-#: ../src/keybindings.c:326
+#: ../src/keybindings.c:327
 msgid "Focus"
 msgstr "Fokuss"
 
-#: ../src/keybindings.c:327
+#: ../src/keybindings.c:328
 msgid "Notebook tab"
 msgstr "Piezīmju grāmatas cilne"
 
-#: ../src/keybindings.c:336 ../src/keybindings.c:368
+#: ../src/keybindings.c:337 ../src/keybindings.c:369
 msgid "New"
 msgstr "Jauna"
 
-#: ../src/keybindings.c:338 ../src/keybindings.c:370
+#: ../src/keybindings.c:339 ../src/keybindings.c:371
 msgid "Open"
 msgstr "Atvērt"
 
-#: ../src/keybindings.c:341
+#: ../src/keybindings.c:342
 msgid "Open selected file"
 msgstr "Atvērt atlasīto datni"
 
-#: ../src/keybindings.c:343
+#: ../src/keybindings.c:344
 msgid "Save"
 msgstr "Saglabāt"
 
-#: ../src/keybindings.c:345 ../src/toolbar.c:58
+#: ../src/keybindings.c:346 ../src/toolbar.c:58
 msgid "Save as"
 msgstr "Saglabāt kā"
 
-#: ../src/keybindings.c:347
+#: ../src/keybindings.c:348
 msgid "Save all"
 msgstr "Saglabāt visu"
 
-#: ../src/keybindings.c:350 ../src/symbols.c:728
+#: ../src/keybindings.c:351 ../src/symbols.c:730
 msgid "Properties"
 msgstr "Īpašības"
 
-#: ../src/keybindings.c:352
+#: ../src/keybindings.c:353
 msgid "Print"
 msgstr "Drukāt"
 
-#: ../src/keybindings.c:354 ../src/keybindings.c:375
+#: ../src/keybindings.c:355 ../src/keybindings.c:376
 msgid "Close"
 msgstr "Aizvērt"
 
-#: ../src/keybindings.c:356
+#: ../src/keybindings.c:357
 msgid "Close all"
 msgstr "Aizvērt visu"
 
-#: ../src/keybindings.c:359
+#: ../src/keybindings.c:360
 msgid "Reload file"
 msgstr "Pārlādēt datni"
 
-#: ../src/keybindings.c:361
+#: ../src/keybindings.c:362
 msgid "Re-open last closed tab"
 msgstr "Atkārtoti atvērt pēdējo aizvērto cilni"
 
-#: ../src/keybindings.c:363
+#: ../src/keybindings.c:364
 msgid "Quit"
 msgstr "Iziet"
 
-#: ../src/keybindings.c:380
+#: ../src/keybindings.c:381
 msgid "Undo"
 msgstr "Atsaukt"
 
-#: ../src/keybindings.c:382
+#: ../src/keybindings.c:383
 msgid "Redo"
 msgstr "Atatsaukt"
 
-#: ../src/keybindings.c:391
+#: ../src/keybindings.c:392
 msgid "Delete to line end"
 msgstr "Dzēst līdz rindas beigām"
 
-#: ../src/keybindings.c:394
+#: ../src/keybindings.c:395
 msgid "Delete to beginning of line"
 msgstr "Dzēst līdz rindas sākumam"
 
-#: ../src/keybindings.c:397
+#: ../src/keybindings.c:398
 msgid "_Transpose Current Line"
 msgstr "_Transponēt pašreizējo rindu"
 
-#: ../src/keybindings.c:399
+#: ../src/keybindings.c:400
 msgid "Scroll to current line"
 msgstr "Ritināt uz pašreizējo rindu"
 
-#: ../src/keybindings.c:401
+#: ../src/keybindings.c:402
 msgid "Scroll up the view by one line"
 msgstr "Ritināt skatu augšup par vienu rindu"
 
-#: ../src/keybindings.c:403
+#: ../src/keybindings.c:404
 msgid "Scroll down the view by one line"
 msgstr "Ritināt skatu lejup par vienu rindu"
 
-#: ../src/keybindings.c:405
+#: ../src/keybindings.c:406
 msgid "Complete snippet"
 msgstr "Pabeigt izgriezumu"
 
-#: ../src/keybindings.c:407
+#: ../src/keybindings.c:408
 msgid "Move cursor in snippet"
 msgstr "Pārvietot kursoru izgriezumā"
 
-#: ../src/keybindings.c:409
+#: ../src/keybindings.c:410
 msgid "Suppress snippet completion"
 msgstr "Apspiest izgriezumu pabeigšanu"
 
-#: ../src/keybindings.c:411
+#: ../src/keybindings.c:412
 msgid "Context Action"
 msgstr "Konteksta darbība"
 
-#: ../src/keybindings.c:413
+#: ../src/keybindings.c:414
 msgid "Complete word"
 msgstr "Pabeigt vārdu"
 
-#: ../src/keybindings.c:415
+#: ../src/keybindings.c:416
 msgid "Show calltip"
 msgstr "Rādīt izsaukumpadomu"
 
-#: ../src/keybindings.c:417
+#: ../src/keybindings.c:418
 msgid "Word part completion"
 msgstr "Vārda daļas pabeigšana"
 
-#: ../src/keybindings.c:420
+#: ../src/keybindings.c:421
 msgid "Move line(s) up"
 msgstr "Pārvietot rindu(-as) augšup"
 
-#: ../src/keybindings.c:423
+#: ../src/keybindings.c:424
 msgid "Move line(s) down"
 msgstr "Pārvietot rindu(-as) lejup"
 
-#: ../src/keybindings.c:428
+#: ../src/keybindings.c:429
 msgid "Cut"
 msgstr "Izgriezt"
 
-#: ../src/keybindings.c:430
+#: ../src/keybindings.c:431
 msgid "Copy"
 msgstr "Kopēt"
 
-#: ../src/keybindings.c:432
+#: ../src/keybindings.c:433
 msgid "Paste"
 msgstr "Ielīmēt"
 
-#: ../src/keybindings.c:443
+#: ../src/keybindings.c:444
 msgid "Select All"
 msgstr "Atlasīt visu"
 
-#: ../src/keybindings.c:445
+#: ../src/keybindings.c:446
 msgid "Select current word"
 msgstr "Atlasīt pašreizējo vārdu"
 
-#: ../src/keybindings.c:453
+#: ../src/keybindings.c:454
 msgid "Select to previous word part"
 msgstr "Atlasīt uz iepriekšējo vārda daļu"
 
-#: ../src/keybindings.c:455
+#: ../src/keybindings.c:456
 msgid "Select to next word part"
 msgstr "Atlasīt uz nākošo vārda daļu"
 
-#: ../src/keybindings.c:463
+#: ../src/keybindings.c:464
 msgid "Toggle line commentation"
 msgstr "Pārslēgt rindu komentēšanu"
 
-#: ../src/keybindings.c:466
+#: ../src/keybindings.c:467
 msgid "Comment line(s)"
 msgstr "Aizkomentēt rindu(-as)"
 
-#: ../src/keybindings.c:468
+#: ../src/keybindings.c:469
 msgid "Uncomment line(s)"
 msgstr "Atkomentēt rindu(-as)"
 
-#: ../src/keybindings.c:470
+#: ../src/keybindings.c:471
 msgid "Increase indent"
 msgstr "Palielināt atkāpi"
 
-#: ../src/keybindings.c:473
+#: ../src/keybindings.c:474
 msgid "Decrease indent"
 msgstr "Samazināt atkāpi"
 
-#: ../src/keybindings.c:476
+#: ../src/keybindings.c:477
 msgid "Increase indent by one space"
 msgstr "Palielināt atkāpi par vienu atstarpi"
 
-#: ../src/keybindings.c:478
+#: ../src/keybindings.c:479
 msgid "Decrease indent by one space"
 msgstr "Samazināt atkāpi par vienu atstarpi"
 
-#: ../src/keybindings.c:482
+#: ../src/keybindings.c:483
 msgid "Send to Custom Command 1"
 msgstr "Sūtīt uz pielāgoto komandu 1"
 
-#: ../src/keybindings.c:484
+#: ../src/keybindings.c:485
 msgid "Send to Custom Command 2"
 msgstr "Sūtīt uz pielāgoto komandu 2"
 
-#: ../src/keybindings.c:486
+#: ../src/keybindings.c:487
 msgid "Send to Custom Command 3"
 msgstr "Sūtīt uz pielāgoto komandu 3"
 
-#: ../src/keybindings.c:488
+#: ../src/keybindings.c:489
 msgid "Send to Custom Command 4"
 msgstr "Sūtīt uz pielāgoto komandu 4"
 
-#: ../src/keybindings.c:490
+#: ../src/keybindings.c:491
 msgid "Send to Custom Command 5"
 msgstr "Sūtīt uz pielāgoto komandu 5"
 
-#: ../src/keybindings.c:492
+#: ../src/keybindings.c:493
 msgid "Send to Custom Command 6"
 msgstr "Sūtīt uz pielāgoto komandu 6"
 
-#: ../src/keybindings.c:494
+#: ../src/keybindings.c:495
 msgid "Send to Custom Command 7"
 msgstr "Sūtīt uz pielāgoto komandu 7"
 
-#: ../src/keybindings.c:496
+#: ../src/keybindings.c:497
 msgid "Send to Custom Command 8"
 msgstr "Sūtīt uz pielāgoto komandu 8"
 
-#: ../src/keybindings.c:498
+#: ../src/keybindings.c:499
 msgid "Send to Custom Command 9"
 msgstr "Sūtīt uz pielāgoto komandu 9"
 
-#: ../src/keybindings.c:506
+#: ../src/keybindings.c:507
 msgid "Join lines"
 msgstr "Savienot rindas"
 
-#: ../src/keybindings.c:511
+#: ../src/keybindings.c:512
 msgid "Insert date"
 msgstr "Ievietot datumu"
 
-#: ../src/keybindings.c:517
+#: ../src/keybindings.c:518
 msgid "Insert New Line Before Current"
 msgstr "Ievietot jaunu rindu pirms pašreizējās"
 
-#: ../src/keybindings.c:519
+#: ../src/keybindings.c:520
 msgid "Insert New Line After Current"
 msgstr "Ievietot jaunu rindu pēc pašreizējās"
 
-#: ../src/keybindings.c:532 ../src/search.c:470
+#: ../src/keybindings.c:533 ../src/search.c:470
 msgid "Find"
 msgstr "Atrast"
 
-#: ../src/keybindings.c:534
+#: ../src/keybindings.c:535
 msgid "Find Next"
 msgstr "Atrast nākošo"
 
-#: ../src/keybindings.c:536
+#: ../src/keybindings.c:537
 msgid "Find Previous"
 msgstr "Atrast iepriekšējo"
 
-#: ../src/keybindings.c:543 ../src/search.c:623
+#: ../src/keybindings.c:544 ../src/search.c:623
 msgid "Replace"
 msgstr "Aizstāt"
 
-#: ../src/keybindings.c:545 ../src/search.c:873
+#: ../src/keybindings.c:546 ../src/search.c:873
 msgid "Find in Files"
 msgstr "Atrast datnēs"
 
-#: ../src/keybindings.c:548
+#: ../src/keybindings.c:549
 msgid "Next Message"
 msgstr "Nākošais ziņojums"
 
-#: ../src/keybindings.c:550
+#: ../src/keybindings.c:551
 msgid "Previous Message"
 msgstr "Iepriekšējais ziņojums"
 
-#: ../src/keybindings.c:553
+#: ../src/keybindings.c:554
 msgid "Find Usage"
 msgstr "Atrast lietojumu"
 
-#: ../src/keybindings.c:556
+#: ../src/keybindings.c:557
 msgid "Find Document Usage"
 msgstr "Atrast dokumenta lietojumu"
 
-#: ../src/keybindings.c:563 ../src/toolbar.c:69
+#: ../src/keybindings.c:564 ../src/toolbar.c:69
 msgid "Navigate back a location"
 msgstr "Navigēt par atrašanās vietu atpakaļ"
 
-#: ../src/keybindings.c:565 ../src/toolbar.c:70
+#: ../src/keybindings.c:566 ../src/toolbar.c:70
 msgid "Navigate forward a location"
 msgstr "Navigēt par atrašanās vietu uz priekšu"
 
-#: ../src/keybindings.c:570
+#: ../src/keybindings.c:571
 msgid "Go to matching brace"
 msgstr "Iet uz atbilstošo figūriekavu"
 
-#: ../src/keybindings.c:573
+#: ../src/keybindings.c:574
 msgid "Toggle marker"
 msgstr "Pārslēgt marķieri"
 
-#: ../src/keybindings.c:582
+#: ../src/keybindings.c:583
 msgid "Go to Symbol Definition"
 msgstr "Iet uz simbola definēšanu"
 
-#: ../src/keybindings.c:585
+#: ../src/keybindings.c:586
 msgid "Go to Symbol Declaration"
 msgstr "Iet uz simbola deklarēšanu"
 
-#: ../src/keybindings.c:587
+#: ../src/keybindings.c:588
 msgid "Go to Start of Line"
 msgstr "Iet uz rindas sākumu"
 
-#: ../src/keybindings.c:589
+#: ../src/keybindings.c:590
 msgid "Go to End of Line"
 msgstr "Iet uz rindas beigām"
 
-#: ../src/keybindings.c:591
+#: ../src/keybindings.c:592
 msgid "Go to Start of Display Line"
 msgstr "Iet uz attēlotāja rindas sākumu"
 
-#: ../src/keybindings.c:593
+#: ../src/keybindings.c:594
 msgid "Go to End of Display Line"
 msgstr "Iet uz attēlotāja rindas beigām"
 
-#: ../src/keybindings.c:595
+#: ../src/keybindings.c:596
 msgid "Go to Previous Word Part"
 msgstr "Iet uz iepriekšējo vārda daļu"
 
-#: ../src/keybindings.c:597
+#: ../src/keybindings.c:598
 msgid "Go to Next Word Part"
 msgstr "Iet uz nākošo vārda daļu"
 
-#: ../src/keybindings.c:602
+#: ../src/keybindings.c:603
 msgid "Toggle All Additional Widgets"
 msgstr "Pārslēgt visus papildu logrīkus"
 
-#: ../src/keybindings.c:605
+#: ../src/keybindings.c:606
 msgid "Fullscreen"
 msgstr "Pilnekrāns"
 
-#: ../src/keybindings.c:607
+#: ../src/keybindings.c:608
 msgid "Toggle Messages Window"
 msgstr "Pārslēgt ziņojumu logu"
 
-#: ../src/keybindings.c:610
+#: ../src/keybindings.c:611
 msgid "Toggle Sidebar"
 msgstr "Pārslēgt sānjoslu"
 
-#: ../src/keybindings.c:612
+#: ../src/keybindings.c:613
 msgid "Zoom In"
 msgstr "Tuvināt"
 
-#: ../src/keybindings.c:614
+#: ../src/keybindings.c:615
 msgid "Zoom Out"
 msgstr "Tālināt"
 
-#: ../src/keybindings.c:616
+#: ../src/keybindings.c:617
 msgid "Zoom Reset"
 msgstr "Atiestatīt tālummaiņu"
 
-#: ../src/keybindings.c:621
+#: ../src/keybindings.c:622
 msgid "Switch to Editor"
 msgstr "Pārslēgties uz redaktoru"
 
-#: ../src/keybindings.c:623
+#: ../src/keybindings.c:624
 msgid "Switch to Search Bar"
 msgstr "Pārslēgties uz meklēšanas joslu"
 
-#: ../src/keybindings.c:625
+#: ../src/keybindings.c:626
 msgid "Switch to Message Window"
 msgstr "Pārslēgties uz ziņojumu logu"
 
-#: ../src/keybindings.c:627
+#: ../src/keybindings.c:628
 msgid "Switch to Compiler"
 msgstr "Pārslēgties uz kompilatoru"
 
-#: ../src/keybindings.c:629
+#: ../src/keybindings.c:630
 msgid "Switch to Messages"
 msgstr "Pārslēgties uz ziņojumiem"
 
-#: ../src/keybindings.c:631
+#: ../src/keybindings.c:632
 msgid "Switch to Scribble"
 msgstr "Pārslēgties uz kricelējumu"
 
-#: ../src/keybindings.c:633
+#: ../src/keybindings.c:634
 msgid "Switch to VTE"
 msgstr "Pārslēgties uz VTE"
 
-#: ../src/keybindings.c:635
+#: ../src/keybindings.c:636
 msgid "Switch to Sidebar"
 msgstr "Pārslēgties uz sānjoslu"
 
-#: ../src/keybindings.c:637
+#: ../src/keybindings.c:638
 msgid "Switch to Sidebar Symbol List"
 msgstr "Pārslēgties uz sānjoslas simbolu sarakstu"
 
-#: ../src/keybindings.c:639
+#: ../src/keybindings.c:640
 msgid "Switch to Sidebar Document List"
 msgstr "Pārslēgties uz sānjoslas dokumentu sarakstu"
 
-#: ../src/keybindings.c:644
+#: ../src/keybindings.c:645
 msgid "Switch to left document"
 msgstr "Pārslēgties uz pa kreisi esošo dokumentu"
 
-#: ../src/keybindings.c:646
+#: ../src/keybindings.c:647
 msgid "Switch to right document"
 msgstr "Pārslēgties uz pa labi esošo dokumentu"
 
-#: ../src/keybindings.c:648
+#: ../src/keybindings.c:649
 msgid "Switch to last used document"
 msgstr "Pārslēgties uz pēdējo lietoto dokumentu"
 
-#: ../src/keybindings.c:651
+#: ../src/keybindings.c:652
 msgid "Move document left"
 msgstr "Pārvietot dokumentu pa kreisi"
 
-#: ../src/keybindings.c:654
+#: ../src/keybindings.c:655
 msgid "Move document right"
 msgstr "Pārvietot dokumentu pa labi"
 
-#: ../src/keybindings.c:656
+#: ../src/keybindings.c:657
 msgid "Move document first"
 msgstr "Pārvietot dokumentu sākumā"
 
-#: ../src/keybindings.c:658
+#: ../src/keybindings.c:659
 msgid "Move document last"
 msgstr "Pārvietot dokumentu beigās"
 
-#: ../src/keybindings.c:663
+#: ../src/keybindings.c:664
 msgid "Toggle Line wrapping"
 msgstr "Pārslēgt rindu aplaušanu"
 
-#: ../src/keybindings.c:665
+#: ../src/keybindings.c:666
 msgid "Toggle Line breaking"
 msgstr "Pārslēgt rindu pārtraukšanu"
 
-#: ../src/keybindings.c:673
+#: ../src/keybindings.c:674
 msgid "Replace spaces with tabs"
 msgstr "Aizstāt atstarpes ar tabulācijām"
 
-#: ../src/keybindings.c:675
+#: ../src/keybindings.c:676
 msgid "Toggle current fold"
 msgstr "Pārslēgt pašreizējo locījumu"
 
-#: ../src/keybindings.c:677
+#: ../src/keybindings.c:678
 msgid "Fold all"
 msgstr "Salocīt visu"
 
-#: ../src/keybindings.c:679
+#: ../src/keybindings.c:680
 msgid "Unfold all"
 msgstr "Atlocīt visu"
 
-#: ../src/keybindings.c:681
+#: ../src/keybindings.c:682
 msgid "Reload symbol list"
 msgstr "Pārlādēt simbolu sarakstu"
 
-#: ../src/keybindings.c:683
+#: ../src/keybindings.c:684
 msgid "Remove Markers"
 msgstr "Noņemt marķierus"
 
-#: ../src/keybindings.c:685
+#: ../src/keybindings.c:686
 msgid "Remove Error Indicators"
 msgstr "Noņemt kļūdu indikatorus"
 
-#: ../src/keybindings.c:687
+#: ../src/keybindings.c:688
 msgid "Remove Markers and Error Indicators"
 msgstr "Noņemt marķierus un kļūdu indikatorus"
 
-#: ../src/keybindings.c:692 ../src/toolbar.c:71
+#: ../src/keybindings.c:693 ../src/toolbar.c:71
 msgid "Compile"
 msgstr "Kompilēt"
 
-#: ../src/keybindings.c:696
+#: ../src/keybindings.c:697
 msgid "Make all"
 msgstr "Izveidot visu"
 
-#: ../src/keybindings.c:699
+#: ../src/keybindings.c:700
 msgid "Make custom target"
 msgstr "Izveidot pielāgotu mērķi"
 
-#: ../src/keybindings.c:701
+#: ../src/keybindings.c:702
 msgid "Make object"
 msgstr "Izveidot objektu"
 
-#: ../src/keybindings.c:703
+#: ../src/keybindings.c:704
 msgid "Next error"
 msgstr "Nākošā kļūda"
 
-#: ../src/keybindings.c:705
+#: ../src/keybindings.c:706
 msgid "Previous error"
 msgstr "Iepriekšējā kļūda"
 
-#: ../src/keybindings.c:707
+#: ../src/keybindings.c:708
 msgid "Run"
 msgstr "Palaist"
 
-#: ../src/keybindings.c:709
+#: ../src/keybindings.c:710
 msgid "Build options"
 msgstr "Būvēšanas opcijas"
 
-#: ../src/keybindings.c:714
+#: ../src/keybindings.c:715
 msgid "Show Color Chooser"
 msgstr "Rādīt krāsu izvēlētāju"
 
-#: ../src/keybindings.c:997
+#: ../src/keybindings.c:998
 msgid "Keyboard Shortcuts"
 msgstr "Tastatūras saīsnes"
 
-#: ../src/keybindings.c:1009
+#: ../src/keybindings.c:1010
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Šīs tastatūras saīsnes ir konfigurējamas:"
 
@@ -4086,11 +4086,11 @@ msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 "Nospiediet taustiņu kombināciju, kuru jūs vēlaties lietot priekš \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2706 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2768 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "Izpl_est visu"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2711 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2773 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Sakļaut visu"
 
@@ -4262,11 +4262,11 @@ msgstr ""
 msgid "Base path:"
 msgstr "Bāzes ceļš:"
 
-#: ../src/project.c:211 ../src/project.c:487
+#: ../src/project.c:211 ../src/project.c:489
 msgid "Choose Project Base Path"
 msgstr "Izvēlēties projekta bāzes ceļu"
 
-#: ../src/project.c:250 ../src/project.c:624 ../src/project.c:1164
+#: ../src/project.c:250 ../src/project.c:626 ../src/project.c:1166
 msgid "Project file could not be written"
 msgstr "Projekta datne nevarēja tikt rakstīta"
 
@@ -4275,7 +4275,7 @@ msgstr "Projekta datne nevarēja tikt rakstīta"
 msgid "Project \"%s\" created."
 msgstr "Projekts \"%s\" izveidots."
 
-#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1025
+#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1027
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Projekta datne \"%s\" nevarēja tikt ielādēta."
@@ -4293,67 +4293,67 @@ msgstr "Projektu datnes"
 msgid "Project \"%s\" closed."
 msgstr "Projekts \"%s\" aizvērts."
 
-#: ../src/project.c:627
+#: ../src/project.c:629
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "Projekts \"%s\" saglabāts."
 
-#: ../src/project.c:660
+#: ../src/project.c:662
 msgid "Do you want to close it before proceeding?"
 msgstr "Vai jūs vēlaties to aizvērt pirms turpināšanas?"
 
-#: ../src/project.c:661
+#: ../src/project.c:663
 #, c-format
 msgid "The '%s' project is open."
 msgstr "Projekts '%s' ir atvērts."
 
-#: ../src/project.c:710
+#: ../src/project.c:712
 msgid "The specified project name is too short."
 msgstr "Norādītais projekta nosaukums ir pārāk īss."
 
-#: ../src/project.c:716
+#: ../src/project.c:718
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "Norādītais projekta nosaukums ir pārāk garš (maks. %d rakstzīmes)."
 
-#: ../src/project.c:728
+#: ../src/project.c:730
 msgid "You have specified an invalid project filename."
 msgstr "Jūs esat norādījis nederīgu projekta datnes nosaukumu."
 
-#: ../src/project.c:751
+#: ../src/project.c:753
 msgid "Create the project's base path directory?"
 msgstr "Vai izveidot projekta bāzes ceļa datņu katalogu?"
 
-#: ../src/project.c:752
+#: ../src/project.c:754
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "Ceļš \"%s\" nepastāv."
 
-#: ../src/project.c:761
+#: ../src/project.c:763
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Projekta bāzes datņu katalogs nevarēja tikt izveidots (%s)."
 
-#: ../src/project.c:774
+#: ../src/project.c:776
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Projekta datne nevarēja tikt rakstīta (%s)."
 
-#: ../src/project.c:780 ../src/search.c:633
+#: ../src/project.c:782 ../src/search.c:633
 msgid "_Replace"
 msgstr "_Aizstāt"
 
-#: ../src/project.c:782 ../plugins/export.c:330
+#: ../src/project.c:784 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "Datne '%s' jau pastāv. Vai jūs vēlaties to pārrakstīt?"
 
 #. initialise the dialog
-#: ../src/project.c:928 ../src/project.c:939
+#: ../src/project.c:930 ../src/project.c:941
 msgid "Choose Project Filename"
 msgstr "Izvēlēties projekta datnes nosaukumu"
 
-#: ../src/project.c:1015
+#: ../src/project.c:1017
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "Projekts \"%s\" atvērts."
@@ -4644,332 +4644,332 @@ msgstr "Nezināma kļūda, izpildot bērnprocesu"
 msgid "Value"
 msgstr "Vērtība"
 
-#: ../src/symbols.c:471 ../src/symbols.c:523 ../src/symbols.c:633
+#: ../src/symbols.c:473 ../src/symbols.c:525 ../src/symbols.c:635
 msgid "Chapter"
 msgstr "Nodaļa"
 
-#: ../src/symbols.c:472 ../src/symbols.c:519 ../src/symbols.c:634
+#: ../src/symbols.c:474 ../src/symbols.c:521 ../src/symbols.c:636
 msgid "Section"
 msgstr "Sadaļa"
 
-#: ../src/symbols.c:473
+#: ../src/symbols.c:475
 msgid "Sect1"
 msgstr "Sadaļa1"
 
-#: ../src/symbols.c:474
+#: ../src/symbols.c:476
 msgid "Sect2"
 msgstr "Sadaļa2"
 
-#: ../src/symbols.c:475
+#: ../src/symbols.c:477
 msgid "Sect3"
 msgstr "Sadaļa3"
 
-#: ../src/symbols.c:476
+#: ../src/symbols.c:478
 msgid "Appendix"
 msgstr "Pielikums"
 
-#: ../src/symbols.c:477 ../src/symbols.c:524 ../src/symbols.c:549
-#: ../src/symbols.c:565 ../src/symbols.c:580 ../src/symbols.c:591
-#: ../src/symbols.c:692 ../src/symbols.c:703 ../src/symbols.c:716
-#: ../src/symbols.c:731 ../src/symbols.c:743 ../src/symbols.c:755
-#: ../src/symbols.c:772 ../src/symbols.c:801 ../src/symbols.c:833
+#: ../src/symbols.c:479 ../src/symbols.c:526 ../src/symbols.c:551
+#: ../src/symbols.c:567 ../src/symbols.c:582 ../src/symbols.c:593
+#: ../src/symbols.c:694 ../src/symbols.c:705 ../src/symbols.c:718
+#: ../src/symbols.c:733 ../src/symbols.c:745 ../src/symbols.c:757
+#: ../src/symbols.c:774 ../src/symbols.c:803 ../src/symbols.c:835
 msgid "Other"
 msgstr "Citi"
 
-#: ../src/symbols.c:483 ../src/symbols.c:763 ../src/symbols.c:811
+#: ../src/symbols.c:485 ../src/symbols.c:765 ../src/symbols.c:813
 msgid "Module"
 msgstr "Modulis"
 
-#: ../src/symbols.c:484 ../src/symbols.c:576 ../src/symbols.c:688
-#: ../src/symbols.c:741 ../src/symbols.c:753 ../src/symbols.c:768
-#: ../src/symbols.c:782
+#: ../src/symbols.c:486 ../src/symbols.c:578 ../src/symbols.c:690
+#: ../src/symbols.c:743 ../src/symbols.c:755 ../src/symbols.c:770
+#: ../src/symbols.c:784
 msgid "Types"
 msgstr "Tipi"
 
-#: ../src/symbols.c:485
+#: ../src/symbols.c:487
 msgid "Type constructors"
 msgstr "Tipu konstruktori"
 
-#: ../src/symbols.c:486 ../src/symbols.c:510 ../src/symbols.c:531
-#: ../src/symbols.c:548 ../src/symbols.c:560 ../src/symbols.c:573
-#: ../src/symbols.c:588 ../src/symbols.c:602 ../src/symbols.c:612
-#: ../src/symbols.c:676 ../src/symbols.c:727 ../src/symbols.c:750
-#: ../src/symbols.c:795 ../src/symbols.c:819
+#: ../src/symbols.c:488 ../src/symbols.c:512 ../src/symbols.c:533
+#: ../src/symbols.c:550 ../src/symbols.c:562 ../src/symbols.c:575
+#: ../src/symbols.c:590 ../src/symbols.c:604 ../src/symbols.c:614
+#: ../src/symbols.c:678 ../src/symbols.c:729 ../src/symbols.c:752
+#: ../src/symbols.c:797 ../src/symbols.c:821
 msgid "Functions"
 msgstr "Funkcijas"
 
-#: ../src/symbols.c:491
+#: ../src/symbols.c:493
 msgid "Program"
 msgstr "Programma"
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:495
 msgid "Divisions"
 msgstr "Iedalījumi"
 
-#: ../src/symbols.c:494 ../src/symbols.c:503 ../src/symbols.c:509
+#: ../src/symbols.c:496 ../src/symbols.c:505 ../src/symbols.c:511
 msgid "Sections"
 msgstr "Sadaļas"
 
-#: ../src/symbols.c:495
+#: ../src/symbols.c:497
 msgid "Paragraph"
 msgstr "Rindkopa"
 
-#: ../src/symbols.c:496
+#: ../src/symbols.c:498
 msgid "Group"
 msgstr "Grupa"
 
-#: ../src/symbols.c:497
+#: ../src/symbols.c:499
 msgid "Data"
 msgstr "Dati"
 
-#: ../src/symbols.c:498
+#: ../src/symbols.c:500
 msgid "Copies"
 msgstr "Kopijas"
 
-#: ../src/symbols.c:504
+#: ../src/symbols.c:506
 msgid "Keys"
 msgstr "Atslēgas"
 
-#: ../src/symbols.c:511 ../src/symbols.c:562 ../src/symbols.c:578
-#: ../src/symbols.c:604 ../src/symbols.c:677 ../src/symbols.c:702
-#: ../src/symbols.c:729 ../src/symbols.c:742 ../src/symbols.c:751
-#: ../src/symbols.c:767 ../src/symbols.c:802 ../src/symbols.c:831
+#: ../src/symbols.c:513 ../src/symbols.c:564 ../src/symbols.c:580
+#: ../src/symbols.c:606 ../src/symbols.c:679 ../src/symbols.c:704
+#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:753
+#: ../src/symbols.c:769 ../src/symbols.c:804 ../src/symbols.c:833
 msgid "Variables"
 msgstr "Mainīgie"
 
-#: ../src/symbols.c:518
+#: ../src/symbols.c:520
 msgid "Environment"
 msgstr "Vide"
 
-#: ../src/symbols.c:520 ../src/symbols.c:635
+#: ../src/symbols.c:522 ../src/symbols.c:637
 msgid "Subsection"
 msgstr "Apakšsadaļa"
 
-#: ../src/symbols.c:521 ../src/symbols.c:636
+#: ../src/symbols.c:523 ../src/symbols.c:638
 msgid "Subsubsection"
 msgstr "Apakšapakšsadaļa"
 
-#: ../src/symbols.c:532 ../src/symbols.c:557
+#: ../src/symbols.c:534 ../src/symbols.c:559
 msgid "Structures"
 msgstr "Struktūras"
 
-#: ../src/symbols.c:539
+#: ../src/symbols.c:541
 msgid "Parts"
 msgstr "Daļas"
 
-#: ../src/symbols.c:540
+#: ../src/symbols.c:542
 msgid "Assembly"
 msgstr "Montāža"
 
-#: ../src/symbols.c:541
+#: ../src/symbols.c:543
 msgid "Steps"
 msgstr "Soļi"
 
-#: ../src/symbols.c:556 ../src/symbols.c:654 ../src/symbols.c:700
+#: ../src/symbols.c:558 ../src/symbols.c:656 ../src/symbols.c:702
 msgid "Modules"
 msgstr "Moduļi"
 
-#: ../src/symbols.c:558 ../src/symbols.c:605
+#: ../src/symbols.c:560 ../src/symbols.c:607
 msgid "Traits"
 msgstr "Pazīmes"
 
-#: ../src/symbols.c:559
+#: ../src/symbols.c:561
 msgid "Implementations"
 msgstr "Īstenošanas"
 
-#: ../src/symbols.c:561 ../src/symbols.c:822
+#: ../src/symbols.c:563 ../src/symbols.c:824
 msgid "Typedefs / Enums"
 msgstr "Tipu definīcijas / skaitītāji"
 
-#: ../src/symbols.c:563 ../src/symbols.c:780 ../src/symbols.c:789
-#: ../src/symbols.c:828
+#: ../src/symbols.c:565 ../src/symbols.c:782 ../src/symbols.c:791
+#: ../src/symbols.c:830
 msgid "Macros"
 msgstr "Makro"
 
-#: ../src/symbols.c:564 ../src/symbols.c:657 ../src/symbols.c:666
-#: ../src/symbols.c:675 ../src/symbols.c:713 ../src/symbols.c:740
+#: ../src/symbols.c:566 ../src/symbols.c:659 ../src/symbols.c:668
+#: ../src/symbols.c:677 ../src/symbols.c:715 ../src/symbols.c:742
 msgid "Methods"
 msgstr "Metodes"
 
-#: ../src/symbols.c:572 ../src/symbols.c:587 ../src/symbols.c:685
-#: ../src/symbols.c:710 ../src/symbols.c:724
+#: ../src/symbols.c:574 ../src/symbols.c:589 ../src/symbols.c:687
+#: ../src/symbols.c:712 ../src/symbols.c:726
 msgid "Package"
 msgstr "Pakotne"
 
-#: ../src/symbols.c:574 ../src/symbols.c:600 ../src/symbols.c:711
-#: ../src/symbols.c:725 ../src/symbols.c:738 ../src/symbols.c:765
-#: ../src/symbols.c:818
+#: ../src/symbols.c:576 ../src/symbols.c:602 ../src/symbols.c:713
+#: ../src/symbols.c:727 ../src/symbols.c:740 ../src/symbols.c:767
+#: ../src/symbols.c:820
 msgid "Interfaces"
 msgstr "Saskarnes"
 
-#: ../src/symbols.c:575 ../src/symbols.c:821
+#: ../src/symbols.c:577 ../src/symbols.c:823
 msgid "Structs"
 msgstr "Struktūras"
 
-#: ../src/symbols.c:577 ../src/symbols.c:590 ../src/symbols.c:603
-#: ../src/symbols.c:730 ../src/symbols.c:752
+#: ../src/symbols.c:579 ../src/symbols.c:592 ../src/symbols.c:605
+#: ../src/symbols.c:732 ../src/symbols.c:754
 msgid "Constants"
 msgstr "Konstantes"
 
-#: ../src/symbols.c:579 ../src/symbols.c:714 ../src/symbols.c:820
+#: ../src/symbols.c:581 ../src/symbols.c:716 ../src/symbols.c:822
 msgid "Members"
 msgstr "Biedri"
 
-#: ../src/symbols.c:589 ../src/symbols.c:754 ../src/symbols.c:779
+#: ../src/symbols.c:591 ../src/symbols.c:756 ../src/symbols.c:781
 msgid "Labels"
 msgstr "Etiķetes"
 
-#: ../src/symbols.c:599 ../src/symbols.c:664 ../src/symbols.c:814
+#: ../src/symbols.c:601 ../src/symbols.c:666 ../src/symbols.c:816
 msgid "Namespaces"
 msgstr "Vārdtelpas"
 
-#: ../src/symbols.c:601 ../src/symbols.c:623 ../src/symbols.c:655
-#: ../src/symbols.c:665 ../src/symbols.c:674 ../src/symbols.c:712
-#: ../src/symbols.c:726 ../src/symbols.c:739 ../src/symbols.c:817
+#: ../src/symbols.c:603 ../src/symbols.c:625 ../src/symbols.c:657
+#: ../src/symbols.c:667 ../src/symbols.c:676 ../src/symbols.c:714
+#: ../src/symbols.c:728 ../src/symbols.c:741 ../src/symbols.c:819
 msgid "Classes"
 msgstr "Klases"
 
-#: ../src/symbols.c:613
+#: ../src/symbols.c:615
 msgid "Anchors"
 msgstr "Enkuri"
 
-#: ../src/symbols.c:614
+#: ../src/symbols.c:616
 msgid "H1 Headings"
 msgstr "H1 virsraksti"
 
-#: ../src/symbols.c:615
+#: ../src/symbols.c:617
 msgid "H2 Headings"
 msgstr "H2 virsraksti"
 
-#: ../src/symbols.c:616
+#: ../src/symbols.c:618
 msgid "H3 Headings"
 msgstr "H3 virsraksti"
 
-#: ../src/symbols.c:624
+#: ../src/symbols.c:626
 msgid "ID Selectors"
 msgstr "ID atlasītāji"
 
-#: ../src/symbols.c:625
+#: ../src/symbols.c:627
 msgid "Type Selectors"
 msgstr "Tipu atlasītāji"
 
-#: ../src/symbols.c:644
+#: ../src/symbols.c:646
 msgid "Section Level 1"
 msgstr "Sadaļas līmenis 1"
 
-#: ../src/symbols.c:645
+#: ../src/symbols.c:647
 msgid "Section Level 2"
 msgstr "Sadaļas līmenis 2"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:648
 msgid "Section Level 3"
 msgstr "Sadaļas līmenis 3"
 
-#: ../src/symbols.c:647
+#: ../src/symbols.c:649
 msgid "Section Level 4"
 msgstr "Sadaļas līmenis 4"
 
-#: ../src/symbols.c:656
+#: ../src/symbols.c:658
 msgid "Singletons"
 msgstr "Vienpaši"
 
-#: ../src/symbols.c:667 ../src/symbols.c:796
+#: ../src/symbols.c:669 ../src/symbols.c:798
 msgid "Procedures"
 msgstr "Procedūras"
 
-#: ../src/symbols.c:678 ../src/symbols.c:723
+#: ../src/symbols.c:680 ../src/symbols.c:725
 msgid "Imports"
 msgstr "Importēšanas"
 
-#: ../src/symbols.c:686
+#: ../src/symbols.c:688
 msgid "Entities"
 msgstr "Entītijas"
 
-#: ../src/symbols.c:687
+#: ../src/symbols.c:689
 msgid "Architectures"
 msgstr "Arhitektūras"
 
-#: ../src/symbols.c:689
+#: ../src/symbols.c:691
 msgid "Functions / Procedures"
 msgstr "Funkcijas / procedūras"
 
-#: ../src/symbols.c:690
+#: ../src/symbols.c:692
 msgid "Variables / Signals"
 msgstr "Mainīgie / signāli"
 
-#: ../src/symbols.c:691
+#: ../src/symbols.c:693
 msgid "Processes / Blocks / Components"
 msgstr "Procesi / bloki / komponentes"
 
-#: ../src/symbols.c:699
+#: ../src/symbols.c:701
 msgid "Events"
 msgstr "Notikumi"
 
-#: ../src/symbols.c:701
+#: ../src/symbols.c:703
 msgid "Functions / Tasks"
 msgstr "Funkcijas / uzdevumi"
 
-#: ../src/symbols.c:715 ../src/symbols.c:771
+#: ../src/symbols.c:717 ../src/symbols.c:773
 msgid "Enums"
 msgstr "Skaitītāji"
 
-#: ../src/symbols.c:764
+#: ../src/symbols.c:766
 msgid "Programs"
 msgstr "Programmas"
 
-#: ../src/symbols.c:766
+#: ../src/symbols.c:768
 msgid "Functions / Subroutines"
 msgstr "Funkcijas / apakšrutīnas"
 
-#: ../src/symbols.c:769
+#: ../src/symbols.c:771
 msgid "Components"
 msgstr "Komponentes"
 
-#: ../src/symbols.c:770
+#: ../src/symbols.c:772
 msgid "Blocks"
 msgstr "Bloki"
 
-#: ../src/symbols.c:781
+#: ../src/symbols.c:783
 msgid "Defines"
 msgstr "Definēšanas"
 
-#: ../src/symbols.c:788
+#: ../src/symbols.c:790
 msgid "Targets"
 msgstr "Mērķi"
 
-#: ../src/symbols.c:797
+#: ../src/symbols.c:799
 msgid "Indexes"
 msgstr "Rādītāji"
 
-#: ../src/symbols.c:798
+#: ../src/symbols.c:800
 msgid "Tables"
 msgstr "Tabulas"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:801
 msgid "Triggers"
 msgstr "Trigeri"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:802
 msgid "Views"
 msgstr "Skati"
 
-#: ../src/symbols.c:832
+#: ../src/symbols.c:834
 msgid "Extern Variables"
 msgstr "Ārējie mainīgie"
 
-#: ../src/symbols.c:1649
+#: ../src/symbols.c:1651
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "Nezināms datnes tipa paplašinājums priekš \"%s\".\n"
 
-#: ../src/symbols.c:1675
+#: ../src/symbols.c:1677
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr ""
 "Neizdevās izveidot birku datni, iespējams, tāpēc, ka netika atrasts neviens "
 "simbols.\n"
 
-#: ../src/symbols.c:1682
+#: ../src/symbols.c:1684
 #, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -4978,7 +4978,7 @@ msgstr ""
 "Lietojums: %s -g <Birku datne> <Datņu saraksts>\n"
 "\n"
 
-#: ../src/symbols.c:1683
+#: ../src/symbols.c:1685
 #, c-format
 msgid ""
 "Example:\n"
@@ -4989,60 +4989,65 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1697
+#: ../src/symbols.c:1699
 msgid "Load Tags File"
 msgstr "Ielādēt birku datni"
 
-#: ../src/symbols.c:1704
+#: ../src/symbols.c:1706
 msgid "Geany tags file (*.*.tags)"
 msgstr "Geany birku datne (*.*.tags)"
 
 #. For translators: the first wildcard is the filetype, the second the filename
-#: ../src/symbols.c:1724
+#: ../src/symbols.c:1726
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "Ielādēta %s birku datne '%s'."
 
-#: ../src/symbols.c:1727
+#: ../src/symbols.c:1729
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Nevarēja ielādēt birku datni '%s'."
 
-#: ../src/symbols.c:1984
+#: ../src/symbols.c:1986
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1986
+#: ../src/symbols.c:1988
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1991
+#: ../src/symbols.c:1993
 #, fuzzy, c-format
 msgid "%s: %lu  (%s)"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:1993
+#: ../src/symbols.c:1995
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2303
+#: ../src/symbols.c:2299
+#, fuzzy
+msgid "Project tags loaded"
+msgstr "Projekts \"%s\" aizvērts."
+
+#: ../src/symbols.c:2365
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Iepriekšēja deklarācija \"%s\" nav atrasta."
 
-#: ../src/symbols.c:2305
+#: ../src/symbols.c:2367
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "\"%s\" definīcija nav atrasta."
 
-#: ../src/symbols.c:2721
+#: ../src/symbols.c:2783
 msgid "Sort by _Name"
 msgstr "Kārtot pēc _nosaukuma"
 
-#: ../src/symbols.c:2728
+#: ../src/symbols.c:2790
 msgid "Sort by _Appearance"
 msgstr "Kārtot pēc izsk_ata"
 
