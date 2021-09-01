@@ -114,12 +114,11 @@ void tm_workspace_free(void)
 }
 
 
-/* esh: Frees the project tags.
- * 		Use only when closing a project.
-*/
+/* esh: Frees the project tags. Use only when closing a project. */
 void tm_workspace_free_prj(void)
 {
 	tm_tags_array_free_prj(theWorkspace->project_tags);
+	theWorkspace->project_tags = NULL;
 }
 
 
