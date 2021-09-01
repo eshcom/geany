@@ -41,9 +41,9 @@ typedef bool (*passStartCallback) (void *userData);
 
 extern void ctagsInit(void);
 extern void ctagsParse(unsigned char *buffer, size_t bufferSize,
-	const char *fileName, const int language,
-	tagEntryFunction tagCallback, passStartCallback passCallback,
-	void *userData);
+					   const char *fileName, const int language,
+					   tagEntryFunction tagCallback, passStartCallback passCallback,
+					   void *userData);
 extern const char *ctagsGetLangName(int lang);
 extern int ctagsGetNamedLang(const char *name);
 extern const char *ctagsGetLangKinds(int lang);
