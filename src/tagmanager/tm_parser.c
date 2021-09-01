@@ -22,6 +22,7 @@
 #include "ctags-api.h"
 
 #include <string.h>
+#include <ctype.h>
 
 
 typedef struct
@@ -825,4 +826,52 @@ gboolean tm_parser_langs_compatible(TMParserType lang, TMParserType other)
 		return TRUE;
 	
 	return FALSE;
+}
+
+gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
+{
+	switch (lang)
+	{
+		case TM_PARSER_ERLANG:
+			return TRUE;
+		/* Other parsers have no quoted identifier */
+		default:
+			return FALSE;
+	}
+}
+
+gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
+								   gchar first, gboolean brackets)
+{
+	switch (lang)
+	{
+		case TM_PARSER_ERLANG:
+			// ignore scope, examples:
+			//		case (module()):test1() of	- "case" is scope
+			//		?module:test1()				- "module" is scope
+			//		Module:test1()				- "Module" is scope
+			if (brackets || prefix == '?' ||
+				(!islower(first) && first != '\''))
+				return TRUE;
+			break;
+		default:
+			break;
+	}
+	return FALSE;
+}
+
+const void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
+										   TMTagType *type)
+{
+	switch (lang)
+	{
+		case TM_PARSER_ERLANG:
+			if (prefix == '?')
+				*type = tm_tag_macro_t;
+			else if (prefix == '#')
+				*type = tm_tag_struct_t;
+			break;
+		default:
+			break;
+	}
 }
