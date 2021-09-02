@@ -2417,17 +2417,42 @@ gchar *utils_get_real_path(const gchar *file_name)
 }
 
 
+//~ esh: using extensions_hash for optimization
+static GHashTable *extensions_hash = NULL;
+
+void extensions_free(void)
+{
+	if (extensions_hash)
+	{
+		g_hash_table_destroy(extensions_hash);
+		extensions_hash = NULL;
+	}
+}
+
 //~ esh: for tm_source_file_new_prj
 TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 {
 	g_return_val_if_fail(file_name != NULL, TM_PARSER_NONE);
 	
+	if (!extensions_hash)
+		extensions_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
+												g_free, NULL);
+	
+	const gchar *ext = strrchr(file_name, '.');
+	if (ext) ++ext; // skip dot
+	
+	if (!EMPTY(ext))
+	{
+		gpointer pval = g_hash_table_lookup(extensions_hash, ext);
+		if (pval) return GPOINTER_TO_INT(pval);
+	}
+	
 	gchar *utf8_fname = utils_get_utf8_from_locale(file_name);
 	GeanyFiletype *ft = filetypes_detect_from_extension(utf8_fname);
 	g_free(utf8_fname);
 	
-	if (ft->id != GEANY_FILETYPES_NONE)
-		return ft->lang;
-	else
-		return TM_PARSER_NONE;
+	if (!EMPTY(ext))
+		g_hash_table_insert(extensions_hash, g_strdup(ext),
+							GINT_TO_POINTER(ft->lang));
+	return ft->lang;
 }
