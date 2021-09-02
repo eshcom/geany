@@ -1315,6 +1315,7 @@ static gboolean do_main_quit(void)
 	sidebar_finalize();
 	configuration_finalize();
 	filetypes_free_types();
+	extensions_free();
 	log_finalize();
 
 	tm_workspace_free();
