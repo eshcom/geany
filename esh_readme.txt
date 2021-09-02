@@ -156,4 +156,41 @@ Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
 >q
 
 ----------------------------------------------------------------------------------------
+//флаг переноса строк и граница проверки переноса определяется двумя параметрами:
+editor_prefs.line_wrapping
+editor_prefs.line_break_column
+//также есть еще такой параметр:
+editor_prefs.line_breaking
+
+Проблема с переносом строк наблюдается в файле editor.c
+
+Обнаружил, что в функции keyfile.c/open_session_file периодически попадается doc->editor->line_breaking = 1
+Значение приходит отсюда: line_breaking = atoi(tmp[8])
+
+Затем, при вводе текста срабатывает функция editor.c/check_line_breaking, в которой editor->line_breaking = 1
+
+keyfile.c/configuration_open_files -> keyfile.c/open_session_file(gchar **tmp, guint len)
+
+Параметр tmp приходит из функции configuration_open_files и инициализируется так:
+gchar **tmp = g_ptr_array_index(session_files, i);
+Т.е. значение для line_breaking приходит из массива session_files
+
+Наполнение массива session_files выполняется в функции keyfile.c/configuration_load_session_files:
+g_ptr_array_add(session_files, tmp_array);
+
+Переменная tmp_array нициализируется так:
+g_snprintf(entry, sizeof(entry), "FILE_NAME_%d", i);
+tmp_array = g_key_file_get_string_list(config, "files", entry, NULL, &error);
+
+Делаем вывод, что значение для line_breaking приходит из файла сессии geany.
+
+Смотрим файл geany.geany:
+FILE_NAME_2=17008;C;0;EUTF-8;1;1;0;%2Fhome%2Fesh%2Fprojects%2Fgithub%2Fgeany%2Fsrc%2Feditor.c;1;4
+FILE_NAME_3=45397;C;0;EUTF-8;1;1;0;%2Fhome%2Fesh%2Fprojects%2Fgithub%2Fgeany%2Fsrc%2Fsymbols.c;0;4
+Здесь привел пример двух файлов, видим, что для editor.c установлено значение 1
+
+Если в geany нажмем "Документ", то увидим, что стоит галочка "Перенос строк".
+Т.е. оказывается перенос строк можно устанавливать индивидуально для каждого файла.
+
+----------------------------------------------------------------------------------------
 
