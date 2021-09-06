@@ -2190,7 +2190,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 			last_tag = tmtag;
 		}
 	}
-	if (filtered_tags->len > 1 && definition && !EMPTY(scope))
+	if (filtered_tags->len > 0 && definition && !EMPTY(scope))
 	{
 		new_tags = filter_tags_by_scope(filtered_tags, scope);
 		if (new_tags->len == 0)
@@ -2206,7 +2206,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag, TMSourceFile 
 		}
 		filter_tags_check(&filtered_tags, &new_tags, FALSE);
 	}
-	if (filtered_tags->len > 1 && definition)
+	if (filtered_tags->len > 0 && definition)
 	{
 		TMTagType search_types;
 		gboolean force_replace;
