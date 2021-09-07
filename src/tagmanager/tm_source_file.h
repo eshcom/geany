@@ -20,7 +20,7 @@
 G_BEGIN_DECLS
 
 /* Casts a pointer to a pointer to a TMSourceFile structure */
-#define TM_SOURCE_FILE(source_file) ((TMSourceFile *) source_file)
+#define TM_SOURCE_FILE(source_file) ((TMSourceFile *)source_file)
 
 /* Evaluates to X is X is defined, else evaluates to Y */
 #define FALLBACK(X,Y) (X)?(X):(Y)

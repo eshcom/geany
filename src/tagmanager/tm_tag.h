@@ -37,7 +37,7 @@
 G_BEGIN_DECLS
 
 /** Use the TM_TAG() macro to cast a pointer to (TMTag *) */
-#define TM_TAG(tag) ((TMTag *) tag)
+#define TM_TAG(tag) ((TMTag *)tag)
 
 /**
  Tag Attributes. Note that some attributes are available to file

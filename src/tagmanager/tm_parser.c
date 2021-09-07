@@ -616,8 +616,8 @@ static void add_subparser(TMParserType lang, TMParserType sublang,
 {
 	guint i;
 	GPtrArray *mapping;
-	GHashTable *lang_map = g_hash_table_lookup(subparser_map, GINT_TO_POINTER(lang));
-	
+	GHashTable *lang_map = g_hash_table_lookup(subparser_map,
+											   GINT_TO_POINTER(lang));
 	if (!lang_map)
 	{
 		lang_map = g_hash_table_new(g_direct_hash, g_direct_equal);
@@ -632,7 +632,9 @@ static void add_subparser(TMParserType lang, TMParserType sublang,
 }
 
 
-#define SUBPARSER_MAP_ENTRY(lang, sublang, map) add_subparser(TM_PARSER_##lang, TM_PARSER_##sublang, map, G_N_ELEMENTS(map))
+#define SUBPARSER_MAP_ENTRY(lang, sublang, map)					 \
+			add_subparser(TM_PARSER_##lang, TM_PARSER_##sublang, \
+						  map, G_N_ELEMENTS(map))
 
 static void init_subparser_map(void)
 {
@@ -773,7 +775,8 @@ gboolean tm_parser_has_full_context(TMParserType lang)
 {
 	switch (lang)
 	{
-		/* These parsers include full hierarchy in the tag scope, separated by tm_parser_context_separator() */
+		/* These parsers include full hierarchy in the tag scope,
+		 * separated by tm_parser_context_separator() */
 		case TM_PARSER_ACTIONSCRIPT:
 		case TM_PARSER_C:
 		case TM_PARSER_CPP:

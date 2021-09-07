@@ -121,24 +121,30 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir);
 
 void geany_match_info_free(GeanyMatchInfo *info);
 
-gint search_find_prev(struct _ScintillaObject *sci, const gchar *str, GeanyFindFlags flags, GeanyMatchInfo **match_);
+gint search_find_prev(struct _ScintillaObject *sci, const gchar *str,
+					  GeanyFindFlags flags, GeanyMatchInfo **match_);
 
-gint search_find_next(struct _ScintillaObject *sci, const gchar *str, GeanyFindFlags flags, GeanyMatchInfo **match_);
+gint search_find_next(struct _ScintillaObject *sci, const gchar *str,
+					  GeanyFindFlags flags, GeanyMatchInfo **match_);
 
-gint search_find_text(struct _ScintillaObject *sci, GeanyFindFlags flags, struct Sci_TextToFind *ttf, GeanyMatchInfo **match_);
+gint search_find_text(struct _ScintillaObject *sci, GeanyFindFlags flags,
+					  struct Sci_TextToFind *ttf, GeanyMatchInfo **match_);
 
 void search_find_again(gboolean change_direction);
 
-void search_find_usage(const gchar *search_text, const gchar *original_search_text, GeanyFindFlags flags, gboolean in_session);
+void search_find_usage(const gchar *search_text, const gchar *original_search_text,
+					   GeanyFindFlags flags, gboolean in_session);
 
 void search_find_selection(struct GeanyDocument *doc, gboolean search_backwards);
 
-gint search_mark_all(struct GeanyDocument *doc, const gchar *search_text, GeanyFindFlags flags);
+gint search_mark_all(struct GeanyDocument *doc, const gchar *search_text,
+					 GeanyFindFlags flags);
 
-gint search_replace_match(struct _ScintillaObject *sci, const GeanyMatchInfo *match, const gchar *replace_text);
+gint search_replace_match(struct _ScintillaObject *sci, const GeanyMatchInfo *match,
+						  const gchar *replace_text);
 
 guint search_replace_range(struct _ScintillaObject *sci, struct Sci_TextToFind *ttf,
-		GeanyFindFlags flags, const gchar *replace_text);
+						   GeanyFindFlags flags, const gchar *replace_text);
 
 #endif /* GEANY_PRIVATE */
 

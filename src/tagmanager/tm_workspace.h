@@ -63,11 +63,13 @@ GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type
 //~ esh: for symbols.c/goto_tag
 GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType lang);
 
-GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang, guint max_num);
+GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang,
+									guint max_num);
 
 GPtrArray *tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
 										   gboolean function, gboolean member,
-										   const gchar *current_scope, gboolean search_namespace);
+										   const gchar *current_scope,
+										   gboolean search_namespace);
 
 
 void tm_workspace_add_source_file_noupdate(TMSourceFile *source_file);
