@@ -130,7 +130,7 @@ void tm_workspace_free_prj(void)
 */
 const TMWorkspace *tm_get_workspace(void)
 {
-	if (NULL == theWorkspace)
+	if (theWorkspace == NULL)
 		tm_create_workspace();
 	return theWorkspace;
 }
@@ -174,6 +174,7 @@ static void update_source_file(TMSourceFile *source_file, guchar *text_buf,
 	}
 	tm_source_file_parse(source_file, text_buf, buf_size, use_buffer);
 	tm_tags_sort(source_file->tags_array, file_tags_sort_attrs, FALSE, TRUE);
+	
 	if (update_workspace)
 	{
 #ifdef TM_DEBUG
@@ -652,6 +653,7 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 	source_file = tm_source_file_new(temp_file, tm_source_file_get_lang_name(lang));
 	if (!source_file)
 		goto cleanup;
+	
 	update_source_file(source_file, NULL, 0, FALSE, FALSE);
 	if (source_file->tags_array->len == 0)
 	{
@@ -708,9 +710,10 @@ GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type
 {
 	GPtrArray *tags = g_ptr_array_new();
 	
-	fill_find_tags_array(tags, theWorkspace->tags_array, name, scope, type, lang);
-	fill_find_tags_array(tags, theWorkspace->global_tags, name, scope, type, lang);
-	
+	fill_find_tags_array(tags, theWorkspace->tags_array,
+						 name, scope, type, lang);
+	fill_find_tags_array(tags, theWorkspace->global_tags,
+						 name, scope, type, lang);
 	if (attrs)
 		tm_tags_sort(tags, attrs, TRUE, FALSE);
 	
@@ -725,7 +728,8 @@ GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType 
 {
 	GPtrArray *tags = g_ptr_array_new();
 	
-	fill_find_tags_array(tags, theWorkspace->project_tags, name, NULL, type, lang);
+	fill_find_tags_array(tags, theWorkspace->project_tags,
+						 name, NULL, type, lang);
 	return tags;
 }
 
@@ -765,13 +769,16 @@ static void fill_find_tags_array_prefix(GPtrArray *dst, const GPtrArray *src,
  @param max_num The maximum number of tags to return.
  @return Array of matching tags sorted by their name.
 */
-GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang, guint max_num)
+GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang,
+									guint max_num)
 {
 	TMTagAttrType attrs[] = { tm_tag_attr_name_t, 0 };
 	GPtrArray *tags = g_ptr_array_new();
 	
-	fill_find_tags_array_prefix(tags, theWorkspace->tags_array, prefix, lang, max_num);
-	fill_find_tags_array_prefix(tags, theWorkspace->global_tags, prefix, lang, max_num);
+	fill_find_tags_array_prefix(tags, theWorkspace->tags_array,
+								prefix, lang, max_num);
+	fill_find_tags_array_prefix(tags, theWorkspace->global_tags,
+								prefix, lang, max_num);
 	
 	tm_tags_sort(tags, attrs, TRUE, FALSE);
 	if (tags->len > max_num)
@@ -791,7 +798,8 @@ GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang, guint
 static GPtrArray *
 find_scope_members_tags(const GPtrArray *all, TMTag *type_tag, gboolean namespace)
 {
-	TMTagType member_types = tm_tag_max_t & ~(TM_TYPE_WITH_MEMBERS | tm_tag_typedef_t);
+	TMTagType member_types = tm_tag_max_t & ~(TM_TYPE_WITH_MEMBERS |
+											  tm_tag_typedef_t);
 	GPtrArray *tags = g_ptr_array_new();
 	gchar *scope;
 	guint i;
@@ -800,7 +808,8 @@ find_scope_members_tags(const GPtrArray *all, TMTag *type_tag, gboolean namespac
 		member_types = tm_tag_max_t;
 	
 	if (type_tag->scope && *(type_tag->scope))
-		scope = g_strconcat(type_tag->scope, tm_parser_context_separator(type_tag->lang),
+		scope = g_strconcat(type_tag->scope,
+							tm_parser_context_separator(type_tag->lang),
 							type_tag->name, NULL);
 	else
 		scope = g_strdup(type_tag->name);
@@ -877,7 +886,8 @@ find_scope_members(const GPtrArray *tags_array, const gchar *name,
 			types &= ~tm_tag_enum_t;
 		
 		type_tags = g_ptr_array_new();
-		fill_find_tags_array(type_tags, tags_array, type_name, NULL, types, lang);
+		fill_find_tags_array(type_tags, tags_array,
+							 type_name, NULL, types, lang);
 		
 		for (j = 0; j < type_tags->len; j++)
 		{
@@ -963,7 +973,8 @@ static gboolean member_at_method_scope(const GPtrArray *tags, const gchar *metho
 			
 			/* check whether the class exists */
 			fill_find_tags_array(cls_tags, src, cls, cls_scope,
-								 TM_TYPE_WITH_MEMBERS | tm_tag_namespace_t, lang);
+								 TM_TYPE_WITH_MEMBERS | tm_tag_namespace_t,
+								 lang);
 			ret = cls_tags->len > 0;
 			g_ptr_array_free(cls_tags, TRUE);
 		}
@@ -1052,7 +1063,8 @@ static GPtrArray *find_namespace_members_all(const GPtrArray *tags,
 GPtrArray *
 tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
 								gboolean function, gboolean member,
-								const gchar *current_scope, gboolean search_namespace)
+								const gchar *current_scope,
+								gboolean search_namespace)
 {
 	TMParserType lang = source_file ? source_file->lang : TM_PARSER_NONE;
 	GPtrArray *tags, *member_tags = NULL;
@@ -1066,10 +1078,11 @@ tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
 	{
 		tags = tm_workspace_find(name, NULL, tm_tag_namespace_t, NULL, lang);
 		
-		member_tags = find_namespace_members_all(tags, theWorkspace->tags_array, lang);
+		member_tags = find_namespace_members_all(tags, theWorkspace->tags_array,
+												 lang);
 		if (!member_tags)
-			member_tags = find_namespace_members_all(tags, theWorkspace->global_tags, lang);
-		
+			member_tags = find_namespace_members_all(tags, theWorkspace->global_tags,
+													 lang);
 		g_ptr_array_free(tags, TRUE);
 	}
 	
@@ -1140,33 +1153,33 @@ static const GPtrArray *tm_workspace_get_parents(const gchar *name)
 	
 	g_return_val_if_fail(name && isalpha(*name),NULL);
 	
-	if (NULL == parents)
+	if (parents == NULL)
 		parents = g_ptr_array_new();
 	else
 		g_ptr_array_set_size(parents, 0);
 	
 	matches = tm_workspace_find(name, NULL, tm_tag_class_t, type, -1);
-	if ((NULL == matches) || (0 == matches->len))
+	if (matches == NULL || matches->len == 0)
 		return NULL;
 	
 	g_ptr_array_add(parents, matches->pdata[0]);
 	while (i < parents->len)
 	{
 		tag = TM_TAG(parents->pdata[i]);
-		if ((NULL != tag->inheritance) && (isalpha(tag->inheritance[0])))
+		if (tag->inheritance != NULL && isalpha(tag->inheritance[0]))
 		{
 			klasses = g_strsplit(tag->inheritance, ",", 10);
-			for (klass = klasses; (NULL != *klass); ++klass)
+			for (klass = klasses; *klass != NULL; ++klass)
 			{
 				for (j = 0; j < parents->len; ++j)
 				{
-					if (0 == strcmp(*klass, TM_TAG(parents->pdata[j])->name))
+					if (strcmp(*klass, TM_TAG(parents->pdata[j])->name) == 0)
 						break;
 				}
 				if (parents->len == j)
 				{
 					matches = tm_workspace_find(*klass, NULL, tm_tag_class_t, type, -1);
-					if ((NULL != matches) && (0 < matches->len))
+					if (matches != NULL && matches->len > 0)
 						g_ptr_array_add(parents, matches->pdata[0]);
 				}
 			}

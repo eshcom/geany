@@ -793,8 +793,9 @@ static gboolean autocomplete_scope(GeanyEditor *editor, const gchar *root, gsize
 
 	if (symbols_get_current_scope(editor->document, &current_scope) == -1)
 		current_scope = "";
-	tags = tm_workspace_find_scope_members(editor->document->tm_file, name, function,
-				member, current_scope, scope_sep_typed);
+	tags = tm_workspace_find_scope_members(editor->document->tm_file,
+										   name, function, member,
+										   current_scope, scope_sep_typed);
 	if (tags)
 	{
 		GPtrArray *filtered = g_ptr_array_new();

@@ -70,7 +70,7 @@ enum
 
 
 #define SOURCE_FILE_NEW(S) ((S) = g_slice_new(TMSourceFilePriv))
-#define SOURCE_FILE_FREE(S) g_slice_free(TMSourceFilePriv, (TMSourceFilePriv *) S)
+#define SOURCE_FILE_FREE(S) g_slice_free(TMSourceFilePriv, (TMSourceFilePriv *)S)
 
 static int get_path_max(const char *path)
 {
@@ -138,8 +138,8 @@ gchar *tm_get_real_path(const gchar *file_name)
 
 static char get_tag_impl(const char *impl)
 {
-	if ((0 == strcmp("virtual", impl))
-	 || (0 == strcmp("pure virtual", impl)))
+	if (strcmp("virtual", impl) == 0 ||
+		strcmp("pure virtual", impl) == 0)
 		return TAG_IMPL_VIRTUAL;
 	
 #ifdef TM_DEBUG
@@ -150,15 +150,15 @@ static char get_tag_impl(const char *impl)
 
 static char get_tag_access(const char *access)
 {
-	if (0 == strcmp("public", access))
+	if (strcmp("public", access) == 0)
 		return TAG_ACCESS_PUBLIC;
-	else if (0 == strcmp("protected", access))
+	else if (strcmp("protected", access) == 0)
 		return TAG_ACCESS_PROTECTED;
-	else if (0 == strcmp("private", access))
+	else if (strcmp("private", access) == 0)
 		return TAG_ACCESS_PRIVATE;
-	else if (0 == strcmp("friend", access))
+	else if (strcmp("friend", access) == 0)
 		return TAG_ACCESS_FRIEND;
-	else if (0 == strcmp("default", access))
+	else if (strcmp("default", access) == 0)
 		return TAG_ACCESS_DEFAULT;
 	
 #ifdef TM_DEBUG
@@ -176,7 +176,8 @@ static char get_tag_access(const char *access)
  @param tag_entry Tag information gathered by the ctags parser
  @return TRUE on success, FALSE on failure
 */
-static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_entry)
+static gboolean init_tag(TMTag *tag, TMSourceFile *file,
+						 const ctagsTag *tag_entry)
 {
 	TMTagType type;
 	
@@ -199,10 +200,9 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
 	tag->pointerOrder = 0;	/* backward compatibility (use var_type instead) */
 	tag->line = tag_entry->lineNumber;
 	
-	if (NULL != tag_entry->signature)
+	if (tag_entry->signature != NULL)
 		tag->arglist = g_strdup(tag_entry->signature);
-	if ((NULL != tag_entry->scopeName) &&
-		(0 != tag_entry->scopeName[0]))
+	if (tag_entry->scopeName != NULL && tag_entry->scopeName[0] != 0)
 		tag->scope = g_strdup(tag_entry->scopeName);
 	if (tag_entry->inheritance != NULL)
 		tag->inheritance = g_strdup(tag_entry->inheritance);
@@ -212,7 +212,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
 		tag->access = get_tag_access(tag_entry->access);
 	if (tag_entry->implementation != NULL)
 		tag->impl = get_tag_impl(tag_entry->implementation);
-	if ((tm_tag_macro_t == tag->type) && (NULL != tag->arglist))
+	if (tag->type == tm_tag_macro_t && tag->arglist != NULL)
 		tag->type = tm_tag_macro_with_arg_t;
 	
 	tag->file = file;
@@ -238,50 +238,50 @@ static gboolean init_tag_from_file(TMTag *tag, FILE *fp, TMParserType lang)
 	guchar changed_char = TA_NAME;
 	
 	tag->refcount = 1;
-	if ((NULL == fgets((gchar*)buf, BUFSIZ, fp)) || ('\0' == *buf))
+	if (fgets((gchar *)buf, BUFSIZ, fp) == NULL || *buf == '\0')
 		return FALSE;
-	for (start = end = buf, status = TRUE; (TRUE == status); start = end, ++end)
+	for (start = end = buf, status = TRUE; status; start = end, ++end)
 	{
-		while ((*end < TA_NAME) && (*end != '\0') && (*end != '\n'))
+		while (*end < TA_NAME && *end != '\0' && *end != '\n')
 			++end;
-		if (('\0' == *end) || ('\n' == *end))
+		if (*end == '\0' || *end == '\n')
 			status = FALSE;
 		changed_char = *end;
 		*end = '\0';
-		if (NULL == tag->name)
+		if (tag->name == NULL)
 		{
 			if (!isprint(*start))
 				return FALSE;
 			else
-				tag->name = g_strdup((gchar*)start);
+				tag->name = g_strdup((gchar *)start);
 		}
 		else
 		{
 			switch (*start)
 			{
 				case TA_LINE:
-					tag->line = atol((gchar*)start + 1);
+					tag->line = atol((gchar *)start + 1);
 					break;
 				case TA_LOCAL:
-					tag->local = atoi((gchar*)start + 1);
+					tag->local = atoi((gchar *)start + 1);
 					break;
 				case TA_TYPE:
-					tag->type = (TMTagType) atoi((gchar*)start + 1);
+					tag->type = (TMTagType) atoi((gchar *)start + 1);
 					break;
 				case TA_ARGLIST:
-					tag->arglist = g_strdup((gchar*)start + 1);
+					tag->arglist = g_strdup((gchar *)start + 1);
 					break;
 				case TA_SCOPE:
-					tag->scope = g_strdup((gchar*)start + 1);
+					tag->scope = g_strdup((gchar *)start + 1);
 					break;
 				case TA_POINTER:
-					tag->pointerOrder = atoi((gchar*)start + 1);
+					tag->pointerOrder = atoi((gchar *)start + 1);
 					break;
 				case TA_VARTYPE:
-					tag->var_type = g_strdup((gchar*)start + 1);
+					tag->var_type = g_strdup((gchar *)start + 1);
 					break;
 				case TA_INHERITS:
-					tag->inheritance = g_strdup((gchar*)start + 1);
+					tag->inheritance = g_strdup((gchar *)start + 1);
 					break;
 				case TA_TIME:  /* Obsolete */
 					break;
@@ -304,7 +304,7 @@ static gboolean init_tag_from_file(TMTag *tag, FILE *fp, TMParserType lang)
 		}
 		*end = changed_char;
 	}
-	if (NULL == tag->name)
+	if (tag->name == NULL)
 		return FALSE;
 	
 	tag->file = NULL;
@@ -322,34 +322,38 @@ static gboolean init_tag_from_file_alt(TMTag *tag, FILE *fp, TMParserType lang)
 	/*guchar changed_char = TA_NAME;*/
 	
 	tag->refcount = 1;
-	if ((NULL == fgets((gchar*)buf, BUFSIZ, fp)) || ('\0' == *buf))
+	if (fgets((gchar *)buf, BUFSIZ, fp) == NULL || *buf == '\0')
 		return FALSE;
 	{
 		gchar **fields;
 		guint field_len;
-		for (start = end = buf, status = TRUE; (TRUE == status); start = end, ++end)
+		for (start = end = buf, status = TRUE; status; start = end, ++end)
 		{
-			while ((*end < TA_NAME) && (*end != '\0') && (*end != '\n'))
+			while (*end < TA_NAME && *end != '\0' && *end != '\n')
 				++end;
-			if (('\0' == *end) || ('\n' == *end))
+			if (*end == '\0' || *end == '\n')
 				status = FALSE;
 			/*changed_char = *end;*/
 			*end = '\0';
-			if (NULL == tag->name && !isprint(*start))
-					return FALSE;
+			if (tag->name == NULL && !isprint(*start))
+				return FALSE;
 			
-			fields = g_strsplit((gchar*)start, "|", -1);
+			fields = g_strsplit((gchar *)start, "|", -1);
 			field_len = g_strv_length(fields);
 			
-			if (field_len >= 1) tag->name = g_strdup(fields[0]);
-			else tag->name = NULL;
-			if (field_len >= 2 && fields[1] != NULL) tag->var_type = g_strdup(fields[1]);
-			if (field_len >= 3 && fields[2] != NULL) tag->arglist = g_strdup(fields[2]);
+			tag->name = field_len >= 1 ? g_strdup(fields[0]) : NULL;
+			
+			if (field_len >= 2 && fields[1] != NULL)
+				tag->var_type = g_strdup(fields[1]);
+			
+			if (field_len >= 3 && fields[2] != NULL)
+				tag->arglist = g_strdup(fields[2]);
+			
 			tag->type = tm_tag_prototype_t;
 			g_strfreev(fields);
 		}
 	}
-	if (NULL == tag->name)
+	if (tag->name == NULL)
 		return FALSE;
 	
 	tag->file = NULL;
@@ -372,7 +376,7 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp, TMParserType lang
 	tag->type = tm_tag_function_t; /* default type is function if no kind is specified */
 	do
 	{
-		if ((NULL == fgets(buf, BUFSIZ, fp)) || ('\0' == *buf))
+		if (fgets(buf, BUFSIZ, fp) == NULL || *buf == '\0')
 			return FALSE;
 	}
 	while (strncmp(buf, "!_TAG_", 6) == 0); /* skip !_TAG_ lines */
@@ -440,39 +444,40 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp, TMParserType lang
 			p = *end ? end + 1 : end;
 			*end = 0; /* terminate the value (or key if no value) */
 			
-			if (!value || 0 == strcmp(key, "kind")) /* tag kind */
+			if (!value || strcmp(key, "kind") == 0) /* tag kind */
 			{
 				const gchar *kind = value ? value : key;
 				
 				if (kind[0] && kind[1])
-					tag->type = tm_parser_get_tag_type(ctagsGetKindFromName(kind, lang), lang);
+					tag->type = tm_parser_get_tag_type(ctagsGetKindFromName(kind, lang),
+													   lang);
 				else
 					tag->type = tm_parser_get_tag_type(*kind, lang);
 			}
-			else if (0 == strcmp(key, "inherits")) /* comma-separated list of classes this class inherits from */
+			else if (strcmp(key, "inherits") == 0) /* comma-separated list of classes this class inherits from */
 			{
 				g_free(tag->inheritance);
 				tag->inheritance = g_strdup(value);
 			}
-			else if (0 == strcmp(key, "implementation")) /* implementation limit */
+			else if (strcmp(key, "implementation") == 0) /* implementation limit */
 				tag->impl = get_tag_impl(value);
-			else if (0 == strcmp(key, "line")) /* line */
+			else if (strcmp(key, "line") == 0) /* line */
 				tag->line = atol(value);
-			else if (0 == strcmp(key, "access")) /* access */
+			else if (strcmp(key, "access") == 0) /* access */
 				tag->access = get_tag_access(value);
-			else if (0 == strcmp(key, "class") ||
-					 0 == strcmp(key, "enum") ||
-					 0 == strcmp(key, "function") ||
-					 0 == strcmp(key, "struct") ||
-					 0 == strcmp(key, "union") ||
-					 0 == strcmp(key, "module")) /* Name of the class/enum/function/struct/union/module in which this tag is a member */
+			else if (strcmp(key, "class") == 0 ||
+					 strcmp(key, "enum") == 0 ||
+					 strcmp(key, "function") == 0 ||
+					 strcmp(key, "struct") == 0 ||
+					 strcmp(key, "union") == 0 ||
+					 strcmp(key, "module") == 0) /* Name of the class/enum/function/struct/union/module in which this tag is a member */
 			{
 				g_free(tag->scope);
 				tag->scope = g_strdup(value);
 			}
-			else if (0 == strcmp(key, "file")) /* static (local) tag */
+			else if (strcmp(key, "file") == 0) /* static (local) tag */
 				tag->local = TRUE;
-			else if (0 == strcmp(key, "signature")) /* arglist */
+			else if (strcmp(key, "signature") == 0) /* arglist */
 			{
 				g_free(tag->arglist);
 				tag->arglist = g_strdup(value);
@@ -522,23 +527,23 @@ static gboolean write_tag(TMTag *tag, FILE *fp, TMTagAttrType attrs)
 	fprintf(fp, "%s", tag->name);
 	if (attrs & tm_tag_attr_type_t)
 		fprintf(fp, "%c%d", TA_TYPE, tag->type);
-	if ((attrs & tm_tag_attr_arglist_t) && (NULL != tag->arglist))
+	if ((attrs & tm_tag_attr_arglist_t) && tag->arglist != NULL)
 		fprintf(fp, "%c%s", TA_ARGLIST, tag->arglist);
 	if (attrs & tm_tag_attr_line_t)
 		fprintf(fp, "%c%ld", TA_LINE, tag->line);
 	if (attrs & tm_tag_attr_local_t)
 		fprintf(fp, "%c%d", TA_LOCAL, tag->local);
-	if ((attrs & tm_tag_attr_scope_t) && (NULL != tag->scope))
+	if ((attrs & tm_tag_attr_scope_t) && tag->scope != NULL)
 		fprintf(fp, "%c%s", TA_SCOPE, tag->scope);
-	if ((attrs & tm_tag_attr_inheritance_t) && (NULL != tag->inheritance))
+	if ((attrs & tm_tag_attr_inheritance_t) && tag->inheritance != NULL)
 		fprintf(fp, "%c%s", TA_INHERITS, tag->inheritance);
 	if (attrs & tm_tag_attr_pointer_t)
 		fprintf(fp, "%c%d", TA_POINTER, tag->pointerOrder);
-	if ((attrs & tm_tag_attr_vartype_t) && (NULL != tag->var_type))
+	if ((attrs & tm_tag_attr_vartype_t) && tag->var_type != NULL)
 		fprintf(fp, "%c%s", TA_VARTYPE, tag->var_type);
-	if ((attrs & tm_tag_attr_access_t) && (TAG_ACCESS_UNKNOWN != tag->access))
+	if ((attrs & tm_tag_attr_access_t) && tag->access != TAG_ACCESS_UNKNOWN)
 		fprintf(fp, "%c%c", TA_ACCESS, tag->access);
-	if ((attrs & tm_tag_attr_impl_t) && (TAG_IMPL_UNKNOWN != tag->impl))
+	if ((attrs & tm_tag_attr_impl_t) && tag->impl != TAG_IMPL_UNKNOWN)
 		fprintf(fp, "%c%c", TA_IMPL, tag->impl);
 	
 	if (fprintf(fp, "\n"))
@@ -556,22 +561,22 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 	TMTag *tag;
 	TMFileFormat format = TM_FILE_FORMAT_TAGMANAGER;
 	
-	if (NULL == (fp = g_fopen(tags_file, "r")))
+	if (!(fp = g_fopen(tags_file, "r")))
 		return NULL;
-	if ((NULL == fgets((gchar*) buf, BUFSIZ, fp)) || ('\0' == *buf))
+	if (fgets((gchar *)buf, BUFSIZ, fp) == NULL || *buf == '\0')
 	{
 		fclose(fp);
 		return NULL; /* early out on error */
 	}
 	else
 	{	/* We read (and discard) the first line for the format specification. */
-		if (buf[0] == '#' && strstr((gchar*) buf, "format=pipe") != NULL)
+		if (buf[0] == '#' && strstr((gchar *)buf, "format=pipe") != NULL)
 			format = TM_FILE_FORMAT_PIPE;
-		else if (buf[0] == '#' && strstr((gchar*) buf, "format=tagmanager") != NULL)
+		else if (buf[0] == '#' && strstr((gchar *)buf, "format=tagmanager") != NULL)
 			format = TM_FILE_FORMAT_TAGMANAGER;
-		else if (buf[0] == '#' && strstr((gchar*) buf, "format=ctags") != NULL)
+		else if (buf[0] == '#' && strstr((gchar *)buf, "format=ctags") != NULL)
 			format = TM_FILE_FORMAT_CTAGS;
-		else if (strncmp((gchar*) buf, "!_TAG_", 6) == 0)
+		else if (strncmp((gchar *)buf, "!_TAG_", 6) == 0)
 			format = TM_FILE_FORMAT_CTAGS;
 		else
 		{	/* We didn't find a valid format specification, so we try to auto-detect the format
@@ -595,7 +600,7 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 	}
 	
 	file_tags = g_ptr_array_new();
-	while (NULL != (tag = new_tag_from_tags_file(fp, mode, format, source_path)))
+	while (tag = new_tag_from_tags_file(fp, mode, format, source_path))
 		g_ptr_array_add(file_tags, tag);
 	fclose(fp);
 	
@@ -610,8 +615,7 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_
 	
 	g_return_val_if_fail(tags_array && tags_file, FALSE);
 	
-	fp = g_fopen(tags_file, "w");
-	if (!fp)
+	if (!(fp = g_fopen(tags_file, "w")))
 		return FALSE;
 	
 	fprintf(fp, "# format=tagmanager\n");
@@ -649,7 +653,7 @@ static void update_python_arglist(const TMTag *tag, TMSourceFile *current_source
 	/* going in reverse order because the tag was added recently */
 	for (i = current_source_file->tags_array->len; i > 0; i--)
 	{
-		TMTag *prev_tag = (TMTag *) current_source_file->tags_array->pdata[i - 1];
+		TMTag *prev_tag = (TMTag *)current_source_file->tags_array->pdata[i - 1];
 		if (g_strcmp0(prev_tag->name, parent_tag_name) == 0)
 		{
 			g_free(prev_tag->arglist);
@@ -719,14 +723,8 @@ static gboolean tm_source_file_init(TMSourceFile *source_file,
 		else
 			source_file->short_name = source_file->file_name;
 	}
-	
 	source_file->tags_array = g_ptr_array_new();
-	
-	if (name == NULL)
-		source_file->lang = TM_PARSER_NONE;
-	else
-		source_file->lang = ctagsGetNamedLang(name);
-	
+	source_file->lang = name ? ctagsGetNamedLang(name) : TM_PARSER_NONE;
 	return TRUE;
 }
 
@@ -742,7 +740,7 @@ TMSourceFile *tm_source_file_new(const char *file_name, const char *name)
 	TMSourceFilePriv *priv;
 	
 	SOURCE_FILE_NEW(priv);
-	if (TRUE != tm_source_file_init(&priv->public, file_name, name))
+	if (!tm_source_file_init(&priv->public, file_name, name))
 	{
 		SOURCE_FILE_FREE(priv);
 		return NULL;
@@ -775,9 +773,9 @@ TMSourceFile *tm_source_file_new_prj(const char *file_name, const char *source_p
 
 static TMSourceFile *tm_source_file_dup(TMSourceFile *source_file)
 {
-	TMSourceFilePriv *priv = (TMSourceFilePriv *) source_file;
+	TMSourceFilePriv *priv = (TMSourceFilePriv *)source_file;
 	
-	g_return_val_if_fail(NULL != source_file, NULL);
+	g_return_val_if_fail(source_file != NULL, NULL);
 	
 	g_atomic_int_inc(&priv->refcount);
 	return source_file;
@@ -809,9 +807,9 @@ static void tm_source_file_destroy(TMSourceFile *source_file)
 GEANY_API_SYMBOL
 void tm_source_file_free(TMSourceFile *source_file)
 {
-	TMSourceFilePriv *priv = (TMSourceFilePriv *) source_file;
+	TMSourceFilePriv *priv = (TMSourceFilePriv *)source_file;
 	
-	if (NULL != priv && g_atomic_int_dec_and_test(&priv->refcount))
+	if (priv != NULL && g_atomic_int_dec_and_test(&priv->refcount))
 	{
 		tm_source_file_destroy(source_file);
 		SOURCE_FILE_FREE(priv);
@@ -851,7 +849,7 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 	const char *file_name;
 	gboolean retry = TRUE;
 	
-	if ((NULL == source_file) || (NULL == source_file->file_name))
+	if (source_file == NULL || source_file->file_name == NULL)
 	{
 		g_warning("Attempt to parse NULL file");
 		return FALSE;
@@ -865,13 +863,12 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 	
 	file_name = source_file->file_name;
 	
-	if (use_buffer && (NULL == text_buf || 0 == buf_size))
+	if (use_buffer && (text_buf == NULL || buf_size == 0))
 	{
 		/* Empty buffer, "parse" by setting empty tag array */
 		tm_tags_array_free(source_file->tags_array, FALSE);
 		return TRUE;
 	}
-	
 	tm_tags_array_free(source_file->tags_array, FALSE);
 	
 	ctagsParse(use_buffer ? text_buf : NULL, buf_size, file_name,

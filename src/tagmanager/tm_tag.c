@@ -61,7 +61,7 @@ static void log_tag_free(TMTag *tag)
 	g_return_if_fail(alive_tags != NULL);
 	
 	if (!g_hash_table_remove(alive_tags, tag)) {
-		g_critical("Freeing invalid TMTag pointer %p", (void *) tag);
+		g_critical("Freeing invalid TMTag pointer %p", (void *)tag);
 	} else {
 		TAG_FREE(tag);
 	}
@@ -137,7 +137,7 @@ void tm_tag_unref(TMTag *tag)
 {
 	/* be NULL-proof because tm_tag_free() was NULL-proof and we indent to be a
 	 * drop-in replacment of it */
-	if (NULL != tag && g_atomic_int_dec_and_test(&tag->refcount))
+	if (tag != NULL && g_atomic_int_dec_and_test(&tag->refcount))
 	{
 		tm_tag_destroy(tag);
 		TAG_FREE(tag);
@@ -163,16 +163,16 @@ static gint tm_tag_compare(gconstpointer ptr1, gconstpointer ptr2,
 {
 	unsigned int *sort_attr;
 	int returnval = 0;
-	TMTag *t1 = *((TMTag **) ptr1);
-	TMTag *t2 = *((TMTag **) ptr2);
+	TMTag *t1 = *((TMTag **)ptr1);
+	TMTag *t2 = *((TMTag **)ptr2);
 	TMSortOptions *sort_options = user_data;
 	
-	if ((NULL == t1) || (NULL == t2))
+	if (t1 == NULL || t2 == NULL)
 	{
 		g_warning("Found NULL tag");
 		return t2 - t1;
 	}
-	if (NULL == sort_options->sort_attrs)
+	if (sort_options->sort_attrs == NULL)
 	{
 		if (sort_options->partial)
 			return strncmp(FALLBACK(t1->name, ""), FALLBACK(t2->name, ""),
@@ -255,7 +255,7 @@ void tm_tags_prune(GPtrArray *tags_array)
 	
 	for (i = 0, count = 0; i < tags_array->len; ++i)
 	{
-		if (NULL != tags_array->pdata[i])
+		if (tags_array->pdata[i] != NULL)
 			tags_array->pdata[count++] = tags_array->pdata[i];
 	}
 	tags_array->len = count;
@@ -282,9 +282,9 @@ void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
 	sort_options.partial = FALSE;
 	for (i = 1; i < tags_array->len; ++i)
 	{
-		if (0 == tm_tag_compare(&(tags_array->pdata[i - 1]),
-								&(tags_array->pdata[i]),
-								&sort_options))
+		if (tm_tag_compare(&(tags_array->pdata[i - 1]),
+						   &(tags_array->pdata[i]),
+						   &sort_options) == 0)
 		{
 			if (unref_duplicates)
 				tm_tag_unref(tags_array->pdata[i-1]);
@@ -405,7 +405,7 @@ static GPtrArray *merge(GPtrArray *big_array, GPtrArray *small_array,
 	/* on average, we are merging a value from small_array every
 	 * len(big_array) / len(small_array) values - good approximation for fast jump
 	 * step size */
-	initial_step = (small_array->len > 0) ? big_array->len / small_array->len : 1;
+	initial_step = small_array->len > 0 ? big_array->len / small_array->len : 1;
 	initial_step = initial_step > 4 ? initial_step : 1;
 	step = initial_step;
 	
@@ -518,9 +518,9 @@ GPtrArray *tm_tags_extract(GPtrArray *tags_array, TMTagType tag_types)
 	new_tags = g_ptr_array_new();
 	for (i = 0; i < tags_array->len; ++i)
 	{
-		if (NULL != tags_array->pdata[i])
+		if (tags_array->pdata[i] != NULL)
 		{
-			if (tag_types & (((TMTag *) tags_array->pdata[i])->type))
+			if (tag_types & (((TMTag *)tags_array->pdata[i])->type))
 				g_ptr_array_add(new_tags, tags_array->pdata[i]);
 		}
 	}
@@ -580,7 +580,7 @@ static gpointer binary_search(gpointer key, gpointer base, size_t nmemb,
 	while (l < u)
 	{
 		idx = (l + u) / 2;
-		p = (gpointer) (((const gchar *) base) + (idx * sizeof(gpointer)));
+		p = (gpointer) (((const gchar *)base) + (idx * sizeof(gpointer)));
 		comparison = (*compar) (key, p, user_data);
 		if (comparison < 0)
 			u = idx;
@@ -601,7 +601,7 @@ static gint tag_search_cmp(gconstpointer ptr1, gconstpointer ptr2,
 	{
 		TMSortOptions *sort_options = user_data;
 		const GPtrArray *tags_array = sort_options->tags_array;
-		TMTag **tag = (TMTag **) ptr2;
+		TMTag **tag = (TMTag **)ptr2;
 		
 		/* if previous/next (depending on sort options) tag equal, we haven't
 		 * found the first/last tag in a sequence of equal tags yet */
@@ -637,7 +637,7 @@ TMTag **tm_tags_find(const GPtrArray *tags_array, const char *name,
 		return NULL;
 	
 	tag = g_new0(TMTag, 1);
-	tag->name = (char *) name;
+	tag->name = (char *)name;
 	
 	sort_options.sort_attrs = NULL;
 	sort_options.partial = partial;
@@ -660,7 +660,7 @@ TMTag **tm_tags_find(const GPtrArray *tags_array, const char *name,
 	}
 	
 	g_free(tag);
-	return (TMTag **) first;
+	return (TMTag **)first;
 }
 
 /* Returns TMTag which "own" given line
@@ -717,7 +717,8 @@ const char *tm_tag_type_name(const TMTag *tag)
 {
 	g_return_val_if_fail(tag, NULL);
 	
-	return tm_ctags_get_kind_name(tm_parser_get_tag_kind(tag->type, tag->lang), tag->lang);
+	return tm_ctags_get_kind_name(tm_parser_get_tag_kind(tag->type, tag->lang),
+								  tag->lang);
 }
 
 /*
@@ -728,13 +729,14 @@ TMTagType tm_tag_name_type(const char *tag_name, TMParserType lang)
 {
 	g_return_val_if_fail(tag_name, tm_tag_undef_t);
 	
-	return tm_parser_get_tag_type(tm_ctags_get_kind_from_name(tag_name, lang), lang);
+	return tm_parser_get_tag_type(tm_ctags_get_kind_from_name(tag_name, lang),
+								  lang);
 }
 
 static const char *tm_tag_impl_name(TMTag *tag)
 {
 	g_return_val_if_fail(tag, NULL);
-	if (TAG_IMPL_VIRTUAL == tag->impl)
+	if (tag->impl == TAG_IMPL_VIRTUAL)
 		return "virtual";
 	else
 		return NULL;
@@ -743,11 +745,11 @@ static const char *tm_tag_impl_name(TMTag *tag)
 static const char *tm_tag_access_name(TMTag *tag)
 {
 	g_return_val_if_fail(tag, NULL);
-	if (TAG_ACCESS_PUBLIC == tag->access)
+	if (tag->access == TAG_ACCESS_PUBLIC)
 		return "public";
-	else if (TAG_ACCESS_PROTECTED == tag->access)
+	else if (tag->access == TAG_ACCESS_PROTECTED)
 		return "protected";
-	else if (TAG_ACCESS_PRIVATE == tag->access)
+	else if (tag->access == TAG_ACCESS_PRIVATE)
 		return "private";
 	else
 		return NULL;
@@ -781,9 +783,8 @@ void tm_tag_print(TMTag *tag, FILE *fp)
 		fprintf(fp, "%s", tag->arglist);
 	if (tag->inheritance)
 		fprintf(fp, " : from %s", tag->inheritance);
-	if ((tag->file) && (tag->line > 0))
-		fprintf(fp, "[%s:%ld]", tag->file->file_name
-		  , tag->line);
+	if (tag->file && tag->line > 0)
+		fprintf(fp, "[%s:%ld]", tag->file->file_name, tag->line);
 	fprintf(fp, "\n");
 }
 
@@ -794,7 +795,7 @@ void tm_tags_array_print(GPtrArray *tags, FILE *fp)
 {
 	guint i;
 	TMTag *tag;
-	if (!(tags && (tags->len > 0) && fp))
+	if (!(tags && tags->len > 0 && fp))
 		return;
 	for (i = 0; i < tags->len; ++i)
 	{
