@@ -89,8 +89,12 @@ static struct
 	gboolean fif_match_whole_word;
 	gboolean fif_invert_results;
 	gboolean fif_recursive;
-	gboolean fif_use_extra_options;
-	gchar *fif_extra_options;
+	gboolean fif_use_extra_options1;
+	gboolean fif_use_extra_options2;
+	gboolean fif_use_extra_options3;
+	gchar *fif_extra_options1;
+	gchar *fif_extra_options2;
+	gchar *fif_extra_options3;
 	gint fif_files_mode;
 	gchar *fif_files;
 	gboolean find_regexp;
@@ -229,10 +233,20 @@ static void init_prefs(void)
 		"fif_invert_results", FALSE, "check_invert");
 	stash_group_add_toggle_button(group, &settings.fif_recursive,
 		"fif_recursive", FALSE, "check_recursive");
-	stash_group_add_entry(group, &settings.fif_extra_options,
-		"fif_extra_options", "", "entry_extra");
-	stash_group_add_toggle_button(group, &settings.fif_use_extra_options,
-		"fif_use_extra_options", FALSE, "check_extra");
+	
+	stash_group_add_entry(group, &settings.fif_extra_options1,
+		"fif_extra_options_1", "", "entry_extra_1");
+	stash_group_add_toggle_button(group, &settings.fif_use_extra_options1,
+		"fif_use_extra_options_1", FALSE, "check_extra_1");
+	stash_group_add_entry(group, &settings.fif_extra_options2,
+		"fif_extra_options_2", "", "entry_extra_2");
+	stash_group_add_toggle_button(group, &settings.fif_use_extra_options2,
+		"fif_use_extra_options_2", FALSE, "check_extra_2");
+	stash_group_add_entry(group, &settings.fif_extra_options3,
+		"fif_extra_options_3", "", "entry_extra_3");
+	stash_group_add_toggle_button(group, &settings.fif_use_extra_options3,
+		"fif_use_extra_options_3", FALSE, "check_extra_3");
+	
 	stash_group_add_entry(group, &settings.fif_files,
 		"fif_files", "", "entry_files");
 	stash_group_add_combo_box(group, &settings.fif_files_mode,
@@ -888,12 +902,41 @@ static void update_fif_file_mode_combo(void)
 }
 
 
+static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
+							  const gchar *entry_name, const gchar *entry_label,
+							  GtkWidget *vbox)
+{
+	GtkWidget *hbox;
+	GtkWidget *check_extra, *entry_extra;
+	
+	check_extra = gtk_check_button_new_with_mnemonic(check_label);
+	ui_hookup_widget(fif_dlg.dialog, check_extra, check_name);
+	gtk_button_set_focus_on_click(GTK_BUTTON(check_extra), FALSE);
+	
+	entry_extra = gtk_entry_new();
+	ui_entry_add_clear_icon(GTK_ENTRY(entry_extra));
+	gtk_entry_set_activates_default(GTK_ENTRY(entry_extra), TRUE);
+	gtk_widget_set_sensitive(entry_extra, FALSE);
+	gtk_widget_set_tooltip_text(entry_extra, entry_label);
+	ui_hookup_widget(fif_dlg.dialog, entry_extra, entry_name);
+	
+	/* enable entry_extra when check_extra is checked */
+	g_signal_connect(check_extra, "toggled",
+					 G_CALLBACK(on_widget_toggled_set_sensitive),
+					 entry_extra);
+	
+	hbox = gtk_hbox_new(FALSE, 6);
+	gtk_box_pack_start(GTK_BOX(hbox), check_extra, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_extra, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(vbox), hbox);
+}
+
 static void create_fif_dialog(void)
 {
 	GtkWidget *dir_combo, *combo, *fcombo, *e_combo, *entry;
 	GtkWidget *label, *label1, *label2, *label3, *checkbox1, *checkbox2,
-			  *check_wholeword, *check_recursive, *check_extra, *entry_extra,
-			  *check_regexp, *combo_files_mode;
+			  *check_wholeword, *check_recursive, *check_regexp,
+			  *combo_files_mode;
 	GtkWidget *dbox, *sbox, *lbox, *rbox, *hbox, *vbox, *ebox;
 	GtkSizeGroup *size_group;
 	
@@ -1035,26 +1078,12 @@ static void create_fif_dialog(void)
 	gtk_container_add(GTK_CONTAINER(hbox), rbox);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 	
-	check_extra = gtk_check_button_new_with_mnemonic(_("E_xtra options:"));
-	ui_hookup_widget(fif_dlg.dialog, check_extra, "check_extra");
-	gtk_button_set_focus_on_click(GTK_BUTTON(check_extra), FALSE);
-	
-	entry_extra = gtk_entry_new();
-	ui_entry_add_clear_icon(GTK_ENTRY(entry_extra));
-	gtk_entry_set_activates_default(GTK_ENTRY(entry_extra), TRUE);
-	gtk_widget_set_sensitive(entry_extra, FALSE);
-	gtk_widget_set_tooltip_text(entry_extra, _("Other options to pass to Grep"));
-	ui_hookup_widget(fif_dlg.dialog, entry_extra, "entry_extra");
-	
-	/* enable entry_extra when check_extra is checked */
-	g_signal_connect(check_extra, "toggled",
-					 G_CALLBACK(on_widget_toggled_set_sensitive),
-					 entry_extra);
-	
-	hbox = gtk_hbox_new(FALSE, 6);
-	gtk_box_pack_start(GTK_BOX(hbox), check_extra, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_extra, TRUE, TRUE, 0);
-	gtk_container_add(GTK_CONTAINER(vbox), hbox);
+	add_extra_widgets("check_extra_1", _("E_xtra options 1:"),
+					  "entry_extra_1", _("Other options to pass to Grep"), vbox);
+	add_extra_widgets("check_extra_2", _("E_xtra options 2:"),
+					  "entry_extra_2", _("Other options to pass to Grep"), vbox);
+	add_extra_widgets("check_extra_3", _("E_xtra options 3:"),
+					  "entry_extra_3", _("Other options to pass to Grep"), vbox);
 	
 	g_signal_connect(fif_dlg.dialog, "response",
 					 G_CALLBACK(on_find_in_files_dialog_response),
@@ -1650,6 +1679,17 @@ fail:
 }
 
 
+static void append_extra_options(GString *gstr, gchar *extra_options)
+{
+	g_strstrip(extra_options);
+	
+	if (*extra_options != 0)
+	{
+		g_string_append_c(gstr, ' ');
+		g_string_append(gstr, extra_options);
+	}
+}
+
 static GString *get_grep_options(void)
 {
 	GString *gstr = g_string_new("-nHI");	/* line numbers, filenames, ignore binaries */
@@ -1668,16 +1708,13 @@ static GString *get_grep_options(void)
 	else
 		g_string_append_c(gstr, 'E');
 	
-	if (settings.fif_use_extra_options)
-	{
-		g_strstrip(settings.fif_extra_options);
-		
-		if (*settings.fif_extra_options != 0)
-		{
-			g_string_append_c(gstr, ' ');
-			g_string_append(gstr, settings.fif_extra_options);
-		}
-	}
+	if (settings.fif_use_extra_options1)
+		append_extra_options(gstr, settings.fif_extra_options1);
+	if (settings.fif_use_extra_options2)
+		append_extra_options(gstr, settings.fif_extra_options2);
+	if (settings.fif_use_extra_options3)
+		append_extra_options(gstr, settings.fif_extra_options3);
+	
 	g_strstrip(settings.fif_files);
 	if (settings.fif_files_mode != FILES_MODE_ALL && *settings.fif_files)
 	{
