@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-01 18:30+0300\n"
+"POT-Creation-Date: 2021-09-16 02:03+0300\n"
 "PO-Revision-Date: 2015-02-15 14:28+0100\n"
 "Last-Translator: Stanislav Horáček <stanislav.horacek@gmail.com>\n"
 "Language-Team: Czech <geany-i18n@uvena.de>\n"
@@ -2960,8 +2960,8 @@ msgstr "Soubor %s uložen."
 msgid "Wrap search and find again?"
 msgstr "Rozšířit hledání na celý dokument a hledat znovu?"
 
-#: ../src/document.c:2489 ../src/search.c:1406 ../src/search.c:1459
-#: ../src/search.c:2261 ../src/search.c:2262
+#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
+#: ../src/search.c:2381 ../src/search.c:2383
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Nebyly nalezeny žádné výskyty \"%s\"."
@@ -2978,15 +2978,15 @@ msgstr[2] "%s: nahrazeno %d výskytů \"%s\" za \"%s\"."
 msgid "Do you want to reload it?"
 msgstr "Chcete ho znovu načíst?"
 
-#: ../src/editor.c:4858
+#: ../src/editor.c:4859
 msgid "Enter Tab Width"
 msgstr "Zadejte šířku tabelátoru"
 
-#: ../src/editor.c:4859
+#: ../src/editor.c:4860
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Zadejte kolik znaků mezery nahradit znakem tabelátoru"
 
-#: ../src/editor.c:5065
+#: ../src/editor.c:5066
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Varování: nestandardní šířka tabelátoru: %d != 8!"
@@ -3541,7 +3541,7 @@ msgstr "Vložit nový řádek před aktuální"
 msgid "Insert New Line After Current"
 msgstr "Vložit nový řádek za aktuální"
 
-#: ../src/keybindings.c:533 ../src/search.c:470
+#: ../src/keybindings.c:533 ../src/search.c:489
 msgid "Find"
 msgstr "Najít"
 
@@ -3553,11 +3553,11 @@ msgstr "Najít další"
 msgid "Find Previous"
 msgstr "Najít předchozí"
 
-#: ../src/keybindings.c:544 ../src/search.c:623
+#: ../src/keybindings.c:544 ../src/search.c:651
 msgid "Replace"
 msgstr "Nahradit"
 
-#: ../src/keybindings.c:546 ../src/search.c:873
+#: ../src/keybindings.c:546 ../src/search.c:942
 msgid "Find in Files"
 msgstr "Najít v souborech"
 
@@ -3990,11 +3990,11 @@ msgstr "Konfigurační adresář nemohl být vytvořen (%s)."
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr "Hledání selhalo (detaily viz menu Nápověda->Debug zprávy)"
 
-#: ../src/libmain.c:1414
+#: ../src/libmain.c:1415
 msgid "Do you really want to quit?"
 msgstr "Opravdu chcete ukončit program?"
 
-#: ../src/libmain.c:1452
+#: ../src/libmain.c:1453
 msgid "Configuration files reloaded."
 msgstr "Konfigurační soubory přenačteny."
 
@@ -4368,7 +4368,7 @@ msgstr "Kořenový adresář projektu nemohl být vytvořen (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Soubor projektu nemohl být zapsán (%s)."
 
-#: ../src/project.c:782 ../src/search.c:633
+#: ../src/project.c:782 ../src/search.c:663
 msgid "_Replace"
 msgstr "_Nahradit"
 
@@ -4387,11 +4387,11 @@ msgstr "Zvolte soubor projektu"
 msgid "Project \"%s\" opened."
 msgstr "Projekt \"%s\" otevřen."
 
-#: ../src/search.c:314 ../src/search.c:966
+#: ../src/search.c:329 ../src/search.c:1040
 msgid "_Use regular expressions"
 msgstr "Použít _regulární výrazy"
 
-#: ../src/search.c:317
+#: ../src/search.c:332
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
@@ -4400,11 +4400,11 @@ msgstr ""
 "Použití POSIXových regulárních výrazů. Pro detailní informace o jejich "
 "použití nahlédněte do dokumentace."
 
-#: ../src/search.c:322
+#: ../src/search.c:339
 msgid "Use _escape sequences"
 msgstr "Použít _escape sekvence"
 
-#: ../src/search.c:326
+#: ../src/search.c:343
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4412,11 +4412,11 @@ msgstr ""
 "Nahradit \\\\, \\t, \\n, \\r a \\uXXXX (Unicode znaky) odpovídajícími "
 "kontrolními znaky."
 
-#: ../src/search.c:329
+#: ../src/search.c:346
 msgid "Use multi-line matchin_g"
 msgstr ""
 
-#: ../src/search.c:334
+#: ../src/search.c:351
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4424,98 +4424,98 @@ msgid ""
 "the pattern."
 msgstr ""
 
-#: ../src/search.c:347
+#: ../src/search.c:364
 msgid "Search _backwards"
 msgstr "Hledat zpě_tně"
 
-#: ../src/search.c:353 ../src/search.c:975
+#: ../src/search.c:370 ../src/search.c:1050
 msgid "C_ase sensitive"
 msgstr "Rozlišovat _velikost písmen"
 
-#: ../src/search.c:357 ../src/search.c:980
+#: ../src/search.c:374 ../src/search.c:1055
 msgid "Match only a _whole word"
 msgstr "Hledat pouze _celé slovo"
 
-#: ../src/search.c:361
+#: ../src/search.c:378
 msgid "Match from s_tart of word"
 msgstr "Hledat od _začátku slova"
 
-#: ../src/search.c:477
+#: ../src/search.c:498
 msgid "_Previous"
 msgstr "_Předchozí"
 
-#: ../src/search.c:482
+#: ../src/search.c:503
 msgid "_Next"
 msgstr "_Následující"
 
-#: ../src/search.c:486 ../src/search.c:644 ../src/search.c:883
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
 msgid "_Search for:"
 msgstr "_Hledat:"
 
 #. Now add the multiple match options
-#: ../src/search.c:514
+#: ../src/search.c:535
 msgid "_Find All"
 msgstr "_Najít vše"
 
-#: ../src/search.c:521
+#: ../src/search.c:543
 msgid "_Mark"
 msgstr "Oz_načit"
 
-#: ../src/search.c:523
+#: ../src/search.c:545
 msgid "Mark all matches in the current document"
 msgstr "Označit všechny výskyty v aktuálním dokumentu."
 
-#: ../src/search.c:528 ../src/search.c:703
+#: ../src/search.c:551 ../src/search.c:736
 msgid "In Sessi_on"
 msgstr "Ve všech _otevřených souborech"
 
-#: ../src/search.c:533 ../src/search.c:708
+#: ../src/search.c:557 ../src/search.c:742
 msgid "_In Document"
 msgstr "V _dokumentu"
 
 #. close window checkbox
-#: ../src/search.c:539 ../src/search.c:721
+#: ../src/search.c:564 ../src/search.c:757
 msgid "Close _dialog"
 msgstr "Z_avřít okno"
 
-#: ../src/search.c:543 ../src/search.c:725
+#: ../src/search.c:568 ../src/search.c:761
 msgid "Disable this option to keep the dialog open"
 msgstr "Vypněte tuto volbu pro zachování tohoto okna otevřeného."
 
-#: ../src/search.c:638
+#: ../src/search.c:669
 msgid "Replace & Fi_nd"
 msgstr "Nahra_dit a najít"
 
-#: ../src/search.c:647
+#: ../src/search.c:679
 msgid "Replace wit_h:"
 msgstr "Nahradit z_a:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:696
+#: ../src/search.c:728
 msgid "Re_place All"
 msgstr "Nahra_dit vše"
 
-#: ../src/search.c:713
+#: ../src/search.c:748
 msgid "In Se_lection"
 msgstr "_Ve výběru"
 
-#: ../src/search.c:715
+#: ../src/search.c:750
 msgid "Replace all matches found in the currently selected text"
 msgstr "Nahradí všechny výskyty v aktuálně označeném textu"
 
-#: ../src/search.c:832
+#: ../src/search.c:870
 msgid "all"
 msgstr "všechny"
 
-#: ../src/search.c:834
+#: ../src/search.c:872
 msgid "project"
 msgstr "z projektu"
 
-#: ../src/search.c:836
+#: ../src/search.c:874
 msgid "custom"
 msgstr "vlastní"
 
-#: ../src/search.c:840
+#: ../src/search.c:879
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4525,47 +4525,58 @@ msgstr ""
 "Z projektu: použít souborové masky definované v nastavení projektu\n"
 "Vlastní: určit souborové masky ručně"
 
-#: ../src/search.c:902
+#: ../src/search.c:975
 msgid "Fi_les:"
 msgstr "Sou_bory"
 
-#: ../src/search.c:914
+#: ../src/search.c:987
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Masky souborů, např. *.c *.h"
 
-#: ../src/search.c:926
+#: ../src/search.c:1000
 msgid "_Directory:"
 msgstr "_Adresář:"
 
-#: ../src/search.c:945
+#: ../src/search.c:1019
 msgid "E_ncoding:"
 msgstr "_Kódování:"
 
-#: ../src/search.c:969
+#: ../src/search.c:1044
 msgid "See grep's manual page for more information"
 msgstr "Pro více informací viz manuál programu grep."
 
-#: ../src/search.c:971
+#: ../src/search.c:1046
 msgid "_Recurse in subfolders"
 msgstr "Rekurzivně v _podadresářích"
 
-#: ../src/search.c:984
+#: ../src/search.c:1059
 msgid "_Invert search results"
 msgstr "_Obrátit výsledky hledání"
 
-#: ../src/search.c:988
+#: ../src/search.c:1063
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Obrácení smyslu hledání, k označení nevyhovujících řádků."
 
-#: ../src/search.c:1005
-msgid "E_xtra options:"
+#: ../src/search.c:1080
+#, fuzzy
+msgid "E_xtra options 1:"
 msgstr "_Dodatečné volby:"
 
-#: ../src/search.c:1013
+#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
 msgid "Other options to pass to Grep"
 msgstr "Další volby grepu"
 
-#: ../src/search.c:1409 ../src/search.c:2267 ../src/search.c:2270
+#: ../src/search.c:1082
+#, fuzzy
+msgid "E_xtra options 2:"
+msgstr "_Dodatečné volby:"
+
+#: ../src/search.c:1084
+#, fuzzy
+msgid "E_xtra options 3:"
+msgstr "_Dodatečné volby:"
+
+#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
@@ -4573,45 +4584,45 @@ msgstr[0] "Nalezen %d výskyt \"%s\"."
 msgstr[1] "Nalezeny %d výskyty \"%s\"."
 msgstr[2] "Nalezeno %d výskytů \"%s\"."
 
-#: ../src/search.c:1465
+#: ../src/search.c:1546
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Nahrazeno %u výskytů v %u dokumentech."
 
-#: ../src/search.c:1654
+#: ../src/search.c:1757
 msgid "Invalid directory for find in files."
 msgstr "Neplatný adresář pro hledání souborů."
 
-#: ../src/search.c:1671
+#: ../src/search.c:1777
 msgid "No text to find."
 msgstr "Žádný text k prohledání."
 
-#: ../src/search.c:1747
+#: ../src/search.c:1857
 msgid "Searching..."
 msgstr "Hledám..."
 
-#: ../src/search.c:1749
+#: ../src/search.c:1859
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (v adresáři: %s)"
 
-#: ../src/search.c:1757
+#: ../src/search.c:1868
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 "Nemohu spustit nástroj grep '%s'; zkontrolujte nastavení cest v Nastavení."
 
-#: ../src/search.c:1797
+#: ../src/search.c:1908
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Adresář nemohl být otevřen (%s)"
 
-#: ../src/search.c:1887
+#: ../src/search.c:1998
 msgid "Search failed."
 msgstr "Hledání selhalo."
 
-#: ../src/search.c:1911
+#: ../src/search.c:2021
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
@@ -4619,11 +4630,11 @@ msgstr[0] "Hledání dokončeno s %d nalezeným výskytem."
 msgstr[1] "Hledání dokončeno s %d nalezenými výskyty."
 msgstr[2] "Hledání dokončeno s %d nalezenými výskyty."
 
-#: ../src/search.c:1919
+#: ../src/search.c:2029
 msgid "No matches found."
 msgstr "Žádné výskyty nebyly nalezeny."
 
-#: ../src/search.c:1949
+#: ../src/search.c:2059
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Špatný regulární výraz: %s"

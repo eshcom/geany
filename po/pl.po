@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-01 18:30+0300\n"
+"POT-Creation-Date: 2021-09-16 02:03+0300\n"
 "PO-Revision-Date: 2017-12-19 03:11+0100\n"
 "Last-Translator: Piotr Orzechowski <tech@orzechowski.hub.pl>\n"
 "Language-Team: polski <geany-i18n@uvena.de>\n"
@@ -2988,8 +2988,8 @@ msgstr "Plik %s został zapisany."
 msgid "Wrap search and find again?"
 msgstr "Rozpocząć wyszukiwanie od początku pliku?"
 
-#: ../src/document.c:2489 ../src/search.c:1406 ../src/search.c:1459
-#: ../src/search.c:2261 ../src/search.c:2262
+#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
+#: ../src/search.c:2381 ../src/search.c:2383
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Nie znaleziono tekstu '%s'."
@@ -3005,15 +3005,15 @@ msgstr[1] "%s: zastąpiono %d wystąpienia ciągu %s na ciąg \"%s\"."
 msgid "Do you want to reload it?"
 msgstr "Chcesz wczytać go ponownie?"
 
-#: ../src/editor.c:4858
+#: ../src/editor.c:4859
 msgid "Enter Tab Width"
 msgstr "Podaj wielkość tabulacji"
 
-#: ../src/editor.c:4859
+#: ../src/editor.c:4860
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Podaj liczbę spacji zastępujących pojedynczy znak tabulacji."
 
-#: ../src/editor.c:5065
+#: ../src/editor.c:5066
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Uwaga: nietypowa długość twardej tabulacji: %d !=8!"
@@ -3571,7 +3571,7 @@ msgstr "Wstaw nowy wiersz przed bieżącym"
 msgid "Insert New Line After Current"
 msgstr "Wstaw nowy wiersz za bieżącym"
 
-#: ../src/keybindings.c:533 ../src/search.c:470
+#: ../src/keybindings.c:533 ../src/search.c:489
 msgid "Find"
 msgstr "Szukaj"
 
@@ -3583,11 +3583,11 @@ msgstr "Znajdź następny"
 msgid "Find Previous"
 msgstr "Znajdź poprzedni"
 
-#: ../src/keybindings.c:544 ../src/search.c:623
+#: ../src/keybindings.c:544 ../src/search.c:651
 msgid "Replace"
 msgstr "Zastąp"
 
-#: ../src/keybindings.c:546 ../src/search.c:873
+#: ../src/keybindings.c:546 ../src/search.c:942
 msgid "Find in Files"
 msgstr "Znajdź w _plikach"
 
@@ -4029,11 +4029,11 @@ msgstr "Nie można utworzyć katalogu konfiguracyjnego (%s)."
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1414
+#: ../src/libmain.c:1415
 msgid "Do you really want to quit?"
 msgstr " Czy na pewno chcesz zakończyć program? "
 
-#: ../src/libmain.c:1452
+#: ../src/libmain.c:1453
 msgid "Configuration files reloaded."
 msgstr "Pliki konfiguracyjne ponownie wczytane."
 
@@ -4415,7 +4415,7 @@ msgstr "Nie można utworzyć katalogu bazowego (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Plik projektu nie został zapisany (%s)."
 
-#: ../src/project.c:782 ../src/search.c:633
+#: ../src/project.c:782 ../src/search.c:663
 msgid "_Replace"
 msgstr "Z_astąp"
 
@@ -4434,22 +4434,22 @@ msgstr "Wybierz nazwę pliku projektu"
 msgid "Project \"%s\" opened."
 msgstr "Projekt \"%s\" otwarty"
 
-#: ../src/search.c:314 ../src/search.c:966
+#: ../src/search.c:329 ../src/search.c:1040
 msgid "_Use regular expressions"
 msgstr "_Użyj wyrażeń regularnych"
 
-#: ../src/search.c:317
+#: ../src/search.c:332
 #, fuzzy
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
 msgstr "Użyj wyrażeń regularnych w stylu POSIX. Szczegóły w dokumentacji."
 
-#: ../src/search.c:322
+#: ../src/search.c:339
 msgid "Use _escape sequences"
 msgstr "Uż_ycie sekwencji specjalnych"
 
-#: ../src/search.c:326
+#: ../src/search.c:343
 #, fuzzy
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
@@ -4458,12 +4458,12 @@ msgstr ""
 "Zastąp \\\\, \\t, \\n, \\r oraz \\uXXXX (znaki Unicode) odpowiednimi znakami "
 "kontrolnymi."
 
-#: ../src/search.c:329
+#: ../src/search.c:346
 #, fuzzy
 msgid "Use multi-line matchin_g"
 msgstr "Użyj dopasowywania wielowierszowe_go"
 
-#: ../src/search.c:334
+#: ../src/search.c:351
 #, fuzzy
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
@@ -4476,98 +4476,98 @@ msgstr ""
 "znaki nowej linii są częścią wejścia i mogą być wychwycone przez wzorzec jak "
 "zwykłe znaki."
 
-#: ../src/search.c:347
+#: ../src/search.c:364
 msgid "Search _backwards"
 msgstr "Wyszukiwanie _wstecz"
 
-#: ../src/search.c:353 ../src/search.c:975
+#: ../src/search.c:370 ../src/search.c:1050
 msgid "C_ase sensitive"
 msgstr "Rozróżnianie wielkości _liter"
 
-#: ../src/search.c:357 ../src/search.c:980
+#: ../src/search.c:374 ../src/search.c:1055
 msgid "Match only a _whole word"
 msgstr "Tylko całe _wyrazy"
 
-#: ../src/search.c:361
+#: ../src/search.c:378
 msgid "Match from s_tart of word"
 msgstr "Tylko wyrazy o takich samych _początkach"
 
-#: ../src/search.c:477
+#: ../src/search.c:498
 msgid "_Previous"
 msgstr "_Poprzedni"
 
-#: ../src/search.c:482
+#: ../src/search.c:503
 msgid "_Next"
 msgstr "_Następny"
 
-#: ../src/search.c:486 ../src/search.c:644 ../src/search.c:883
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
 msgid "_Search for:"
 msgstr "_Szukaj:"
 
 #. Now add the multiple match options
-#: ../src/search.c:514
+#: ../src/search.c:535
 msgid "_Find All"
 msgstr "_Znajdź wszystkie"
 
-#: ../src/search.c:521
+#: ../src/search.c:543
 msgid "_Mark"
 msgstr "_Oznacz"
 
-#: ../src/search.c:523
+#: ../src/search.c:545
 msgid "Mark all matches in the current document"
 msgstr "Oznacz wszystkie wystąpienia w bieżącym dokumencie"
 
-#: ../src/search.c:528 ../src/search.c:703
+#: ../src/search.c:551 ../src/search.c:736
 msgid "In Sessi_on"
 msgstr "W _sesji"
 
-#: ../src/search.c:533 ../src/search.c:708
+#: ../src/search.c:557 ../src/search.c:742
 msgid "_In Document"
 msgstr "_W dokumencie"
 
 #. close window checkbox
-#: ../src/search.c:539 ../src/search.c:721
+#: ../src/search.c:564 ../src/search.c:757
 msgid "Close _dialog"
 msgstr "_Zamknij po ustawieniu oznaczeń"
 
-#: ../src/search.c:543 ../src/search.c:725
+#: ../src/search.c:568 ../src/search.c:761
 msgid "Disable this option to keep the dialog open"
 msgstr "Wyłącz tę opcję, by zostawić okno otwarte"
 
-#: ../src/search.c:638
+#: ../src/search.c:669
 msgid "Replace & Fi_nd"
 msgstr "Za_stąp i znajdź"
 
-#: ../src/search.c:647
+#: ../src/search.c:679
 msgid "Replace wit_h:"
 msgstr "Za_stąp ciągiem:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:696
+#: ../src/search.c:728
 msgid "Re_place All"
 msgstr "Zastąp _wszystkie"
 
-#: ../src/search.c:713
+#: ../src/search.c:748
 msgid "In Se_lection"
 msgstr "W _zaznaczeniu"
 
-#: ../src/search.c:715
+#: ../src/search.c:750
 msgid "Replace all matches found in the currently selected text"
 msgstr "Zamieć wszystkie ciągi znalezione w aktualnie zaznaczonym tekście"
 
-#: ../src/search.c:832
+#: ../src/search.c:870
 msgid "all"
 msgstr "wszystko"
 
-#: ../src/search.c:834
+#: ../src/search.c:872
 msgid "project"
 msgstr "projekt"
 
-#: ../src/search.c:836
+#: ../src/search.c:874
 msgid "custom"
 msgstr "własne"
 
-#: ../src/search.c:840
+#: ../src/search.c:879
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4577,76 +4577,87 @@ msgstr ""
 "Projekt: użyj maski pliku zdefiniowanej w projekcie\n"
 "Własne: wprowadź własną maskę"
 
-#: ../src/search.c:902
+#: ../src/search.c:975
 msgid "Fi_les:"
 msgstr "P_liki:"
 
-#: ../src/search.c:914
+#: ../src/search.c:987
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Maski plików, np. *.c *.h"
 
-#: ../src/search.c:926
+#: ../src/search.c:1000
 msgid "_Directory:"
 msgstr "Ka_talog:"
 
-#: ../src/search.c:945
+#: ../src/search.c:1019
 msgid "E_ncoding:"
 msgstr "_Kodowanie:"
 
-#: ../src/search.c:969
+#: ../src/search.c:1044
 msgid "See grep's manual page for more information"
 msgstr "Po szczegóły zajrzyj do podręcznika programu grep."
 
-#: ../src/search.c:971
+#: ../src/search.c:1046
 msgid "_Recurse in subfolders"
 msgstr "Szukaj w _podkatalogach"
 
-#: ../src/search.c:984
+#: ../src/search.c:1059
 msgid "_Invert search results"
 msgstr "_Odwróć wyniki wyszukiwania"
 
-#: ../src/search.c:988
+#: ../src/search.c:1063
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Zaznacz wiersze <b>nie pasujące</b> do kryterium."
 
-#: ../src/search.c:1005
-msgid "E_xtra options:"
+#: ../src/search.c:1080
+#, fuzzy
+msgid "E_xtra options 1:"
 msgstr "Opcje _dodatkowe:"
 
-#: ../src/search.c:1013
+#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
 msgid "Other options to pass to Grep"
 msgstr "Inne opcje dla programu Grep"
 
-#: ../src/search.c:1409 ../src/search.c:2267 ../src/search.c:2270
+#: ../src/search.c:1082
+#, fuzzy
+msgid "E_xtra options 2:"
+msgstr "Opcje _dodatkowe:"
+
+#: ../src/search.c:1084
+#, fuzzy
+msgid "E_xtra options 3:"
+msgstr "Opcje _dodatkowe:"
+
+#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
 #, fuzzy, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Znaleziono %d wyników wyszukiwania ciągu \"%s\"."
 msgstr[1] "Znaleziono %d wyników wyszukiwania ciągu \"%s\"."
 
-#: ../src/search.c:1465
+#: ../src/search.c:1546
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Zastąpiono %u wystąpień w %u dokumentach."
 
-#: ../src/search.c:1654
+#: ../src/search.c:1757
 msgid "Invalid directory for find in files."
 msgstr "Nieprawidłowy katalog."
 
-#: ../src/search.c:1671
+#: ../src/search.c:1777
 msgid "No text to find."
 msgstr "Nie znaleziono tekstu."
 
-#: ../src/search.c:1747
+#: ../src/search.c:1857
 msgid "Searching..."
 msgstr "Poszukiwanie..."
 
-#: ../src/search.c:1749
+#: ../src/search.c:1859
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (w katalogu: %s)"
 
-#: ../src/search.c:1757
+#: ../src/search.c:1868
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4654,27 +4665,27 @@ msgstr ""
 "Nie można uruchomić programu grep: \"%s\". Sprawdź, czy podałeś właściwą "
 "ścieżkę do programu w ustawieniach Geany."
 
-#: ../src/search.c:1797
+#: ../src/search.c:1908
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Nie można otworzyć katalogu %s"
 
-#: ../src/search.c:1887
+#: ../src/search.c:1998
 msgid "Search failed."
 msgstr "Wyszukiwanie nieudane"
 
-#: ../src/search.c:1911
+#: ../src/search.c:2021
 #, fuzzy, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Wyszukiwanie zakończone z %d wynikami"
 msgstr[1] "Wyszukiwanie zakończone z %d wynikami"
 
-#: ../src/search.c:1919
+#: ../src/search.c:2029
 msgid "No matches found."
 msgstr "Nie znaleziono ciągu."
 
-#: ../src/search.c:1949
+#: ../src/search.c:2059
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Błędne wyrażenie regularne: %s"
