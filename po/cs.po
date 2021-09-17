@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2015-02-15 14:28+0100\n"
 "Last-Translator: Stanislav Horáček <stanislav.horacek@gmail.com>\n"
 "Language-Team: Czech <geany-i18n@uvena.de>\n"
@@ -1646,7 +1646,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminál:</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Terminál"
 
@@ -2732,7 +2732,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "neznámý"
 
@@ -2741,7 +2741,7 @@ msgstr "neznámý"
 msgid "%s Properties"
 msgstr "Vlastnosti %s"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(s BOM)"
 
@@ -2960,8 +2960,8 @@ msgstr "Soubor %s uložen."
 msgid "Wrap search and find again?"
 msgstr "Rozšířit hledání na celý dokument a hledat znovu?"
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Nebyly nalezeny žádné výskyty \"%s\"."
@@ -3289,7 +3289,7 @@ msgid "Document"
 msgstr "Dokument"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Sestavit"
 
@@ -3557,7 +3557,7 @@ msgstr "Najít předchozí"
 msgid "Replace"
 msgstr "Nahradit"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 msgid "Find in Files"
 msgstr "Najít v souborech"
 
@@ -4387,7 +4387,7 @@ msgstr "Zvolte soubor projektu"
 msgid "Project \"%s\" opened."
 msgstr "Projekt \"%s\" otevřen."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "Použít _regulární výrazy"
 
@@ -4428,11 +4428,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Hledat zpě_tně"
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Rozlišovat _velikost písmen"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Hledat pouze _celé slovo"
 
@@ -4448,7 +4448,7 @@ msgstr "_Předchozí"
 msgid "_Next"
 msgstr "_Následující"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 msgid "_Search for:"
 msgstr "_Hledat:"
 
@@ -4525,58 +4525,58 @@ msgstr ""
 "Z projektu: použít souborové masky definované v nastavení projektu\n"
 "Vlastní: určit souborové masky ručně"
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "Sou_bory"
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Masky souborů, např. *.c *.h"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "_Adresář:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "_Kódování:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Pro více informací viz manuál programu grep."
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "Rekurzivně v _podadresářích"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "_Obrátit výsledky hledání"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Obrácení smyslu hledání, k označení nevyhovujících řádků."
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "_Dodatečné volby:"
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr "Další volby grepu"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "_Dodatečné volby:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "_Dodatečné volby:"
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
@@ -4584,45 +4584,45 @@ msgstr[0] "Nalezen %d výskyt \"%s\"."
 msgstr[1] "Nalezeny %d výskyty \"%s\"."
 msgstr[2] "Nalezeno %d výskytů \"%s\"."
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Nahrazeno %u výskytů v %u dokumentech."
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr "Neplatný adresář pro hledání souborů."
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "Žádný text k prohledání."
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 msgid "Searching..."
 msgstr "Hledám..."
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (v adresáři: %s)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 "Nemohu spustit nástroj grep '%s'; zkontrolujte nastavení cest v Nastavení."
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Adresář nemohl být otevřen (%s)"
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "Hledání selhalo."
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
@@ -4630,11 +4630,11 @@ msgstr[0] "Hledání dokončeno s %d nalezeným výskytem."
 msgstr[1] "Hledání dokončeno s %d nalezenými výskyty."
 msgstr[2] "Hledání dokončeno s %d nalezenými výskyty."
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "Žádné výskyty nebyly nalezeny."
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Špatný regulární výraz: %s"
@@ -5389,106 +5389,106 @@ msgstr ""
 "kódování: %e      typ souboru: %f      rámec: %S"
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr ""
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr ""
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "PŘE"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "VLO"
 
 # indentation TAB = tabulators, SP = spaces
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "TAB"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 msgid "SP"
 msgstr "MEZ"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr "T/M"
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "ZMĚ"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 msgid "(new instance) "
 msgstr "(nová instance) "
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Písmo aktualizováno (%s)."
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "C Standard Library"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C Standard Library)"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "C++ Standard Library"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.rrrr"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.rrrr"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "rrrr/mm/dd"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.rrrr hh:mm:ss"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.rrrr hh:mm:ss"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "rrrr/mm/dd hh:mm:ss"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 msgid "_Use Custom Date Format"
 msgstr "_Použít vlastní formát data"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "Vlastní formát data"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5496,36 +5496,36 @@ msgstr ""
 "Zadejte vlastní formát data a času. Můžete použít stejné konverzní "
 "specifikátory jako v ANSI C funkci strftime."
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Formát data nemohl být převeden (možná je příliš dlouhý)."
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 msgid "_Set Custom Date Format"
 msgstr "_Nastavit vlastní formát data"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "Vybrat složku"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "Vybrat soubor"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "_Přenačíst konfiguraci"
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 msgid "Save All"
 msgstr "Uložit vš_e"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 msgid "Close All"
 msgstr "Zavřít vše"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr "Geany se nemůže spustit!"
 
@@ -5567,30 +5567,35 @@ msgstr ""
 msgid "LF"
 msgstr ""
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr ""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 msgid "_Set Path From Document"
 msgstr "Nastavit _cestu z dokumentu"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "Zvolte základní cestu projektu"
+
+#: ../src/vte.c:898
 msgid "_Restart Terminal"
 msgstr "_Restartovat terminál"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr "Vstupní _metody"
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
 msgstr ""
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 

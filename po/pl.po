@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2017-12-19 03:11+0100\n"
 "Last-Translator: Piotr Orzechowski <tech@orzechowski.hub.pl>\n"
 "Language-Team: polski <geany-i18n@uvena.de>\n"
@@ -1654,7 +1654,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminal</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Terminal"
 
@@ -2755,7 +2755,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "nieznany"
 
@@ -2764,7 +2764,7 @@ msgstr "nieznany"
 msgid "%s Properties"
 msgstr "Własności"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(z BOM)"
 
@@ -2988,8 +2988,8 @@ msgstr "Plik %s został zapisany."
 msgid "Wrap search and find again?"
 msgstr "Rozpocząć wyszukiwanie od początku pliku?"
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Nie znaleziono tekstu '%s'."
@@ -3319,7 +3319,7 @@ msgid "Document"
 msgstr "_Dokument"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Buduj"
 
@@ -3587,7 +3587,7 @@ msgstr "Znajdź poprzedni"
 msgid "Replace"
 msgstr "Zastąp"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 msgid "Find in Files"
 msgstr "Znajdź w _plikach"
 
@@ -4434,7 +4434,7 @@ msgstr "Wybierz nazwę pliku projektu"
 msgid "Project \"%s\" opened."
 msgstr "Projekt \"%s\" otwarty"
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "_Użyj wyrażeń regularnych"
 
@@ -4480,11 +4480,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Wyszukiwanie _wstecz"
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Rozróżnianie wielkości _liter"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Tylko całe _wyrazy"
 
@@ -4500,7 +4500,7 @@ msgstr "_Poprzedni"
 msgid "_Next"
 msgstr "_Następny"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 msgid "_Search for:"
 msgstr "_Szukaj:"
 
@@ -4577,87 +4577,87 @@ msgstr ""
 "Projekt: użyj maski pliku zdefiniowanej w projekcie\n"
 "Własne: wprowadź własną maskę"
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "P_liki:"
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Maski plików, np. *.c *.h"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "Ka_talog:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "_Kodowanie:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Po szczegóły zajrzyj do podręcznika programu grep."
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "Szukaj w _podkatalogach"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "_Odwróć wyniki wyszukiwania"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Zaznacz wiersze <b>nie pasujące</b> do kryterium."
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Opcje _dodatkowe:"
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr "Inne opcje dla programu Grep"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Opcje _dodatkowe:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Opcje _dodatkowe:"
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, fuzzy, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Znaleziono %d wyników wyszukiwania ciągu \"%s\"."
 msgstr[1] "Znaleziono %d wyników wyszukiwania ciągu \"%s\"."
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Zastąpiono %u wystąpień w %u dokumentach."
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr "Nieprawidłowy katalog."
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "Nie znaleziono tekstu."
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 msgid "Searching..."
 msgstr "Poszukiwanie..."
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (w katalogu: %s)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4665,27 +4665,27 @@ msgstr ""
 "Nie można uruchomić programu grep: \"%s\". Sprawdź, czy podałeś właściwą "
 "ścieżkę do programu w ustawieniach Geany."
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Nie można otworzyć katalogu %s"
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "Wyszukiwanie nieudane"
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, fuzzy, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Wyszukiwanie zakończone z %d wynikami"
 msgstr[1] "Wyszukiwanie zakończone z %d wynikami"
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "Nie znaleziono ciągu."
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Błędne wyrażenie regularne: %s"
@@ -5447,105 +5447,105 @@ msgstr ""
 "kodowanie: %e    typ pliku: %f     funkcja: %S"
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr "%dL"
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr "RO "
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "NDP"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "WST"
 
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "TAB"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 msgid "SP"
 msgstr "SP"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr "TAB/SP"
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 msgid "(new instance) "
 msgstr "(nowa instancja) "
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Zaktualizowano czcionkę (%s)."
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "Standardowa biblioteka C"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++ (Standardowa biblioteka C)"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "Standardowa biblioteka C++"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.rrrr"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.rrrr"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "rrrr/mm/dd"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.rrrr gg:mm:ss"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.rrrr gg:mm:ss"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "rrrr/mm/dd gg:mm:ss"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 msgid "_Use Custom Date Format"
 msgstr "_Użyj własnego formatu daty"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "Własny format daty"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5553,36 +5553,36 @@ msgstr ""
 "Wprowadź własny format daty i czasu. Możesz używać dowolne operatory "
 "konwersji dostępne w funkcji strftime języka ANSI C."
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Format daty nie mógł zostać skonwertowany (prawdopodobnie za długi)"
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 msgid "_Set Custom Date Format"
 msgstr "Zdefiniuj _własny format daty"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "Wybierz katalog"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "Wybierz plik"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "Wczytaj _ponownie konfigurację"
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 msgid "Save All"
 msgstr "Za_pisz wszystko"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 msgid "Close All"
 msgstr "Zamknij wszystk_o"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr "Nie można uruchomić Geany!"
 
@@ -5623,24 +5623,29 @@ msgstr "CR"
 msgid "LF"
 msgstr "LF"
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, fuzzy, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr "niepoprawna biblioteka VTE: \"%s\": brakuje symbolu \"%s\""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 msgid "_Set Path From Document"
 msgstr "P_obierz ścieżkę dokumentu"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "Wybierz katalog bazowy dla projektu"
+
+#: ../src/vte.c:898
 msgid "_Restart Terminal"
 msgstr "Po_nownie uruchom terminal"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr "Meto_dy wejściowe"
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 #, fuzzy
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
@@ -5649,7 +5654,7 @@ msgstr ""
 "Nie zmieniono katalogu, ponieważ terminal może zawierać jakieś dane "
 "wejściowe (wciśnij Ctrl+C lub Enter, aby je wyczyścić)."
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 #, fuzzy
 msgid "Directory not changed because the terminal process is not running."
 msgstr ""

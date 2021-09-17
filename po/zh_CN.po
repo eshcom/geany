@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2019-09-26 20:42+0800\n"
 "Last-Translator: Dongyuan Liu <liu.dongyuan@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -1542,7 +1542,7 @@ msgstr "不要使用简单运行脚本（通常用于显示程序的退出状态
 msgid "<b>Terminal</b>"
 msgstr "<b>终端</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "虚拟终端"
 
@@ -2600,7 +2600,7 @@ msgstr "发生了一个错误或无法取得文件信息 (比如一个空文件)
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "未知"
 
@@ -2609,7 +2609,7 @@ msgstr "未知"
 msgid "%s Properties"
 msgstr "%s 属性"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(含有 BOM)"
 
@@ -2820,8 +2820,8 @@ msgstr "文件 %s 已保存。"
 msgid "Wrap search and find again?"
 msgstr "要循环查找吗？"
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "未找到匹配项“%s”。"
@@ -3142,7 +3142,7 @@ msgid "Document"
 msgstr "文档"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "生成"
 
@@ -3402,7 +3402,7 @@ msgstr "查找上一个"
 msgid "Replace"
 msgstr "替换"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 msgid "Find in Files"
 msgstr "在多个文件中查找"
 
@@ -4206,7 +4206,7 @@ msgstr "选择项目文件名"
 msgid "Project \"%s\" opened."
 msgstr "已打开项目“%s”。"
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "使用正则表达式(_U)"
 
@@ -4245,11 +4245,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "向后搜索(_B)"
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "大小写敏感(_A)"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "整词配对(_W)"
 
@@ -4265,7 +4265,7 @@ msgstr "上一个(_P)"
 msgid "_Next"
 msgstr "下一个(_N)"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 msgid "_Search for:"
 msgstr "搜索(_S)："
 
@@ -4342,111 +4342,111 @@ msgstr ""
 "项目：使用项目设置中定义的文件通配符\n"
 "自定义：自定义文件通配符"
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "文件(_L)："
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "文件通配符，比如 *.c *.h"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "目录(_D)："
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "编码(_N)："
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "详情请参阅 Grep 手册"
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "搜索子目录(_R)"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "反转查找结果(_I)"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "反转查找结果以选择不匹配的行"
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "额外的参数(_X)："
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr "传给 Grep 的其它参数"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "额外的参数(_X)："
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "额外的参数(_X)："
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "找到 %d 个“%s”的匹配项。"
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "在 %2$u 个文档中替换了 %1$u 个匹配项。"
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr "非法目录。"
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "未找到。"
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 msgid "Searching..."
 msgstr "搜索..."
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (在目录 %s 中)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr "无法执行 Grep 工具“%s”：%s。请检查首选项中的路径设置。"
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "无法打开目录 (%s)"
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "搜索失败。"
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "搜索完成，找到 %d 个匹配项。"
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "未找到匹配项。"
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr "错误的正则表达式：%s"
@@ -5172,105 +5172,105 @@ msgstr ""
 "%e      文件类型: %f      范围: %S"
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr "%dL"
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr "只读 "
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "覆盖"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "插入"
 
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "制表符"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 msgid "SP"
 msgstr "空格"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr "制表符或空格"
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "已修改"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 msgid "(new instance) "
 msgstr "(新实例) "
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "字体已更新 (%s)。"
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "C标准库"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C标准库)"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "C++ 标准库"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.yyyy"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.yyyy"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "yyyy/mm/dd"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "yyyy/mm/dd hh:mm:ss"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 msgid "_Use Custom Date Format"
 msgstr "使用自定义日期格式(_U)"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "自定义日期格式"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5278,35 +5278,35 @@ msgstr ""
 "请在这里输入自定义日期和时间格式。你可以使用 ANSI C strftime 函数中的任何一个"
 "转义符。"
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "日期格式字符串无法转换 (可能太长了)。"
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 msgid "_Set Custom Date Format"
 msgstr "设置自定义日期格式(_S)"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "选择目录"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "选择文件"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 msgid "_Filetype Configuration"
 msgstr "文件类型设置(_F)"
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 msgid "Save All"
 msgstr "全部保存"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 msgid "Close All"
 msgstr "全部关闭"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr "Geany 无法启动！"
 
@@ -5344,30 +5344,35 @@ msgstr "CR"
 msgid "LF"
 msgstr "LF"
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr "无效的 VTE 库 \"%s\"：缺少符号 \"%s\""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 msgid "_Set Path From Document"
 msgstr "根据文档设置路径(_S)"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "选择项目根目录"
+
+#: ../src/vte.c:898
 msgid "_Restart Terminal"
 msgstr "重启虚拟终端(_R)"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr "输入法(_I)"
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
 msgstr "未切换目录，因为终端可能包含一些输入（按 Ctrl+C 或回车键清除）。"
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 #, fuzzy
 msgid "Directory not changed because the terminal process is not running."
 msgstr "未切换目录，因为终端可能包含一些输入（按 Ctrl+C 或回车键清除）。"

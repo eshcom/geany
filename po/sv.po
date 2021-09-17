@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.35\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2019-06-03 09:55+0200\n"
 "Last-Translator: Tony Mattsson <superxorn@gmail.com>\n"
 "Language-Team: Swedish <geany-i18n@uvena.de>\n"
@@ -1615,7 +1615,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminal</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Terminal"
 
@@ -2694,7 +2694,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "okänd"
 
@@ -2703,7 +2703,7 @@ msgstr "okänd"
 msgid "%s Properties"
 msgstr "%s Egenskaper"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(med BOM)"
 
@@ -2920,8 +2920,8 @@ msgstr "Fil %s sparad."
 msgid "Wrap search and find again?"
 msgstr "Vill du fortsätta sökningen från början av dokumentet?"
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Inga träffar hittades för \"%s\"."
@@ -3243,7 +3243,7 @@ msgid "Document"
 msgstr "Dokument"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Bygg"
 
@@ -3503,7 +3503,7 @@ msgstr "Sök föregående"
 msgid "Replace"
 msgstr "Ersätt"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 msgid "Find in Files"
 msgstr "Sök i filer"
 
@@ -4331,7 +4331,7 @@ msgstr "Välj projektets filnamn"
 msgid "Project \"%s\" opened."
 msgstr "Projekt \"%s\" öppnad."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "Använd reguljära uttryck"
 
@@ -4375,11 +4375,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Sök bakåt"
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Gör skillnad mellan versaler och gemener"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Sök endast hela ord"
 
@@ -4395,7 +4395,7 @@ msgstr "Föregående"
 msgid "_Next"
 msgstr "Nästa"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 msgid "_Search for:"
 msgstr "Sök efter:"
 
@@ -4472,87 +4472,87 @@ msgstr ""
 "Projekt: använd filmönstren definierade i projektinställningarna\n"
 "Användaranpassad: ange filmönster manuellt"
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "Filer:"
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Filmönster, exepelvis *.c *.h"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "Sökväg:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "Teckenkodning:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Läs Grep's manualsida för mer information"
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "Gå igenom undermappar"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "Invertera sökresultat"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Invertera träffar, välj de rader som inte har några träffar"
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr "Andra tillval att skicka till Grep"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Hittat %d träff för \"%s\"."
 msgstr[1] "Hittat %d träffar för \"%s\"."
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Ersatt %u träffar i %u dokument."
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr "Ogiltig mapp för att söka i filer."
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "Ingen text att söka efter."
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 msgid "Searching..."
 msgstr "Söker..."
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (i sökväg: %s)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4560,27 +4560,27 @@ msgstr ""
 "Kan inte exekvera grep-verktyget \"%s\": %s. Kontrollera sökvägen i "
 "Inställningar."
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Kan inte öppna sökväg (%s)"
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "Sökningen misslyckades."
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Sökning avslutad med %d träff."
 msgstr[1] "Sökning avslutad med %d träffar."
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "Inga träffar hittade."
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Felaktig rexex: %s"
@@ -5314,105 +5314,105 @@ msgstr ""
 "%e      filtyp: %f      omfång: %S"
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr "%dL"
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr "RO "
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "OVR"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "INS"
 
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "TAB"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 msgid "SP"
 msgstr "SP"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr "T/S"
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 msgid "(new instance) "
 msgstr "(new instans) "
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Font uppdaterad (%s)."
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "C Standard Library"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C Standard Library)"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "C++ Standard Library"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.yyyy"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.yyyy"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "yyyy/mm/dd"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "yyyy/mm/dd hh:mm:ss"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 msgid "_Use Custom Date Format"
 msgstr "Använd användardefinierat datumformat"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "Användardefinierat datumformat"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5420,35 +5420,35 @@ msgstr ""
 "Skriv in användardefinierat datum- och tidsformat. Du kan använda den syntax "
 "som specificeras av ANSI C:s strftime funktion."
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Strängen för datumformat kunde inte konverteras (möjligtvis för lång)."
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 msgid "_Set Custom Date Format"
 msgstr "Ställ in användardefinierat datumformat"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "Välj mapp"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "Välj fil"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 msgid "_Filetype Configuration"
 msgstr "Konfigurationen av filtyper"
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 msgid "Save All"
 msgstr "Spara alla"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 msgid "Close All"
 msgstr "Stäng alla"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr "Geany kan ej starta!"
 
@@ -5488,24 +5488,29 @@ msgstr "CR"
 msgid "LF"
 msgstr "LF"
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr "ogiltigt VTE bibliotek \"%s\": symbol saknas \"%s\""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 msgid "_Set Path From Document"
 msgstr "Ange sökväg från dokumentet"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "Välj projektets sökväg"
+
+#: ../src/vte.c:898
 msgid "_Restart Terminal"
 msgstr "Starta om terminalen"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr "Inmatningsmetoder"
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
@@ -5513,7 +5518,7 @@ msgstr ""
 "Mappen ändrades inte därför komanndotolen kan innehålla inmatad information "
 "(tryck Ctrl+C eller RETUR-tangenten för att rensa)."
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 #, fuzzy
 msgid "Directory not changed because the terminal process is not running."
 msgstr ""

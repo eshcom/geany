@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2008-11-30 16:22+0200\n"
 "Last-Translator: Atanas Beloborodov <nasko@cod3r.org>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -1781,7 +1781,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>Разрешения:</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Терминал"
 
@@ -2952,7 +2952,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "неизвестен"
 
@@ -2961,7 +2961,7 @@ msgstr "неизвестен"
 msgid "%s Properties"
 msgstr "Свойства"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(с BOM)"
 
@@ -3180,8 +3180,8 @@ msgstr "Запазих файла %s."
 msgid "Wrap search and find again?"
 msgstr "Да пробвам ли отново с търсенето?"
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, fuzzy, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Няма намерени съвпадения за '%s'."
@@ -3525,7 +3525,7 @@ msgid "Document"
 msgstr "_Документ"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Построй"
 
@@ -3809,7 +3809,7 @@ msgstr "Намери предишното"
 msgid "Replace"
 msgstr "Замени"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 #, fuzzy
 msgid "Find in Files"
 msgstr "Намери въф _файлове"
@@ -4690,7 +4690,7 @@ msgstr "Изберете име за проекта"
 msgid "Project \"%s\" opened."
 msgstr "Отворих проекта \"%s\"."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "_Използвай редовни изрази"
 
@@ -4733,12 +4733,12 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "_Търси назад"
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 #, fuzzy
 msgid "C_ase sensitive"
 msgstr "_Зачитане на малки/големи букви"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Само _ако съвпада с цяла дума"
 
@@ -4754,7 +4754,7 @@ msgstr "_Предишен"
 msgid "_Next"
 msgstr "_Следващ"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 #, fuzzy
 msgid "_Search for:"
 msgstr "Търси за:"
@@ -4837,95 +4837,95 @@ msgid ""
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr ""
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 #, fuzzy
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Файлови образци:"
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 #, fuzzy
 msgid "_Directory:"
 msgstr "Директория:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 #, fuzzy
 msgid "E_ncoding:"
 msgstr "Задайте знаково кодиране:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 #, fuzzy
 msgid "See grep's manual page for more information"
 msgstr "Виж страницата на ръководството на grep за повече информация."
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "Рек_урсивно в поддиректории"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "О_бърни наопъки резултатие от търсенето"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 #, fuzzy
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Обърни наопъки логиката за търсене на съвпадения, за да изберете не-"
 "съвпадащите редове."
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Д_опълнителни настройки:"
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr "Други опции, които да се предадат на Grep"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Д_опълнителни настройки:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Д_опълнителни настройки:"
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, fuzzy, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Намерих %d съвпадения за '%s'."
 msgstr[1] "Намерих %d съвпадения за '%s'."
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, fuzzy, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Отбелязва всички съвпадения в текущия документ."
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr "Неправилна директория за търсене във файлове."
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "Няма текст, който да се търси."
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 #, fuzzy
 msgid "Searching..."
 msgstr "Тър_си"
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s·%s·--·%s·(в директория:·%s)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4933,27 +4933,27 @@ msgstr ""
 "Не мога да стартирам програмата grep: '%s'; проверете настройката за пътя в "
 "Предпочитания"
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Не можах да отворя директорията (%s)"
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "Търсенето се провали."
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, fuzzy, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Търсенето завърши с %d съвпадения"
 msgstr[1] "Търсенето завърши с %d съвпадения"
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "Не открих съвпадения."
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr ""
@@ -5733,108 +5733,108 @@ msgid ""
 msgstr ""
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr ""
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr "RO"
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "OVR"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "INS"
 
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "ТАБУЛАЦИЯ"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 #, fuzzy
 msgid "SP"
 msgstr "ИНТЕРВАЛ"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr ""
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 #, fuzzy
 msgid "(new instance) "
 msgstr "Интерфейс"
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Шрифтът е обновен (%s)."
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "Стандартна библиотека на С"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO·C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++·(стандартна С библиотека )"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "Стандартна С++ библиотека"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++·STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "дд.мм.гггг"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "мм.дд.гггг"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "гггг/мм/дд"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "дд.мм.гггг чч:мм:сс"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "мм.дд.гггг чч:мм:сс"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "гггг/мм/дд чч:мм:сс"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 #, fuzzy
 msgid "_Use Custom Date Format"
 msgstr "Използвай потребителски формат за датата"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "Потребителски формат за дата"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 #, fuzzy
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
@@ -5844,41 +5844,41 @@ msgstr ""
 "всякакви общоприети начини на изписване, които могат да бъдат използвани с "
 "ANSI·C функцията strftime . За повече подробности, вижте \"man·strftime\""
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 "Формата за дата не може да бъде преобразуван (най-вероятно е прекалено "
 "дълъг)."
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 #, fuzzy
 msgid "_Set Custom Date Format"
 msgstr "Задайте потребителски формат за дата"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "Изберете папка"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "Изберете файл"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "Не успях да компилирам."
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 #, fuzzy
 msgid "Save All"
 msgstr "Запази _всички"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 #, fuzzy
 msgid "Close All"
 msgstr "_Затвори Всички"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr ""
 
@@ -5919,32 +5919,37 @@ msgstr ""
 msgid "LF"
 msgstr ""
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr ""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 #, fuzzy
 msgid "_Set Path From Document"
 msgstr "Превключи към левия документ"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "Изберете основен път за проекта"
+
+#: ../src/vte.c:898
 #, fuzzy
 msgid "_Restart Terminal"
 msgstr "Терминал"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr "_Метеди за вход"
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
 msgstr ""
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 

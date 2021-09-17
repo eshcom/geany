@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-16 02:03+0300\n"
+"POT-Creation-Date: 2021-09-18 01:14+0300\n"
 "PO-Revision-Date: 2012-02-08 11:28-0000\n"
 "Last-Translator: فيصل شامخ <chamfay@gmail.com>\n"
 "Language-Team: فيصل شامخ <chamfay@gmail.com>\n"
@@ -1528,7 +1528,7 @@ msgstr ""
 msgid "<b>Terminal</b>"
 msgstr "<b>الطرفية</b>"
 
-#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:455
+#: ../data/geany.glade.h:340 ../src/prefs.c:1622 ../src/vte.c:460
 msgid "Terminal"
 msgstr "الطرفية"
 
@@ -2619,7 +2619,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:288
+#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "غير معروف"
 
@@ -2628,7 +2628,7 @@ msgstr "غير معروف"
 msgid "%s Properties"
 msgstr "خصائص"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:291
 msgid "(with BOM)"
 msgstr "(مع BOM)"
 
@@ -2832,8 +2832,8 @@ msgstr "تم حفظ الملف %s"
 msgid "Wrap search and find again?"
 msgstr ""
 
-#: ../src/document.c:2489 ../src/search.c:1487 ../src/search.c:1540
-#: ../src/search.c:2381 ../src/search.c:2383
+#: ../src/document.c:2489 ../src/search.c:1488 ../src/search.c:1541
+#: ../src/search.c:2382 ../src/search.c:2384
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr ""
@@ -3160,7 +3160,7 @@ msgid "Document"
 msgstr "مستند"
 
 #: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
-#: ../src/ui_utils.c:2240
+#: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "بناء"
 
@@ -3427,7 +3427,7 @@ msgstr "إيجاد السابق"
 msgid "Replace"
 msgstr "استبدِل"
 
-#: ../src/keybindings.c:546 ../src/search.c:942
+#: ../src/keybindings.c:546 ../src/search.c:943
 msgid "Find in Files"
 msgstr "بحث في الملفات"
 
@@ -4227,7 +4227,7 @@ msgstr "اختيار اسم المشروع"
 msgid "Project \"%s\" opened."
 msgstr "تم فتح المشروع  \"%s\" بنجاح."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr ""
 
@@ -4263,11 +4263,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr ""
 
-#: ../src/search.c:370 ../src/search.c:1050
+#: ../src/search.c:370 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "راع اختلاف الأحرف الكبيرة/الصغيرة"
 
-#: ../src/search.c:374 ../src/search.c:1055
+#: ../src/search.c:374 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "مطابقة الكلمة كاملة."
 
@@ -4283,7 +4283,7 @@ msgstr "السابق"
 msgid "_Next"
 msgstr "التالي"
 
-#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:956
+#: ../src/search.c:507 ../src/search.c:676 ../src/search.c:957
 msgid "_Search for:"
 msgstr "ا_بحث عن:"
 
@@ -4357,113 +4357,113 @@ msgid ""
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:975
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "الملفات:"
 
-#: ../src/search.c:987
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr ""
 
-#: ../src/search.c:1000
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "الدليل:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "الترميز:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "أنظر دليل استخدام grep للإستزادة أكثر."
 
-#: ../src/search.c:1046
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr ""
 
-#: ../src/search.c:1059
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "اعكس نتائج البحث"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 
-#: ../src/search.c:1080
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "خيارات أخرى:"
 
-#: ../src/search.c:1081 ../src/search.c:1083 ../src/search.c:1085
+#: ../src/search.c:1082 ../src/search.c:1084 ../src/search.c:1086
 msgid "Other options to pass to Grep"
 msgstr ""
 
-#: ../src/search.c:1082
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "خيارات أخرى:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "خيارات أخرى:"
 
-#: ../src/search.c:1490 ../src/search.c:2388 ../src/search.c:2392
+#: ../src/search.c:1491 ../src/search.c:2389 ../src/search.c:2393
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:1546
+#: ../src/search.c:1547
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr ""
 
-#: ../src/search.c:1757
+#: ../src/search.c:1758
 msgid "Invalid directory for find in files."
 msgstr ""
 
-#: ../src/search.c:1777
+#: ../src/search.c:1778
 msgid "No text to find."
 msgstr "لا يوجد نص للبحث عنه"
 
-#: ../src/search.c:1857
+#: ../src/search.c:1858
 msgid "Searching..."
 msgstr "بحث..."
 
-#: ../src/search.c:1859
+#: ../src/search.c:1860
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (في المجلد: %s)"
 
-#: ../src/search.c:1868
+#: ../src/search.c:1869
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr "لا يمكن تنفيذ اﻷداة grep '%s'; افحص المسار في نافذة التفضيلات."
 
-#: ../src/search.c:1908
+#: ../src/search.c:1909
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr ""
 
-#: ../src/search.c:1998
+#: ../src/search.c:1999
 msgid "Search failed."
 msgstr "فشل البحث."
 
-#: ../src/search.c:2021
+#: ../src/search.c:2022
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:2029
+#: ../src/search.c:2030
 msgid "No matches found."
 msgstr "لا تطابقات."
 
-#: ../src/search.c:2059
+#: ../src/search.c:2060
 #, c-format
 msgid "Bad regex: %s"
 msgstr "عبارة سيئة: %s"
@@ -5196,140 +5196,140 @@ msgid ""
 msgstr ""
 
 #. L = lines
-#: ../src/ui_utils.c:239
+#: ../src/ui_utils.c:238
 #, c-format
 msgid "%dL"
 msgstr ""
 
 #. RO = read-only
-#: ../src/ui_utils.c:249 ../src/ui_utils.c:256
+#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
 msgid "RO "
 msgstr "RO "
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "OVR"
 msgstr "OVR"
 
-#: ../src/ui_utils.c:251
+#: ../src/ui_utils.c:250
 msgid "INS"
 msgstr "INS"
 
-#: ../src/ui_utils.c:265
+#: ../src/ui_utils.c:264
 msgid "TAB"
 msgstr "TAB"
 
 #. SP = space
-#: ../src/ui_utils.c:268
+#: ../src/ui_utils.c:267
 msgid "SP"
 msgstr "SP"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:271
+#: ../src/ui_utils.c:270
 msgid "T/S"
 msgstr "T/S"
 
-#: ../src/ui_utils.c:279
+#: ../src/ui_utils.c:278
 msgid "MOD"
 msgstr "MOD"
 
-#: ../src/ui_utils.c:381
+#: ../src/ui_utils.c:380
 msgid "(new instance) "
 msgstr "(كائن جديد) "
 
-#: ../src/ui_utils.c:451
+#: ../src/ui_utils.c:449
 #, c-format
 msgid "Font updated (%s)."
 msgstr "تمّ تحديث الخط (%s)"
 
-#: ../src/ui_utils.c:702
+#: ../src/ui_utils.c:706
 msgid "C Standard Library"
 msgstr "مكتبة سي القياسية"
 
-#: ../src/ui_utils.c:703
+#: ../src/ui_utils.c:708
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:710
 msgid "C++ (C Standard Library)"
 msgstr "C++ (مكتبة سي القياسية)"
 
-#: ../src/ui_utils.c:705
+#: ../src/ui_utils.c:712
 msgid "C++ Standard Library"
 msgstr "مكتبة سي بلس بلس القياسية"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:714
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:728 ../src/ui_utils.c:806
+#: ../src/ui_utils.c:736 ../src/ui_utils.c:822
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.yyyy"
 
-#: ../src/ui_utils.c:730 ../src/ui_utils.c:807
+#: ../src/ui_utils.c:738 ../src/ui_utils.c:823
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.yyyy"
 
-#: ../src/ui_utils.c:732 ../src/ui_utils.c:808
+#: ../src/ui_utils.c:740 ../src/ui_utils.c:824
 msgid "yyyy/mm/dd"
 msgstr "yyyy/mm/dd"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:817
+#: ../src/ui_utils.c:742 ../src/ui_utils.c:833
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:818
+#: ../src/ui_utils.c:744 ../src/ui_utils.c:834
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:819
+#: ../src/ui_utils.c:746 ../src/ui_utils.c:835
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "yyyy/mm/dd hh:mm:ss"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:828
+#: ../src/ui_utils.c:748 ../src/ui_utils.c:844
 msgid "_Use Custom Date Format"
 msgstr "استخدام صيغة تاريخ مخصصة"
 
-#: ../src/ui_utils.c:744
+#: ../src/ui_utils.c:752
 msgid "Custom Date Format"
 msgstr "صيغة تاريخ مخصصة"
 
-#: ../src/ui_utils.c:745
+#: ../src/ui_utils.c:754
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
 msgstr ""
 
-#: ../src/ui_utils.c:766
+#: ../src/ui_utils.c:775
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 
-#: ../src/ui_utils.c:841
+#: ../src/ui_utils.c:859
 msgid "_Set Custom Date Format"
 msgstr "تعيين صيغة تاريخ مخصصة"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select Folder"
 msgstr "اختيار مجلد"
 
-#: ../src/ui_utils.c:2031
+#: ../src/ui_utils.c:2088
 msgid "Select File"
 msgstr "اختيار ملف"
 
-#: ../src/ui_utils.c:2201
+#: ../src/ui_utils.c:2261
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "أعِد تحميل اﻹعداد"
 
-#: ../src/ui_utils.c:2238
+#: ../src/ui_utils.c:2299
 msgid "Save All"
 msgstr "حفظ الكل"
 
-#: ../src/ui_utils.c:2239
+#: ../src/ui_utils.c:2300
 msgid "Close All"
 msgstr "أغلق الكل"
 
-#: ../src/ui_utils.c:2471
+#: ../src/ui_utils.c:2539
 msgid "Geany cannot start!"
 msgstr "برنامج Geany لا يمكنه العمل!"
 
@@ -5369,30 +5369,35 @@ msgstr ""
 msgid "LF"
 msgstr ""
 
-#: ../src/vte.c:666
+#: ../src/vte.c:680
 #, c-format
 msgid "invalid VTE library \"%s\": missing symbol \"%s\""
 msgstr ""
 
-#: ../src/vte.c:860
+#: ../src/vte.c:885
 msgid "_Set Path From Document"
 msgstr "تعيين المسار من الملف"
 
-#: ../src/vte.c:865
+#: ../src/vte.c:891
+#, fuzzy
+msgid "_Set Project Path"
+msgstr "المشاريع السابقة"
+
+#: ../src/vte.c:898
 msgid "_Restart Terminal"
 msgstr "إعاد تشغيل الطرفية"
 
-#: ../src/vte.c:898
+#: ../src/vte.c:935
 msgid "_Input Methods"
 msgstr ""
 
-#: ../src/vte.c:991
+#: ../src/vte.c:1028
 msgid ""
 "Directory not changed because the terminal may contain some input (press Ctrl"
 "+C or Enter to clear it)."
 msgstr ""
 
-#: ../src/vte.c:998
+#: ../src/vte.c:1036
 msgid "Directory not changed because the terminal process is not running."
 msgstr ""
 
