@@ -863,8 +863,8 @@ gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
 	return FALSE;
 }
 
-const void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
-										   TMTagType *type)
+void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
+									 TMTagType *type)
 {
 	switch (lang)
 	{
