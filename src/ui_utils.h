@@ -104,7 +104,8 @@ void ui_set_statusbar(gboolean log, const gchar *format, ...) G_GNUC_PRINTF (2, 
 
 void ui_table_add_row(GtkTable *table, gint row, ...) G_GNUC_NULL_TERMINATED;
 
-GtkWidget *ui_path_box_new(const gchar *title, GtkFileChooserAction action, GtkEntry *entry);
+GtkWidget *ui_path_box_new(const gchar *title, GtkFileChooserAction action,
+						   GtkEntry *entry);
 
 GtkWidget *ui_button_new_with_image(const gchar *stock_id, const gchar *text);
 
@@ -120,10 +121,11 @@ void ui_progress_bar_stop(void);
 
 void ui_entry_add_clear_icon(GtkEntry *entry);
 
-void ui_menu_add_document_items(GtkMenu *menu, GeanyDocument *active, GCallback callback);
+void ui_menu_add_document_items(GtkMenu *menu, GeanyDocument *active,
+								GCallback callback);
 
 void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
-		GCallback callback, GCompareFunc sort_func);
+									   GCallback callback, GCompareFunc sort_func);
 
 void ui_widget_modify_font_from_string(GtkWidget *wid, const gchar *str);
 
@@ -132,7 +134,7 @@ gboolean ui_is_keyval_enter_or_return(guint keyval);
 gint ui_get_gtk_settings_integer(const gchar *property_name, gint default_value);
 
 void ui_combo_box_add_to_history(GtkComboBoxText *combo_entry,
-		const gchar *text, gint history_len);
+								 const gchar *text, gint history_len);
 
 const gchar *ui_lookup_stock_label(const gchar *stock_id);
 
@@ -140,9 +142,11 @@ void ui_tree_view_set_tooltip_text_column(GtkTreeView *tree_view, gint column);
 
 
 #ifndef GEANY_DISABLE_DEPRECATED
-GtkWidget *ui_frame_new_with_alignment(const gchar *label_text, GtkWidget **alignment) GEANY_DEPRECATED;
+GtkWidget *ui_frame_new_with_alignment(const gchar *label_text,
+									   GtkWidget **alignment) GEANY_DEPRECATED;
 
-void ui_widget_set_tooltip_text(GtkWidget *widget, const gchar *text) GEANY_DEPRECATED_FOR(gtk_widget_set_tooltip_text);
+void ui_widget_set_tooltip_text(GtkWidget *widget, const gchar *text)
+					GEANY_DEPRECATED_FOR(gtk_widget_set_tooltip_text);
 #endif	/* GEANY_DISABLE_DEPRECATED */
 
 
@@ -165,7 +169,7 @@ typedef struct UIPrefs
 	gboolean	allow_always_save; /* if set, files can always be saved, even if unchanged */
 	gchar		*statusbar_template;
 	gboolean	new_document_after_close;
-
+	
 	/* Menu-item related data */
 	GQueue		*recent_queue;
 	GQueue		*recent_projects_queue;
@@ -189,12 +193,12 @@ typedef struct UIWidgets
 	GtkWidget	*recent_projects_menuitem;
 	GtkWidget	*recent_projects_menu_menubar;
 	GtkWidget	*config_files_filetype_menu;
-
+	
 	/* dialogs */
 	GtkWidget	*open_colorsel;
 	GtkWidget	*open_fontsel;
 	GtkWidget	*prefs_dialog;
-
+	
 	/* other widgets not needed in GeanyMainWidgets */
 	GtkWidget	*statusbar;			/* use ui_set_statusbar() to set */
 }
@@ -237,7 +241,7 @@ void ui_hbutton_box_copy_layout(GtkButtonBox *master, GtkButtonBox *copy);
 void ui_combo_box_prepend_text_once(GtkComboBoxText *combo, const gchar *text);
 
 void ui_setup_open_button_callback(GtkWidget *open_btn, const gchar *title,
-		GtkFileChooserAction action, GtkEntry *entry);
+								   GtkFileChooserAction action, GtkEntry *entry);
 
 void ui_auto_separator_add_ref(GeanyAutoSeparator *autosep, GtkWidget *item);
 
@@ -255,7 +259,8 @@ void ui_widget_set_sensitive(GtkWidget *widget, gboolean set);
 void ui_entry_add_activate_backward_signal(GtkEntry *entry);
 
 void ui_editable_insert_text_callback(GtkEditable *editable, gchar *new_text,
-									  gint new_text_len, gint *position, gpointer data);
+									  gint new_text_len, gint *position,
+									  gpointer data);
 
 GtkWidget *ui_label_new_bold(const gchar *text);
 
@@ -276,7 +281,7 @@ void ui_init_toolbar_widgets(void);
 void ui_init_stock_items(void);
 
 void ui_add_config_file_menu_item(const gchar *real_path, const gchar *label,
-		GtkContainer *parent);
+								  GtkContainer *parent);
 
 void ui_update_statusbar(GeanyDocument *doc, gint pos);
 
@@ -340,7 +345,8 @@ gboolean ui_tree_view_find_next(GtkTreeView *treeview, TVMatchCallback cb);
 
 gboolean ui_tree_view_find_previous(GtkTreeView *treeview, TVMatchCallback cb);
 
-gboolean ui_tree_model_iter_any_next(GtkTreeModel *model, GtkTreeIter *iter, gboolean down);
+gboolean ui_tree_model_iter_any_next(GtkTreeModel *model, GtkTreeIter *iter,
+									 gboolean down);
 
 void ui_statusbar_showhide(gboolean state);
 
