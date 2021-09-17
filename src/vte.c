@@ -173,6 +173,7 @@ enum
 	POPUP_PASTE,
 	POPUP_SELECTALL,
 	POPUP_CHANGEPATH,
+	POPUP_CHANGEPATH2PRJ,
 	POPUP_RESTARTTERMINAL,
 	POPUP_PREFERENCES,
 	TARGET_UTF8_STRING = 0,
@@ -621,6 +622,9 @@ static gboolean vte_button_pressed(GtkWidget *widget, GdkEventButton *event,
 {
 	if (event->button == 3)
 	{
+		GtkWidget *item = ui_lookup_widget(vc->menu, "item_set_project_path");
+		ui_widget_set_sensitive(item, app->project != NULL);
+		
 		gtk_widget_grab_focus(vc->vte);
 		gtk_menu_popup(GTK_MENU(vc->menu), NULL, NULL, NULL, NULL,
 					   event->button, event->time);
@@ -803,6 +807,13 @@ static void vte_popup_menu_clicked(GtkMenuItem *menuitem, gpointer user_data)
 				vte_cwd(doc->file_name, TRUE);
 			break;
 		}
+		case POPUP_CHANGEPATH2PRJ:
+		{
+			gchar *path = project_get_base_path();
+			vte_cwd(path, TRUE);
+			g_free(path);
+			break;
+		}
 		case POPUP_RESTARTTERMINAL:
 		{
 			vte_restart(vc->vte);
@@ -876,6 +887,13 @@ static GtkWidget *vte_create_popup_menu(void)
 	gtk_container_add(GTK_CONTAINER(menu), item);
 	g_signal_connect(item, "activate", G_CALLBACK(vte_popup_menu_clicked),
 					 GINT_TO_POINTER(POPUP_CHANGEPATH));
+	
+	item = gtk_image_menu_item_new_with_mnemonic(_("_Set Project Path"));
+	gtk_widget_show(item);
+	gtk_container_add(GTK_CONTAINER(menu), item);
+	ui_hookup_widget(menu, item, "item_set_project_path");
+	g_signal_connect(item, "activate", G_CALLBACK(vte_popup_menu_clicked),
+					 GINT_TO_POINTER(POPUP_CHANGEPATH2PRJ));
 	
 	item = gtk_image_menu_item_new_with_mnemonic(_("_Restart Terminal"));
 	gtk_widget_show(item);
