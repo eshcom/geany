@@ -1702,7 +1702,8 @@ static void close_block(GeanyEditor *editor, gint pos)
  * NULL terminated in any case, even when the word is truncated because wordlen is too small.
  * position can be -1, then the current position is used.
  * wc are the wordchars to use, if NULL, GEANY_WORDCHARS will be used */
-static WordBound read_current_word(GeanyEditor *editor, gint pos, gchar *word, gsize wordlen,
+static WordBound read_current_word(GeanyEditor *editor, gint pos,
+								   gchar *word, gsize wordlen,
 								   const gchar *wc, gboolean stem)
 {
 	WordBound wordBound = {-1, -1};
@@ -1734,8 +1735,9 @@ static WordBound read_current_word(GeanyEditor *editor, gint pos, gchar *word, g
 }
 
 
-static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
-					  gsize wordlen, const gchar *wc, gboolean stem, TMParserType lang)
+static void read_word(gchar *chunk, gint *startword, gint *endword,
+					  gchar *word, gsize wordlen, const gchar *wc,
+					  gboolean stem, TMParserType lang)
 {
 	word[0] = '\0';
 	
@@ -1777,14 +1779,22 @@ static void read_word(gchar *chunk, gint *startword, gint *endword, gchar *word,
 
 /* esh: Reads the quoted word (based on read_word),
  * 		needed for TM_PARSER_ERLANG */
-static void read_word_quoted(gchar *chunk, gint *startword, gint *endword, gchar *word,
-							 gsize wordlen, gboolean stem)
+static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
+							 gchar *word, gsize wordlen, gboolean stem)
 {
 	word[0] = '\0';
 	
+	if (stem) // for left search (example, scope search)
+	{
+		if (chunk[*endword - 1] != '\'')
+			return;
+		if (*startword == *endword && *startword > 0)
+			(*startword)--;
+	}
+	
 	int limit = 20;
-	while (*startword > 0 && limit > 0 && (chunk[*startword - 1] != '\'' &&
-										   chunk[*startword - 1] != ' '))
+	while (*startword > 0 && limit > 0 &&
+		   !strchr("\'(): ", chunk[*startword - 1]))
 	{
 		(*startword)--;
 		limit--;
@@ -1797,8 +1807,8 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword, gchar
 	if (!stem)
 	{
 		limit = 20;
-		while (chunk[*endword] != 0 && limit > 0 && (chunk[*endword] != '\'' &&
-													 chunk[*endword] != ' '))
+		while (chunk[*endword] != 0 && limit > 0 &&
+			   !strchr("\'(): ", chunk[*endword]))
 		{
 			(*endword)++;
 			limit--;
@@ -1830,7 +1840,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	ScintillaObject *sci = editor->sci;
 	
 	//~ word search:
-	WordBound wordBound = read_current_word(editor, pos, word, wordlen, NULL, FALSE);
+	WordBound wordBound = read_current_word(editor, pos, word, wordlen,
+										    NULL, FALSE);
 	pos = wordBound.start;
 	/* skip whitespaces */
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
@@ -1862,7 +1873,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				if (pos > 0)
 				{
 					//~ scope search:
-					wordBound = read_current_word(editor, pos, scope, scopelen, NULL, FALSE);
+					wordBound = read_current_word(editor, pos, scope, scopelen,
+												  NULL, TRUE);
 					pos = wordBound.start;
 					
 					gchar prefix = ' ';
@@ -1947,7 +1959,7 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 					endword = startword;
 					//~ scope search:
 					read_word(chunk, &startword, &endword, scope, scopelen,
-							  GEANY_WORDCHARS, FALSE, lang);
+							  GEANY_WORDCHARS, TRUE, lang);
 					
 					gchar prefix = ' ';
 					gchar first = chunk[startword];

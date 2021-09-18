@@ -356,4 +356,5 @@ enc_attrs(Msg) ->
 
 fun1(SessionId) ->
   Headers = <<"#!::t=",SessionId/binary,",a=",(base:version(describe))/binary>>,
-  binary:copy(<<0>>, 184-1-size(Headers)).
+  binary:copy(<<0>>, 184-1-size(Headers)),
+  'L6proto':decode('PresenceMessage', Headers).
