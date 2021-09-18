@@ -1887,7 +1887,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 					if (pos > 0)
 						prefix = sci_get_char_at(sci, pos - 1);
 					
-					if (tm_parser_undefined_scope(lang, prefix, first, brackets))
+					if (tm_parser_undefined_scope(lang, prefix, first, brackets, scope))
 						*scope = '\0';
 					
 					return;
@@ -1971,7 +1971,7 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 					if (startword > 0)
 						prefix = chunk[startword - 1];
 					
-					if (tm_parser_undefined_scope(lang, prefix, first, brackets))
+					if (tm_parser_undefined_scope(lang, prefix, first, brackets, scope))
 						*scope = '\0';
 					
 					return;

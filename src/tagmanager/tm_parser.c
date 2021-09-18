@@ -844,7 +844,8 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
 }
 
 gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
-								   gchar first, gboolean brackets)
+								   gchar first, gboolean brackets,
+								   const gchar *scope)
 {
 	switch (lang)
 	{
@@ -855,6 +856,10 @@ gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
 			//		Module:test1()				- "Module" is scope
 			if (brackets || prefix == '?' ||
 				(!islower(first) && first != '\''))
+				return TRUE;
+			break;
+		case TM_PARSER_PYTHON:
+			if (g_strcmp0(scope, "self") == 0)
 				return TRUE;
 			break;
 		default:
