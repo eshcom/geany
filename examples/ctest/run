@@ -1,0 +1,8 @@
+#!/bin/bash
+
+CFLAGS=`pkg-config --cflags glib-2.0 gtk+-2.0`
+LDLIBS=`pkg-config --libs glib-2.0 gtk+-2.0`
+
+gcc $CFLAGS -g -std=c99 main.c $LDLIBS
+
+./a.out
