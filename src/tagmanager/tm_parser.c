@@ -843,9 +843,8 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
 	}
 }
 
-gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
-								   gchar first, gboolean brackets,
-								   const gchar *scope)
+gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
+								   gchar prefix, gboolean brackets)
 {
 	switch (lang)
 	{
@@ -855,7 +854,7 @@ gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
 			//		?module:test1()				- "module" is scope
 			//		Module:test1()				- "Module" is scope
 			if (brackets || prefix == '?' ||
-				(!islower(first) && first != '\''))
+				!(scope[0] == '\'' || islower(scope[0])))
 				return TRUE;
 			break;
 		case TM_PARSER_PYTHON:

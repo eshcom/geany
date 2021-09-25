@@ -232,6 +232,12 @@ typedef struct
 	gint end;
 } WordBound;
 
+typedef struct
+{
+	WordBound bound;
+	gboolean brackets;
+} ScopeBound;
+
 
 void editor_init(void);
 
