@@ -130,9 +130,8 @@ gboolean tm_parser_langs_compatible(TMParserType lang, TMParserType other);
 
 gboolean tm_parser_has_quoted_identifiers(TMParserType lang);
 
-gboolean tm_parser_undefined_scope(TMParserType lang, gchar prefix,
-								   gchar first, gboolean brackets,
-								   const gchar *scope);
+gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
+								   gchar prefix, gboolean brackets);
 
 void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
 									 TMTagType *type);
