@@ -1,0 +1,81 @@
+--- # Sequencer protocols for Laser eye surgery
+- step:  &id001                  # defines anchor label &id001
+    instrument:      Lasik 2000
+    pulseEnergy:     5.4
+    pulseDuration:   12
+    spotSize:        1mm
+
+- step: &id002
+    instrument:      Lasik 2000
+    pulseEnergy:     5.0
+    pulseDuration:   10
+    spotSize:        2mm
+- step: *id001                   # refers to the first step (with anchor &id001)
+- step: *id002                   # refers to the second step
+- step: *id002
+
+---
+a: 123                     # an integer
+b: "123"                   # a string, disambiguated by quotes
+c: 123.0                   # a float
+d: !!float 123             # also a float via explicit data type prefixed by (!!)
+e: !!str 123               # a string, disambiguated by explicit type
+f: !!str Yes               # a string via explicit type
+g: Yes                     # a boolean True (yaml1.1), string "Yes" (yaml1.2)
+h: Yes we have No bananas  # a string, "Yes" and "No" disambiguated by context.
+i: true
+
+---
+picture: !!binary |
+  R0lGODdhDQAIAIAAAAAAANn
+  Z2SwAAAAADQAIAAACF4SDGQ
+  ar3xxbJ9p0qa7R0YxwzaFME
+  1IAADs=
+
+---
+myObject: !myClass { name: Joe, age: 15 }
+
+
+  license-bk:
+    image: license:${BRANCH:-none}
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-1.0.0}
+    container_name: l4_backend  
+    environment:
+      DATABASE_URL: "postgres://license:pass@postgres:5432/license_test"
+      HOME: "/var/run/license"
+      GUI_PORT: 9090
+      API_KEY: "k123"
+      HEALTH_API_KEY: "k1"
+    ports:
+      - "9090"
+    depends_on:
+      - postgres
+#    networks:
+#      - postgres
+    command: ["/opt/license/script/wait-for-it.sh", "postgres:5432", "--", "/opt/license/run.sh", "-pgmigrate", "bk"]
+
+
+  click:
+    image: license4-test-click
+    build: deploy/clickhouse
+    container_name: l4_click
+#    dns_search: ""
+    hostname: "click"
+    environment:
+      CLICKHOUSE_DB: l6_test
+    expose:
+      - 8123
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - 'click-data:/var/lib/clickhouse'
+      - 'click-log:/var/log/clickhouse-server'
+       - type: bind
+         read_only: true
+         source: ./clickhouse/config.xml
+         target: /etc/clickhouse-server/config.d/sentry.xml

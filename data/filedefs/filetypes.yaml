@@ -14,7 +14,7 @@ operator=operator
 
 [keywords]
 # all items must be in one line
-keywords=true false yes no
+keywords=null true false yes no on off
 
 
 [settings]
