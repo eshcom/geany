@@ -2761,7 +2761,8 @@ void document_highlight_tags(GeanyDocument *doc)
 
 	/* get any type keywords and tell scintilla about them
 	 * this will cause the type keywords to be colourized in scintilla */
-	keywords_str = symbols_find_typenames_as_string(doc->file_type->lang, FALSE);
+	keywords_str = symbols_find_typenames_as_string(doc->file_type->lang,
+													FALSE);
 	if (keywords_str)
 	{
 		gchar *keywords = g_string_free(keywords_str, FALSE);

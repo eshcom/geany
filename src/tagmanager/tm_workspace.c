@@ -1068,9 +1068,9 @@ tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
 {
 	TMParserType lang = source_file ? source_file->lang : TM_PARSER_NONE;
 	GPtrArray *tags, *member_tags = NULL;
-	TMTagType function_types = tm_tag_function_t | tm_tag_method_t |
+	TMTagType function_types = tm_tag_function_t       | tm_tag_method_t |
 							   tm_tag_macro_with_arg_t | tm_tag_prototype_t;
-	TMTagType tag_type = tm_tag_max_t & ~(function_types | tm_tag_enumerator_t |
+	TMTagType tag_type = tm_tag_max_t & ~(function_types     | tm_tag_enumerator_t |
 										  tm_tag_namespace_t | tm_tag_package_t);
 	TMTagAttrType sort_attr[] = {tm_tag_attr_name_t, 0};
 	
