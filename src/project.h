@@ -41,7 +41,7 @@ typedef struct GeanyProject
 	 * by a plugin. */
 	gint type;
 	GStrv file_patterns;	/**< Array of filename extension patterns. */
-
+	
 	struct GeanyProjectPrivate	*priv;	/* must be last, append fields before this item */
 }
 GeanyProject;
@@ -86,7 +86,8 @@ void project_build_properties(void);
 gboolean project_ask_close(void);
 
 
-gboolean project_load_file(const gchar *locale_file_name, gboolean save_default_session);
+gboolean project_load_file(const gchar *locale_file_name,
+						   gboolean save_default_session);
 
 gboolean project_load_file_with_session(const gchar *locale_file_name,
 										gboolean save_default_session);

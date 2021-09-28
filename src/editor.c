@@ -273,7 +273,7 @@ void editor_snippets_init(void)
 	userconfigfile = g_build_filename(app->configdir, "snippets.conf", NULL);
 
 	/* check for old autocomplete.conf files (backwards compatibility) */
-	if (! g_file_test(userconfigfile, G_FILE_TEST_IS_REGULAR))
+	if (!g_file_test(userconfigfile, G_FILE_TEST_IS_REGULAR))
 		SETPTR(userconfigfile, g_build_filename(app->configdir, "autocomplete.conf", NULL));
 
 	/* load the actual config files */
@@ -478,8 +478,8 @@ void editor_toggle_fold(GeanyEditor *editor, gint line, gint modifiers)
 	else
 		header = sci_get_fold_parent(sci, line);
 
-	if ((editor_prefs.unfold_all_children && ! (modifiers & SCMOD_SHIFT)) ||
-		(! editor_prefs.unfold_all_children && (modifiers & SCMOD_SHIFT)))
+	if ((editor_prefs.unfold_all_children && !(modifiers & SCMOD_SHIFT)) ||
+		(!editor_prefs.unfold_all_children && (modifiers & SCMOD_SHIFT)))
 	{
 		SSM(sci, SCI_FOLDCHILDREN, header, SC_FOLDACTION_TOGGLE);
 	}
@@ -516,7 +516,7 @@ static void on_update_ui(GeanyEditor *editor, G_GNUC_UNUSED SCNotification *nt)
 
 	/* since Scintilla 2.24, SCN_UPDATEUI is also sent on scrolling though we don't need to handle
 	 * this and so ignore every SCN_UPDATEUI events except for content and selection changes */
-	if (! (nt->updated & SC_UPDATE_CONTENT) && ! (nt->updated & SC_UPDATE_SELECTION))
+	if (!(nt->updated & SC_UPDATE_CONTENT) && !(nt->updated & SC_UPDATE_SELECTION))
 		return;
 
 	/* undo / redo menu update */
@@ -890,7 +890,7 @@ static void on_char_added(GeanyEditor *editor, SCNotification *nt)
 		/* tag autocompletion */
 		default:
 #if 0
-			if (! editor_start_auto_complete(editor, pos, FALSE))
+			if (!editor_start_auto_complete(editor, pos, FALSE))
 				request_reshowing_calltip(nt);
 #else
 			editor_start_auto_complete(editor, pos, FALSE);
@@ -959,7 +959,7 @@ static void fold_changed(ScintillaObject *sci, gint line, gint levelNow, gint le
 {
 	if (levelNow & SC_FOLDLEVELHEADERFLAG)
 	{
-		if (! (levelPrev & SC_FOLDLEVELHEADERFLAG))
+		if (!(levelPrev & SC_FOLDLEVELHEADERFLAG))
 		{
 			/* Adding a fold point */
 			SSM(sci, SCI_SETFOLDEXPANDED, line, 1);
@@ -969,7 +969,7 @@ static void fold_changed(ScintillaObject *sci, gint line, gint levelNow, gint le
 	}
 	else if (levelPrev & SC_FOLDLEVELHEADERFLAG)
 	{
-		if (! sci_get_fold_expanded(sci, line))
+		if (!sci_get_fold_expanded(sci, line))
 		{	/* Removing the fold from one that has been contracted so should expand
 			 * otherwise lines are left invisible with no way to make them visible */
 			SSM(sci, SCI_SETFOLDEXPANDED, line, 1);
@@ -977,7 +977,7 @@ static void fold_changed(ScintillaObject *sci, gint line, gint levelNow, gint le
 				expand(sci, &line, TRUE, FALSE, 0, levelPrev);
 		}
 	}
-	if (! (levelNow & SC_FOLDLEVELWHITEFLAG) &&
+	if (!(levelNow & SC_FOLDLEVELWHITEFLAG) &&
 			((levelPrev & SC_FOLDLEVELNUMBERMASK) > (levelNow & SC_FOLDLEVELNUMBERMASK)))
 	{
 		if (!SSM(sci, SCI_GETALLLINESVISIBLE, 0, 0)) {
@@ -1141,7 +1141,7 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 				/* automatically adjust Scintilla's line numbers margin width */
 				auto_update_margin_width(editor);
 			}
-			if (nt->modificationType & SC_STARTACTION && ! ignore_callback)
+			if (nt->modificationType & SC_STARTACTION && !ignore_callback)
 			{
 				/* get notified about undo changes */
 				document_undo_add(doc, UNDO_SCINTILLA, NULL);
@@ -1418,7 +1418,7 @@ static gint get_sci_line_code_end_position(ScintillaObject *sci, gint line)
 	{
 		gint style = sci_get_style_at(sci, pos);
 
-		if (highlighting_is_code_style(lexer, style) && ! isspace(sci_get_char_at(sci, pos)))
+		if (highlighting_is_code_style(lexer, style) && !isspace(sci_get_char_at(sci, pos)))
 			break;
 	}
 
@@ -1641,7 +1641,7 @@ static void close_block(GeanyEditor *editor, gint pos)
 
 	sci = editor->sci;
 
-	if (! lexer_has_braces(sci))
+	if (!lexer_has_braces(sci))
 		return;
 
 	line = sci_get_line_from_position(sci, pos);
@@ -1887,7 +1887,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	
 	//~ word search:
 	WordBound wordbound = read_current_word(editor, pos, word, wordlen,
-										    NULL, FALSE);
+											NULL, FALSE);
 	if (wordbound.start == wordbound.end)
 		return;
 	
@@ -2281,7 +2281,7 @@ static gint find_start_bracket_chunk(gchar *chunk, gint pos)
 
 static gboolean append_calltip(GString *str, const TMTag *tag, GeanyFiletypeID ft_id)
 {
-	if (! tag->arglist)
+	if (!tag->arglist)
 		return FALSE;
 
 	if (ft_id != GEANY_FILETYPES_PASCAL && ft_id != GEANY_FILETYPES_GO)
@@ -2330,7 +2330,7 @@ static gchar *find_calltip(const gchar *word, GeanyFiletype *ft)
 {
 	GPtrArray *tags;
 	const TMTagType arg_types = tm_tag_function_t | tm_tag_prototype_t |
-		tm_tag_method_t | tm_tag_macro_with_arg_t;
+								tm_tag_method_t   | tm_tag_macro_with_arg_t;
 	TMTag *tag;
 	GString *str = NULL;
 	guint i;
@@ -2365,7 +2365,7 @@ static gchar *find_calltip(const gchar *word, GeanyFiletype *ft)
 	{
 		tag = TM_TAG(tags->pdata[i]);
 
-		if (! tag->arglist)
+		if (!tag->arglist)
 			tags->pdata[i] = NULL;
 	}
 	tm_tags_prune((GPtrArray *) tags);
@@ -2383,7 +2383,7 @@ static gchar *find_calltip(const gchar *word, GeanyFiletype *ft)
 	}
 
 	/* if the current word has changed since last time, start with the first tag match */
-	if (! utils_str_equal(word, calltip.last_word))
+	if (!utils_str_equal(word, calltip.last_word))
 		calltip.tag_index = 0;
 	/* cache the current word for next time */
 	g_free(calltip.last_word);
@@ -2455,7 +2455,7 @@ gboolean editor_show_calltip(GeanyEditor *editor, gint pos)
 
 	/* the style 1 before the brace (which may be highlighted) */
 	style = sci_get_style_at(sci, pos - 1);
-	if (! highlighting_is_code_style(lexer, style))
+	if (!highlighting_is_code_style(lexer, style))
 		return FALSE;
 
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
@@ -2540,7 +2540,7 @@ static gboolean autocomplete_check_html(GeanyEditor *editor, gint style, gint po
 	else if (ft->id == GEANY_FILETYPES_PHP)
 	{
 		/* use entity completion when style is outside of PHP styles */
-		if (! is_style_php(style))
+		if (!is_style_php(style))
 			try = TRUE;
 	}
 	if (try)
@@ -2664,7 +2664,7 @@ gboolean editor_start_auto_complete(GeanyEditor *editor, gint pos, gboolean forc
 
 	g_return_val_if_fail(editor != NULL, FALSE);
 
-	if (! editor_prefs.auto_complete_symbols && ! force)
+	if (!editor_prefs.auto_complete_symbols && !force)
 		return FALSE;
 
 	/* If we are at the beginning of the document, we skip autocompletion as we can't determine the
@@ -3101,7 +3101,7 @@ gboolean editor_complete_snippet(GeanyEditor *editor, gint pos)
 	/* return if we are editing an existing line (chars on right of cursor) */
 	if (keybindings_lookup_item(GEANY_KEY_GROUP_EDITOR,
 			GEANY_KEYS_EDITOR_COMPLETESNIPPET)->key == GDK_space &&
-		! editor_prefs.complete_snippets_whilst_editing && ! at_eol(sci, pos))
+		!editor_prefs.complete_snippets_whilst_editing && !at_eol(sci, pos))
 		return FALSE;
 
 	wc = snippets_find_completion_by_name("Special", "wordchars");
@@ -3109,7 +3109,7 @@ gboolean editor_complete_snippet(GeanyEditor *editor, gint pos)
 
 	/* prevent completion of "for " */
 	if (!EMPTY(word) &&
-		! isspace(sci_get_char_at(sci, pos - 1))) /* pos points to the line end char so use pos -1 */
+		!isspace(sci_get_char_at(sci, pos - 1))) /* pos points to the line end char so use pos -1 */
 	{
 		sci_start_undo_action(sci);	/* needed because we insert a space separately from construct */
 		result = snippets_complete_constructs(editor, pos, word);
@@ -3171,12 +3171,12 @@ static gboolean handle_xml(GeanyEditor *editor, gint pos, gchar ch)
 	
 	/* If the user has turned us off, quit now.
 	 * This may make sense only in certain languages */
-	if (! editor_prefs.auto_close_xml_tags || (lexer != SCLEX_HTML && lexer != SCLEX_XML))
+	if (!editor_prefs.auto_close_xml_tags || (lexer != SCLEX_HTML && lexer != SCLEX_XML))
 		return FALSE;
 	
 	/* return if we are inside any embedded script */
 	style = sci_get_style_at(sci, pos);
-	if (style > SCE_H_XCCOMMENT && ! highlighting_is_string_style(lexer, style))
+	if (style > SCE_H_XCCOMMENT && !highlighting_is_string_style(lexer, style))
 		return FALSE;
 	
 	/* if ch is /, check for </, else quit */
@@ -3258,7 +3258,7 @@ static GeanyFiletype *editor_get_filetype_at_line(GeanyEditor *editor, gint line
 	style = sci_get_style_at(editor->sci, line_start);
 
 	/* Handle PHP filetype with embedded HTML */
-	if (current_ft->id == GEANY_FILETYPES_PHP && ! is_style_php(style))
+	if (current_ft->id == GEANY_FILETYPES_PHP && !is_style_php(style))
 		current_ft = filetypes[GEANY_FILETYPES_HTML];
 
 	/* Handle languages embedded in HTML */
@@ -3310,7 +3310,7 @@ static void real_comment_multiline(GeanyEditor *editor, gint line_start, gint la
 	ft = editor_get_filetype_at_line(editor, line_start);
 
 	eol = editor_get_eol_char(editor);
-	if (! filetype_get_comment_open_close(ft, FALSE, &co, &cc))
+	if (!filetype_get_comment_open_close(ft, FALSE, &co, &cc))
 		g_return_if_reached();
 	str_begin = g_strdup_printf("%s%s", (co != NULL) ? co : "", eol);
 	str_end = g_strdup_printf("%s%s", (cc != NULL) ? cc : "", eol);
@@ -3364,7 +3364,7 @@ static gboolean real_uncomment_multiline(GeanyEditor *editor)
 	g_return_val_if_fail(editor != NULL && editor->document->file_type != NULL, FALSE);
 
 	ft = editor_get_filetype_at_line(editor, sci_get_current_line(editor->sci));
-	if (! filetype_get_comment_open_close(ft, FALSE, &co, &cc))
+	if (!filetype_get_comment_open_close(ft, FALSE, &co, &cc))
 		g_return_val_if_reached(FALSE);
 
 	start = find_in_current_style(editor->sci, co, TRUE);
@@ -3461,7 +3461,7 @@ gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle)
 
 	ft = editor_get_filetype_at_line(editor, first_line);
 
-	if (! filetype_get_comment_open_close(ft, TRUE, &co, &cc))
+	if (!filetype_get_comment_open_close(ft, TRUE, &co, &cc))
 		return 0;
 
 	co_len = strlen(co);
@@ -3535,7 +3535,7 @@ gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle)
 
 	/* restore selection if there is one
 	 * but don't touch the selection if caller is editor_do_comment_toggle */
-	if (! toggle && sel_start < sel_end)
+	if (!toggle && sel_start < sel_end)
 	{
 		if (single_line)
 		{
@@ -3585,7 +3585,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 
 	ft = editor_get_filetype_at_line(editor, first_line);
 
-	if (! filetype_get_comment_open_close(ft, TRUE, &co, &cc))
+	if (!filetype_get_comment_open_close(ft, TRUE, &co, &cc))
 		return;
 
 	co_len = strlen(co);
@@ -3756,7 +3756,7 @@ gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_line
 
 	ft = editor_get_filetype_at_line(editor, first_line);
 
-	if (! filetype_get_comment_open_close(ft, single_comment, &co, &cc))
+	if (!filetype_get_comment_open_close(ft, single_comment, &co, &cc))
 		return 0;
 
 	co_len = strlen(co);
@@ -3825,7 +3825,7 @@ gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_line
 
 	/* restore selection if there is one
 	 * but don't touch the selection if caller is editor_do_comment_toggle */
-	if (! toggle && sel_start < sel_end)
+	if (!toggle && sel_start < sel_end)
 	{
 		if (single_line)
 		{
@@ -3900,10 +3900,10 @@ static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos)
 	SSM(editor->sci, SCI_SETHIGHLIGHTGUIDE, 0, 0);
 	SSM(editor->sci, SCI_BRACEBADLIGHT, (uptr_t)-1, 0);
 
-	if (! utils_isbrace(sci_get_char_at(editor->sci, brace_pos), editor_prefs.brace_match_ltgt))
+	if (!utils_isbrace(sci_get_char_at(editor->sci, brace_pos), editor_prefs.brace_match_ltgt))
 	{
 		brace_pos++;
-		if (! utils_isbrace(sci_get_char_at(editor->sci, brace_pos), editor_prefs.brace_match_ltgt))
+		if (!utils_isbrace(sci_get_char_at(editor->sci, brace_pos), editor_prefs.brace_match_ltgt))
 		{
 			return;
 		}
@@ -4057,7 +4057,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 
 	g_return_if_fail(editor != NULL && editor->document->file_type != NULL);
 
-	if (! filetype_get_comment_open_close(editor->document->file_type, FALSE, &co, &cc))
+	if (!filetype_get_comment_open_close(editor->document->file_type, FALSE, &co, &cc))
 		g_return_if_reached();
 	if (!EMPTY(cc))
 		have_multiline_comment = TRUE;
@@ -4073,7 +4073,7 @@ void editor_insert_multiline_comment(GeanyEditor *editor)
 	/* use the indent on the current line but only when comment indentation is used
 	 * and we don't have multi line comment characters */
 	if (editor->auto_indent &&
-		! have_multiline_comment &&	doc->file_type->comment_use_indent)
+		!have_multiline_comment &&	doc->file_type->comment_use_indent)
 	{
 		read_indent(editor, editor_info.click_pos);
 		text = g_strdup_printf("%s\n%s\n%s\n", indent, indent, indent);
@@ -4122,7 +4122,7 @@ void editor_scroll_to_line(GeanyEditor *editor, gint line, gfloat percent_of_vie
 
 	wid = GTK_WIDGET(editor->sci);
 
-	if (! gtk_widget_get_window(wid) || ! gdk_window_is_viewable(gtk_widget_get_window(wid)))
+	if (!gtk_widget_get_window(wid) || !gdk_window_is_viewable(gtk_widget_get_window(wid)))
 		return;	/* prevent gdk_window_scroll warning */
 
 	if (line == -1)
@@ -4201,7 +4201,7 @@ void editor_select_lines(GeanyEditor *editor, gboolean extra_line)
 	end = sci_get_selection_end(editor->sci);
 
 	/* check if whole lines are already selected */
-	if (! extra_line && start != end &&
+	if (!extra_line && start != end &&
 		sci_get_col_from_position(editor->sci, start) == 0 &&
 		sci_get_col_from_position(editor->sci, end) == 0)
 			return;
@@ -4594,7 +4594,7 @@ void editor_display_current_line(GeanyEditor *editor, gfloat percent_of_view)
 	sci_ensure_line_is_visible(editor->sci, line);
 
 	/* scroll the line if it's off screen */
-	if (! editor_line_in_view(editor, line))
+	if (!editor_line_in_view(editor, line))
 		editor->scroll_percent = percent_of_view;
 	else
 		sci_scroll_caret(editor->sci); /* may need horizontal scrolling */
@@ -4838,7 +4838,7 @@ static void fold_all(GeanyEditor *editor, gboolean want_fold)
 {
 	gint lines, first, i;
 
-	if (editor == NULL || ! editor_prefs.folding)
+	if (editor == NULL || !editor_prefs.folding)
 		return;
 
 	lines = sci_get_line_count(editor->sci);
@@ -4941,7 +4941,7 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 	if (tab_len_f < 0.0)
 		tab_len_f = sci_get_tab_width(editor->sci);
 
-	if (! dialogs_show_input_numeric(
+	if (!dialogs_show_input_numeric(
 		_("Enter Tab Width"),
 		_("Enter the amount of spaces which should be replaced by a tab character."),
 		&tab_len_f, 1, 100, 1))
@@ -5347,7 +5347,7 @@ static gboolean register_named_icon(ScintillaObject *sci, guint id, const gchar 
 
 	gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &size, NULL);
 	pixbuf = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(), name, size, 0, &error);
-	if (! pixbuf)
+	if (!pixbuf)
 	{
 		g_warning("failed to load icon '%s': %s", name, error->message);
 		g_error_free(error);
@@ -5360,7 +5360,7 @@ static gboolean register_named_icon(ScintillaObject *sci, guint id, const gchar 
 	height = gdk_pixbuf_get_height(pixbuf);
 
 	if (gdk_pixbuf_get_bits_per_sample(pixbuf) != 8 ||
-		! gdk_pixbuf_get_has_alpha(pixbuf) ||
+		!gdk_pixbuf_get_has_alpha(pixbuf) ||
 		n_channels != 4 ||
 		rowstride != width * n_channels)
 	{
@@ -5576,7 +5576,7 @@ void editor_set_indentation_guides(GeanyEditor *editor)
 
 	g_return_if_fail(editor != NULL);
 
-	if (! editor_prefs.show_indent_guide)
+	if (!editor_prefs.show_indent_guide)
 	{
 		sci_set_indentation_guides(editor->sci, SC_IV_NONE);
 		return;

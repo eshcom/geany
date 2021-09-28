@@ -38,7 +38,8 @@ G_BEGIN_DECLS
 # define textdomain(String) (String)
 # define bind_textdomain_codeset(Domain,Codeset) (Codeset)
 # define bindtextdomain(Domain,Dir) (Dir)
-# define ngettext(String,PluralString,Number) (((Number) == 1) ? (String) : (PluralString))
+# define ngettext(String,PluralString,Number) \
+			(((Number) == 1) ? (String) : (PluralString))
 # define _(String) String
 # define N_(String) String
 # define C_(Context,String) (String)
