@@ -102,6 +102,8 @@ void project_setup_prefs(void);
 
 void project_apply_prefs(void);
 
+void project_load_tags();
+
 #endif /* GEANY_PRIVATE */
 
 G_END_DECLS

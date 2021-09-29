@@ -2337,16 +2337,8 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	if (tags->len == 0 && app->project)
 	{
 		if (!app->tm_workspace->project_tags)
-		{
-			gchar *base_path = project_get_base_path();
-			gchar *tags_file = project_get_tags_file();
-			
-			if (tm_workspace_load_project_tags(tags_file, base_path))
-				ui_set_statusbar(TRUE, _("Project tags loaded"));
-			
-			g_free(base_path);
-			g_free(tags_file);
-		}
+			project_load_tags();
+		
 		all_tags = tm_workspace_find_prj(name, tm_tag_max_t,
 										 old_doc->file_type->lang);
 		

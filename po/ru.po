@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.35\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-18 01:14+0300\n"
+"POT-Creation-Date: 2021-09-29 10:41+0300\n"
 "PO-Revision-Date: 2019-04-16 21:50+0400\n"
 "Last-Translator: Pavel Roschin <rpg89(at)post(dot)ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -110,11 +110,11 @@ msgstr "П_оиск"
 msgid "Open Selected F_ile"
 msgstr "Открыть _выбранный файл"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2800
+#: ../data/geany.glade.h:19 ../src/symbols.c:2858
 msgid "Find _Usage"
 msgstr "_Найти использования"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2805
+#: ../data/geany.glade.h:20 ../src/symbols.c:2865
 msgid "Find _Document Usage"
 msgstr "Найти использования в _документе"
 
@@ -1266,7 +1266,7 @@ msgstr ""
 "Периодичность проверки на изменение файлов на диске (в секундах). Нулевое "
 "значение отключает проверку."
 
-#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:467
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:471
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Файлы"
@@ -1675,7 +1675,7 @@ msgstr "Сохранить _как..."
 msgid "Sa_ve All"
 msgstr "Сохранить _все"
 
-#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3641
+#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3642
 #: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Загрузить заново"
@@ -1800,7 +1800,7 @@ msgstr "Найти _следующее"
 msgid "Find _Previous"
 msgstr "Найти _предыдущее"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2810
+#: ../data/geany.glade.h:382 ../src/symbols.c:2872
 msgid "Find in F_iles..."
 msgstr "Найти в _файлах..."
 
@@ -2133,7 +2133,7 @@ msgstr "Заметки"
 msgid "Project Properties"
 msgstr "Свойства проекта"
 
-#: ../data/geany.glade.h:465 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:183
 msgid "Filename:"
 msgstr "Имя файла:"
 
@@ -2161,7 +2161,7 @@ msgstr ""
 "Список шаблонов поиска, разделённых пробелами (например, *.c *.h), "
 "используемых для поиска в диалоге файлов"
 
-#: ../data/geany.glade.h:471 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2188,62 +2188,78 @@ msgid "Use global settings"
 msgstr "Использовать глобальные настройки"
 
 #: ../data/geany.glade.h:476
+msgid "Load tags file when opening a project"
+msgstr "Загружать файл тегов при открытии проекта"
+
+#: ../data/geany.glade.h:477
+msgid "Use a list of objects from the tags file for the lexer"
+msgstr "Использовать для лексера список объектов из файла тегов"
+
+#: ../data/geany.glade.h:478
+msgid "<b>Using a tags file</b>"
+msgstr "<b>Использование файла тегов</b>"
+
+#: ../data/geany.glade.h:479
+msgid "Tags"
+msgstr "Теги"
+
+#: ../data/geany.glade.h:480
 msgid "Size:"
 msgstr "Размер:"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:481
 msgid "Location:"
 msgstr "Размещение:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:482
 msgid "Read-only:"
 msgstr "Только чтение:"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:483
 msgid "Encoding:"
 msgstr "Кодировка:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:484
 msgid "Modified:"
 msgstr "Модифицирован:"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:485
 msgid "Changed:"
 msgstr "Изменён:"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:486
 msgid "Accessed:"
 msgstr "Последний доступ:"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:487
 msgid "(only inside Geany)"
 msgstr "(только внутри Geany)"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:488
 msgid "Permissions:"
 msgstr "Права:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:489
 msgid "Read:"
 msgstr "Чтение:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:490
 msgid "Write:"
 msgstr "Запись:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:491
 msgid "Execute:"
 msgstr "Выполнить:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:492
 msgid "Owner:"
 msgstr "Владелец:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:493
 msgid "Group:"
 msgstr "Группа:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:494
 msgid "Other:"
 msgstr "Прочие:"
 
@@ -2434,12 +2450,12 @@ msgstr "Ошибок сборки больше нет."
 msgid "Set menu item label"
 msgstr "Метка элемента меню"
 
-#: ../src/build.c:1834 ../src/symbols.c:524 ../src/tools.c:414
+#: ../src/build.c:1834 ../src/symbols.c:528 ../src/tools.c:414
 msgid "Label"
 msgstr "Метка"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:519 ../src/tools.c:399
+#: ../src/build.c:1835 ../src/symbols.c:523 ../src/tools.c:399
 msgid "Command"
 msgstr "Команда"
 
@@ -2718,7 +2734,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
+#: ../src/symbols.c:2660 ../src/symbols.c:2678 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "неизвестно"
 
@@ -2893,20 +2909,20 @@ msgstr "Не удалось выполнить запись в файл '%s': о
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr "Не удалось закрыть файл '%s': ошибка в fclose(): %s"
 
-#: ../src/document.c:2077 ../src/document.c:3642
+#: ../src/document.c:2077 ../src/document.c:3643
 msgid "_Overwrite"
 msgstr "_Перезаписать"
 
-#: ../src/document.c:2079 ../src/document.c:3645
+#: ../src/document.c:2079 ../src/document.c:3646
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr "Файл '%s' на диске более новый, чем в текущем буфере."
 
-#: ../src/document.c:2087 ../src/document.c:3694
+#: ../src/document.c:2087 ../src/document.c:3695
 msgid "Try to resave the file?"
 msgstr "Попытаться сохранить файл заново?"
 
-#: ../src/document.c:2088 ../src/document.c:3695
+#: ../src/document.c:2088 ../src/document.c:3696
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "Файл \"%s\" не найден на диске!"
@@ -2959,19 +2975,19 @@ msgstr[0] "%s: произведена %d замена \"%s\" на \"%s\"."
 msgstr[1] "%s: произведено %d замены \"%s\" на \"%s\"."
 msgstr[2] "%s: произведено %d замен \"%s\" на \"%s\"."
 
-#: ../src/document.c:3644
+#: ../src/document.c:3645
 msgid "Do you want to reload it?"
 msgstr "Вы действительно хотите загрузить его заново?"
 
-#: ../src/editor.c:4859
+#: ../src/editor.c:4945
 msgid "Enter Tab Width"
 msgstr "Ширина табуляции:"
 
-#: ../src/editor.c:4860
+#: ../src/editor.c:4946
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Количество пробелов, которые будут заменены символом табуляции."
 
-#: ../src/editor.c:5066
+#: ../src/editor.c:5152
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Внимание: нестандартная ширина табуляции: %d != 8"
@@ -3191,7 +3207,7 @@ msgid "All Source"
 msgstr "Все файлы исходного кода"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1211 ../src/project.c:351 ../src/win32.c:145
+#: ../src/filetypes.c:1211 ../src/project.c:359 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Все типы"
@@ -3228,7 +3244,7 @@ msgid "Color Schemes"
 msgstr "Цветовые схемы"
 
 #. visual group order
-#: ../src/keybindings.c:312 ../src/symbols.c:494
+#: ../src/keybindings.c:312 ../src/symbols.c:498
 msgid "File"
 msgstr "Файл"
 
@@ -3264,11 +3280,11 @@ msgstr "Перейти"
 msgid "View"
 msgstr "Вид"
 
-#: ../src/keybindings.c:322 ../src/symbols.c:645
+#: ../src/keybindings.c:322 ../src/symbols.c:649
 msgid "Document"
 msgstr "Документ"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
+#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:527
 #: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Сборка"
@@ -3309,7 +3325,7 @@ msgstr "Сохранить как"
 msgid "Save all"
 msgstr "Сохранить все"
 
-#: ../src/keybindings.c:351 ../src/symbols.c:730
+#: ../src/keybindings.c:351 ../src/symbols.c:734
 msgid "Properties"
 msgstr "Свойства"
 
@@ -3817,7 +3833,7 @@ msgstr "Создать глобальный файл тегов (смотрит�
 
 #: ../src/libmain.c:125
 msgid "Don't preprocess C/C++ files when generating tags file"
-msgstr "Не использовать препроцессор для файлов C/C++ при создании файла тэгов"
+msgstr "Не использовать препроцессор для файлов C/C++ при создании файла тегов"
 
 #: ../src/libmain.c:127
 msgid "Don't open files in a running instance, force opening a new instance"
@@ -4091,11 +4107,11 @@ msgstr "Захватить клавишу"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Укажите сочетание клавиш для \"%s\""
 
-#: ../src/prefs.c:226 ../src/symbols.c:2768 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2821 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Развернуть все"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2773 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2828 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Свернуть все"
 
@@ -4228,32 +4244,32 @@ msgstr "Файл %s напечатан."
 
 #. "projects" is part of the default project base path so be careful when translating
 #. * please avoid special characters and spaces, look at the source for details or ask Frank
-#: ../src/project.c:99
+#: ../src/project.c:100
 msgid "projects"
 msgstr "проекты"
 
-#: ../src/project.c:134
+#: ../src/project.c:136
 msgid "Move the current documents into the new project's session?"
 msgstr "Переместить открытые документы в сессию нового проекта?"
 
-#: ../src/project.c:152
+#: ../src/project.c:154
 msgid "New Project"
 msgstr "Новый проект"
 
-#: ../src/project.c:157
+#: ../src/project.c:161
 msgid "C_reate"
 msgstr "С_оздать"
 
-#: ../src/project.c:168 ../plugins/classbuilder.c:465
+#: ../src/project.c:172 ../plugins/classbuilder.c:465
 #: ../plugins/classbuilder.c:475
 msgid "Name:"
 msgstr "Имя:"
 
-#: ../src/project.c:175
+#: ../src/project.c:179
 msgid "Project name"
 msgstr "Название проекта"
 
-#: ../src/project.c:187
+#: ../src/project.c:191
 #, c-format
 msgid ""
 "Path of the file representing the project and storing its settings. It "
@@ -4262,105 +4278,109 @@ msgstr ""
 "Путь до файла, в котором хранится проект и его параметры. Обычно он имеет "
 "расширение \"%s\"."
 
-#: ../src/project.c:201
+#: ../src/project.c:205
 msgid "Base path:"
 msgstr "Путь к каталогу:"
 
-#: ../src/project.c:211 ../src/project.c:489
+#: ../src/project.c:215 ../src/project.c:500
 msgid "Choose Project Base Path"
 msgstr "Выберите путь к каталогу проекта:"
 
-#: ../src/project.c:250 ../src/project.c:626 ../src/project.c:1166
+#: ../src/project.c:254 ../src/project.c:640 ../src/project.c:1199
 msgid "Project file could not be written"
 msgstr "Не удалось выполнить запись в файл проекта"
 
-#: ../src/project.c:255
+#: ../src/project.c:259
 #, c-format
 msgid "Project \"%s\" created."
 msgstr "Проект \"%s\" создан."
 
-#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1027
+#: ../src/project.c:299 ../src/project.c:329 ../src/project.c:1054
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Файл проекта \"%s\" не может быть загружен."
 
-#: ../src/project.c:317 ../src/project.c:335
+#: ../src/project.c:322 ../src/project.c:341
 msgid "Open Project"
 msgstr "Открыть проект"
 
-#: ../src/project.c:355
+#: ../src/project.c:363
 msgid "Project files"
 msgstr "Файлы проекта"
 
-#: ../src/project.c:417
+#: ../src/project.c:427
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "Проект \"%s\" закрыт."
 
-#: ../src/project.c:629
+#: ../src/project.c:643
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "Проект \"%s\" сохранён."
 
-#: ../src/project.c:662
+#: ../src/project.c:676
 msgid "Do you want to close it before proceeding?"
 msgstr "Закрыть его перед продолжением?"
 
-#: ../src/project.c:663
+#: ../src/project.c:677
 #, c-format
 msgid "The '%s' project is open."
 msgstr "Проект '%s' открыт."
 
-#: ../src/project.c:712
+#: ../src/project.c:727
 msgid "The specified project name is too short."
 msgstr "Указанное имя проекта слишком короткое."
 
-#: ../src/project.c:718
+#: ../src/project.c:733
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "Указанное имя проекта слишком длинное (максимум %d символов)."
 
-#: ../src/project.c:730
+#: ../src/project.c:744
 msgid "You have specified an invalid project filename."
 msgstr "Недопустимое имя проекта."
 
-#: ../src/project.c:753
+#: ../src/project.c:767
 msgid "Create the project's base path directory?"
 msgstr "Создать каталог проекта?"
 
-#: ../src/project.c:754
+#: ../src/project.c:768
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "Каталог \"%s\" не существует."
 
-#: ../src/project.c:763
+#: ../src/project.c:777
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Каталог для проекта не может быть создан (%s)."
 
-#: ../src/project.c:776
+#: ../src/project.c:790
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Не удалось выполнить запись в файл проекта (%s)."
 
-#: ../src/project.c:782 ../src/search.c:663
+#: ../src/project.c:796 ../src/search.c:663
 msgid "_Replace"
 msgstr "_Заменить"
 
-#: ../src/project.c:784 ../plugins/export.c:330
+#: ../src/project.c:797 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "Файл '%s' уже существует. Перезаписать?"
 
 #. initialise the dialog
-#: ../src/project.c:930 ../src/project.c:941
+#: ../src/project.c:949 ../src/project.c:961
 msgid "Choose Project Filename"
 msgstr "Выберите имя файла проекта"
 
-#: ../src/project.c:1017
+#: ../src/project.c:1039
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "Проект \"%s\" открыт."
+
+#: ../src/project.c:1425
+msgid "Project tags loaded."
+msgstr "Загружены теги проекта."
 
 #: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
@@ -4658,340 +4678,340 @@ msgstr "Неизвестная ошибка при запуске дочерне
 msgid "Value"
 msgstr "Значение"
 
-#: ../src/symbols.c:473 ../src/symbols.c:525 ../src/symbols.c:635
+#: ../src/symbols.c:477 ../src/symbols.c:529 ../src/symbols.c:639
 msgid "Chapter"
 msgstr "Глава"
 
-#: ../src/symbols.c:474 ../src/symbols.c:521 ../src/symbols.c:636
+#: ../src/symbols.c:478 ../src/symbols.c:525 ../src/symbols.c:640
 msgid "Section"
 msgstr "Раздел"
 
-#: ../src/symbols.c:475
+#: ../src/symbols.c:479
 msgid "Sect1"
 msgstr "Секция1"
 
-#: ../src/symbols.c:476
+#: ../src/symbols.c:480
 msgid "Sect2"
 msgstr "Секция2"
 
-#: ../src/symbols.c:477
+#: ../src/symbols.c:481
 msgid "Sect3"
 msgstr "Секция3"
 
-#: ../src/symbols.c:478
+#: ../src/symbols.c:482
 msgid "Appendix"
 msgstr "Приложение"
 
-#: ../src/symbols.c:479 ../src/symbols.c:526 ../src/symbols.c:551
-#: ../src/symbols.c:567 ../src/symbols.c:582 ../src/symbols.c:593
-#: ../src/symbols.c:694 ../src/symbols.c:705 ../src/symbols.c:718
-#: ../src/symbols.c:733 ../src/symbols.c:745 ../src/symbols.c:757
-#: ../src/symbols.c:774 ../src/symbols.c:803 ../src/symbols.c:835
+#: ../src/symbols.c:483 ../src/symbols.c:530 ../src/symbols.c:555
+#: ../src/symbols.c:571 ../src/symbols.c:586 ../src/symbols.c:597
+#: ../src/symbols.c:698 ../src/symbols.c:709 ../src/symbols.c:722
+#: ../src/symbols.c:737 ../src/symbols.c:749 ../src/symbols.c:761
+#: ../src/symbols.c:778 ../src/symbols.c:807 ../src/symbols.c:839
 msgid "Other"
 msgstr "Другое"
 
-#: ../src/symbols.c:485 ../src/symbols.c:765 ../src/symbols.c:813
+#: ../src/symbols.c:489 ../src/symbols.c:769 ../src/symbols.c:817
 msgid "Module"
 msgstr "Модуль"
 
-#: ../src/symbols.c:486 ../src/symbols.c:578 ../src/symbols.c:690
-#: ../src/symbols.c:743 ../src/symbols.c:755 ../src/symbols.c:770
-#: ../src/symbols.c:784
+#: ../src/symbols.c:490 ../src/symbols.c:582 ../src/symbols.c:694
+#: ../src/symbols.c:747 ../src/symbols.c:759 ../src/symbols.c:774
+#: ../src/symbols.c:788
 msgid "Types"
 msgstr "Типы"
 
-#: ../src/symbols.c:487
+#: ../src/symbols.c:491
 msgid "Type constructors"
 msgstr "Конструкторы типов"
 
-#: ../src/symbols.c:488 ../src/symbols.c:512 ../src/symbols.c:533
-#: ../src/symbols.c:550 ../src/symbols.c:562 ../src/symbols.c:575
-#: ../src/symbols.c:590 ../src/symbols.c:604 ../src/symbols.c:614
-#: ../src/symbols.c:678 ../src/symbols.c:729 ../src/symbols.c:752
-#: ../src/symbols.c:797 ../src/symbols.c:821
+#: ../src/symbols.c:492 ../src/symbols.c:516 ../src/symbols.c:537
+#: ../src/symbols.c:554 ../src/symbols.c:566 ../src/symbols.c:579
+#: ../src/symbols.c:594 ../src/symbols.c:608 ../src/symbols.c:618
+#: ../src/symbols.c:682 ../src/symbols.c:733 ../src/symbols.c:756
+#: ../src/symbols.c:801 ../src/symbols.c:825
 msgid "Functions"
 msgstr "Функции"
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:497
 msgid "Program"
 msgstr "Программа"
 
-#: ../src/symbols.c:495
+#: ../src/symbols.c:499
 msgid "Divisions"
 msgstr ""
 
-#: ../src/symbols.c:496 ../src/symbols.c:505 ../src/symbols.c:511
+#: ../src/symbols.c:500 ../src/symbols.c:509 ../src/symbols.c:515
 msgid "Sections"
 msgstr "Разделы"
 
-#: ../src/symbols.c:497
+#: ../src/symbols.c:501
 msgid "Paragraph"
 msgstr "Абзац"
 
-#: ../src/symbols.c:498
+#: ../src/symbols.c:502
 msgid "Group"
 msgstr "Группа"
 
-#: ../src/symbols.c:499
+#: ../src/symbols.c:503
 msgid "Data"
 msgstr "Данные"
 
-#: ../src/symbols.c:500
+#: ../src/symbols.c:504
 msgid "Copies"
 msgstr ""
 
-#: ../src/symbols.c:506
+#: ../src/symbols.c:510
 msgid "Keys"
 msgstr "Клавиши"
 
-#: ../src/symbols.c:513 ../src/symbols.c:564 ../src/symbols.c:580
-#: ../src/symbols.c:606 ../src/symbols.c:679 ../src/symbols.c:704
-#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:753
-#: ../src/symbols.c:769 ../src/symbols.c:804 ../src/symbols.c:833
+#: ../src/symbols.c:517 ../src/symbols.c:568 ../src/symbols.c:584
+#: ../src/symbols.c:610 ../src/symbols.c:683 ../src/symbols.c:708
+#: ../src/symbols.c:735 ../src/symbols.c:748 ../src/symbols.c:757
+#: ../src/symbols.c:773 ../src/symbols.c:808 ../src/symbols.c:837
 msgid "Variables"
 msgstr "Переменные"
 
-#: ../src/symbols.c:520
+#: ../src/symbols.c:524
 msgid "Environment"
 msgstr "Окружение"
 
-#: ../src/symbols.c:522 ../src/symbols.c:637
+#: ../src/symbols.c:526 ../src/symbols.c:641
 msgid "Subsection"
 msgstr "Подраздел"
 
-#: ../src/symbols.c:523 ../src/symbols.c:638
+#: ../src/symbols.c:527 ../src/symbols.c:642
 msgid "Subsubsection"
 msgstr "Субподраздел"
 
-#: ../src/symbols.c:534 ../src/symbols.c:559
+#: ../src/symbols.c:538 ../src/symbols.c:563
 msgid "Structures"
 msgstr "Структуры"
 
-#: ../src/symbols.c:541
+#: ../src/symbols.c:545
 msgid "Parts"
 msgstr "Части"
 
-#: ../src/symbols.c:542
+#: ../src/symbols.c:546
 msgid "Assembly"
 msgstr "Сборка"
 
-#: ../src/symbols.c:543
+#: ../src/symbols.c:547
 msgid "Steps"
 msgstr "Шаги"
 
-#: ../src/symbols.c:558 ../src/symbols.c:656 ../src/symbols.c:702
+#: ../src/symbols.c:562 ../src/symbols.c:660 ../src/symbols.c:706
 msgid "Modules"
 msgstr "Модули"
 
-#: ../src/symbols.c:560 ../src/symbols.c:607
+#: ../src/symbols.c:564 ../src/symbols.c:611
 msgid "Traits"
 msgstr "Типажи"
 
-#: ../src/symbols.c:561
+#: ../src/symbols.c:565
 msgid "Implementations"
 msgstr "Реализации"
 
-#: ../src/symbols.c:563 ../src/symbols.c:824
+#: ../src/symbols.c:567 ../src/symbols.c:828
 msgid "Typedefs / Enums"
 msgstr "Типы / Перечисления"
 
-#: ../src/symbols.c:565 ../src/symbols.c:782 ../src/symbols.c:791
-#: ../src/symbols.c:830
+#: ../src/symbols.c:569 ../src/symbols.c:786 ../src/symbols.c:795
+#: ../src/symbols.c:834
 msgid "Macros"
 msgstr "Макросы"
 
-#: ../src/symbols.c:566 ../src/symbols.c:659 ../src/symbols.c:668
-#: ../src/symbols.c:677 ../src/symbols.c:715 ../src/symbols.c:742
+#: ../src/symbols.c:570 ../src/symbols.c:663 ../src/symbols.c:672
+#: ../src/symbols.c:681 ../src/symbols.c:719 ../src/symbols.c:746
 msgid "Methods"
 msgstr "Методы"
 
-#: ../src/symbols.c:574 ../src/symbols.c:589 ../src/symbols.c:687
-#: ../src/symbols.c:712 ../src/symbols.c:726
+#: ../src/symbols.c:578 ../src/symbols.c:593 ../src/symbols.c:691
+#: ../src/symbols.c:716 ../src/symbols.c:730
 msgid "Package"
 msgstr "Пакет"
 
-#: ../src/symbols.c:576 ../src/symbols.c:602 ../src/symbols.c:713
-#: ../src/symbols.c:727 ../src/symbols.c:740 ../src/symbols.c:767
-#: ../src/symbols.c:820
+#: ../src/symbols.c:580 ../src/symbols.c:606 ../src/symbols.c:717
+#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:771
+#: ../src/symbols.c:824
 msgid "Interfaces"
 msgstr "Интерфейсы"
 
-#: ../src/symbols.c:577 ../src/symbols.c:823
+#: ../src/symbols.c:581 ../src/symbols.c:827
 msgid "Structs"
 msgstr "Структуры"
 
-#: ../src/symbols.c:579 ../src/symbols.c:592 ../src/symbols.c:605
-#: ../src/symbols.c:732 ../src/symbols.c:754
+#: ../src/symbols.c:583 ../src/symbols.c:596 ../src/symbols.c:609
+#: ../src/symbols.c:736 ../src/symbols.c:758
 msgid "Constants"
 msgstr "Константы"
 
-#: ../src/symbols.c:581 ../src/symbols.c:716 ../src/symbols.c:822
+#: ../src/symbols.c:585 ../src/symbols.c:720 ../src/symbols.c:826
 msgid "Members"
 msgstr "Члены"
 
-#: ../src/symbols.c:591 ../src/symbols.c:756 ../src/symbols.c:781
+#: ../src/symbols.c:595 ../src/symbols.c:760 ../src/symbols.c:785
 msgid "Labels"
 msgstr "Метки"
 
-#: ../src/symbols.c:601 ../src/symbols.c:666 ../src/symbols.c:816
+#: ../src/symbols.c:605 ../src/symbols.c:670 ../src/symbols.c:820
 msgid "Namespaces"
 msgstr "Пространства имён"
 
-#: ../src/symbols.c:603 ../src/symbols.c:625 ../src/symbols.c:657
-#: ../src/symbols.c:667 ../src/symbols.c:676 ../src/symbols.c:714
-#: ../src/symbols.c:728 ../src/symbols.c:741 ../src/symbols.c:819
+#: ../src/symbols.c:607 ../src/symbols.c:629 ../src/symbols.c:661
+#: ../src/symbols.c:671 ../src/symbols.c:680 ../src/symbols.c:718
+#: ../src/symbols.c:732 ../src/symbols.c:745 ../src/symbols.c:823
 msgid "Classes"
 msgstr "Классы"
 
-#: ../src/symbols.c:615
+#: ../src/symbols.c:619
 msgid "Anchors"
 msgstr "Якоря"
 
-#: ../src/symbols.c:616
+#: ../src/symbols.c:620
 msgid "H1 Headings"
 msgstr "Заголовок (H1)"
 
-#: ../src/symbols.c:617
+#: ../src/symbols.c:621
 msgid "H2 Headings"
 msgstr "Заголовок (H2)"
 
-#: ../src/symbols.c:618
+#: ../src/symbols.c:622
 msgid "H3 Headings"
 msgstr "Заголовок (H3)"
 
-#: ../src/symbols.c:626
+#: ../src/symbols.c:630
 msgid "ID Selectors"
 msgstr "Идентификаторы"
 
-#: ../src/symbols.c:627
+#: ../src/symbols.c:631
 msgid "Type Selectors"
 msgstr "Типы"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:650
 msgid "Section Level 1"
 msgstr "Раздел уровень 1"
 
-#: ../src/symbols.c:647
+#: ../src/symbols.c:651
 msgid "Section Level 2"
 msgstr "Раздел уровень 2"
 
-#: ../src/symbols.c:648
+#: ../src/symbols.c:652
 msgid "Section Level 3"
 msgstr "Раздел уровень 3"
 
-#: ../src/symbols.c:649
+#: ../src/symbols.c:653
 msgid "Section Level 4"
 msgstr "Раздел уровень 4"
 
-#: ../src/symbols.c:658
+#: ../src/symbols.c:662
 msgid "Singletons"
 msgstr "Синглтоны"
 
-#: ../src/symbols.c:669 ../src/symbols.c:798
+#: ../src/symbols.c:673 ../src/symbols.c:802
 msgid "Procedures"
 msgstr "Процедуры"
 
-#: ../src/symbols.c:680 ../src/symbols.c:725
+#: ../src/symbols.c:684 ../src/symbols.c:729
 msgid "Imports"
 msgstr "Импорт"
 
-#: ../src/symbols.c:688
+#: ../src/symbols.c:692
 msgid "Entities"
 msgstr "Сущности"
 
-#: ../src/symbols.c:689
+#: ../src/symbols.c:693
 msgid "Architectures"
 msgstr "Архитектуры"
 
-#: ../src/symbols.c:691
+#: ../src/symbols.c:695
 msgid "Functions / Procedures"
 msgstr "Функции / Процедуры"
 
-#: ../src/symbols.c:692
+#: ../src/symbols.c:696
 msgid "Variables / Signals"
 msgstr "Переменные / Сигналы"
 
-#: ../src/symbols.c:693
+#: ../src/symbols.c:697
 msgid "Processes / Blocks / Components"
 msgstr "Процессы / Блоки / Компоненты"
 
-#: ../src/symbols.c:701
+#: ../src/symbols.c:705
 msgid "Events"
 msgstr "События"
 
-#: ../src/symbols.c:703
+#: ../src/symbols.c:707
 msgid "Functions / Tasks"
 msgstr "Функции / Задачи"
 
-#: ../src/symbols.c:717 ../src/symbols.c:773
+#: ../src/symbols.c:721 ../src/symbols.c:777
 msgid "Enums"
 msgstr "Перечисления"
 
-#: ../src/symbols.c:766
+#: ../src/symbols.c:770
 msgid "Programs"
 msgstr "Программы"
 
-#: ../src/symbols.c:768
+#: ../src/symbols.c:772
 msgid "Functions / Subroutines"
 msgstr "Функции / Процедуры"
 
-#: ../src/symbols.c:771
+#: ../src/symbols.c:775
 msgid "Components"
 msgstr "Компоненты"
 
-#: ../src/symbols.c:772
+#: ../src/symbols.c:776
 msgid "Blocks"
 msgstr "Блоки"
 
-#: ../src/symbols.c:783
+#: ../src/symbols.c:787
 msgid "Defines"
 msgstr "Определения"
 
-#: ../src/symbols.c:790
+#: ../src/symbols.c:794
 msgid "Targets"
 msgstr "Цели"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:803
 msgid "Indexes"
 msgstr "Индексы"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:804
 msgid "Tables"
 msgstr "Таблицы"
 
-#: ../src/symbols.c:801
+#: ../src/symbols.c:805
 msgid "Triggers"
 msgstr "Триггеры"
 
-#: ../src/symbols.c:802
+#: ../src/symbols.c:806
 msgid "Views"
 msgstr "Отображения"
 
-#: ../src/symbols.c:834
+#: ../src/symbols.c:838
 msgid "Extern Variables"
 msgstr "Внешние переменные"
 
-#: ../src/symbols.c:1651
+#: ../src/symbols.c:1676
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "Неизвестное расширение имени файла для \"%s\".\n"
 
-#: ../src/symbols.c:1677
+#: ../src/symbols.c:1703
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr ""
 "Не удалось создать файл тегов, возможно, не было найдено ни одного символа.\n"
 
-#: ../src/symbols.c:1684
+#: ../src/symbols.c:1710
 #, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
 "\n"
 msgstr ""
-"Использование: %s -g <файл тэгов> <список файлов>\n"
+"Использование: %s -g <файл тегов> <список файлов>\n"
 "\n"
 
-#: ../src/symbols.c:1685
+#: ../src/symbols.c:1711
 #, c-format
 msgid ""
 "Example:\n"
@@ -5002,64 +5022,61 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1699
+#: ../src/symbols.c:1725
 msgid "Load Tags File"
 msgstr "Загрузить файл тегов"
 
-#: ../src/symbols.c:1706
+#: ../src/symbols.c:1733
 msgid "Geany tags file (*.*.tags)"
 msgstr "Файлы тегов Geany (*.*.tags)"
 
-#. For translators: the first wildcard is the filetype, the second the filename
-#: ../src/symbols.c:1726
+#. For translators: the first wildcard is the filetype,
+#. * the second the filename
+#: ../src/symbols.c:1754
 #, c-format
 msgid "Loaded %s tags file '%s'."
-msgstr "Загружено файл с тэгами %s '%s'."
+msgstr "Загружено файл с тегами %s '%s'."
 
-#: ../src/symbols.c:1729
+#: ../src/symbols.c:1757
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Не удалось загрузить файл тегов '%s'."
 
-#: ../src/symbols.c:1986
+#: ../src/symbols.c:2017
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1988
+#: ../src/symbols.c:2020
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1993
+#: ../src/symbols.c:2026
 #, fuzzy, c-format
 msgid "%s: %lu  (%s)"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:1995
+#: ../src/symbols.c:2029
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2299
-msgid "Project tags loaded"
-msgstr "Загружены тэги проекта"
-
-#: ../src/symbols.c:2365
+#: ../src/symbols.c:2404
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Предварительное объявление \"%s\" не найдено."
 
-#: ../src/symbols.c:2367
+#: ../src/symbols.c:2406
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Определение \"%s\" не найдено."
 
-#: ../src/symbols.c:2783
+#: ../src/symbols.c:2839
 msgid "Sort by _Name"
 msgstr "Сортировать по _имени"
 
-#: ../src/symbols.c:2790
+#: ../src/symbols.c:2847
 msgid "Sort by _Appearance"
 msgstr "Сортировать по _появлению"
 
