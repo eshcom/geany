@@ -54,7 +54,7 @@ extern void vStringTruncate (vString *const string, const size_t length)
 	string->length = length;
 	string->buffer[string->length] = '\0';
 	DebugStatement ( memset (string->buffer + string->length, 0,
-	                         string->size - string->length); )
+							 string->size - string->length); )
 }
 
 extern void vStringDelete (vString *const string)
@@ -289,7 +289,7 @@ static char valueToXDigit (int v)
 
 extern void vStringCatSWithEscaping (vString* b, const char *s)
 {
-	for(; *s; s++)
+	for (; *s; s++)
 	{
 		int c = *s;
 

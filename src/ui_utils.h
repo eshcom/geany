@@ -36,8 +36,8 @@ G_BEGIN_DECLS
  *
  *  @since 0.16
  **/
-#define ui_hookup_widget(owner, widget, widget_name) \
-	g_object_set_data_full(G_OBJECT(owner), widget_name, \
+#define ui_hookup_widget(owner, widget, widget_name)		\
+	g_object_set_data_full(G_OBJECT(owner), widget_name,	\
 		g_object_ref(widget), (GDestroyNotify)g_object_unref);
 
 

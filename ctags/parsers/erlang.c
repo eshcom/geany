@@ -56,7 +56,7 @@ static bool isIdentifierCharacter(int c)
 static bool isMultilineString(const unsigned char *cp, bool isString)
 {
 	int prev = ' ';
-	while(*cp != '\0')
+	while (*cp != '\0')
 	{
 		if (isString)
 		{
@@ -76,7 +76,7 @@ static bool isMultilineString(const unsigned char *cp, bool isString)
 
 static const unsigned char *skipSpace(const unsigned char *cp)
 {
-	while(isspace((int)*cp))
+	while (isspace((int)*cp))
 		++cp;
 	return cp;
 }
@@ -93,7 +93,7 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 		++cp;
 		
 		int prev = ' ';
-		while(*cp != '\0')
+		while (*cp != '\0')
 		{
 			if (*cp == '\'' && prev != '\\')
 				break;
@@ -114,7 +114,7 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 	}
 	else
 	{
-		while(isIdentifierCharacter((int)*cp))
+		while (isIdentifierCharacter((int)*cp))
 		{
 			vStringPut(identifier, (int)*cp);
 			++cp;
@@ -214,7 +214,7 @@ static void findErlangTags(void)
 	
 	bool isMultiStr = false; // esh: skip multiline string
 	
-	while((line = readLineFromInputFile()) != NULL)
+	while ((line = readLineFromInputFile()) != NULL)
 	{
 		const unsigned char *cp = line;
 		if (isMultiStr)

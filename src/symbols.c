@@ -222,7 +222,7 @@ GString *symbols_find_typenames_as_string(TMParserType lang,
 	typedefs = global ? app->tm_workspace->global_typename_array
 					  : app->tm_workspace->typename_array;
 	
-	if ((typedefs) && (typedefs->len > 0))
+	if (typedefs && typedefs->len > 0)
 	{
 		const gchar *last_name = "";
 		
@@ -337,7 +337,7 @@ static GList *get_tag_list(GeanyDocument *doc, TMTagType tag_types)
 
 
 /* amount of types in the symbol list (currently max. 8 are used) */
-#define MAX_SYMBOL_TYPES	(sizeof(tv_iters) / sizeof(GtkTreeIter))
+#define MAX_SYMBOL_TYPES (sizeof(tv_iters) / sizeof(GtkTreeIter))
 
 struct TreeviewSymbols
 {
@@ -917,7 +917,7 @@ static gchar *get_symbol_tooltip(GeanyDocument *doc, const TMTag *tag)
 	gchar *utf8_name = editor_get_calltip_text(doc->editor, tag);
 	
 	if (!utf8_name && tag->var_type &&
-		tag->type & (tm_tag_field_t | tm_tag_member_t |
+		tag->type & (tm_tag_field_t    | tm_tag_member_t |
 					 tm_tag_variable_t | tm_tag_externvar_t))
 	{
 		if (tag->lang != TM_PARSER_PASCAL && tag->lang != TM_PARSER_GO)
@@ -1432,7 +1432,7 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 	
 	/* Second pass, now we have a tree cleaned up from invalid rows,
 	 * we simply add new ones */
-	foreach_list (item, *tags)
+	foreach_list(item, *tags)
 	{
 		TMTag *tag = item->data;
 		GtkTreeIter *parent;
@@ -1998,6 +1998,7 @@ static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags,
 	file_names = g_new(gchar *, tags->len);
 	foreach_ptr_array(tmtag, i, tags)
 		file_names[i] = tmtag->file->file_name;
+	
 	short_names = utils_strv_shorten_file_list(file_names, tags->len);
 	g_free(file_names);
 	
@@ -2447,7 +2448,6 @@ static gboolean current_tag_changed(GeanyDocument *doc, gint cur_line,
 		}
 		else ret = TRUE;
 	}
-	
 	/* record current line and file index for next time */
 	old_line = cur_line;
 	old_doc = doc;

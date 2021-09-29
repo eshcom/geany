@@ -65,7 +65,7 @@ typedef struct GeanyFilePrefs
 	gboolean		tab_close_switch_to_mru;
 	gboolean		keep_edit_history_on_reload; /* Keep undo stack upon, and allow undoing of, document reloading. */
 	gboolean		show_keep_edit_history_on_reload_msg; /* whether to show the message introducing the above feature */
- 	gboolean		reload_clean_doc_on_file_change;
+	gboolean		reload_clean_doc_on_file_change;
 }
 GeanyFilePrefs;
 
@@ -116,7 +116,7 @@ typedef struct GeanyDocument
 	 * @c 0 is reserved as an unused value.
 	 * @see document_find_by_id(). */
 	guint			 id;
-
+	
 	struct GeanyDocumentPrivate *priv;	/* should be last, append fields before this item */
 }
 GeanyDocument;
@@ -149,10 +149,10 @@ GeanyDocument;
  * 	g_assert(doc->is_valid);
  * }
  * @endcode */
-#define foreach_document(i) \
-	for (i = 0; i < GEANY(documents_array)->len; i++)\
-		if (!documents[i]->is_valid)\
-			{}\
+#define foreach_document(i)								\
+	for (i = 0; i < GEANY(documents_array)->len; i++)	\
+		if (!documents[i]->is_valid)					\
+			{}											\
 		else /* prevent outside 'else' matching our macro 'if' */
 
 /** Null-safe way to check @ref GeanyDocument::is_valid.
@@ -166,11 +166,13 @@ GeanyDocument;
  *  (e.g. _("untitled")) if the document's filename was not yet set.
  *  This macro never returns @c NULL.
  **/
-#define DOC_FILENAME(doc) \
-	(G_LIKELY((doc)->file_name != NULL) ? ((doc)->file_name) : GEANY_STRING_UNTITLED)
+#define DOC_FILENAME(doc)										\
+	(G_LIKELY((doc)->file_name != NULL) ? ((doc)->file_name)	\
+										: GEANY_STRING_UNTITLED)
 
 
-GeanyDocument* document_new_file(const gchar *filename, GeanyFiletype *ft, const gchar *text);
+GeanyDocument* document_new_file(const gchar *filename, GeanyFiletype *ft,
+								 const gchar *text);
 
 GeanyDocument *document_get_current(void);
 
@@ -185,10 +187,10 @@ GeanyDocument* document_find_by_real_path(const gchar *realname);
 gboolean document_save_file(GeanyDocument *doc, gboolean force);
 
 GeanyDocument* document_open_file(const gchar *locale_filename, gboolean readonly,
-		GeanyFiletype *ft, const gchar *forced_enc);
+								  GeanyFiletype *ft, const gchar *forced_enc);
 
-void document_open_files(const GSList *filenames, gboolean readonly, GeanyFiletype *ft,
-		const gchar *forced_enc);
+void document_open_files(const GSList *filenames, gboolean readonly,
+						 GeanyFiletype *ft, const gchar *forced_enc);
 
 gboolean document_remove_page(guint page_num);
 
@@ -211,7 +213,8 @@ void document_rename_file(GeanyDocument *doc, const gchar *new_filename);
 const GdkColor *document_get_status_color(GeanyDocument *doc);
 
 gchar *document_get_basename_for_display(GeanyDocument *doc, gint length);
-gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem, gboolean fullpath);
+gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem,
+									 gboolean fullpath);
 
 gint document_get_notebook_page(GeanyDocument *doc);
 
@@ -236,7 +239,8 @@ extern GeanyFilePrefs file_prefs;
 extern GPtrArray *documents_array;
 
 
-/* These functions will replace the older functions. For now they have a documents_ prefix. */
+/* These functions will replace the older functions.
+ * For now they have a documents_ prefix. */
 
 GeanyDocument* document_new_file_if_non_open(void);
 
@@ -258,26 +262,37 @@ gboolean document_account_for_unsaved(void);
 
 gboolean document_close_all(void);
 
-GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename, gint pos,
-		gboolean readonly, GeanyFiletype *ft, const gchar *forced_enc);
+GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename,
+									   gint pos, gboolean readonly,
+									   GeanyFiletype *ft, const gchar *forced_enc);
 
 void document_open_file_list(const gchar *data, gsize length);
 
-gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text, gboolean inc,
-		gboolean backwards);
+gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text,
+								  gboolean inc, gboolean backwards);
 
-gint document_find_text(GeanyDocument *doc, const gchar *text, const gchar *original_text,
-		GeanyFindFlags flags, gboolean search_backwards, GeanyMatchInfo **match_,
-		gboolean scroll, GtkWidget *parent);
+gint document_find_text(GeanyDocument *doc, const gchar *text,
+						const gchar *original_text, GeanyFindFlags flags,
+						gboolean search_backwards, GeanyMatchInfo **match_,
+						gboolean scroll, GtkWidget *parent);
 
-gint document_replace_text(GeanyDocument *doc, const gchar *find_text, const gchar *original_find_text,
-		const gchar *replace_text, GeanyFindFlags flags, gboolean search_backwards);
+gint document_replace_text(GeanyDocument *doc, const gchar *find_text,
+						   const gchar *original_find_text,
+						   const gchar *replace_text,
+						   GeanyFindFlags flags,
+						   gboolean search_backwards);
 
-gint document_replace_all(GeanyDocument *doc, const gchar *find_text, const gchar *replace_text,
-		const gchar *original_find_text, const gchar *original_replace_text, GeanyFindFlags flags);
+gint document_replace_all(GeanyDocument *doc, const gchar *find_text,
+						  const gchar *replace_text,
+						  const gchar *original_find_text,
+						  const gchar *original_replace_text,
+						  GeanyFindFlags flags);
 
-void document_replace_sel(GeanyDocument *doc, const gchar *find_text, const gchar *replace_text,
-						  const gchar *original_find_text, const gchar *original_replace_text, GeanyFindFlags flags);
+void document_replace_sel(GeanyDocument *doc, const gchar *find_text,
+						  const gchar *replace_text,
+						  const gchar *original_find_text,
+						  const gchar *original_replace_text,
+						  GeanyFindFlags flags);
 
 void document_update_tags(GeanyDocument *doc);
 
@@ -322,7 +337,7 @@ gpointer document_get_data(const GeanyDocument *doc, const gchar *key);
 void document_set_data(GeanyDocument *doc, const gchar *key, gpointer data);
 
 void document_set_data_full(GeanyDocument *doc, const gchar *key,
-	gpointer data, GDestroyNotify free_func);
+							gpointer data, GDestroyNotify free_func);
 
 #endif /* GEANY_PRIVATE */
 

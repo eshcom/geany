@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-#define GEANY_PROJECT_EXT				"geany"
+#define GEANY_PROJECT_EXT		"geany"
 
 
 /** Structure for representing a project. */

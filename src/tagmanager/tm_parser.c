@@ -519,7 +519,8 @@ typedef struct
 	guint size;
 } TMParserMap;
 
-#define MAP_ENTRY(lang) [TM_PARSER_##lang] = {map_##lang, G_N_ELEMENTS(map_##lang)}
+#define MAP_ENTRY(lang) \
+	[TM_PARSER_##lang] = {map_##lang, G_N_ELEMENTS(map_##lang)}
 
 /* keep in sync with TM_PARSER_* definitions in the header */
 static TMParserMap parser_map[] = {
@@ -632,9 +633,9 @@ static void add_subparser(TMParserType lang, TMParserType sublang,
 }
 
 
-#define SUBPARSER_MAP_ENTRY(lang, sublang, map)					 \
-			add_subparser(TM_PARSER_##lang, TM_PARSER_##sublang, \
-						  map, G_N_ELEMENTS(map))
+#define SUBPARSER_MAP_ENTRY(lang, sublang, map)				\
+	add_subparser(TM_PARSER_##lang, TM_PARSER_##sublang,	\
+				  map, G_N_ELEMENTS(map))
 
 static void init_subparser_map(void)
 {

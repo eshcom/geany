@@ -59,14 +59,14 @@
 #include <gdk/gdkkeysyms.h>
 
 
-#define DEFAULT_STATUSBAR_TEMPLATE N_(\
-	"line: %l / %L\t "   \
-	"col: %c\t "         \
-	"sel: %s\t "         \
-	"%w      %t      %m" \
-	"mode: %M      "     \
-	"encoding: %e      " \
-	"filetype: %f      " \
+#define DEFAULT_STATUSBAR_TEMPLATE N_(	\
+	"line: %l / %L\t "					\
+	"col: %c\t "						\
+	"sel: %s\t "						\
+	"%w      %t      %m"				\
+	"mode: %M      "					\
+	"encoding: %e      "				\
+	"filetype: %f      "				\
 	"scope: %S")
 
 GeanyInterfacePrefs	interface_prefs;
@@ -887,13 +887,13 @@ void ui_save_buttons_toggle(gboolean enable)
 }
 
 
-#define add_doc_widget(widget_name) \
-				g_ptr_array_add(widgets.document_buttons, \
-								ui_lookup_widget(main_widgets.window, widget_name))
+#define add_doc_widget(widget_name)				\
+	g_ptr_array_add(widgets.document_buttons,	\
+					ui_lookup_widget(main_widgets.window, widget_name))
 
-#define add_doc_toolitem(widget_name) \
-				g_ptr_array_add(widgets.document_buttons, \
-								toolbar_get_action_by_name(widget_name))
+#define add_doc_toolitem(widget_name)			\
+	g_ptr_array_add(widgets.document_buttons,	\
+					toolbar_get_action_by_name(widget_name))
 
 static void init_document_widgets(void)
 {
@@ -2375,7 +2375,7 @@ typedef struct GeanySharedMenu
 GeanySharedMenu;
 
 #define foreach_menu(item, array) \
-			for (item = array; item->menu; item++)
+	for (item = array; item->menu; item++)
 
 static void on_editor_menu_show(GtkWidget *widget, GeanySharedMenu *items)
 {

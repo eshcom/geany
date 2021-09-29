@@ -405,7 +405,7 @@ static gint editor_get_long_line_column(void)
 }
 
 
-#define get_project_pref(id)\
+#define get_project_pref(id) \
 	(app->project ? app->project->priv->id : editor_prefs.id)
 
 static const GeanyEditorPrefs *
