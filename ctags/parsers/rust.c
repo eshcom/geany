@@ -243,7 +243,7 @@ static void scanIdentifier (lexerState *lexer)
 	do
 	{
 		advanceAndStoreChar(lexer);
-	} while(lexer->cur_c != EOF && isIdentifierContinue(lexer->cur_c));
+	} while (lexer->cur_c != EOF && isIdentifierContinue(lexer->cur_c));
 }
 
 /* Double-quoted strings, we only care about the \" escape. These
@@ -469,7 +469,7 @@ static void skipUntil (lexerState *lexer, int goal_tokens[], int num_goal_tokens
 		    && bracket_level == 0)
 		{
 			int ii = 0;
-			for(ii = 0; ii < num_goal_tokens; ii++)
+			for (ii = 0; ii < num_goal_tokens; ii++)
 			{
 				if (lexer->cur_token == goal_tokens[ii])
 				{

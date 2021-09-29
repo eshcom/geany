@@ -1388,7 +1388,7 @@ static void init_stash_prefs(void)
 }
 
 
-#define COPY_PREF(dest, prefname)\
+#define COPY_PREF(dest, prefname) \
 	(dest.prefname = priv.prefname)
 
 const GeanyFilePrefs *project_get_file_prefs(void)

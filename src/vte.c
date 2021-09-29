@@ -79,7 +79,8 @@ struct _VteTerminal
 	GtkAdjustment *adjustment;
 };
 
-#define VTE_TERMINAL(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), VTE_TYPE_TERMINAL, VteTerminal))
+#define VTE_TERMINAL(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), VTE_TYPE_TERMINAL, \
+													  VteTerminal))
 #define VTE_TYPE_TERMINAL (vf->vte_terminal_get_type())
 
 typedef enum {
@@ -255,32 +256,32 @@ static void rgba_from_color_array(GdkRGBA *rgba_palette, const GdkColor *color_p
 	}
 }
 
-#define WRAP_RGBA_SETTER(name) \
-	static void wrap_##name(VteTerminal *terminal, const GdkColor *color) \
-	{ \
-		GdkRGBA rgba; \
-		rgba_from_color(&rgba, color); \
-		vf->name##_rgba(terminal, &rgba); \
+#define WRAP_RGBA_SETTER(name)												\
+	static void wrap_##name(VteTerminal *terminal, const GdkColor *color)	\
+	{																		\
+		GdkRGBA rgba;														\
+		rgba_from_color(&rgba, color);										\
+		vf->name##_rgba(terminal, &rgba);									\
 	}
 //~ WRAP_RGBA_SETTER(vte_terminal_set_color_background)
 //~ WRAP_RGBA_SETTER(vte_terminal_set_color_foreground)
 WRAP_RGBA_SETTER(vte_terminal_set_color_bold)
 #undef WRAP_RGBA_SETTER
 
-#define WRAP_RGBA_SETTER2(name) \
-	static void wrap_##name(VteTerminal *terminal, \
-							const GdkColor *color1, const GdkColor *color2, \
-							const GdkColor *color_palette, gsize palette_size) \
-	{ \
-		GdkRGBA rgba1; \
-		rgba_from_color(&rgba1, color1); \
-		GdkRGBA rgba2; \
-		rgba_from_color(&rgba2, color2); \
-		static GdkRGBA *rgba_palette = NULL; \
-		if (rgba_palette == NULL) \
-			rgba_palette = g_new(GdkRGBA, palette_size); \
-		rgba_from_color_array(rgba_palette, color_palette, palette_size); \
-		vf->name##_rgba(terminal, &rgba1, &rgba2, rgba_palette, palette_size); \
+#define WRAP_RGBA_SETTER2(name)													\
+	static void wrap_##name(VteTerminal *terminal,								\
+							const GdkColor *color1, const GdkColor *color2,		\
+							const GdkColor *color_palette, gsize palette_size)	\
+	{																			\
+		GdkRGBA rgba1;															\
+		rgba_from_color(&rgba1, color1);										\
+		GdkRGBA rgba2;															\
+		rgba_from_color(&rgba2, color2);										\
+		static GdkRGBA *rgba_palette = NULL;									\
+		if (rgba_palette == NULL)												\
+			rgba_palette = g_new(GdkRGBA, palette_size);						\
+		rgba_from_color_array(rgba_palette, color_palette, palette_size);		\
+		vf->name##_rgba(terminal, &rgba1, &rgba2, rgba_palette, palette_size);	\
 	}
 WRAP_RGBA_SETTER2(vte_terminal_set_colors)
 #undef WRAP_RGBA_SETTER2
@@ -673,21 +674,21 @@ static gboolean vte_register_symbols(GModule *mod)
 		g_module_symbol(mod, name, (void*)(dest))
 	#define BIND_SYMBOL(field) \
 		BIND_SYMBOL_FULL(#field, &vf->field)
-	#define BIND_REQUIRED_SYMBOL_FULL(name, dest) \
-		G_STMT_START { \
-			if (!BIND_SYMBOL_FULL(name, dest)) \
-			{ \
-				g_critical(_("invalid VTE library \"%s\": missing symbol \"%s\""), \
-						g_module_name(mod), name); \
-				return FALSE; \
-			} \
+	#define BIND_REQUIRED_SYMBOL_FULL(name, dest)									\
+		G_STMT_START {																\
+			if (!BIND_SYMBOL_FULL(name, dest))										\
+			{																		\
+				g_critical(_("invalid VTE library \"%s\": missing symbol \"%s\""),	\
+						   g_module_name(mod), name);								\
+				return FALSE;														\
+			}																		\
 		} G_STMT_END
 	#define BIND_REQUIRED_SYMBOL(field) \
 		BIND_REQUIRED_SYMBOL_FULL(#field, &vf->field)
-	#define BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(field) \
-		G_STMT_START { \
-			BIND_REQUIRED_SYMBOL_FULL(#field, &vf->field##_rgba); \
-			vf->field = wrap_##field; \
+	#define BIND_REQUIRED_SYMBOL_RGBA_WRAPPED(field)				\
+		G_STMT_START {												\
+			BIND_REQUIRED_SYMBOL_FULL(#field, &vf->field##_rgba);	\
+			vf->field = wrap_##field;								\
 		} G_STMT_END
 	
 	BIND_SYMBOL(vte_get_major_version);

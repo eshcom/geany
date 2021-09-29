@@ -37,8 +37,8 @@ G_BEGIN_DECLS
 struct GeanyDocument;
 
 /** Default character set to define which characters should be treated as part of a word. */
-#define GEANY_WORDCHARS					"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-#define GEANY_MAX_WORD_LENGTH			192
+#define GEANY_WORDCHARS			"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#define GEANY_MAX_WORD_LENGTH	192
 
 /** Whether to use tabs, spaces or both to indent. */
 typedef enum

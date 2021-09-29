@@ -44,7 +44,7 @@ struct GeanyDocument;
 typedef enum
 {
 	GEANY_FILETYPES_NONE = 0,	/* first filetype is always None & must be 0 */
-
+	
 	GEANY_FILETYPES_PHP,
 	GEANY_FILETYPES_BASIC,	/* FreeBasic */
 	GEANY_FILETYPES_MATLAB,
@@ -164,7 +164,7 @@ typedef struct GeanyFiletype
 	/* filetype indent settings, -1 if not set */
 	gint			  indent_type;
 	gint			  indent_width;
-
+	
 	struct GeanyFiletypePrivate	*priv;	/* must be last, append fields before this item */
 }
 GeanyFiletype;
@@ -172,7 +172,7 @@ GeanyFiletype;
 /** Wraps @ref GeanyData::filetypes_array so it can be used with C array syntax.
  * Example: filetypes[GEANY_FILETYPES_C]->name = ...;
  * @see filetypes_index(). */
-#define filetypes	((GeanyFiletype **)GEANY(filetypes_array)->pdata)
+#define filetypes ((GeanyFiletype **)GEANY(filetypes_array)->pdata)
 
 
 GeanyFiletype *filetypes_detect_from_file(const gchar *utf8_filename);
@@ -224,10 +224,11 @@ GtkFileFilter *filetypes_create_file_filter_all_source(void);
 gboolean filetype_has_tags(GeanyFiletype *ft);
 
 gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
-		gchar **filename, gint *line);
+									   gchar **filename, gint *line);
 
-gboolean filetype_get_comment_open_close(const GeanyFiletype *ft, gboolean single_first,
-		const gchar **co, const gchar **cc);
+gboolean filetype_get_comment_open_close(const GeanyFiletype *ft,
+										 gboolean single_first,
+										 const gchar **co, const gchar **cc);
 
 #endif /* GEANY_PRIVATE */
 

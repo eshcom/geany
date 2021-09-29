@@ -2313,7 +2313,7 @@ static void addIgnoreListFromFile (const char *const fileName)
 	int c = stringListCount(tokens);
 	int i;
 
-	for(i=0;i<c;i++)
+	for (i = 0; i < c; i++)
 	{
 		vString * s = stringListItem(tokens,i);
 		saveIgnoreToken(vStringValue(s));
