@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.32\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-18 01:14+0300\n"
+"POT-Creation-Date: 2021-09-29 10:41+0300\n"
 "PO-Revision-Date: 2019-01-09 14:45+0200\n"
 "Last-Translator: Vangelis Skarmoutsos <skarmoutsosv@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -109,11 +109,11 @@ msgstr "_Αναζήτηση"
 msgid "Open Selected F_ile"
 msgstr "Άνοιγμα _επιλεγμένο αρχείο"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2800
+#: ../data/geany.glade.h:19 ../src/symbols.c:2858
 msgid "Find _Usage"
 msgstr "Εύρεση _χρήσης"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2805
+#: ../data/geany.glade.h:20 ../src/symbols.c:2865
 msgid "Find _Document Usage"
 msgstr "Εύρεση χρήση _κειμένου"
 
@@ -1293,7 +1293,7 @@ msgstr ""
 "Πόσο συχνά θα γίνεται έλεγχος για αλλαγές του εγγράφου στον δίσκο, σε "
 "δευτερόλεπτα. Το μηδέν απενεργοποιεί τον έλεγχο."
 
-#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:467
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:471
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Αρχεία"
@@ -1718,7 +1718,7 @@ msgstr "Αποθήκευση _ως..."
 msgid "Sa_ve All"
 msgstr "Αποθήκευση όλων"
 
-#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3641
+#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3642
 #: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Επαναφόρτωση"
@@ -1843,7 +1843,7 @@ msgstr "Αναζήτηση _επόμενου"
 msgid "Find _Previous"
 msgstr "Αναζήτηση _προηγούμενου"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2810
+#: ../data/geany.glade.h:382 ../src/symbols.c:2872
 msgid "Find in F_iles..."
 msgstr "Αναζήτηση στα α_ρχεία..."
 
@@ -2176,7 +2176,7 @@ msgstr "Σημειωματάριο"
 msgid "Project Properties"
 msgstr "Ιδιότητες έργου"
 
-#: ../data/geany.glade.h:465 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:183
 msgid "Filename:"
 msgstr "Όνομα αρχείου:"
 
@@ -2208,7 +2208,7 @@ msgstr ""
 "Λίστα πρότυπων αρχείων διαχωρισμένη με κενά για χρήση στο διάλογο αναζήτηση "
 "σε αρχεία (π.χ. *.c *.h)"
 
-#: ../data/geany.glade.h:471 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2235,62 +2235,80 @@ msgid "Use global settings"
 msgstr "Χρήση γενικών ρυθμίσεων"
 
 #: ../data/geany.glade.h:476
+#, fuzzy
+msgid "Load tags file when opening a project"
+msgstr "Η διαδρομή από την οποία θα ξεκινά για άνοιγμα των αρχείων του έργου"
+
+#: ../data/geany.glade.h:477
+msgid "Use a list of objects from the tags file for the lexer"
+msgstr ""
+
+#: ../data/geany.glade.h:478
+#, fuzzy
+msgid "<b>Using a tags file</b>"
+msgstr "<b>Αποθήκευση αρχείων</b>"
+
+#: ../data/geany.glade.h:479
+msgid "Tags"
+msgstr ""
+
+#: ../data/geany.glade.h:480
 msgid "Size:"
 msgstr "Μέγεθος:"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:481
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:482
 msgid "Read-only:"
 msgstr "Μόνο για ανάγνωση:"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:483
 msgid "Encoding:"
 msgstr "Kωδικοποίηση:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:484
 msgid "Modified:"
 msgstr "Τροποποιημένο:"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:485
 msgid "Changed:"
 msgstr "Αλλαγμένο:"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:486
 msgid "Accessed:"
 msgstr "Προσπελάστηκε:"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:487
 msgid "(only inside Geany)"
 msgstr "(μόνο εντός Geany)"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:488
 msgid "Permissions:"
 msgstr "Δικαιώματα:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:489
 msgid "Read:"
 msgstr "Ανάγνωση:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:490
 msgid "Write:"
 msgstr "Εγγραφή:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:491
 msgid "Execute:"
 msgstr "Εκτέλεση:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:492
 msgid "Owner:"
 msgstr "Κάτοχος:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:493
 msgid "Group:"
 msgstr "Ομάδα:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:494
 msgid "Other:"
 msgstr "Άλλοι:"
 
@@ -2487,12 +2505,12 @@ msgstr "Δεν έχει άλλα λάθη στη κατασκευή (build)."
 msgid "Set menu item label"
 msgstr "Καθορισμός ετικέτας του αντικειμένου μενού"
 
-#: ../src/build.c:1834 ../src/symbols.c:524 ../src/tools.c:414
+#: ../src/build.c:1834 ../src/symbols.c:528 ../src/tools.c:414
 msgid "Label"
 msgstr "Ετικέτα"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:519 ../src/tools.c:399
+#: ../src/build.c:1835 ../src/symbols.c:523 ../src/tools.c:399
 msgid "Command"
 msgstr "Εντολή"
 
@@ -2771,7 +2789,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
+#: ../src/symbols.c:2660 ../src/symbols.c:2678 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "άγνωστο"
 
@@ -2948,21 +2966,21 @@ msgstr "Αποτυχία εγγραφής αρχείου '%s': Το fwrite() α�
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr "Αποτυχία κλεισίματος αρχείου '%s': Το fclose() απέτυχε: %s"
 
-#: ../src/document.c:2077 ../src/document.c:3642
+#: ../src/document.c:2077 ../src/document.c:3643
 msgid "_Overwrite"
 msgstr "_Αντικατάσταση"
 
-#: ../src/document.c:2079 ../src/document.c:3645
+#: ../src/document.c:2079 ../src/document.c:3646
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr ""
 "Το αρχείο '%s' στον δίσκο είναι πιο πρόσφατο από αυτό στο τρέχον buffer."
 
-#: ../src/document.c:2087 ../src/document.c:3694
+#: ../src/document.c:2087 ../src/document.c:3695
 msgid "Try to resave the file?"
 msgstr "Προσπάθεια να ξανασωθεί το αρχείο;"
 
-#: ../src/document.c:2088 ../src/document.c:3695
+#: ../src/document.c:2088 ../src/document.c:3696
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "Το αρχείο \"%s\" δεν βρέθηκε στον δίσκο!"
@@ -3014,20 +3032,20 @@ msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] "%s: αντικατάσταση %d εμφανιζόμενου του \"%s\" με \"%s\"."
 msgstr[1] "%s: αντικατάσταση %d εμφανιζόμενων του \"%s\" με \"%s\"."
 
-#: ../src/document.c:3644
+#: ../src/document.c:3645
 msgid "Do you want to reload it?"
 msgstr "Θέλετε να το επαναφορτώσετε;"
 
-#: ../src/editor.c:4859
+#: ../src/editor.c:4945
 msgid "Enter Tab Width"
 msgstr "Εισαγωγή πλάτους του Tab"
 
-#: ../src/editor.c:4860
+#: ../src/editor.c:4946
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr ""
 "Εισαγωγή του πλήθους των κενών που θα αντικαθίστανται από έναν χαρακτήρα tab."
 
-#: ../src/editor.c:5066
+#: ../src/editor.c:5152
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Προειδοποίηση: μη τυποποιημένο εύρος tab: %d != 8!"
@@ -3247,7 +3265,7 @@ msgid "All Source"
 msgstr "Όλα τα πηγαία"
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1211 ../src/project.c:351 ../src/win32.c:145
+#: ../src/filetypes.c:1211 ../src/project.c:359 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Όλα τα αρχεία"
@@ -3284,7 +3302,7 @@ msgid "Color Schemes"
 msgstr "Επιλογέας χρωμάτων"
 
 #. visual group order
-#: ../src/keybindings.c:312 ../src/symbols.c:494
+#: ../src/keybindings.c:312 ../src/symbols.c:498
 msgid "File"
 msgstr "Αρχείο"
 
@@ -3320,11 +3338,11 @@ msgstr "Μετάβαση"
 msgid "View"
 msgstr "Προβολή"
 
-#: ../src/keybindings.c:322 ../src/symbols.c:645
+#: ../src/keybindings.c:322 ../src/symbols.c:649
 msgid "Document"
 msgstr "Έγγραφο"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
+#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:527
 #: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Κατασκευή"
@@ -3365,7 +3383,7 @@ msgstr "Αποθήκευση ως"
 msgid "Save all"
 msgstr "Αποθήκευση όλων"
 
-#: ../src/keybindings.c:351 ../src/symbols.c:730
+#: ../src/keybindings.c:351 ../src/symbols.c:734
 msgid "Properties"
 msgstr "Ιδιότητες"
 
@@ -4152,11 +4170,11 @@ msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 "Πατήστε τον συνδυασμό πλήκτρων που θέλετε να χρησιμοποιήσετε για \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2768 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2821 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Επέκταση όλων"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2773 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2828 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_αναδίπλωση όλων"
 
@@ -4292,32 +4310,32 @@ msgstr "Το αρχείο %s εκτυπώθηκε."
 
 #. "projects" is part of the default project base path so be careful when translating
 #. * please avoid special characters and spaces, look at the source for details or ask Frank
-#: ../src/project.c:99
+#: ../src/project.c:100
 msgid "projects"
 msgstr "έργα"
 
-#: ../src/project.c:134
+#: ../src/project.c:136
 msgid "Move the current documents into the new project's session?"
 msgstr "Μετακίνηση των τρεχόντων εγγράφων στη συνεδρία του νέου έργου;"
 
-#: ../src/project.c:152
+#: ../src/project.c:154
 msgid "New Project"
 msgstr "Νέο έργο"
 
-#: ../src/project.c:157
+#: ../src/project.c:161
 msgid "C_reate"
 msgstr "Δ_ημιουργία"
 
-#: ../src/project.c:168 ../plugins/classbuilder.c:465
+#: ../src/project.c:172 ../plugins/classbuilder.c:465
 #: ../plugins/classbuilder.c:475
 msgid "Name:"
 msgstr "Όνομα:"
 
-#: ../src/project.c:175
+#: ../src/project.c:179
 msgid "Project name"
 msgstr "Όνομα έργου"
 
-#: ../src/project.c:187
+#: ../src/project.c:191
 #, c-format
 msgid ""
 "Path of the file representing the project and storing its settings. It "
@@ -4326,105 +4344,110 @@ msgstr ""
 "Η διαδρομή του αρχείου που αντιπροσωπεύει το έργο και την αποθήκευση των "
 "ρυθμίσεών του. Θα πρέπει να έχει κανονικά το \"% s\" ως επέκταση."
 
-#: ../src/project.c:201
+#: ../src/project.c:205
 msgid "Base path:"
 msgstr "Βασική διαδρομή:"
 
-#: ../src/project.c:211 ../src/project.c:489
+#: ../src/project.c:215 ../src/project.c:500
 msgid "Choose Project Base Path"
 msgstr "Επιλογή Βασικής Διαδρομής Έργου"
 
-#: ../src/project.c:250 ../src/project.c:626 ../src/project.c:1166
+#: ../src/project.c:254 ../src/project.c:640 ../src/project.c:1199
 msgid "Project file could not be written"
 msgstr "Το αρχείο του έργου δεν ήταν δυνατόν να γραφεί"
 
-#: ../src/project.c:255
+#: ../src/project.c:259
 #, c-format
 msgid "Project \"%s\" created."
 msgstr "Το έργο \"%s\" δημιουργήθηκε."
 
-#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1027
+#: ../src/project.c:299 ../src/project.c:329 ../src/project.c:1054
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Το αρχείο έργου \"%s\" δεν ήταν δυνατόν να φορτωθεί."
 
-#: ../src/project.c:317 ../src/project.c:335
+#: ../src/project.c:322 ../src/project.c:341
 msgid "Open Project"
 msgstr "Άνοιγμα Έργου"
 
-#: ../src/project.c:355
+#: ../src/project.c:363
 msgid "Project files"
 msgstr "Αρχεία έργου"
 
-#: ../src/project.c:417
+#: ../src/project.c:427
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "Το έργο \"%s\" έκλεισε."
 
-#: ../src/project.c:629
+#: ../src/project.c:643
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "Το έργο \"%s\" αποθηκεύτηκε."
 
-#: ../src/project.c:662
+#: ../src/project.c:676
 msgid "Do you want to close it before proceeding?"
 msgstr "Θέλετε να το κλείσετε πριν προχωρήσετε;"
 
-#: ../src/project.c:663
+#: ../src/project.c:677
 #, c-format
 msgid "The '%s' project is open."
 msgstr "Το έργο '%s' είναι ανοιχτό."
 
-#: ../src/project.c:712
+#: ../src/project.c:727
 msgid "The specified project name is too short."
 msgstr "Το καθορισμένο όνομα έργου είναι πολύ μικρό."
 
-#: ../src/project.c:718
+#: ../src/project.c:733
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "Το καθορισμένο όνομα έργου είναι πολύ μεγάλο (max. %d χαρακτήρες)."
 
-#: ../src/project.c:730
+#: ../src/project.c:744
 msgid "You have specified an invalid project filename."
 msgstr "Καθορίσατε ένα άκυρο όνομα αρχείου του έργου."
 
-#: ../src/project.c:753
+#: ../src/project.c:767
 msgid "Create the project's base path directory?"
 msgstr "Δημιουργία φακέλου της βασικής διαδρομής του έργου;"
 
-#: ../src/project.c:754
+#: ../src/project.c:768
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "Η διαδρομή \"%s\" δεν υπάρχει."
 
-#: ../src/project.c:763
+#: ../src/project.c:777
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Δεν ήταν δυνατόν να δημιουργηθεί ο βασικός φάκελος του έργου (%s)."
 
-#: ../src/project.c:776
+#: ../src/project.c:790
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Το αρχείο του έργου δεν ήταν δυνατόν να γραφεί (%s)."
 
-#: ../src/project.c:782 ../src/search.c:663
+#: ../src/project.c:796 ../src/search.c:663
 msgid "_Replace"
 msgstr "Αν_τικατάσταση"
 
-#: ../src/project.c:784 ../plugins/export.c:330
+#: ../src/project.c:797 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "Το αρχείο '%s' υπάρχει ήδη. Θέλετε να αντικατασταθεί;"
 
 #. initialise the dialog
-#: ../src/project.c:930 ../src/project.c:941
+#: ../src/project.c:949 ../src/project.c:961
 msgid "Choose Project Filename"
 msgstr "Επιλογή ονόματος αρχείου έργου"
 
-#: ../src/project.c:1017
+#: ../src/project.c:1039
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "Το έργο \"%s\" άνοιξε."
+
+#: ../src/project.c:1425
+#, fuzzy
+msgid "Project tags loaded."
+msgstr "Το έργο \"%s\" έκλεισε."
 
 #: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
@@ -4725,332 +4748,332 @@ msgstr "Άγνωστο σφάλμα κατά την εκτέλεση θυγατ�
 msgid "Value"
 msgstr "Τιμή"
 
-#: ../src/symbols.c:473 ../src/symbols.c:525 ../src/symbols.c:635
+#: ../src/symbols.c:477 ../src/symbols.c:529 ../src/symbols.c:639
 msgid "Chapter"
 msgstr "Κεφάλαιο"
 
-#: ../src/symbols.c:474 ../src/symbols.c:521 ../src/symbols.c:636
+#: ../src/symbols.c:478 ../src/symbols.c:525 ../src/symbols.c:640
 msgid "Section"
 msgstr "Ενότητα"
 
-#: ../src/symbols.c:475
+#: ../src/symbols.c:479
 msgid "Sect1"
 msgstr "Ενότ1"
 
-#: ../src/symbols.c:476
+#: ../src/symbols.c:480
 msgid "Sect2"
 msgstr "Ενότ2"
 
-#: ../src/symbols.c:477
+#: ../src/symbols.c:481
 msgid "Sect3"
 msgstr "Ενότ3"
 
-#: ../src/symbols.c:478
+#: ../src/symbols.c:482
 msgid "Appendix"
 msgstr "Παράρτημα"
 
-#: ../src/symbols.c:479 ../src/symbols.c:526 ../src/symbols.c:551
-#: ../src/symbols.c:567 ../src/symbols.c:582 ../src/symbols.c:593
-#: ../src/symbols.c:694 ../src/symbols.c:705 ../src/symbols.c:718
-#: ../src/symbols.c:733 ../src/symbols.c:745 ../src/symbols.c:757
-#: ../src/symbols.c:774 ../src/symbols.c:803 ../src/symbols.c:835
+#: ../src/symbols.c:483 ../src/symbols.c:530 ../src/symbols.c:555
+#: ../src/symbols.c:571 ../src/symbols.c:586 ../src/symbols.c:597
+#: ../src/symbols.c:698 ../src/symbols.c:709 ../src/symbols.c:722
+#: ../src/symbols.c:737 ../src/symbols.c:749 ../src/symbols.c:761
+#: ../src/symbols.c:778 ../src/symbols.c:807 ../src/symbols.c:839
 msgid "Other"
 msgstr "Άλλα"
 
-#: ../src/symbols.c:485 ../src/symbols.c:765 ../src/symbols.c:813
+#: ../src/symbols.c:489 ../src/symbols.c:769 ../src/symbols.c:817
 msgid "Module"
 msgstr "Μονάδα"
 
-#: ../src/symbols.c:486 ../src/symbols.c:578 ../src/symbols.c:690
-#: ../src/symbols.c:743 ../src/symbols.c:755 ../src/symbols.c:770
-#: ../src/symbols.c:784
+#: ../src/symbols.c:490 ../src/symbols.c:582 ../src/symbols.c:694
+#: ../src/symbols.c:747 ../src/symbols.c:759 ../src/symbols.c:774
+#: ../src/symbols.c:788
 msgid "Types"
 msgstr "Τύποι"
 
-#: ../src/symbols.c:487
+#: ../src/symbols.c:491
 msgid "Type constructors"
 msgstr "Τύποι constructor"
 
-#: ../src/symbols.c:488 ../src/symbols.c:512 ../src/symbols.c:533
-#: ../src/symbols.c:550 ../src/symbols.c:562 ../src/symbols.c:575
-#: ../src/symbols.c:590 ../src/symbols.c:604 ../src/symbols.c:614
-#: ../src/symbols.c:678 ../src/symbols.c:729 ../src/symbols.c:752
-#: ../src/symbols.c:797 ../src/symbols.c:821
+#: ../src/symbols.c:492 ../src/symbols.c:516 ../src/symbols.c:537
+#: ../src/symbols.c:554 ../src/symbols.c:566 ../src/symbols.c:579
+#: ../src/symbols.c:594 ../src/symbols.c:608 ../src/symbols.c:618
+#: ../src/symbols.c:682 ../src/symbols.c:733 ../src/symbols.c:756
+#: ../src/symbols.c:801 ../src/symbols.c:825
 msgid "Functions"
 msgstr "Συναρτήσεις"
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:497
 msgid "Program"
 msgstr "Πρόγραμμα"
 
-#: ../src/symbols.c:495
+#: ../src/symbols.c:499
 msgid "Divisions"
 msgstr ""
 
-#: ../src/symbols.c:496 ../src/symbols.c:505 ../src/symbols.c:511
+#: ../src/symbols.c:500 ../src/symbols.c:509 ../src/symbols.c:515
 msgid "Sections"
 msgstr "Ενότητες"
 
-#: ../src/symbols.c:497
+#: ../src/symbols.c:501
 msgid "Paragraph"
 msgstr "Παράγραφος"
 
-#: ../src/symbols.c:498
+#: ../src/symbols.c:502
 msgid "Group"
 msgstr "Ομάδα"
 
-#: ../src/symbols.c:499
+#: ../src/symbols.c:503
 msgid "Data"
 msgstr "Δεδομένα"
 
-#: ../src/symbols.c:500
+#: ../src/symbols.c:504
 msgid "Copies"
 msgstr ""
 
-#: ../src/symbols.c:506
+#: ../src/symbols.c:510
 msgid "Keys"
 msgstr "Πλήκτρα"
 
-#: ../src/symbols.c:513 ../src/symbols.c:564 ../src/symbols.c:580
-#: ../src/symbols.c:606 ../src/symbols.c:679 ../src/symbols.c:704
-#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:753
-#: ../src/symbols.c:769 ../src/symbols.c:804 ../src/symbols.c:833
+#: ../src/symbols.c:517 ../src/symbols.c:568 ../src/symbols.c:584
+#: ../src/symbols.c:610 ../src/symbols.c:683 ../src/symbols.c:708
+#: ../src/symbols.c:735 ../src/symbols.c:748 ../src/symbols.c:757
+#: ../src/symbols.c:773 ../src/symbols.c:808 ../src/symbols.c:837
 msgid "Variables"
 msgstr "Μεταβλητές"
 
-#: ../src/symbols.c:520
+#: ../src/symbols.c:524
 msgid "Environment"
 msgstr "Περιβάλλον"
 
-#: ../src/symbols.c:522 ../src/symbols.c:637
+#: ../src/symbols.c:526 ../src/symbols.c:641
 msgid "Subsection"
 msgstr "Υποενότητα"
 
-#: ../src/symbols.c:523 ../src/symbols.c:638
+#: ../src/symbols.c:527 ../src/symbols.c:642
 msgid "Subsubsection"
 msgstr "Υπο-υποενότητα"
 
-#: ../src/symbols.c:534 ../src/symbols.c:559
+#: ../src/symbols.c:538 ../src/symbols.c:563
 msgid "Structures"
 msgstr "Δομές (Structures)"
 
-#: ../src/symbols.c:541
+#: ../src/symbols.c:545
 msgid "Parts"
 msgstr "Τμήματα"
 
-#: ../src/symbols.c:542
+#: ../src/symbols.c:546
 msgid "Assembly"
 msgstr "Assembly"
 
-#: ../src/symbols.c:543
+#: ../src/symbols.c:547
 msgid "Steps"
 msgstr "Βήματα"
 
-#: ../src/symbols.c:558 ../src/symbols.c:656 ../src/symbols.c:702
+#: ../src/symbols.c:562 ../src/symbols.c:660 ../src/symbols.c:706
 msgid "Modules"
 msgstr "Μονάδες"
 
-#: ../src/symbols.c:560 ../src/symbols.c:607
+#: ../src/symbols.c:564 ../src/symbols.c:611
 msgid "Traits"
 msgstr "Χαρακτηριστικά"
 
-#: ../src/symbols.c:561
+#: ../src/symbols.c:565
 msgid "Implementations"
 msgstr "Συγχωνεύσεις (Implementations)"
 
-#: ../src/symbols.c:563 ../src/symbols.c:824
+#: ../src/symbols.c:567 ../src/symbols.c:828
 msgid "Typedefs / Enums"
 msgstr "Typedefs / Enums"
 
-#: ../src/symbols.c:565 ../src/symbols.c:782 ../src/symbols.c:791
-#: ../src/symbols.c:830
+#: ../src/symbols.c:569 ../src/symbols.c:786 ../src/symbols.c:795
+#: ../src/symbols.c:834
 msgid "Macros"
 msgstr "Μακροεντολές"
 
-#: ../src/symbols.c:566 ../src/symbols.c:659 ../src/symbols.c:668
-#: ../src/symbols.c:677 ../src/symbols.c:715 ../src/symbols.c:742
+#: ../src/symbols.c:570 ../src/symbols.c:663 ../src/symbols.c:672
+#: ../src/symbols.c:681 ../src/symbols.c:719 ../src/symbols.c:746
 msgid "Methods"
 msgstr "Μέθοδοι"
 
-#: ../src/symbols.c:574 ../src/symbols.c:589 ../src/symbols.c:687
-#: ../src/symbols.c:712 ../src/symbols.c:726
+#: ../src/symbols.c:578 ../src/symbols.c:593 ../src/symbols.c:691
+#: ../src/symbols.c:716 ../src/symbols.c:730
 msgid "Package"
 msgstr "Πακέτο"
 
-#: ../src/symbols.c:576 ../src/symbols.c:602 ../src/symbols.c:713
-#: ../src/symbols.c:727 ../src/symbols.c:740 ../src/symbols.c:767
-#: ../src/symbols.c:820
+#: ../src/symbols.c:580 ../src/symbols.c:606 ../src/symbols.c:717
+#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:771
+#: ../src/symbols.c:824
 msgid "Interfaces"
 msgstr "Διασυνδέσεις"
 
-#: ../src/symbols.c:577 ../src/symbols.c:823
+#: ../src/symbols.c:581 ../src/symbols.c:827
 msgid "Structs"
 msgstr "Δομές (Structs)"
 
-#: ../src/symbols.c:579 ../src/symbols.c:592 ../src/symbols.c:605
-#: ../src/symbols.c:732 ../src/symbols.c:754
+#: ../src/symbols.c:583 ../src/symbols.c:596 ../src/symbols.c:609
+#: ../src/symbols.c:736 ../src/symbols.c:758
 msgid "Constants"
 msgstr "Σταθερές"
 
-#: ../src/symbols.c:581 ../src/symbols.c:716 ../src/symbols.c:822
+#: ../src/symbols.c:585 ../src/symbols.c:720 ../src/symbols.c:826
 msgid "Members"
 msgstr "Μέλη"
 
-#: ../src/symbols.c:591 ../src/symbols.c:756 ../src/symbols.c:781
+#: ../src/symbols.c:595 ../src/symbols.c:760 ../src/symbols.c:785
 msgid "Labels"
 msgstr "Ετικέτες"
 
-#: ../src/symbols.c:601 ../src/symbols.c:666 ../src/symbols.c:816
+#: ../src/symbols.c:605 ../src/symbols.c:670 ../src/symbols.c:820
 msgid "Namespaces"
 msgstr "Namespaces"
 
-#: ../src/symbols.c:603 ../src/symbols.c:625 ../src/symbols.c:657
-#: ../src/symbols.c:667 ../src/symbols.c:676 ../src/symbols.c:714
-#: ../src/symbols.c:728 ../src/symbols.c:741 ../src/symbols.c:819
+#: ../src/symbols.c:607 ../src/symbols.c:629 ../src/symbols.c:661
+#: ../src/symbols.c:671 ../src/symbols.c:680 ../src/symbols.c:718
+#: ../src/symbols.c:732 ../src/symbols.c:745 ../src/symbols.c:823
 msgid "Classes"
 msgstr "Κλάσεις"
 
-#: ../src/symbols.c:615
+#: ../src/symbols.c:619
 msgid "Anchors"
 msgstr "Αγκύλες (Anchors)"
 
-#: ../src/symbols.c:616
+#: ../src/symbols.c:620
 msgid "H1 Headings"
 msgstr "H1 Κεφαλίδες"
 
-#: ../src/symbols.c:617
+#: ../src/symbols.c:621
 msgid "H2 Headings"
 msgstr "H2 Κεφαλίδες"
 
-#: ../src/symbols.c:618
+#: ../src/symbols.c:622
 msgid "H3 Headings"
 msgstr "H3 Κεφαλίδες"
 
-#: ../src/symbols.c:626
+#: ../src/symbols.c:630
 msgid "ID Selectors"
 msgstr "ID Selectors"
 
-#: ../src/symbols.c:627
+#: ../src/symbols.c:631
 msgid "Type Selectors"
 msgstr "Τύποι Επιλογέων"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:650
 msgid "Section Level 1"
 msgstr "Επίπεδο Ενότητας 1"
 
-#: ../src/symbols.c:647
+#: ../src/symbols.c:651
 msgid "Section Level 2"
 msgstr "Επίπεδο Ενότητας 2"
 
-#: ../src/symbols.c:648
+#: ../src/symbols.c:652
 msgid "Section Level 3"
 msgstr "Επίπεδο Ενότητας 3"
 
-#: ../src/symbols.c:649
+#: ../src/symbols.c:653
 msgid "Section Level 4"
 msgstr "Επίπεδο Ενότητας 4"
 
-#: ../src/symbols.c:658
+#: ../src/symbols.c:662
 msgid "Singletons"
 msgstr "Σίνγκλετον"
 
-#: ../src/symbols.c:669 ../src/symbols.c:798
+#: ../src/symbols.c:673 ../src/symbols.c:802
 msgid "Procedures"
 msgstr "Διεργασίες"
 
-#: ../src/symbols.c:680 ../src/symbols.c:725
+#: ../src/symbols.c:684 ../src/symbols.c:729
 msgid "Imports"
 msgstr "Εισαγωγές"
 
-#: ../src/symbols.c:688
+#: ../src/symbols.c:692
 msgid "Entities"
 msgstr "Οντότητες"
 
-#: ../src/symbols.c:689
+#: ../src/symbols.c:693
 msgid "Architectures"
 msgstr "Αρχιτεκτονικές"
 
-#: ../src/symbols.c:691
+#: ../src/symbols.c:695
 msgid "Functions / Procedures"
 msgstr "Συναρτήσεις / Διεργασίες"
 
-#: ../src/symbols.c:692
+#: ../src/symbols.c:696
 msgid "Variables / Signals"
 msgstr "Μεταβλητές / Σινιάλα"
 
-#: ../src/symbols.c:693
+#: ../src/symbols.c:697
 msgid "Processes / Blocks / Components"
 msgstr "Διεργασίες / Μπλοκ / Συστατικά"
 
-#: ../src/symbols.c:701
+#: ../src/symbols.c:705
 msgid "Events"
 msgstr "Συμβάντα"
 
-#: ../src/symbols.c:703
+#: ../src/symbols.c:707
 msgid "Functions / Tasks"
 msgstr "Συναρτήσεις / Εργασίες"
 
-#: ../src/symbols.c:717 ../src/symbols.c:773
+#: ../src/symbols.c:721 ../src/symbols.c:777
 msgid "Enums"
 msgstr "Enums"
 
-#: ../src/symbols.c:766
+#: ../src/symbols.c:770
 msgid "Programs"
 msgstr "Προγράμματα"
 
-#: ../src/symbols.c:768
+#: ../src/symbols.c:772
 msgid "Functions / Subroutines"
 msgstr "Συναρτήσεις / Υπορουτίνες"
 
-#: ../src/symbols.c:771
+#: ../src/symbols.c:775
 msgid "Components"
 msgstr "Συστατικά"
 
-#: ../src/symbols.c:772
+#: ../src/symbols.c:776
 msgid "Blocks"
 msgstr "Μπλοκ"
 
-#: ../src/symbols.c:783
+#: ../src/symbols.c:787
 msgid "Defines"
 msgstr "Defines"
 
-#: ../src/symbols.c:790
+#: ../src/symbols.c:794
 msgid "Targets"
 msgstr "Στόχοι"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:803
 msgid "Indexes"
 msgstr "Ευρετήρια"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:804
 msgid "Tables"
 msgstr "Πίνακες"
 
-#: ../src/symbols.c:801
+#: ../src/symbols.c:805
 msgid "Triggers"
 msgstr "Σκανδάλες"
 
-#: ../src/symbols.c:802
+#: ../src/symbols.c:806
 msgid "Views"
 msgstr "Προβολές"
 
-#: ../src/symbols.c:834
+#: ../src/symbols.c:838
 msgid "Extern Variables"
 msgstr "Εξωτερικές μεταβλητές"
 
-#: ../src/symbols.c:1651
+#: ../src/symbols.c:1676
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "Άγνωστη προέκταση τύπου αρχείου για \"%s\".\n"
 
-#: ../src/symbols.c:1677
+#: ../src/symbols.c:1703
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr ""
 "Αποτυχία δημιουργίας αρχείου ετικετών, πιθανόν λόγω του ότι δεν βρέθηκαν "
 "σύμβολα.\n"
 
-#: ../src/symbols.c:1684
+#: ../src/symbols.c:1710
 #, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -5059,7 +5082,7 @@ msgstr ""
 "Χρήση: %s -g <Αρχείο Ετικετών> <Λίστα Αρχείου>\n"
 "\n"
 
-#: ../src/symbols.c:1685
+#: ../src/symbols.c:1711
 #, c-format
 msgid ""
 "Example:\n"
@@ -5070,65 +5093,61 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1699
+#: ../src/symbols.c:1725
 msgid "Load Tags File"
 msgstr "Φόρτωση αρχείου ετικετών"
 
-#: ../src/symbols.c:1706
+#: ../src/symbols.c:1733
 msgid "Geany tags file (*.*.tags)"
 msgstr "Αρχεία ετικετών Geany (*.*.tags)"
 
-#. For translators: the first wildcard is the filetype, the second the filename
-#: ../src/symbols.c:1726
+#. For translators: the first wildcard is the filetype,
+#. * the second the filename
+#: ../src/symbols.c:1754
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "Φορτωμένες %s ετικέτες αρχείου '%s'."
 
-#: ../src/symbols.c:1729
+#: ../src/symbols.c:1757
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Δεν ήταν δυνατόν να φορτωθεί το αρχείο ετικετών '%s'."
 
-#: ../src/symbols.c:1986
+#: ../src/symbols.c:2017
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1988
+#: ../src/symbols.c:2020
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:1993
+#: ../src/symbols.c:2026
 #, fuzzy, c-format
 msgid "%s: %lu  (%s)"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:1995
+#: ../src/symbols.c:2029
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2299
-#, fuzzy
-msgid "Project tags loaded"
-msgstr "Το έργο \"%s\" έκλεισε."
-
-#: ../src/symbols.c:2365
+#: ../src/symbols.c:2404
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Δεν βρέθηκε η προωθημένη δήλωση (declaration) \"%s\"."
 
-#: ../src/symbols.c:2367
+#: ../src/symbols.c:2406
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Ο καθορισμός του \"%s\" δεν βρέθηκε."
 
-#: ../src/symbols.c:2783
+#: ../src/symbols.c:2839
 msgid "Sort by _Name"
 msgstr "Ταξινόμηση κατά _όνομα"
 
-#: ../src/symbols.c:2790
+#: ../src/symbols.c:2847
 msgid "Sort by _Appearance"
 msgstr "Ταξινόμηση κατά _εμφάνιση"
 

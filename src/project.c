@@ -1040,6 +1040,11 @@ gboolean project_load_file(const gchar *locale_file_name,
 		
 		ui_add_recent_project_file(utf8_filename);
 		g_free(utf8_filename);
+		
+		//~ esh: load tags file
+		if (app->project->priv->load_tags_file_on_open)
+			project_load_tags();
+		
 		return TRUE;
 	}
 	else
@@ -1373,6 +1378,13 @@ static void init_stash_prefs(void)
 		"auto_continue_multiline", editor_prefs.auto_continue_multiline,
 		"check_auto_multiline1");
 	add_stash_group(group, TRUE);
+	
+	group = stash_group_new("tags_prefs");
+	stash_group_add_toggle_button(group, &priv.load_tags_file_on_open,
+		"load_tags_file_on_open", FALSE, "check_load_tags_file_on_open");
+	stash_group_add_toggle_button(group, &priv.use_tags_file_for_lexer,
+		"use_tags_file_for_lexer", FALSE, "check_use_tags_file_for_lexer");
+	add_stash_group(group, TRUE);
 }
 
 
@@ -1402,4 +1414,16 @@ void project_init(void)
 
 void project_finalize(void)
 {
+}
+
+void project_load_tags()
+{
+	gchar *base_path = project_get_base_path();
+	gchar *tags_file = project_get_tags_file();
+	
+	if (tm_workspace_load_project_tags(tags_file, base_path))
+		ui_set_statusbar(TRUE, _("Project tags loaded."));
+	
+	g_free(base_path);
+	g_free(tags_file);
 }

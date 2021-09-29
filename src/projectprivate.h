@@ -30,6 +30,10 @@ G_BEGIN_DECLS
 
 typedef struct GeanyProjectPrivate
 {
+	// tags prefs
+	gboolean	load_tags_file_on_open;
+	gboolean	use_tags_file_for_lexer;
+	
 	// file prefs
 	gboolean	final_new_line;
 	gboolean	strip_trailing_spaces;

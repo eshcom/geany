@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-18 01:14+0300\n"
+"POT-Creation-Date: 2021-09-29 10:41+0300\n"
 "PO-Revision-Date: 2013-07-06 15:07+0200\n"
 "Last-Translator: Asier Iturralde Sarasola <asier.iturralde@gmail.com>\n"
 "Language-Team: Euskara <librezale@librezale.org>\n"
@@ -106,11 +106,11 @@ msgstr "_Bilatu"
 msgid "Open Selected F_ile"
 msgstr "Ireki hautatutako _fitxategia"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2800
+#: ../data/geany.glade.h:19 ../src/symbols.c:2858
 msgid "Find _Usage"
 msgstr "Bilatu _erabilera"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2805
+#: ../data/geany.glade.h:20 ../src/symbols.c:2865
 msgid "Find _Document Usage"
 msgstr "Bilatu _dokumentuaren erabilera"
 
@@ -1200,7 +1200,7 @@ msgid ""
 "disables checking."
 msgstr ""
 
-#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:467
+#: ../data/geany.glade.h:261 ../src/prefs.c:1610 ../src/symbols.c:471
 #: ../plugins/filebrowser.c:1167
 msgid "Files"
 msgstr "Fitxategiak"
@@ -1583,7 +1583,7 @@ msgstr "Gorde honela"
 msgid "Sa_ve All"
 msgstr "Gorde denak"
 
-#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3641
+#: ../data/geany.glade.h:351 ../src/document.c:1680 ../src/document.c:3642
 #: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Birkargatu"
@@ -1710,7 +1710,7 @@ msgstr "Bilatu _hurrengoa"
 msgid "Find _Previous"
 msgstr "Bilatu _aurrekoa"
 
-#: ../data/geany.glade.h:382 ../src/symbols.c:2810
+#: ../data/geany.glade.h:382 ../src/symbols.c:2872
 #, fuzzy
 msgid "Find in F_iles..."
 msgstr "Bilatu _fitxategietan"
@@ -2057,7 +2057,7 @@ msgstr ""
 msgid "Project Properties"
 msgstr "Proiektuaren propietateak"
 
-#: ../data/geany.glade.h:465 ../src/project.c:179
+#: ../data/geany.glade.h:465 ../src/project.c:183
 msgid "Filename:"
 msgstr "Fitxategi-izena:"
 
@@ -2086,7 +2086,7 @@ msgid ""
 "g. *.c *.h)"
 msgstr ""
 
-#: ../data/geany.glade.h:471 ../src/project.c:208
+#: ../data/geany.glade.h:471 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2110,67 +2110,84 @@ msgid "Use global settings"
 msgstr "Erabili ezarpen orokorrak"
 
 #: ../data/geany.glade.h:476
-msgid "Size:"
+msgid "Load tags file when opening a project"
 msgstr ""
 
 #: ../data/geany.glade.h:477
-#, fuzzy
-msgid "Location:"
-msgstr "<b>Kokapena:</b>"
+msgid "Use a list of objects from the tags file for the lexer"
+msgstr ""
 
 #: ../data/geany.glade.h:478
 #, fuzzy
-msgid "Read-only:"
-msgstr ", irakurtzeko soilik"
+msgid "<b>Using a tags file</b>"
+msgstr "<b>Fitxategiak gordetzen</b>"
 
 #: ../data/geany.glade.h:479
-#, fuzzy
-msgid "Encoding:"
-msgstr "_Kodeketa:"
+msgid "Tags"
+msgstr ""
 
 #: ../data/geany.glade.h:480
-msgid "Modified:"
+msgid "Size:"
 msgstr ""
 
 #: ../data/geany.glade.h:481
 #, fuzzy
+msgid "Location:"
+msgstr "<b>Kokapena:</b>"
+
+#: ../data/geany.glade.h:482
+#, fuzzy
+msgid "Read-only:"
+msgstr ", irakurtzeko soilik"
+
+#: ../data/geany.glade.h:483
+#, fuzzy
+msgid "Encoding:"
+msgstr "_Kodeketa:"
+
+#: ../data/geany.glade.h:484
+msgid "Modified:"
+msgstr ""
+
+#: ../data/geany.glade.h:485
+#, fuzzy
 msgid "Changed:"
 msgstr "_Aldatu"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:486
 msgid "Accessed:"
 msgstr ""
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:487
 msgid "(only inside Geany)"
 msgstr "(soilik Geany barruan)"
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:488
 #, fuzzy
 msgid "Permissions:"
 msgstr "<b>Baimenak:</b>"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:489
 msgid "Read:"
 msgstr "Irakurri:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:490
 msgid "Write:"
 msgstr "Idatzi:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:491
 msgid "Execute:"
 msgstr "Exekutatu:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:492
 msgid "Owner:"
 msgstr "Jabea:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:493
 msgid "Group:"
 msgstr "Taldea:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:494
 msgid "Other:"
 msgstr "Besteak:"
 
@@ -2356,12 +2373,12 @@ msgstr ""
 msgid "Set menu item label"
 msgstr "Ezarri menuko elementuaren etiketa"
 
-#: ../src/build.c:1834 ../src/symbols.c:524 ../src/tools.c:414
+#: ../src/build.c:1834 ../src/symbols.c:528 ../src/tools.c:414
 msgid "Label"
 msgstr "Etiketa"
 
 #. command column, holding status and command display
-#: ../src/build.c:1835 ../src/symbols.c:519 ../src/tools.c:399
+#: ../src/build.c:1835 ../src/symbols.c:523 ../src/tools.c:399
 msgid "Command"
 msgstr "Komandoa"
 
@@ -2628,7 +2645,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2614 ../src/symbols.c:2630 ../src/ui_utils.c:287
+#: ../src/symbols.c:2660 ../src/symbols.c:2678 ../src/ui_utils.c:287
 msgid "unknown"
 msgstr "ezezaguna"
 
@@ -2793,21 +2810,21 @@ msgstr ""
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2077 ../src/document.c:3642
+#: ../src/document.c:2077 ../src/document.c:3643
 #, fuzzy
 msgid "_Overwrite"
 msgstr "Gainidatzi?"
 
-#: ../src/document.c:2079 ../src/document.c:3645
+#: ../src/document.c:2079 ../src/document.c:3646
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr ""
 
-#: ../src/document.c:2087 ../src/document.c:3694
+#: ../src/document.c:2087 ../src/document.c:3695
 msgid "Try to resave the file?"
 msgstr "Fitxategia berriz gordetzen saiatu?"
 
-#: ../src/document.c:2088 ../src/document.c:3695
+#: ../src/document.c:2088 ../src/document.c:3696
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "\"%s\" fitxategia ez da diskoan aurkitu!"
@@ -2856,19 +2873,19 @@ msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/document.c:3644
+#: ../src/document.c:3645
 msgid "Do you want to reload it?"
 msgstr "Birkargatu nahi duzu?"
 
-#: ../src/editor.c:4859
+#: ../src/editor.c:4945
 msgid "Enter Tab Width"
 msgstr "Sartu tabulazioaren zabalera"
 
-#: ../src/editor.c:4860
+#: ../src/editor.c:4946
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Sartu tabulazio karaktere batekin ordezkatu beharreko zuriune kopurua."
 
-#: ../src/editor.c:5066
+#: ../src/editor.c:5152
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3091,7 +3108,7 @@ msgid "All Source"
 msgstr ""
 
 #. create meta file filter "All files"
-#: ../src/filetypes.c:1211 ../src/project.c:351 ../src/win32.c:145
+#: ../src/filetypes.c:1211 ../src/project.c:359 ../src/win32.c:145
 #: ../src/win32.c:190 ../src/win32.c:211 ../src/win32.c:216
 msgid "All files"
 msgstr "Fitxategi guztiak"
@@ -3128,7 +3145,7 @@ msgid "Color Schemes"
 msgstr "Kolore-eskemak"
 
 #. visual group order
-#: ../src/keybindings.c:312 ../src/symbols.c:494
+#: ../src/keybindings.c:312 ../src/symbols.c:498
 msgid "File"
 msgstr "Fitxategia"
 
@@ -3164,11 +3181,11 @@ msgstr "Joan hona"
 msgid "View"
 msgstr "Ikusi"
 
-#: ../src/keybindings.c:322 ../src/symbols.c:645
+#: ../src/keybindings.c:322 ../src/symbols.c:649
 msgid "Document"
 msgstr "Dokumentua"
 
-#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:516
+#: ../src/keybindings.c:324 ../src/keybindings.c:695 ../src/project.c:527
 #: ../src/ui_utils.c:2301
 msgid "Build"
 msgstr "Eraiki"
@@ -3209,7 +3226,7 @@ msgstr "Gorde honela"
 msgid "Save all"
 msgstr "Gorde dena"
 
-#: ../src/keybindings.c:351 ../src/symbols.c:730
+#: ../src/keybindings.c:351 ../src/symbols.c:734
 msgid "Properties"
 msgstr "Propietateak"
 
@@ -3981,11 +3998,11 @@ msgstr ""
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 
-#: ../src/prefs.c:226 ../src/symbols.c:2768 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2821 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Zabaldu dena"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2773 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2828 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Tolestu dena"
 
@@ -4109,138 +4126,143 @@ msgstr "%s fitxategia inprimatuta."
 
 #. "projects" is part of the default project base path so be careful when translating
 #. * please avoid special characters and spaces, look at the source for details or ask Frank
-#: ../src/project.c:99
+#: ../src/project.c:100
 msgid "projects"
 msgstr "proiektuak"
 
-#: ../src/project.c:134
+#: ../src/project.c:136
 msgid "Move the current documents into the new project's session?"
 msgstr ""
 
-#: ../src/project.c:152
+#: ../src/project.c:154
 msgid "New Project"
 msgstr "Proiektu berria"
 
-#: ../src/project.c:157
+#: ../src/project.c:161
 msgid "C_reate"
 msgstr "_Sortu"
 
-#: ../src/project.c:168 ../plugins/classbuilder.c:465
+#: ../src/project.c:172 ../plugins/classbuilder.c:465
 #: ../plugins/classbuilder.c:475
 msgid "Name:"
 msgstr "Izena:"
 
-#: ../src/project.c:175
+#: ../src/project.c:179
 #, fuzzy
 msgid "Project name"
 msgstr "Proiektua"
 
-#: ../src/project.c:187
+#: ../src/project.c:191
 #, c-format
 msgid ""
 "Path of the file representing the project and storing its settings. It "
 "should normally have the \"%s\" extension."
 msgstr ""
 
-#: ../src/project.c:201
+#: ../src/project.c:205
 msgid "Base path:"
 msgstr ""
 
-#: ../src/project.c:211 ../src/project.c:489
+#: ../src/project.c:215 ../src/project.c:500
 msgid "Choose Project Base Path"
 msgstr "Aukeratu proiektuaren oinarrizko bidea"
 
-#: ../src/project.c:250 ../src/project.c:626 ../src/project.c:1166
+#: ../src/project.c:254 ../src/project.c:640 ../src/project.c:1199
 msgid "Project file could not be written"
 msgstr "Ezin izan da proiektu-fitxategia idatzi"
 
-#: ../src/project.c:255
+#: ../src/project.c:259
 #, c-format
 msgid "Project \"%s\" created."
 msgstr "\"%s\" proiektua sortuta."
 
-#: ../src/project.c:295 ../src/project.c:323 ../src/project.c:1027
+#: ../src/project.c:299 ../src/project.c:329 ../src/project.c:1054
 #, c-format
 msgid "Project file \"%s\" could not be loaded."
 msgstr "Ezin izan da \"%s\" proiektu-fitxategia kargatu."
 
-#: ../src/project.c:317 ../src/project.c:335
+#: ../src/project.c:322 ../src/project.c:341
 msgid "Open Project"
 msgstr "Ireki proiektua"
 
-#: ../src/project.c:355
+#: ../src/project.c:363
 msgid "Project files"
 msgstr "Proiektuaren fitxategiak"
 
-#: ../src/project.c:417
+#: ../src/project.c:427
 #, c-format
 msgid "Project \"%s\" closed."
 msgstr "\"%s\" proiektua itxita."
 
-#: ../src/project.c:629
+#: ../src/project.c:643
 #, c-format
 msgid "Project \"%s\" saved."
 msgstr "\"%s\" proiektua gordeta."
 
-#: ../src/project.c:662
+#: ../src/project.c:676
 msgid "Do you want to close it before proceeding?"
 msgstr "Jarraitu aurretik itxi nahi duzu?"
 
-#: ../src/project.c:663
+#: ../src/project.c:677
 #, c-format
 msgid "The '%s' project is open."
 msgstr "'%s' proiektua irekita dago."
 
-#: ../src/project.c:712
+#: ../src/project.c:727
 msgid "The specified project name is too short."
 msgstr "Zehazturiko proiektu-izena laburregia da."
 
-#: ../src/project.c:718
+#: ../src/project.c:733
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "Zehazturiko proiektu-izena luzeegia da (gehienez %d karaktere)."
 
-#: ../src/project.c:730
+#: ../src/project.c:744
 msgid "You have specified an invalid project filename."
 msgstr "Proiektuaren fitxategi-izen baliogabea zehaztu duzu."
 
-#: ../src/project.c:753
+#: ../src/project.c:767
 msgid "Create the project's base path directory?"
 msgstr "Proiektuaren oinarrizko bidearen direktorioa sortu?"
 
-#: ../src/project.c:754
+#: ../src/project.c:768
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "\"%s\" bidea ez da existitzen."
 
-#: ../src/project.c:763
+#: ../src/project.c:777
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "Ezin izan da proiektuaren oinarrizko direktorioa sortu (%s)."
 
-#: ../src/project.c:776
+#: ../src/project.c:790
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "Ezin izan da proiektu-fitxategia idatzi (%s)."
 
-#: ../src/project.c:782 ../src/search.c:663
+#: ../src/project.c:796 ../src/search.c:663
 msgid "_Replace"
 msgstr "_Ordezkatu"
 
-#: ../src/project.c:784 ../plugins/export.c:330
+#: ../src/project.c:797 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "'%s' fitxategia dagoeneko existitzen da. Gainidatzi nahi duzu?"
 
 #. initialise the dialog
-#: ../src/project.c:930 ../src/project.c:941
+#: ../src/project.c:949 ../src/project.c:961
 msgid "Choose Project Filename"
 msgstr "Aukeratu proiektuaren fitxategi-izena"
 
-#: ../src/project.c:1017
+#: ../src/project.c:1039
 #, c-format
 msgid "Project \"%s\" opened."
 msgstr "\"%s\" proiektua irekita."
+
+#: ../src/project.c:1425
+#, fuzzy
+msgid "Project tags loaded."
+msgstr "\"%s\" proiektua itxita."
 
 #: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
@@ -4527,335 +4549,335 @@ msgstr ""
 msgid "Value"
 msgstr "Balioa"
 
-#: ../src/symbols.c:473 ../src/symbols.c:525 ../src/symbols.c:635
+#: ../src/symbols.c:477 ../src/symbols.c:529 ../src/symbols.c:639
 msgid "Chapter"
 msgstr "Kapitulua"
 
-#: ../src/symbols.c:474 ../src/symbols.c:521 ../src/symbols.c:636
+#: ../src/symbols.c:478 ../src/symbols.c:525 ../src/symbols.c:640
 msgid "Section"
 msgstr "Atala"
 
-#: ../src/symbols.c:475
+#: ../src/symbols.c:479
 msgid "Sect1"
 msgstr "Atal1"
 
-#: ../src/symbols.c:476
+#: ../src/symbols.c:480
 msgid "Sect2"
 msgstr "Atal2"
 
-#: ../src/symbols.c:477
+#: ../src/symbols.c:481
 msgid "Sect3"
 msgstr "Atal3"
 
-#: ../src/symbols.c:478
+#: ../src/symbols.c:482
 msgid "Appendix"
 msgstr "Eranskina"
 
-#: ../src/symbols.c:479 ../src/symbols.c:526 ../src/symbols.c:551
-#: ../src/symbols.c:567 ../src/symbols.c:582 ../src/symbols.c:593
-#: ../src/symbols.c:694 ../src/symbols.c:705 ../src/symbols.c:718
-#: ../src/symbols.c:733 ../src/symbols.c:745 ../src/symbols.c:757
-#: ../src/symbols.c:774 ../src/symbols.c:803 ../src/symbols.c:835
+#: ../src/symbols.c:483 ../src/symbols.c:530 ../src/symbols.c:555
+#: ../src/symbols.c:571 ../src/symbols.c:586 ../src/symbols.c:597
+#: ../src/symbols.c:698 ../src/symbols.c:709 ../src/symbols.c:722
+#: ../src/symbols.c:737 ../src/symbols.c:749 ../src/symbols.c:761
+#: ../src/symbols.c:778 ../src/symbols.c:807 ../src/symbols.c:839
 msgid "Other"
 msgstr "Bestelakoa"
 
-#: ../src/symbols.c:485 ../src/symbols.c:765 ../src/symbols.c:813
+#: ../src/symbols.c:489 ../src/symbols.c:769 ../src/symbols.c:817
 msgid "Module"
 msgstr "Modulua"
 
-#: ../src/symbols.c:486 ../src/symbols.c:578 ../src/symbols.c:690
-#: ../src/symbols.c:743 ../src/symbols.c:755 ../src/symbols.c:770
-#: ../src/symbols.c:784
+#: ../src/symbols.c:490 ../src/symbols.c:582 ../src/symbols.c:694
+#: ../src/symbols.c:747 ../src/symbols.c:759 ../src/symbols.c:774
+#: ../src/symbols.c:788
 msgid "Types"
 msgstr "Motak"
 
-#: ../src/symbols.c:487
+#: ../src/symbols.c:491
 msgid "Type constructors"
 msgstr "Mota eraikitzaileak"
 
-#: ../src/symbols.c:488 ../src/symbols.c:512 ../src/symbols.c:533
-#: ../src/symbols.c:550 ../src/symbols.c:562 ../src/symbols.c:575
-#: ../src/symbols.c:590 ../src/symbols.c:604 ../src/symbols.c:614
-#: ../src/symbols.c:678 ../src/symbols.c:729 ../src/symbols.c:752
-#: ../src/symbols.c:797 ../src/symbols.c:821
+#: ../src/symbols.c:492 ../src/symbols.c:516 ../src/symbols.c:537
+#: ../src/symbols.c:554 ../src/symbols.c:566 ../src/symbols.c:579
+#: ../src/symbols.c:594 ../src/symbols.c:608 ../src/symbols.c:618
+#: ../src/symbols.c:682 ../src/symbols.c:733 ../src/symbols.c:756
+#: ../src/symbols.c:801 ../src/symbols.c:825
 msgid "Functions"
 msgstr "Funtzioak"
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:497
 msgid "Program"
 msgstr "Programa"
 
-#: ../src/symbols.c:495
+#: ../src/symbols.c:499
 msgid "Divisions"
 msgstr ""
 
-#: ../src/symbols.c:496 ../src/symbols.c:505 ../src/symbols.c:511
+#: ../src/symbols.c:500 ../src/symbols.c:509 ../src/symbols.c:515
 msgid "Sections"
 msgstr "Atalak"
 
-#: ../src/symbols.c:497
+#: ../src/symbols.c:501
 msgid "Paragraph"
 msgstr "Paragrafoa"
 
-#: ../src/symbols.c:498
+#: ../src/symbols.c:502
 msgid "Group"
 msgstr "Taldea"
 
-#: ../src/symbols.c:499
+#: ../src/symbols.c:503
 msgid "Data"
 msgstr "Datuak"
 
-#: ../src/symbols.c:500
+#: ../src/symbols.c:504
 msgid "Copies"
 msgstr ""
 
-#: ../src/symbols.c:506
+#: ../src/symbols.c:510
 msgid "Keys"
 msgstr "Gakoak"
 
-#: ../src/symbols.c:513 ../src/symbols.c:564 ../src/symbols.c:580
-#: ../src/symbols.c:606 ../src/symbols.c:679 ../src/symbols.c:704
-#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:753
-#: ../src/symbols.c:769 ../src/symbols.c:804 ../src/symbols.c:833
+#: ../src/symbols.c:517 ../src/symbols.c:568 ../src/symbols.c:584
+#: ../src/symbols.c:610 ../src/symbols.c:683 ../src/symbols.c:708
+#: ../src/symbols.c:735 ../src/symbols.c:748 ../src/symbols.c:757
+#: ../src/symbols.c:773 ../src/symbols.c:808 ../src/symbols.c:837
 msgid "Variables"
 msgstr "Aldagaiak"
 
-#: ../src/symbols.c:520
+#: ../src/symbols.c:524
 msgid "Environment"
 msgstr "Ingurunea"
 
-#: ../src/symbols.c:522 ../src/symbols.c:637
+#: ../src/symbols.c:526 ../src/symbols.c:641
 msgid "Subsection"
 msgstr "Azpiatala"
 
-#: ../src/symbols.c:523 ../src/symbols.c:638
+#: ../src/symbols.c:527 ../src/symbols.c:642
 msgid "Subsubsection"
 msgstr "Azpiazpiatala"
 
-#: ../src/symbols.c:534 ../src/symbols.c:559
+#: ../src/symbols.c:538 ../src/symbols.c:563
 msgid "Structures"
 msgstr "Egiturak"
 
-#: ../src/symbols.c:541
+#: ../src/symbols.c:545
 msgid "Parts"
 msgstr "Zatiak"
 
-#: ../src/symbols.c:542
+#: ../src/symbols.c:546
 msgid "Assembly"
 msgstr ""
 
-#: ../src/symbols.c:543
+#: ../src/symbols.c:547
 msgid "Steps"
 msgstr "Pausoak"
 
-#: ../src/symbols.c:558 ../src/symbols.c:656 ../src/symbols.c:702
+#: ../src/symbols.c:562 ../src/symbols.c:660 ../src/symbols.c:706
 msgid "Modules"
 msgstr "Moduluak"
 
-#: ../src/symbols.c:560 ../src/symbols.c:607
+#: ../src/symbols.c:564 ../src/symbols.c:611
 msgid "Traits"
 msgstr ""
 
-#: ../src/symbols.c:561
+#: ../src/symbols.c:565
 #, fuzzy
 msgid "Implementations"
 msgstr "Koska"
 
-#: ../src/symbols.c:563 ../src/symbols.c:824
+#: ../src/symbols.c:567 ../src/symbols.c:828
 msgid "Typedefs / Enums"
 msgstr ""
 
-#: ../src/symbols.c:565 ../src/symbols.c:782 ../src/symbols.c:791
-#: ../src/symbols.c:830
+#: ../src/symbols.c:569 ../src/symbols.c:786 ../src/symbols.c:795
+#: ../src/symbols.c:834
 msgid "Macros"
 msgstr "Makroak"
 
-#: ../src/symbols.c:566 ../src/symbols.c:659 ../src/symbols.c:668
-#: ../src/symbols.c:677 ../src/symbols.c:715 ../src/symbols.c:742
+#: ../src/symbols.c:570 ../src/symbols.c:663 ../src/symbols.c:672
+#: ../src/symbols.c:681 ../src/symbols.c:719 ../src/symbols.c:746
 msgid "Methods"
 msgstr "Metodoak"
 
-#: ../src/symbols.c:574 ../src/symbols.c:589 ../src/symbols.c:687
-#: ../src/symbols.c:712 ../src/symbols.c:726
+#: ../src/symbols.c:578 ../src/symbols.c:593 ../src/symbols.c:691
+#: ../src/symbols.c:716 ../src/symbols.c:730
 msgid "Package"
 msgstr "Paketea"
 
-#: ../src/symbols.c:576 ../src/symbols.c:602 ../src/symbols.c:713
-#: ../src/symbols.c:727 ../src/symbols.c:740 ../src/symbols.c:767
-#: ../src/symbols.c:820
+#: ../src/symbols.c:580 ../src/symbols.c:606 ../src/symbols.c:717
+#: ../src/symbols.c:731 ../src/symbols.c:744 ../src/symbols.c:771
+#: ../src/symbols.c:824
 msgid "Interfaces"
 msgstr "Interfazeak"
 
-#: ../src/symbols.c:577 ../src/symbols.c:823
+#: ../src/symbols.c:581 ../src/symbols.c:827
 msgid "Structs"
 msgstr ""
 
-#: ../src/symbols.c:579 ../src/symbols.c:592 ../src/symbols.c:605
-#: ../src/symbols.c:732 ../src/symbols.c:754
+#: ../src/symbols.c:583 ../src/symbols.c:596 ../src/symbols.c:609
+#: ../src/symbols.c:736 ../src/symbols.c:758
 msgid "Constants"
 msgstr "Konstanteak"
 
-#: ../src/symbols.c:581 ../src/symbols.c:716 ../src/symbols.c:822
+#: ../src/symbols.c:585 ../src/symbols.c:720 ../src/symbols.c:826
 msgid "Members"
 msgstr "Kideak"
 
-#: ../src/symbols.c:591 ../src/symbols.c:756 ../src/symbols.c:781
+#: ../src/symbols.c:595 ../src/symbols.c:760 ../src/symbols.c:785
 msgid "Labels"
 msgstr "Etiketak"
 
-#: ../src/symbols.c:601 ../src/symbols.c:666 ../src/symbols.c:816
+#: ../src/symbols.c:605 ../src/symbols.c:670 ../src/symbols.c:820
 msgid "Namespaces"
 msgstr ""
 
-#: ../src/symbols.c:603 ../src/symbols.c:625 ../src/symbols.c:657
-#: ../src/symbols.c:667 ../src/symbols.c:676 ../src/symbols.c:714
-#: ../src/symbols.c:728 ../src/symbols.c:741 ../src/symbols.c:819
+#: ../src/symbols.c:607 ../src/symbols.c:629 ../src/symbols.c:661
+#: ../src/symbols.c:671 ../src/symbols.c:680 ../src/symbols.c:718
+#: ../src/symbols.c:732 ../src/symbols.c:745 ../src/symbols.c:823
 msgid "Classes"
 msgstr "Klaseak"
 
-#: ../src/symbols.c:615
+#: ../src/symbols.c:619
 msgid "Anchors"
 msgstr "Aingurak"
 
-#: ../src/symbols.c:616
+#: ../src/symbols.c:620
 msgid "H1 Headings"
 msgstr "H1 goiburuak"
 
-#: ../src/symbols.c:617
+#: ../src/symbols.c:621
 msgid "H2 Headings"
 msgstr "H2 goiburuak"
 
-#: ../src/symbols.c:618
+#: ../src/symbols.c:622
 msgid "H3 Headings"
 msgstr "H3 goiburuak"
 
-#: ../src/symbols.c:626
+#: ../src/symbols.c:630
 msgid "ID Selectors"
 msgstr "ID hautatzaileak"
 
-#: ../src/symbols.c:627
+#: ../src/symbols.c:631
 msgid "Type Selectors"
 msgstr "Mota hautatzaileak"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:650
 msgid "Section Level 1"
 msgstr "Atal maila 1"
 
-#: ../src/symbols.c:647
+#: ../src/symbols.c:651
 msgid "Section Level 2"
 msgstr "Atal maila 2"
 
-#: ../src/symbols.c:648
+#: ../src/symbols.c:652
 msgid "Section Level 3"
 msgstr "Atal maila 3"
 
-#: ../src/symbols.c:649
+#: ../src/symbols.c:653
 msgid "Section Level 4"
 msgstr "Atal maila 4"
 
-#: ../src/symbols.c:658
+#: ../src/symbols.c:662
 msgid "Singletons"
 msgstr ""
 
-#: ../src/symbols.c:669 ../src/symbols.c:798
+#: ../src/symbols.c:673 ../src/symbols.c:802
 msgid "Procedures"
 msgstr "Prozedurak"
 
-#: ../src/symbols.c:680 ../src/symbols.c:725
+#: ../src/symbols.c:684 ../src/symbols.c:729
 msgid "Imports"
 msgstr "Inportazioak"
 
-#: ../src/symbols.c:688
+#: ../src/symbols.c:692
 msgid "Entities"
 msgstr "Entitateak"
 
-#: ../src/symbols.c:689
+#: ../src/symbols.c:693
 msgid "Architectures"
 msgstr "Arkitekturak"
 
-#: ../src/symbols.c:691
+#: ../src/symbols.c:695
 msgid "Functions / Procedures"
 msgstr "Funtzioak / Prozedurak"
 
-#: ../src/symbols.c:692
+#: ../src/symbols.c:696
 msgid "Variables / Signals"
 msgstr "Aldagaiak / Seinaleak"
 
-#: ../src/symbols.c:693
+#: ../src/symbols.c:697
 msgid "Processes / Blocks / Components"
 msgstr "Prozesuak / Blokeak / Osagaiak"
 
-#: ../src/symbols.c:701
+#: ../src/symbols.c:705
 msgid "Events"
 msgstr "Gertaerak"
 
-#: ../src/symbols.c:703
+#: ../src/symbols.c:707
 msgid "Functions / Tasks"
 msgstr "Funtzioak / Atazak"
 
-#: ../src/symbols.c:717 ../src/symbols.c:773
+#: ../src/symbols.c:721 ../src/symbols.c:777
 msgid "Enums"
 msgstr ""
 
-#: ../src/symbols.c:766
+#: ../src/symbols.c:770
 #, fuzzy
 msgid "Programs"
 msgstr "Programa"
 
-#: ../src/symbols.c:768
+#: ../src/symbols.c:772
 #, fuzzy
 msgid "Functions / Subroutines"
 msgstr "Funtzioak / Prozedurak"
 
-#: ../src/symbols.c:771
+#: ../src/symbols.c:775
 #, fuzzy
 msgid "Components"
 msgstr "Dokumentuak"
 
-#: ../src/symbols.c:772
+#: ../src/symbols.c:776
 msgid "Blocks"
 msgstr "Blokeak"
 
-#: ../src/symbols.c:783
+#: ../src/symbols.c:787
 msgid "Defines"
 msgstr ""
 
-#: ../src/symbols.c:790
+#: ../src/symbols.c:794
 msgid "Targets"
 msgstr "Helburuak"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:803
 msgid "Indexes"
 msgstr "Indizeak"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:804
 msgid "Tables"
 msgstr "Taulak"
 
-#: ../src/symbols.c:801
+#: ../src/symbols.c:805
 msgid "Triggers"
 msgstr "Disparadoreak"
 
-#: ../src/symbols.c:802
+#: ../src/symbols.c:806
 msgid "Views"
 msgstr "Ikuspegiak"
 
-#: ../src/symbols.c:834
+#: ../src/symbols.c:838
 #, fuzzy
 msgid "Extern Variables"
 msgstr "Aldagaiak"
 
-#: ../src/symbols.c:1651
+#: ../src/symbols.c:1676
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr ""
 
-#: ../src/symbols.c:1677
+#: ../src/symbols.c:1703
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr ""
 
-#: ../src/symbols.c:1684
+#: ../src/symbols.c:1710
 #, fuzzy, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -4864,7 +4886,7 @@ msgstr ""
 "Erabilera: %s -g <etiketa-fitxategia> <fitxategi-zerrenda>\n"
 "\n"
 
-#: ../src/symbols.c:1685
+#: ../src/symbols.c:1711
 #, c-format
 msgid ""
 "Example:\n"
@@ -4875,67 +4897,63 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1699
+#: ../src/symbols.c:1725
 #, fuzzy
 msgid "Load Tags File"
 msgstr "Kargatu etiketak"
 
-#: ../src/symbols.c:1706
+#: ../src/symbols.c:1733
 #, fuzzy
 msgid "Geany tags file (*.*.tags)"
 msgstr "Geany etiketa-fitxategiak (*.*.tags)"
 
-#. For translators: the first wildcard is the filetype, the second the filename
-#: ../src/symbols.c:1726
+#. For translators: the first wildcard is the filetype,
+#. * the second the filename
+#: ../src/symbols.c:1754
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr ""
 
-#: ../src/symbols.c:1729
+#: ../src/symbols.c:1757
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Ezin izan da '%s' etiketa-fitxategia kargatu."
 
-#: ../src/symbols.c:1986
+#: ../src/symbols.c:2017
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>Bideak</b>"
 
-#: ../src/symbols.c:1988
+#: ../src/symbols.c:2020
 #, fuzzy, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>Bideak</b>"
 
-#: ../src/symbols.c:1993
+#: ../src/symbols.c:2026
 #, c-format
 msgid "%s: %lu  (%s)"
 msgstr ""
 
-#: ../src/symbols.c:1995
+#: ../src/symbols.c:2029
 #, c-format
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2299
-#, fuzzy
-msgid "Project tags loaded"
-msgstr "\"%s\" proiektua itxita."
-
-#: ../src/symbols.c:2365
+#: ../src/symbols.c:2404
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr ""
 
-#: ../src/symbols.c:2367
+#: ../src/symbols.c:2406
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Ez da \"%s\"(r)en definiziorik aurkitu."
 
-#: ../src/symbols.c:2783
+#: ../src/symbols.c:2839
 msgid "Sort by _Name"
 msgstr "Ordenatu _izenaren arabera"
 
-#: ../src/symbols.c:2790
+#: ../src/symbols.c:2847
 msgid "Sort by _Appearance"
 msgstr "Antolatu _itxuraren arabera"
 
