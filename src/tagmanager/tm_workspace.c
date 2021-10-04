@@ -79,7 +79,10 @@ static gboolean tm_create_workspace(void)
 	theWorkspace->source_files = g_ptr_array_new();
 	theWorkspace->typename_array = g_ptr_array_new();
 	theWorkspace->global_typename_array = g_ptr_array_new();
-	theWorkspace->project_tags = NULL; // esh: on demand init by tm_workspace_load_project_tags
+	
+	// esh: on demand init by tm_workspace_load_project_tags:
+	theWorkspace->project_tags = NULL; 
+	theWorkspace->project_typename_array = NULL;
 	
 	ctagsInit();
 	tm_parser_verify_type_mappings();
@@ -107,16 +110,22 @@ void tm_workspace_free(void)
 	g_ptr_array_free(theWorkspace->tags_array, TRUE);
 	g_ptr_array_free(theWorkspace->typename_array, TRUE);
 	g_ptr_array_free(theWorkspace->global_typename_array, TRUE);
-	tm_tags_array_free_prj(theWorkspace->project_tags); // esh: free the project tags
+	
+	tm_workspace_free_prj(); // esh: free the project tags/typenames
 	
 	g_free(theWorkspace);
 	theWorkspace = NULL;
 }
 
 
-/* esh: Frees the project tags. Use only when closing a project. */
+/* esh: Frees the project tags/typenames. */
 void tm_workspace_free_prj(void)
 {
+	if (theWorkspace->project_typename_array)
+	{
+		g_ptr_array_free(theWorkspace->project_typename_array, TRUE);
+		theWorkspace->project_typename_array = NULL;
+	}
 	tm_tags_array_free_prj(theWorkspace->project_tags);
 	theWorkspace->project_tags = NULL;
 }
@@ -296,7 +305,8 @@ static void tm_workspace_update(void)
 #ifdef TM_DEBUG
 	g_message("Total: %d tags", theWorkspace->tags_array->len);
 #endif
-	tm_tags_sort(theWorkspace->tags_array, workspace_tags_sort_attrs, TRUE, FALSE);
+	tm_tags_sort(theWorkspace->tags_array, workspace_tags_sort_attrs,
+				 TRUE, FALSE);
 	
 	g_ptr_array_free(theWorkspace->typename_array, TRUE);
 	theWorkspace->typename_array = tm_tags_extract(theWorkspace->tags_array,
@@ -382,7 +392,8 @@ gboolean tm_workspace_load_global_tags(const char *tags_file, TMParserType mode)
 	theWorkspace->global_tags = new_tags;
 	
 	g_ptr_array_free(theWorkspace->global_typename_array, TRUE);
-	theWorkspace->global_typename_array = tm_tags_extract(new_tags, TM_GLOBAL_TYPE_MASK);
+	theWorkspace->global_typename_array =
+		tm_tags_extract(new_tags, TM_GLOBAL_TYPE_MASK);
 	
 	return TRUE;
 }
@@ -392,20 +403,28 @@ gboolean tm_workspace_load_global_tags(const char *tags_file, TMParserType mode)
  * 		(based on tm_workspace_load_global_tags)
  * 		added GEANY_API_SYMBOL - for geanyctags plugin
 */
-GEANY_API_SYMBOL
-gboolean tm_workspace_load_project_tags(const char *tags_file, const char *source_path)
+gboolean tm_workspace_load_project_tags(const char *tags_file,
+										const char *source_path,
+										gboolean load_typenames)
 {
 	GPtrArray *file_tags;
 	
-	file_tags = tm_source_file_read_tags_file(tags_file, TM_PARSER_NONE, source_path);
+	file_tags = tm_source_file_read_tags_file(tags_file, TM_PARSER_NONE,
+											  source_path);
 	if (!file_tags)
 		return FALSE;
 	
 	tm_tags_sort(file_tags, workspace_tags_sort_attrs, FALSE, FALSE);
 	
-	tm_tags_array_free_prj(theWorkspace->project_tags); // free the current project tags
+	tm_workspace_free_prj(); // free the current project tags/typenames
+	
 	theWorkspace->project_tags = file_tags;
 	
+	if (load_typenames)
+	{
+		theWorkspace->project_typename_array =
+			tm_tags_extract(theWorkspace->project_tags, TM_GLOBAL_TYPE_MASK);
+	}
 	return TRUE;
 }
 

@@ -40,6 +40,13 @@ enum
 	SYMBOLS_SORT_USE_PREVIOUS
 };
 
+//~ esh: for symbols_find_typenames_as_string func
+enum
+{
+	TYPENAMES_SOURCE,
+	TYPENAMES_GLOBAL,
+	TYPENAMES_PROJECT
+};
 
 void symbols_init(void);
 
@@ -50,7 +57,7 @@ void symbols_reload_config_files(void);
 void symbols_global_tags_loaded(guint file_type_idx);
 
 GString *symbols_find_typenames_as_string(TMParserType lang,
-										  gboolean global);
+										  gint typedefs_kind);
 
 gboolean symbols_recreate_tag_list(GeanyDocument *doc, gint sort_mode);
 

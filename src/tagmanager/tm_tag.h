@@ -132,7 +132,7 @@ TMTag **tm_tags_find(const GPtrArray *tags_array, const char *name,
 					 gboolean partial, guint *tagCount);
 
 void tm_tags_array_free(GPtrArray *tags_array, gboolean free_all);
-void tm_tags_array_free_prj(GPtrArray *tags_array); // esh: for tm_workspace_free/tm_workspace_free_prj
+void tm_tags_array_free_prj(GPtrArray *tags_array); // esh: for tm_workspace_free_prj
 
 const TMTag *tm_get_current_tag(GPtrArray *file_tags, const gulong line,
 								const TMTagType tag_types);

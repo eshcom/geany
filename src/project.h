@@ -52,8 +52,12 @@ void project_write_config(void);
 //~ esh: also for geanyctags plugin
 gchar *project_get_base_path(void);
 
-//~ esh: for symbols.c/goto_tag, also for geanyctags plugin
+//~ esh: also for geanyctags plugin
 gchar *project_get_tags_file(void);
+
+//~ esh: also for geanyctags plugin
+void project_load_tags_file(const gchar *tags_file,
+							const gchar *source_path);
 
 
 #ifdef GEANY_PRIVATE

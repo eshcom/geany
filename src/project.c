@@ -427,7 +427,7 @@ gboolean project_close(gboolean open_default)
 	ui_set_statusbar(TRUE, _("Project \"%s\" closed."), app->project->name);
 	destroy_project(open_default);
 	
-	tm_workspace_free_prj(); // esh: free the project tags
+	tm_workspace_free_prj(); // esh: free the project tags/typenames
 	return TRUE;
 }
 
@@ -1232,8 +1232,7 @@ gchar *project_get_base_path(void)
 }
 
 
-//~ esh: for symbols.c/goto_tag
-//~ esh: added GEANY_API_SYMBOL - for geanyctags plugin
+//~ esh: also for geanyctags plugin
 GEANY_API_SYMBOL
 gchar *project_get_tags_file(void)
 {
@@ -1244,6 +1243,22 @@ gchar *project_get_tags_file(void)
 		return tags_file;
 	}
 	return NULL;
+}
+
+
+//~ esh: also for geanyctags plugin
+GEANY_API_SYMBOL
+void project_load_tags_file(const gchar *tags_file,
+							const gchar *source_path)
+{
+	if (app->project)
+	{
+		GeanyProjectPrivate *priv = app->project->priv;
+		
+		if (tm_workspace_load_project_tags(tags_file, source_path,
+										   priv->use_tags_file_for_lexer))
+			ui_set_statusbar(TRUE, _("Project tags loaded."));
+	}
 }
 
 
@@ -1421,8 +1436,7 @@ void project_load_tags()
 	gchar *base_path = project_get_base_path();
 	gchar *tags_file = project_get_tags_file();
 	
-	if (tm_workspace_load_project_tags(tags_file, base_path))
-		ui_set_statusbar(TRUE, _("Project tags loaded."));
+	project_load_tags_file(tags_file, base_path);
 	
 	g_free(base_path);
 	g_free(tags_file);
