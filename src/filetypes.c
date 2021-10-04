@@ -492,7 +492,6 @@ static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 {
 	gchar *lfn = NULL;
 	gchar *path;
-	gboolean found = FALSE;
 	
 #ifdef G_OS_WIN32
 	/* use lower case basename */
@@ -502,17 +501,10 @@ static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 #endif
 	SETPTR(lfn, utils_get_locale_from_utf8(lfn));
 	
-	path = g_build_filename(app->configdir, GEANY_FILEDEFS_SUBDIR,
-							"filetypes.", NULL);
-	if (g_str_has_prefix(lfn, path))
-		found = TRUE;
-	else
-	{
-		SETPTR(path, g_build_filename(app->datadir, GEANY_FILEDEFS_SUBDIR,
-									  "filetypes.", NULL));
-		if (g_str_has_prefix(lfn, path))
-			found = TRUE;
-	}
+	//~ esh: detect conf-file by parent dir of utf8_filename
+	path = g_path_get_dirname(utf8_filename);
+	gboolean found = g_str_has_suffix(path, GEANY_FILEDEFS_SUBDIR);
+	
 	g_free(path);
 	g_free(lfn);
 	return found ? filetypes[GEANY_FILETYPES_CONF] : NULL;
