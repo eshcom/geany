@@ -2820,13 +2820,19 @@ void document_highlight_tags(GeanyDocument *doc)
 		default:
 			return; /* early out if type keywords are not supported */
 	}
-	if (!app->tm_workspace->tags_array)
+	
+	gint typedefs_kind;
+	if (app->tm_workspace->project_typename_array)
+		typedefs_kind = TYPENAMES_PROJECT;
+	else if (app->tm_workspace->typename_array)
+		typedefs_kind = TYPENAMES_SOURCE;
+	else
 		return;
 	
 	/* get any type keywords and tell scintilla about them
 	 * this will cause the type keywords to be colourized in scintilla */
 	keywords_str = symbols_find_typenames_as_string(doc->file_type->lang,
-													FALSE);
+													typedefs_kind);
 	if (keywords_str)
 	{
 		gchar *keywords = g_string_free(keywords_str, FALSE);

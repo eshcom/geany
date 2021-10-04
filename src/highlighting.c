@@ -815,7 +815,8 @@ static void merge_type_keywords(ScintillaObject *sci, guint ft_id, guint keyword
 	const gchar *user_words = style_sets[ft_id].keywords[keyword_idx];
 	GString *s;
 
-	s = symbols_find_typenames_as_string(filetypes[ft_id]->lang, TRUE);
+	s = symbols_find_typenames_as_string(filetypes[ft_id]->lang,
+										 TYPENAMES_GLOBAL);
 	if (G_UNLIKELY(s == NULL))
 		s = g_string_sized_new(200);
 	else
