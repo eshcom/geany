@@ -57,7 +57,8 @@ gint get_folding_margin_width();
 
 #ifdef GEANY_PRIVATE
 
-void highlighting_init_styles(guint filetype_idx, GKeyFile *config, GKeyFile *configh);
+void highlighting_init_styles(guint filetype_idx, GKeyFile *config,
+							  GKeyFile *configh);
 
 void highlighting_free_styles(void);
 

@@ -17,7 +17,7 @@
  but through an external interface such as tm_source_file_parse(), which generates
  an array of tags for the given source file. Once the tag list is generated,
  you can do various operations such as:
- 	-# Extract relevant tags using tm_tags_extract()
+	-# Extract relevant tags using tm_tags_extract()
 	-# Sort an array of tags using tm_tags_sort()
 	-# Deduplicate an array of tags using tm_tags_dedup().
 

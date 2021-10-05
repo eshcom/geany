@@ -1135,7 +1135,7 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object, GeanyEditor *edi
 			}
 			break;
 
- 		case SCN_MODIFIED:
+		case SCN_MODIFIED:
 			if (editor_prefs.show_linenumber_margin && (nt->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) && nt->linesAdded)
 			{
 				/* automatically adjust Scintilla's line numbers margin width */
@@ -1260,7 +1260,7 @@ get_whitespace(const GeanyIndentPrefs *iprefs, gint width)
 		memset(str + tabs, ' ', spaces);
 		str[len] = '\0';
 		return str;
- 	}
+	}
 }
 
 
@@ -3063,7 +3063,7 @@ static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos, cons
 	sci_scroll_caret(sci);
 
 	g_free(str);
- 	return TRUE;
+	return TRUE;
 }
 
 

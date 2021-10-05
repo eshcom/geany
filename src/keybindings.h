@@ -54,7 +54,8 @@ typedef gboolean (*GeanyKeyGroupCallback) (guint key_id);
  * with the same key combination to handle it).
  *
  * @since 1.26 (API 226) */
-typedef gboolean (*GeanyKeyGroupFunc)(GeanyKeyGroup *group, guint key_id, gpointer user_data);
+typedef gboolean (*GeanyKeyGroupFunc)(GeanyKeyGroup *group, guint key_id,
+									  gpointer user_data);
 
 /** Function pointer type used for keybinding callbacks. */
 typedef void (*GeanyKeyCallback) (guint key_id);
@@ -66,7 +67,8 @@ typedef void (*GeanyKeyCallback) (guint key_id);
  * with the same key combination to handle it).
  *
  * @since 1.26 (API 226) */
-typedef gboolean (*GeanyKeyBindingFunc)(GeanyKeyBinding *key, guint key_id, gpointer user_data);
+typedef gboolean (*GeanyKeyBindingFunc)(GeanyKeyBinding *key, guint key_id,
+										gpointer user_data);
 
 /** Represents a single keybinding action.
  *
@@ -282,13 +284,15 @@ enum GeanyKeyBindingID
 void keybindings_send_command(guint group_id, guint key_id);
 
 GeanyKeyBinding *keybindings_set_item(GeanyKeyGroup *group, gsize key_id,
-		GeanyKeyCallback callback, guint key, GdkModifierType mod,
-		const gchar *name, const gchar *label, GtkWidget *menu_item);
+									  GeanyKeyCallback callback, guint key,
+									  GdkModifierType mod, const gchar *kf_name,
+									  const gchar *label, GtkWidget *menu_item);
 
 GeanyKeyBinding *keybindings_set_item_full(GeanyKeyGroup *group, gsize key_id,
-		guint key, GdkModifierType mod, const gchar *kf_name, const gchar *label,
-		GtkWidget *menu_item, GeanyKeyBindingFunc func, gpointer pdata,
-		GDestroyNotify destroy_notify);
+										   guint key, GdkModifierType mod,
+										   const gchar *kf_name, const gchar *label,
+										   GtkWidget *menu_item, GeanyKeyBindingFunc cb,
+										   gpointer pdata, GDestroyNotify destroy_notify);
 
 GeanyKeyBinding *keybindings_get_item(GeanyKeyGroup *group, gsize key_id);
 
@@ -307,14 +311,18 @@ void keybindings_free(void);
 
 GeanyKeyGroup *keybindings_get_core_group(guint id);
 
-GeanyKeyGroup *keybindings_set_group(GeanyKeyGroup *group, const gchar *section_name,
-		const gchar *label, gsize count, GeanyKeyGroupCallback callback) G_GNUC_WARN_UNUSED_RESULT;
+GeanyKeyGroup *keybindings_set_group(GeanyKeyGroup *group,
+									 const gchar *section_name,
+									 const gchar *label, gsize count,
+									 GeanyKeyGroupCallback callback)
+									 G_GNUC_WARN_UNUSED_RESULT;
 
 void keybindings_free_group(GeanyKeyGroup *group);
 
 gchar *keybindings_get_label(GeanyKeyBinding *kb);
 
-void keybindings_update_combo(GeanyKeyBinding *kb, guint key, GdkModifierType mods);
+void keybindings_update_combo(GeanyKeyBinding *kb, guint key,
+							  GdkModifierType mods);
 
 GeanyKeyBinding *keybindings_lookup_item(guint group_id, guint key_id);
 

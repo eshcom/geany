@@ -64,8 +64,8 @@
 /**
  *  Tries to open the given URI in a browser.
  *  On Windows, the system's default browser is opened.
- *  On non-Windows systems, the browser command set in the preferences dialog is used. In case
- *  that fails or it is unset, the user is asked to correct or fill it.
+ *  On non-Windows systems, the browser command set in the preferences dialog is used.
+ *  In case that fails or it is unset, the user is asked to correct or fill it.
  *
  *  @param uri The URI to open in the web browser.
  *
@@ -79,19 +79,20 @@ void utils_open_browser(const gchar *uri)
 	win32_open_browser(uri);
 #else
 	gchar *argv[2] = { (gchar *) uri, NULL };
-
+	
 	g_return_if_fail(uri != NULL);
-
+	
 	while (!spawn_async(NULL, tool_prefs.browser_cmd, argv, NULL, NULL, NULL))
 	{
-		gchar *new_cmd = dialogs_show_input(_("Select Browser"), GTK_WINDOW(main_widgets.window),
-			_("Failed to spawn the configured browser command. "
-			  "Please correct it or enter another one."),
-			tool_prefs.browser_cmd);
-
+		gchar *new_cmd = dialogs_show_input(_("Select Browser"),
+							GTK_WINDOW(main_widgets.window),
+							_("Failed to spawn the configured browser command. "
+							  "Please correct it or enter another one."),
+							tool_prefs.browser_cmd);
+		
 		if (new_cmd == NULL) /* user canceled */
 			break;
-
+		
 		SETPTR(tool_prefs.browser_cmd, new_cmd);
 	}
 #endif
@@ -104,40 +105,36 @@ gint utils_get_line_endings(const gchar* buffer, gsize size)
 	gsize i;
 	guint cr, lf, crlf, max_mode;
 	gint mode;
-
+	
 	cr = lf = crlf = 0;
-
+	
 	for (i = 0; i < size ; i++)
 	{
 		if (buffer[i] == 0x0a)
-		{
-			/* LF */
+		{	/* LF */
 			lf++;
 		}
 		else if (buffer[i] == 0x0d)
 		{
 			if (i >= (size - 1))
-			{
-				/* Last char, CR */
+			{	/* Last char, CR */
 				cr++;
 			}
 			else
 			{
 				if (buffer[i + 1] != 0x0a)
-				{
-					/* CR */
+				{	/* CR */
 					cr++;
 				}
 				else
-				{
-					/* CRLF */
+				{	/* CRLF */
 					crlf++;
 				}
 				i++;
 			}
 		}
 	}
-
+	
 	/* Vote for the maximum */
 	mode = SC_EOL_LF;
 	max_mode = lf;
@@ -151,7 +148,6 @@ gint utils_get_line_endings(const gchar* buffer, gsize size)
 		mode = SC_EOL_CR;
 		max_mode = cr;
 	}
-
 	return mode;
 }
 
@@ -163,7 +159,7 @@ gboolean utils_isbrace(gchar c, gboolean include_angles)
 		case '<':
 		case '>':
 		return include_angles;
-
+		
 		case '(':
 		case ')':
 		case '{':
@@ -181,7 +177,7 @@ gboolean utils_is_opening_brace(gchar c, gboolean include_angles)
 	{
 		case '<':
 		return include_angles;
-
+		
 		case '(':
 		case '{':
 		case '[':  return TRUE;
@@ -202,21 +198,22 @@ gboolean utils_is_opening_brace(gchar c, gboolean include_angles)
  * @param filename The filename of the file to write, in locale encoding.
  * @param text The text to write into the file.
  *
- * @return 0 if the file was successfully written, otherwise the @c errno of the
- *         failed operation is returned.
+ * @return 0 if the file was successfully written, otherwise the @c errno
+ *         of the failed operation is returned.
  **/
 GEANY_API_SYMBOL
 gint utils_write_file(const gchar *filename, const gchar *text)
 {
 	g_return_val_if_fail(filename != NULL, ENOENT);
 	g_return_val_if_fail(text != NULL, EINVAL);
-
+	
 	if (file_prefs.use_safe_file_saving)
 	{
 		GError *error = NULL;
-		if (! g_file_set_contents(filename, text, -1, &error))
+		if (!g_file_set_contents(filename, text, -1, &error))
 		{
-			geany_debug("%s: could not write to file %s (%s)", G_STRFUNC, filename, error->message);
+			geany_debug("%s: could not write to file %s (%s)",
+						G_STRFUNC, filename, error->message);
 			g_error_free(error);
 			return EIO;
 		}
@@ -226,10 +223,10 @@ gint utils_write_file(const gchar *filename, const gchar *text)
 		FILE *fp;
 		gsize bytes_written, len;
 		gboolean fail = FALSE;
-
+		
 		if (filename == NULL)
 			return ENOENT;
-
+		
 		len = strlen(text);
 		errno = 0;
 		fp = g_fopen(filename, "w");
@@ -238,13 +235,13 @@ gint utils_write_file(const gchar *filename, const gchar *text)
 		else
 		{
 			bytes_written = fwrite(text, sizeof(gchar), len, fp);
-
+			
 			if (len != bytes_written)
 			{
 				fail = TRUE;
-				geany_debug(
-					"utils_write_file(): written only %"G_GSIZE_FORMAT" bytes, had to write %"G_GSIZE_FORMAT" bytes to %s",
-					bytes_written, len, filename);
+				geany_debug("utils_write_file(): written only %"G_GSIZE_FORMAT
+							" bytes, had to write %"G_GSIZE_FORMAT" bytes to %s",
+							bytes_written, len, filename);
 			}
 			if (fclose(fp) != 0)
 				fail = TRUE;
@@ -252,7 +249,7 @@ gint utils_write_file(const gchar *filename, const gchar *text)
 		if (fail)
 		{
 			geany_debug("utils_write_file(): could not write to file %s (%s)",
-				filename, g_strerror(errno));
+						filename, g_strerror(errno));
 			return FALLBACK(errno, EIO);
 		}
 	}
@@ -263,23 +260,24 @@ gint utils_write_file(const gchar *filename, const gchar *text)
 /** Searches backward through @a size bytes looking for a '<'.
  * @param sel .
  * @param size .
- * @return @nullable The tag name (newly allocated) or @c NULL if no opening tag was found.
+ * @return @nullable The tag name (newly allocated) or @c NULL
+ *                   if no opening tag was found.
  */
 GEANY_API_SYMBOL
 gchar *utils_find_open_xml_tag(const gchar sel[], gint size)
 {
 	const gchar *cur, *begin;
 	gsize len;
-
+	
 	cur = utils_find_open_xml_tag_pos(sel, size);
 	if (cur == NULL)
 		return NULL;
-
+	
 	cur++; /* skip the bracket */
 	begin = cur;
 	while (strchr(":_-.", *cur) || isalnum(*cur))
 		cur++;
-
+	
 	len = (gsize)(cur - begin);
 	return len ? g_strndup(begin, len) : NULL;
 }
@@ -288,21 +286,22 @@ gchar *utils_find_open_xml_tag(const gchar sel[], gint size)
 /** Searches backward through @a size bytes looking for a '<'.
  * @param sel .
  * @param size .
- * @return @nullable pointer to '<' of the found opening tag within @a sel, or @c NULL if no opening tag was found.
+ * @return @nullable pointer to '<' of the found opening tag within @a sel,
+ *                   or @c NULL if no opening tag was found.
  */
 GEANY_API_SYMBOL
 const gchar *utils_find_open_xml_tag_pos(const gchar sel[], gint size)
 {
 	/* stolen from anjuta and modified */
 	const gchar *begin, *cur;
-
+	
 	if (G_UNLIKELY(size < 3))
 	{	/* Smallest tag is "<p>" which is 3 characters */
 		return NULL;
 	}
 	begin = &sel[0];
 	cur = &sel[size - 1];
-
+	
 	/* Skip to the character before the closing brace */
 	while (cur > begin)
 	{
@@ -316,20 +315,22 @@ const gchar *utils_find_open_xml_tag_pos(const gchar sel[], gint size)
 		cur--;
 	if (*cur == '/')
 		return NULL; /* we found a short tag which doesn't need to be closed */
+	
 	while (cur > begin)
 	{
 		if (*cur == '<')
 			break;
-		/* exit immediately if such non-valid XML/HTML is detected, e.g. "<script>if a >" */
+		/* exit immediately if such non-valid XML/HTML is detected,
+		 * e.g. "<script>if a >" */
 		else if (*cur == '>')
 			break;
 		--cur;
 	}
-
+	
 	/* if the found tag is an opening, not a closing tag or empty <> */
 	if (*cur == '<' && *(cur + 1) != '/' && *(cur + 1) != '>')
 		return cur;
-
+	
 	return NULL;
 }
 
@@ -357,12 +358,12 @@ gboolean utils_is_short_html_tag(const gchar *tag_name)
 		"track",
 		"wbr"
 	};
-
+	
 	if (tag_name)
 	{
 		if (bsearch(tag_name, names, G_N_ELEMENTS(names), 20,
 			(GCompareFunc)g_ascii_strcasecmp))
-				return TRUE;
+			return TRUE;
 	}
 	return FALSE;
 }
@@ -405,14 +406,14 @@ const gchar *utils_get_eol_char(gint eol_mode)
 void utils_ensure_same_eol_characters(GString *string, gint target_eol_mode)
 {
 	const gchar *eol_str = utils_get_eol_char(target_eol_mode);
-
+	
 	/* first convert data to LF only */
 	utils_string_replace_all(string, "\r\n", "\n");
 	utils_string_replace_all(string, "\r", "\n");
-
+	
 	if (target_eol_mode == SC_EOL_LF)
 		return;
-
+	
 	/* now convert to desired line endings */
 	utils_string_replace_all(string, "\n", eol_str);
 }
@@ -433,7 +434,7 @@ gboolean utils_is_absolute_path(const gchar *path)
 {
 	if (G_UNLIKELY(EMPTY(path)))
 		return FALSE;
-
+	
 	return g_path_is_absolute(path);
 }
 
@@ -444,9 +445,9 @@ gboolean utils_is_absolute_path(const gchar *path)
 const gchar *utils_path_skip_root(const gchar *path)
 {
 	const gchar *path_relative;
-
+	
 	path_relative = g_path_skip_root(path);
-
+	
 	return (path_relative != NULL) ? path_relative : path;
 }
 
@@ -461,17 +462,18 @@ gdouble utils_scale_round(gdouble val, gdouble factor)
 	val = floor(val * factor + 0.5);
 	val = MAX(val, 0);
 	val = MIN(val, factor);
-
+	
 	return val;
 }
 
 
-/* like g_utf8_strdown() but if @str is not valid UTF8, convert it from locale first.
+/* like g_utf8_strdown() but if @str is not valid UTF8,
+ * convert it from locale first.
  * returns NULL on charset conversion failure */
 static gchar *utf8_strdown(const gchar *str)
 {
 	gchar *down;
-
+	
 	if (g_utf8_validate(str, -1, NULL))
 		down = g_utf8_strdown(str, -1);
 	else
@@ -480,7 +482,6 @@ static gchar *utf8_strdown(const gchar *str)
 		if (down)
 			SETPTR(down, g_utf8_strdown(down, -1));
 	}
-
 	return down;
 }
 
@@ -497,8 +498,8 @@ static gchar *utf8_strdown(const gchar *str)
  *  @param s1 @nullable Pointer to first string or @c NULL.
  *  @param s2 @nullable Pointer to second string or @c NULL.
  *
- *  @return an integer less than, equal to, or greater than zero if @a s1 is found, respectively,
- *          to be less than, to match, or to be greater than @a s2.
+ *  @return an integer less than, equal to, or greater than zero if @a s1 is found,
+ *          respectively, to be less than, to match, or to be greater than @a s2.
  *
  *  @since 0.16
  */
@@ -507,24 +508,24 @@ gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 {
 	gchar *tmp1, *tmp2;
 	gint result;
-
+	
 	g_return_val_if_fail(s1 != NULL, 1);
 	g_return_val_if_fail(s2 != NULL, -1);
-
+	
 	/* ensure strings are UTF-8 and lowercase */
 	tmp1 = utf8_strdown(s1);
-	if (! tmp1)
+	if (!tmp1)
 		return 1;
 	tmp2 = utf8_strdown(s2);
-	if (! tmp2)
+	if (!tmp2)
 	{
 		g_free(tmp1);
 		return -1;
 	}
-
+	
 	/* compare */
 	result = strcmp(tmp1, tmp2);
-
+	
 	g_free(tmp1);
 	g_free(tmp2);
 	return result;
@@ -533,8 +534,8 @@ gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 
 /**
  *  Truncates the input string to a given length.
- *  Characters are removed from the middle of the string, so the start and the end of string
- *  won't change.
+ *  Characters are removed from the middle of the string,
+ *  so the start and the end of string won't change.
  *
  *  @param string Input string.
  *  @param truncate_length The length in characters of the resulting string.
@@ -555,33 +556,35 @@ gchar *utils_str_middle_truncate(const gchar *string, guint truncate_length)
 	guint right_offset;
 	guint delimiter_length;
 	const gchar *delimiter = "\342\200\246";
-
+	
 	g_return_val_if_fail(string != NULL, NULL);
-
+	
 	length = strlen(string);
-
+	
 	g_return_val_if_fail(g_utf8_validate(string, length, NULL), NULL);
-
-	/* It doesn't make sense to truncate strings to less than the size of the delimiter plus 2
-	 * characters (one on each side) */
+	
+	/* It doesn't make sense to truncate strings to less than the size
+	 * of the delimiter plus 2 characters (one on each side) */
 	delimiter_length = g_utf8_strlen(delimiter, -1);
 	if (truncate_length < (delimiter_length + 2))
 		return g_strdup(string);
-
+	
 	n_chars = g_utf8_strlen(string, length);
-
+	
 	/* Make sure the string is not already small enough. */
 	if (n_chars <= truncate_length)
 		return g_strdup (string);
-
+	
 	/* Find the 'middle' where the truncation will occur. */
 	num_left_chars = (truncate_length - delimiter_length) / 2;
 	right_offset = n_chars - truncate_length + num_left_chars + delimiter_length;
-
-	truncated = g_string_new_len(string, g_utf8_offset_to_pointer(string, num_left_chars) - string);
+	
+	truncated = g_string_new_len(string,
+						g_utf8_offset_to_pointer(string, num_left_chars) - string);
+	
 	g_string_append(truncated, delimiter);
 	g_string_append(truncated, g_utf8_offset_to_pointer(string, right_offset));
-
+	
 	return g_string_free(truncated, FALSE);
 }
 
@@ -601,7 +604,7 @@ gboolean utils_str_equal(const gchar *a, const gchar *b)
 	/* (taken from libexo from os-cillation) */
 	if (a == NULL && b == NULL) return TRUE;
 	else if (a == NULL || b == NULL) return FALSE;
-
+	
 	return strcmp(a, b) == 0;
 }
 GEANY_API_SYMBOL
@@ -610,13 +613,14 @@ gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n)
 	/* (taken from libexo from os-cillation) */
 	if (a == NULL && b == NULL) return TRUE;
 	else if (a == NULL || b == NULL) return FALSE;
-
+	
 	return strncmp(a, b, n) == 0;
 }
 
 
 /**
- *  Removes the extension from @a filename and return the result in a newly allocated string.
+ *  Removes the extension from @a filename and return
+ *  the result in a newly allocated string.
  *
  *  @param filename The filename to operate on.
  *
@@ -628,18 +632,18 @@ gchar *utils_remove_ext_from_filename(const gchar *filename)
 	gchar *last_dot;
 	gchar *result;
 	gsize len;
-
+	
 	g_return_val_if_fail(filename != NULL, NULL);
-
+	
 	last_dot = strrchr(filename, '.');
-	if (! last_dot)
+	if (!last_dot)
 		return g_strdup(filename);
-
+	
 	len = (gsize) (last_dot - filename);
 	result = g_malloc(len + 1);
 	memcpy(result, filename, len);
 	result[len] = 0;
-
+	
 	return result;
 }
 
@@ -661,27 +665,29 @@ gchar utils_brace_opposite(gchar ch)
 }
 
 
-/* Checks whether the given file can be written. locale_filename is expected in locale encoding.
+/* Checks whether the given file can be written.
+ * locale_filename is expected in locale encoding.
  * Returns 0 if it can be written, otherwise it returns errno */
 gint utils_is_file_writable(const gchar *locale_filename)
 {
 	gchar *file;
 	gint ret;
-
-	if (! g_file_test(locale_filename, G_FILE_TEST_EXISTS) &&
-		! g_file_test(locale_filename, G_FILE_TEST_IS_DIR))
-		/* get the file's directory to check for write permission if it doesn't yet exist */
+	
+	if (!g_file_test(locale_filename, G_FILE_TEST_EXISTS) &&
+		!g_file_test(locale_filename, G_FILE_TEST_IS_DIR))
+		/* get the file's directory to check for write permission
+		 * if it doesn't yet exist */
 		file = g_path_get_dirname(locale_filename);
 	else
 		file = g_strdup(locale_filename);
-
+	
 #ifdef G_OS_WIN32
 	/* use _waccess on Windows, access() doesn't accept special characters */
 	ret = win32_check_write_permission(file);
 #else
-
-	/* access set also errno to "FILE NOT FOUND" even if locale_filename is writeable, so use
-	 * errno only when access() explicitly returns an error */
+	
+	/* access set also errno to "FILE NOT FOUND" even if locale_filename is writeable,
+	 * so use errno only when access() explicitly returns an error */
 	if (access(file, R_OK | W_OK) != 0)
 		ret = errno;
 	else
@@ -694,21 +700,22 @@ gint utils_is_file_writable(const gchar *locale_filename)
 
 /* Replaces all occurrences of needle in haystack with replacement.
  * Warning: *haystack must be a heap address; it may be freed and reassigned.
- * Note: utils_string_replace_all() will always be faster when @a replacement is longer
- * than @a needle.
+ * Note: utils_string_replace_all() will always be faster 
+ * when @a replacement is longer than @a needle.
  * All strings have to be NULL-terminated.
  * See utils_string_replace_all() for details. */
-void utils_str_replace_all(gchar **haystack, const gchar *needle, const gchar *replacement)
+void utils_str_replace_all(gchar **haystack, const gchar *needle,
+						   const gchar *replacement)
 {
 	GString *str;
-
+	
 	g_return_if_fail(*haystack != NULL);
-
+	
 	str = g_string_new(*haystack);
-
+	
 	g_free(*haystack);
 	utils_string_replace_all(str, needle, replacement);
-
+	
 	*haystack = g_string_free(str, FALSE);
 }
 
@@ -716,26 +723,27 @@ void utils_str_replace_all(gchar **haystack, const gchar *needle, const gchar *r
 gint utils_strpos(const gchar *haystack, const gchar *needle)
 {
 	const gchar *sub;
-
-	if (! *needle)
+	
+	if (!*needle)
 		return -1;
-
+	
 	sub = strstr(haystack, needle);
-	if (! sub)
+	if (!sub)
 		return -1;
-
+	
 	return sub - haystack;
 }
 
 
 /**
  *  Retrieves a formatted date/time string from strftime().
- *  This function should be preferred to directly calling strftime() since this function
- *  works on UTF-8 encoded strings.
+ *  This function should be preferred to directly calling strftime() since
+ *  this function works on UTF-8 encoded strings.
  *
  *  @param format The format string to pass to strftime(3). See the strftime(3)
  *                documentation for details, in UTF-8 encoding.
- *  @param time_to_use @nullable The date/time to use, in time_t format or @c NULL to use the current time.
+ *  @param time_to_use @nullable The date/time to use,
+ *         in time_t format or @c NULL to use the current time.
  *
  *  @return A newly-allocated string, should be freed when no longer needed.
  *
@@ -748,10 +756,10 @@ gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 	static gchar date[1024];
 	gchar *locale_format;
 	gsize len;
-
+	
 	g_return_val_if_fail(format != NULL, NULL);
-
-	if (! g_utf8_validate(format, -1, NULL))
+	
+	if (!g_utf8_validate(format, -1, NULL))
 	{
 		locale_format = g_locale_from_utf8(format, -1, NULL, NULL, NULL);
 		if (locale_format == NULL)
@@ -759,7 +767,7 @@ gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 	}
 	else
 		locale_format = g_strdup(format);
-
+	
 	if (time_to_use != NULL)
 		tm = localtime(time_to_use);
 	else
@@ -767,13 +775,13 @@ gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 		time_t tp = time(NULL);
 		tm = localtime(&tp);
 	}
-
+	
 	len = strftime(date, 1024, locale_format, tm);
 	g_free(locale_format);
 	if (len == 0)
 		return NULL;
-
-	if (! g_utf8_validate(date, len, NULL))
+	
+	if (!g_utf8_validate(date, len, NULL))
 		return g_locale_to_utf8(date, len, NULL, NULL, NULL);
 	else
 		return g_strdup(date);
@@ -784,14 +792,13 @@ gchar *utils_get_initials(const gchar *name)
 {
 	gint i = 1, j = 1;
 	gchar *initials = g_malloc0(5);
-
+	
 	initials[0] = name[0];
 	while (name[i] != '\0' && j < 4)
 	{
 		if (name[i] == ' ' && name[i + 1] != ' ')
-		{
 			initials[j++] = name[i + 1];
-		}
+		
 		i++;
 	}
 	return initials;
@@ -804,21 +811,21 @@ gchar *utils_get_initials(const gchar *name)
  *  @param config A GKeyFile object.
  *  @param section The group name to look in for the key.
  *  @param key The key to find.
- *  @param default_value The default value which will be returned when @a section or @a key
- *         don't exist.
+ *  @param default_value The default value which will be returned
+ *         when @a section or @a key don't exist.
  *
- *  @return The value associated with @a key as an integer, or the given default value if the value
- *          could not be retrieved.
+ *  @return The value associated with @a key as an integer, or the given
+ *          default value if the value could not be retrieved.
  **/
 GEANY_API_SYMBOL
-gint utils_get_setting_integer(GKeyFile *config, const gchar *section, const gchar *key,
-							   const gint default_value)
+gint utils_get_setting_integer(GKeyFile *config, const gchar *section,
+							   const gchar *key, const gint default_value)
 {
 	gint tmp;
 	GError *error = NULL;
-
+	
 	g_return_val_if_fail(config, default_value);
-
+	
 	tmp = g_key_file_get_integer(config, section, key, &error);
 	if (error)
 	{
@@ -835,21 +842,21 @@ gint utils_get_setting_integer(GKeyFile *config, const gchar *section, const gch
  *  @param config A GKeyFile object.
  *  @param section The group name to look in for the key.
  *  @param key The key to find.
- *  @param default_value The default value which will be returned when @c section or @c key
- *         don't exist.
+ *  @param default_value The default value which will be returned
+ *         when @c section or @c key don't exist.
  *
- *  @return The value associated with @a key as a boolean, or the given default value if the value
- *          could not be retrieved.
+ *  @return The value associated with @a key as a boolean, or the given
+ *          default value if the value could not be retrieved.
  **/
 GEANY_API_SYMBOL
-gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section, const gchar *key,
-								   const gboolean default_value)
+gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section,
+								   const gchar *key, const gboolean default_value)
 {
 	gboolean tmp;
 	GError *error = NULL;
-
+	
 	g_return_val_if_fail(config, default_value);
-
+	
 	tmp = g_key_file_get_boolean(config, section, key, &error);
 	if (error)
 	{
@@ -866,25 +873,24 @@ gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section, const
  *  @param config A GKeyFile object.
  *  @param section The group name to look in for the key.
  *  @param key The key to find.
- *  @param default_value The default value which will be returned when @a section or @a key
- *         don't exist.
+ *  @param default_value The default value which will be returned
+ *         when @a section or @a key don't exist.
  *
  *  @return A newly allocated string, either the value for @a key or a copy of the given
  *          default value if it could not be retrieved.
  **/
 GEANY_API_SYMBOL
-gchar *utils_get_setting_string(GKeyFile *config, const gchar *section, const gchar *key,
-								const gchar *default_value)
+gchar *utils_get_setting_string(GKeyFile *config, const gchar *section,
+								const gchar *key, const gchar *default_value)
 {
 	gchar *tmp;
-
+	
 	g_return_val_if_fail(config, g_strdup(default_value));
-
+	
 	tmp = g_key_file_get_string(config, section, key, NULL);
 	if (!tmp)
-	{
 		return g_strdup(default_value);
-	}
+	
 	return tmp;
 }
 
@@ -892,7 +898,7 @@ gchar *utils_get_setting_string(GKeyFile *config, const gchar *section, const gc
 gchar *utils_get_hex_from_color(GdkColor *color)
 {
 	g_return_val_if_fail(color != NULL, NULL);
-
+	
 	return g_strdup_printf("#%02X%02X%02X",
 		(guint) (utils_scale_round(color->red / 65535.0, 255)),
 		(guint) (utils_scale_round(color->green / 65535.0, 255)),
@@ -901,24 +907,23 @@ gchar *utils_get_hex_from_color(GdkColor *color)
 
 
 /* Get directory from current file in the notebook.
- * Returns dir string that should be freed or NULL, depending on whether current file is valid.
+ * Returns dir string that should be freed or NULL,
+ * depending on whether current file is valid.
  * Returned string is in UTF-8 encoding */
 gchar *utils_get_current_file_dir_utf8(void)
 {
 	GeanyDocument *doc = document_get_current();
-
+	
 	if (doc != NULL)
 	{
 		/* get current filename */
 		const gchar *cur_fname = doc->file_name;
-
+		
 		if (cur_fname != NULL)
-		{
-			/* get folder part from current filename */
+		{	/* get folder part from current filename */
 			return g_path_get_dirname(cur_fname); /* returns "." if no path */
 		}
 	}
-
 	return NULL; /* no file open */
 }
 
@@ -939,20 +944,20 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 	static const gchar zero_and_units[] = { '0', 0, 'K', 'M', 'G', 'T' };
 	static const gchar fmt[] = "%Lu %c%c";
 	static const gchar fmt_tenths[] = "%Lu.%d %c%c";
-
+	
 	guint64 val;
 	gint frac;
 	const gchar *u;
 	const gchar *f;
-
+	
 	u = zero_and_units;
 	f = fmt;
 	frac = 0;
-
+	
 	val = size * block_size;
 	if (val == 0)
 		return g_strdup(u);
-
+	
 	if (display_unit)
 	{
 		val += display_unit/2;	/* Deal with rounding. */
@@ -969,12 +974,12 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 			val /= 1024;
 		}
 		if (frac >= 10)
-		{		/* We need to round up here. */
+		{	/* We need to round up here. */
 			++val;
 			frac = 0;
 		}
 	}
-
+	
 	/* If f==fmt then 'frac' and 'u' are ignored. */
 	return g_strdup_printf(f, val, frac, *u, 'b');
 }
@@ -985,9 +990,9 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 {
 	gchar buf[64] = {0};
-
+	
 	g_return_val_if_fail(spec != NULL, -1);
-
+	
 	if (spec[0] == '0' && (spec[1] == 'x' || spec[1] == 'X'))
 	{
 		/* convert to # format for GDK to understand it */
@@ -995,13 +1000,12 @@ gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 		strncpy(buf + 1, spec + 2, sizeof(buf) - 2);
 		spec = buf;
 	}
-
 	return gdk_color_parse(spec, color);
 }
 
 
-/* converts a GdkColor to the packed 24 bits BGR format, as understood by Scintilla
- * returns a 24 bits BGR color, or -1 on failure */
+/* converts a GdkColor to the packed 24 bits BGR format, as understood
+ * by Scintilla returns a 24 bits BGR color, or -1 on failure */
 gint utils_color_to_bgr(const GdkColor *c)
 {
 	g_return_val_if_fail(c != NULL, -1);
@@ -1009,8 +1013,8 @@ gint utils_color_to_bgr(const GdkColor *c)
 }
 
 
-/* parses @p spec using utils_parse_color() and convert it to 24 bits BGR using
- * utils_color_to_bgr() */
+/* parses @p spec using utils_parse_color() and convert it
+ * to 24 bits BGR using utils_color_to_bgr() */
 gint utils_parse_color_to_bgr(const gchar *spec)
 {
 	GdkColor color;
@@ -1027,31 +1031,31 @@ gchar *utils_get_current_time_string(void)
 	const time_t tp = time(NULL);
 	const struct tm *tmval = localtime(&tp);
 	gchar *result = g_malloc0(9);
-
+	
 	strftime(result, 9, "%H:%M:%S", tmval);
 	result[8] = '\0';
 	return result;
 }
 
 
-GIOChannel *utils_set_up_io_channel(
-				gint fd, GIOCondition cond, gboolean nblock, GIOFunc func, gpointer data)
+GIOChannel *utils_set_up_io_channel(gint fd, GIOCondition cond, gboolean nblock,
+									GIOFunc func, gpointer data)
 {
 	GIOChannel *ioc;
 	/*const gchar *encoding;*/
-
+	
 	#ifdef G_OS_WIN32
 	ioc = g_io_channel_win32_new_fd(fd);
 	#else
 	ioc = g_io_channel_unix_new(fd);
 	#endif
-
+	
 	if (nblock)
 		g_io_channel_set_flags(ioc, G_IO_FLAG_NONBLOCK, NULL);
-
+	
 	g_io_channel_set_encoding(ioc, NULL, NULL);
 /*
-	if (! g_get_charset(&encoding))
+	if (!g_get_charset(&encoding))
 	{	// hope this works reliably
 		GError *error = NULL;
 		g_io_channel_set_encoding(ioc, encoding, &error);
@@ -1065,10 +1069,10 @@ GIOChannel *utils_set_up_io_channel(
 */
 	/* "auto-close" ;-) */
 	g_io_channel_set_close_on_unref(ioc, TRUE);
-
+	
 	g_io_add_watch(ioc, cond, func, data);
 	g_io_channel_unref(ioc);
-
+	
 	return ioc;
 }
 
@@ -1080,9 +1084,9 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 {
 	gsize i, j, len;
 	guint unicodechar;
-
+	
 	g_return_val_if_fail(string != NULL, FALSE);
-
+	
 	j = 0;
 	len = strlen(string);
 	for (i = 0; i < len; i++)
@@ -1090,9 +1094,8 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 		if (string[i]=='\\')
 		{
 			if (i++ >= strlen(string))
-			{
 				return FALSE;
-			}
+			
 			switch (string[i])
 			{
 				case '\\':
@@ -1113,51 +1116,73 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 				case 'x': /* Warning: May produce illegal utf-8 string! */
 					i += 2;
 					if (i >= strlen(string))
-					{
 						return FALSE;
-					}
-					if (isdigit(string[i - 1])) string[j] = string[i - 1] - 48;
-					else if (isxdigit(string[i - 1])) string[j] = tolower(string[i - 1])-87;
+					
+					if (isdigit(string[i - 1]))
+						string[j] = string[i - 1] - 48;
+					else if (isxdigit(string[i - 1]))
+						string[j] = tolower(string[i - 1]) - 87;
 					else return FALSE;
+					
 					string[j] <<= 4;
-					if (isdigit(string[i])) string[j] |= string[i] - 48;
-					else if (isxdigit(string[i])) string[j] |= tolower(string[i])-87;
+					if (isdigit(string[i]))
+						string[j] |= string[i] - 48;
+					else if (isxdigit(string[i]))
+						string[j] |= tolower(string[i]) - 87;
 					else return FALSE;
+					
 					break;
 #endif
 				case 'u':
 				{
 					i += 2;
 					if (i >= strlen(string))
-					{
 						return FALSE;
-					}
-					if (isdigit(string[i - 1])) unicodechar = string[i - 1] - 48;
-					else if (isxdigit(string[i - 1])) unicodechar = tolower(string[i - 1])-87;
+					
+					if (isdigit(string[i - 1]))
+						unicodechar = string[i - 1] - 48;
+					else if (isxdigit(string[i - 1]))
+						unicodechar = tolower(string[i - 1]) - 87;
 					else return FALSE;
+					
 					unicodechar <<= 4;
-					if (isdigit(string[i])) unicodechar |= string[i] - 48;
-					else if (isxdigit(string[i])) unicodechar |= tolower(string[i])-87;
+					if (isdigit(string[i]))
+						unicodechar |= string[i] - 48;
+					else if (isxdigit(string[i]))
+						unicodechar |= tolower(string[i]) - 87;
 					else return FALSE;
-					if (((i + 2) < strlen(string)) && (isdigit(string[i + 1]) || isxdigit(string[i + 1]))
+					
+					if (((i + 2) < strlen(string))
+						&& (isdigit(string[i + 1]) || isxdigit(string[i + 1]))
 						&& (isdigit(string[i + 2]) || isxdigit(string[i + 2])))
 					{
 						i += 2;
 						unicodechar <<= 8;
-						if (isdigit(string[i - 1])) unicodechar |= ((string[i - 1] - 48) << 4);
-						else unicodechar |= ((tolower(string[i - 1])-87) << 4);
-						if (isdigit(string[i])) unicodechar |= string[i] - 48;
-						else unicodechar |= tolower(string[i])-87;
+						if (isdigit(string[i - 1]))
+							unicodechar |= ((string[i - 1] - 48) << 4);
+						else
+							unicodechar |= ((tolower(string[i - 1]) - 87) << 4);
+						
+						if (isdigit(string[i]))
+							unicodechar |= string[i] - 48;
+						else
+							unicodechar |= tolower(string[i]) - 87;
 					}
-					if (((i + 2) < strlen(string)) && (isdigit(string[i + 1]) || isxdigit(string[i + 1]))
+					if (((i + 2) < strlen(string))
+						&& (isdigit(string[i + 1]) || isxdigit(string[i + 1]))
 						&& (isdigit(string[i + 2]) || isxdigit(string[i + 2])))
 					{
 						i += 2;
 						unicodechar <<= 8;
-						if (isdigit(string[i - 1])) unicodechar |= ((string[i - 1] - 48) << 4);
-						else unicodechar |= ((tolower(string[i - 1])-87) << 4);
-						if (isdigit(string[i])) unicodechar |= string[i] - 48;
-						else unicodechar |= tolower(string[i])-87;
+						if (isdigit(string[i - 1]))
+							unicodechar |= ((string[i - 1] - 48) << 4);
+						else
+							unicodechar |= ((tolower(string[i - 1]) - 87) << 4);
+						
+						if (isdigit(string[i]))
+							unicodechar |= string[i] - 48;
+						else
+							unicodechar |= tolower(string[i]) - 87;
 					}
 					if (unicodechar < 0x80)
 					{
@@ -1221,10 +1246,10 @@ gboolean utils_wrap_string(gchar *string, gint wrapstart)
 {
 	gchar *pos, *linestart;
 	gboolean ret = FALSE;
-
+	
 	if (wrapstart < 0)
 		wrapstart = 80;
-
+	
 	for (pos = linestart = string; *pos != '\0'; pos++)
 	{
 		if (pos - linestart >= wrapstart && *pos == ' ')
@@ -1240,28 +1265,32 @@ gboolean utils_wrap_string(gchar *string, gint wrapstart)
 
 /**
  *  Converts the given UTF-8 encoded string into locale encoding.
- *  On Windows platforms, it does nothing and instead it just returns a copy of the input string.
+ *  On Windows platforms, it does nothing and instead it just
+ *  returns a copy of the input string.
  *
  *  @param utf8_text UTF-8 encoded text.
  *
- *  @return The converted string in locale encoding, or a copy of the input string if conversion
- *    failed. Should be freed with g_free(). If @a utf8_text is @c NULL, @c NULL is returned.
+ *  @return The converted string in locale encoding, or a copy of the
+ *          input string if conversion failed. Should be freed with g_free().
+ *          If @a utf8_text is @c NULL, @c NULL is returned.
  **/
 GEANY_API_SYMBOL
 gchar *utils_get_locale_from_utf8(const gchar *utf8_text)
 {
 #ifdef G_OS_WIN32
-	/* just do nothing on Windows platforms, this ifdef is just to prevent unwanted conversions
-	 * which would result in wrongly converted strings */
+	/* just do nothing on Windows platforms, this ifdef is just to prevent
+	 * unwanted conversions which would result in wrongly converted strings */
 	return g_strdup(utf8_text);
 #else
 	gchar *locale_text;
-
-	if (! utf8_text)
+	
+	if (!utf8_text)
 		return NULL;
+	
 	locale_text = g_locale_from_utf8(utf8_text, -1, NULL, NULL, NULL);
 	if (locale_text == NULL)
 		locale_text = g_strdup(utf8_text);
+	
 	return locale_text;
 #endif
 }
@@ -1269,28 +1298,32 @@ gchar *utils_get_locale_from_utf8(const gchar *utf8_text)
 
 /**
  *  Converts the given string (in locale encoding) into UTF-8 encoding.
- *  On Windows platforms, it does nothing and instead it just returns a copy of the input string.
+ *  On Windows platforms, it does nothing and instead it just
+ *  returns a copy of the input string.
  *
  *  @param locale_text Text in locale encoding.
  *
- *  @return The converted string in UTF-8 encoding, or a copy of the input string if conversion
- *    failed. Should be freed with g_free(). If @a locale_text is @c NULL, @c NULL is returned.
+ *  @return The converted string in UTF-8 encoding, or a copy of the
+ *          input string if conversion failed. Should be freed with g_free().
+ *          If @a locale_text is @c NULL, @c NULL is returned.
  **/
 GEANY_API_SYMBOL
 gchar *utils_get_utf8_from_locale(const gchar *locale_text)
 {
 #ifdef G_OS_WIN32
-	/* just do nothing on Windows platforms, this ifdef is just to prevent unwanted conversions
-	 * which would result in wrongly converted strings */
+	/* just do nothing on Windows platforms, this ifdef is just to prevent
+	 * unwanted conversions which would result in wrongly converted strings */
 	return g_strdup(locale_text);
 #else
 	gchar *utf8_text;
-
-	if (! locale_text)
+	
+	if (!locale_text)
 		return NULL;
+	
 	utf8_text = g_locale_to_utf8(locale_text, -1, NULL, NULL, NULL);
 	if (utf8_text == NULL)
 		utf8_text = g_strdup(locale_text);
+	
 	return utf8_text;
 #endif
 }
@@ -1303,7 +1336,7 @@ void utils_free_pointers(gsize arg_count, ...)
 	va_list a;
 	gsize i;
 	gpointer ptr;
-
+	
 	va_start(a, arg_count);
 	for (i = 0; i < arg_count; i++)
 	{
@@ -1327,26 +1360,24 @@ gchar **utils_strv_new(const gchar *first, ...)
 	va_list args;
 	gchar *str;
 	gchar **strv;
-
+	
 	g_return_val_if_fail(first != NULL, NULL);
-
+	
 	strvlen = 1;	/* for first argument */
-
+	
 	/* count other arguments */
 	va_start(args, first);
 	for (; va_arg(args, gchar*) != NULL; strvlen++);
 	va_end(args);
-
+	
 	strv = g_new(gchar*, strvlen + 1);	/* +1 for NULL terminator */
 	strv[0] = g_strdup(first);
-
+	
 	va_start(args, first);
 	for (i = 1; str = va_arg(args, gchar*), str != NULL; i++)
-	{
 		strv[i] = g_strdup(str);
-	}
 	va_end(args);
-
+	
 	strv[i] = NULL;
 	return strv;
 }
@@ -1358,21 +1389,23 @@ gchar **utils_strv_new(const gchar *first, ...)
  *  The permissions of the created directory are set 0700.
  *
  *  @param path The path of the directory to create, in locale encoding.
- *  @param create_parent_dirs Whether to create intermediate parent directories if necessary.
+ *  @param create_parent_dirs Whether to create intermediate
+ *         parent directories if necessary.
  *
- *  @return 0 if the directory was successfully created, otherwise the @c errno of the
- *          failed operation is returned.
+ *  @return 0 if the directory was successfully created, otherwise
+ *          the @c errno of the failed operation is returned.
  **/
 GEANY_API_SYMBOL
 gint utils_mkdir(const gchar *path, gboolean create_parent_dirs)
 {
 	gint mode = 0700;
 	gint result;
-
+	
 	if (path == NULL || strlen(path) == 0)
 		return EFAULT;
-
-	result = (create_parent_dirs) ? g_mkdir_with_parents(path, mode) : g_mkdir(path, mode);
+	
+	result = (create_parent_dirs) ? g_mkdir_with_parents(path, mode)
+								  : g_mkdir(path, mode);
 	if (result != 0)
 		return errno;
 	return 0;
@@ -1381,44 +1414,47 @@ gint utils_mkdir(const gchar *path, gboolean create_parent_dirs)
 
 /**
  * Gets a list of files from the specified directory.
- * Locale encoding is expected for @a path and used for the file list. The list and the data
- * in the list should be freed after use, e.g.:
+ * Locale encoding is expected for @a path and used for the file list.
+ * The list and the data in the list should be freed after use, e.g.:
  * @code
  * g_slist_foreach(list, (GFunc) g_free, NULL);
  * g_slist_free(list); @endcode
  *
  * @note If you don't need a list you should use the foreach_dir() macro instead -
- * it's more efficient.
+ *       it's more efficient.
  *
  * @param path The path of the directory to scan, in locale encoding.
- * @param full_path Whether to include the full path for each filename in the list. Obviously this
- * will use more memory.
+ * @param full_path Whether to include the full path for each filename in the list.
+ *        Obviously this will use more memory.
  * @param sort Whether to sort alphabetically (UTF-8 safe).
  * @param error The location for storing a possible error, or @c NULL.
  *
- * @return @elementtype{filename} @transfer{full} @nullable A newly allocated list or @c NULL if
- * no files were found. The list and its data should be freed when no longer needed.
+ * @return @elementtype{filename} @transfer{full} @nullable A newly allocated
+ *         list or @c NULL if no files were found. The list and its data
+ *         should be freed when no longer needed.
  * @see utils_get_file_list().
  **/
 GEANY_API_SYMBOL
-GSList *utils_get_file_list_full(const gchar *path, gboolean full_path, gboolean sort, GError **error)
+GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
+								 gboolean sort, GError **error)
 {
 	GSList *list = NULL;
 	GDir *dir;
 	const gchar *filename;
-
+	
 	if (error)
 		*error = NULL;
 	g_return_val_if_fail(path != NULL, NULL);
-
+	
 	dir = g_dir_open(path, 0, error);
 	if (dir == NULL)
 		return NULL;
-
+	
 	foreach_dir(filename, dir)
 	{
-		list = g_slist_prepend(list, full_path ?
-			g_build_path(G_DIR_SEPARATOR_S, path, filename, NULL) : g_strdup(filename));
+		list = g_slist_prepend(list, full_path ? g_build_path(G_DIR_SEPARATOR_S,
+															  path, filename, NULL)
+											   : g_strdup(filename));
 	}
 	g_dir_close(dir);
 	/* sorting last is quicker than on insertion */
@@ -1430,46 +1466,49 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path, gboolean
 
 /**
  * Gets a sorted list of files from the specified directory.
- * Locale encoding is expected for @a path and used for the file list. The list and the data
- * in the list should be freed after use, e.g.:
+ * Locale encoding is expected for @a path and used for the file list.
+ * The list and the data in the list should be freed after use, e.g.:
  * @code
  * g_slist_foreach(list, (GFunc) g_free, NULL);
  * g_slist_free(list); @endcode
  *
  * @param path The path of the directory to scan, in locale encoding.
- * @param length The location to store the number of non-@c NULL data items in the list,
- *               unless @c NULL.
+ * @param length The location to store the number of non-@c NULL data items
+ *               in the list, unless @c NULL.
  * @param error The location for storing a possible error, or @c NULL.
  *
- * @return @elementtype{filename} @transfer{full} @nullable A newly allocated list or @c NULL
- * if no files were found. The list and its data should be freed when no longer needed.
+ * @return @elementtype{filename} @transfer{full} @nullable A newly allocated
+ *         list or @c NULL if no files were found. The list and its data
+ *         should be freed when no longer needed.
  * @see utils_get_file_list_full().
  **/
 GEANY_API_SYMBOL
 GSList *utils_get_file_list(const gchar *path, guint *length, GError **error)
 {
 	GSList *list = utils_get_file_list_full(path, FALSE, TRUE, error);
-
+	
 	if (length)
 		*length = g_slist_length(list);
 	return list;
 }
 
 
-/* returns TRUE if any letter in str is a capital, FALSE otherwise. Should be Unicode safe. */
+/* returns TRUE if any letter in str is a capital, FALSE otherwise.
+ * Should be Unicode safe. */
 gboolean utils_str_has_upper(const gchar *str)
 {
 	gunichar c;
-
-	if (EMPTY(str) || ! g_utf8_validate(str, -1, NULL))
+	
+	if (EMPTY(str) || !g_utf8_validate(str, -1, NULL))
 		return FALSE;
-
+	
 	while (*str != '\0')
 	{
 		c = g_utf8_get_char(str);
 		/* check only letters and stop once the first non-capital was found */
 		if (g_unichar_isalpha(c) && g_unichar_isupper(c))
 			return TRUE;
+		
 		/* FIXME don't write a const string */
 		str = g_utf8_next_char(str);
 	}
@@ -1479,27 +1518,28 @@ gboolean utils_str_has_upper(const gchar *str)
 
 /* end can be -1 for haystack->len.
  * returns: position of found text or -1. */
-gint utils_string_find(GString *haystack, gint start, gint end, const gchar *needle)
+gint utils_string_find(GString *haystack, gint start, gint end,
+					   const gchar *needle)
 {
 	gint pos;
-
+	
 	g_return_val_if_fail(haystack != NULL, -1);
 	if (haystack->len == 0)
 		return -1;
-
+	
 	g_return_val_if_fail(start >= 0, -1);
 	if (start >= (gint)haystack->len)
 		return -1;
-
+	
 	g_return_val_if_fail(!EMPTY(needle), -1);
-
+	
 	if (end < 0)
 		end = haystack->len;
-
+	
 	pos = utils_strpos(haystack->str + start, needle);
 	if (pos == -1)
 		return -1;
-
+	
 	pos += start;
 	if (pos >= end)
 		return -1;
@@ -1510,7 +1550,8 @@ gint utils_string_find(GString *haystack, gint start, gint end, const gchar *nee
 /* Replaces @len characters from offset @a pos.
  * len can be -1 to replace the remainder of @a str.
  * returns: pos + strlen(replace). */
-gint utils_string_replace(GString *str, gint pos, gint len, const gchar *replace)
+gint utils_string_replace(GString *str, gint pos, gint len,
+						  const gchar *replace)
 {
 	g_string_erase(str, pos, len);
 	if (replace)
@@ -1534,19 +1575,20 @@ gint utils_string_replace(GString *str, gint pos, gint len, const gchar *replace
  * @return Number of replacements made.
  **/
 GEANY_API_SYMBOL
-guint utils_string_replace_all(GString *haystack, const gchar *needle, const gchar *replace)
+guint utils_string_replace_all(GString *haystack, const gchar *needle,
+							   const gchar *replace)
 {
 	guint count = 0;
 	gint pos = 0;
 	gsize needle_length = strlen(needle);
-
+	
 	while (1)
 	{
 		pos = utils_string_find(haystack, pos, -1, needle);
-
+		
 		if (pos == -1)
 			break;
-
+		
 		pos = utils_string_replace(haystack, pos, needle_length, replace);
 		count++;
 	}
@@ -1568,13 +1610,14 @@ guint utils_string_replace_all(GString *haystack, const gchar *needle, const gch
  *  @since 0.16
  */
 GEANY_API_SYMBOL
-guint utils_string_replace_first(GString *haystack, const gchar *needle, const gchar *replace)
+guint utils_string_replace_first(GString *haystack, const gchar *needle,
+								 const gchar *replace)
 {
 	gint pos = utils_string_find(haystack, 0, -1, needle);
-
+	
 	if (pos == -1)
 		return 0;
-
+	
 	utils_string_replace(haystack, pos, strlen(needle), replace);
 	return 1;
 }
@@ -1586,29 +1629,31 @@ guint utils_string_replace_first(GString *haystack, const gchar *needle, const g
  * returns: number of replacements.
  * bug: replaced text can affect matching of ^ or \b */
 guint utils_string_regex_replace_all(GString *haystack, GRegex *regex,
-		guint match_num, const gchar *replace, gboolean literal)
+									 guint match_num, const gchar *replace,
+									 gboolean literal)
 {
 	GMatchInfo *minfo;
 	guint ret = 0;
 	gint start = 0;
-
+	
 	g_assert(literal); /* escapes not implemented yet */
 	g_return_val_if_fail(replace, 0);
-
+	
 	/* ensure haystack->str is not null */
 	if (haystack->len == 0)
 		return 0;
-
+	
 	/* passing a start position makes G_REGEX_MATCH_NOTBOL automatic */
-	while (g_regex_match_full(regex, haystack->str, -1, start, 0, &minfo, NULL))
+	while (g_regex_match_full(regex, haystack->str, -1,
+							  start, 0, &minfo, NULL))
 	{
 		gint end, len;
-
+		
 		g_match_info_fetch_pos(minfo, match_num, &start, &end);
 		len = end - start;
 		utils_string_replace(haystack, start, len, replace);
 		ret++;
-
+		
 		/* skip past whole match */
 		g_match_info_fetch_pos(minfo, 0, NULL, &end);
 		start = end - len + strlen(replace);
@@ -1623,14 +1668,11 @@ guint utils_string_regex_replace_all(GString *haystack, GRegex *regex,
 const gchar *utils_get_default_dir_utf8(void)
 {
 	if (app->project && !EMPTY(app->project->base_path))
-	{
 		return app->project->base_path;
-	}
-
+	
 	if (!EMPTY(prefs.default_open_path))
-	{
 		return prefs.default_open_path;
-	}
+	
 	return NULL;
 }
 
@@ -1638,34 +1680,40 @@ const gchar *utils_get_default_dir_utf8(void)
 /**
  *  Wraps @c spawn_sync(), which see.
  *
- *  @param dir @nullable The child's current working directory, or @c NULL to inherit parent's.
+ *  @param dir @nullable The child's current working directory,
+ *                       or @c NULL to inherit parent's.
  *  @param argv The child's argument vector.
- *  @param env @nullable The child's environment, or @c NULL to inherit parent's.
+ *  @param env @nullable The child's environment,
+ *                       or @c NULL to inherit parent's.
  *  @param flags Ignored.
  *  @param child_setup @girskip Ignored.
  *  @param user_data @girskip Ignored.
- *  @param std_out @out @optional The return location for child output, or @c NULL.
- *  @param std_err @out @optional The return location for child error messages, or @c NULL.
- *  @param exit_status @out @optional The child exit status, as returned by waitpid(), or @c NULL.
+ *  @param std_out @out @optional The return location for child
+ *                                output, or @c NULL.
+ *  @param std_err @out @optional The return location for child
+ *                                error messages, or @c NULL.
+ *  @param exit_status @out @optional The child exit status, as returned
+ *                                    by waitpid(), or @c NULL.
  *  @param error The return location for error or @c NULL.
  *
  *  @return @c TRUE on success, @c FALSE if an error was set.
  **/
 GEANY_API_SYMBOL
-gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
-						  GSpawnChildSetupFunc child_setup, gpointer user_data, gchar **std_out,
-						  gchar **std_err, gint *exit_status, GError **error)
+gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env,
+						  GSpawnFlags flags, GSpawnChildSetupFunc child_setup,
+						  gpointer user_data, gchar **std_out, gchar **std_err,
+						  gint *exit_status, GError **error)
 {
 	GString *output = std_out ? g_string_new(NULL) : NULL;
 	GString *errors = std_err ? g_string_new(NULL) : NULL;
-	gboolean result = spawn_sync(dir, NULL, argv, env, NULL, output, errors, exit_status, error);
-
+	gboolean result = spawn_sync(dir, NULL, argv, env, NULL, output,
+								 errors, exit_status, error);
 	if (std_out)
 		*std_out = g_string_free(output, !result);
-
+	
 	if (std_err)
 		*std_err = g_string_free(errors, !result);
-
+	
 	return result;
 }
 
@@ -1673,21 +1721,24 @@ gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env, GSpawnFla
 /**
  *  Wraps @c spawn_async(), which see.
  *
- *  @param dir @nullable The child's current working directory, or @c NULL to inherit parent's.
+ *  @param dir @nullable The child's current working directory,
+ *                       or @c NULL to inherit parent's.
  *  @param argv The child's argument vector.
- *  @param env @nullable The child's environment, or @c NULL to inherit parent's.
+ *  @param env @nullable The child's environment,
+ *                       or @c NULL to inherit parent's.
  *  @param flags Ignored.
  *  @param child_setup @girskip Ignored.
  *  @param user_data Ignored.
- *  @param child_pid @out @nullable The return location for child process ID, or @c NULL.
+ *  @param child_pid @out @nullable The return location for child
+ *                                  process ID, or @c NULL.
  *  @param error The return location for error or @c NULL.
  *
  *  @return @c TRUE on success, @c FALSE if an error was set.
  **/
 GEANY_API_SYMBOL
-gboolean utils_spawn_async(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
-						   GSpawnChildSetupFunc child_setup, gpointer user_data, GPid *child_pid,
-						   GError **error)
+gboolean utils_spawn_async(const gchar *dir, gchar **argv, gchar **env,
+						   GSpawnFlags flags, GSpawnChildSetupFunc child_setup,
+						   gpointer user_data, GPid *child_pid, GError **error)
 {
 	return spawn_async(dir, NULL, argv, env, child_pid, error);
 }
@@ -1712,12 +1763,12 @@ const gchar *utils_get_uri_file_prefix(void)
 gchar *utils_get_path_from_uri(const gchar *uri)
 {
 	gchar *locale_filename;
-
+	
 	g_return_val_if_fail(uri != NULL, NULL);
-
-	if (! utils_is_uri(uri))
+	
+	if (!utils_is_uri(uri))
 		return g_strdup(uri);
-
+	
 	/* this will work only for 'file://' URIs */
 	locale_filename = g_filename_from_uri(uri, NULL, NULL);
 	/* g_filename_from_uri() failed, so we probably have a non-local URI */
@@ -1728,11 +1779,11 @@ gchar *utils_get_path_from_uri(const gchar *uri)
 		g_object_unref(file);
 		if (locale_filename == NULL)
 		{
-			geany_debug("The URI '%s' could not be resolved to a local path. This means "
-				"that the URI is invalid or that you don't have gvfs-fuse installed.", uri);
+			geany_debug("The URI '%s' could not be resolved to a local path. "
+						"This means that the URI is invalid or that you "
+						"don't have gvfs-fuse installed.", uri);
 		}
 	}
-
 	return locale_filename;
 }
 
@@ -1740,7 +1791,7 @@ gchar *utils_get_path_from_uri(const gchar *uri)
 gboolean utils_is_uri(const gchar *uri)
 {
 	g_return_val_if_fail(uri != NULL, FALSE);
-
+	
 	return (strstr(uri, "://") != NULL);
 }
 
@@ -1749,29 +1800,29 @@ gboolean utils_is_uri(const gchar *uri)
 gboolean utils_is_remote_path(const gchar *path)
 {
 	g_return_val_if_fail(path != NULL, FALSE);
-
-	/* if path is an URI and it doesn't start "file://", we take it as remote */
+	
+	/* if path is an URI and it doesn't start "file://",
+	 * we take it as remote */
 	if (utils_is_uri(path) && strncmp(path, "file:", 5) != 0)
 		return TRUE;
-
+	
 #ifndef G_OS_WIN32
 	{
 		static gchar *fuse_path = NULL;
 		static gsize len = 0;
-
+		
 		if (G_UNLIKELY(fuse_path == NULL))
 		{
 			fuse_path = g_build_filename(g_get_home_dir(), ".gvfs", NULL);
 			len = strlen(fuse_path);
 		}
-		/* Comparing the file path against a hardcoded path is not the most elegant solution
-		 * but for now it is better than nothing. Ideally, g_file_new_for_path() should create
-		 * proper GFile objects for Fuse paths, but it only does in future GVFS
-		 * versions (gvfs 1.1.1). */
+		/* Comparing the file path against a hardcoded path is not
+		 * the most elegant solution but for now it is better than nothing.
+		 * Ideally, g_file_new_for_path() should create proper GFile objects
+		 * for Fuse paths, but it only does in future GVFS versions (gvfs 1.1.1). */
 		return (strncmp(path, fuse_path, len) == 0);
 	}
 #endif
-
 	return FALSE;
 }
 
@@ -1784,25 +1835,27 @@ void utils_tidy_path(gchar *filename)
 	GString *str;
 	const gchar *needle;
 	gboolean preserve_double_backslash = FALSE;
-
+	
 	g_return_if_fail(g_path_is_absolute(filename));
-
+	
 	str = g_string_new(filename);
-
+	
 	if (str->len >= 2 && strncmp(str->str, "\\\\", 2) == 0)
 		preserve_double_backslash = TRUE;
-
+	
 #ifdef G_OS_WIN32
 	/* using MSYS we can get Unix-style separators */
 	utils_string_replace_all(str, "/", G_DIR_SEPARATOR_S);
 #endif
 	/* replace "/./" and "//" */
-	utils_string_replace_all(str, G_DIR_SEPARATOR_S "." G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S);
-	utils_string_replace_all(str, G_DIR_SEPARATOR_S G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S);
-
+	utils_string_replace_all(str, G_DIR_SEPARATOR_S "." G_DIR_SEPARATOR_S,
+							 G_DIR_SEPARATOR_S);
+	utils_string_replace_all(str, G_DIR_SEPARATOR_S G_DIR_SEPARATOR_S,
+							 G_DIR_SEPARATOR_S);
+	
 	if (preserve_double_backslash)
 		g_string_prepend(str, "\\");
-
+	
 	/* replace "/../" */
 	needle = G_DIR_SEPARATOR_S ".." G_DIR_SEPARATOR_S;
 	while (1)
@@ -1813,21 +1866,21 @@ void utils_tidy_path(gchar *filename)
 		else
 		{
 			gssize pos, sub_len;
-
+			
 			pos = c - str->str;
 			if (pos <= 3)
 				break;	/* bad path */
-
+			
 			/* replace "/../" */
 			g_string_erase(str, pos, strlen(needle));
 			g_string_insert_c(str, pos, G_DIR_SEPARATOR);
-
+			
 			/* search for last "/" before found "/../" */
 			c = g_strrstr_len(str->str, pos, G_DIR_SEPARATOR_S);
 			sub_len = pos - (c - str->str);
-			if (! c)
+			if (!c)
 				break;	/* bad path */
-
+			
 			pos = c - str->str;	/* position of previous "/" */
 			g_string_erase(str, pos, sub_len);
 		}
@@ -1856,11 +1909,11 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 {
 	const gchar *r;
 	gchar *w = string;
-
+	
 	g_return_val_if_fail(string, NULL);
 	if (G_UNLIKELY(EMPTY(chars)))
 		return string;
-
+	
 	foreach_str(r, string)
 	{
 		if (!strchr(chars, *r))
@@ -1871,22 +1924,24 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 }
 
 
-/* Gets list of sorted filenames with no path and no duplicates from user and system config */
+/* Gets list of sorted filenames with no path and
+ * no duplicates from user and system config */
 GSList *utils_get_config_files(const gchar *subdir)
 {
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, subdir, NULL);
+	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
+							   subdir, NULL);
 	GSList *list = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	GSList *syslist, *node;
-
+	
 	if (!list)
-	{
 		utils_mkdir(path, FALSE);
-	}
-	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir, subdir, NULL));
+	
+	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir,
+							  subdir, NULL));
 	syslist = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	/* merge lists */
 	list = g_slist_concat(list, syslist);
-
+	
 	list = g_slist_sort(list, (GCompareFunc) utils_str_casecmp);
 	/* remove duplicates (next to each other after sorting) */
 	foreach_slist(node, list)
@@ -1894,7 +1949,7 @@ GSList *utils_get_config_files(const gchar *subdir)
 		if (node->next && utils_str_equal(node->next->data, node->data))
 		{
 			GSList *old = node->next;
-
+			
 			g_free(old->data);
 			node->next = old->next;
 			g_slist_free1(old);
@@ -1905,30 +1960,29 @@ GSList *utils_get_config_files(const gchar *subdir)
 }
 
 
-/* Suffix can be NULL or a string which should be appended to the Help URL like
- * an anchor link, e.g. "#some_anchor". */
+/* Suffix can be NULL or a string which should be appended
+ * to the Help URL like an anchor link, e.g. "#some_anchor". */
 gchar *utils_get_help_url(const gchar *suffix)
 {
 	gchar *uri;
 	const gchar *uri_file_prefix = utils_get_uri_file_prefix();
 	gint skip = strlen(uri_file_prefix);
-
+	
 	uri = g_strconcat(uri_file_prefix, app->docdir, "/index.html", NULL);
 #ifdef G_OS_WIN32
 	g_strdelimit(uri, "\\", '/'); /* replace '\\' by '/' */
 #endif
-
-	if (! g_file_test(uri + skip, G_FILE_TEST_IS_REGULAR))
+	
+	if (!g_file_test(uri + skip, G_FILE_TEST_IS_REGULAR))
 	{	/* fall back to online documentation if it is not found on the hard disk */
 		g_free(uri);
-		uri = g_strconcat(GEANY_HOMEPAGE, "manual/", VERSION, "/index.html", NULL);
+		uri = g_strconcat(GEANY_HOMEPAGE, "manual/",
+						  VERSION, "/index.html", NULL);
 	}
-
+	
 	if (suffix != NULL)
-	{
 		SETPTR(uri, g_strconcat(uri, suffix, NULL));
-	}
-
+	
 	return uri;
 }
 
@@ -1936,7 +1990,7 @@ gchar *utils_get_help_url(const gchar *suffix)
 static gboolean str_in_array(const gchar **haystack, const gchar *needle)
 {
 	const gchar **p;
-
+	
 	for (p = haystack; *p != NULL; ++p)
 	{
 		if (utils_str_equal(*p, needle))
@@ -1948,9 +2002,10 @@ static gboolean str_in_array(const gchar **haystack, const gchar *needle)
 
 /**
  * Copies the current environment into a new array.
- * @a exclude_vars is a @c NULL-terminated array of variable names which should be not copied.
- * All further arguments are key, value pairs of variables which should be added to
- * the environment.
+ * @a exclude_vars is a @c NULL-terminated array of variable names
+ *                 which should be not copied.
+ * All further arguments are key, value pairs of variables
+ * which should be added to the environment.
  *
  * The argument list must be @c NULL-terminated.
  *
@@ -1961,7 +2016,8 @@ static gboolean str_in_array(const gchar **haystack, const gchar *needle)
  * @return @transfer{full} The new environment array. Use @c g_strfreev() to free it.
  **/
 GEANY_API_SYMBOL
-gchar **utils_copy_environment(const gchar **exclude_vars, const gchar *first_varname, ...)
+gchar **utils_copy_environment(const gchar **exclude_vars,
+							   const gchar *first_varname, ...)
 {
 	gchar **result;
 	gchar **p;
@@ -1969,24 +2025,24 @@ gchar **utils_copy_environment(const gchar **exclude_vars, const gchar *first_va
 	va_list args;
 	const gchar *key, *value;
 	guint n, o;
-
+	
 	/* count the additional variables */
 	va_start(args, first_varname);
 	for (o = 1; va_arg(args, gchar*) != NULL; o++);
 	va_end(args);
 	/* the passed arguments should be even (key, value pairs) */
 	g_return_val_if_fail(o % 2 == 0, NULL);
-
+	
 	o /= 2;
-
+	
 	/* get all the environ variables */
 	env = g_listenv();
-
+	
 	/* create an array large enough to hold the new environment */
 	n = g_strv_length(env);
 	/* 'n + o + 1' could leak a little bit when exclude_vars is set */
 	result = g_new(gchar *, n + o + 1);
-
+	
 	/* copy the environment */
 	for (n = 0, p = env; *p != NULL; ++p)
 	{
@@ -1997,12 +2053,12 @@ gchar **utils_copy_environment(const gchar **exclude_vars, const gchar *first_va
 			/* skip excluded variables */
 			if (exclude_vars != NULL && str_in_array(exclude_vars, *p))
 				continue;
-
+			
 			result[n++] = g_strconcat(*p, "=", value, NULL);
 		}
 	}
 	g_strfreev(env);
-
+	
 	/* now add additional variables */
 	va_start(args, first_varname);
 	key = first_varname;
@@ -2010,16 +2066,15 @@ gchar **utils_copy_environment(const gchar **exclude_vars, const gchar *first_va
 	while (key != NULL)
 	{
 		result[n++] = g_strconcat(key, "=", value, NULL);
-
+		
 		key = va_arg(args, gchar*);
 		if (key == NULL)
 			break;
 		value = va_arg(args, gchar*);
 	}
 	va_end(args);
-
+	
 	result[n] = NULL;
-
 	return result;
 }
 
@@ -2030,20 +2085,20 @@ gchar **utils_strv_join(gchar **first, gchar **second)
 {
 	gchar **strv;
 	gchar **rptr, **wptr;
-
+	
 	if (!first)
 		return second;
 	if (!second)
 		return first;
-
+	
 	strv = g_new0(gchar*, g_strv_length(first) + g_strv_length(second) + 1);
 	wptr = strv;
-
+	
 	foreach_strv(rptr, first)
 		*wptr++ = *rptr;
 	foreach_strv(rptr, second)
 		*wptr++ = *rptr;
-
+	
 	g_free(first);
 	g_free(second);
 	return strv;
@@ -2051,46 +2106,48 @@ gchar **utils_strv_join(gchar **first, gchar **second)
 
 /* * Returns the common prefix in a list of strings.
  *
- * The size of the list may be given explicitely, but defaults to @c g_strv_length(strv).
+ * The size of the list may be given explicitely,
+ * but defaults to @c g_strv_length(strv).
  *
  * @param strv The list of strings to process.
- * @param strv_len The number of strings contained in @a strv. Can be -1 if it's terminated by @c NULL.
+ * @param strv_len The number of strings contained in @a strv.
+ *                 Can be -1 if it's terminated by @c NULL.
  *
- * @return The common prefix that is part of all strings (maybe empty), or NULL if an empty list
- *         was passed in.
+ * @return The common prefix that is part of all strings (maybe empty),
+ *         or NULL if an empty list was passed in.
  */
 GEANY_EXPORT_SYMBOL
 gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
 {
 	gsize num;
-
+	
 	if (strv_len == 0)
 		return NULL;
-
+	
 	num = (strv_len == -1) ? g_strv_length(strv) : (gsize) strv_len;
-
+	
 	for (gsize i = 0; strv[0][i]; i++)
 	{
 		for (gsize j = 1; j < num; j++)
 		{
 			if (strv[j][i] != strv[0][i])
-			{
-				/* return prefix on first mismatch */
+			{	/* return prefix on first mismatch */
 				return g_strndup(strv[0], i);
 			}
 		}
 	}
-
 	return g_strdup(strv[0]);
 }
 
 
 /* * Returns the longest common substring in a list of strings.
  *
- * The size of the list may be given explicitely, but defaults to @c g_strv_length(strv).
+ * The size of the list may be given explicitely,
+ * but defaults to @c g_strv_length(strv).
  *
  * @param strv The list of strings to process.
- * @param strv_len The number of strings contained in @a strv. Can be -1 if it's terminated by @c NULL.
+ * @param strv_len The number of strings contained in @a strv.
+ *                 Can be -1 if it's terminated by @c NULL.
  *
  * @return The common prefix that is part of all strings.
  */
@@ -2104,15 +2161,15 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 	gsize max = 0;
 	char *lcs;
 	gsize found;
-
+	
 	if (strv_len == 0)
 		return NULL;
-
+	
 	num = (strv_len == -1) ? g_strv_length(strv) : (gsize) strv_len;
-
+	
 	first = strv[0];
 	len = strlen(first);
-
+	
 	/* sub is the working area where substrings from first are copied to */
 	sub = g_malloc(len+1);
 	lcs = g_strdup("");
@@ -2122,10 +2179,11 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 		/* No point in continuing if the remainder is too short */
 		if (max > chars_left)
 			break;
-		/* If delimiters are given, we only need to compare substrings which start and
-		 * end with one of them, so skip any non-delim chars at front ... */
+		/* If delimiters are given, we only need to compare substrings which start
+		 * and end with one of them, so skip any non-delim chars at front ... */
 		if (NZV(delim) && (strchr(delim, _sub[0]) == NULL))
 			continue;
+		
 		for (n_chars = 1; n_chars <= chars_left; n_chars++)
 		{
 			if (NZV(delim))
@@ -2150,7 +2208,7 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 		}
 	}
 	g_free(sub);
-
+	
 	return lcs;
 }
 
@@ -2166,10 +2224,10 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
  * replaces the longest common substring with an ellipsis ("...").
  *
  * @param file_names @array{length=file_names_len} The list of strings to process.
- * @param file_names_len The number of strings contained in @a file_names. Can be -1 if it's
- *        terminated by @c NULL.
- * @return @transfer{full} A newly-allocated array of transformed paths strings, terminated by
-            @c NULL. Use @c g_strfreev() to free it.
+ * @param file_names_len The number of strings contained in @a file_names.
+ *        Can be -1 if it's terminated by @c NULL.
+ * @return @transfer{full} A newly-allocated array of transformed paths strings,
+ *         terminated by @c NULL. Use @c g_strfreev() to free it.
  *
  * @since 1.34 (API 239)
  */
@@ -2181,13 +2239,14 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 	gchar *prefix, *lcs, *end;
 	gchar **names;
 	gsize prefix_len = 0, lcs_len = 0;
-
+	
 	if (file_names_len == 0)
 		return g_new0(gchar *, 1);
-
+	
 	g_return_val_if_fail(file_names != NULL, NULL);
-
-	num = (file_names_len == -1) ? g_strv_length(file_names) : (gsize) file_names_len;
+	
+	num = (file_names_len == -1) ? g_strv_length(file_names)
+								 : (gsize) file_names_len;
 	/* Always include a terminating NULL, enables easy freeing with g_strfreev()
 	 * We just copy the pointers so we can advance them here. But don't
 	 * forget to duplicate the strings before returning.
@@ -2196,7 +2255,7 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 	memcpy(names, file_names, num * sizeof(gchar *));
 	/* Always include a terminating NULL, enables easy freeing with g_strfreev() */
 	names[num] = NULL;
-
+	
 	/* First: determine the common prefix, that will be stripped.
 	 * We only want to strip full path components, including the trailing slash.
 	 * Except if the component is just "/".
@@ -2209,23 +2268,23 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 		for (i = 0; i < num; i++)
 			names[i] += prefix_len;
 	}
-
-	/* Second: determine the longest common substring (lcs), that will be ellipsized. Again,
-	 * we look only for full path compnents so that we ellipsize between separators. This implies
-	 * that the file name cannot be ellipsized which is desirable anyway.
+	
+	/* Second: determine the longest common substring (lcs), that will be ellipsized.
+	 * Again, we look only for full path compnents so that we ellipsize between separators.
+	 * This implies that the file name cannot be ellipsized which is desirable anyway.
 	 */
 	lcs = utils_strv_find_lcs(names, num, G_DIR_SEPARATOR_S"/");
 	if (lcs)
 	{
 		lcs_len = strlen(lcs);
-		/* Don't bother for tiny common parts (which are often just "." or "/"). Beware
-		 * that lcs includes the enclosing dir separators so the part must be at least 5 chars
-		 * to be eligible for ellipsizing.
+		/* Don't bother for tiny common parts (which are often just "." or "/").
+		 * Beware that lcs includes the enclosing dir separators so the part
+		 * must be at least 5 chars to be eligible for ellipsizing.
 		 */
 		if (lcs_len < 7)
 			lcs_len = 0;
 	}
-
+	
 	/* Last: build the shortened list of unique file names */
 	for (i = 0; i < num; i++)
 	{
@@ -2238,29 +2297,30 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 			const gchar *lcs_start = strstr(names[i], lcs);
 			const gchar *lcs_end = lcs_start + lcs_len;
 			/* Dir seperators are included in lcs but shouldn't be elipsized. */
-			names[i] = g_strdup_printf("%.*s...%s", (int)(lcs_start - names[i] + 1), names[i], lcs_end - 1);
+			names[i] = g_strdup_printf("%.*s...%s", (int)(lcs_start - names[i] + 1),
+									   names[i], lcs_end - 1);
 		}
 	}
-
 	g_free(lcs);
 	g_free(prefix);
-
+	
 	return names;
 }
 
 
-/* Try to parse a date using g_date_set_parse(). It doesn't take any format hint,
+/* Try to parse a date using g_date_set_parse().
+ * It doesn't take any format hint,
  * obviously g_date_set_parse() uses some magic.
  * The returned GDate object must be freed. */
 GDate *utils_parse_date(const gchar *input)
 {
 	GDate *date = g_date_new();
-
+	
 	g_date_set_parse(date, input);
-
+	
 	if (g_date_valid(date))
 		return date;
-
+	
 	g_date_free(date);
 	return NULL;
 }
@@ -2270,14 +2330,14 @@ gchar *utils_parse_and_format_build_date(const gchar *input)
 {
 	gchar date_buf[255];
 	GDate *date = utils_parse_date(input);
-
+	
 	if (date != NULL)
 	{
-		g_date_strftime(date_buf, sizeof(date_buf), GEANY_TEMPLATES_FORMAT_DATE, date);
+		g_date_strftime(date_buf, sizeof(date_buf),
+						GEANY_TEMPLATES_FORMAT_DATE, date);
 		g_date_free(date);
 		return g_strdup(date_buf);
 	}
-
 	return g_strdup(input);
 }
 
@@ -2309,46 +2369,61 @@ static gboolean is_osx_bundle(void)
 const gchar *utils_resource_dir(GeanyResourceDirType type)
 {
 	static const gchar *resdirs[RESOURCE_DIR_COUNT] = {NULL};
-
+	
 	if (!resdirs[RESOURCE_DIR_DATA])
 	{
 #ifdef G_OS_WIN32
 		gchar *prefix = win32_get_installation_dir();
-
+		
 		resdirs[RESOURCE_DIR_DATA] = g_build_filename(prefix, "data", NULL);
-		resdirs[RESOURCE_DIR_ICON] = g_build_filename(prefix, "share", "icons", NULL);
-		resdirs[RESOURCE_DIR_DOC] = g_build_filename(prefix, "share", "doc", "geany", "html", NULL);
-		resdirs[RESOURCE_DIR_LOCALE] = g_build_filename(prefix, "share", "locale", NULL);
-		resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(prefix, "lib", "geany", NULL);
-		resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(prefix, "libexec", "geany", NULL);
+		resdirs[RESOURCE_DIR_ICON] = g_build_filename(prefix, "share",
+													  "icons", NULL);
+		resdirs[RESOURCE_DIR_DOC] = g_build_filename(prefix, "share", "doc",
+													 "geany", "html", NULL);
+		resdirs[RESOURCE_DIR_LOCALE] = g_build_filename(prefix, "share",
+														"locale", NULL);
+		resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(prefix, "lib",
+														"geany", NULL);
+		resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(prefix, "libexec",
+														 "geany", NULL);
 		g_free(prefix);
 #else
 		if (is_osx_bundle())
 		{
 # ifdef MAC_INTEGRATION
 			gchar *prefix = gtkosx_application_get_resource_path();
-
-			resdirs[RESOURCE_DIR_DATA] = g_build_filename(prefix, "share", "geany", NULL);
-			resdirs[RESOURCE_DIR_ICON] = g_build_filename(prefix, "share", "icons", NULL);
-			resdirs[RESOURCE_DIR_DOC] = g_build_filename(prefix, "share", "doc", "geany", "html", NULL);
-			resdirs[RESOURCE_DIR_LOCALE] = g_build_filename(prefix, "share", "locale", NULL);
-			resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(prefix, "lib", "geany", NULL);
-			resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(prefix, "libexec", "geany", NULL);
+			
+			resdirs[RESOURCE_DIR_DATA] = g_build_filename(prefix, "share",
+														  "geany", NULL);
+			resdirs[RESOURCE_DIR_ICON] = g_build_filename(prefix, "share",
+														  "icons", NULL);
+			resdirs[RESOURCE_DIR_DOC] = g_build_filename(prefix, "share", "doc",
+														 "geany", "html", NULL);
+			resdirs[RESOURCE_DIR_LOCALE] = g_build_filename(prefix, "share",
+															"locale", NULL);
+			resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(prefix, "lib",
+															"geany", NULL);
+			resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(prefix, "libexec",
+															 "geany", NULL);
 			g_free(prefix);
 # endif
 		}
 		else
 		{
-			resdirs[RESOURCE_DIR_DATA] = g_build_filename(GEANY_DATADIR, "geany", NULL);
-			resdirs[RESOURCE_DIR_ICON] = g_build_filename(GEANY_DATADIR, "icons", NULL);
-			resdirs[RESOURCE_DIR_DOC] = g_build_filename(GEANY_DOCDIR, "html", NULL);
+			resdirs[RESOURCE_DIR_DATA] = g_build_filename(GEANY_DATADIR,
+														  "geany", NULL);
+			resdirs[RESOURCE_DIR_ICON] = g_build_filename(GEANY_DATADIR,
+														  "icons", NULL);
+			resdirs[RESOURCE_DIR_DOC] = g_build_filename(GEANY_DOCDIR,
+														 "html", NULL);
 			resdirs[RESOURCE_DIR_LOCALE] = g_build_filename(GEANY_LOCALEDIR, NULL);
-			resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(GEANY_LIBDIR, "geany", NULL);
-			resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(GEANY_LIBEXECDIR, "geany", NULL);
+			resdirs[RESOURCE_DIR_PLUGIN] = g_build_filename(GEANY_LIBDIR,
+															"geany", NULL);
+			resdirs[RESOURCE_DIR_LIBEXEC] = g_build_filename(GEANY_LIBEXECDIR,
+															 "geany", NULL);
 		}
 #endif
 	}
-
 	return resdirs[type];
 }
 
@@ -2357,13 +2432,13 @@ void utils_start_new_geany_instance(const gchar *doc_path)
 {
 	const gchar *command = is_osx_bundle() ? "open" : "geany";
 	gchar *exec_path = g_find_program_in_path(command);
-
+	
 	if (exec_path)
 	{
 		GError *err = NULL;
 		const gchar *argv[6]; // max args + 1
 		gint argc = 0;
-
+		
 		argv[argc++] = exec_path;
 		if (is_osx_bundle())
 		{
@@ -2378,8 +2453,9 @@ void utils_start_new_geany_instance(const gchar *doc_path)
 			argv[argc++] = doc_path;
 		}
 		argv[argc] = NULL;
-
-		if (!utils_spawn_async(NULL, (gchar**) argv, NULL, 0, NULL, NULL, NULL, &err))
+		
+		if (!utils_spawn_async(NULL, (gchar**) argv, NULL, 0,
+							   NULL, NULL, NULL, &err))
 		{
 			g_printerr("Unable to open new window: %s\n", err->message);
 			g_error_free(err);

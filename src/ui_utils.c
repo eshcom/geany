@@ -143,8 +143,8 @@ static void set_statusbar(const gchar *text, gboolean allow_override)
 		return; /* just do nothing if statusbar is not visible */
 	
 	if (id == 0)
-		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(ui_widgets.statusbar), "geany-main");
-	
+		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(ui_widgets.statusbar),
+										  "geany-main");
 	g_get_current_time(&timeval);
 	
 	if (!allow_override)
@@ -280,7 +280,8 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 				}
 				break;
 			case 'M':
-				g_string_append(stats_str, utils_get_eol_short_name(sci_get_eol_mode(doc->editor->sci)));
+				g_string_append(stats_str, utils_get_eol_short_name(
+												sci_get_eol_mode(doc->editor->sci)));
 				break;
 			case 'e':
 				g_string_append(stats_str,
@@ -288,7 +289,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 				if (encodings_is_unicode_charset(doc->encoding) && (doc->has_bom))
 				{
 					g_string_append_c(stats_str, ' ');
-					g_string_append(stats_str, _("(with BOM)"));	/* BOM = byte order mark */
+					g_string_append(stats_str, _("(with BOM)")); /* BOM = byte order mark */
 				}
 				break;
 			case 'f':
@@ -301,7 +302,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 			case 'Y':
 				g_string_append_c(stats_str, ' ');
 				g_string_append_printf(stats_str, "%d",
-					sci_get_style_at(doc->editor->sci, pos));
+									   sci_get_style_at(doc->editor->sci, pos));
 				break;
 			default:
 				g_string_append_len(stats_str, expos, 1);
@@ -442,9 +443,7 @@ void ui_set_editor_font(const gchar *font_name)
 	for (i = 0; i < documents_array->len; i++)
 	{
 		if (documents[i]->editor)
-		{
 			editor_set_font(documents[i]->editor, interface_prefs.editor_font);
-		}
 	}
 	ui_set_statusbar(TRUE, _("Font updated (%s)."), interface_prefs.editor_font);
 }
@@ -536,7 +535,8 @@ void ui_update_menu_copy_items(GeanyDocument *doc)
 	if (IS_SCINTILLA(focusw))
 		enable = (doc == NULL) ? FALSE : sci_has_selection(doc->editor->sci);
 	else if (GTK_IS_EDITABLE(focusw))
-		enable = gtk_editable_get_selection_bounds(GTK_EDITABLE(focusw), NULL, NULL);
+		enable = gtk_editable_get_selection_bounds(GTK_EDITABLE(focusw),
+												   NULL, NULL);
 	else if (GTK_IS_TEXT_VIEW(focusw))
 	{
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focusw));
@@ -899,8 +899,8 @@ static void init_document_widgets(void)
 {
 	widgets.document_buttons = g_ptr_array_new();
 	
-	/* Cache the document-sensitive widgets so we don't have to keep looking them up
-	 * when using ui_document_buttons_update(). */
+	/* Cache the document-sensitive widgets so we don't have to keep
+	 * looking them up when using ui_document_buttons_update(). */
 	add_doc_widget("menu_close1");
 	add_doc_widget("close_other_documents1");
 	add_doc_widget("menu_change_font1");
@@ -1245,7 +1245,7 @@ static void recent_project_activate_cb(GtkMenuItem *menuitem,
 
 
 static void add_recent_file(const gchar *utf8_filename, GeanyRecentFiles *grf,
-		const GtkRecentData *rdata)
+							const GtkRecentData *rdata)
 {
 	if (g_queue_find_custom(grf->recent_queue, utf8_filename,
 							(GCompareFunc) strcmp) == NULL)
@@ -1316,12 +1316,14 @@ gchar *ui_menu_item_get_text(GtkMenuItem *menu_item)
 		if (GTK_IS_LABEL(child))
 			text = gtk_label_get_text(GTK_LABEL(child));
 	}
-	/* GTK owns text so it's much safer to return a copy of it in case the memory is reallocated */
+	/* GTK owns text so it's much safer to return a copy of
+	 * it in case the memory is reallocated */
 	return g_strdup(text);
 }
 
 
-static gint find_recent_file_item(gconstpointer list_data, gconstpointer user_data)
+static gint find_recent_file_item(gconstpointer list_data,
+								  gconstpointer user_data)
 {
 	gchar *menu_text = ui_menu_item_get_text(GTK_MENU_ITEM(list_data));
 	gint result;
@@ -1342,7 +1344,8 @@ void ui_update_recent_project_menu(void)
 	GeanyRecentFiles *grf = recent_get_recent_projects();
 	GList *children, *item;
 	
-	/* only need to update the menubar menu, the project doesn't have a toolbar item */
+	/* only need to update the menubar menu,
+	 * the project doesn't have a toolbar item */
 	children = gtk_container_get_children(GTK_CONTAINER(grf->menubar));
 	for (item = children; item; item = item->next)
 	{
@@ -1889,8 +1892,8 @@ gboolean ui_tree_view_find_previous(GtkTreeView *treeview, TVMatchCallback cb)
 
 /* Shamelessly stolen from GTK */
 static gboolean ui_tree_view_query_tooltip_cb(GtkWidget *widget, gint x, gint y,
-											  gboolean keyboard_tip, GtkTooltip *tooltip,
-											  gpointer data)
+											  gboolean keyboard_tip,
+											  GtkTooltip *tooltip, gpointer data)
 {
 	GValue value = { 0 };
 	GValue transformed = { 0 };
@@ -1908,13 +1911,13 @@ static gboolean ui_tree_view_query_tooltip_cb(GtkWidget *widget, gint x, gint y,
 	gtk_tree_model_get_value(model, &iter, column, &value);
 	
 	g_value_init(&transformed, G_TYPE_STRING);
-	if (g_value_transform(&value, &transformed) && g_value_get_string(&transformed))
+	if (g_value_transform(&value, &transformed) &&
+		g_value_get_string(&transformed))
 	{
 		gtk_tooltip_set_text(tooltip, g_value_get_string(&transformed));
 		gtk_tree_view_set_tooltip_row(tree_view, tooltip, path);
 		tootlip_set = TRUE;
 	}
-	
 	g_value_unset(&transformed);
 	g_value_unset(&value);
 	gtk_tree_path_free(path);
@@ -1984,7 +1987,8 @@ GEANY_API_SYMBOL
 GtkWidget *ui_path_box_new(const gchar *title, GtkFileChooserAction action,
 						   GtkEntry *entry)
 {
-	GtkWidget *vbox, *dirbtn, *openimg, *hbox, *path_entry, *parent, *next_parent;
+	GtkWidget *vbox, *dirbtn, *openimg, *hbox,
+			  *path_entry, *parent, *next_parent;
 	
 	hbox = gtk_hbox_new(FALSE, 6);
 	path_entry = GTK_WIDGET(entry);
@@ -2073,8 +2077,8 @@ static gchar *run_file_chooser(const gchar *title, GtkFileChooserAction action,
 
 static void ui_path_box_open_clicked(GtkButton *button, gpointer user_data)
 {
-	GtkFileChooserAction action = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button),
-																	"action"));
+	GtkFileChooserAction action = GPOINTER_TO_INT(g_object_get_data(
+													G_OBJECT(button), "action"));
 	GtkEntry *entry = user_data;
 	const gchar *title = g_object_get_data(G_OBJECT(button), "title");
 	gchar *utf8_path = NULL;
@@ -2759,7 +2763,8 @@ static void auto_separator_update(GeanyAutoSeparator *autosep)
 }
 
 
-static void on_auto_separator_item_show_hide(GtkWidget *widget, gpointer user_data)
+static void on_auto_separator_item_show_hide(GtkWidget *widget,
+											 gpointer user_data)
 {
 	GeanyAutoSeparator *autosep = user_data;
 	
@@ -2771,7 +2776,8 @@ static void on_auto_separator_item_show_hide(GtkWidget *widget, gpointer user_da
 }
 
 
-static void on_auto_separator_item_destroy(GtkWidget *widget, gpointer user_data)
+static void on_auto_separator_item_destroy(GtkWidget *widget,
+										   gpointer user_data)
 {
 	GeanyAutoSeparator *autosep = user_data;
 	
@@ -3051,7 +3057,8 @@ void ui_menu_add_document_items(GtkMenu *menu, GeanyDocument *active,
  **/
 GEANY_API_SYMBOL
 void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
-									   GCallback callback, GCompareFunc compare_func)
+									   GCallback callback,
+									   GCompareFunc compare_func)
 {
 	GtkWidget *menu_item, *menu_item_label, *image;
 	GeanyDocument *doc;
@@ -3079,7 +3086,8 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 		
 		base_name = g_path_get_basename(DOC_FILENAME(doc));
 		menu_item = gtk_image_menu_item_new_with_label(base_name);
-		image = gtk_image_new_from_gicon(doc->file_type->icon, GTK_ICON_SIZE_MENU);
+		image = gtk_image_new_from_gicon(doc->file_type->icon,
+										 GTK_ICON_SIZE_MENU);
 		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), image);
 		gtk_widget_set_tooltip_text(menu_item, DOC_FILENAME(doc));
 		
@@ -3088,7 +3096,8 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 		g_signal_connect(menu_item, "activate", callback, doc);
 		
 		menu_item_label = gtk_bin_get_child(GTK_BIN(menu_item));
-		gtk_widget_set_name(menu_item_label, document_get_status_widget_class(doc));
+		gtk_widget_set_name(menu_item_label,
+							document_get_status_widget_class(doc));
 		
 		if (doc == active)
 			ui_label_set_markup(GTK_LABEL(menu_item_label), "<b>%s</b>", base_name);
@@ -3299,7 +3308,8 @@ gint ui_encodings_combo_box_get_active_encoding(GtkComboBox *combo)
 	if (gtk_combo_box_get_active_iter(combo, &iter))
 	{
 		GtkTreeModel *model = gtk_combo_box_get_model(combo);
-		enc = encodings_encoding_store_get_encoding(GTK_TREE_STORE(model), &iter);
+		enc = encodings_encoding_store_get_encoding(GTK_TREE_STORE(model),
+													&iter);
 	}
 	return enc;
 }

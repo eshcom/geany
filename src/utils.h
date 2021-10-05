@@ -49,37 +49,37 @@ G_BEGIN_DECLS
  * @a result can be an expression using the 'old' value of @a ptr.
  * E.g. @code SETPTR(str, g_strndup(str, 5)); @endcode
  **/
-#define SETPTR(ptr, result) \
-	do {\
-		gpointer setptr_tmp = ptr;\
-		ptr = result;\
-		g_free(setptr_tmp);\
+#define SETPTR(ptr, result)			\
+	do {							\
+		gpointer setptr_tmp = ptr;	\
+		ptr = result;				\
+		g_free(setptr_tmp);			\
 	} while (0)
 
 #ifndef GEANY_DISABLE_DEPRECATED
 /** @deprecated 2011/11/15 - use SETPTR() instead. */
-#define setptr(ptr, result) \
-	{\
-		gpointer setptr_tmp = ptr;\
-		ptr = result;\
-		g_free(setptr_tmp);\
+#define setptr(ptr, result)			\
+	{								\
+		gpointer setptr_tmp = ptr;	\
+		ptr = result;				\
+		g_free(setptr_tmp);			\
 	}
 #endif
 
 /** Duplicates a string on the stack using @c g_alloca().
  * Like glibc's @c strdupa(), but portable.
  * @note You must include @c string.h yourself.
- * @warning Don't use excessively or for long strings otherwise there may be stack exhaustion -
- *          see the GLib docs for @c g_alloca(). */
+ * @warning Don't use excessively or for long strings otherwise there may be
+ *          stack exhaustion - see the GLib docs for @c g_alloca(). */
 #define utils_strdupa(str) \
 	strcpy(g_alloca(strlen(str) + 1), str)
 
 /* Get a keyfile setting, using the home keyfile if the key exists,
  * otherwise system keyfile. */
-#define utils_get_setting(type, home, sys, group, key, default_val)\
-	(g_key_file_has_key(home, group, key, NULL)) ?\
-		utils_get_setting_##type(home, group, key, default_val) :\
-		utils_get_setting_##type(sys, group, key, default_val)
+#define utils_get_setting(type, home, sys, group, key, default_val)	\
+	(g_key_file_has_key(home, group, key, NULL))					\
+		? utils_get_setting_##type(home, group, key, default_val)	\
+		: utils_get_setting_##type(sys, group, key, default_val)
 
 /* ignore the case of filenames and paths under WIN32, causes errors if not */
 #ifdef G_OS_WIN32
@@ -107,9 +107,11 @@ G_BEGIN_DECLS
  * @param item pointer in @a ptr_array.
  * @param idx @c guint index into @a ptr_array.
  * @param ptr_array @c GPtrArray to traverse. */
-#define foreach_ptr_array(item, idx, ptr_array) \
-	for (idx = 0, item = ((ptr_array)->len > 0 ? g_ptr_array_index((ptr_array), 0) : NULL); \
-		idx < (ptr_array)->len; ++idx, item = g_ptr_array_index((ptr_array), idx))
+#define foreach_ptr_array(item, idx, ptr_array)							\
+	for (idx = 0, item = ((ptr_array)->len > 0 ?						\
+							g_ptr_array_index((ptr_array), 0) : NULL);	\
+		 idx < (ptr_array)->len;										\
+		 ++idx, item = g_ptr_array_index((ptr_array), idx))
 
 /** Iterates all the nodes in @a list.
  * @param node should be a (@c GList*).
@@ -126,18 +128,20 @@ G_BEGIN_DECLS
 /* Iterates all the nodes in @a list. Safe against removal during iteration
  * @param node should be a (@c GList*).
  * @param list @c GList to traverse. */
-#define foreach_list_safe(node, list) \
-	for (GList *_node = (list), *_next = (list) ? (list)->next : NULL; \
-	     (node = _node) != NULL; \
-	     _node = _next, _next = _next ? _next->next : NULL)
+#define foreach_list_safe(node, list)									\
+	for (GList *_node = (list), *_next = (list) ? (list)->next : NULL;	\
+		 (node = _node) != NULL;										\
+		 _node = _next, _next = _next ? _next->next : NULL)
 
 /** Iterates through each unsorted filename in a @c GDir.
  * @param filename (@c const @c gchar*) locale-encoded filename, without path. Do not modify or free.
  * @param dir @c GDir created with @c g_dir_open(). Call @c g_dir_close() afterwards.
  * @see utils_get_file_list() if you want a sorted list.
  * @since Geany 0.19. */
-#define foreach_dir(filename, dir)\
-	for ((filename) = g_dir_read_name(dir); (filename) != NULL; (filename) = g_dir_read_name(dir))
+#define foreach_dir(filename, dir)			\
+	for ((filename) = g_dir_read_name(dir);	\
+		 (filename) != NULL;				\
+		 (filename) = g_dir_read_name(dir))
 
 /** Iterates through each character in @a string.
  * @param char_ptr Pointer to character.
@@ -151,7 +155,7 @@ G_BEGIN_DECLS
  * @param str_ptr @c gchar** pointer to string element.
  * @param strv Can be @c NULL.
  * @since Geany 0.20 */
-#define foreach_strv(str_ptr, strv)\
+#define foreach_strv(str_ptr, strv) \
 	if (!(strv)) {} else foreach_str(str_ptr, strv)
 
 /** Iterates from 0 to @a size.
@@ -165,11 +169,13 @@ G_BEGIN_DECLS
 gboolean utils_str_equal(const gchar *a, const gchar *b);
 gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n);
 
-guint utils_string_replace_all(GString *haystack, const gchar *needle, const gchar *replace);
+guint utils_string_replace_all(GString *haystack, const gchar *needle,
+							   const gchar *replace);
 
 GSList *utils_get_file_list(const gchar *path, guint *length, GError **error);
 
-GSList *utils_get_file_list_full(const gchar *path, gboolean full_path, gboolean sort, GError **error);
+GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
+								 gboolean sort, GError **error);
 
 gint utils_write_file(const gchar *filename, const gchar *text);
 
@@ -181,19 +187,23 @@ gchar *utils_remove_ext_from_filename(const gchar *filename);
 
 gint utils_mkdir(const gchar *path, gboolean create_parent_dirs);
 
-gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section, const gchar *key, const gboolean default_value);
+gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section,
+								   const gchar *key, const gboolean default_value);
 
-gint utils_get_setting_integer(GKeyFile *config, const gchar *section, const gchar *key, const gint default_value);
+gint utils_get_setting_integer(GKeyFile *config, const gchar *section,
+							   const gchar *key, const gint default_value);
 
-gchar *utils_get_setting_string(GKeyFile *config, const gchar *section, const gchar *key, const gchar *default_value);
+gchar *utils_get_setting_string(GKeyFile *config, const gchar *section,
+								const gchar *key, const gchar *default_value);
 
-gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
-						  GSpawnChildSetupFunc child_setup, gpointer user_data, gchar **std_out,
-						  gchar **std_err, gint *exit_status, GError **error);
+gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env,
+						  GSpawnFlags flags, GSpawnChildSetupFunc child_setup,
+						  gpointer user_data, gchar **std_out, gchar **std_err,
+						  gint *exit_status, GError **error);
 
-gboolean utils_spawn_async(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
-						   GSpawnChildSetupFunc child_setup, gpointer user_data, GPid *child_pid,
-						   GError **error);
+gboolean utils_spawn_async(const gchar *dir, gchar **argv, gchar **env,
+						   GSpawnFlags flags, GSpawnChildSetupFunc child_setup,
+						   gpointer user_data, GPid *child_pid, GError **error);
 
 gint utils_str_casecmp(const gchar *s1, const gchar *s2);
 
@@ -201,13 +211,16 @@ gchar *utils_get_date_time(const gchar *format, time_t *time_to_use);
 
 void utils_open_browser(const gchar *uri);
 
-guint utils_string_replace_first(GString *haystack, const gchar *needle, const gchar *replace);
+guint utils_string_replace_first(GString *haystack, const gchar *needle,
+								 const gchar *replace);
 
 gchar *utils_str_middle_truncate(const gchar *string, guint truncate_length);
 
 gchar *utils_str_remove_chars(gchar *string, const gchar *chars);
 
-gchar **utils_copy_environment(const gchar **exclude_vars, const gchar *first_varname, ...) G_GNUC_NULL_TERMINATED;
+gchar **utils_copy_environment(const gchar **exclude_vars,
+							   const gchar *first_varname, ...)
+							   G_GNUC_NULL_TERMINATED;
 
 gchar *utils_find_open_xml_tag(const gchar sel[], gint size);
 
@@ -232,7 +245,7 @@ typedef enum
 	RESOURCE_DIR_LOCALE,
 	RESOURCE_DIR_PLUGIN,
 	RESOURCE_DIR_LIBEXEC,
-
+	
 	RESOURCE_DIR_COUNT
 } GeanyResourceDirType;
 
@@ -265,14 +278,18 @@ gdouble utils_scale_round(gdouble val, gdouble factor);
 
 gchar utils_brace_opposite(gchar ch);
 
-gint utils_string_find(GString *haystack, gint start, gint end, const gchar *needle);
+gint utils_string_find(GString *haystack, gint start, gint end,
+					   const gchar *needle);
 
-gint utils_string_replace(GString *str, gint pos, gint len, const gchar *replace);
+gint utils_string_replace(GString *str, gint pos, gint len,
+						  const gchar *replace);
 
 guint utils_string_regex_replace_all(GString *haystack, GRegex *regex,
-		guint match_num, const gchar *replace, gboolean literal);
+									 guint match_num, const gchar *replace,
+									 gboolean literal);
 
-void utils_str_replace_all(gchar **haystack, const gchar *needle, const gchar *replacement);
+void utils_str_replace_all(gchar **haystack, const gchar *needle,
+						   const gchar *replacement);
 
 gint utils_strpos(const gchar* haystack, const gchar *needle);
 
@@ -308,11 +325,14 @@ void utils_free_pointers(gsize arg_count, ...) G_GNUC_NULL_TERMINATED;
 
 gchar **utils_strv_new(const gchar *first, ...) G_GNUC_NULL_TERMINATED;
 
-gchar **utils_strv_join(gchar **first, gchar **second) G_GNUC_WARN_UNUSED_RESULT;
+gchar **utils_strv_join(gchar **first, gchar **second)
+						G_GNUC_WARN_UNUSED_RESULT;
 
-gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len) G_GNUC_WARN_UNUSED_RESULT;
+gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
+									 G_GNUC_WARN_UNUSED_RESULT;
 
-gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim) G_GNUC_WARN_UNUSED_RESULT;
+gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
+						   G_GNUC_WARN_UNUSED_RESULT;
 
 GSList *utils_get_config_files(const gchar *subdir);
 
