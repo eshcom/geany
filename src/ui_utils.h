@@ -125,7 +125,8 @@ void ui_menu_add_document_items(GtkMenu *menu, GeanyDocument *active,
 								GCallback callback);
 
 void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
-									   GCallback callback, GCompareFunc sort_func);
+									   GCallback callback,
+									   GCompareFunc compare_func);
 
 void ui_widget_modify_font_from_string(GtkWidget *wid, const gchar *str);
 

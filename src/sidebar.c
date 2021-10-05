@@ -120,13 +120,13 @@ static void prepare_taglist(GtkWidget *tree, GtkTreeStore *store)
 	column = gtk_tree_view_column_new();
 
 	gtk_tree_view_column_pack_start(column, icon_renderer, FALSE);
-  	gtk_tree_view_column_set_attributes(column, icon_renderer, "pixbuf", SYMBOLS_COLUMN_ICON, NULL);
-  	g_object_set(icon_renderer, "xalign", 0.0, NULL);
+	gtk_tree_view_column_set_attributes(column, icon_renderer, "pixbuf", SYMBOLS_COLUMN_ICON, NULL);
+	g_object_set(icon_renderer, "xalign", 0.0, NULL);
 
-  	gtk_tree_view_column_pack_start(column, text_renderer, TRUE);
-  	gtk_tree_view_column_set_attributes(column, text_renderer, "text", SYMBOLS_COLUMN_NAME, NULL);
-  	g_object_set(text_renderer, "yalign", 0.5, NULL);
-  	gtk_tree_view_column_set_title(column, _("Symbols"));
+	gtk_tree_view_column_pack_start(column, text_renderer, TRUE);
+	gtk_tree_view_column_set_attributes(column, text_renderer, "text", SYMBOLS_COLUMN_NAME, NULL);
+	g_object_set(text_renderer, "yalign", 0.5, NULL);
+	gtk_tree_view_column_set_title(column, _("Symbols"));
 
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);

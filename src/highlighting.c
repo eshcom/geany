@@ -103,14 +103,14 @@ enum	/* Geany common styling */
 static struct
 {
 	GeanyLexerStyle	 styling[GCS_MAX];
-
+	
 	/* icon style, 1-4 */
 	gint fold_marker;
 	/* vertical line style, 0-2 */
 	gint fold_lines;
 	/* horizontal line when folded, 0-2 */
 	gint fold_draw_line;
-
+	
 	gchar			*wordchars;
 } common_style_set = { { { 0 } }, 0, 0, 0, NULL };
 
@@ -125,7 +125,8 @@ static GeanyLexerStyle gsd_default = {0x000000, 0xffffff, FALSE, FALSE};
 
 
 /* filetypes should use the filetypes.foo [lexer_properties] group instead of hardcoding */
-static void sci_set_property(ScintillaObject *sci, const gchar *name, const gchar *value)
+static void sci_set_property(ScintillaObject *sci, const gchar *name,
+							 const gchar *value)
 {
 	SSM(sci, SCI_SETPROPERTY, (uptr_t) name, (sptr_t) value);
 }
@@ -134,7 +135,7 @@ static void sci_set_property(ScintillaObject *sci, const gchar *name, const gcha
 static void new_styleset(guint file_type_id, gsize styling_count)
 {
 	StyleSet *set = &style_sets[file_type_id];
-
+	
 	set->count = styling_count;
 	set->styling = g_new0(GeanyLexerStyle, styling_count);
 }
@@ -144,7 +145,7 @@ static void free_styleset(guint file_type_id)
 {
 	StyleSet *style_ptr;
 	style_ptr = &style_sets[file_type_id];
-
+	
 	style_ptr->count = 0;
 	g_free(style_ptr->styling);
 	style_ptr->styling = NULL;
@@ -160,15 +161,15 @@ static void free_styleset(guint file_type_id)
 
 
 static void get_keyfile_keywords(GKeyFile *config, GKeyFile *configh,
-				const gchar *key, guint ft_id, guint pos)
+								 const gchar *key, guint ft_id, guint pos)
 {
 	style_sets[ft_id].keywords[pos] =
 		utils_get_setting(string, configh, config, "keywords", key, "");
 }
 
 
-static void get_keyfile_wordchars(GKeyFile *config, GKeyFile *configh, gchar **wordchars,
-		const gchar *default_wordchars)
+static void get_keyfile_wordchars(GKeyFile *config, GKeyFile *configh,
+								  gchar **wordchars, const gchar *default_wordchars)
 {
 	*wordchars = utils_get_setting(string, configh, config,
 		"settings", "wordchars", default_wordchars);
@@ -181,10 +182,10 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
 	gchar *comma, *name = NULL;
 	const gchar *bold = NULL;
 	const gchar *italic = NULL;
-
+	
 	g_return_val_if_fail(named_style, FALSE);
 	name = utils_strdupa(named_style);	/* named_style must not be written to, may be a static string */
-
+	
 	comma = strstr(name, ",");
 	if (comma)
 	{
@@ -193,19 +194,18 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
 		*comma = '\0';	/* terminate name to make lookup work */
 	}
 	cs = g_hash_table_lookup(named_style_hash, name);
-
+	
 	if (cs)
 	{
- 		*style = *cs;
- 		if (bold)
- 			style->bold = !style->bold;
- 		if (italic)
- 			style->italic = !style->italic;
+		*style = *cs;
+		if (bold)
+			style->bold = !style->bold;
+		if (italic)
+			style->italic = !style->italic;
 	}
 	else
-	{
 		*style = gsd_default;
-	}
+	
 	return (cs != NULL);
 }
 
@@ -218,39 +218,40 @@ static void parse_color(GKeyFile *kf, const gchar *str, gint *clr)
 {
 	gint c;
 	gchar *named_color = NULL;
-
+	
 	g_return_if_fail(clr != NULL);
-
+	
 	if (G_UNLIKELY(EMPTY(str)))
 		return;
-
+	
 	named_color = g_key_file_get_string(kf, "named_colors", str, NULL);
 	if (named_color)
 		str = named_color;
-
+	
 	c = utils_parse_color_to_bgr(str);
 	if (c == -1)
 		geany_debug("Bad color '%s'", str);
 	else
 		*clr = c;
-
+	
 	g_free(named_color);
 }
 
 
 static void parse_keyfile_style(GKeyFile *kf, gchar **list,
-		const GeanyLexerStyle *default_style, GeanyLexerStyle *style)
+								const GeanyLexerStyle *default_style,
+								GeanyLexerStyle *style)
 {
 	gsize len;
-
+	
 	g_return_if_fail(default_style);
 	g_return_if_fail(style);
-
+	
 	*style = *default_style;
-
+	
 	if (!list)
 		return;
-
+	
 	len = g_strv_length(list);
 	if (len == 0)
 		return;
@@ -278,7 +279,7 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 			g_strfreev(items);
 		}
 	}
-
+	
 	switch (len)
 	{
 		case 4:
@@ -297,25 +298,27 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 
 
 static void get_keyfile_style(GKeyFile *config, GKeyFile *configh,
-		const gchar *key_name, GeanyLexerStyle *style)
+							  const gchar *key_name, GeanyLexerStyle *style)
 {
 	gchar **list;
 	gsize len;
-
+	
 	g_return_if_fail(config);
 	g_return_if_fail(configh);
 	g_return_if_fail(key_name);
 	g_return_if_fail(style);
-
-	list = g_key_file_get_string_list(configh, "styling", key_name, &len, NULL);
+	
+	list = g_key_file_get_string_list(configh, "styling",
+									  key_name, &len, NULL);
 	if (list == NULL)
 	{
-		list = g_key_file_get_string_list(config, "styling", key_name, &len, NULL);
+		list = g_key_file_get_string_list(config, "styling",
+										  key_name, &len, NULL);
 		parse_keyfile_style(config, list, &gsd_default, style);
 	}
 	else
 		parse_keyfile_style(configh, list, &gsd_default, style);
-
+	
 	g_strfreev(list);
 }
 
@@ -324,55 +327,55 @@ static void convert_int(const gchar *int_str, gint *val)
 {
 	gchar *end;
 	gint v = strtol(int_str, &end, 10);
-
+	
 	if (int_str != end)
 		*val = v;
 }
 
 
 /* Get first and second integer numbers, store in foreground and background fields of @a style. */
-static void get_keyfile_int(GKeyFile *config, GKeyFile *configh, const gchar *section,
-							const gchar *key, gint fdefault_val, gint sdefault_val,
+static void get_keyfile_int(GKeyFile *config, GKeyFile *configh,
+							const gchar *section, const gchar *key,
+							gint fdefault_val, gint sdefault_val,
 							GeanyLexerStyle *style)
 {
 	gchar **list;
 	gsize len;
 	GeanyLexerStyle def = {fdefault_val, sdefault_val, FALSE, FALSE};
-
+	
 	g_return_if_fail(config);
 	g_return_if_fail(configh);
 	g_return_if_fail(section);
 	g_return_if_fail(key);
-
+	
 	list = g_key_file_get_string_list(configh, section, key, &len, NULL);
 	if (list == NULL)
 		list = g_key_file_get_string_list(config, section, key, &len, NULL);
-
+	
 	*style = def;
 	if (!list)
 		return;
-
+	
 	if (list[0])
 	{
 		convert_int(list[0], &style->foreground);
 		if (list[1])
-		{
 			convert_int(list[1], &style->background);
-		}
 	}
 	g_strfreev(list);
 }
 
 
 /* first or second can be NULL. */
-static void get_keyfile_ints(GKeyFile *config, GKeyFile *configh, const gchar *section,
-							const gchar *key,
-							gint fdefault_val, gint sdefault_val,
-							gint *first, gint *second)
+static void get_keyfile_ints(GKeyFile *config, GKeyFile *configh,
+							 const gchar *section, const gchar *key,
+							 gint fdefault_val, gint sdefault_val,
+							 gint *first, gint *second)
 {
 	GeanyLexerStyle tmp_style;
-
-	get_keyfile_int(config, configh, section, key, fdefault_val, sdefault_val, &tmp_style);
+	
+	get_keyfile_int(config, configh, section, key, fdefault_val,
+					sdefault_val, &tmp_style);
 	if (first)
 		*first = tmp_style.foreground;
 	if (second)
@@ -384,7 +387,7 @@ static guint invert(guint icolour)
 {
 	if (interface_prefs.highlighting_invert_all)
 		return 0xffffff - icolour;
-
+	
 	return icolour;
 }
 
@@ -392,7 +395,7 @@ static guint invert(guint icolour)
 static GeanyLexerStyle *get_style(guint ft_id, guint styling_index)
 {
 	g_assert(ft_id < filetypes_array->len);
-
+	
 	if (G_UNLIKELY(ft_id == GEANY_FILETYPES_NONE))
 	{
 		g_assert(styling_index < GCS_MAX);
@@ -401,17 +404,18 @@ static GeanyLexerStyle *get_style(guint ft_id, guint styling_index)
 	else
 	{
 		StyleSet *set = &style_sets[ft_id];
-
+		
 		g_assert(styling_index < set->count);
 		return &set->styling[styling_index];
 	}
 }
 
 
-static void set_sci_style(ScintillaObject *sci, guint style, guint ft_id, guint styling_index)
+static void set_sci_style(ScintillaObject *sci, guint style, guint ft_id,
+						  guint styling_index)
 {
 	GeanyLexerStyle *style_ptr = get_style(ft_id, styling_index);
-
+	
 	SSM(sci, SCI_STYLESETFORE, style,	invert(style_ptr->foreground));
 	SSM(sci, SCI_STYLESETBACK, style,	invert(style_ptr->background));
 	SSM(sci, SCI_STYLESETBOLD, style,	style_ptr->bold);
@@ -422,13 +426,13 @@ static void set_sci_style(ScintillaObject *sci, guint style, guint ft_id, guint 
 void highlighting_free_styles(void)
 {
 	guint i;
-
+	
 	for (i = 0; i < filetypes_array->len; i++)
 		free_styleset(i);
-
+	
 	if (named_style_hash)
 		g_hash_table_destroy(named_style_hash);
-
+	
 	g_free(style_sets);
 }
 
@@ -437,7 +441,8 @@ static gchar*
 get_keyfile_whitespace_chars(GKeyFile *config, GKeyFile *configh)
 {
 	return utils_get_setting(string, configh, config,
-		"settings", "whitespace_chars", GEANY_WHITESPACE_CHARS);
+							 "settings", "whitespace_chars",
+							 GEANY_WHITESPACE_CHARS);
 }
 
 
@@ -446,13 +451,13 @@ static void add_named_style(GKeyFile *config, const gchar *key)
 	const gchar group[] = "named_styles";
 	gchar **list;
 	gsize len;
-
+	
 	list = g_key_file_get_string_list(config, group, key, &len, NULL);
 	/* we allow a named style to reference another style above it */
 	if (list && len >= 1)
 	{
 		GeanyLexerStyle *style = g_new0(GeanyLexerStyle, 1);
-
+		
 		parse_keyfile_style(config, list, &gsd_default, style);
 		g_hash_table_insert(named_style_hash, g_strdup(key), style);
 	}
@@ -465,21 +470,21 @@ static void get_named_styles(GKeyFile *config)
 	const gchar group[] = "named_styles";
 	gchar **keys = g_key_file_get_keys(config, group, NULL, NULL);
 	gchar **ptr = keys;
-
+	
 	if (!ptr)
 		return;
-
+	
 	while (1)
 	{
 		const gchar *key = *ptr;
-
+		
 		if (!key)
 			break;
-
+		
 		/* don't replace already read default style with system one */
 		if (!g_str_equal(key, "default"))
 			add_named_style(config, key);
-
+		
 		ptr++;
 	}
 	g_strfreev(keys);
@@ -489,8 +494,9 @@ static void get_named_styles(GKeyFile *config)
 static GKeyFile *utils_key_file_new(const gchar *filename)
 {
 	GKeyFile *config = g_key_file_new();
-
-	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS, NULL);
+	
+	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS,
+							  NULL);
 	return config;
 }
 
@@ -499,20 +505,23 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 {
 	const gchar *scheme = editor_prefs.color_scheme;
 	gboolean free_kf = FALSE;
-
+	
 	if (named_style_hash)
 		g_hash_table_destroy(named_style_hash);	/* reloading */
-
-	named_style_hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
-
+	
+	named_style_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
+											 g_free, g_free);
 	if (!EMPTY(scheme))
 	{
 		gchar *path, *path_home;
-
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir, GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
-		path_home = g_build_path(G_DIR_SEPARATOR_S, app->configdir, GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
-
-		if (g_file_test(path, G_FILE_TEST_EXISTS) || g_file_test(path_home, G_FILE_TEST_EXISTS))
+		
+		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
+							GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
+		path_home = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
+								 GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
+		
+		if (g_file_test(path, G_FILE_TEST_EXISTS) ||
+			g_file_test(path_home, G_FILE_TEST_EXISTS))
 		{
 			config = utils_key_file_new(path);
 			config_home = utils_key_file_new(path_home);
@@ -527,11 +536,11 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 	read_named_style("default", &gsd_default);	/* in case user overrides but not with both colors */
 	add_named_style(config_home, "default");
 	read_named_style("default", &gsd_default);
-
+	
 	get_named_styles(config);
 	/* home overrides any system named style */
 	get_named_styles(config_home);
-
+	
 	if (free_kf)
 	{
 		g_key_file_free(config);
@@ -543,24 +552,40 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 {
 	load_named_styles(config, config_home);
-
-	get_keyfile_style(config, config_home, "default", &common_style_set.styling[GCS_DEFAULT]);
-	get_keyfile_style(config, config_home, "selection", &common_style_set.styling[GCS_SELECTION]);
-	get_keyfile_style(config, config_home, "brace_good", &common_style_set.styling[GCS_BRACE_GOOD]);
-	get_keyfile_style(config, config_home, "brace_bad", &common_style_set.styling[GCS_BRACE_BAD]);
-	get_keyfile_style(config, config_home, "margin_linenumber", &common_style_set.styling[GCS_MARGIN_LINENUMBER]);
-	get_keyfile_style(config, config_home, "margin_folding", &common_style_set.styling[GCS_MARGIN_FOLDING]);
-	get_keyfile_style(config, config_home, "fold_symbol_highlight", &common_style_set.styling[GCS_FOLD_SYMBOL_HIGHLIGHT]);
-	get_keyfile_style(config, config_home, "current_line", &common_style_set.styling[GCS_CURRENT_LINE]);
-	get_keyfile_style(config, config_home, "caret", &common_style_set.styling[GCS_CARET]);
-	get_keyfile_style(config, config_home, "indent_guide", &common_style_set.styling[GCS_INDENT_GUIDE]);
-	get_keyfile_style(config, config_home, "white_space", &common_style_set.styling[GCS_WHITE_SPACE]);
-	get_keyfile_style(config, config_home, "marker_line", &common_style_set.styling[GCS_MARKER_LINE]);
-	get_keyfile_style(config, config_home, "marker_search", &common_style_set.styling[GCS_MARKER_SEARCH]);
-	get_keyfile_style(config, config_home, "marker_mark", &common_style_set.styling[GCS_MARKER_MARK]);
-	get_keyfile_style(config, config_home, "calltips", &common_style_set.styling[GCS_CALLTIPS]);
-	get_keyfile_style(config, config_home, "indicator_error", &common_style_set.styling[GCS_INDICATOR_ERROR]);
-
+	
+	get_keyfile_style(config, config_home, "default",
+					  &common_style_set.styling[GCS_DEFAULT]);
+	get_keyfile_style(config, config_home, "selection",
+					  &common_style_set.styling[GCS_SELECTION]);
+	get_keyfile_style(config, config_home, "brace_good",
+					  &common_style_set.styling[GCS_BRACE_GOOD]);
+	get_keyfile_style(config, config_home, "brace_bad",
+					  &common_style_set.styling[GCS_BRACE_BAD]);
+	get_keyfile_style(config, config_home, "margin_linenumber",
+					  &common_style_set.styling[GCS_MARGIN_LINENUMBER]);
+	get_keyfile_style(config, config_home, "margin_folding",
+					  &common_style_set.styling[GCS_MARGIN_FOLDING]);
+	get_keyfile_style(config, config_home, "fold_symbol_highlight",
+					  &common_style_set.styling[GCS_FOLD_SYMBOL_HIGHLIGHT]);
+	get_keyfile_style(config, config_home, "current_line",
+					  &common_style_set.styling[GCS_CURRENT_LINE]);
+	get_keyfile_style(config, config_home, "caret",
+					  &common_style_set.styling[GCS_CARET]);
+	get_keyfile_style(config, config_home, "indent_guide",
+					  &common_style_set.styling[GCS_INDENT_GUIDE]);
+	get_keyfile_style(config, config_home, "white_space",
+					  &common_style_set.styling[GCS_WHITE_SPACE]);
+	get_keyfile_style(config, config_home, "marker_line",
+					  &common_style_set.styling[GCS_MARKER_LINE]);
+	get_keyfile_style(config, config_home, "marker_search",
+					  &common_style_set.styling[GCS_MARKER_SEARCH]);
+	get_keyfile_style(config, config_home, "marker_mark",
+					  &common_style_set.styling[GCS_MARKER_MARK]);
+	get_keyfile_style(config, config_home, "calltips",
+					  &common_style_set.styling[GCS_CALLTIPS]);
+	get_keyfile_style(config, config_home, "indicator_error",
+					  &common_style_set.styling[GCS_INDICATOR_ERROR]);
+	
 	get_keyfile_ints(config, config_home, "styling", "folding_style",
 		1, 1, &common_style_set.fold_marker, &common_style_set.fold_lines);
 	get_keyfile_ints(config, config_home, "styling", "folding_horiz_line",
@@ -579,9 +604,10 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 		256, 256, &common_style_set.styling[GCS_MARKER_TRANSLUCENCY]);
 	get_keyfile_int(config, config_home, "styling", "line_height",
 		0, 0, &common_style_set.styling[GCS_LINE_HEIGHT]);
-
+	
 	g_free(common_style_set.wordchars);
-	get_keyfile_wordchars(config, config_home, &common_style_set.wordchars, GEANY_WORDCHARS);
+	get_keyfile_wordchars(config, config_home, &common_style_set.wordchars,
+						  GEANY_WORDCHARS);
 	g_free(whitespace_chars);
 	whitespace_chars = get_keyfile_whitespace_chars(config, config_home);
 }
@@ -589,25 +615,26 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 
 static void set_character_classes(ScintillaObject *sci, guint ft_id)
 {
-	const gchar *word = (ft_id == GEANY_FILETYPES_NONE ?
-		common_style_set.wordchars : style_sets[ft_id].wordchars);
+	const gchar *word = (ft_id == GEANY_FILETYPES_NONE
+										? common_style_set.wordchars
+										: style_sets[ft_id].wordchars);
 	gchar *whitespace;
 	guint i, j;
-
+	
 	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t) word);
-
+	
 	/* setting wordchars resets character classes, so we have to set whitespaces after
 	 * wordchars, but we want wordchars to have precenence over whitepace chars */
 	whitespace = g_malloc0(strlen(whitespace_chars) + 1);
 	for (i = 0, j = 0; whitespace_chars[i] != 0; i++)
 	{
-		if (! strchr(word, whitespace_chars[i]))
+		if (!strchr(word, whitespace_chars[i]))
 			whitespace[j++] = whitespace_chars[i];
 	}
 	whitespace[j] = 0;
-
+	
 	SSM(sci, SCI_SETWHITESPACECHARS, 0, (sptr_t) whitespace);
-
+	
 	g_free(whitespace);
 }
 
@@ -615,73 +642,90 @@ static void set_character_classes(ScintillaObject *sci, guint ft_id)
 static void styleset_common(ScintillaObject *sci, guint ft_id)
 {
 	GeanyLexerStyle *style;
-
+	
 	SSM(sci, SCI_STYLECLEARALL, 0, 0);
-
+	
 	set_character_classes(sci, ft_id);
-
+	
 	/* caret colour, style and width */
-	SSM(sci, SCI_SETCARETFORE, invert(common_style_set.styling[GCS_CARET].foreground), 0);
-	SSM(sci, SCI_SETCARETWIDTH, common_style_set.styling[GCS_CARET].background, 0);
+	SSM(sci, SCI_SETCARETFORE,
+		invert(common_style_set.styling[GCS_CARET].foreground), 0);
+	SSM(sci, SCI_SETCARETWIDTH,
+		common_style_set.styling[GCS_CARET].background, 0);
+	
 	if (common_style_set.styling[GCS_CARET].bold)
 		SSM(sci, SCI_SETCARETSTYLE, CARETSTYLE_BLOCK, 0);
 	else
 		SSM(sci, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
-
+	
 	/* line height */
-	SSM(sci, SCI_SETEXTRAASCENT, common_style_set.styling[GCS_LINE_HEIGHT].foreground, 0);
-	SSM(sci, SCI_SETEXTRADESCENT, common_style_set.styling[GCS_LINE_HEIGHT].background, 0);
-
+	SSM(sci, SCI_SETEXTRAASCENT,
+		common_style_set.styling[GCS_LINE_HEIGHT].foreground, 0);
+	SSM(sci, SCI_SETEXTRADESCENT,
+		common_style_set.styling[GCS_LINE_HEIGHT].background, 0);
+	
 	/* colourise the current line */
-	SSM(sci, SCI_SETCARETLINEBACK, invert(common_style_set.styling[GCS_CURRENT_LINE].background), 0);
+	SSM(sci, SCI_SETCARETLINEBACK,
+		invert(common_style_set.styling[GCS_CURRENT_LINE].background), 0);
 	/* bold=enable current line */
-	SSM(sci, SCI_SETCARETLINEVISIBLE, common_style_set.styling[GCS_CURRENT_LINE].bold, 0);
-
+	SSM(sci, SCI_SETCARETLINEVISIBLE,
+		common_style_set.styling[GCS_CURRENT_LINE].bold, 0);
+	
 	/* Translucency for current line and selection */
-	SSM(sci, SCI_SETCARETLINEBACKALPHA, common_style_set.styling[GCS_TRANSLUCENCY].foreground, 0);
-	SSM(sci, SCI_SETSELALPHA, common_style_set.styling[GCS_TRANSLUCENCY].background, 0);
-
+	SSM(sci, SCI_SETCARETLINEBACKALPHA,
+		common_style_set.styling[GCS_TRANSLUCENCY].foreground, 0);
+	SSM(sci, SCI_SETSELALPHA,
+		common_style_set.styling[GCS_TRANSLUCENCY].background, 0);
+	
 	/* line wrapping visuals */
 	SSM(sci, SCI_SETWRAPVISUALFLAGS,
 		common_style_set.styling[GCS_LINE_WRAP_VISUALS].foreground, 0);
 	SSM(sci, SCI_SETWRAPVISUALFLAGSLOCATION,
 		common_style_set.styling[GCS_LINE_WRAP_VISUALS].background, 0);
-	SSM(sci, SCI_SETWRAPSTARTINDENT, common_style_set.styling[GCS_LINE_WRAP_INDENT].foreground, 0);
-	SSM(sci, SCI_SETWRAPINDENTMODE, common_style_set.styling[GCS_LINE_WRAP_INDENT].background, 0);
-
+	SSM(sci, SCI_SETWRAPSTARTINDENT,
+		common_style_set.styling[GCS_LINE_WRAP_INDENT].foreground, 0);
+	SSM(sci, SCI_SETWRAPINDENTMODE,
+		common_style_set.styling[GCS_LINE_WRAP_INDENT].background, 0);
+	
 	/* Error indicator */
 	SSM(sci, SCI_INDICSETSTYLE, GEANY_INDICATOR_ERROR, INDIC_SQUIGGLEPIXMAP);
 	SSM(sci, SCI_INDICSETFORE, GEANY_INDICATOR_ERROR,
 		invert(common_style_set.styling[GCS_INDICATOR_ERROR].foreground));
-
+	
 	/* Search indicator, used for 'Mark' matches */
 	SSM(sci, SCI_INDICSETSTYLE, GEANY_INDICATOR_SEARCH, INDIC_ROUNDBOX);
 	SSM(sci, SCI_INDICSETFORE, GEANY_INDICATOR_SEARCH,
 		invert(common_style_set.styling[GCS_MARKER_SEARCH].background));
 	SSM(sci, SCI_INDICSETALPHA, GEANY_INDICATOR_SEARCH, 60);
-
+	
 	/* Snippet cursor indicator, when inserting snippets with multiple
 	 * cursor positions. */
 	SSM(sci, SCI_INDICSETSTYLE, GEANY_INDICATOR_SNIPPET, INDIC_DOTBOX);
 	SSM(sci, SCI_INDICSETALPHA, GEANY_INDICATOR_SNIPPET, 60);
-
+	
 	/* define marker symbols
 	 * 0 -> line marker */
 	SSM(sci, SCI_MARKERDEFINE, 0, SC_MARK_SHORTARROW);
-	SSM(sci, SCI_MARKERSETFORE, 0, invert(common_style_set.styling[GCS_MARKER_LINE].foreground));
-	SSM(sci, SCI_MARKERSETBACK, 0, invert(common_style_set.styling[GCS_MARKER_LINE].background));
-	SSM(sci, SCI_MARKERSETALPHA, 0, common_style_set.styling[GCS_MARKER_TRANSLUCENCY].foreground);
-
+	SSM(sci, SCI_MARKERSETFORE, 0,
+		invert(common_style_set.styling[GCS_MARKER_LINE].foreground));
+	SSM(sci, SCI_MARKERSETBACK, 0,
+		invert(common_style_set.styling[GCS_MARKER_LINE].background));
+	SSM(sci, SCI_MARKERSETALPHA, 0,
+		common_style_set.styling[GCS_MARKER_TRANSLUCENCY].foreground);
+	
 	/* 1 -> user marker */
 	SSM(sci, SCI_MARKERDEFINE, 1, SC_MARK_PLUS);
-	SSM(sci, SCI_MARKERSETFORE, 1, invert(common_style_set.styling[GCS_MARKER_MARK].foreground));
-	SSM(sci, SCI_MARKERSETBACK, 1, invert(common_style_set.styling[GCS_MARKER_MARK].background));
-	SSM(sci, SCI_MARKERSETALPHA, 1, common_style_set.styling[GCS_MARKER_TRANSLUCENCY].background);
-
+	SSM(sci, SCI_MARKERSETFORE, 1,
+		invert(common_style_set.styling[GCS_MARKER_MARK].foreground));
+	SSM(sci, SCI_MARKERSETBACK, 1,
+		invert(common_style_set.styling[GCS_MARKER_MARK].background));
+	SSM(sci, SCI_MARKERSETALPHA, 1,
+		common_style_set.styling[GCS_MARKER_TRANSLUCENCY].background);
+	
 	/* 2 -> folding marker, other folding settings */
 	SSM(sci, SCI_SETMARGINTYPEN, 2, SC_MARGIN_SYMBOL);
 	SSM(sci, SCI_SETMARGINMASKN, 2, SC_MASK_FOLDERS);
-
+	
 	/* drawing a horizontal line when text if folded */
 	switch (common_style_set.fold_draw_line)
 	{
@@ -701,7 +745,7 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 			break;
 		}
 	}
-
+	
 	/* choose the folding style - boxes or circles, I prefer boxes, so it is default ;-) */
 	SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDEREND, SC_MARK_EMPTY);
 	SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPENMID, SC_MARK_EMPTY);
@@ -728,7 +772,7 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDER, SC_MARK_PLUS);
 			break;
 	}
-
+	
 	/* choose the folding style - straight or curved, I prefer straight, so it is default ;-) */
 	switch (common_style_set.fold_lines)
 	{
@@ -759,7 +803,7 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 			SC_MARKNUM_FOLDERMIDTAIL
 		};
 		guint i;
-
+		
 		foreach_range(i, G_N_ELEMENTS(markers))
 		{
 			SSM(sci, SCI_MARKERSETFORE, markers[i],
@@ -768,14 +812,14 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 				invert(common_style_set.styling[GCS_MARGIN_FOLDING].foreground));
 		}
 	}
-
+	
 	/* set some common defaults */
 	sci_set_property(sci, "fold", "1");
 	sci_set_property(sci, "fold.compact", "0");
 	sci_set_property(sci, "fold.comment", "1");
 	sci_set_property(sci, "fold.preprocessor", "1");
 	sci_set_property(sci, "fold.at.else", "1");
-
+	
 	style = &common_style_set.styling[GCS_SELECTION];
 	if (!style->bold && !style->italic)
 	{
@@ -787,63 +831,68 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 	SSM(sci, SCI_SETSELFORE, style->bold, invert(style->foreground));
 	/* italic (4th argument) is whether to override default background selection */
 	SSM(sci, SCI_SETSELBACK, style->italic, invert(style->background));
-
-	SSM(sci, SCI_SETFOLDMARGINCOLOUR, 1, invert(common_style_set.styling[GCS_MARGIN_FOLDING].background));
-	SSM(sci, SCI_SETFOLDMARGINHICOLOUR, 1, invert(common_style_set.styling[GCS_MARGIN_FOLDING].background));
+	
+	SSM(sci, SCI_SETFOLDMARGINCOLOUR, 1,
+		invert(common_style_set.styling[GCS_MARGIN_FOLDING].background));
+	SSM(sci, SCI_SETFOLDMARGINHICOLOUR, 1,
+		invert(common_style_set.styling[GCS_MARGIN_FOLDING].background));
 	set_sci_style(sci, STYLE_LINENUMBER, GEANY_FILETYPES_NONE, GCS_MARGIN_LINENUMBER);
 	set_sci_style(sci, STYLE_BRACELIGHT, GEANY_FILETYPES_NONE, GCS_BRACE_GOOD);
 	set_sci_style(sci, STYLE_BRACEBAD, GEANY_FILETYPES_NONE, GCS_BRACE_BAD);
 	set_sci_style(sci, STYLE_INDENTGUIDE, GEANY_FILETYPES_NONE, GCS_INDENT_GUIDE);
-
+	
 	/* bold = common whitespace settings enabled */
 	SSM(sci, SCI_SETWHITESPACEFORE, common_style_set.styling[GCS_WHITE_SPACE].bold,
 		invert(common_style_set.styling[GCS_WHITE_SPACE].foreground));
 	SSM(sci, SCI_SETWHITESPACEBACK, common_style_set.styling[GCS_WHITE_SPACE].italic,
 		invert(common_style_set.styling[GCS_WHITE_SPACE].background));
-
+	
 	if (common_style_set.styling[GCS_CALLTIPS].bold)
-		SSM(sci, SCI_CALLTIPSETFORE, invert(common_style_set.styling[GCS_CALLTIPS].foreground), 1);
+		SSM(sci, SCI_CALLTIPSETFORE,
+			invert(common_style_set.styling[GCS_CALLTIPS].foreground), 1);
 	if (common_style_set.styling[GCS_CALLTIPS].italic)
-		SSM(sci, SCI_CALLTIPSETBACK, invert(common_style_set.styling[GCS_CALLTIPS].background), 1);
+		SSM(sci, SCI_CALLTIPSETBACK,
+			invert(common_style_set.styling[GCS_CALLTIPS].background), 1);
 }
 
 
 /* Merge & assign global typedefs and user secondary keywords.
  * keyword_idx is used for both style_sets[].keywords and scintilla keyword style number */
-static void merge_type_keywords(ScintillaObject *sci, guint ft_id, guint keyword_idx)
+static void merge_type_keywords(ScintillaObject *sci, guint ft_id,
+								guint keyword_idx)
 {
 	const gchar *user_words = style_sets[ft_id].keywords[keyword_idx];
 	GString *s;
-
+	
 	s = symbols_find_typenames_as_string(filetypes[ft_id]->lang,
 										 TYPENAMES_GLOBAL);
 	if (G_UNLIKELY(s == NULL))
 		s = g_string_sized_new(200);
 	else
 		g_string_append_c(s, ' '); /* append a space as delimiter to the existing list of words */
-
+	
 	g_string_append(s, user_words);
-
+	
 	sci_set_keywords(sci, keyword_idx, s->str);
 	g_string_free(s, TRUE);
 }
 
 
-static void styleset_init_from_mapping(guint ft_id, GKeyFile *config, GKeyFile *config_home,
-		const HLStyle *styles, gsize n_styles,
-		const HLKeyword *keywords, gsize n_keywords)
+static void styleset_init_from_mapping(guint ft_id, GKeyFile *config,
+									   GKeyFile *config_home,
+									   const HLStyle *styles, gsize n_styles,
+									   const HLKeyword *keywords, gsize n_keywords)
 {
 	gsize i;
-
+	
 	/* styles */
 	new_styleset(ft_id, n_styles);
 	foreach_range(i, n_styles)
 	{
 		GeanyLexerStyle *style = &style_sets[ft_id].styling[i];
-
 		get_keyfile_style(config, config_home, styles[i].name, style);
 	}
-
+	
 	/* keywords */
 	if (n_keywords < 1)
 		style_sets[ft_id].keywords = NULL;
@@ -859,17 +908,17 @@ static void styleset_init_from_mapping(guint ft_id, GKeyFile *config, GKeyFile *
 
 /* STYLE_DEFAULT will be set to match the first style. */
 static void styleset_from_mapping(ScintillaObject *sci, guint ft_id, guint lexer,
-		const HLStyle *styles, gsize n_styles,
-		const HLKeyword *keywords, gsize n_keywords,
-		const HLProperty *properties, gsize n_properties)
+								  const HLStyle *styles, gsize n_styles,
+								  const HLKeyword *keywords, gsize n_keywords,
+								  const HLProperty *properties, gsize n_properties)
 {
 	gsize i;
-
+	
 	g_assert(ft_id != GEANY_FILETYPES_NONE);
-
+	
 	/* lexer */
 	sci_set_lexer(sci, lexer);
-
+	
 	/* styles */
 	styleset_common(sci, ft_id);
 	if (n_styles > 0)
@@ -883,16 +932,17 @@ static void styleset_from_mapping(ScintillaObject *sci, guint ft_id, guint lexer
 			set_sci_style(sci, styles[i].style, ft_id, i);
 		}
 	}
-
+	
 	/* keywords */
 	foreach_range(i, n_keywords)
 	{
 		if (keywords[i].merge)
 			merge_type_keywords(sci, ft_id, i);
 		else
-			sci_set_keywords(sci, keywords[i].id, style_sets[ft_id].keywords[i]);
+			sci_set_keywords(sci, keywords[i].id,
+							 style_sets[ft_id].keywords[i]);
 	}
-
+	
 	/* properties */
 	foreach_range(i, n_properties)
 		sci_set_property(sci, properties[i].property, properties[i].value);
@@ -903,51 +953,54 @@ static void styleset_from_mapping(ScintillaObject *sci, guint ft_id, guint lexer
 static void styleset_default(ScintillaObject *sci, guint ft_id)
 {
 	sci_set_lexer(sci, SCLEX_NULL);
-
-	/* we need to set STYLE_DEFAULT before we call SCI_STYLECLEARALL in styleset_common() */
+	
+	/* we need to set STYLE_DEFAULT before we call
+	 * SCI_STYLECLEARALL in styleset_common() */
 	set_sci_style(sci, STYLE_DEFAULT, GEANY_FILETYPES_NONE, GCS_DEFAULT);
-
+	
 	styleset_common(sci, ft_id);
 }
 
 
-static void get_key_values(GKeyFile *config, const gchar *group, gchar **keys, gchar **values)
+static void get_key_values(GKeyFile *config, const gchar *group,
+						   gchar **keys, gchar **values)
 {
 	while (*keys)
 	{
 		gchar *str = g_key_file_get_string(config, group, *keys, NULL);
-
+		
 		if (str)
 			SETPTR(*values, str);
-
+		
 		keys++;
 		values++;
 	}
 }
 
 
-static void read_properties(GeanyFiletype *ft, GKeyFile *config, GKeyFile *configh)
+static void read_properties(GeanyFiletype *ft, GKeyFile *config,
+							GKeyFile *configh)
 {
 	gchar group[] = "lexer_properties";
 	gchar **keys;
 	gchar **keysh = g_key_file_get_keys(configh, group, NULL, NULL);
 	gchar **ptr;
-
+	
 	/* remove overridden keys from system keyfile */
 	foreach_strv(ptr, keysh)
 		g_key_file_remove_key(config, group, *ptr, NULL);
-
+	
 	/* merge sys and user keys */
 	keys = g_key_file_get_keys(config, group, NULL, NULL);
 	keys = utils_strv_join(keys, keysh);
-
+	
 	if (keys)
 	{
 		gchar **values = g_new0(gchar*, g_strv_length(keys) + 1);
-
+		
 		style_sets[ft->id].property_keys = keys;
 		style_sets[ft->id].property_values = values;
-
+		
 		get_key_values(config, group, keys, values);
 		get_key_values(configh, group, keys, values);
 	}
@@ -961,36 +1014,37 @@ static guint get_lexer_filetype(GeanyFiletype *ft)
 }
 
 
-#define init_styleset_case(LANG_NAME) \
-	case (GEANY_FILETYPES_##LANG_NAME): \
-		styleset_init_from_mapping(filetype_idx, config, configh, \
-				highlighting_styles_##LANG_NAME, \
-				HL_N_ENTRIES(highlighting_styles_##LANG_NAME), \
-				highlighting_keywords_##LANG_NAME, \
-				HL_N_ENTRIES(highlighting_keywords_##LANG_NAME)); \
+#define init_styleset_case(LANG_NAME)								\
+	case (GEANY_FILETYPES_##LANG_NAME):								\
+		styleset_init_from_mapping(filetype_idx, config, configh,	\
+				highlighting_styles_##LANG_NAME,					\
+				HL_N_ENTRIES(highlighting_styles_##LANG_NAME),		\
+				highlighting_keywords_##LANG_NAME,					\
+				HL_N_ENTRIES(highlighting_keywords_##LANG_NAME));	\
 		break
 
 /* Called by filetypes_load_config(). */
-void highlighting_init_styles(guint filetype_idx, GKeyFile *config, GKeyFile *configh)
+void highlighting_init_styles(guint filetype_idx, GKeyFile *config,
+							  GKeyFile *configh)
 {
 	GeanyFiletype *ft = filetypes[filetype_idx];
 	guint lexer_id = get_lexer_filetype(ft);
 	gchar *default_str;
-
+	
 	if (!style_sets)
 		style_sets = g_new0(StyleSet, filetypes_array->len);
-
+	
 	/* Clear old information if necessary - e.g. when reloading config */
 	free_styleset(filetype_idx);
-
+	
 	read_properties(ft, config, configh);
 	/* If a default style exists, check it uses a named style
 	 * Note: almost all filetypes have a "default" style, except HTML ones */
 	default_str = utils_get_setting(string, configh, config,
-		"styling", "default", "default");
+									"styling", "default", "default");
 	ft->priv->warn_color_scheme = !g_ascii_isalpha(*default_str);
 	g_free(default_str);
-
+	
 	/* None filetype handled specially */
 	if (filetype_idx == GEANY_FILETYPES_NONE)
 	{
@@ -999,7 +1053,7 @@ void highlighting_init_styles(guint filetype_idx, GKeyFile *config, GKeyFile *co
 	}
 	/* All stylesets depend on filetypes.common */
 	filetypes_load_config(GEANY_FILETYPES_NONE, FALSE);
-
+	
 	switch (lexer_id)
 	{
 		init_styleset_case(ABAQUS);
@@ -1058,24 +1112,24 @@ void highlighting_init_styles(guint filetype_idx, GKeyFile *config, GKeyFile *co
 		default:
 			if (ft->lexer_filetype)
 				geany_debug("Filetype %s has a recursive lexer_filetype %s set!",
-					ft->name, ft->lexer_filetype->name);
+							ft->name, ft->lexer_filetype->name);
 	}
-
+	
 	/* should be done in filetypes.c really: */
 	get_keyfile_wordchars(config, configh, &style_sets[filetype_idx].wordchars,
-			common_style_set.wordchars);
+						  common_style_set.wordchars);
 }
 
 
-#define styleset_case(LANG_NAME) \
-	case (GEANY_FILETYPES_##LANG_NAME): \
-		styleset_from_mapping(sci, ft->id, highlighting_lexer_##LANG_NAME, \
-				highlighting_styles_##LANG_NAME, \
-				HL_N_ENTRIES(highlighting_styles_##LANG_NAME), \
-				highlighting_keywords_##LANG_NAME, \
-				HL_N_ENTRIES(highlighting_keywords_##LANG_NAME), \
-				highlighting_properties_##LANG_NAME, \
-				HL_N_ENTRIES(highlighting_properties_##LANG_NAME)); \
+#define styleset_case(LANG_NAME)											\
+	case (GEANY_FILETYPES_##LANG_NAME):										\
+		styleset_from_mapping(sci, ft->id, highlighting_lexer_##LANG_NAME,	\
+				highlighting_styles_##LANG_NAME,							\
+				HL_N_ENTRIES(highlighting_styles_##LANG_NAME),				\
+				highlighting_keywords_##LANG_NAME,							\
+				HL_N_ENTRIES(highlighting_keywords_##LANG_NAME),			\
+				highlighting_properties_##LANG_NAME,						\
+				HL_N_ENTRIES(highlighting_properties_##LANG_NAME));			\
 		break
 
 /** Sets up highlighting and other visual settings.
@@ -1085,9 +1139,9 @@ GEANY_API_SYMBOL
 void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 {
 	guint lexer_id = get_lexer_filetype(ft);
-
+	
 	filetypes_load_config(ft->id, FALSE);	/* load filetypes.ext */
-
+	
 	switch (lexer_id)
 	{
 		styleset_case(ABAQUS);
@@ -1152,7 +1206,7 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 	{
 		gchar **prop = style_sets[ft->id].property_keys;
 		gchar **val = style_sets[ft->id].property_values;
-
+		
 		while (*prop)
 		{
 			sci_set_property(sci, *prop, *val);
@@ -1176,10 +1230,10 @@ const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id)
 {
 	g_return_val_if_fail(ft_id >= 0 && (guint) ft_id < filetypes_array->len, NULL);
 	g_return_val_if_fail(style_id >= 0, NULL);
-
+	
 	/* ensure filetype loaded */
 	filetypes_load_config((guint) ft_id, FALSE);
-
+	
 	/* TODO: style_id might not be the real array index (Scintilla styles are not always synced
 	 * with array indices) */
 	return get_style((guint) ft_id, (guint) style_id);
@@ -1199,11 +1253,12 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	GtkTreeIter iter;
 	gchar *fname;
 	gchar *path;
-
+	
 	if (!gtk_tree_selection_get_selected(treesel, &model, &iter))
 		return;
+	
 	gtk_tree_model_get(model, &iter, SCHEME_FILE, &fname, -1);
-
+	
 	/* check if default item */
 	if (!fname)
 	{
@@ -1212,14 +1267,17 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 		return;
 	}
 	SETPTR(fname, utils_get_locale_from_utf8(fname));
-
-	/* fname is just the basename from the menu item, so prepend the custom files path */
-	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+	
+	/* fname is just the basename from the menu item,
+	 * so prepend the custom files path */
+	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
+						GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
 	if (!g_file_test(path, G_FILE_TEST_EXISTS))
 	{
 		/* try the system path */
 		g_free(path);
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
+							GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
 	}
 	if (g_file_test(path, G_FILE_TEST_EXISTS))
 	{
@@ -1238,55 +1296,64 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 
 
 static gchar *utils_get_setting_locale_string(GKeyFile *keyfile,
-		const gchar *group, const gchar *key, const gchar *default_value)
+											  const gchar *group,
+											  const gchar *key,
+											  const gchar *default_value)
 {
-	gchar *result = g_key_file_get_locale_string(keyfile, group, key, NULL, NULL);
-
+	gchar *result = g_key_file_get_locale_string(keyfile, group, key,
+												 NULL, NULL);
 	return FALLBACK(result, g_strdup(default_value));
 }
 
 
-static void add_color_scheme_item(GtkListStore *store,
-	gchar *name, gchar *desc, const gchar *fn, GtkTreeIter *current_iter)
+static void add_color_scheme_item(GtkListStore *store, gchar *name,
+								  gchar *desc, const gchar *fn,
+								  GtkTreeIter *current_iter)
 {
 	GtkTreeIter iter;
 	gchar *markup;
-
+	
 	/* reuse parameters */
 	name = g_markup_escape_text(name, -1);
 	desc = g_markup_escape_text(desc, -1);
 	markup = g_strdup_printf("<big><b>%s</b></big>\n%s", name, desc);
 	g_free(name);
 	g_free(desc);
-
+	
 	gtk_list_store_append(store, &iter);
 	gtk_list_store_set(store, &iter, SCHEME_MARKUP, markup,
 		SCHEME_FILE, fn, -1);
 	g_free(markup);
-
+	
 	/* select the current iter if the the color scheme matches, or if it's the
 	 * default (fn == NULL), in case of bad config file.  the default theme is
 	 * first anyway so if a later scheme matches it will override default */
-	if ((! fn || utils_str_equal(fn, editor_prefs.color_scheme)) && current_iter)
+	if ((!fn || utils_str_equal(fn, editor_prefs.color_scheme))
+		&& current_iter)
 		*current_iter = iter;
 }
 
 
-static void add_color_scheme_file(GtkListStore *store, const gchar *fname, GtkTreeIter *current_iter)
+static void add_color_scheme_file(GtkListStore *store, const gchar *fname,
+								  GtkTreeIter *current_iter)
 {
 	GKeyFile *hkeyfile, *skeyfile;
 	gchar *path, *theme_name, *theme_desc;
 	gchar *theme_fn = utils_get_utf8_from_locale(fname);
-
-	path = g_build_filename(app->configdir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+	
+	path = g_build_filename(app->configdir, GEANY_COLORSCHEMES_SUBDIR,
+							fname, NULL);
 	hkeyfile = utils_key_file_new(path);
-	SETPTR(path, g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR, fname, NULL));
+	SETPTR(path, g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR,
+								  fname, NULL));
 	skeyfile = utils_key_file_new(path);
-
-	theme_name = utils_get_setting(locale_string, hkeyfile, skeyfile, "theme_info", "name", theme_fn);
-	theme_desc = utils_get_setting(locale_string, hkeyfile, skeyfile, "theme_info", "description", NULL);
-	add_color_scheme_item(store, theme_name, theme_desc, theme_fn, current_iter);
-
+	
+	theme_name = utils_get_setting(locale_string, hkeyfile, skeyfile,
+								   "theme_info", "name", theme_fn);
+	theme_desc = utils_get_setting(locale_string, hkeyfile, skeyfile,
+								   "theme_info", "description", NULL);
+	add_color_scheme_item(store, theme_name, theme_desc, theme_fn,
+						  current_iter);
 	g_free(path);
 	g_free(theme_fn);
 	g_free(theme_name);
@@ -1296,20 +1363,22 @@ static void add_color_scheme_file(GtkListStore *store, const gchar *fname, GtkTr
 }
 
 
-static gboolean add_color_scheme_items(GtkListStore *store, GtkTreeIter *current_iter)
+static gboolean add_color_scheme_items(GtkListStore *store,
+									   GtkTreeIter *current_iter)
 {
 	GSList *list, *node;
-
-	add_color_scheme_item(store, _("Default"), _("Default"), NULL, current_iter);
+	
+	add_color_scheme_item(store, _("Default"), _("Default"),
+						  NULL, current_iter);
 	list = utils_get_config_files(GEANY_COLORSCHEMES_SUBDIR);
-
+	
 	foreach_slist(node, list)
 	{
 		gchar *fname = node->data;
-
+		
 		if (g_str_has_suffix(fname, ".conf"))
 			add_color_scheme_file(store, fname, current_iter);
-
+		
 		g_free(fname);
 	}
 	g_slist_free(list);
@@ -1317,8 +1386,8 @@ static gboolean add_color_scheme_items(GtkListStore *store, GtkTreeIter *current
 }
 
 
-static void on_color_scheme_dialog_response(GtkWidget *dialog,
-	gint response, gpointer *dialog_ptr)
+static void on_color_scheme_dialog_response(GtkWidget *dialog, gint response,
+											gpointer *dialog_ptr)
 {
 	*dialog_ptr = NULL;
 	gtk_widget_destroy(dialog);
@@ -1329,7 +1398,7 @@ void highlighting_show_color_scheme_dialog(void)
 {
 	static GtkWidget *dialog = NULL;
 	GtkListStore *store = gtk_list_store_new(SCHEME_COLUMNS,
-		G_TYPE_STRING, G_TYPE_STRING);
+											 G_TYPE_STRING, G_TYPE_STRING);
 	GtkCellRenderer *text_renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *treesel;
@@ -1337,52 +1406,60 @@ void highlighting_show_color_scheme_dialog(void)
 	GtkTreePath *path;
 	GtkWidget *vbox, *swin, *tree;
 	GeanyDocument *doc;
-
+	
 	doc = document_get_current();
 	if (doc && doc->file_type->priv->warn_color_scheme)
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_WARNING,
 			_("The current filetype overrides the default style."),
 			_("This may cause color schemes to display incorrectly."));
-
+	
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(tree), TRUE);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);
-
+	
 	text_renderer = gtk_cell_renderer_text_new();
 	g_object_set(text_renderer, "wrap-mode", PANGO_WRAP_WORD, NULL);
 	column = gtk_tree_view_column_new_with_attributes(
-		NULL, text_renderer, "markup", SCHEME_MARKUP, NULL);
+					NULL, text_renderer, "markup", SCHEME_MARKUP, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
-
+	
 	add_color_scheme_items(store, &current_iter);
-
+	
 	treesel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	gtk_tree_selection_select_iter(treesel, &current_iter);
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &current_iter);
 	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(tree), path, NULL, FALSE, 0, 0);
 	gtk_tree_path_free(path);
-	g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
-
+	g_signal_connect(treesel, "changed",
+					 G_CALLBACK(on_color_scheme_changed), NULL);
+	
 	/* old dialog may still be showing */
 	if (dialog)
 		gtk_widget_destroy(dialog);
+	
 	dialog = gtk_dialog_new_with_buttons(_("Color Schemes"),
-		GTK_WINDOW(main_widgets.window), GTK_DIALOG_DESTROY_WITH_PARENT,
-		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+					GTK_WINDOW(main_widgets.window),
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+	
 	vbox = ui_dialog_vbox_new(GTK_DIALOG(dialog));
 	gtk_box_set_spacing(GTK_BOX(vbox), 6);
 	gtk_widget_set_name(dialog, "GeanyDialog");
 	gtk_window_set_default_size(GTK_WINDOW(dialog),
-		GEANY_DEFAULT_DIALOG_HEIGHT * 7/4, GEANY_DEFAULT_DIALOG_HEIGHT);
-
+								GEANY_DEFAULT_DIALOG_HEIGHT * 7/4,
+								GEANY_DEFAULT_DIALOG_HEIGHT);
+	
 	swin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(swin), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(swin),
+										GTK_SHADOW_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(swin),
-		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+								   GTK_POLICY_AUTOMATIC,
+								   GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(swin), tree);
 	gtk_box_pack_start(GTK_BOX(vbox), swin, TRUE, TRUE, 0);
-	g_signal_connect(dialog, "response", G_CALLBACK(on_color_scheme_dialog_response), &dialog);
+	g_signal_connect(dialog, "response",
+					 G_CALLBACK(on_color_scheme_dialog_response), &dialog);
 	gtk_widget_show_all(dialog);
 }
 
@@ -1397,7 +1474,8 @@ void highlighting_show_color_scheme_dialog(void)
 GEANY_API_SYMBOL
 gboolean highlighting_is_string_style(gint lexer, gint style)
 {
-	/* Don't forget STRINGEOL, to prevent completion whilst typing a string with no closing char. */
+	/* Don't forget STRINGEOL, to prevent completion
+	 * whilst typing a string with no closing char. */
 	
 	switch (lexer)
 	{
