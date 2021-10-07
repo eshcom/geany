@@ -2,6 +2,8 @@
 -compile(nowarn_export_all).
 -compile(export_all).
 
+-export([is_session_closed/1]).
+
 -author(esh).
 -version(1.0).
 
@@ -358,3 +360,9 @@ fun1(SessionId) ->
   Headers = <<"#!::t=",SessionId/binary,",a=",(base:version(describe))/binary>>,
   binary:copy(<<0>>, 184-1-size(Headers)),
   'L6proto':decode('PresenceMessage', Headers).
+
+
+is_session_closed(#tmp{} = S)
+    when S#tmp.t1 /= test1 -> true;
+is_session_closed(#tmp{} = S)
+    when S#tmp.t1 =/= test2 -> true.

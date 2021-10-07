@@ -208,6 +208,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
 	ErlFormatSequence formatSeq = ErlFormatSequence();
 	
+	Sci_PositionU endPos = startPos + length;
+	
 	//~ esh: logs are written to a file ~/.cache/upstart/unity7.log (ubuntu 16)
 	//~ printf("!!!LexErlang: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
@@ -449,8 +451,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   && erlangBIFs.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_BIFS);
 						
-					} else if (sc.ch == '(' || sc.ch == '/') {
+					} else if (sc.ch == '(') {
 						sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+						
+					} else if (sc.ch == '/') {
+						Sci_PositionU i = sc.currentPos + 1;
+						while (i < endPos && IsASpaceOrTab(styler[i]))
+							i++;
+						if (isdigit(styler[i]))
+							sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
 						
 					} else if (erlangAtomSpec.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_ATOM_SPEC);
