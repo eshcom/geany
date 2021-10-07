@@ -774,6 +774,17 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
+
+#define CHECK_STRINGEOL()								\
+	Sci_PositionU i = sc.currentPos;					\
+	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+		i++;											\
+	if (i == endPos || IsACRLF(styler[i]))				\
+		sc.ChangeState(SCE_C_STRINGEOL|activitySet);	\
+	else												\
+		sc.SetState(stringState|activitySet);
+
+
 void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, IDocument *pAccess) {
 	LexAccessor styler(pAccess);
@@ -1252,13 +1263,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					formatSeq.initFormatState();
 					
 				} else {
-					Sci_PositionU i = sc.currentPos;
-					while (i < endPos && IsASpaceOrTab(styler[i]))
-						i++;
-					if (i == endPos || IsACRLF(styler[i]))
-						sc.ChangeState(SCE_C_STRINGEOL|activitySet);
-					else
-						sc.SetState(stringState|activitySet);
+					CHECK_STRINGEOL();
 				}
 				break;
 				
@@ -1286,13 +1291,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					formatSeq.initFormatState();
 					
 				} else {
-					Sci_PositionU i = sc.currentPos;
-					while (i < endPos && IsASpaceOrTab(styler[i]))
-						i++;
-					if (i == endPos || IsACRLF(styler[i]))
-						sc.ChangeState(SCE_C_STRINGEOL|activitySet);
-					else
-						sc.SetState(stringState|activitySet);
+					CHECK_STRINGEOL();
 				}
 				break;
 				

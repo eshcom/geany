@@ -539,6 +539,17 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	}
 }
 
+
+#define CHECK_STRINGEOL()							\
+	Sci_PositionU i = sc.currentPos;				\
+	while (i < endPos && IsASpaceOrTab(styler[i]))	\
+		i++;										\
+	if (i == endPos || IsACRLF(styler[i]))			\
+		sc.ChangeState(SCE_P_STRINGEOL);			\
+	else											\
+		sc.SetState(stringState);
+
+
 void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 								 int initStyle, IDocument *pAccess) {
 	Accessor styler(pAccess, NULL);
@@ -830,13 +841,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					needEOLCheck = true;
 					
 				} else {
-					Sci_PositionU i = sc.currentPos;
-					while (i < endPos && IsASpaceOrTab(styler[i]))
-						i++;
-					if (i == endPos || IsACRLF(styler[i]))
-						sc.ChangeState(SCE_P_STRINGEOL);
-					else
-						sc.SetState(stringState);
+					CHECK_STRINGEOL();
 				}
 			}
 		} else if (sc.state == SCE_P_FORMATSEQUENCE) {
@@ -868,13 +873,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					needEOLCheck = true;
 					
 				} else {
-					Sci_PositionU i = sc.currentPos;
-					while (i < endPos && IsASpaceOrTab(styler[i]))
-						i++;
-					if (i == endPos || IsACRLF(styler[i]))
-						sc.ChangeState(SCE_P_STRINGEOL);
-					else
-						sc.SetState(stringState);
+					CHECK_STRINGEOL();
 				}
 			}
 		} else if (sc.state == SCE_P_STRINGEOL) {
