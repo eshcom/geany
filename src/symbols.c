@@ -2296,7 +2296,8 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 
 static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_line,
 								   const GPtrArray *all_tags, const gchar *scope,
-								   TMTagType type, gboolean definition)
+								   TMTagType type, gboolean definition,
+								   gboolean is_project_tags)
 {
 	TMTag *tmtag, *current_tag = NULL;
 	GPtrArray *tags, *filtered_tags;
@@ -2309,11 +2310,19 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 		if (tmtag->file)
 		{
 			g_ptr_array_add(tags, tmtag);
-			if (tmtag->file == current_file && tmtag->line == current_line)
-				current_tag = tmtag;
+			if (is_project_tags)
+			{
+				if (current_file && utils_str_equal(current_file->file_name,
+													tmtag->file->file_name))
+					current_tag = tmtag;
+			}
+			else
+			{
+				if (tmtag->file == current_file && tmtag->line == current_line)
+					current_tag = tmtag;
+			}
 		}
 	}
-	
 	if (current_tag)
 		/* swap definition/declaration search */
 		definition = current_tag->type & tm_forward_types;
@@ -2344,8 +2353,8 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
 								 old_doc->file_type->lang);
 	
-	tags = wrap_filter_tags(old_doc->tm_file, current_line,
-							all_tags, scope, type, definition);
+	tags = wrap_filter_tags(old_doc->tm_file, current_line, all_tags,
+							scope, type, definition, FALSE);
 	g_ptr_array_free(all_tags, TRUE);
 	
 	if (tags->len == 0 && app->project)
@@ -2356,8 +2365,8 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		all_tags = tm_workspace_find_prj(name, tm_tag_max_t,
 										 old_doc->file_type->lang);
 		
-		tags = wrap_filter_tags(old_doc->tm_file, current_line,
-								all_tags, scope, type, definition);
+		tags = wrap_filter_tags(old_doc->tm_file, current_line, all_tags,
+								scope, type, definition, TRUE);
 		g_ptr_array_free(all_tags, TRUE);
 	}
 	
