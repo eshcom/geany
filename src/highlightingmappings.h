@@ -272,7 +272,8 @@ static const HLKeyword highlighting_keywords_C[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
 	{ 1, "secondary",	TRUE },
 	{ 2, "docComment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types -
+	 * see document_highlight_tags() */
 	{ 6, "commonword",	FALSE },
 	{ 7, "otherclass",	FALSE }
 };
@@ -504,7 +505,8 @@ static const HLKeyword highlighting_keywords_D[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types */
 	{ 1, "secondary",	TRUE },
 	{ 2, "docComment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types -
+	 * see document_highlight_tags() */
 	{ 4, "types",		FALSE },
 };
 #define highlighting_properties_D		EMPTY_PROPERTIES
@@ -785,7 +787,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_H_QUESTION,				"html_question",			FALSE	 },
 	{ SCE_H_VALUE,					"html_value",				FALSE	 },
 	{ SCE_H_XCCOMMENT,				"html_xccomment",			FALSE	 },
-
+	
 	{ SCE_H_SGML_DEFAULT,			"sgml_default",				FALSE	 },
 	{ SCE_H_SGML_COMMENT,			"sgml_comment",				FALSE	 },
 	{ SCE_H_SGML_SPECIAL,			"sgml_special",				FALSE	 },
@@ -797,7 +799,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_H_SGML_BLOCK_DEFAULT,		"sgml_block_default",		FALSE	 },
 	{ SCE_H_SGML_1ST_PARAM_COMMENT,	"sgml_1st_param_comment",	FALSE	 },
 	{ SCE_H_SGML_ERROR,				"sgml_error",				FALSE	 },
-
+	
 	/* embedded JavaScript */
 	{ SCE_HJ_START,					"jscript_start",			FALSE	 },
 	{ SCE_HJ_DEFAULT,				"jscript_default",			FALSE	 },
@@ -812,7 +814,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HJ_SYMBOLS,				"jscript_symbols",			FALSE	 },
 	{ SCE_HJ_STRINGEOL,				"jscript_stringeol",		FALSE	 },
 	{ SCE_HJ_REGEX,					"jscript_regex",			FALSE	 },
-
+	
 	/* for HB, VBScript?, use the same styles as for JavaScript */
 	{ SCE_HB_START,					"jscript_start",			FALSE	 },
 	{ SCE_HB_DEFAULT,				"jscript_default",			FALSE	 },
@@ -822,7 +824,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HB_STRING,				"jscript_doublestring",		FALSE	 },
 	{ SCE_HB_IDENTIFIER,			"jscript_symbols",			FALSE	 },
 	{ SCE_HB_STRINGEOL,				"jscript_stringeol",		FALSE	 },
-
+	
 	/* for HBA, VBScript?, use the same styles as for JavaScript */
 	{ SCE_HBA_START,				"jscript_start",			FALSE	 },
 	{ SCE_HBA_DEFAULT,				"jscript_default",			FALSE	 },
@@ -832,7 +834,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HBA_STRING,				"jscript_doublestring",		FALSE	 },
 	{ SCE_HBA_IDENTIFIER,			"jscript_symbols",			FALSE	 },
 	{ SCE_HBA_STRINGEOL,			"jscript_stringeol",		FALSE	 },
-
+	
 	/* for HJA, ASP Javascript, use the same styles as for JavaScript */
 	{ SCE_HJA_START,				"jscript_start",			FALSE	 },
 	{ SCE_HJA_DEFAULT,				"jscript_default",			FALSE	 },
@@ -847,7 +849,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HJA_SYMBOLS,				"jscript_symbols",			FALSE	 },
 	{ SCE_HJA_STRINGEOL,			"jscript_stringeol",		FALSE	 },
 	{ SCE_HJA_REGEX,				"jscript_regex",			FALSE	 },
-
+	
 	/* embedded Python */
 	{ SCE_HP_START,					"jscript_start",			FALSE	 },
 	{ SCE_HP_DEFAULT,				"python_default",			FALSE	 },
@@ -862,7 +864,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HP_DEFNAME,				"python_defname",			FALSE	 },
 	{ SCE_HP_OPERATOR,				"python_operator",			FALSE	 },
 	{ SCE_HP_IDENTIFIER,			"python_identifier",		FALSE	 },
-
+	
 	/* for embedded HPA (what is this?) we use the Python styles */
 	{ SCE_HPA_START,				"jscript_start",			FALSE	 },
 	{ SCE_HPA_DEFAULT,				"python_default",			FALSE	 },
@@ -877,7 +879,7 @@ static const HLStyle highlighting_styles_HTML[] =
 	{ SCE_HPA_DEFNAME,				"python_defname",			FALSE	 },
 	{ SCE_HPA_OPERATOR,				"python_operator",			FALSE	 },
 	{ SCE_HPA_IDENTIFIER,			"python_identifier",		FALSE	 },
-
+	
 	/* PHP */
 	{ SCE_HPHP_DEFAULT,				"php_default",				FALSE	 },
 	{ SCE_HPHP_SIMPLESTRING,		"php_simplestring",			FALSE	 },
@@ -916,7 +918,8 @@ static const HLKeyword highlighting_keywords_JAVA[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
 	{ 1, "secondary",	TRUE },
 	{ 2, "doccomment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types -
+	 * see document_highlight_tags() */
 	{ 4, "typedefs",	FALSE },
 	{ 6, "commonword",	FALSE },
 	{ 7, "otherclass",	FALSE }
@@ -1138,7 +1141,8 @@ static const HLKeyword highlighting_keywords_OBJECTIVEC[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
 	{ 1, "secondary",	TRUE },
 	{ 2, "docComment",	FALSE }
-	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types -
+	 * see document_highlight_tags() */
 };
 #define highlighting_properties_OBJECTIVEC	highlighting_properties_C
 
@@ -1442,7 +1446,8 @@ static const HLKeyword highlighting_keywords_RUST[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types */
 	{ 1, "secondary",	TRUE },
 	{ 2, "tertiary",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types -
+	 * see document_highlight_tags() */
 };
 #define highlighting_properties_RUST		EMPTY_PROPERTIES
 

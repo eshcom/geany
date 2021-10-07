@@ -36,7 +36,8 @@ G_BEGIN_DECLS
 /* Forward-declared to avoid including document.h since it includes this header */
 struct GeanyDocument;
 
-/** Default character set to define which characters should be treated as part of a word. */
+/** Default character set to define which characters
+ *  should be treated as part of a word. */
 #define GEANY_WORDCHARS			"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 #define GEANY_MAX_WORD_LENGTH	192
 
@@ -60,15 +61,17 @@ typedef enum
 }
 GeanyAutoIndent;
 
-/** Geany indicator types, can be used with Editor indicator functions to highlight
- *  text in the document. */
+/** Geany indicator types, can be used with Editor indicator
+ *  functions to highlight text in the document. */
 typedef enum
 {
-	/** Indicator to highlight errors in the document text. This is a red squiggly underline. */
+	/** Indicator to highlight errors in the document text.
+	 *  This is a red squiggly underline. */
 	GEANY_INDICATOR_ERROR = 0,
-	/** Indicator used to highlight search results in the document. This is a
-	 *  rounded box around the text. */
-	/* start container indicator outside of lexer indicators (0..7), see Scintilla docs */
+	/** Indicator used to highlight search results in the document.
+	 *  This is a rounded box around the text. */
+	/* start container indicator outside of lexer indicators (0..7),
+	 * see Scintilla docs */
 	GEANY_INDICATOR_SEARCH = 8,
 	GEANY_INDICATOR_SNIPPET = 9
 }
@@ -81,8 +84,8 @@ GeanyIndicator;
  **/
 typedef struct GeanyIndentPrefs
 {
-	gint			width;				/**< Indent width. */
-	GeanyIndentType	type;				/**< Whether to use tabs, spaces or both to indent. */
+	gint			width;		/**< Indent width. */
+	GeanyIndentType	type;		/**< Whether to use tabs, spaces or both to indent. */
 	/** Width of a tab, but only when using GEANY_INDENT_TYPE_BOTH.
 	 * To get the display tab width, use sci_get_tab_width(). */
 	gint			hard_tab_width;
@@ -97,7 +100,8 @@ GeanyIndentPrefs;
 /* @warning Use @c editor_get_prefs() instead to include project overrides. */
 typedef struct GeanyEditorPrefs
 {
-	GeanyIndentPrefs *indentation;	/* Default indentation prefs. Use editor_get_indent_prefs(). */
+	GeanyIndentPrefs *indentation;	/* Default indentation prefs.
+									   Use editor_get_indent_prefs(). */
 	gboolean	show_white_space;
 	gboolean	show_indent_guide;
 	gboolean	show_line_endings;
@@ -148,8 +152,8 @@ GType editor_get_type (void);
 /** Editor-owned fields for each document. */
 typedef struct GeanyEditor
 {
-	struct GeanyDocument	*document;		/**< The document associated with the editor. */
-	ScintillaObject	*sci;			/**< The Scintilla editor @c GtkWidget. */
+	struct GeanyDocument *document;	/**< The document associated with the editor. */
+	ScintillaObject *sci;			/**< The Scintilla editor @c GtkWidget. */
 	gboolean		 line_wrapping;	/**< @c TRUE if line wrapping is enabled. */
 	gboolean		 auto_indent;	/**< @c TRUE if auto-indentation is enabled. */
 	/** Percentage to scroll view by on paint, if positive. */
@@ -165,7 +169,8 @@ const GeanyIndentPrefs *editor_get_indent_prefs(GeanyEditor *editor);
 
 ScintillaObject *editor_create_widget(GeanyEditor *editor);
 
-void editor_indicator_set_on_range(GeanyEditor *editor, gint indic, gint start, gint end);
+void editor_indicator_set_on_range(GeanyEditor *editor, gint indic,
+								   gint start, gint end);
 
 void editor_indicator_set_on_line(GeanyEditor *editor, gint indic, gint line);
 
@@ -175,7 +180,8 @@ void editor_set_indent_type(GeanyEditor *editor, GeanyIndentType type);
 
 void editor_set_indent_width(GeanyEditor *editor, gint width);
 
-gchar *editor_get_word_at_pos(GeanyEditor *editor, gint pos, const gchar *wordchars);
+gchar *editor_get_word_at_pos(GeanyEditor *editor, gint pos,
+							  const gchar *wordchars);
 
 const gchar *editor_get_eol_char_name(GeanyEditor *editor);
 
@@ -185,15 +191,18 @@ const gchar *editor_get_eol_char(GeanyEditor *editor);
 
 void editor_insert_text_block(GeanyEditor *editor, const gchar *text,
 	 						  gint insert_pos, gint cursor_index,
-	 						  gint newline_indent_size, gboolean replace_newlines);
+	 						  gint newline_indent_size,
+	 						  gboolean replace_newlines);
 
 gint editor_get_eol_char_mode(GeanyEditor *editor);
 
 gboolean editor_goto_pos(GeanyEditor *editor, gint pos, gboolean mark);
 
-const gchar *editor_find_snippet(GeanyEditor *editor, const gchar *snippet_name);
+const gchar *editor_find_snippet(GeanyEditor *editor,
+								 const gchar *snippet_name);
 
-void editor_insert_snippet(GeanyEditor *editor, gint pos, const gchar *snippet);
+void editor_insert_snippet(GeanyEditor *editor, gint pos,
+						   const gchar *snippet);
 
 
 #ifdef GEANY_PRIVATE
@@ -202,9 +211,9 @@ extern GeanyEditorPrefs editor_prefs;
 
 typedef enum
 {
-	GEANY_VIRTUAL_SPACE_DISABLED = 0,
-	GEANY_VIRTUAL_SPACE_SELECTION = 1,
-	GEANY_VIRTUAL_SPACE_ALWAYS = 3
+	GEANY_VIRTUAL_SPACE_DISABLED	= 0,
+	GEANY_VIRTUAL_SPACE_SELECTION	= 1,
+	GEANY_VIRTUAL_SPACE_ALWAYS		= 3
 }
 GeanyVirtualSpace;
 
@@ -245,9 +254,11 @@ GeanyEditor *editor_create(struct GeanyDocument *doc);
 
 void editor_destroy(GeanyEditor *editor);
 
-void editor_sci_notify_cb(GtkWidget *widget, gint scn, gpointer scnt, gpointer data);
+void editor_sci_notify_cb(GtkWidget *widget, gint scn,
+						  gpointer scnt, gpointer data);
 
-gboolean editor_start_auto_complete(GeanyEditor *editor, gint pos, gboolean force);
+gboolean editor_start_auto_complete(GeanyEditor *editor,
+									gint pos, gboolean force);
 
 gboolean editor_complete_word_part(GeanyEditor *editor);
 
@@ -259,7 +270,8 @@ gboolean editor_show_calltip(GeanyEditor *editor, gint pos);
 
 void editor_do_comment_toggle(GeanyEditor *editor);
 
-gint editor_do_comment(GeanyEditor *editor, gint line, gboolean allow_empty_lines,
+gint editor_do_comment(GeanyEditor *editor, gint line,
+					   gboolean allow_empty_lines,
 					   gboolean toggle, gboolean single_comment);
 
 gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle);
@@ -272,11 +284,13 @@ void editor_indent(GeanyEditor *editor, gboolean increase);
 
 void editor_smart_line_indentation(GeanyEditor *editor);
 
-void editor_indentation_by_one_space(GeanyEditor *editor, gint pos, gboolean decrease);
+void editor_indentation_by_one_space(GeanyEditor *editor, gint pos,
+									 gboolean decrease);
 
 gboolean editor_line_in_view(GeanyEditor *editor, gint line);
 
-void editor_scroll_to_line(GeanyEditor *editor, gint line, gfloat percent_of_view);
+void editor_scroll_to_line(GeanyEditor *editor, gint line,
+						   gfloat percent_of_view);
 
 void editor_display_current_line(GeanyEditor *editor, gfloat percent_of_view);
 
@@ -309,13 +323,14 @@ void editor_find_custom_words_chunk(gchar *chunk, TMParserType lang, const gchar
 									gchar *word1, gsize wordlen1, const gchar *wordchars1,
 									gchar *word2, gsize wordlen2, const gchar *wordchars2);
 
-void editor_find_current_word(GeanyEditor *editor, gint pos, gchar *word,
-							  gsize wordlen, const gchar *wc);
+void editor_find_current_word(GeanyEditor *editor, gint pos,
+							  gchar *word, gsize wordlen, const gchar *wc);
 
 void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
 									gchar *word, gsize wordlen);
 
-gchar *editor_get_default_selection(GeanyEditor *editor, gboolean use_current_word,
+gchar *editor_get_default_selection(GeanyEditor *editor,
+									gboolean use_current_word,
 									const gchar *wordchars);
 
 void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
@@ -346,7 +361,8 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection);
 
 void editor_strip_line_trailing_spaces(GeanyEditor *editor, gint line);
 
-void editor_strip_trailing_spaces(GeanyEditor *editor, gboolean ignore_selection);
+void editor_strip_trailing_spaces(GeanyEditor *editor,
+								  gboolean ignore_selection);
 
 void editor_ensure_final_newline(GeanyEditor *editor);
 

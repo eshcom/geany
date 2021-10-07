@@ -62,14 +62,15 @@ static gchar *whitespace_chars = NULL;
 typedef struct
 {
 	gsize			count;		/* number of styles */
-	GeanyLexerStyle	*styling;		/* array of styles, NULL if not used or uninitialised */
+	GeanyLexerStyle	*styling;	/* array of styles, NULL if not used or uninitialised */
 	gchar			**keywords;
 	gchar			*wordchars;	/* NULL used for style sets with no styles */
 	gchar			**property_keys;
 	gchar			**property_values;
 } StyleSet;
 
-/* each filetype has a styleset but GEANY_FILETYPES_NONE uses common_style_set for styling */
+/* each filetype has a styleset but GEANY_FILETYPES_NONE
+ * uses common_style_set for styling */
 static StyleSet *style_sets = NULL;
 
 
@@ -124,7 +125,8 @@ static GHashTable *named_style_hash = NULL;
 static GeanyLexerStyle gsd_default = {0x000000, 0xffffff, FALSE, FALSE};
 
 
-/* filetypes should use the filetypes.foo [lexer_properties] group instead of hardcoding */
+/* filetypes should use the filetypes.foo [lexer_properties]
+ * group instead of hardcoding */
 static void sci_set_property(ScintillaObject *sci, const gchar *name,
 							 const gchar *value)
 {
@@ -184,8 +186,8 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
 	const gchar *italic = NULL;
 	
 	g_return_val_if_fail(named_style, FALSE);
-	name = utils_strdupa(named_style);	/* named_style must not be written to, may be a static string */
-	
+	name = utils_strdupa(named_style);	/* named_style must not be written to,
+										   may be a static string */
 	comma = strstr(name, ",");
 	if (comma)
 	{
@@ -333,7 +335,8 @@ static void convert_int(const gchar *int_str, gint *val)
 }
 
 
-/* Get first and second integer numbers, store in foreground and background fields of @a style. */
+/* Get first and second integer numbers, store in 
+ * foreground and background fields of @a style. */
 static void get_keyfile_int(GKeyFile *config, GKeyFile *configh,
 							const gchar *section, const gchar *key,
 							gint fdefault_val, gint sdefault_val,
@@ -533,7 +536,8 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 	}
 	/* first set default to the "default" named style */
 	add_named_style(config, "default");
-	read_named_style("default", &gsd_default);	/* in case user overrides but not with both colors */
+	read_named_style("default", &gsd_default);	/* in case user overrides
+												   but not with both colors */
 	add_named_style(config_home, "default");
 	read_named_style("default", &gsd_default);
 	
@@ -623,8 +627,9 @@ static void set_character_classes(ScintillaObject *sci, guint ft_id)
 	
 	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t) word);
 	
-	/* setting wordchars resets character classes, so we have to set whitespaces after
-	 * wordchars, but we want wordchars to have precenence over whitepace chars */
+	/* setting wordchars resets character classes, so we have
+	 * to set whitespaces after wordchars, but we want wordchars
+	 * to have precenence over whitepace chars */
 	whitespace = g_malloc0(strlen(whitespace_chars) + 1);
 	for (i = 0, j = 0; whitespace_chars[i] != 0; i++)
 	{
@@ -773,7 +778,8 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 			break;
 	}
 	
-	/* choose the folding style - straight or curved, I prefer straight, so it is default ;-) */
+	/* choose the folding style - straight or curved,
+	 * I prefer straight, so it is default ;-) */
 	switch (common_style_set.fold_lines)
 	{
 		case 2:
@@ -857,7 +863,8 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 
 
 /* Merge & assign global typedefs and user secondary keywords.
- * keyword_idx is used for both style_sets[].keywords and scintilla keyword style number */
+ * keyword_idx is used for both style_sets[].keywords
+ * and scintilla keyword style number */
 static void merge_type_keywords(ScintillaObject *sci, guint ft_id,
 								guint keyword_idx)
 {
@@ -869,8 +876,8 @@ static void merge_type_keywords(ScintillaObject *sci, guint ft_id,
 	if (G_UNLIKELY(s == NULL))
 		s = g_string_sized_new(200);
 	else
-		g_string_append_c(s, ' '); /* append a space as delimiter to the existing list of words */
-	
+		g_string_append_c(s, ' '); /* append a space as delimiter
+									  to the existing list of words */
 	g_string_append(s, user_words);
 	
 	sci_set_keywords(sci, keyword_idx, s->str);
@@ -1219,12 +1226,14 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 
 /** Retrieves a style @a style_id for the filetype @a ft_id.
  * If the style was not already initialised
- * (e.g. by by opening a file of this type), it will be initialised. The returned pointer is
- * owned by Geany and must not be freed.
+ * (e.g. by by opening a file of this type), it will be initialised.
+ * The returned pointer is owned by Geany and must not be freed.
  * @param ft_id Filetype ID, e.g. @c GEANY_FILETYPES_DIFF.
- * @param style_id A Scintilla lexer style, e.g. @c SCE_DIFF_ADDED. See scintilla/include/SciLexer.h.
+ * @param style_id A Scintilla lexer style, e.g. @c SCE_DIFF_ADDED.
+ *                 See scintilla/include/SciLexer.h.
  * @return A pointer to the style struct.
- * @see Scintilla messages @c SCI_STYLEGETFORE, etc, for use with scintilla_send_message(). */
+ * @see Scintilla messages @c SCI_STYLEGETFORE, etc,
+ *                for use with scintilla_send_message(). */
 GEANY_API_SYMBOL
 const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id)
 {
@@ -1234,8 +1243,8 @@ const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id)
 	/* ensure filetype loaded */
 	filetypes_load_config((guint) ft_id, FALSE);
 	
-	/* TODO: style_id might not be the real array index (Scintilla styles are not always synced
-	 * with array indices) */
+	/* TODO: style_id might not be the real array index
+	 *       (Scintilla styles are not always synced with array indices) */
 	return get_style((guint) ft_id, (guint) style_id);
 }
 
@@ -1712,7 +1721,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		case SCLEX_MARKDOWN:
 		case SCLEX_TXT2TAGS:
 		case SCLEX_YAML:
-			/* there is no string type in those lexers, listing here just for completeness */
+			/* there is no string type in those lexers,
+			 * listing here just for completeness */
 			return FALSE;
 	}
 	return FALSE;
@@ -1930,14 +1940,16 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 			return (style == SCE_TXT2TAGS_COMMENT);
 		
 		case SCLEX_MARKDOWN:
-			/* there is no comment type in those lexers, listing here just for completeness */
+			/* there is no comment type in those lexers,
+			 * listing here just for completeness */
 			return FALSE;
 	}
 	return FALSE;
 }
 
 
-/** Checks whether the given style is normal code (not string, comment, preprocessor, etc).
+/** Checks whether the given style is normal code
+ *  (not string, comment, preprocessor, etc).
  *
  * @param lexer Scintilla lexer type (@c SCLEX_*).
  * @param style Scintilla style (@c SCE_*).

@@ -40,7 +40,7 @@
 /* for the navigation history queue */
 typedef struct
 {
-	const gchar *file;	/* This is the document's filename, in UTF-8 */
+	const gchar *file; /* This is the document's filename, in UTF-8 */
 	gint pos;
 } filepos;
 
@@ -50,15 +50,14 @@ static guint nav_queue_pos;
 static GtkAction *navigation_buttons[2];
 
 
-
 void navqueue_init(void)
 {
 	navigation_queue = g_queue_new();
 	nav_queue_pos = 0;
-
+	
 	navigation_buttons[0] = toolbar_get_action_by_name("NavBack");
 	navigation_buttons[1] = toolbar_get_action_by_name("NavFor");
-
+	
 	gtk_action_set_sensitive(navigation_buttons[0], FALSE);
 	gtk_action_set_sensitive(navigation_buttons[1], FALSE);
 }
@@ -66,10 +65,9 @@ void navqueue_init(void)
 
 void navqueue_free(void)
 {
-	while (! g_queue_is_empty(navigation_queue))
-	{
+	while (!g_queue_is_empty(navigation_queue))
 		g_free(g_queue_pop_tail(navigation_queue));
-	}
+	
 	g_queue_free(navigation_queue);
 }
 
@@ -90,21 +88,21 @@ static void adjust_buttons(void)
 	}
 	/* forward should be sensitive since where not at the start */
 	gtk_action_set_sensitive(navigation_buttons[1], TRUE);
-
+	
 	/* back should be sensitive if there's a place to go back to */
-	(nav_queue_pos < g_queue_get_length(navigation_queue) - 1) ?
-		gtk_action_set_sensitive(navigation_buttons[0], TRUE) :
-			gtk_action_set_sensitive(navigation_buttons[0], FALSE);
+	(nav_queue_pos < g_queue_get_length(navigation_queue) - 1)
+			? gtk_action_set_sensitive(navigation_buttons[0], TRUE)
+			: gtk_action_set_sensitive(navigation_buttons[0], FALSE);
 }
 
 
-static gboolean
-queue_pos_matches(guint queue_pos, const gchar *fname, gint pos)
+static gboolean queue_pos_matches(guint queue_pos,
+								  const gchar *fname, gint pos)
 {
 	if (queue_pos < g_queue_get_length(navigation_queue))
 	{
 		filepos *fpos = g_queue_peek_nth(navigation_queue, queue_pos);
-
+		
 		return (utils_str_equal(fpos->file, fname) && fpos->pos == pos);
 	}
 	return FALSE;
@@ -115,21 +113,21 @@ static void add_new_position(const gchar *utf8_filename, gint pos)
 {
 	filepos *npos;
 	guint i;
-
+	
 	if (queue_pos_matches(nav_queue_pos, utf8_filename, pos))
 		return;	/* prevent duplicates */
-
+	
 	npos = g_new0(filepos, 1);
 	npos->file = utf8_filename;
 	npos->pos = pos;
-
-	/* if we've jumped to a new position from inside the queue rather than going forward */
+	
+	/* if we've jumped to a new position from inside
+	 * the queue rather than going forward */
 	if (nav_queue_pos > 0)
 	{
 		for (i = 0; i < nav_queue_pos; i++)
-		{
 			g_free(g_queue_pop_head(navigation_queue));
-		}
+		
 		nav_queue_pos = 0;
 	}
 	g_queue_push_head(navigation_queue, npos);
@@ -138,40 +136,43 @@ static void add_new_position(const gchar *utf8_filename, gint pos)
 
 
 /**
- *  Adds old file position and new file position to the navqueue, then goes to the new position.
+ *  Adds old file position and new file position to the navqueue,
+ *  then goes to the new position.
  *
- *  @param old_doc The document of the previous position, if set as invalid (@c NULL) then no old
- *         position is set
+ *  @param old_doc The document of the previous position, if set
+ *                 as invalid (@c NULL) then no old position is set
  *  @param new_doc The document of the new position, must be valid.
- *  @param line the line number of the new position. It is counted with 1 as the first line, not 0.
+ *  @param line the line number of the new position.
+ *         It is counted with 1 as the first line, not 0.
  *
- *  @return @c TRUE if the cursor has changed the position to @a line or @c FALSE otherwise.
+ *  @return @c TRUE if the cursor has changed the position
+ *             to @a line or @c FALSE otherwise.
  **/
 GEANY_API_SYMBOL
-gboolean navqueue_goto_line(GeanyDocument *old_doc, GeanyDocument *new_doc, gint line)
+gboolean navqueue_goto_line(GeanyDocument *old_doc,
+							GeanyDocument *new_doc,
+							gint line)
 {
 	gint pos;
-
+	
 	g_return_val_if_fail(old_doc == NULL || old_doc->is_valid, FALSE);
 	g_return_val_if_fail(DOC_VALID(new_doc), FALSE);
 	g_return_val_if_fail(line >= 1, FALSE);
-
+	
 	pos = sci_get_position_from_line(new_doc->editor->sci, line - 1);
-
+	
 	/* first add old file position */
 	if (old_doc != NULL && old_doc->file_name)
 	{
 		gint cur_pos = sci_get_current_position(old_doc->editor->sci);
-
+		
 		add_new_position(old_doc->file_name, cur_pos);
 	}
-
+	
 	/* now add new file position */
 	if (new_doc->file_name)
-	{
 		add_new_position(new_doc->file_name, pos);
-	}
-
+	
 	return editor_goto_pos(new_doc->editor, pos, TRUE);
 }
 
@@ -179,10 +180,10 @@ gboolean navqueue_goto_line(GeanyDocument *old_doc, GeanyDocument *new_doc, gint
 static gboolean goto_file_pos(const gchar *file, gint pos)
 {
 	GeanyDocument *doc = document_find_by_filename(file);
-
+	
 	if (doc == NULL)
 		return FALSE;
-
+	
 	return editor_goto_pos(doc->editor, pos, TRUE);
 }
 
@@ -191,34 +192,33 @@ void navqueue_go_back(void)
 {
 	filepos *fprev;
 	GeanyDocument *doc = document_get_current();
-
-	/* If the navqueue is currently at some position A, but the actual cursor is at some other
-	 * place B, we should add B to the navqueue, so that (1) we go back to A, not to the next
-	 * item in the queue; and (2) we can later restore B by going forward.
+	
+	/* If the navqueue is currently at some position A, but the actual
+	 * cursor is at some other place B, we should add B to the navqueue,
+	 * so that (1) we go back to A, not to the next item in the queue;
+	 * and (2) we can later restore B by going forward.
 	 * (If A = B, add_new_position will ignore it.) */
 	if (doc)
 	{
 		if (doc->file_name)
-			add_new_position(doc->file_name, sci_get_current_position(doc->editor->sci));
+			add_new_position(doc->file_name,
+							 sci_get_current_position(doc->editor->sci));
 	}
 	else
 		/* see also https://github.com/geany/geany/pull/1537 */
 		g_warning("Attempted navigation when nothing is open");
-
+	
 	/* return if theres no place to go back to */
 	if (g_queue_is_empty(navigation_queue) ||
 		nav_queue_pos >= g_queue_get_length(navigation_queue) - 1)
 		return;
-
+	
 	/* jump back */
 	fprev = g_queue_peek_nth(navigation_queue, nav_queue_pos + 1);
 	if (goto_file_pos(fprev->file, fprev->pos))
-	{
 		nav_queue_pos++;
-	}
 	else
-	{
-		/** TODO: add option to re open the file */
+	{	/** TODO: add option to re open the file */
 		g_free(g_queue_pop_nth(navigation_queue, nav_queue_pos + 1));
 	}
 	adjust_buttons();
@@ -228,23 +228,19 @@ void navqueue_go_back(void)
 void navqueue_go_forward(void)
 {
 	filepos *fnext;
-
+	
 	if (nav_queue_pos < 1 ||
 		nav_queue_pos >= g_queue_get_length(navigation_queue))
 		return;
-
+	
 	/* jump forward */
 	fnext = g_queue_peek_nth(navigation_queue, nav_queue_pos - 1);
 	if (goto_file_pos(fnext->file, fnext->pos))
-	{
 		nav_queue_pos--;
-	}
 	else
-	{
-		/** TODO: add option to re open the file */
+	{	/** TODO: add option to re open the file */
 		g_free(g_queue_pop_nth(navigation_queue, nav_queue_pos - 1));
 	}
-
 	adjust_buttons();
 }
 
@@ -262,15 +258,15 @@ static gint find_by_filename(gconstpointer a, gconstpointer b)
 void navqueue_remove_file(const gchar *filename)
 {
 	GList *match;
-
+	
 	if (filename == NULL)
 		return;
-
-	while ((match = g_queue_find_custom(navigation_queue, filename, find_by_filename)))
+	
+	while (match = g_queue_find_custom(navigation_queue, filename,
+									   find_by_filename))
 	{
 		g_free(match->data);
 		g_queue_delete_link(navigation_queue, match);
 	}
-
 	adjust_buttons();
 }
