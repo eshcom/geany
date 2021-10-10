@@ -1630,10 +1630,19 @@ static gboolean cb_func_file_action(guint key_id)
 			break;
 		case GEANY_KEYS_FILE_OPENLASTTAB:
 		{
-			gchar *utf8_filename = g_queue_peek_head(ui_prefs.recent_queue);
-			gchar *locale_filename = utils_get_locale_from_utf8(utf8_filename);
-			document_open_file(locale_filename, FALSE, NULL, NULL);
-			g_free(locale_filename);
+			guint len = g_queue_get_length(ui_prefs.recent_queue);
+			for (guint i = 0; i < len; i++)
+			{
+				gchar *utf8_filename = g_queue_peek_nth(ui_prefs.recent_queue, i);
+				if (!document_find_by_filename(utf8_filename))
+				{	// closed doc - reopen it
+					gchar *locale_filename = utils_get_locale_from_utf8(utf8_filename);
+					GeanyDocument *doc = document_open_file(locale_filename,
+															FALSE, NULL, NULL);
+					g_free(locale_filename);
+					if (doc) break;
+				}
+			}
 			break;
 		}
 		case GEANY_KEYS_FILE_SAVE:
