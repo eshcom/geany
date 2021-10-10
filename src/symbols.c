@@ -2180,12 +2180,15 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 								   tm_tag_variable_t   | tm_tag_externvar_t |
 								   tm_tag_struct_t     | tm_tag_macro_t;
 	
+	gchar *fname_wo_ext = utils_remove_ext_from_filename(file->file_name, TRUE);
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		if ((tmtag->type & search_types) &&
-			g_strcmp0(tmtag->file->file_name, file->file_name) == 0)
+			g_str_has_prefix(tmtag->file->file_name, fname_wo_ext))
 			g_ptr_array_add(filtered_tags, tmtag);
 	}
+	g_free(fname_wo_ext);
+	
 	if (filtered_tags->len == 0)
 	{
 		gchar *dir = g_path_get_dirname(file->file_name);

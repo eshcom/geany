@@ -627,7 +627,8 @@ gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n)
  *  @return A newly-allocated string, should be freed when no longer needed.
  **/
 GEANY_API_SYMBOL
-gchar *utils_remove_ext_from_filename(const gchar *filename)
+gchar *utils_remove_ext_from_filename(const gchar *filename,
+									  const gboolean leave_dot)
 {
 	gchar *last_dot;
 	gchar *result;
@@ -639,7 +640,9 @@ gchar *utils_remove_ext_from_filename(const gchar *filename)
 	if (!last_dot)
 		return g_strdup(filename);
 	
-	len = (gsize) (last_dot - filename);
+	len = leave_dot ? (gsize) (last_dot - filename + 1)
+					: (gsize) (last_dot - filename);
+	
 	result = g_malloc(len + 1);
 	memcpy(result, filename, len);
 	result[len] = 0;

@@ -1238,7 +1238,8 @@ gchar *project_get_tags_file(void)
 {
 	if (app->project)
 	{
-		gchar *tags_file = utils_remove_ext_from_filename(app->project->file_name);
+		gchar *tags_file = utils_remove_ext_from_filename(app->project->file_name,
+														  FALSE);
 		SETPTR(tags_file, g_strconcat(tags_file, ".tags", NULL));
 		return tags_file;
 	}
