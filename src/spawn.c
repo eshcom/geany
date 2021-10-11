@@ -1447,7 +1447,7 @@ static void print_status(gint status)
 
 static void exit_cb(GPid pid, gint status, G_GNUC_UNUSED gpointer data)
 {
-	fprintf(stderr, "process %u ", (guint) pid);
+	fprintf(stderr, "process %u ", (guint)pid);
 	print_status(status);
 }
 

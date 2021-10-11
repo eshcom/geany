@@ -1074,7 +1074,8 @@ static void on_check_run_in_vte_toggled(GtkToggleButton *togglebutton,
 										GtkWidget *user_data)
 {
 	g_return_if_fail(GTK_IS_WIDGET(user_data));
-	gtk_widget_set_sensitive(user_data, gtk_toggle_button_get_active(togglebutton));
+	gtk_widget_set_sensitive(user_data,
+							 gtk_toggle_button_get_active(togglebutton));
 }
 
 

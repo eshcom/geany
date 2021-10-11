@@ -3066,7 +3066,7 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 	gchar *base_name;
 	GPtrArray *sorted_documents;
 	
-	len = (guint) gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
+	len = (guint)gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
 	
 	sorted_documents = g_ptr_array_sized_new(len);
 	/* copy the documents_array into the new one */
@@ -3153,7 +3153,7 @@ void ui_editable_insert_text_callback(GtkEditable *editable, gchar *new_text,
 	gint i;
 	
 	if (new_text_len == -1)
-		new_text_len = (gint) strlen(new_text);
+		new_text_len = (gint)strlen(new_text);
 	
 	for (i = 0; i < new_text_len; i++, new_text++)
 	{

@@ -164,7 +164,7 @@ static void geany_wrap_label_get_preferred_width (GtkWidget *widget,
 static void geany_wrap_label_get_preferred_width_for_height (GtkWidget *widget,
 		gint height, gint *minimal_width, gint *natural_width)
 {
-	PangoLayout *layout = gtk_label_get_layout(GTK_LABEL(widget));;
+	PangoLayout *layout = gtk_label_get_layout(GTK_LABEL(widget));
 
 	pango_layout_set_height(layout, height * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);

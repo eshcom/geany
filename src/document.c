@@ -380,7 +380,7 @@ GeanyDocument *document_get_current(void)
 	if (cur_page == -1)
 		return NULL;
 	else
-		return document_get_from_page((guint) cur_page);
+		return document_get_from_page((guint)cur_page);
 }
 
 
@@ -515,7 +515,7 @@ static gint document_get_new_idx(void)
 	for (i = 0; i < documents_array->len; i++)
 	{
 		if (documents[i]->editor == NULL)
-			return (gint) i;
+			return (gint)i;
 	}
 	return -1;
 }
@@ -3439,7 +3439,7 @@ const GdkColor *document_get_status_color(GeanyDocument *doc)
 GEANY_API_SYMBOL
 GeanyDocument *document_index(gint idx)
 {
-	return (idx >= 0 && idx < (gint) documents_array->len) ? documents[idx] : NULL;
+	return (idx >= 0 && idx < (gint)documents_array->len) ? documents[idx] : NULL;
 }
 
 

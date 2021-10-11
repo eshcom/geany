@@ -903,9 +903,9 @@ gchar *utils_get_hex_from_color(GdkColor *color)
 	g_return_val_if_fail(color != NULL, NULL);
 	
 	return g_strdup_printf("#%02X%02X%02X",
-		(guint) (utils_scale_round(color->red / 65535.0, 255)),
-		(guint) (utils_scale_round(color->green / 65535.0, 255)),
-		(guint) (utils_scale_round(color->blue / 65535.0, 255)));
+				(guint)(utils_scale_round(color->red / 65535.0, 255)),
+				(guint)(utils_scale_round(color->green / 65535.0, 255)),
+				(guint)(utils_scale_round(color->blue / 65535.0, 255)));
 }
 
 

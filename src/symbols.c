@@ -172,7 +172,7 @@ static gboolean symbols_load_global_tags(const gchar *tags_file,
 	if (result)
 	{
 		geany_debug("Loaded %s (%s), %u symbol(s).", tags_file, ft->name,
-					(guint) (get_tag_count() - old_tag_count));
+					(guint)(get_tag_count() - old_tag_count));
 	}
 	return result;
 }
@@ -1913,8 +1913,8 @@ static void goto_popup_position_func(GtkMenu *menu, gint *x, gint *y,
 	if (event_button)
 	{
 		/* if we got a mouse click, popup at that position */
-		*x = (gint) event_button->x_root;
-		*y = (gint) event_button->y_root;
+		*x = (gint)event_button->x_root;
+		*y = (gint)event_button->y_root;
 		line_height = 0; /* we don't want to offset below the line or anything */
 	}
 	else /* keyboard positioning */

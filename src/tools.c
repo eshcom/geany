@@ -548,7 +548,7 @@ static void cc_on_custom_command_activate(GtkMenuItem *menuitem, gpointer user_d
 	command_idx = GPOINTER_TO_INT(user_data);
 
 	if (ui_prefs.custom_commands == NULL ||
-		command_idx < 0 || command_idx > (gint) g_strv_length(ui_prefs.custom_commands))
+		command_idx < 0 || command_idx > (gint)g_strv_length(ui_prefs.custom_commands))
 	{
 		cc_show_dialog_custom_commands();
 		return;

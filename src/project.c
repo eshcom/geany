@@ -1023,7 +1023,8 @@ static void on_entries_changed(GtkEditable *editable, PropertyDialogElements *e)
 static void on_radio_long_line_custom_toggled(GtkToggleButton *radio,
 											  GtkWidget *spin_long_line)
 {
-	gtk_widget_set_sensitive(spin_long_line, gtk_toggle_button_get_active(radio));
+	gtk_widget_set_sensitive(spin_long_line,
+							 gtk_toggle_button_get_active(radio));
 }
 
 

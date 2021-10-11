@@ -50,7 +50,8 @@ void on_replace_tabs_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_toolbutton_search_clicked(GtkAction *action, gpointer user_data);
 
-gboolean toolbar_popup_menu(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
+gboolean toolbar_popup_menu(GtkWidget *widget, GdkEventButton *event,
+							gpointer user_data);
 
 void on_undo1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
@@ -68,9 +69,11 @@ void on_zoom_in1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_zoom_out1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
-void on_toolbar_search_entry_changed(GtkAction *action, const gchar *text, gpointer user_data);
+void on_toolbar_search_entry_changed(GtkAction *action, const gchar *text,
+									 gpointer user_data);
 
-void on_toolbar_search_entry_activate(GtkAction *action, const gchar *text, gpointer user_data);
+void on_toolbar_search_entry_activate(GtkAction *action, const gchar *text,
+									  gpointer user_data);
 
 void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
@@ -104,15 +107,18 @@ void on_help1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_toolbutton_compile_clicked(GtkAction *action, gpointer user_data);
 
-void on_line_wrapping1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data);
+void on_line_wrapping1_toggled(GtkCheckMenuItem *checkmenuitem,
+							   gpointer user_data);
 
-void on_toolbutton_goto_entry_activate(GtkAction *action, const gchar *text, gpointer user_data);
+void on_toolbutton_goto_entry_activate(GtkAction *action, const gchar *text,
+									   gpointer user_data);
 
 void on_toolbutton_goto_clicked(GtkAction *action, gpointer user_data);
 
 void on_toolbutton_run_clicked(GtkAction *action, gpointer user_data);
 
-void on_menu_remove_indicators1_activate(GtkMenuItem *menuitem, gpointer user_data);
+void on_menu_remove_indicators1_activate(GtkMenuItem *menuitem,
+										 gpointer user_data);
 
 void on_print1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
@@ -120,7 +126,8 @@ void on_file_properties_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_menu_select_all1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
-void on_menu_show_sidebar1_toggled(GtkCheckMenuItem *checkmenuitem, gpointer user_data);
+void on_menu_show_sidebar1_toggled(GtkCheckMenuItem *checkmenuitem,
+								   gpointer user_data);
 
 void on_menu_comment_line1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
@@ -130,7 +137,8 @@ void on_menu_increase_indent1_activate(GtkMenuItem *menuitem, gpointer user_data
 
 void on_menu_decrease_indent1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
-void on_menu_toggle_line_commentation1_activate(GtkMenuItem *menuitem, gpointer user_data);
+void on_menu_toggle_line_commentation1_activate(GtkMenuItem *menuitem,
+												gpointer user_data);
 
 void on_next_message1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
@@ -142,21 +150,25 @@ void on_project_close1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_project_properties1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
-void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem, gpointer user_data);
+void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
+										  gpointer user_data);
 
 void on_remove_markers1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
-void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem, gpointer user_data);
+void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem,
+													 gpointer user_data);
 
 void on_toolbutton_back_activate(GtkAction *action, gpointer user_data);
 
 void on_toolbutton_forward_activate(GtkAction *action, gpointer user_data);
 
-gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event, gpointer user_data);
+gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event,
+						 gpointer user_data);
 
-gboolean on_escape_key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+gboolean on_escape_key_press_event(GtkWidget *widget, GdkEventKey *event,
+								   gpointer user_data);
 
 void on_line_breaking1_activate(GtkMenuItem *menuitem, gpointer user_data);
 

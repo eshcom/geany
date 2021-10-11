@@ -576,7 +576,7 @@ static gboolean shebang_find_and_match_filetype(const gchar *utf8_filename,
 		if (test == -1)
 			break;
 		
-		if (ft->id == (guint) test)
+		if (ft->id == (guint)test)
 		{
 			result = TRUE;
 			break;
@@ -1518,8 +1518,8 @@ void filetypes_reload_extensions(void)
 GEANY_API_SYMBOL
 GeanyFiletype *filetypes_index(gint idx)
 {
-	return (idx >= 0 && idx < (gint) filetypes_array->len) ? filetypes[idx]
-														   : NULL;
+	return (idx >= 0 && idx < (gint)filetypes_array->len) ? filetypes[idx]
+														  : NULL;
 }
 
 

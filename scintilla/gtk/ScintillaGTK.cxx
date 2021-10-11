@@ -1854,7 +1854,7 @@ gint ScintillaGTK::ScrollEvent(GtkWidget *widget, GdkEventScroll *event) {
 		if (event->direction == GDK_SCROLL_SMOOTH && GDK_IS_WAYLAND_WINDOW(event->window)) {
 			const int smoothScrollFactor = 4;
 			sciThis->smoothScrollY += event->delta_y * smoothScrollFactor;
-			sciThis->smoothScrollX += event->delta_x * smoothScrollFactor;;
+			sciThis->smoothScrollX += event->delta_x * smoothScrollFactor;
 			if (ABS(sciThis->smoothScrollY) >= 1.0) {
 				const int scrollLines = std::trunc(sciThis->smoothScrollY);
 				sciThis->ScrollTo(sciThis->topLine + scrollLines);
