@@ -142,7 +142,7 @@ extern bool enableXtag (xtagType type, bool state)
 
 	old = isXtagEnabled (type);
 	desc->enabled = state;
-	desc->isEnabled = NULL;;
+	desc->isEnabled = NULL;
 
 	return old;
 }

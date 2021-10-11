@@ -187,7 +187,7 @@ static void remove_socket_link_full(void)
 	/* read the contents of the symbolic link socket_info.file_name and delete it
 	 * readlink should return something like "/tmp/geany_socket.499602d2" */
 	len = readlink(socket_info.file_name, real_path, sizeof(real_path) - 1);
-	if ((gint) len > 0)
+	if ((gint)len > 0)
 	{
 		real_path[len] = '\0';
 		g_unlink(real_path);

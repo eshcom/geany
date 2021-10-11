@@ -3711,38 +3711,38 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 	/* restore selection or caret position */
 	if (single_line)
 	{
-		gint a = (first_line_was_comment) ? - (gint) co_len : (gint) co_len;
+		gint a = (first_line_was_comment) ? - (gint)co_len : (gint)co_len;
 		gint indent_len;
 		
 		/* don't modify sel_start when the selection starts within indentation */
 		read_indent(editor, sel_start);
-		indent_len = (gint) strlen(indent);
+		indent_len = (gint)strlen(indent);
 		if ((sel_start - first_line_start) <= indent_len)
 			a = 0;
 		/* if the selection start was inside the comment mark, adjust the position */
 		else if (first_line_was_comment &&
 				 sel_start >= (first_line_start + indent_len) &&
-				 sel_start <= (first_line_start + indent_len + (gint) co_len))
+				 sel_start <= (first_line_start + indent_len + (gint)co_len))
 		{
 			a = (first_line_start + indent_len) - sel_start;
 		}
 		
 		if (sel_start < sel_end)
 		{
-			gint b = (count_commented * (gint) co_len) -
-						(count_uncommented * (gint) co_len);
+			gint b = (count_commented * (gint)co_len) -
+						(count_uncommented * (gint)co_len);
 			
 			/* same for selection end, but here we add
 			 * an offset on the offset above */
 			read_indent(editor, sel_end + b);
-			indent_len = (gint) strlen(indent);
+			indent_len = (gint)strlen(indent);
 			if ((sel_end - last_line_start) < indent_len)
-				b += last_line_was_comment ? (gint) co_len : -(gint) co_len;
+				b += last_line_was_comment ? (gint)co_len : -(gint)co_len;
 			else if (last_line_was_comment &&
 					 sel_end >= (last_line_start + indent_len) &&
-					 sel_end <= (last_line_start + indent_len + (gint) co_len))
+					 sel_end <= (last_line_start + indent_len + (gint)co_len))
 			{
-				b += (gint) co_len - (sel_end - (last_line_start + indent_len));
+				b += (gint)co_len - (sel_end - (last_line_start + indent_len));
 			}
 			
 			sci_set_selection_start(editor->sci, sel_start + a);
@@ -3757,16 +3757,16 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 		if (count_uncommented > 0)
 		{
 			sci_set_selection_start(editor->sci,
-									sel_start - (gint) co_len + eol_len);
+									sel_start - (gint)co_len + eol_len);
 			sci_set_selection_end(editor->sci,
-								  sel_end - (gint) co_len + eol_len);
+								  sel_end - (gint)co_len + eol_len);
 		}
 		else if (count_commented > 0)
 		{
 			sci_set_selection_start(editor->sci,
-									sel_start + (gint) co_len - eol_len);
+									sel_start + (gint)co_len - eol_len);
 			sci_set_selection_end(editor->sci,
-								  sel_end + (gint) co_len - eol_len);
+								  sel_end + (gint)co_len - eol_len);
 		}
 		if (sel_start >= sel_end)
 			sci_scroll_caret(editor->sci);
@@ -5038,7 +5038,7 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 									&tab_len_f, 1, 100, 1))
 		return;
 	
-	tab_len = (gint) tab_len_f;
+	tab_len = (gint)tab_len_f;
 	text = g_strnfill(tab_len, ' ');
 	
 	sci_start_undo_action(editor->sci);

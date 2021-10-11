@@ -1237,15 +1237,15 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 GEANY_API_SYMBOL
 const GeanyLexerStyle *highlighting_get_style(gint ft_id, gint style_id)
 {
-	g_return_val_if_fail(ft_id >= 0 && (guint) ft_id < filetypes_array->len, NULL);
+	g_return_val_if_fail(ft_id >= 0 && (guint)ft_id < filetypes_array->len, NULL);
 	g_return_val_if_fail(style_id >= 0, NULL);
 	
 	/* ensure filetype loaded */
-	filetypes_load_config((guint) ft_id, FALSE);
+	filetypes_load_config((guint)ft_id, FALSE);
 	
 	/* TODO: style_id might not be the real array index
 	 *       (Scintilla styles are not always synced with array indices) */
-	return get_style((guint) ft_id, (guint) style_id);
+	return get_style((guint)ft_id, (guint)style_id);
 }
 
 

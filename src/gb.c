@@ -307,7 +307,7 @@ static gboolean geany_pong_area_button_press(GtkWidget *area, GdkEventButton *ev
 
 static gboolean geany_pong_area_motion_notify(GtkWidget *area, GdkEventMotion *event, GeanyPong *self)
 {
-	self->handle_pos = (gint) event->x;
+	self->handle_pos = (gint)event->x;
 	/* clamp so the handle is always fully in */
 	if (self->handle_pos < self->handle_width/2 + BORDER_THIKNESS)
 		self->handle_pos = self->handle_width/2 + BORDER_THIKNESS;
@@ -473,7 +473,7 @@ static gboolean gb_on_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointe
 	if (event->keyval < 0x80)
 	{
 		memmove (text, &text[1], G_N_ELEMENTS(text) - 1);
-		text[G_N_ELEMENTS(text) - 2] = (gchar) event->keyval;
+		text[G_N_ELEMENTS(text) - 2] = (gchar)event->keyval;
 
 		if (utils_str_equal(text, "geany"))
 		{

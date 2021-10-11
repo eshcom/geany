@@ -514,7 +514,7 @@ gchar *win32_show_document_save_as_dialog(GtkWindow *parent, const gchar *title,
 		if (CommDlgExtendedError())
 		{
 			gchar *error = g_strdup_printf(
-				"File dialog box error (%x)", (gint) CommDlgExtendedError());
+				"File dialog box error (%x)", (gint)CommDlgExtendedError());
 			win32_message_dialog(NULL, GTK_MESSAGE_ERROR, error);
 			g_free(error);
 		}
@@ -563,7 +563,7 @@ gchar *win32_show_file_dialog(GtkWindow *parent, const gchar *title, const gchar
 		if (CommDlgExtendedError())
 		{
 			gchar *error = g_strdup_printf(
-				"File dialog box error (%x)", (gint) CommDlgExtendedError());
+				"File dialog box error (%x)", (gint)CommDlgExtendedError());
 			win32_message_dialog(NULL, GTK_MESSAGE_ERROR, error);
 			g_free(error);
 		}
@@ -791,7 +791,7 @@ void win32_open_browser(const gchar *uri)
 				uri++;
 		}
 	}
-	ret = (gint) ShellExecute(NULL, "open", uri, NULL, NULL, SW_SHOWNORMAL);
+	ret = (gint)ShellExecute(NULL, "open", uri, NULL, NULL, SW_SHOWNORMAL);
 	if (ret <= 32)
 	{
 		gchar *err = g_win32_error_message(GetLastError());

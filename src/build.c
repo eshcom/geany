@@ -557,7 +557,7 @@ void build_remove_menu_item(const GeanyBuildSource src, const GeanyBuildGroup gr
 		for (i = 0; i < build_groups_count[grp]; ++i)
 			bc[i].exists = FALSE;
 	}
-	else if ((guint) cmd < build_groups_count[grp])
+	else if ((guint)cmd < build_groups_count[grp])
 		bc[cmd].exists = FALSE;
 }
 
@@ -1375,7 +1375,7 @@ static void create_build_menu_item(GtkWidget *menu, GeanyKeyGroup *group, GtkAcc
 	}
 	gtk_widget_show(item);
 	if (bs->key_binding >= 0)
-		add_menu_accel(group, (guint) bs->key_binding, ag, item);
+		add_menu_accel(group, (guint)bs->key_binding, ag, item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
 	if (bs->cb != NULL)
 	{
@@ -2646,8 +2646,8 @@ void build_set_group_count(GeanyBuildGroup grp, gint count)
 
 	g_return_if_fail(count >= 0);
 
-	if ((guint) count > build_groups_count[grp])
-		build_groups_count[grp] = (guint) count;
+	if ((guint)count > build_groups_count[grp])
+		build_groups_count[grp] = (guint)count;
 	for (i = 0, sum = 0; i < GEANY_GBG_COUNT; ++i)
 		sum += build_groups_count[i];
 	build_items_count = sum;

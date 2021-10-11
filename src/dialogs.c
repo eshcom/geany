@@ -244,7 +244,7 @@ static GtkWidget *create_filetype_combo_box(void)
 			default: iter_parent = NULL;
 		}
 		gtk_tree_store_insert_with_values(store, NULL, iter_parent, -1,
-				0, (gint) ft->id, 1, ft->title, -1);
+				0, (gint)ft->id, 1, ft->title, -1);
 	}
 
 	combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
@@ -888,7 +888,7 @@ void dialogs_show_open_font(void)
 	{
 		GtkWidget *apply_button;
 
-		ui_widgets.open_fontsel = gtk_font_selection_dialog_new(_("Choose font"));;
+		ui_widgets.open_fontsel = gtk_font_selection_dialog_new(_("Choose font"));
 		gtk_container_set_border_width(GTK_CONTAINER(ui_widgets.open_fontsel), 4);
 		gtk_window_set_modal(GTK_WINDOW(ui_widgets.open_fontsel), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(ui_widgets.open_fontsel), TRUE);
