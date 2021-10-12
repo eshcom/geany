@@ -133,8 +133,11 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang);
 gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 								   gchar prefix, gboolean brackets);
 
-void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
-									 TMTagType *type);
+gboolean tm_parser_strict_scope(TMParserType lang);
+gboolean tm_parser_strict_file(TMParserType lang);
+
+void tm_parser_define_type(TMTagType *type, TMParserType lang,
+						   gchar prefix, gchar suffix);
 
 #endif /* GEANY_PRIVATE */
 

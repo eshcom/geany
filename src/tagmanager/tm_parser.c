@@ -868,18 +868,71 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 	return FALSE;
 }
 
-void tm_parser_define_type_by_prefix(TMParserType lang, gchar prefix,
-									 TMTagType *type)
+gboolean tm_parser_strict_scope(TMParserType lang)
 {
+	//~ esh: add langs to exclude here as needed
+	switch (lang)
+	{
+		case TM_PARSER_NONE:
+		case TM_PARSER_PYTHON:
+			return FALSE;
+		default:
+			return TRUE;
+	}
+}
+
+gboolean tm_parser_strict_file(TMParserType lang)
+{
+	//~ esh: add langs to exclude here as needed
+	switch (lang)
+	{
+		case TM_PARSER_NONE:
+		case TM_PARSER_ERLANG:
+			// esh: not suitable for Erlang lang
+			// example: goto "stream_stats" in "server_config:'$mapper_record'(stream_stats)"
+			return FALSE;
+		default:
+			return TRUE;
+	}
+}
+
+void tm_parser_define_type(TMTagType *type, TMParserType lang,
+						   gchar prefix, gchar suffix)
+{
+	//~ esh: this func will expand
 	switch (lang)
 	{
 		case TM_PARSER_ERLANG:
 			if (prefix == '?')
 				*type = tm_tag_macro_t;
-			else if (prefix == '#')
+			else if (prefix == '#') // record
 				*type = tm_tag_struct_t;
+			else if (suffix == '(')
+				*type = tm_tag_function_t | tm_tag_typedef_t;
+			else if (suffix == ':')
+				*type = tm_tag_max_t & ~(tm_tag_macro_t    | tm_tag_struct_t |
+										 tm_tag_function_t | tm_tag_typedef_t);
+			else
+				*type = tm_tag_max_t & ~(tm_tag_macro_t | tm_tag_typedef_t);
+			break;
+		case TM_PARSER_C:
+		case TM_PARSER_CPP:
+			if (suffix == '(')
+				*type = tm_tag_function_t | tm_tag_macro_t |
+						tm_tag_macro_with_arg_t;
+			else if (suffix == ':')
+				*type = tm_tag_class_t;
+			break;
+		case TM_PARSER_PYTHON:
+			if (suffix == '=' || suffix == '.') 
+				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_function_t);
+			else if (suffix == '(')
+				*type = tm_tag_max_t & ~(tm_tag_externvar_t);
 			break;
 		default:
+			if (suffix == '(')
+				*type = tm_tag_function_t       | tm_tag_method_t |
+						tm_tag_macro_with_arg_t | tm_tag_prototype_t;
 			break;
 	}
 }

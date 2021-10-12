@@ -1788,8 +1788,10 @@ static void read_word(gchar *chunk, gint *startword, gint *endword,
 	}
 	if (*startword != *endword)
 	{
+		gchar save = chunk[*endword];
 		chunk[*endword] = '\0';
 		g_strlcpy(word, chunk + *startword, wordlen); /* ensure null terminated */
+		chunk[*endword] = save;
 	}
 	else
 		g_strlcpy(word, "", wordlen);
@@ -1913,9 +1915,25 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
 		pos--;
 	
+	TMParserType lang = editor->document->file_type->lang;
+	
+	// esh: define the type ----------------------------------
+	gchar prefix = pos > 0 ? sci_get_char_at(sci, pos - 1) : ' ';
+	
+	gint limit = sci_get_length(sci);
+	gint endword = wordbound.end;
+	/* skip whitespaces */
+	while (endword < limit && isspace(sci_get_char_at(sci, endword)))
+		endword++;
+	
+	gchar suffix = endword < limit ? sci_get_char_at(sci, endword) : ' ';
+	
+	tm_parser_define_type(type, lang, prefix, suffix);
+	//--------------------------------------------------------
+	
+	// esh: define the scope ---------------------------------
 	if (pos > 0)
 	{
-		TMParserType lang = editor->document->file_type->lang;
 		const gchar *context_sep = tm_parser_context_separator(lang);
 		
 		if (match_last_chars(sci, pos, context_sep))
@@ -1934,27 +1952,24 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				scopebound = tmp_bound;
 				pos = scopebound.bound.start;
 			}
-			if (*scope == '\0')
-				return;
 			
-			pos = scopebound.bound.start;
-			
-			/* skip whitespaces */
-			while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
-				pos--;
-			
-			gchar prefix = pos > 0 ? sci_get_char_at(sci, pos - 1) : ' ';
-			
-			if (tm_parser_undefined_scope(scope, lang, prefix,
-										  scopebound.brackets))
-				*scope = '\0';
-		}
-		else // esh: define the type by prefix
-		{
-			gchar prefix = sci_get_char_at(sci, pos - 1);
-			tm_parser_define_type_by_prefix(lang, prefix, type);
+			if (*scope != '\0')
+			{
+				pos = scopebound.bound.start;
+				
+				/* skip whitespaces */
+				while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
+					pos--;
+				
+				prefix = pos > 0 ? sci_get_char_at(sci, pos - 1) : ' ';
+				
+				if (tm_parser_undefined_scope(scope, lang, prefix,
+											  scopebound.brackets))
+					*scope = '\0';
+			}
 		}
 	}
+	//--------------------------------------------------------
 }
 
 
@@ -2013,7 +2028,8 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 {
 	g_return_if_fail(chunk != NULL);
 	
-	gint startword = strlen(chunk);
+	gint limit = strlen(chunk);
+	gint startword = limit;
 	while (startword > 0 && !strchr(GEANY_WORDCHARS"()", chunk[startword - 1]))
 		startword--;
 	if (chunk[startword - 1] == '(')
@@ -2037,6 +2053,19 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 	while (startword > 0 && isspace(chunk[startword - 1]))
 		startword--;
 	
+	// esh: define the type ----------------------------------
+	gchar prefix = startword > 0 ? chunk[startword - 1] : ' ';
+	
+	/* skip whitespaces */
+	while (endword < limit && isspace(chunk[endword]))
+		endword++;
+	
+	gchar suffix = endword < limit ? chunk[endword] : ' ';
+	
+	tm_parser_define_type(type, lang, prefix, suffix);
+	//--------------------------------------------------------
+	
+	// esh: define the scope ---------------------------------
 	if (startword > 0)
 	{
 		const gchar *context_sep = tm_parser_context_separator(lang);
@@ -2058,27 +2087,24 @@ void editor_find_word_and_scope_chunk(gchar *chunk, TMParserType lang,
 				scopebound = tmp_bound;
 				startword = scopebound.bound.start;
 			}
-			if (*scope == '\0')
-				return;
 			
-			startword = scopebound.bound.start;
-			
-			/* skip whitespaces */
-			while (startword > 0 && isspace(chunk[startword - 1]))
-				startword--;
-			
-			gchar prefix = startword > 0 ? chunk[startword - 1] : ' ';
-			
-			if (tm_parser_undefined_scope(scope, lang, prefix,
-										  scopebound.brackets))
-				*scope = '\0';
-		}
-		else // esh: define the type by prefix
-		{
-			gchar prefix = chunk[startword - 1];
-			tm_parser_define_type_by_prefix(lang, prefix, type);
+			if (*scope != '\0')
+			{
+				startword = scopebound.bound.start;
+				
+				/* skip whitespaces */
+				while (startword > 0 && isspace(chunk[startword - 1]))
+					startword--;
+				
+				prefix = startword > 0 ? chunk[startword - 1] : ' ';
+				
+				if (tm_parser_undefined_scope(scope, lang, prefix,
+											  scopebound.brackets))
+					*scope = '\0';
+			}
 		}
 	}
+	//--------------------------------------------------------
 }
 
 
@@ -2096,8 +2122,8 @@ void editor_find_custom_words(GeanyEditor *editor, const gchar separator,
 											wordchars1, FALSE);
 	if (wordbound.start != wordbound.end)
 	{
-		gint pos = wordbound.end;
 		gint limit = sci_get_length(sci);
+		gint pos = wordbound.end;
 		/* skip whitespaces */
 		while (pos < limit && isspace(sci_get_char_at(sci, pos)))
 			pos++;
@@ -2129,42 +2155,39 @@ void editor_find_custom_words_chunk(gchar *chunk, TMParserType lang, const gchar
 {
 	g_return_if_fail(chunk != NULL);
 	
-	gint startword = 0;
 	gint limit = strlen(chunk);
+	gint startword = 0;
 	/* skip whitespaces */
 	while (startword < limit && isspace(chunk[startword]))
 		startword++;
 	gint endword = startword;
 	
-	gchar *chunk2 = g_strdup(chunk);
 	//~ word1 search:
 	read_word(chunk, &startword, &endword, word1, wordlen1,
 			  wordchars1, FALSE, lang);
 	if (startword != endword)
 	{
 		/* skip whitespaces */
-		while (endword < limit && isspace(chunk2[endword]))
+		while (endword < limit && isspace(chunk[endword]))
 			endword++;
 		
-		if (endword < limit && chunk2[endword] == separator)
+		if (endword < limit && chunk[endword] == separator)
 		{
 			endword++;
 			/* skip whitespaces */
-			while (endword < limit && isspace(chunk2[endword]))
+			while (endword < limit && isspace(chunk[endword]))
 				endword++;
 			
 			if (endword < limit)
 			{
 				startword = endword;
 				//~ word2 search:
-				read_word(chunk2, &startword, &endword, word2, wordlen2,
+				read_word(chunk, &startword, &endword, word2, wordlen2,
 						  wordchars2, FALSE, lang);
-				g_free(chunk2);
 				return;
 			}
 		}
 	}
-	g_free(chunk2);
 	*word2 = '\0';
 }
 
