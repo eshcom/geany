@@ -1142,7 +1142,8 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	
 	if (!text)
 	{
-		/* only set selection if the dialog is not already visible, or has just been created */
+		/* only set selection if the dialog is not already visible,
+		 * or has just been created */
 		if (doc && !sel && !gtk_widget_get_visible(fif_dlg.dialog))
 			sel = editor_get_default_selection(doc->editor,
 											   search_prefs.use_current_word,
@@ -1155,9 +1156,9 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	g_free(sel);
 	
 	/* add project's base path directory to the dir list, we do this here once
-	 * (in create_fif_dialog() it would fail if a project is opened after dialog creation) */
-	gboolean proj_base_path = (app->project != NULL &&
-							   !EMPTY(app->project->base_path));
+	 * (in create_fif_dialog() it would fail if a project
+	 *  is opened after dialog creation) */
+	gboolean proj_base_path = (app->project && !EMPTY(app->project->base_path));
 	if (proj_base_path)
 	{
 		ui_combo_box_prepend_text_once(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
@@ -1169,15 +1170,42 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		cur_dir = g_strdup(dir);	/* custom directory argument passed */
 	else
 	{
+		const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
+		
 		//~ esh: added check new param use_current_proj_dir
 		if (search_prefs.use_current_proj_dir && proj_base_path)
 		{
-			const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
 			if (!utils_strn_equal(entry_text, app->project->base_path,
 								  min_len_str(entry_text, app->project->base_path)))
+			{	//~ example:
+				//~ -----------------------------------------------
+				//~ entry_text = <project_path> || <project_path>/*
+				//~   -> goto else
+				//~ -----------------------------------------------
+				//~ entry_text = /home
+				//~   -> set cur_dir = <project_path>
+				//~     -> set entry text = cur_dir (see below)
+				//~ -----------------------------------------------
 				cur_dir = g_strdup(app->project->base_path);
+			}
 			else
-			{
+			{	//~ example:
+				//~ -----------------------------------------------------------
+				//~ entry_text   = <project_path>/dir1
+				//~ cur_file_dir = <project_path>/dir1 || <project_path>/dir1/*
+				//~   -> leave cur_dir = NULL
+				//~     -> leave entry text as is
+				//~ -----------------------------------------------------------
+				//~ entry_text   = <project_path>/dir1/*
+				//~ cur_file_dir = <project_path>/dir1
+				//~   -> set cur_dir = cur_file_dir
+				//~     -> set entry text = cur_dir (see below)
+				//~ -----------------------------------------------------------
+				//~ entry_text   = <project_path>/dir1 || <project_path>/dir1/*
+				//~ cur_file_dir = <project_path>/dir2 || <project_path>/dir2/*
+				//~   -> set cur_dir = <project_path>
+				//~     -> set entry text = cur_dir (see below)
+				//~ -----------------------------------------------------------
 				gchar *cur_file_dir = utils_get_current_file_dir_utf8();
 				if (!utils_strn_equal(cur_file_dir, entry_text,
 									  min_len_str(cur_file_dir, entry_text)))
@@ -1192,9 +1220,11 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			
 			/* Only set the directory entry once for the current document */
 			cur_dir = utils_get_current_file_dir_utf8();
-			if (doc == last_doc && cur_dir && utils_str_equal(cur_dir, last_cur_dir))
+			if (doc == last_doc && cur_dir &&
+				utils_str_equal(cur_dir, last_cur_dir))
 			{
-				/* in case the user now wants the current directory, add it to history */
+				/* in case the user now wants the current directory,
+				 * add it to history */
 				ui_combo_box_add_to_history(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
 											cur_dir, 0);
 				SETPTR(cur_dir, NULL);
@@ -1204,12 +1234,11 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			
 			last_doc = doc;
 		}
-		if (!cur_dir && EMPTY(gtk_entry_get_text(GTK_ENTRY(entry))))
+		if (!cur_dir && EMPTY(entry_text))
 		{
 			/* use default_open_path if no directory could be determined
 			 * (e.g. when no files are open) */
-			if (!cur_dir)
-				cur_dir = g_strdup(utils_get_default_dir_utf8());
+			cur_dir = g_strdup(utils_get_default_dir_utf8());
 			if (!cur_dir)
 				cur_dir = g_get_current_dir();
 		}
@@ -1226,8 +1255,9 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	/* set the encoding of the current file */
 	if (doc != NULL)
 		enc_idx = encodings_get_idx_from_charset(doc->encoding);
-	ui_encodings_combo_box_set_active_encoding(GTK_COMBO_BOX(fif_dlg.encoding_combo),
-											   enc_idx);
+	ui_encodings_combo_box_set_active_encoding(
+							GTK_COMBO_BOX(fif_dlg.encoding_combo),
+							enc_idx);
 	
 	/* put the focus to the directory entry if it is empty */
 	if (utils_str_equal(gtk_entry_get_text(GTK_ENTRY(entry)), ""))
