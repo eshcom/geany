@@ -420,11 +420,10 @@ void configuration_save_session_files(GKeyFile *config)
 		
 		// esh: fixed overwriting VTE/last_dir of the current project from the previous project
 		//		in case there was an incomplete command in the terminal in the previous project
-		if (app->project != NULL && !EMPTY(app->project->base_path))
+		if (app->project && !EMPTY(app->project->base_path))
 		{
 			gint len = strlen(app->project->base_path);
-			if (app->project->base_path[len - 1] == '/'
-				|| app->project->base_path[len - 1] == '\\')
+			if (app->project->base_path[len - 1] == G_DIR_SEPARATOR)
 				len--;
 			if (utils_strn_equal(vte_info.dir, app->project->base_path, len))
 				g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);

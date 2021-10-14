@@ -1462,7 +1462,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 			filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
 			
 			if (!g_file_test(filename, G_FILE_TEST_EXISTS) &&
-				app->project != NULL && !EMPTY(app->project->base_path))
+				app->project && !EMPTY(app->project->base_path))
 			{
 				/* try the project's base path */
 				SETPTR(path, project_get_base_path());
@@ -1471,6 +1471,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 											  path, sel, NULL));
 			}
 			g_free(path);
+			
 #ifdef G_OS_UNIX
 			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,

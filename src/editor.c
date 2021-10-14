@@ -1215,7 +1215,7 @@ static gboolean on_editor_notify(G_GNUC_UNUSED GObject *object,
 			{
 				switch (nt->position)
 				{
-					case 1:	/* up arrow */
+					case 1: /* up arrow */
 						if (calltip.tag_index > 0)
 							calltip.tag_index--;
 						break;
@@ -3734,7 +3734,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 	/* restore selection or caret position */
 	if (single_line)
 	{
-		gint a = (first_line_was_comment) ? - (gint)co_len : (gint)co_len;
+		gint a = (first_line_was_comment) ? -(gint)co_len : (gint)co_len;
 		gint indent_len;
 		
 		/* don't modify sel_start when the selection starts within indentation */
@@ -3821,7 +3821,7 @@ gint editor_do_comment(GeanyEditor *editor, gint line,
 		first_line = sci_get_line_from_position(editor->sci, sel_start);
 		/* Find the last line with chars selected (not EOL char) */
 		last_line = sci_get_line_from_position(editor->sci,
-			sel_end - editor_get_eol_char_len(editor));
+							sel_end - editor_get_eol_char_len(editor));
 		last_line = MAX(first_line, last_line);
 	}
 	else
@@ -4317,7 +4317,8 @@ static gboolean sci_is_blank_line(ScintillaObject *sci, gint line)
 
 /* Returns first line of paragraph for GTK_DIR_UP, line after paragraph
  * ends for GTK_DIR_DOWN or -1 if called on an empty line. */
-static gint find_paragraph_stop(GeanyEditor *editor, gint line, gint direction)
+static gint find_paragraph_stop(GeanyEditor *editor, gint line,
+								gint direction)
 {
 	gint step;
 	ScintillaObject *sci = editor->sci;
@@ -4327,10 +4328,7 @@ static gint find_paragraph_stop(GeanyEditor *editor, gint line, gint direction)
 	if (sci_is_blank_line(sci, line))
 		return -1;
 	
-	if (direction == GTK_DIR_UP)
-		step = -1;
-	else
-		step = 1;
+	step = (direction == GTK_DIR_UP) ? -1 : 1;
 	
 	while (TRUE)
 	{
@@ -4389,10 +4387,7 @@ static gint find_block_stop(GeanyEditor *editor, gint line, gint direction)
 	if (sci_is_blank_line(sci, line))
 		return -1;
 	
-	if (direction == GTK_DIR_UP)
-		step = -1;
-	else
-		step = 1;
+	step = (direction == GTK_DIR_UP) ? -1 : 1;
 	
 	ind = sci_get_line_indentation(sci, line);
 	while (TRUE)
@@ -5339,7 +5334,8 @@ static gboolean on_editor_scroll_event(GtkWidget *widget,
 	GeanyEditor *editor = user_data;
 	
 	/* we only handle up and down, leave the rest to Scintilla */
-	if (event->direction != GDK_SCROLL_UP && event->direction != GDK_SCROLL_DOWN)
+	if (event->direction != GDK_SCROLL_UP &&
+		event->direction != GDK_SCROLL_DOWN)
 		return FALSE;
 	
 	/* Handle scroll events if Alt is pressed and scroll whole pages instead of a

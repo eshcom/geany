@@ -172,11 +172,76 @@ void run_test_case02()
 		   utils_str_equal(space1, space2));
 }
 
+void run_test_case03()
+{
+	gchar *curr = g_get_current_dir();
+	gchar *item1 = g_path_get_basename("/usr/test/file.erl");
+	gchar *item2 = g_path_get_dirname("/usr/test/file.erl");
+	gchar *item3 = g_path_get_dirname("/usr/test/dir1");
+	gchar *item4 = g_path_get_dirname("/usr/test/dir2/");
+	gchar *item5 = g_path_get_dirname("/usr/test/dir2\\");
+	printf("curr = %s\nitem1 = %s\nitem2 = %s\nitem3 = %s\nitem4 = %s\nitem5 = %s\n",
+		   curr, item1, item2, item3, item4, item5);
+	//~ Result:
+	//~ item1 = file.erl
+	//~ item2 = /usr/test
+	//~ item3 = /usr/test
+	//~ item4 = /usr/test/dir2
+	//~ item5 = /usr/test
+	g_free(curr);
+	g_free(item1);
+	g_free(item2);
+	g_free(item3);
+	g_free(item4);
+	g_free(item5);
+	
+	gchar *build1 = g_build_filename("/usr/test/dir", "item", NULL);
+	gchar *build2 = g_build_filename("/usr/test/dir", "item/", NULL);
+	gchar *build3 = g_build_filename("/usr/test/dir", "/item", NULL);
+	gchar *build4 = g_build_filename("/usr/test/dir", "/item/", NULL);
+	gchar *build5 = g_build_filename("/usr/test/dir/", "item", NULL);
+	gchar *build6 = g_build_filename("/usr/test/dir/", "item/", NULL);
+	gchar *build7 = g_build_filename("/usr/test/dir/", "/item", NULL);
+	gchar *build8 = g_build_filename("/usr/test/dir/", "/item/", NULL);
+	printf("build1 = %s\nbuild2 = %s\nbuild3 = %s\nbuild4 = %s\n"
+		   "build5 = %s\nbuild6 = %s\nbuild7 = %s\nbuild8 = %s\n",
+		   build1, build2, build3, build4, build5, build6, build7, build8);
+	//~ Result:
+	//~ build1 = /usr/test/dir/item
+	//~ build2 = /usr/test/dir/item/
+	//~ build3 = /usr/test/dir/item
+	//~ build4 = /usr/test/dir/item/
+	//~ build5 = /usr/test/dir/item
+	//~ build6 = /usr/test/dir/item/
+	//~ build7 = /usr/test/dir/item
+	//~ build8 = /usr/test/dir/item/
+	g_free(build1);
+	g_free(build2);
+	g_free(build3);
+	g_free(build4);
+	g_free(build5);
+	g_free(build6);
+	g_free(build7);
+	g_free(build8);
+}
+
+static gchar word[100];
+
+void run_test_case04()
+{
+	printf("word = %s, len1 = %d\n", word, (int)strlen(word));
+	*word = '\0';
+	printf("word = %s, len2 = %d\n", word, (int)strlen(word));
+	*word = 'T';
+	printf("word = %s, len3 = %d\n", word, (int)strlen(word));
+}
 
 int main(void)
 {
-	run_test_case01();
-	run_test_case02();
+	//~ run_test_case01();
+	//~ run_test_case02();
+	//~ run_test_case03();
+	run_test_case04();
 	
 	return 0;
 }

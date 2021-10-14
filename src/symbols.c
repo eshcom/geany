@@ -1107,7 +1107,8 @@ static gboolean tree_store_remove_row(GtkTreeStore *store, GtkTreeIter *iter)
 	has_parent = gtk_tree_model_iter_parent(GTK_TREE_MODEL(store),
 											&parent, iter);
 	cont = gtk_tree_store_remove(store, iter);
-	/* if there is no next at this level but there is a parent iter, continue from it */
+	/* if there is no next at this level but there is a parent iter,
+	 * continue from it */
 	if (!cont && has_parent)
 	{
 		*iter = parent;
@@ -1426,8 +1427,7 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 					gtk_tree_store_set(store, &iter,
 									   SYMBOLS_COLUMN_NAME, name,
 									   SYMBOLS_COLUMN_TOOLTIP, tooltip,
-									   SYMBOLS_COLUMN_TAG, found,
-									   -1);
+									   SYMBOLS_COLUMN_TAG, found, -1);
 					g_free(tooltip);
 				}
 				
@@ -1503,15 +1503,15 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 }
 
 
-/* we don't want to sort 1st-level nodes, but we can't return 0 because the tree sort
- * is not stable, so the order is already lost. */
+/* we don't want to sort 1st-level nodes, but we can't return 0 because
+ * the tree sort is not stable, so the order is already lost. */
 static gint compare_top_level_names(const gchar *a, const gchar *b)
 {
 	guint i;
 	const gchar *name;
 	
-	/* This should never happen as it would mean that two or more top
-	 * level items have the same name but it can happen by typos in the translations. */
+	/* This should never happen as it would mean that two or more top level items
+	 * have the same name but it can happen by typos in the translations. */
 	if (utils_str_equal(a, b))
 		return 1;
 	
@@ -1864,7 +1864,8 @@ static void on_goto_popup_item_activate(GtkMenuItem *item, TMTag *tag)
 }
 
 
-/* FIXME: use the same icons as in the symbols tree defined in add_top_level_items() */
+/* FIXME: use the same icons as in the symbols tree
+ *        defined in add_top_level_items() */
 static guint get_tag_class(const TMTag *tag)
 {
 	switch (tag->type)
@@ -2444,8 +2445,8 @@ static gint get_function_fold_number(GeanyDocument *doc)
 
 
 /* Should be used only with get_current_tag_cached.
- * tag_types caching might trigger recomputation too often but this isn't used differently often
- * enough to be an issue for now */
+ * tag_types caching might trigger recomputation too often but this
+ * isn't used differently often enough to be an issue for now */
 static gboolean current_tag_changed(GeanyDocument *doc, gint cur_line,
 									gint fold_level, guint tag_types)
 {
@@ -2481,8 +2482,8 @@ static gboolean current_tag_changed(GeanyDocument *doc, gint cur_line,
 
 
 /* Parse the function name up to 2 lines before tag_line.
- * C++ like syntax should be parsed by parse_cpp_function_at_line, otherwise the return
- * type or argument names can be confused with the function name. */
+ * C++ like syntax should be parsed by parse_cpp_function_at_line, otherwise
+ * the return type or argument names can be confused with the function name. */
 static gchar *parse_function_at_line(ScintillaObject *sci, gint tag_line)
 {
 	gint start, end, max_pos;
@@ -2521,14 +2522,14 @@ static gchar *parse_cpp_function_at_line(ScintillaObject *sci, gint tag_line)
 	tmp = 0;
 	/* goto the begin of function body */
 	while (end < max_pos &&
-		(tmp = sci_get_char_at(sci, end)) != '{' &&
-		tmp != 0) end++;
-	if (tmp == 0) end --;
+		   (tmp = sci_get_char_at(sci, end)) != '{' &&
+		   tmp != 0) end++;
+	if (tmp == 0) end--;
 	
 	/* go back to the end of function identifier */
 	while (end > 0 && end > first_pos - 500 &&
-		(tmp = sci_get_char_at(sci, end)) != '(' &&
-		tmp != 0) end--;
+		   (tmp = sci_get_char_at(sci, end)) != '(' &&
+		   tmp != 0) end--;
 	end--;
 	if (end < 0) end = 0;
 	
@@ -2542,14 +2543,15 @@ static gchar *parse_cpp_function_at_line(ScintillaObject *sci, gint tag_line)
 						  || (c = sci_get_char_at(sci, start)) == '~'
 						  || c == ':'))
 		start--;
-	if (start != 0 && start < end) start++;	/* correct for last non-matching char */
+	if (start != 0 && start < end) start++; /* correct for last non-matching char */
 	
 	if (start == end) return NULL;
 	return sci_get_contents_range(sci, start, end + 1);
 }
 
 
-/* gets the fold header after or on @line, but skipping folds created because of parentheses */
+/* gets the fold header after or on @line, but skipping
+ * folds created because of parentheses */
 static gint get_fold_header_after(ScintillaObject *sci, gint line)
 {
 	const gint line_count = sci_get_line_count(sci);
@@ -2563,8 +2565,8 @@ static gint get_fold_header_after(ScintillaObject *sci, gint line)
 			const gint lexer = sci_get_lexer(sci);
 			gint parenthesis_match_line = -1;
 			
-			/* now find any unbalanced open parenthesis on the line and see where the matching
-			 * brace would be, mimicking what folding on () does */
+			/* now find any unbalanced open parenthesis on the line and see where
+			 * the matching brace would be, mimicking what folding on () does */
 			for (gint pos = sci_get_position_from_line(sci, line);
 				 pos < line_end; pos++)
 			{
@@ -2590,13 +2592,14 @@ static gint get_fold_header_after(ScintillaObject *sci, gint line)
 			 * header be at the parent level) */
 			if ((parenthesis_match_line == last_child) ||
 				(parenthesis_match_line == last_child + 1 &&
-				 sci_get_fold_level(sci, parenthesis_match_line) & SC_FOLDLEVELHEADERFLAG))
+				 sci_get_fold_level(sci, parenthesis_match_line)
+					& SC_FOLDLEVELHEADERFLAG))
 				line = last_child;
 			else
 				return line;
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -2609,7 +2612,8 @@ static gint get_current_tag_name(GeanyDocument *doc, gchar **tagname,
 	
 	line = sci_get_current_line(doc->editor->sci);
 	parent = sci_get_fold_parent(doc->editor->sci, line);
-	/* if we're inside a fold level and we have up-to-date tags, get the function from TM */
+	/* if we're inside a fold level and we have up-to-date tags,
+	 * get the function from TM */
 	if (parent >= 0 && doc->tm_file != NULL && doc->tm_file->tags_array != NULL &&
 		(!doc->changed || editor_prefs.autocompletion_update_freq > 0))
 	{
@@ -2620,11 +2624,12 @@ static gint get_current_tag_name(GeanyDocument *doc, gchar **tagname,
 			gint tag_line = tag->line - 1;
 			gint last_child = line + 1;
 			
-			/* if it may be a false positive because we're inside a fold level not inside anything
-			 * we match, e.g. a #if in C or C++, we check we're inside the fold level that start
-			 * right after the tag we got from TM.
-			 * Additionally, we perform parentheses matching on the initial line not to get confused
-			 * by folding on () in case the parameter list spans multiple lines */
+			/* if it may be a false positive because we're inside a fold level not
+			 * inside anything we match, e.g. a #if in C or C++, we check we're
+			 * inside the fold level that start right after the tag we got from TM.
+			 * Additionally, we perform parentheses matching on the initial line not
+			 * to get confused by folding on () in case the parameter list spans
+			 * multiple lines */
 			if (abs(tag_line - parent) > 1)
 			{
 				const gint tag_fold = get_fold_header_after(doc->editor->sci,
@@ -2647,8 +2652,8 @@ static gint get_current_tag_name(GeanyDocument *doc, gchar **tagname,
 			}
 		}
 	}
-	/* for the poor guy with a modified document and without real time tag parsing, we fallback
-	 * to dirty and inaccurate hand-parsing */
+	/* for the poor guy with a modified document and without real time
+	 * tag parsing, we fallback to dirty and inaccurate hand-parsing */
 	else if (parent >= 0 && doc->file_type != NULL &&
 			 doc->file_type->id != GEANY_FILETYPES_NONE)
 	{
@@ -2720,8 +2725,8 @@ static gint get_current_tag_name_cached(GeanyDocument *doc,
 
 
 /* Sets *tagname to point at the current function or tag name.
- * If doc is NULL, reset the cached current tag data to ensure it will be reparsed on the next
- * call to this function.
+ * If doc is NULL, reset the cached current tag data to ensure
+ * it will be reparsed on the next call to this function.
  * Returns: line number of the current tag, or -1 if unknown. */
 gint symbols_get_current_function(GeanyDocument *doc, const gchar **tagname)
 {
@@ -2730,14 +2735,16 @@ gint symbols_get_current_function(GeanyDocument *doc, const gchar **tagname)
 }
 
 
-/* same as symbols_get_current_function() but finds class, namespaces and more */
+/* same as symbols_get_current_function() but finds class,
+ * namespaces and more */
 gint symbols_get_current_scope(GeanyDocument *doc, const gchar **tagname)
 {
 	TMTagType tag_types = (tm_tag_function_t | tm_tag_method_t |
 						   tm_tag_class_t    | tm_tag_struct_t |
 						   tm_tag_enum_t     | tm_tag_union_t);
 	
-	/* Python parser reports imports as namespaces which confuses the scope detection */
+	/* Python parser reports imports as namespaces
+	 * which confuses the scope detection */
 	if (doc && doc->file_type->lang != filetypes[GEANY_FILETYPES_PYTHON]->lang)
 		tag_types |= tm_tag_namespace_t;
 	
@@ -2779,11 +2786,14 @@ static void on_symbol_tree_menu_show(GtkWidget *widget,
 	ignore_callback = TRUE;
 	
 	if (doc->priv->symbol_list_sort_mode == SYMBOLS_SORT_BY_NAME)
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_name),
-									   TRUE);
+		gtk_check_menu_item_set_active(
+					GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_name),
+					TRUE);
 	else
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_appearance),
-									   TRUE);
+		gtk_check_menu_item_set_active(
+					GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_appearance),
+					TRUE);
+	
 	ignore_callback = FALSE;
 }
 

@@ -1218,13 +1218,12 @@ gchar *project_get_base_path(void)
 			return g_strdup(project->base_path);
 		else
 		{	/* build base_path out of project file name's dir and base_path */
-			gchar *path;
 			gchar *dir = g_path_get_dirname(project->file_name);
 			
 			if (utils_str_equal(project->base_path, "./"))
 				return dir;
 			
-			path = g_build_filename(dir, project->base_path, NULL);
+			gchar *path = g_build_filename(dir, project->base_path, NULL);
 			g_free(dir);
 			return path;
 		}
