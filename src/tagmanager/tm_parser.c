@@ -921,7 +921,10 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 				*type = tm_tag_function_t | tm_tag_macro_t |
 						tm_tag_macro_with_arg_t;
 			else if (suffix == ':')
-				*type = tm_tag_class_t;
+				//~ example:
+				//~ class: CharacterSet::setNone
+				//~ enum:  case TM_PARSER_C:
+				*type = tm_tag_class_t | tm_tag_enumerator_t;
 			break;
 		case TM_PARSER_PYTHON:
 			if (suffix == '=' || suffix == '.') 
