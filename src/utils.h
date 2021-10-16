@@ -167,7 +167,6 @@ G_BEGIN_DECLS
 
 
 gboolean utils_str_equal(const gchar *a, const gchar *b);
-gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n);
 
 guint utils_string_replace_all(GString *haystack, const gchar *needle,
 							   const gchar *replace);
@@ -250,6 +249,15 @@ typedef enum
 	RESOURCE_DIR_COUNT
 } GeanyResourceDirType;
 
+enum
+{
+	MATCH_NOT,
+	MATCH_FULL,
+	MATCH_PREF_1,
+	MATCH_PREF_2
+};
+
+gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
 
 gint utils_get_line_endings(const gchar* buffer, gsize size);
 

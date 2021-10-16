@@ -607,15 +607,6 @@ gboolean utils_str_equal(const gchar *a, const gchar *b)
 	
 	return strcmp(a, b) == 0;
 }
-GEANY_API_SYMBOL
-gboolean utils_strn_equal(const gchar *a, const gchar *b, const gint n)
-{
-	/* (taken from libexo from os-cillation) */
-	if (a == NULL && b == NULL) return TRUE;
-	else if (a == NULL || b == NULL) return FALSE;
-	
-	return strncmp(a, b, n) == 0;
-}
 
 
 /**
@@ -2534,4 +2525,53 @@ TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 		g_hash_table_insert(extensions_hash, g_strdup(ext),
 							GINT_TO_POINTER(ft->lang));
 	return ft->lang;
+}
+
+//~ esh: very efficient algorithm for comparing dirs:
+//~      1. one-pass scheme;
+//~      2. does not require the creation of additional vars
+gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
+{
+	if (EMPTY(dir1) || EMPTY(dir2))
+		return MATCH_NOT;
+	
+	dir1++;
+	dir2++;
+	
+	while (TRUE)
+	{
+		if (*dir1 == '\0')
+		{
+			if (*dir2 == '\0')
+				return MATCH_FULL;
+			else if (*(--dir1) == G_DIR_SEPARATOR)
+				return MATCH_PREF_1;
+			else if (*dir2 == G_DIR_SEPARATOR)
+			{
+				if (*(++dir2) == '\0')
+					return MATCH_FULL;
+				else
+					return MATCH_PREF_1;
+			}
+			return MATCH_NOT;
+		}
+		if (*dir2 == '\0')
+		{
+			if (*(--dir2) == G_DIR_SEPARATOR)
+				return MATCH_PREF_2;
+			else if (*dir1 == G_DIR_SEPARATOR)
+			{
+				if (*(++dir1) == '\0')
+					return MATCH_FULL;
+				else
+					return MATCH_PREF_2;
+			}
+			return MATCH_NOT;
+		}
+		if (*dir1 != *dir2)
+			return MATCH_NOT;
+		
+		dir1++;
+		dir2++;
+	}
 }

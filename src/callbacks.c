@@ -1452,23 +1452,63 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 			filename = g_strdup(sel);
 		else
 		{	/* relative filename, add the path of the current file */
-			gchar *path;
-			
-			path = utils_get_current_file_dir_utf8();
+			gchar *path = utils_get_current_file_dir_utf8();
 			SETPTR(path, utils_get_locale_from_utf8(path));
 			if (!path)
 				path = g_get_current_dir();
 			
 			filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
 			
-			if (!g_file_test(filename, G_FILE_TEST_EXISTS) &&
-				app->project && !EMPTY(app->project->base_path))
+			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 			{
-				/* try the project's base path */
-				SETPTR(path, project_get_base_path());
-				SETPTR(path, utils_get_locale_from_utf8(path));
-				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-											  path, sel, NULL));
+				gboolean currpath_match_proj = FALSE;
+				
+				gchar *base_path = project_get_base_path();
+				if (base_path)
+				{
+					SETPTR(base_path, utils_get_locale_from_utf8(base_path));
+					
+					gint match = utils_match_dirs(path, base_path);
+					if (match == MATCH_PREF_2)
+					{	// navigate from path to base_path
+						while (TRUE)
+						{
+							SETPTR(path, g_path_get_dirname(path));
+							SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+														  path, sel, NULL));
+							
+							if (utils_match_dirs(path, base_path) == MATCH_FULL ||
+								g_file_test(filename, G_FILE_TEST_EXISTS))
+								break;
+						}
+						currpath_match_proj = TRUE;
+					}
+					else if (match == MATCH_FULL)
+						currpath_match_proj = TRUE;
+					else
+					{	/* try the project's base path */
+						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+													  base_path, sel, NULL));
+					}
+					g_free(base_path);
+				}
+				
+				if (!currpath_match_proj &&
+					!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// navigate from path to parent dir: level(path) - 2
+					gint level = 2;
+					while (level > 0 && !utils_str_equal(path, G_DIR_SEPARATOR_S))
+					{
+						SETPTR(path, g_path_get_dirname(path));
+						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+													  path, sel, NULL));
+						
+						if (g_file_test(filename, G_FILE_TEST_EXISTS))
+							break;
+						
+						level--;
+					}
+				}
 			}
 			g_free(path);
 			
