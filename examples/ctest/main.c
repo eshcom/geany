@@ -16,6 +16,17 @@
 #include <glib/gprintf.h>
 
 
+#define EMPTY(ptr) \
+	(!(ptr) || !*(ptr))
+
+#define SETPTR(ptr, result)			\
+	do {							\
+		gpointer setptr_tmp = ptr;	\
+		ptr = result;				\
+		g_free(setptr_tmp);			\
+	} while (0)
+
+
 gboolean utils_str_equal(const gchar *a, const gchar *b)
 {
 	/* (taken from libexo from os-cillation) */
@@ -225,10 +236,11 @@ void run_test_case03()
 	g_free(build8);
 }
 
-static gchar word[100];
 
 void run_test_case04()
 {
+	gchar word[100];
+	
 	printf("word = %s, len1 = %d\n", word, (int)strlen(word));
 	*word = '\0';
 	printf("word = %s, len2 = %d\n", word, (int)strlen(word));
@@ -236,12 +248,123 @@ void run_test_case04()
 	printf("word = %s, len3 = %d\n", word, (int)strlen(word));
 }
 
+enum
+{
+	MATCH_NOT,
+	MATCH_FULL,
+	MATCH_PREF_1,
+	MATCH_PREF_2
+};
+
+gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
+{
+	if (EMPTY(dir1) || EMPTY(dir2))
+		return MATCH_NOT;
+	
+	dir1++;
+	dir2++;
+	
+	while (TRUE)
+	{
+		if (*dir1 == '\0')
+		{
+			if (*dir2 == '\0')
+				return MATCH_FULL;
+			else if (*(--dir1) == G_DIR_SEPARATOR)
+				return MATCH_PREF_1;
+			else if (*dir2 == G_DIR_SEPARATOR)
+			{
+				if (*(++dir2) == '\0')
+					return MATCH_FULL;
+				else
+					return MATCH_PREF_1;
+			}
+			return MATCH_NOT;
+		}
+		if (*dir2 == '\0')
+		{
+			if (*(--dir2) == G_DIR_SEPARATOR)
+				return MATCH_PREF_2;
+			else if (*dir1 == G_DIR_SEPARATOR)
+			{
+				if (*(++dir1) == '\0')
+					return MATCH_FULL;
+				else
+					return MATCH_PREF_2;
+			}
+			return MATCH_NOT;
+		}
+		if (*dir1 != *dir2)
+			return MATCH_NOT;
+		
+		dir1++;
+		dir2++;
+	}
+}
+
+
+#define STR_SIZE 100
+
+void run_test_case05()
+{
+	gchar dir1[STR_SIZE], dir2[STR_SIZE];
+	
+	g_strlcpy(dir1, "", STR_SIZE);
+	g_strlcpy(dir2, "", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+	
+	g_strlcpy(dir1, "/usr/bin", STR_SIZE);
+	g_strlcpy(dir2, "/usr/bin/", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+	
+	g_strlcpy(dir1, "/usr/bin", STR_SIZE);
+	g_strlcpy(dir2, "/usr/bin/dir", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+	
+	g_strlcpy(dir1, "/usr/bin/", STR_SIZE);
+	g_strlcpy(dir2, "/usr/bin/dir", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+	
+	g_strlcpy(dir1, "/usr/bin1", STR_SIZE);
+	g_strlcpy(dir2, "/usr/bin2", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+	
+	g_strlcpy(dir1, "/usr/bin1", STR_SIZE);
+	g_strlcpy(dir2, "/usr/bin2/", STR_SIZE);
+	printf("dir1 = %s, dir2 = %s, match1 = %d, match2 = %d\n", dir1, dir2,
+		   utils_match_dirs(dir1, dir2), utils_match_dirs(dir2, dir1));
+}
+
+void run_test_case06()
+{
+	gchar *path = g_strdup("/usr/local");
+	
+	gint level = 3;
+	while (level > 0 && g_strcmp0(path, G_DIR_SEPARATOR_S) != 0)
+	{
+		SETPTR(path, g_path_get_dirname(path));
+		printf("path = %s\n", path);
+		level--;
+	}
+	//~ Result:
+	//~ path = /usr
+	//~ path = /
+	g_free(path);
+}
+
 int main(void)
 {
 	//~ run_test_case01();
 	//~ run_test_case02();
 	//~ run_test_case03();
-	run_test_case04();
+	//~ run_test_case04();
+	//~ run_test_case05();
+	run_test_case06();
 	
 	return 0;
 }

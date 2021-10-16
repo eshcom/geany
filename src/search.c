@@ -1109,18 +1109,6 @@ void search_show_find_in_files_dialog(const gchar *dir)
 }
 
 
-gint min_len_str(const gchar *str1, const gchar *str2)
-{
-	if (EMPTY(str1) && EMPTY(str2))
-		return 0;
-	else if (!EMPTY(str1) && EMPTY(str2))
-		return strlen(str1);
-	else if (!EMPTY(str2) && EMPTY(str1))
-		return strlen(str2);
-	else
-		return fmin(strlen(str1), strlen(str2));
-}
-
 void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 {
 	GtkWidget *entry; /* for child GtkEntry of a GtkComboBoxEntry */
@@ -1158,11 +1146,11 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	/* add project's base path directory to the dir list, we do this here once
 	 * (in create_fif_dialog() it would fail if a project
 	 *  is opened after dialog creation) */
-	gboolean proj_base_path = (app->project && !EMPTY(app->project->base_path));
-	if (proj_base_path)
+	gchar *project_base_path = project_get_base_path();
+	if (project_base_path)
 	{
 		ui_combo_box_prepend_text_once(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
-									   app->project->base_path);
+									   project_base_path);
 	}
 	
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.dir_combo));
@@ -1173,43 +1161,31 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
 		
 		//~ esh: added check new param use_current_proj_dir
-		if (search_prefs.use_current_proj_dir && proj_base_path)
+		if (search_prefs.use_current_proj_dir && project_base_path)
 		{
-			if (!utils_strn_equal(entry_text, app->project->base_path,
-								  min_len_str(entry_text, app->project->base_path)))
-			{	//~ example:
-				//~ -----------------------------------------------
-				//~ entry_text = <project_path> || <project_path>/*
-				//~   -> goto else
-				//~ -----------------------------------------------
-				//~ entry_text = /home
-				//~   -> set cur_dir = <project_path>
-				//~     -> set entry text = cur_dir (see below)
-				//~ -----------------------------------------------
-				cur_dir = g_strdup(app->project->base_path);
+			gint match = utils_match_dirs(entry_text, project_base_path);
+			if (match != MATCH_FULL && match != MATCH_PREF_2)
+			{	// entry_text != <project_path> &&
+				// entry_text != <project_path>/*
+				cur_dir = g_strdup(project_base_path);
 			}
 			else
-			{	//~ example:
-				//~ -----------------------------------------------------------
-				//~ entry_text   = <project_path>/dir1
-				//~ cur_file_dir = <project_path>/dir1 || <project_path>/dir1/*
-				//~   -> leave cur_dir = NULL
-				//~     -> leave entry text as is
-				//~ -----------------------------------------------------------
-				//~ entry_text   = <project_path>/dir1/*
-				//~ cur_file_dir = <project_path>/dir1
-				//~   -> set cur_dir = cur_file_dir
-				//~     -> set entry text = cur_dir (see below)
-				//~ -----------------------------------------------------------
-				//~ entry_text   = <project_path>/dir1 || <project_path>/dir1/*
-				//~ cur_file_dir = <project_path>/dir2 || <project_path>/dir2/*
-				//~   -> set cur_dir = <project_path>
-				//~     -> set entry text = cur_dir (see below)
-				//~ -----------------------------------------------------------
+			{
 				gchar *cur_file_dir = utils_get_current_file_dir_utf8();
-				if (!utils_strn_equal(cur_file_dir, entry_text,
-									  min_len_str(cur_file_dir, entry_text)))
-					cur_dir = g_strdup(app->project->base_path);
+				match = utils_match_dirs(entry_text, cur_file_dir);
+				
+				if (match == MATCH_NOT)
+				{	// entry_text != cur_file_dir
+					cur_dir = g_strdup(project_base_path);
+				}
+				else if (match == MATCH_PREF_2)
+				{	// entry_text == cur_file_dir/*
+					match = utils_match_dirs(cur_file_dir, project_base_path);
+					if (match == MATCH_FULL || match == MATCH_PREF_2)
+						cur_dir = g_strdup(cur_file_dir);
+					else
+						cur_dir = g_strdup(project_base_path);
+				}
 				g_free(cur_file_dir);
 			}
 		}
@@ -1243,6 +1219,8 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 				cur_dir = g_get_current_dir();
 		}
 	}
+	g_free(project_base_path);
+	
 	if (cur_dir)
 	{
 		gtk_entry_set_text(GTK_ENTRY(entry), cur_dir);
