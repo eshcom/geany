@@ -1569,24 +1569,22 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
  * length is the length of the string */
 void document_open_file_list(const gchar *data, gsize length)
 {
-	guint i;
-	gchar **list;
-	
 	g_return_if_fail(data != NULL);
 	
-	list = g_strsplit(data, utils_get_eol_char(utils_get_line_endings(data, length)), 0);
+	gchar **items = g_strsplit(data, utils_get_eol_char(
+										utils_get_line_endings(data, length)), 0);
 	
 	/* stop at the end or first empty item, because last item is empty but not null */
-	for (i = 0; list[i] != NULL && list[i][0] != '\0'; i++)
+	for (gchar **item = items; *item && **item; item++)
 	{
-		gchar *filename = utils_get_path_from_uri(list[i]);
+		gchar *filename = utils_get_path_from_uri(*item);
 		
 		if (filename == NULL)
 			continue;
 		document_open_file(filename, FALSE, NULL, NULL);
 		g_free(filename);
 	}
-	g_strfreev(list);
+	g_strfreev(items);
 }
 
 

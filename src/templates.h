@@ -37,19 +37,20 @@ G_BEGIN_DECLS
 /** Template preferences. */
 typedef struct GeanyTemplatePrefs
 {
-	gchar			*developer;	/**< Name */
-	gchar			*company;	/**< Company */
-	gchar			*mail;		/**< Email */
-	gchar			*initials;	/**< Initials */
-	gchar			*version;	/**< Initial version */
-	gchar			*year_format;
-	gchar			*date_format;
-	gchar			*datetime_format;
+	gchar *developer;	/**< Name */
+	gchar *company;		/**< Company */
+	gchar *mail;		/**< Email */
+	gchar *initials;	/**< Initials */
+	gchar *version;		/**< Initial version */
+	gchar *year_format;
+	gchar *date_format;
+	gchar *datetime_format;
 }
 GeanyTemplatePrefs;
 
 
-gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname);
+gchar *templates_get_template_fileheader(gint filetype_idx,
+										 const gchar *fname);
 
 
 #ifdef GEANY_PRIVATE
@@ -57,9 +58,9 @@ gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname);
 struct filetype;
 
 #define GEANY_TEMPLATES_INDENT 3
-#define GEANY_TEMPLATES_FORMAT_YEAR              C_("DefaultYear", "%Y")
-#define GEANY_TEMPLATES_FORMAT_DATE              C_("DefaultDate", "%Y-%m-%d")
-#define GEANY_TEMPLATES_FORMAT_DATETIME          C_("DefaultDateTime", "%d.%m.%Y %H:%M:%S %Z")
+#define GEANY_TEMPLATES_FORMAT_YEAR     C_("DefaultYear", "%Y")
+#define GEANY_TEMPLATES_FORMAT_DATE     C_("DefaultDate", "%Y-%m-%d")
+#define GEANY_TEMPLATES_FORMAT_DATETIME C_("DefaultDateTime", "%d.%m.%Y %H:%M:%S %Z")
 
 enum
 {
@@ -79,15 +80,16 @@ void templates_init(void);
 
 gchar *templates_get_template_changelog(GeanyDocument *doc);
 
-gchar *templates_get_template_function(GeanyDocument *doc, const gchar *func_name);
+gchar *templates_get_template_function(GeanyDocument *doc,
+									   const gchar *func_name);
 
 gchar *templates_get_template_licence(GeanyDocument *doc, gint licence_type);
 
 void templates_replace_common(GString *tmpl, const gchar *fname,
-	GeanyFiletype *ft, const gchar *func_name);
+							  GeanyFiletype *ft, const gchar *func_name);
 
-void templates_replace_valist(GString *text,
-	const gchar *first_wildcard, ...) G_GNUC_NULL_TERMINATED;
+void templates_replace_valist(GString *text, const gchar *first_wildcard, ...)
+							  G_GNUC_NULL_TERMINATED;
 
 void templates_free_templates(void);
 

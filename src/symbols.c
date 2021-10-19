@@ -2157,10 +2157,10 @@ static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 		// found tag "setDigits" with scope: Scintilla::CharacterSet::setBase
 		if (tmtag->scope)
 		{
-			gchar **items = g_strsplit(tmtag->scope, context_sep, 0);
-			for (guint j = 0; items[j] && items[j][0] != '\0'; j++)
+			gchar **item, **items = g_strsplit(tmtag->scope, context_sep, 0);
+			foreach_strv(item, items)
 			{
-				if (utils_str_equal(items[j], scope))
+				if (**item && utils_str_equal(*item, scope))
 				{
 					g_ptr_array_add(filtered_tags, tmtag);
 					break;

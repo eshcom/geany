@@ -156,7 +156,7 @@ G_BEGIN_DECLS
  * @param strv Can be @c NULL.
  * @since Geany 0.20 */
 #define foreach_strv(str_ptr, strv) \
-	if (!(strv)) {} else foreach_str(str_ptr, strv)
+	if (strv) foreach_str(str_ptr, strv)
 
 /** Iterates from 0 to @a size.
  * @param i Integer.

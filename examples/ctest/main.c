@@ -26,6 +26,12 @@
 		g_free(setptr_tmp);			\
 	} while (0)
 
+#define foreach_str(char_ptr, string) \
+	for (char_ptr = string; *char_ptr; char_ptr++)
+
+#define foreach_strv(str_ptr, strv) \
+	if (strv) foreach_str(str_ptr, strv)
+
 
 gboolean utils_str_equal(const gchar *a, const gchar *b)
 {
@@ -357,6 +363,38 @@ void run_test_case06()
 	g_free(path);
 }
 
+void run_test_case07()
+{
+	gchar **item, **items = g_strsplit("  .o .lo  .dll   .pyc ", " ", 0);
+	foreach_strv(item, items)
+	{
+		if (**item)
+			printf("item = %s, c = '%c'\n", *item, **item);
+	}
+	g_strfreev(items);
+	
+	items = g_strsplit("", " ", 0);
+	printf("len = %d, is null items = %d, is null first = %d, is null first = %d\n",
+		   g_strv_length(items), items == NULL, *items == NULL, items[0] == NULL);
+	g_strfreev(items);
+	//~ Result:
+	//~ item = .o, c = '.'
+	//~ item = .lo, c = '.'
+	//~ item = .dll, c = '.'
+	//~ item = .pyc, c = '.'
+	//~ len = 0, is null items = 0, is null first = 1
+	
+	printf("has pref1 = %d, has pref2 = %d, has pref3 = %d\n",
+		   g_str_has_prefix("", ""), g_str_has_prefix(" ", ""),
+		   g_str_has_prefix("test123", ""));
+	printf("has suff1 = %d, has suff2 = %d, has suff3 = %d\n",
+		   g_str_has_suffix("", ""), g_str_has_suffix(" ", ""),
+		   g_str_has_suffix("test123", ""));
+	//~ Result:
+	//~ has pref1 = 1, has pref2 = 1, has pref3 = 1
+	//~ has suff1 = 1, has suff2 = 1, has suff3 = 1
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -364,7 +402,8 @@ int main(void)
 	//~ run_test_case03();
 	//~ run_test_case04();
 	//~ run_test_case05();
-	run_test_case06();
+	//~ run_test_case06();
+	run_test_case07();
 	
 	return 0;
 }
