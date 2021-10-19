@@ -903,8 +903,7 @@ static void update_fif_file_mode_combo(void)
 
 
 static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
-							  const gchar *entry_name, const gchar *entry_label,
-							  GtkWidget *vbox)
+							  const gchar *entry_name, GtkWidget *vbox)
 {
 	GtkWidget *hbox;
 	GtkWidget *check_extra, *entry_extra;
@@ -917,7 +916,8 @@ static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
 	ui_entry_add_clear_icon(GTK_ENTRY(entry_extra));
 	gtk_entry_set_activates_default(GTK_ENTRY(entry_extra), TRUE);
 	gtk_widget_set_sensitive(entry_extra, FALSE);
-	gtk_widget_set_tooltip_text(entry_extra, entry_label);
+	gtk_widget_set_tooltip_text(entry_extra,
+								_("Other options to pass to Grep"));
 	ui_hookup_widget(fif_dlg.dialog, entry_extra, entry_name);
 	
 	/* enable entry_extra when check_extra is checked */
@@ -1079,11 +1079,11 @@ static void create_fif_dialog(void)
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 	
 	add_extra_widgets("check_extra_1", _("E_xtra options 1:"),
-					  "entry_extra_1", _("Other options to pass to Grep"), vbox);
+					  "entry_extra_1", vbox);
 	add_extra_widgets("check_extra_2", _("E_xtra options 2:"),
-					  "entry_extra_2", _("Other options to pass to Grep"), vbox);
+					  "entry_extra_2", vbox);
 	add_extra_widgets("check_extra_3", _("E_xtra options 3:"),
-					  "entry_extra_3", _("Other options to pass to Grep"), vbox);
+					  "entry_extra_3", vbox);
 	
 	g_signal_connect(fif_dlg.dialog, "response",
 					 G_CALLBACK(on_find_in_files_dialog_response),

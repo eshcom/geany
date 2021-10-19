@@ -956,7 +956,8 @@ find_scope_members(const GPtrArray *tags_array, const gchar *name,
 
 
 /* Checks whether a member tag is directly accessible from method with method_scope */
-static gboolean member_at_method_scope(const GPtrArray *tags, const gchar *method_scope,
+static gboolean member_at_method_scope(const GPtrArray *tags,
+									   const gchar *method_scope,
 									   TMTag *member_tag, TMParserType lang)
 {
 	const gchar *sep = tm_parser_context_separator(lang);
@@ -987,7 +988,8 @@ static gboolean member_at_method_scope(const GPtrArray *tags, const gchar *metho
 		/* check whether member inside the class */
 		if (g_strcmp0(member_tag->scope, member_scope) == 0)
 		{
-			const GPtrArray *src = member_tag->file ? member_tag->file->tags_array : tags;
+			const GPtrArray *src = member_tag->file ? member_tag->file->tags_array
+													: tags;
 			GPtrArray *cls_tags = g_ptr_array_new();
 			
 			/* check whether the class exists */
@@ -1166,8 +1168,6 @@ static const GPtrArray *tm_workspace_get_parents(const gchar *name)
 	const GPtrArray *matches;
 	guint i = 0;
 	guint j;
-	gchar **klasses;
-	gchar **klass;
 	TMTag *tag;
 	
 	g_return_val_if_fail(name && isalpha(*name),NULL);
@@ -1187,8 +1187,8 @@ static const GPtrArray *tm_workspace_get_parents(const gchar *name)
 		tag = TM_TAG(parents->pdata[i]);
 		if (tag->inheritance != NULL && isalpha(tag->inheritance[0]))
 		{
-			klasses = g_strsplit(tag->inheritance, ",", 10);
-			for (klass = klasses; *klass != NULL; ++klass)
+			gchar **klass, **klasses = g_strsplit(tag->inheritance, ",", 10);
+			foreach_strv(klass, klasses)
 			{
 				for (j = 0; j < parents->len; ++j)
 				{

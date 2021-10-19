@@ -260,26 +260,23 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 	else if (len == 1)
 	{
 		gchar **items = g_strsplit(list[0], ",", 0);
-		if (items != NULL)
+		if (items[0])
 		{
-			if (g_strv_length(items) > 0)
+			if (g_hash_table_lookup(named_style_hash, items[0]) != NULL)
 			{
-				if (g_hash_table_lookup(named_style_hash, items[0]) != NULL)
-				{
-					if (!read_named_style(list[0], style))
-						geany_debug("Unable to read named style '%s'", items[0]);
-					g_strfreev(items);
-					return;
-				}
-				else if (strchr(list[0], ',') != NULL)
-				{
-					geany_debug("Unknown named style '%s'", items[0]);
-					g_strfreev(items);
-					return;
-				}
+				if (!read_named_style(list[0], style))
+					geany_debug("Unable to read named style '%s'", items[0]);
+				g_strfreev(items);
+				return;
 			}
-			g_strfreev(items);
+			else if (strchr(list[0], ',') != NULL)
+			{
+				geany_debug("Unknown named style '%s'", items[0]);
+				g_strfreev(items);
+				return;
+			}
 		}
+		g_strfreev(items);
 	}
 	
 	switch (len)

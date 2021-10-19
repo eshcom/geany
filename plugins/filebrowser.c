@@ -150,7 +150,7 @@ static gboolean check_object(const gchar *base_name)
 
 	foreach_strv(ptr, exts)
 	{
-		if (g_str_has_suffix(base_name, *ptr))
+		if (**ptr && g_str_has_suffix(base_name, *ptr))
 		{
 			ret = TRUE;
 			break;

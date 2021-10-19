@@ -62,8 +62,10 @@ static gchar *get_template_fileheader(GeanyFiletype *ft);
 
 /* called by templates_replace_common */
 static void templates_replace_default_dates(GString *text);
-static void templates_replace_command(GString *text, const gchar *file_name,
-	const gchar *file_type, const gchar *func_name);
+static void templates_replace_command(GString *text,
+									  const gchar *file_name,
+									  const gchar *file_type,
+									  const gchar *func_name);
 
 
 static gchar *read_file(const gchar *locale_fname)
@@ -71,23 +73,25 @@ static gchar *read_file(const gchar *locale_fname)
 	gchar *contents;
 	gsize length;
 	GString *str;
-
-	if (! g_file_get_contents(locale_fname, &contents, &length, NULL))
+	
+	if (!g_file_get_contents(locale_fname, &contents, &length, NULL))
 		return NULL;
-
-	if (! encodings_convert_to_utf8_auto(&contents, &length, NULL, NULL, NULL, NULL))
+	
+	if (!encodings_convert_to_utf8_auto(&contents, &length,
+										NULL, NULL, NULL, NULL))
 	{
 		gchar *utf8_fname = utils_get_utf8_from_locale(locale_fname);
-
-		ui_set_statusbar(TRUE, _("Failed to convert template file \"%s\" to UTF-8"), utf8_fname);
+		
+		ui_set_statusbar(TRUE, _("Failed to convert template file \"%s\" to UTF-8"),
+						 utf8_fname);
 		g_free(utf8_fname);
 		g_free(contents);
 		return NULL;
 	}
-
+	
 	str = g_string_new(contents);
 	g_free(contents);
-
+	
 	/* convert to LF endings for consistency in mixing templates */
 	utils_ensure_same_eol_characters(str, SC_EOL_LF);
 	return g_string_free(str, FALSE);
@@ -97,13 +101,13 @@ static gchar *read_file(const gchar *locale_fname)
 static void read_template(const gchar *name, gint id)
 {
 	gchar *fname = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-		GEANY_TEMPLATES_SUBDIR, name, NULL);
-
+								GEANY_TEMPLATES_SUBDIR, name, NULL);
+	
 	/* try system if user template doesn't exist */
 	if (!g_file_test(fname, G_FILE_TEST_EXISTS))
 		SETPTR(fname, g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-			GEANY_TEMPLATES_SUBDIR, name, NULL));
-
+								   GEANY_TEMPLATES_SUBDIR, name, NULL));
+	
 	templates[id] = read_file(fname);
 	g_free(fname);
 }
@@ -113,14 +117,14 @@ static void read_template(const gchar *name, gint id)
 static void convert_eol_characters(GString *template, GeanyDocument *doc)
 {
 	gint doc_eol_mode;
-
+	
 	g_return_if_fail(doc == NULL || doc->is_valid);
-
+	
 	if (doc == NULL)
 		doc = document_get_current();
-
+	
 	g_return_if_fail(doc != NULL);
-
+	
 	doc_eol_mode = editor_get_eol_char_mode(doc->editor);
 	utils_ensure_same_eol_characters(template, doc_eol_mode);
 }
@@ -141,53 +145,54 @@ void templates_replace_common(GString *tmpl, const gchar *fname,
 							  GeanyFiletype *ft, const gchar *func_name)
 {
 	gchar *shortname;
-
+	
 	if (fname == NULL)
 	{
 		if (!ft->extension)
 			shortname = g_strdup(GEANY_STRING_UNTITLED);
 		else
-			shortname = g_strconcat(GEANY_STRING_UNTITLED, ".", ft->extension, NULL);
+			shortname = g_strconcat(GEANY_STRING_UNTITLED, ".",
+									ft->extension, NULL);
 	}
 	else
 		shortname = g_path_get_basename(fname);
-
+	
 	templates_replace_valist(tmpl,
-		"{filename}", shortname,
-		"{project}", app->project ? app->project->name : "",
-		"{description}", app->project ? app->project->description : "",
-		NULL);
+				"{filename}", shortname,
+				"{project}", app->project ? app->project->name : "",
+				"{description}", app->project ? app->project->description : "",
+				NULL);
 	g_free(shortname);
-
+	
 	templates_replace_default_dates(tmpl);
 	templates_replace_command(tmpl, fname, ft->name, func_name);
 	/* Bug: command results could have {ob} {cb} strings in! */
 	/* replace braces last */
 	templates_replace_valist(tmpl,
-		"{ob}", "{",
-		"{cb}", "}",
-		NULL);
+				"{ob}", "{",
+				"{cb}", "}",
+				NULL);
 }
 
 
-static gchar *get_template_from_file(const gchar *locale_fname, const gchar *doc_filename,
+static gchar *get_template_from_file(const gchar *locale_fname,
+									 const gchar *doc_filename,
 									 GeanyFiletype *ft)
 {
 	gchar *content;
-
+	
 	content = read_file(locale_fname);
-
+	
 	if (content != NULL)
 	{
 		gchar *file_header;
 		GString *template = g_string_new(content);
-
+		
 		file_header = get_template_fileheader(ft);
-		templates_replace_valist(template,
-			"{fileheader}", file_header,
-			NULL);
+		templates_replace_valist(template, "{fileheader}", file_header,
+								 NULL);
 		templates_replace_common(template, doc_filename, ft, NULL);
-
+		
 		utils_free_pointers(2, file_header, content, NULL);
 		return g_string_free(template, FALSE);
 	}
@@ -195,8 +200,8 @@ static gchar *get_template_from_file(const gchar *locale_fname, const gchar *doc
 }
 
 
-static void
-on_new_with_file_template(GtkMenuItem *menuitem, G_GNUC_UNUSED gpointer user_data)
+static void on_new_with_file_template(GtkMenuItem *menuitem,
+									  G_GNUC_UNUSED gpointer user_data)
 {
 	gchar *fname = ui_menu_item_get_text(menuitem);
 	GeanyFiletype *ft;
@@ -204,25 +209,25 @@ on_new_with_file_template(GtkMenuItem *menuitem, G_GNUC_UNUSED gpointer user_dat
 	const gchar *extension = strrchr(fname, '.'); /* easy way to get the file extension */
 	gchar *new_filename = g_strconcat(GEANY_STRING_UNTITLED, extension, NULL);
 	gchar *path;
-
+	
 	ft = filetypes_detect_from_extension(fname);
 	SETPTR(fname, utils_get_locale_from_utf8(fname));
-
-	/* fname is just the basename from the menu item, so prepend the custom files path */
-	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, GEANY_TEMPLATES_SUBDIR,
-		"files", fname, NULL);
+	
+	/* fname is just the basename from the menu item,
+	 * so prepend the custom files path */
+	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
+						GEANY_TEMPLATES_SUBDIR, "files", fname, NULL);
+	
 	template = get_template_from_file(path, new_filename, ft);
 	if (!template)
-	{
-		/* try the system path */
+	{	/* try the system path */
 		g_free(path);
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir, GEANY_TEMPLATES_SUBDIR,
-			"files", fname, NULL);
+		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
+							GEANY_TEMPLATES_SUBDIR, "files", fname, NULL);
 		template = get_template_from_file(path, new_filename, ft);
 	}
 	if (template)
-	{
-		/* line endings will be converted */
+	{	/* line endings will be converted */
 		document_new_file(new_filename, ft, template);
 	}
 	else
@@ -241,30 +246,31 @@ static void add_file_item(const gchar *fname, GtkWidget *menu)
 {
 	GtkWidget *tmp_button;
 	gchar *label;
-
+	
 	g_return_if_fail(fname);
 	g_return_if_fail(menu);
-
+	
 	label = utils_get_utf8_from_locale(fname);
-
+	
 	tmp_button = gtk_menu_item_new_with_label(label);
 	gtk_widget_show(tmp_button);
 	gtk_container_add(GTK_CONTAINER(menu), tmp_button);
-	g_signal_connect(tmp_button, "activate", G_CALLBACK(on_new_with_file_template), NULL);
-
+	g_signal_connect(tmp_button, "activate",
+					 G_CALLBACK(on_new_with_file_template), NULL);
 	g_free(label);
 }
 
 
 static void populate_file_template_menu(GtkWidget *menu)
 {
-	GSList *list = utils_get_config_files(GEANY_TEMPLATES_SUBDIR G_DIR_SEPARATOR_S "files");
+	GSList *list = utils_get_config_files(GEANY_TEMPLATES_SUBDIR
+										  G_DIR_SEPARATOR_S "files");
 	GSList *node;
-
+	
 	foreach_slist(node, list)
 	{
 		gchar *fname = node->data;
-
+		
 		add_file_item(fname, menu);
 		g_free(fname);
 	}
@@ -275,15 +281,16 @@ static void populate_file_template_menu(GtkWidget *menu)
 static void create_file_template_menu(void)
 {
 	GtkWidget *item;
-
+	
 	new_with_template_menu = gtk_menu_new();
 	item = ui_lookup_widget(main_widgets.window, "menu_new_with_template1");
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), new_with_template_menu);
-
+	
 	new_with_template_toolbar_menu = gtk_menu_new();
 	g_object_ref(new_with_template_toolbar_menu);
-	geany_menu_button_action_set_menu(GEANY_MENU_BUTTON_ACTION(toolbar_get_action_by_name("New")),
-		new_with_template_toolbar_menu);
+	geany_menu_button_action_set_menu(
+				GEANY_MENU_BUTTON_ACTION(toolbar_get_action_by_name("New")),
+				new_with_template_toolbar_menu);
 }
 
 
@@ -291,13 +298,12 @@ static void create_file_template_menu(void)
 static void on_document_save(G_GNUC_UNUSED GObject *object, GeanyDocument *doc)
 {
 	gchar *path;
-
+	
 	g_return_if_fail(!EMPTY(doc->real_path));
-
+	
 	path = g_build_filename(app->configdir, GEANY_TEMPLATES_SUBDIR, NULL);
 	if (strncmp(doc->real_path, path, strlen(path)) == 0)
-	{
-		/* reload templates */
+	{	/* reload templates */
 		templates_free_templates();
 		templates_init();
 	}
@@ -309,26 +315,29 @@ static void on_document_save(G_GNUC_UNUSED GObject *object, GeanyDocument *doc)
 void templates_init(void)
 {
 	static gboolean init_done = FALSE;
-
+	
 	init_general_templates();
-
+	
 	if (!init_done)
 	{
 		create_file_template_menu();
-		g_signal_connect(geany_object, "document-save", G_CALLBACK(on_document_save), NULL);
+		g_signal_connect(geany_object, "document-save",
+						 G_CALLBACK(on_document_save), NULL);
 		init_done = TRUE;
 	}
-
 	populate_file_template_menu(new_with_template_menu);
 	populate_file_template_menu(new_with_template_toolbar_menu);
 }
 
 
-/* indent is used to make some whitespace between comment char and real start of the line
+/* indent is used to make some whitespace between
+ * comment char and real start of the line
  * e.g. indent = 8 prints " *     here comes the text of the line"
- * indent is meant to be the whole amount of characters before the real line content follows, i.e.
- * 6 characters are filled with whitespace when the comment characters include " *" */
-static void make_comment_block(GString *comment_text, gint filetype_idx, guint indent)
+ * indent is meant to be the whole amount of characters before
+ * the real line content follows, i.e. 6 characters are filled
+ * with whitespace when the comment characters include " *" */
+static void make_comment_block(GString *comment_text,
+							   gint filetype_idx, guint indent)
 {
 	gchar *frame_start;			/* to add before comment_text */
 	gchar *frame_end;			/* to add after comment_text */
@@ -342,13 +351,14 @@ static void make_comment_block(GString *comment_text, gint filetype_idx, guint i
 	GeanyFiletype *ft = filetypes_index(filetype_idx);
 	const gchar *co;
 	const gchar *cc;
-
+	
 	g_return_if_fail(comment_text != NULL);
 	g_return_if_fail(ft != NULL);
-
-	template_eol_mode = utils_get_line_endings(comment_text->str, comment_text->len);
+	
+	template_eol_mode = utils_get_line_endings(comment_text->str,
+											   comment_text->len);
 	template_eol_char = utils_get_eol_char(template_eol_mode);
-
+	
 	filetype_get_comment_open_close(ft, FALSE, &co, &cc);
 	if (!EMPTY(co))
 	{
@@ -371,25 +381,25 @@ static void make_comment_block(GString *comment_text, gint filetype_idx, guint i
 		frame_end = g_strconcat("*/", template_eol_char, NULL);
 		line_prefix = "";
 	}
-
+	
 	/* do some magic to nicely format C-like multi-line comments */
 	if (!EMPTY(frame_start) && frame_start[1] == '*')
-	{
-		/* prefix the string with a space */
+	{	/* prefix the string with a space */
 		SETPTR(frame_end, g_strconcat(" ", frame_end, NULL));
 		line_prefix = " *";
 	}
-
+	
 	/* construct the real prefix with given amount of whitespace */
-	i = (indent > strlen(line_prefix)) ? (indent - strlen(line_prefix)) : strlen(line_prefix);
+	i = (indent > strlen(line_prefix)) ? (indent - strlen(line_prefix))
+									   : strlen(line_prefix);
 	tmp = g_strnfill(i, ' ');
 	prefix = g_strconcat(line_prefix, tmp, NULL);
 	g_free(tmp);
-
+	
 	/* add line_prefix to every line of comment_text */
 	lines = g_strsplit(comment_text->str, template_eol_char, -1);
 	len = g_strv_length(lines);
-	if (len > 0)	/* prevent unsigned wraparound if comment_text is empty */
+	if (len > 0) /* prevent unsigned wraparound if comment_text is empty */
 	{
 		for (i = 0; i < len - 1; i++)
 		{
@@ -399,10 +409,10 @@ static void make_comment_block(GString *comment_text, gint filetype_idx, guint i
 		}
 	}
 	tmp = g_strjoinv(template_eol_char, lines);
-
+	
 	/* clear old contents */
 	g_string_erase(comment_text, 0, -1);
-
+	
 	/* add frame_end */
 	if (frame_start != NULL)
 		g_string_append(comment_text, frame_start);
@@ -411,7 +421,7 @@ static void make_comment_block(GString *comment_text, gint filetype_idx, guint i
 	/* add frame_start  */
 	if (frame_end != NULL)
 		g_string_append(comment_text, frame_end);
-
+	
 	utils_free_pointers(4, prefix, tmp, frame_start, frame_end, NULL);
 	g_strfreev(lines);
 }
@@ -420,18 +430,20 @@ static void make_comment_block(GString *comment_text, gint filetype_idx, guint i
 gchar *templates_get_template_licence(GeanyDocument *doc, gint licence_type)
 {
 	GString *template;
-
+	
 	g_return_val_if_fail(DOC_VALID(doc), NULL);
-	g_return_val_if_fail(licence_type == GEANY_TEMPLATE_GPL || licence_type == GEANY_TEMPLATE_BSD, NULL);
-
+	g_return_val_if_fail(licence_type == GEANY_TEMPLATE_GPL ||
+						 licence_type == GEANY_TEMPLATE_BSD, NULL);
+	
 	template = g_string_new(templates[licence_type]);
 	replace_static_values(template);
 	templates_replace_default_dates(template);
-	templates_replace_command(template, DOC_FILENAME(doc), doc->file_type->name, NULL);
-
+	templates_replace_command(template, DOC_FILENAME(doc),
+							  doc->file_type->name, NULL);
+	
 	make_comment_block(template, doc->file_type->id, GEANY_TEMPLATES_INDENT);
 	convert_eol_characters(template, doc);
-
+	
 	return g_string_free(template, FALSE);
 }
 
@@ -439,28 +451,31 @@ gchar *templates_get_template_licence(GeanyDocument *doc, gint licence_type)
 static gchar *get_template_fileheader(GeanyFiletype *ft)
 {
 	GString *template = g_string_new(templates[GEANY_TEMPLATE_FILEHEADER]);
-
-	filetypes_load_config(ft->id, FALSE);	/* load any user extension setting */
-
+	
+	filetypes_load_config(ft->id, FALSE); /* load any user extension setting */
+	
 	templates_replace_valist(template,
-		"{gpl}", templates[GEANY_TEMPLATE_GPL],
-		"{bsd}", templates[GEANY_TEMPLATE_BSD],
-		NULL);
-
-	/* we don't replace other wildcards here otherwise they would get done twice for files */
+							 "{gpl}", templates[GEANY_TEMPLATE_GPL],
+							 "{bsd}", templates[GEANY_TEMPLATE_BSD],
+							 NULL);
+	
+	/* we don't replace other wildcards here otherwise
+	 * they would get done twice for files */
 	make_comment_block(template, ft->id, GEANY_TEMPLATES_INDENT);
 	return g_string_free(template, FALSE);
 }
 
 
-/* TODO change the signature to take a GeanyDocument? this would break plugin API/ABI */
+/* TODO change the signature to take a GeanyDocument?
+ *      this would break plugin API/ABI */
 GEANY_API_SYMBOL
-gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname)
+gchar *templates_get_template_fileheader(gint filetype_idx,
+										 const gchar *fname)
 {
 	GeanyFiletype *ft = filetypes[filetype_idx];
 	gchar *str = get_template_fileheader(ft);
 	GString *template = g_string_new(str);
-
+	
 	g_free(str);
 	templates_replace_common(template, fname, ft, NULL);
 	convert_eol_characters(template, NULL);
@@ -468,20 +483,22 @@ gchar *templates_get_template_fileheader(gint filetype_idx, const gchar *fname)
 }
 
 
-gchar *templates_get_template_function(GeanyDocument *doc, const gchar *func_name)
+gchar *templates_get_template_function(GeanyDocument *doc,
+									   const gchar *func_name)
 {
 	GString *text;
-
+	
 	func_name = (func_name != NULL) ? func_name : "";
 	text = g_string_new(templates[GEANY_TEMPLATE_FUNCTION]);
-
+	
 	templates_replace_valist(text, "{functionname}", func_name, NULL);
 	templates_replace_default_dates(text);
-	templates_replace_command(text, DOC_FILENAME(doc), doc->file_type->name, func_name);
-
+	templates_replace_command(text, DOC_FILENAME(doc),
+							  doc->file_type->name, func_name);
+	
 	make_comment_block(text, doc->file_type->id, GEANY_TEMPLATES_INDENT);
 	convert_eol_characters(text, doc);
-
+	
 	return g_string_free(text, FALSE);
 }
 
@@ -490,16 +507,17 @@ gchar *templates_get_template_changelog(GeanyDocument *doc)
 {
 	GString *result;
 	const gchar *file_type_name;
-
+	
 	g_return_val_if_fail(DOC_VALID(doc), NULL);
-
+	
 	result = g_string_new(templates[GEANY_TEMPLATE_CHANGELOG]);
 	file_type_name = (doc->file_type != NULL) ? doc->file_type->name : "";
 	replace_static_values(result);
 	templates_replace_default_dates(result);
-	templates_replace_command(result, DOC_FILENAME(doc), file_type_name, NULL);
+	templates_replace_command(result, DOC_FILENAME(doc),
+							  file_type_name, NULL);
 	convert_eol_characters(result, doc);
-
+	
 	return g_string_free(result, FALSE);
 }
 
@@ -507,7 +525,7 @@ gchar *templates_get_template_changelog(GeanyDocument *doc)
 static void free_template_menu_items(GtkWidget *menu)
 {
 	GList *children, *item;
-
+	
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	foreach_list(item, children)
 		gtk_widget_destroy(GTK_WIDGET(item->data));
@@ -517,10 +535,9 @@ static void free_template_menu_items(GtkWidget *menu)
 
 void templates_free_templates(void)
 {
-	gint i;
-
-	for (i = 0; i < GEANY_MAX_TEMPLATES; i++)
+	for (gint i = 0; i < GEANY_MAX_TEMPLATES; i++)
 		g_free(templates[i]);
+	
 	free_template_menu_items(new_with_template_menu);
 	free_template_menu_items(new_with_template_toolbar_menu);
 }
@@ -549,25 +566,25 @@ void templates_replace_valist(GString *text, const gchar *first_wildcard, ...)
 {
 	va_list args;
 	const gchar *key, *value;
-
+	
 	g_return_if_fail(text != NULL);
-
+	
 	va_start(args, first_wildcard);
-
+	
 	key = first_wildcard;
 	value = va_arg(args, gchar*);
-
+	
 	while (key != NULL)
 	{
 		utils_string_replace_all(text, key, value);
-
+		
 		key = va_arg(args, gchar*);
 		if (key == NULL || text == NULL)
 			break;
 		value = va_arg(args, gchar*);
 	}
 	va_end(args);
-
+	
 	replace_static_values(text);
 }
 
@@ -577,15 +594,15 @@ static void templates_replace_default_dates(GString *text)
 	gchar *year = utils_get_date_time(template_prefs.year_format, NULL);
 	gchar *date = utils_get_date_time(template_prefs.date_format, NULL);
 	gchar *datetime = utils_get_date_time(template_prefs.datetime_format, NULL);
-
+	
 	g_return_if_fail(text != NULL);
-
+	
 	templates_replace_valist(text,
-		"{year}", year,
-		"{date}", date,
-		"{datetime}", datetime,
-		NULL);
-
+							 "{year}", year,
+							 "{date}", date,
+							 "{datetime}", datetime,
+							 NULL);
+	
 	utils_free_pointers(3, year, date, datetime, NULL);
 }
 
@@ -597,53 +614,54 @@ static gchar *run_command(const gchar *command, const gchar *file_name,
 	gchar *result = NULL;
 	GError *error = NULL;
 	gchar **env;
-
+	
 	file_name = (file_name != NULL) ? file_name : "";
 	file_type = (file_type != NULL) ? file_type : "";
 	func_name = (func_name != NULL) ? func_name : "";
-
+	
 	env = utils_copy_environment(NULL,
-		"GEANY_FILENAME", file_name,
-		"GEANY_FILETYPE", file_type,
-		"GEANY_FUNCNAME", func_name,
-		NULL);
-
+								 "GEANY_FILENAME", file_name,
+								 "GEANY_FILETYPE", file_type,
+								 "GEANY_FUNCNAME", func_name,
+								 NULL);
+	
 	if (spawn_sync(NULL, command, NULL, env, NULL, output, NULL, NULL, &error))
-	{
 		result = g_string_free(output, FALSE);
-	}
 	else
 	{
 		g_warning(_("Cannot execute template command \"%s\". "
-			"Hint: incorrect paths in the command are a common cause of errors. "
-			"Error: %s."), command, error->message);
+					"Hint: incorrect paths in the command are "
+					"a common cause of errors. Error: %s."),
+				  command, error->message);
 		g_error_free(error);
 	}
-
+	
 	g_strfreev(env);
 	return result;
 }
 
 
-static void templates_replace_command(GString *text, const gchar *file_name,
-							   const gchar *file_type, const gchar *func_name)
+static void templates_replace_command(GString *text,
+									  const gchar *file_name,
+									  const gchar *file_type,
+									  const gchar *func_name)
 {
 	gchar *match;
-
+	
 	g_return_if_fail(text != NULL);
-
+	
 	while ((match = strstr(text->str, "{command:")) != NULL)
 	{
 		gchar *wildcard;
 		gchar *cmd = match;
 		gchar *result;
-
+		
 		while (*match != '}' && *match != '\0')
 			match++;
-
+		
 		wildcard = g_strndup(cmd, (gsize) (match - cmd + 1));
 		cmd = g_strndup(wildcard + 9, strlen(wildcard) - 10);
-
+		
 		result = run_command(cmd, file_name, file_type, func_name);
 		if (result != NULL)
 		{
@@ -653,7 +671,7 @@ static void templates_replace_command(GString *text, const gchar *file_name,
 		}
 		else
 			utils_string_replace_first(text, wildcard, "");
-
+		
 		g_free(wildcard);
 		g_free(cmd);
 	}
