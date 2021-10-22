@@ -2186,7 +2186,8 @@ static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
 	return filtered_tags;
 }
 
-static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
+static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
+									  const TMTagType type)
 {
 	TMTag *tmtag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
@@ -2195,7 +2196,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 	gchar *fname_wo_ext = utils_remove_ext_from_filename(file->file_name, TRUE);
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		if (g_str_has_prefix(tmtag->file->file_name, fname_wo_ext))
+		if ((tmtag->type & type) &&
+			g_str_has_prefix(tmtag->file->file_name, fname_wo_ext))
 			g_ptr_array_add(filtered_tags, tmtag);
 	}
 	g_free(fname_wo_ext);
@@ -2205,7 +2207,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file)
 		gchar *dir = g_path_get_dirname(file->file_name);
 		foreach_ptr_array(tmtag, i, tags)
 		{
-			if (g_str_has_prefix(tmtag->file->file_name, dir))
+			if ((tmtag->type & type) &&
+				g_str_has_prefix(tmtag->file->file_name, dir))
 				g_ptr_array_add(filtered_tags, tmtag);
 		}
 		g_free(dir);
@@ -2283,9 +2286,10 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 		filter_tags_check(&filtered_tags, &new_tags, TRUE);
 	}
 	
-	if (filtered_tags->len > 1 && current_file && tm_parser_strict_file(lang))
+	if (filtered_tags->len > 1 && current_file)
 	{
-		new_tags = filter_tags_by_file(filtered_tags, current_file);
+		new_tags = filter_tags_by_file(filtered_tags, current_file,
+									   tm_parser_get_filter_type(lang, type));
 		filter_tags_check(&filtered_tags, &new_tags, FALSE);
 	}
 	
