@@ -122,6 +122,8 @@ gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang);
 TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang,
 									   TMTagType type);
 
+TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type);
+
 const gchar *tm_parser_context_separator(TMParserType lang);
 
 gboolean tm_parser_has_full_context(TMParserType lang);
@@ -134,7 +136,6 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 								   gchar prefix, gboolean brackets);
 
 gboolean tm_parser_strict_scope(TMParserType lang);
-gboolean tm_parser_strict_file(TMParserType lang);
 
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
 						   gchar prefix, gchar suffix);
