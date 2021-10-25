@@ -78,7 +78,7 @@ void utils_open_browser(const gchar *uri)
 	g_return_if_fail(uri != NULL);
 	win32_open_browser(uri);
 #else
-	gchar *argv[2] = { (gchar *) uri, NULL };
+	gchar *argv[2] = { (gchar *)uri, NULL };
 	
 	g_return_if_fail(uri != NULL);
 	
@@ -631,8 +631,8 @@ gchar *utils_remove_ext_from_filename(const gchar *filename,
 	if (!last_dot)
 		return g_strdup(filename);
 	
-	len = leave_dot ? (gsize) (last_dot - filename + 1)
-					: (gsize) (last_dot - filename);
+	len = leave_dot ? (gsize)(last_dot - filename + 1)
+					: (gsize)(last_dot - filename);
 	
 	result = g_malloc(len + 1);
 	memcpy(result, filename, len);
@@ -1453,7 +1453,7 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 	g_dir_close(dir);
 	/* sorting last is quicker than on insertion */
 	if (sort)
-		list = g_slist_sort(list, (GCompareFunc) utils_str_casecmp);
+		list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
 	return list;
 }
 
@@ -1936,7 +1936,7 @@ GSList *utils_get_config_files(const gchar *subdir)
 	/* merge lists */
 	list = g_slist_concat(list, syslist);
 	
-	list = g_slist_sort(list, (GCompareFunc) utils_str_casecmp);
+	list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
 	/* remove duplicates (next to each other after sorting) */
 	foreach_slist(node, list)
 	{
@@ -2118,7 +2118,7 @@ gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
 	if (strv_len == 0)
 		return NULL;
 	
-	num = (strv_len == -1) ? g_strv_length(strv) : (gsize) strv_len;
+	num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
 	
 	for (gsize i = 0; strv[0][i]; i++)
 	{
@@ -2159,7 +2159,7 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 	if (strv_len == 0)
 		return NULL;
 	
-	num = (strv_len == -1) ? g_strv_length(strv) : (gsize) strv_len;
+	num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
 	
 	first = strv[0];
 	len = strlen(first);
@@ -2240,7 +2240,7 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 	g_return_val_if_fail(file_names != NULL, NULL);
 	
 	num = (file_names_len == -1) ? g_strv_length(file_names)
-								 : (gsize) file_names_len;
+								 : (gsize)file_names_len;
 	/* Always include a terminating NULL, enables easy freeing with g_strfreev()
 	 * We just copy the pointers so we can advance them here. But don't
 	 * forget to duplicate the strings before returning.
@@ -2448,7 +2448,7 @@ void utils_start_new_geany_instance(const gchar *doc_path)
 		}
 		argv[argc] = NULL;
 		
-		if (!utils_spawn_async(NULL, (gchar**) argv, NULL, 0,
+		if (!utils_spawn_async(NULL, (gchar **)argv, NULL, 0,
 							   NULL, NULL, NULL, &err))
 		{
 			g_printerr("Unable to open new window: %s\n", err->message);

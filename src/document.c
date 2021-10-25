@@ -2212,7 +2212,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	{	/* always write a UTF-8 BOM because in this moment the text itself is still in UTF-8
 		 * encoding, it will be converted to doc->encoding below and this conversion
 		 * also changes the BOM */
-		data = (gchar*) g_malloc(len + 3);	/* 3 chars for BOM */
+		data = (gchar *)g_malloc(len + 3); /* 3 chars for BOM */
 		data[0] = (gchar) 0xef;
 		data[1] = (gchar) 0xbb;
 		data[2] = (gchar) 0xbf;
@@ -2221,7 +2221,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	}
 	else
 	{
-		data = (gchar*) g_malloc(len);
+		data = (gchar *)g_malloc(len);
 		sci_get_text(doc->editor->sci, len, data);
 	}
 	
@@ -2575,7 +2575,7 @@ static guint document_replace_range(GeanyDocument *doc, const gchar *find_text,
 	
 	ttf.chrg.cpMin = start;
 	ttf.chrg.cpMax = end;
-	ttf.lpstrText = (gchar*)find_text;
+	ttf.lpstrText = (gchar *)find_text;
 	
 	sci_start_undo_action(sci);
 	count = search_replace_range(sci, &ttf, flags, replace_text);
@@ -3122,7 +3122,7 @@ void document_undo(GeanyDocument *doc)
 				/* use the "old" encoding */
 				document_redo_add(doc, UNDO_ENCODING, g_strdup(doc->encoding));
 				
-				document_set_encoding(doc, (const gchar*)action->data);
+				document_set_encoding(doc, (const gchar *)action->data);
 				g_free(action->data);
 				
 				ui_update_statusbar(doc, -1);
@@ -3243,7 +3243,7 @@ void document_redo(GeanyDocument *doc)
 				document_undo_add_internal(doc, UNDO_ENCODING,
 										   g_strdup(doc->encoding));
 				
-				document_set_encoding(doc, (const gchar*)action->data);
+				document_set_encoding(doc, (const gchar *)action->data);
 				g_free(action->data);
 				
 				ui_update_statusbar(doc, -1);

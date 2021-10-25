@@ -122,9 +122,9 @@ static gchar* get_tex_rgb(gint rgb_colour)
 	gdouble rf = (rgb_colour % 256) / 256.0;
 	gdouble gf = ((rgb_colour & - 16711936) / 256) / 256.0;
 	gdouble bf = ((rgb_colour & 0xff0000) / 65536) / 256.0;
-	gint r = (gint) (rf * 10 + 0.5);
-	gint g = (gint) (gf * 10 + 0.5);
-	gint b = (gint) (bf * 10 + 0.5);
+	gint r = (gint)(rf * 10 + 0.5);
+	gint g = (gint)(gf * 10 + 0.5);
+	gint b = (gint)(bf * 10 + 0.5);
 
 	return g_strdup_printf("%d.%d, %d.%d, %d.%d", r / 10, r % 10, g / 10, g % 10, b / 10, b % 10);
 }

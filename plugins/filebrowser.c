@@ -808,7 +808,7 @@ static void on_clear_filter(GtkEntry *entry, gpointer user_data)
 
 static void on_path_entry_activate(GtkEntry *entry, gpointer user_data)
 {
-	gchar *new_dir = (gchar*) gtk_entry_get_text(entry);
+	gchar *new_dir = (gchar *)gtk_entry_get_text(entry);
 
 	if (!EMPTY(new_dir))
 	{

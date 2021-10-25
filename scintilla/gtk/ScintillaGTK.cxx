@@ -3184,11 +3184,11 @@ GEANY_API_SYMBOL
 GType scnotification_get_type(void) {
 	static gsize type_id = 0;
 	if (g_once_init_enter(&type_id)) {
-		const gsize id = (gsize) g_boxed_type_register_static(
-					 g_intern_static_string("SCNotification"),
-					 (GBoxedCopyFunc) copy_,
-					 (GBoxedFreeFunc) free_);
+		const gsize id = (gsize)g_boxed_type_register_static(
+									 g_intern_static_string("SCNotification"),
+									 (GBoxedCopyFunc)copy_,
+									 (GBoxedFreeFunc)free_);
 		g_once_init_leave(&type_id, id);
 	}
-	return (GType) type_id;
+	return (GType)type_id;
 }

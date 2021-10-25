@@ -824,7 +824,7 @@ static void tb_editor_drag_data_rcvd_cb(GtkWidget *widget, GdkDragContext *conte
 		gboolean is_sep;
 		gchar *text = NULL;
 
-		text = (gchar*) gtk_selection_data_get_data(data);
+		text = (gchar *)gtk_selection_data_get_data(data);
 		is_sep = utils_str_equal(text, TB_EDITOR_SEPARATOR);
 		/* If the source of the action is equal to the target, we do just re-order and so need
 		 * to delete the separator to get it moved, not just copied. */
@@ -1089,7 +1089,7 @@ void toolbar_configure(GtkWindow *parent)
 	{
 		const gchar *name = gtk_action_get_name(l->data);
 
-		if (g_slist_find_custom(used_items, name, (GCompareFunc) strcmp) == NULL)
+		if (g_slist_find_custom(used_items, name, (GCompareFunc)strcmp) == NULL)
 		{
 			GtkTreeIter iter;
 
