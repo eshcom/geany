@@ -624,7 +624,7 @@ static gboolean vte_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	if (event->button == 3)
 	{
 		GtkWidget *item = ui_lookup_widget(vc->menu, "item_set_project_path");
-		ui_widget_set_sensitive(item, app->project != NULL);
+		ui_widget_show_hide(item, app->project != NULL);
 		
 		gtk_widget_grab_focus(vc->vte);
 		gtk_menu_popup(GTK_MENU(vc->menu), NULL, NULL, NULL, NULL,
