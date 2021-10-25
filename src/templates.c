@@ -659,7 +659,7 @@ static void templates_replace_command(GString *text,
 		while (*match != '}' && *match != '\0')
 			match++;
 		
-		wildcard = g_strndup(cmd, (gsize) (match - cmd + 1));
+		wildcard = g_strndup(cmd, (gsize)(match - cmd + 1));
 		cmd = g_strndup(wildcard + 9, strlen(wildcard) - 10);
 		
 		result = run_command(cmd, file_name, file_type, func_name);

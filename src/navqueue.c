@@ -247,7 +247,7 @@ void navqueue_go_forward(void)
 
 static gint find_by_filename(gconstpointer a, gconstpointer b)
 {
-	if (utils_str_equal(((const filepos*)a)->file, (const gchar*) b))
+	if (utils_str_equal(((const filepos*)a)->file, (const gchar *)b))
 		return 0;
 	else
 		return 1;

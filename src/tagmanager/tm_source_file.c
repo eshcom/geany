@@ -86,8 +86,10 @@ static int get_path_max(const char *path)
 
 
 #if defined(G_OS_WIN32) && !defined(HAVE_REALPATH)
-/* realpath implementation for Windows found at http://bugzilla.gnome.org/show_bug.cgi?id=342926
- * this one is better than e.g. liberty's lrealpath because this one uses Win32 API and works
+/* realpath implementation for Windows found at
+ * http://bugzilla.gnome.org/show_bug.cgi?id=342926
+ * this one is better than e.g. liberty's lrealpath
+ * because this one uses Win32 API and works
  * with special chars within the filename */
 static char *realpath(const char *pathname, char *resolved_path)
 {
@@ -116,7 +118,8 @@ static char *realpath(const char *pathname, char *resolved_path)
  Given a file name, returns a newly allocated string containing the realpath()
  of the file.
  @param file_name The original file_name
- @return A newly allocated string containing the real path to the file. NULL if none is available.
+ @return A newly allocated string containing the real path to the file.
+         NULL if none is available.
  @deprecated since 1.32 (ABI 235)
  @see utils_get_real_path()
 */
@@ -312,9 +315,10 @@ static gboolean init_tag_from_file(TMTag *tag, FILE *fp, TMParserType lang)
 	return TRUE;
 }
 
-/* alternative parser for Pascal and LaTeX global tags files with the following format
- * tagname|return value|arglist|description\n */
-static gboolean init_tag_from_file_alt(TMTag *tag, FILE *fp, TMParserType lang)
+/* alternative parser for Pascal and LaTeX global tags files with the
+ * following format: tagname|return value|arglist|description\n */
+static gboolean init_tag_from_file_alt(TMTag *tag, FILE *fp,
+									   TMParserType lang)
 {
 	guchar buf[BUFSIZ];
 	guchar *start, *end;
@@ -364,7 +368,8 @@ static gboolean init_tag_from_file_alt(TMTag *tag, FILE *fp, TMParserType lang)
 /*
  CTags tag file format (http://ctags.sourceforge.net/FORMAT)
 */
-static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp, TMParserType lang,
+static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
+										 TMParserType lang,
 										 const gchar *source_path)
 {
 	TMSourceFile *file = NULL;
@@ -489,7 +494,8 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp, TMParserType lang
 	return TRUE;
 }
 
-static TMTag *new_tag_from_tags_file(FILE *fp, TMParserType mode, TMFileFormat format,
+static TMTag *new_tag_from_tags_file(FILE *fp, TMParserType mode,
+									 TMFileFormat format,
 									 const gchar *source_path)
 {
 	TMTag *tag = tm_tag_new();
@@ -552,7 +558,8 @@ static gboolean write_tag(TMTag *tag, FILE *fp, TMTagAttrType attrs)
 		return FALSE;
 }
 
-GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mode,
+GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file,
+										 TMParserType mode,
 										 const gchar *source_path)
 {
 	guchar buf[BUFSIZ];
@@ -579,8 +586,9 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 		else if (strncmp((gchar *)buf, "!_TAG_", 6) == 0)
 			format = TM_FILE_FORMAT_CTAGS;
 		else
-		{	/* We didn't find a valid format specification, so we try to auto-detect the format
-			 * by counting the pipe characters on the first line and asumme pipe format when
+		{	/* We didn't find a valid format specification, so we try
+			 * to auto-detect the format by counting the pipe characters
+			 * on the first line and asumme pipe format when
 			 * we find more than one pipe on the line. */
 			guint i, pipe_cnt = 0, tab_cnt = 0;
 			for (i = 0; i < BUFSIZ && buf[i] != '\0' && pipe_cnt < 2; i++)
@@ -600,14 +608,15 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 	}
 	
 	file_tags = g_ptr_array_new();
-	while (tag = new_tag_from_tags_file(fp, mode, format, source_path))
+	while ((tag = new_tag_from_tags_file(fp, mode, format, source_path)))
 		g_ptr_array_add(file_tags, tag);
 	fclose(fp);
 	
 	return file_tags;
 }
 
-gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_array)
+gboolean tm_source_file_write_tags_file(const gchar *tags_file,
+										GPtrArray *tags_array)
 {
 	guint i;
 	FILE *fp;
@@ -623,7 +632,7 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_
 	{
 		TMTag *tag = TM_TAG(tags_array->pdata[i]);
 		
-		ret = write_tag(tag, fp, tm_tag_attr_type_t | tm_tag_attr_scope_t |
+		ret = write_tag(tag, fp, tm_tag_attr_type_t    | tm_tag_attr_scope_t   |
 								 tm_tag_attr_arglist_t | tm_tag_attr_vartype_t |
 								 tm_tag_attr_pointer_t);
 		if (!ret)
@@ -635,7 +644,8 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_
 }
 
 /* add argument list of __init__() Python methods to the class tag */
-static void update_python_arglist(const TMTag *tag, TMSourceFile *current_source_file)
+static void update_python_arglist(const TMTag *tag,
+								  TMSourceFile *current_source_file)
 {
 	guint i;
 	const char *parent_tag_name;
@@ -751,7 +761,8 @@ TMSourceFile *tm_source_file_new(const char *file_name, const char *name)
 
 /* esh: Initializes a TMSourceFile structure from a file name.
  * 		(based on tm_source_file_new/tm_source_file_init) */
-TMSourceFile *tm_source_file_new_prj(const char *file_name, const char *source_path)
+TMSourceFile *tm_source_file_new_prj(const char *file_name,
+									 const char *source_path)
 {
 	g_return_val_if_fail(file_name && source_path, NULL);
 	
@@ -798,9 +809,10 @@ static void tm_source_file_destroy(TMSourceFile *source_file)
 
 /** Decrements the reference count of @a source_file
  *
- * If the reference count drops to 0, then @a source_file is freed, including all contents.
- * Make sure the @a source_file is already removed from any TMWorkSpace before the
- * this happens.
+ * If the reference count drops to 0, then @a source_file is freed,
+ * including all contents.
+ * Make sure the @a source_file is already removed from any TMWorkSpace
+ * before the this happens.
  * @param source_file The source file to free.
  * @see tm_workspace_remove_source_file()
 */
@@ -833,7 +845,8 @@ void tm_source_file_free_prj(TMSourceFile *source_file)
 GEANY_API_SYMBOL
 GType tm_source_file_get_type(void);
 
-G_DEFINE_BOXED_TYPE(TMSourceFile, tm_source_file, tm_source_file_dup, tm_source_file_free);
+G_DEFINE_BOXED_TYPE(TMSourceFile, tm_source_file,
+					tm_source_file_dup, tm_source_file_free);
 
 /* Parses the text-buffer or source file and regenarates the tags.
  @param source_file The source file to parse

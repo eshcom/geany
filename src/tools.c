@@ -515,8 +515,8 @@ static void cc_show_dialog_custom_commands(void)
 			/* walk commands and labels lists */
 			for (cmd_node = cmd_list, lbl_node = lbl_list; cmd_node != NULL; cmd_node = cmd_node->next, lbl_node = lbl_node->next)
 			{
-				commands[j] = (gchar*) cmd_node->data;
-				labels[j] = (gchar*) lbl_node->data;
+				commands[j] = (gchar *)cmd_node->data;
+				labels[j] = (gchar *)lbl_node->data;
 				j++;
 			}
 			/* null-terminate the arrays */

@@ -1248,7 +1248,7 @@ static void add_recent_file(const gchar *utf8_filename, GeanyRecentFiles *grf,
 							const GtkRecentData *rdata)
 {
 	if (g_queue_find_custom(grf->recent_queue, utf8_filename,
-							(GCompareFunc) strcmp) == NULL)
+							(GCompareFunc)strcmp) == NULL)
 	{
 		if (grf->type == RECENT_FILE_FILE && rdata)
 		{
@@ -1403,7 +1403,7 @@ static void recent_file_loaded(const gchar *utf8_filename, GeanyRecentFiles *grf
 	
 	/* first reorder the queue */
 	item = g_queue_find_custom(grf->recent_queue, utf8_filename,
-							   (GCompareFunc) strcmp);
+							   (GCompareFunc)strcmp);
 	g_return_if_fail(item != NULL);
 	
 	g_queue_unlink(grf->recent_queue, item);
@@ -1418,7 +1418,7 @@ static void recent_file_loaded(const gchar *utf8_filename, GeanyRecentFiles *grf
 		
 		children = gtk_container_get_children(GTK_CONTAINER(parents[i]));
 		item = g_list_find_custom(children, utf8_filename,
-								  (GCompareFunc) find_recent_file_item);
+								  (GCompareFunc)find_recent_file_item);
 		/* either reorder or prepend a new one */
 		if (item)
 			menu_reorder_child(GTK_MENU(parents[i]), item->data, 0);

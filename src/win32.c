@@ -235,7 +235,7 @@ static wchar_t *get_dir_for_path(const gchar *utf8_filename)
 	gchar *result;
 
 	if (g_file_test(utf8_filename, G_FILE_TEST_IS_DIR))
-		result = (gchar*) utf8_filename;
+		result = (gchar *)utf8_filename;
 	else
 		result = g_path_get_dirname(utf8_filename);
 

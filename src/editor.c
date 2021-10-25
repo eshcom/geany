@@ -2836,9 +2836,9 @@ static void snippets_replace_specials(gpointer key, gpointer value,
 	g_return_if_fail(key != NULL);
 	g_return_if_fail(value != NULL);
 	
-	needle = g_strconcat("%", (gchar*) key, "%", NULL);
+	needle = g_strconcat("%", (gchar *)key, "%", NULL);
 	
-	utils_string_replace_all(pattern, needle, (gchar*) value);
+	utils_string_replace_all(pattern, needle, (gchar *)value);
 	g_free(needle);
 }
 
@@ -3407,7 +3407,7 @@ static gint find_in_current_style(ScintillaObject *sci, const gchar *text,
 	while (end < len && sci_get_style_at(sci, end + 1) == current_style)
 		end += 1;
 	
-	ttf.lpstrText = (gchar*) text;
+	ttf.lpstrText = (gchar *)text;
 	ttf.chrg.cpMin = backwards ? end + 1 : start;
 	ttf.chrg.cpMax = backwards ? start : end + 1;
 	return sci_find_text(sci, 0, &ttf);
@@ -4997,7 +4997,7 @@ void editor_replace_tabs(GeanyEditor *editor, gboolean ignore_selection)
 		ttf.chrg.cpMin = 0;
 		ttf.chrg.cpMax = sci_get_length(editor->sci);
 	}
-	ttf.lpstrText = (gchar*) "\t";
+	ttf.lpstrText = (gchar *)"\t";
 	
 	anchor_pos = SSM(editor->sci, SCI_GETANCHOR, 0, 0);
 	caret_pos = sci_get_current_position(editor->sci);

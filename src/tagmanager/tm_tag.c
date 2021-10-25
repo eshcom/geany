@@ -29,7 +29,7 @@ static void foreach_tags_log(gpointer key, gpointer value, gpointer data)
 	gsize *ref_count = data;
 	const TMTag *tag = value;
 	
-	*ref_count += (gsize) tag->refcount;
+	*ref_count += (gsize)tag->refcount;
 	g_debug("Leaked TMTag (%d refs): %s", tag->refcount, tag->name);
 }
 
