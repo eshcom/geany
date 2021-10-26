@@ -888,7 +888,8 @@ TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type)
 		case TM_PARSER_ERLANG:
 			// conditions are formed in accordance
 			// with the tm_parser_define_type func
-			if (type == tm_tag_macro_t || type == tm_tag_struct_t ||
+			if (//type == tm_tag_macro_t || // exclude macros
+				type == tm_tag_struct_t ||
 				type == (tm_tag_function_t | tm_tag_typedef_t))
 				return type;
 			return tm_tag_undef_t;

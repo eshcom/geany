@@ -220,9 +220,13 @@ void run_test_case03()
 	gchar *build6 = g_build_filename("/usr/test/dir/", "item/", NULL);
 	gchar *build7 = g_build_filename("/usr/test/dir/", "/item", NULL);
 	gchar *build8 = g_build_filename("/usr/test/dir/", "/item/", NULL);
+	gchar *build9 = g_build_filename("/usr/test/dir/", "./item", NULL);
+	gchar *build10 = g_build_filename("/usr/test/dir/", "./item/", NULL);
 	printf("build1 = %s\nbuild2 = %s\nbuild3 = %s\nbuild4 = %s\n"
-		   "build5 = %s\nbuild6 = %s\nbuild7 = %s\nbuild8 = %s\n",
-		   build1, build2, build3, build4, build5, build6, build7, build8);
+		   "build5 = %s\nbuild6 = %s\nbuild7 = %s\nbuild8 = %s\n"
+		   "build9 = %s\nbuild10 = %s\n",
+		   build1, build2, build3, build4, build5, build6,
+		   build7, build8, build9, build10);
 	//~ Result:
 	//~ build1 = /usr/test/dir/item
 	//~ build2 = /usr/test/dir/item/
@@ -232,6 +236,8 @@ void run_test_case03()
 	//~ build6 = /usr/test/dir/item/
 	//~ build7 = /usr/test/dir/item
 	//~ build8 = /usr/test/dir/item/
+	//~ build9 = /usr/test/dir/./item
+	//~ build10 = /usr/test/dir/./item/
 	g_free(build1);
 	g_free(build2);
 	g_free(build3);
@@ -240,6 +246,8 @@ void run_test_case03()
 	g_free(build6);
 	g_free(build7);
 	g_free(build8);
+	g_free(build9);
+	g_free(build10);
 }
 
 
@@ -393,6 +401,20 @@ void run_test_case07()
 	//~ Result:
 	//~ has pref1 = 1, has pref2 = 1, has pref3 = 1
 	//~ has suff1 = 1, has suff2 = 1, has suff3 = 1
+	
+	items = g_strsplit("", ";", 0);
+	printf("item1: %s, item2: %s\n", items[0], items[1]);
+	g_strfreev(items);
+	items = g_strsplit("!", ";", 0);
+	printf("item1: %s, item2: %s\n", items[0], items[1]);
+	g_strfreev(items);
+	items = g_strsplit("!;", ";", 0);
+	printf("item1: '%s', item2: '%s'\n", items[0], items[1]);
+	g_strfreev(items);
+	//~ Result:
+	//~ item1: (null), item2: (null)
+	//~ item1: !, item2: (null)
+	//~ item1: '!', item2: ''
 }
 
 int main(void)
