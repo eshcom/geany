@@ -235,6 +235,16 @@ void extensions_free(void);
 //~ esh: for tm_source_file_new_prj
 TMParserType utils_detect_lang_from_extension(const gchar *file_name);
 
+enum
+{
+	MATCH_DIRS_NOT,
+	MATCH_DIRS_FULL,
+	MATCH_DIRS_PREF_1,
+	MATCH_DIRS_PREF_2
+};
+
+gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
+
 #ifdef GEANY_PRIVATE
 
 typedef enum
@@ -248,14 +258,6 @@ typedef enum
 	
 	RESOURCE_DIR_COUNT
 } GeanyResourceDirType;
-
-enum
-{
-	MATCH_NOT,
-	MATCH_FULL,
-	MATCH_PREF_1,
-	MATCH_PREF_2
-};
 
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
 

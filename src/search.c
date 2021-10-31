@@ -1164,7 +1164,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		if (search_prefs.use_current_proj_dir && project_base_path)
 		{
 			gint match = utils_match_dirs(entry_text, project_base_path);
-			if (match != MATCH_FULL && match != MATCH_PREF_2)
+			if (match != MATCH_DIRS_FULL && match != MATCH_DIRS_PREF_2)
 			{	// entry_text != <project_path> &&
 				// entry_text != <project_path>/*
 				cur_dir = g_strdup(project_base_path);
@@ -1174,14 +1174,14 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 				gchar *cur_file_dir = utils_get_current_file_dir_utf8();
 				match = utils_match_dirs(entry_text, cur_file_dir);
 				
-				if (match == MATCH_NOT)
+				if (match == MATCH_DIRS_NOT)
 				{	// entry_text != cur_file_dir
 					cur_dir = g_strdup(project_base_path);
 				}
-				else if (match == MATCH_PREF_2)
+				else if (match == MATCH_DIRS_PREF_2)
 				{	// entry_text == cur_file_dir/*
 					match = utils_match_dirs(cur_file_dir, project_base_path);
-					if (match == MATCH_FULL || match == MATCH_PREF_2)
+					if (match == MATCH_DIRS_FULL || match == MATCH_DIRS_PREF_2)
 						cur_dir = g_strdup(cur_file_dir);
 					else
 						cur_dir = g_strdup(project_base_path);

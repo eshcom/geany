@@ -426,7 +426,7 @@ void configuration_save_session_files(GKeyFile *config)
 		{
 			gint match = utils_match_dirs(vte_info.dir, project_base_path);
 			
-			if (match == MATCH_FULL || match == MATCH_PREF_2)
+			if (match == MATCH_DIRS_FULL || match == MATCH_DIRS_PREF_2)
 				g_key_file_set_string(config, "VTE", "last_dir", vte_info.dir);
 			
 			g_free(project_base_path);

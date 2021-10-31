@@ -1469,7 +1469,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 					SETPTR(base_path, utils_get_locale_from_utf8(base_path));
 					
 					gint match = utils_match_dirs(path, base_path);
-					if (match == MATCH_PREF_2)
+					if (match == MATCH_DIRS_PREF_2)
 					{	// navigate from path to base_path
 						while (TRUE)
 						{
@@ -1477,13 +1477,13 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 							SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
 														  path, sel, NULL));
 							
-							if (utils_match_dirs(path, base_path) == MATCH_FULL ||
-								g_file_test(filename, G_FILE_TEST_EXISTS))
+							if (utils_match_dirs(path, base_path) == MATCH_DIRS_FULL
+								|| g_file_test(filename, G_FILE_TEST_EXISTS))
 								break;
 						}
 						currpath_match_proj = TRUE;
 					}
-					else if (match == MATCH_FULL)
+					else if (match == MATCH_DIRS_FULL)
 						currpath_match_proj = TRUE;
 					else
 					{	/* try the project's base path */

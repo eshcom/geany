@@ -2530,10 +2530,11 @@ TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 //~ esh: very efficient algorithm for comparing dirs:
 //~      1. one-pass scheme;
 //~      2. does not require the creation of additional vars
+GEANY_API_SYMBOL
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
 {
 	if (EMPTY(dir1) || EMPTY(dir2))
-		return MATCH_NOT;
+		return MATCH_DIRS_NOT;
 	
 	dir1++;
 	dir2++;
@@ -2543,33 +2544,33 @@ gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
 		if (*dir1 == '\0')
 		{
 			if (*dir2 == '\0')
-				return MATCH_FULL;
+				return MATCH_DIRS_FULL;
 			else if (*(--dir1) == G_DIR_SEPARATOR)
-				return MATCH_PREF_1;
+				return MATCH_DIRS_PREF_1;
 			else if (*dir2 == G_DIR_SEPARATOR)
 			{
 				if (*(++dir2) == '\0')
-					return MATCH_FULL;
+					return MATCH_DIRS_FULL;
 				else
-					return MATCH_PREF_1;
+					return MATCH_DIRS_PREF_1;
 			}
-			return MATCH_NOT;
+			return MATCH_DIRS_NOT;
 		}
 		if (*dir2 == '\0')
 		{
 			if (*(--dir2) == G_DIR_SEPARATOR)
-				return MATCH_PREF_2;
+				return MATCH_DIRS_PREF_2;
 			else if (*dir1 == G_DIR_SEPARATOR)
 			{
 				if (*(++dir1) == '\0')
-					return MATCH_FULL;
+					return MATCH_DIRS_FULL;
 				else
-					return MATCH_PREF_2;
+					return MATCH_DIRS_PREF_2;
 			}
-			return MATCH_NOT;
+			return MATCH_DIRS_NOT;
 		}
 		if (*dir1 != *dir2)
-			return MATCH_NOT;
+			return MATCH_DIRS_NOT;
 		
 		dir1++;
 		dir2++;
