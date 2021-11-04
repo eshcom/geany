@@ -978,6 +978,7 @@ static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 		GeanyDocument *doc = document_get_current();
 		if (doc != NULL)
 			*filename = g_strdup(doc->file_name);
+		
 		g_strfreev(fields);
 		return;
 	}

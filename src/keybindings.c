@@ -1737,6 +1737,7 @@ static gboolean cb_func_search_action(guint key_id)
 	}
 	if (!doc)
 		return TRUE;
+	
 	sci = doc->editor->sci;
 	
 	switch (key_id)
@@ -2216,13 +2217,11 @@ static void goto_tag(GeanyDocument *doc, gboolean definition)
 /* Common function for goto keybindings, useful even when sci doesn't have focus. */
 static gboolean cb_func_goto_action(guint key_id)
 {
-	gint cur_line;
 	GeanyDocument *doc = document_get_current();
-	
 	if (doc == NULL)
 		return TRUE;
 	
-	cur_line = sci_get_current_line(doc->editor->sci);
+	gint cur_line = sci_get_current_line(doc->editor->sci);
 	
 	switch (key_id)
 	{
@@ -2779,7 +2778,6 @@ static gboolean cb_func_select_action(guint key_id)
 static gboolean cb_func_document_action(guint key_id)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	if (doc == NULL)
 		return TRUE;
 	

@@ -45,27 +45,27 @@ G_BEGIN_DECLS
 /** File Prefs. */
 typedef struct GeanyFilePrefs
 {
-	gint			default_new_encoding;
-	gint			default_open_encoding;
-	gboolean		final_new_line;
-	gboolean		strip_trailing_spaces;
-	gboolean		replace_tabs;
-	gboolean		tab_order_ltr;
-	gboolean		tab_order_beside;
-	gboolean		show_tab_cross;
-	guint			mru_length;
-	gint			default_eol_character;
-	gint			disk_check_timeout;
-	gboolean		cmdline_new_files;	/* New file if command-line filename doesn't exist */
-	gboolean		use_safe_file_saving;
-	gboolean		ensure_convert_new_lines;
-	gboolean		gio_unsafe_save_backup;
-	gboolean		use_gio_unsafe_file_saving; /* whether to use GIO as the unsafe backend */
-	gchar			*extract_filetype_regex;	/* regex to extract filetype on opening */
-	gboolean		tab_close_switch_to_mru;
-	gboolean		keep_edit_history_on_reload; /* Keep undo stack upon, and allow undoing of, document reloading. */
-	gboolean		show_keep_edit_history_on_reload_msg; /* whether to show the message introducing the above feature */
-	gboolean		reload_clean_doc_on_file_change;
+	gint		default_new_encoding;
+	gint		default_open_encoding;
+	gboolean	final_new_line;
+	gboolean	strip_trailing_spaces;
+	gboolean	replace_tabs;
+	gboolean	tab_order_ltr;
+	gboolean	tab_order_beside;
+	gboolean	show_tab_cross;
+	guint		mru_length;
+	gint		default_eol_character;
+	gint		disk_check_timeout;
+	gboolean	cmdline_new_files;	/* New file if command-line filename doesn't exist */
+	gboolean	use_safe_file_saving;
+	gboolean	ensure_convert_new_lines;
+	gboolean	gio_unsafe_save_backup;
+	gboolean	use_gio_unsafe_file_saving; /* whether to use GIO as the unsafe backend */
+	gchar		*extract_filetype_regex;	/* regex to extract filetype on opening */
+	gboolean	tab_close_switch_to_mru;
+	gboolean	keep_edit_history_on_reload; /* Keep undo stack upon, and allow undoing of, document reloading. */
+	gboolean	show_keep_edit_history_on_reload_msg; /* whether to show the message introducing the above feature */
+	gboolean	reload_clean_doc_on_file_change;
 }
 GeanyFilePrefs;
 
@@ -78,7 +78,8 @@ GType document_get_type (void);
  **/
 typedef struct GeanyDocument
 {
-	/** Flag used to check if this document is valid when iterating @ref GeanyData::documents_array. */
+	/** Flag used to check if this document is valid when
+	 *  iterating @ref GeanyData::documents_array. */
 	gboolean		 is_valid;
 	gint			 index;		/**< Index in the documents array. */
 	/** Whether this document supports source code symbols(tags) to show in the sidebar. */
@@ -117,7 +118,7 @@ typedef struct GeanyDocument
 	 * @see document_find_by_id(). */
 	guint			 id;
 	
-	struct GeanyDocumentPrivate *priv;	/* should be last, append fields before this item */
+	struct GeanyDocumentPrivate *priv; /* should be last, append fields before this item */
 }
 GeanyDocument;
 
@@ -171,22 +172,22 @@ GeanyDocument;
 										: GEANY_STRING_UNTITLED)
 
 
-GeanyDocument* document_new_file(const gchar *filename, GeanyFiletype *ft,
+GeanyDocument *document_new_file(const gchar *filename, GeanyFiletype *ft,
 								 const gchar *text);
 
 GeanyDocument *document_get_current(void);
 
 GeanyDocument *document_get_from_notebook_child(GtkWidget *page);
 
-GeanyDocument* document_get_from_page(guint page_num);
+GeanyDocument *document_get_from_page(guint page_num);
 
-GeanyDocument* document_find_by_filename(const gchar *utf8_filename);
+GeanyDocument *document_find_by_filename(const gchar *utf8_filename);
 
-GeanyDocument* document_find_by_real_path(const gchar *realname);
+GeanyDocument *document_find_by_real_path(const gchar *realname);
 
 gboolean document_save_file(GeanyDocument *doc, gboolean force);
 
-GeanyDocument* document_open_file(const gchar *locale_filename, gboolean readonly,
+GeanyDocument *document_open_file(const gchar *locale_filename, gboolean readonly,
 								  GeanyFiletype *ft, const gchar *forced_enc);
 
 void document_open_files(const GSList *filenames, gboolean readonly,
@@ -242,7 +243,7 @@ extern GPtrArray *documents_array;
 /* These functions will replace the older functions.
  * For now they have a documents_ prefix. */
 
-GeanyDocument* document_new_file_if_non_open(void);
+GeanyDocument *document_new_file_if_non_open(void);
 
 gboolean document_reload_prompt(GeanyDocument *doc, const gchar *forced_enc);
 

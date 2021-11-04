@@ -10,8 +10,8 @@
 
 /**
  * @file tm_workspace.h
- The TMWorkspace structure is meant to be used as a singleton to store application
- wide tag information.
+ The TMWorkspace structure is meant to be used as a singleton
+ to store application wide tag information.
 
  The workspace is intended to contain a list of global tags
  and a set of individual source files.
@@ -132,10 +132,10 @@ void tm_workspace_free_prj(void)
 
 
 /* Since TMWorkspace is a singleton, you should not create multiple
- workspaces, but get a pointer to the workspace whenever required. The first
- time a pointer is requested, or a source file is added to the workspace,
- a workspace is created. Subsequent calls to the function will return the
- created workspace.
+ workspaces, but get a pointer to the workspace whenever required.
+ The first time a pointer is requested, or a source file is added
+ to the workspace, a workspace is created. Subsequent calls to the
+ function will return the created workspace.
 */
 const TMWorkspace *tm_get_workspace(void)
 {
@@ -158,9 +158,7 @@ static void tm_workspace_merge_tags(GPtrArray **big_array, GPtrArray *small_arra
 static void merge_extracted_tags(GPtrArray **dest, GPtrArray *src,
 								 TMTagType tag_types)
 {
-	GPtrArray *arr;
-	
-	arr = tm_tags_extract(src, tag_types);
+	GPtrArray *arr = tm_tags_extract(src, tag_types);
 	tm_workspace_merge_tags(dest, arr);
 	g_ptr_array_free(arr, TRUE);
 }
@@ -171,13 +169,14 @@ static void update_source_file(TMSourceFile *source_file, guchar *text_buf,
 							   gboolean update_workspace)
 {
 #ifdef TM_DEBUG
-	g_message("Source file updating based on source file %s", source_file->file_name);
+	g_message("Source file updating based on source file %s",
+			  source_file->file_name);
 #endif
 	
 	if (update_workspace)
 	{
-		/* tm_source_file_parse() deletes the tag objects - remove the tags from
-		 * workspace while they exist and can be scanned */
+		/* tm_source_file_parse() deletes the tag objects - remove the tags
+		 * from workspace while they exist and can be scanned */
 		tm_tags_remove_file_tags(source_file, theWorkspace->tags_array);
 		tm_tags_remove_file_tags(source_file, theWorkspace->typename_array);
 	}
@@ -189,9 +188,11 @@ static void update_source_file(TMSourceFile *source_file, guchar *text_buf,
 #ifdef TM_DEBUG
 		g_message("Updating workspace from source file");
 #endif
-		tm_workspace_merge_tags(&theWorkspace->tags_array, source_file->tags_array);
+		tm_workspace_merge_tags(&theWorkspace->tags_array,
+								source_file->tags_array);
 		
-		merge_extracted_tags(&(theWorkspace->typename_array), source_file->tags_array,
+		merge_extracted_tags(&(theWorkspace->typename_array),
+							 source_file->tags_array,
 							 TM_GLOBAL_TYPE_MASK);
 	}
 #ifdef TM_DEBUG
@@ -204,7 +205,7 @@ static void update_source_file(TMSourceFile *source_file, guchar *text_buf,
 
 
 /** Adds a source file to the workspace, parses it and updates the workspace tags.
- @param source_file The source file to add to the workspace.
+    @param source_file The source file to add to the workspace.
 */
 GEANY_API_SYMBOL
 void tm_workspace_add_source_file(TMSourceFile *source_file)
@@ -232,8 +233,8 @@ void tm_workspace_add_source_file_noupdate(TMSourceFile *source_file)
  other tag arrays pointing to these tags should be rebuilt as well. All sorting
  information is also lost.
  @param source_file The source file to update with a buffer.
- @param text_buf A text buffer. The user should take care of allocate and free it after
- the use here.
+ @param text_buf A text buffer. The user should take care of allocate
+                 and free it after the use here.
  @param buf_size The size of text_buf.
 */
 void tm_workspace_update_source_file_buffer(TMSourceFile *source_file,
@@ -243,9 +244,9 @@ void tm_workspace_update_source_file_buffer(TMSourceFile *source_file,
 }
 
 
-/** Removes a source file from the workspace if it exists. This function also removes
- the tags belonging to this file from the workspace. To completely free the TMSourceFile
- pointer call tm_source_file_free() on it.
+/** Removes a source file from the workspace if it exists.
+ This function also removes the tags belonging to this file from the workspace.
+ To completely free the TMSourceFile pointer call tm_source_file_free() on it.
  @param source_file Pointer to the source file to be removed.
 */
 GEANY_API_SYMBOL
@@ -268,10 +269,10 @@ void tm_workspace_remove_source_file(TMSourceFile *source_file)
 }
 
 
-/* Recreates workspace tag array from all member TMSourceFile objects. Use if you
- want to globally refresh the workspace. This function does not call tm_source_file_update()
- which should be called before this function on source files which need to be
- reparsed.
+/* Recreates workspace tag array from all member TMSourceFile objects.
+ Use if you want to globally refresh the workspace. This function
+ does not call tm_source_file_update() which should be called before
+ this function on source files which need to be reparsed.
 */
 static void tm_workspace_update(void)
 {
@@ -317,7 +318,8 @@ static void tm_workspace_update(void)
 /** Adds multiple source files to the workspace and updates the workspace tag arrays.
  This is more efficient than calling tm_workspace_add_source_file() and
  tm_workspace_update_source_file() separately for each of the files.
- @param source_files @elementtype{TMSourceFile} The source files to be added to the workspace.
+ @param source_files @elementtype{TMSourceFile}
+        The source files to be added to the workspace.
 */
 GEANY_API_SYMBOL
 void tm_workspace_add_source_files(GPtrArray *source_files)
@@ -341,7 +343,8 @@ void tm_workspace_add_source_files(GPtrArray *source_files)
  arrays. This is more efficient than calling tm_workspace_remove_source_file()
  separately for each of the files. To completely free the TMSourceFile pointers
  call tm_source_file_free() on each of them.
- @param source_files @elementtype{TMSourceFile} The source files to be removed from the workspace.
+ @param source_files @elementtype{TMSourceFile}
+        The source files to be removed from the workspace.
 */
 GEANY_API_SYMBOL
 void tm_workspace_remove_source_files(GPtrArray *source_files)
@@ -368,8 +371,8 @@ void tm_workspace_remove_source_files(GPtrArray *source_files)
 }
 
 
-/* Loads the global tag list from the specified file. The global tag list should
- have been first created using tm_workspace_create_global_tags().
+/* Loads the global tag list from the specified file. The global tag list
+ should have been first created using tm_workspace_create_global_tags().
  @param tags_file The file containing global tags.
  @return TRUE on success, FALSE on failure.
  @see tm_workspace_create_global_tags()
@@ -432,11 +435,10 @@ gboolean tm_workspace_load_project_tags(const char *tags_file,
 static gboolean write_includes_file(const gchar *outf, GList *includes_files)
 {
 	FILE *fp = g_fopen(outf, "w");
-	GList *node = includes_files;
-	
 	if (!fp)
 		return FALSE;
 	
+	GList *node = includes_files;
 	while (node)
 	{
 		char *str = g_strdup_printf("#include \"%s\"\n", (char*)node->data);
@@ -453,11 +455,10 @@ static gboolean write_includes_file(const gchar *outf, GList *includes_files)
 static gboolean combine_include_files(const gchar *outf, GList *file_list)
 {
 	FILE *fp = g_fopen(outf, "w");
-	GList *node = file_list;
-	
 	if (!fp)
 		return FALSE;
 	
+	GList *node = file_list;
 	while (node)
 	{
 		const char *fname = node->data;
@@ -473,7 +474,7 @@ static gboolean combine_include_files(const gchar *outf, GList *file_list)
 		else
 		{
 			fwrite(contents, length, 1, fp);
-			fwrite("\n", 1, 1, fp);	/* in case file doesn't end in newline (e.g. windows). */
+			fwrite("\n", 1, 1, fp); /* in case file doesn't end in newline (e.g. windows). */
 			g_free(contents);
 		}
 		node = g_list_next(node);
@@ -485,9 +486,8 @@ static gboolean combine_include_files(const gchar *outf, GList *file_list)
 static gchar *create_temp_file(const gchar *tpl)
 {
 	gchar *name;
-	gint fd;
+	gint fd = g_file_open_tmp(tpl, &name, NULL);
 	
-	fd = g_file_open_tmp(tpl, &name, NULL);
 	if (fd < 0)
 		name = NULL;
 	else
@@ -511,17 +511,15 @@ static GList *lookup_includes(const gchar **includes, gint includes_count)
 #ifdef HAVE_GLOB_H
 	globbuf.gl_offs = 0;
 	
-	if (includes[0][0] == '"')	/* leading \" char for glob matching */
+	if (includes[0][0] == '"') /* leading \" char for glob matching */
 	{
 		for (i = 0; i < includes_count; i++)
 		{
 			size_t dirty_len = strlen(includes[i]);
-			gchar *clean_path;
-			
 			if (dirty_len < 2)
 				continue;
 			
-			clean_path = g_malloc(dirty_len - 1);
+			gchar *clean_path = g_malloc(dirty_len - 1);
 			
 			strncpy(clean_path, includes[i] + 1, dirty_len - 1);
 			clean_path[dirty_len - 2] = 0;
@@ -632,13 +630,13 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 										 int includes_count, const char *tags_file,
 										 TMParserType lang)
 {
+	gchar *temp_file = create_temp_file("tmp_XXXXXX.cpp");
+	if (!temp_file)
+		return FALSE;
+	
 	gboolean ret = FALSE;
 	TMSourceFile *source_file;
 	GList *includes_files;
-	gchar *temp_file = create_temp_file("tmp_XXXXXX.cpp");
-	
-	if (!temp_file)
-		return FALSE;
 	
 	includes_files = lookup_includes(includes, includes_count);
 	
@@ -651,8 +649,10 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 		ret = combine_include_files(temp_file, includes_files);
 	
 	g_list_free_full(includes_files, g_free);
+	
 	if (!ret)
 		goto cleanup;
+	
 	ret = FALSE;
 	
 	if (pre_process)
@@ -720,8 +720,8 @@ static void fill_find_tags_array(GPtrArray *dst, const GPtrArray *src,
  @param scope The scope name of the tag to find, or NULL.
  @param type The tag types to return (TMTagType). Can be a bitmask.
  @param attrs The attributes to sort and dedup on (0 terminated integer array).
- @param lang Specifies the language(see the table in parsers.h) of the tags to be found,
-			 -1 for all
+ @param lang Specifies the language(see the table in parsers.h)
+             of the tags to be found, -1 for all
  @return Array of matching tags.
 */
 GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type,
@@ -783,8 +783,8 @@ static void fill_find_tags_array_prefix(GPtrArray *dst, const GPtrArray *src,
 /* Returns tags with the specified prefix sorted by name. If there are several
  tags with the same name, only one of them appears in the resulting array.
  @param prefix The prefix of the tag to find.
- @param lang Specifies the language(see the table in parsers.h) of the tags to be found,
-			 -1 for all.
+ @param lang Specifies the language(see the table in parsers.h)
+             of the tags to be found, -1 for all.
  @param max_num The maximum number of tags to return.
  @return Array of matching tags sorted by their name.
 */
@@ -809,13 +809,13 @@ GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang,
 
 /* Gets all members of type_tag; search them inside the all array.
  * The namespace parameter determines whether we are performing the "namespace"
- * search (user has typed something like "A::" where A is a type) or "scope" search
- * (user has typed "a." where a is a global struct-like variable). With the
- * namespace search we return all direct descendants of any type while with the
- * scope search we return only those which can be invoked on a variable (member,
- * method, etc.). */
-static GPtrArray *
-find_scope_members_tags(const GPtrArray *all, TMTag *type_tag, gboolean namespace)
+ * search (user has typed something like "A::" where A is a type) or
+ * "scope" search (user has typed "a." where a is a global struct-like variable).
+ * With the namespace search we return all direct descendants of any type
+ * while with the scope search we return only those which can be invoked
+ * on a variable (member, method, etc.). */
+static GPtrArray *find_scope_members_tags(const GPtrArray *all,
+										  TMTag *type_tag, gboolean namespace)
 {
 	TMTagType member_types = tm_tag_max_t & ~(TM_TYPE_WITH_MEMBERS |
 											  tm_tag_typedef_t);
@@ -864,7 +864,9 @@ static gchar *strip_type(const gchar *scoped_name, TMParserType lang)
 		/* remove scope prefix */
 		const gchar *sep = tm_parser_context_separator(lang);
 		const gchar *base = g_strrstr(scoped_name, sep);
-		gchar *name = base ? g_strdup(base + strlen(sep)) : g_strdup(scoped_name);
+		
+		gchar *name = base ? g_strdup(base + strlen(sep))
+						   : g_strdup(scoped_name);
 		
 		/* remove pointers */
 		g_strdelimit(name, "*^", ' ');
@@ -877,38 +879,34 @@ static gchar *strip_type(const gchar *scoped_name, TMParserType lang)
 
 
 /* Gets all members of the type with the given name; search them inside tags_array */
-static GPtrArray *
-find_scope_members(const GPtrArray *tags_array, const gchar *name,
-				   TMSourceFile *file, TMParserType lang, gboolean namespace)
+static GPtrArray *find_scope_members(const GPtrArray *tags_array, const gchar *name,
+									 TMSourceFile *file, TMParserType lang,
+									 gboolean namespace)
 {
-	GPtrArray *res = NULL;
-	gchar *type_name;
-	guint i;
-	
 	g_return_val_if_fail(name && *name, NULL);
 	
-	type_name = g_strdup(name);
+	GPtrArray *res = NULL;
+	gchar *type_name = g_strdup(name);
 	
 	/* Check if type_name is a type that can possibly contain members.
-	 * Try to resolve intermediate typedefs to get the real type name. Also
-	 * add scope information to the name if applicable.
-	 * The loop below loops only when resolving typedefs - avoid possibly infinite
-	 * loop when typedefs create a cycle by adding some limits. */
-	for (i = 0; i < 5; i++)
+	 * Try to resolve intermediate typedefs to get the real type name.
+	 * Also add scope information to the name if applicable.
+	 * The loop below loops only when resolving typedefs - avoid possibly
+	 * infinite loop when typedefs create a cycle by adding some limits. */
+	for (guint i = 0; i < 5; i++)
 	{
-		guint j;
-		GPtrArray *type_tags;
 		TMTagType types = TM_TYPE_WITH_MEMBERS | tm_tag_typedef_t;
 		TMTag *tag = NULL;
 		
 		if (!namespace)
 			types &= ~tm_tag_enum_t;
 		
-		type_tags = g_ptr_array_new();
+		GPtrArray *type_tags = g_ptr_array_new();
+		
 		fill_find_tags_array(type_tags, tags_array,
 							 type_name, NULL, types, lang);
 		
-		for (j = 0; j < type_tags->len; j++)
+		for (guint j = 0; j < type_tags->len; j++)
 		{
 			TMTag *test_tag = TM_TAG(type_tags->pdata[j]);
 			
@@ -944,7 +942,8 @@ find_scope_members(const GPtrArray *tags_array, const gchar *name,
 		else /* real type with members */
 		{
 			/* use the same file as the composite type if file information available */
-			res = find_scope_members_tags(tag->file ? tag->file->tags_array : tags_array,
+			res = find_scope_members_tags(tag->file ? tag->file->tags_array
+													: tags_array,
 										  tag, namespace);
 			break;
 		}
@@ -1009,15 +1008,16 @@ static gboolean member_at_method_scope(const GPtrArray *tags,
 
 
 /* For an array of variable/type tags, find members inside the types */
-static GPtrArray *
-find_scope_members_all(const GPtrArray *tags, const GPtrArray *searched_array,
-					   TMParserType lang, gboolean member, const gchar *current_scope)
+static GPtrArray *find_scope_members_all(const GPtrArray *tags,
+										 const GPtrArray *searched_array,
+										 TMParserType lang, gboolean member,
+										 const gchar *current_scope)
 {
 	GPtrArray *member_tags = NULL;
 	guint i;
 	
-	/* there may be several variables/types with the same name - try each of them until
-	 * we find something */
+	/* there may be several variables/types with the same name -
+	 * try each of them until we find something */
 	for (i = 0; i < tags->len && !member_tags; i++)
 	{
 		TMTag *tag = TM_TAG(tags->pdata[i]);
@@ -1072,20 +1072,23 @@ static GPtrArray *find_namespace_members_all(const GPtrArray *tags,
 }
 
 
-/* Returns all member tags of a struct/union/class if the provided name is a variable
- of such a type or the name of the type.
+/* Returns all member tags of a struct/union/class if the provided name
+   is a variable of such a type or the name of the type.
  @param source_file TMSourceFile of the edited source file
  @param name Name of the variable/type whose members are searched
  @param function TRUE if the name is a name of a function
- @param member TRUE if invoked on class/struct member (e.g. after the last dot in foo.bar.)
+ @param member TRUE if invoked on class/struct member
+               (e.g. after the last dot in foo.bar.)
  @param current_scope The current scope in the editor
- @param search_namespace Whether to search the contents of namespace (e.g. after MyNamespace::)
- @return A GPtrArray of TMTag pointers to struct/union/class members or NULL when not found */
-GPtrArray *
-tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
-								gboolean function, gboolean member,
-								const gchar *current_scope,
-								gboolean search_namespace)
+ @param search_namespace Whether to search the contents of namespace
+                         (e.g. after MyNamespace::)
+ @return A GPtrArray of TMTag pointers to struct/union/class members
+           or NULL when not found */
+GPtrArray *tm_workspace_find_scope_members(TMSourceFile *source_file,
+										   const char *name,
+										   gboolean function, gboolean member,
+										   const gchar *current_scope,
+										   gboolean search_namespace)
 {
 	TMParserType lang = source_file ? source_file->lang : TM_PARSER_NONE;
 	GPtrArray *tags, *member_tags = NULL;
@@ -1122,11 +1125,11 @@ tm_workspace_find_scope_members(TMSourceFile *source_file, const char *name,
 			member_tags = find_scope_members_all(tags, source_file->tags_array,
 												 lang, member, current_scope);
 		if (!member_tags)
-			member_tags = find_scope_members_all(tags, theWorkspace->tags_array, lang,
-												 member, current_scope);
+			member_tags = find_scope_members_all(tags, theWorkspace->tags_array,
+												 lang, member, current_scope);
 		if (!member_tags)
-			member_tags = find_scope_members_all(tags, theWorkspace->global_tags, lang,
-												 member, current_scope);
+			member_tags = find_scope_members_all(tags, theWorkspace->global_tags,
+												 lang, member, current_scope);
 		g_ptr_array_free(tags, TRUE);
 	}
 	
@@ -1163,14 +1166,14 @@ void tm_workspace_dump(void)
  @return A GPtrArray of TMTag pointers (includes the TMTag for the class) */
 static const GPtrArray *tm_workspace_get_parents(const gchar *name)
 {
+	g_return_val_if_fail(name && isalpha(*name), NULL);
+	
 	static TMTagAttrType type[] = { tm_tag_attr_name_t, tm_tag_attr_none_t };
 	static GPtrArray *parents = NULL;
 	const GPtrArray *matches;
 	guint i = 0;
 	guint j;
 	TMTag *tag;
-	
-	g_return_val_if_fail(name && isalpha(*name),NULL);
 	
 	if (parents == NULL)
 		parents = g_ptr_array_new();
@@ -1182,6 +1185,7 @@ static const GPtrArray *tm_workspace_get_parents(const gchar *name)
 		return NULL;
 	
 	g_ptr_array_add(parents, matches->pdata[0]);
+	
 	while (i < parents->len)
 	{
 		tag = TM_TAG(parents->pdata[i]);

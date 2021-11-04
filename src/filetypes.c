@@ -56,7 +56,7 @@
 #define GEANY_FILETYPE_SEARCH_LINES 2 /* lines of file to search for filetype */
 
 GPtrArray *filetypes_array = NULL;
-static GHashTable *filetypes_hash = NULL;	/* Hash of filetype pointers based on name keys */
+static GHashTable *filetypes_hash = NULL; /* Hash of filetype pointers based on name keys */
 GSList *filetypes_by_title = NULL;
 
 
@@ -232,9 +232,9 @@ static gint cmp_filetype(gconstpointer pft1, gconstpointer pft2, gpointer data)
 GEANY_API_SYMBOL
 const GSList *filetypes_get_sorted_by_name(void)
 {
-	static GSList *list = NULL;
-	
 	g_return_val_if_fail(filetypes_by_title, NULL);
+	
+	static GSList *list = NULL;
 	
 	if (!list)
 	{
@@ -361,9 +361,7 @@ static void on_document_save(G_GNUC_UNUSED GObject *object, GeanyDocument *doc)
 	basename = g_path_get_basename(doc->real_path);
 	if (g_str_has_prefix(basename, "filetypes."))
 	{
-		guint i;
-		
-		for (i = 0; i < filetypes_array->len; i++)
+		for (guint i = 0; i < filetypes_array->len; i++)
 		{
 			GeanyFiletype *ft = filetypes[i];
 			
@@ -432,13 +430,13 @@ static void create_set_filetype_menu(gboolean config)
 				  : ui_lookup_widget(main_widgets.window, "set_filetype1_menu");
 	
 	group_menus[GEANY_FILETYPE_GROUP_COMPILED] =
-		create_sub_menu(menu, _("_Programming Languages"));
+			create_sub_menu(menu, _("_Programming Languages"));
 	group_menus[GEANY_FILETYPE_GROUP_SCRIPT] =
-		create_sub_menu(menu, _("_Scripting Languages"));
+			create_sub_menu(menu, _("_Scripting Languages"));
 	group_menus[GEANY_FILETYPE_GROUP_MARKUP] =
-		create_sub_menu(menu, _("_Markup Languages"));
+			create_sub_menu(menu, _("_Markup Languages"));
 	group_menus[GEANY_FILETYPE_GROUP_MISC] =
-		create_sub_menu(menu, _("M_iscellaneous"));
+			create_sub_menu(menu, _("M_iscellaneous"));
 	
 	/* Append all filetypes to the menu */
 	foreach_slist(node, filetypes_by_title)
@@ -491,7 +489,6 @@ static guint match_basename(const GeanyFiletype *ft, const gchar *base_filename)
 static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 {
 	gchar *lfn = NULL;
-	gchar *path;
 	
 #ifdef G_OS_WIN32
 	/* use lower case basename */
@@ -502,11 +499,12 @@ static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 	SETPTR(lfn, utils_get_locale_from_utf8(lfn));
 	
 	//~ esh: detect conf-file by parent dir of utf8_filename
-	path = g_path_get_dirname(utf8_filename);
+	gchar *path = g_path_get_dirname(utf8_filename);
 	gboolean found = g_str_has_suffix(path, GEANY_FILEDEFS_SUBDIR);
 	
 	g_free(path);
 	g_free(lfn);
+	
 	return found ? filetypes[GEANY_FILETYPES_CONF] : NULL;
 }
 
@@ -637,7 +635,8 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 		g_free(tmp);
 	}
 	/* detect HTML files */
-	if (g_str_has_prefix(line, "<!DOCTYPE html") || g_str_has_prefix(line, "<html"))
+	if (g_str_has_prefix(line, "<!DOCTYPE html") ||
+		g_str_has_prefix(line, "<html"))
 	{
 		/* PHP, Perl and Python files might also start with <html,
 		 * so detect them based on filename extension and
@@ -646,9 +645,7 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 											 GEANY_FILETYPES_PERL,
 											 GEANY_FILETYPES_PHP,
 											 GEANY_FILETYPES_PYTHON, -1))
-		{
 			ft = filetypes[GEANY_FILETYPES_HTML];
-		}
 	}
 	/* detect XML files */
 	else if (utf8_filename && g_str_has_prefix(line, "<?xml"))
@@ -663,14 +660,11 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 											 GEANY_FILETYPES_PERL,
 											 GEANY_FILETYPES_PHP,
 											 GEANY_FILETYPES_PYTHON, -1))
-		{
 			ft = filetypes[GEANY_FILETYPES_XML];
-		}
 	}
 	else if (g_str_has_prefix(line, "<?php"))
-	{
 		ft = filetypes[GEANY_FILETYPES_PHP];
-	}
+	
 	return ft;
 }
 
@@ -732,20 +726,19 @@ static GeanyFiletype *filetypes_detect_from_file_internal(const gchar *utf8_file
  * checking for a shebang, then filename extension. */
 GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc)
 {
-	GeanyFiletype 	*ft;
-	gchar 			*lines[GEANY_FILETYPE_SEARCH_LINES + 1];
-	gint			 i;
-	
 	g_return_val_if_fail(doc == NULL || doc->is_valid,
 						 filetypes[GEANY_FILETYPES_NONE]);
-	
 	if (doc == NULL)
 		return filetypes[GEANY_FILETYPES_NONE];
 	
+	GeanyFiletype	*ft;
+	gchar			*lines[GEANY_FILETYPE_SEARCH_LINES + 1];
+	gint			 i;
+	
 	for (i = 0; i < GEANY_FILETYPE_SEARCH_LINES; ++i)
 		lines[i] = sci_get_line(doc->editor->sci, i);
-	
 	lines[i] = NULL;
+	
 	ft = filetypes_detect_from_file_internal(doc->file_name, lines);
 	
 	for (i = 0; i < GEANY_FILETYPE_SEARCH_LINES; ++i)
@@ -768,18 +761,18 @@ GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc)
 GEANY_API_SYMBOL
 GeanyFiletype *filetypes_detect_from_file(const gchar *utf8_filename)
 {
-	gchar line[1024];
-	gchar *lines[2];
-	FILE  *f;
 	gchar *locale_name = utils_get_locale_from_utf8(utf8_filename);
-	
-	f = g_fopen(locale_name, "r");
+	FILE *f = g_fopen(locale_name, "r");
 	g_free(locale_name);
+	
 	if (f != NULL)
 	{
+		gchar line[1024];
 		if (fgets(line, sizeof(line), f) != NULL)
 		{
 			fclose(f);
+			
+			gchar *lines[2];
 			lines[0] = line;
 			lines[1] = NULL;
 			return filetypes_detect_from_file_internal(utf8_filename, lines);
@@ -808,6 +801,7 @@ static void
 on_filetype_change(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
+	
 	if (ignore_callback || doc == NULL ||
 		!gtk_check_menu_item_get_active(menuitem))
 		return;
@@ -849,14 +843,16 @@ static void filetype_free(gpointer data, G_GNUC_UNUSED gpointer user_data)
 	g_free(ft->priv->ftdefcmds);
 	g_free(ft->priv->execcmds);
 	g_free(ft->error_regex_string);
+	
 	if (ft->icon)
 		g_object_unref(ft->icon);
+	
 	g_strfreev(ft->pattern);
 	
 	if (ft->priv->error_regex)
 		g_regex_unref(ft->priv->error_regex);
 	
-	g_slist_foreach(ft->priv->tag_files, (GFunc) g_free, NULL);
+	g_slist_foreach(ft->priv->tag_files, (GFunc)g_free, NULL);
 	g_slist_free(ft->priv->tag_files);
 	
 	g_free(ft->priv);
@@ -989,7 +985,7 @@ static void load_settings(guint ft_id, GKeyFile *config, GKeyFile *configh)
 
 
 static void copy_keys(GKeyFile *dest, const gchar *dest_group,
-		GKeyFile *src, const gchar *src_group)
+					  GKeyFile *src, const gchar *src_group)
 {
 	gchar **keys = g_key_file_get_keys(src, src_group, NULL, NULL);
 	gchar **ptr;
@@ -1027,14 +1023,13 @@ static gchar *filetypes_get_filename(GeanyFiletype *ft, gboolean user)
 
 static void add_group_keys(GKeyFile *kf, const gchar *group, GeanyFiletype *ft)
 {
-	gchar *files[2];
 	gboolean loaded = FALSE;
-	guint i;
 	
+	gchar *files[2];
 	files[0] = filetypes_get_filename(ft, FALSE);
 	files[1] = filetypes_get_filename(ft, TRUE);
 	
-	for (i = 0; i < G_N_ELEMENTS(files); i++)
+	for (guint i = 0; i < G_N_ELEMENTS(files); i++)
 	{
 		GKeyFile *src = g_key_file_new();
 		
@@ -1135,9 +1130,7 @@ void filetypes_load_config(guint ft_id, gboolean reload)
 	config_home = g_key_file_new();
 	{
 		/* highlighting uses GEANY_FILETYPES_NONE for common settings */
-		gchar *f;
-		
-		f = filetypes_get_filename(ft, FALSE);
+		gchar *f = filetypes_get_filename(ft, FALSE);
 		load_system_keyfile(config, f, G_KEY_FILE_KEEP_COMMENTS, ft);
 		
 		SETPTR(f, filetypes_get_filename(ft, TRUE));
@@ -1197,6 +1190,7 @@ void filetypes_save_commands(GeanyFiletype *ft)
 	build_save_menu(config_home, ft, GEANY_BCS_HOME_FT);
 	data = g_key_file_to_data(config_home, NULL, NULL);
 	utils_write_file(fname, data);
+	
 	g_free(data);
 	g_key_file_free(config_home);
 	g_free(fname);
@@ -1287,6 +1281,7 @@ static void compile_regex(GeanyFiletype *ft, gchar *regstr)
 	}
 	if (ft->priv->error_regex)
 		g_regex_unref(ft->priv->error_regex);
+	
 	ft->priv->error_regex = regex;
 }
 
@@ -1339,8 +1334,8 @@ gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 	for (i = 1; i < n_match_groups; i++)
 	{
 		gint start_pos;
-		
 		g_match_info_fetch_pos(minfo, i, &start_pos, NULL);
+		
 		if (start_pos != -1)
 		{
 			if (first == NULL)
@@ -1356,9 +1351,8 @@ gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 	if (second)
 	{
 		gchar *end;
-		glong l;
+		glong l = strtol(first, &end, 10);
 		
-		l = strtol(first, &end, 10);
 		if (*end == '\0')	/* first is purely decimals */
 		{
 			*line = l;
@@ -1392,8 +1386,7 @@ gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 #ifdef G_OS_WIN32
 static void convert_filetype_extensions_to_lower_case(gchar **patterns, gsize len)
 {
-	guint i;
-	for (i = 0; i < len; i++)
+	for (guint i = 0; i < len; i++)
 		SETPTR(patterns[i], g_ascii_strdown(patterns[i], -1));
 }
 #endif
@@ -1401,11 +1394,10 @@ static void convert_filetype_extensions_to_lower_case(gchar **patterns, gsize le
 
 static void read_extensions(GKeyFile *sysconfig, GKeyFile *userconfig)
 {
-	guint i;
 	gsize len = 0;
 	
 	/* read the keys */
-	for (i = 0; i < filetypes_array->len; i++)
+	for (guint i = 0; i < filetypes_array->len; i++)
 	{
 		gboolean userset = g_key_file_has_key(userconfig, "Extensions",
 											  filetypes[i]->name, NULL);
@@ -1436,7 +1428,6 @@ static void read_group(GKeyFile *config, const gchar *group_name,
 	foreach_strv(name, names)
 	{
 		GeanyFiletype *ft = filetypes_lookup_by_name(*name);
-		
 		if (ft)
 		{
 			ft->group = group_id;
@@ -1474,10 +1465,8 @@ static void read_filetype_config(void)
 	GKeyFile *sysconfig = g_key_file_new();
 	GKeyFile *userconfig = g_key_file_new();
 	
-	g_key_file_load_from_file(sysconfig, sysconfigfile,
-							  G_KEY_FILE_NONE, NULL);
-	g_key_file_load_from_file(userconfig, userconfigfile,
-							  G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(sysconfig, sysconfigfile, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(userconfig, userconfigfile, G_KEY_FILE_NONE, NULL);
 	
 	read_extensions(sysconfig, userconfig);
 	read_groups(sysconfig);
@@ -1492,11 +1481,10 @@ static void read_filetype_config(void)
 
 void filetypes_reload_extensions(void)
 {
-	guint i;
-	
 	read_filetype_config();
 	
 	/* Redetect filetype of any documents with none set */
+	guint i;
 	foreach_document(i)
 	{
 		GeanyDocument *doc = documents[i];
@@ -1598,7 +1586,7 @@ gboolean filetype_get_comment_open_close(const GeanyFiletype *ft,
 }
 
 static void *copy_(void *src) { return src; }
-static void free_(void *doc) { }
+static void  free_(void *doc) { }
 
 /** @gironly
  * Gets the GType of GeanyFiletype

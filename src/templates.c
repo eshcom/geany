@@ -179,9 +179,7 @@ static gchar *get_template_from_file(const gchar *locale_fname,
 									 const gchar *doc_filename,
 									 GeanyFiletype *ft)
 {
-	gchar *content;
-	
-	content = read_file(locale_fname);
+	gchar *content = read_file(locale_fname);
 	
 	if (content != NULL)
 	{
@@ -189,8 +187,7 @@ static gchar *get_template_from_file(const gchar *locale_fname,
 		GString *template = g_string_new(content);
 		
 		file_header = get_template_fileheader(ft);
-		templates_replace_valist(template, "{fileheader}", file_header,
-								 NULL);
+		templates_replace_valist(template, "{fileheader}", file_header, NULL);
 		templates_replace_common(template, doc_filename, ft, NULL);
 		
 		utils_free_pointers(2, file_header, content, NULL);
@@ -514,8 +511,7 @@ gchar *templates_get_template_changelog(GeanyDocument *doc)
 	file_type_name = (doc->file_type != NULL) ? doc->file_type->name : "";
 	replace_static_values(result);
 	templates_replace_default_dates(result);
-	templates_replace_command(result, DOC_FILENAME(doc),
-							  file_type_name, NULL);
+	templates_replace_command(result, DOC_FILENAME(doc), file_type_name, NULL);
 	convert_eol_characters(result, doc);
 	
 	return g_string_free(result, FALSE);
@@ -529,6 +525,7 @@ static void free_template_menu_items(GtkWidget *menu)
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	foreach_list(item, children)
 		gtk_widget_destroy(GTK_WIDGET(item->data));
+	
 	g_list_free(children);
 }
 
@@ -591,18 +588,17 @@ void templates_replace_valist(GString *text, const gchar *first_wildcard, ...)
 
 static void templates_replace_default_dates(GString *text)
 {
+	g_return_if_fail(text != NULL);
+	
 	gchar *year = utils_get_date_time(template_prefs.year_format, NULL);
 	gchar *date = utils_get_date_time(template_prefs.date_format, NULL);
 	gchar *datetime = utils_get_date_time(template_prefs.datetime_format, NULL);
-	
-	g_return_if_fail(text != NULL);
 	
 	templates_replace_valist(text,
 							 "{year}", year,
 							 "{date}", date,
 							 "{datetime}", datetime,
 							 NULL);
-	
 	utils_free_pointers(3, year, date, datetime, NULL);
 }
 

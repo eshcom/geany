@@ -162,8 +162,7 @@ static gsize get_tag_count(void)
  * note that the tag count only counts new global tags added -
  * if a tag has the same name, currently it replaces the existing tag,
  * so loading a file twice will say 0 tags the 2nd time. */
-static gboolean symbols_load_global_tags(const gchar *tags_file,
-										 GeanyFiletype *ft)
+static gboolean symbols_load_global_tags(const gchar *tags_file, GeanyFiletype *ft)
 {
 	gboolean result;
 	gsize old_tag_count = get_tag_count();
@@ -210,8 +209,7 @@ void symbols_global_tags_loaded(guint file_type_idx)
 }
 
 
-GString *symbols_find_typenames_as_string(TMParserType lang,
-										  gint typedefs_kind)
+GString *symbols_find_typenames_as_string(TMParserType lang, gint typedefs_kind)
 {
 	guint j;
 	TMTag *tag;
@@ -1035,8 +1033,7 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 }
 
 
-static GdkPixbuf *get_child_icon(GtkTreeStore *tree_store,
-								 GtkTreeIter *parent)
+static GdkPixbuf *get_child_icon(GtkTreeStore *tree_store, GtkTreeIter *parent)
 {
 	GdkPixbuf *icon = NULL;
 	
@@ -1112,8 +1109,7 @@ static gboolean tree_store_remove_row(GtkTreeStore *store, GtkTreeIter *iter)
 	if (!cont && has_parent)
 	{
 		*iter = parent;
-		cont = ui_tree_model_iter_any_next(GTK_TREE_MODEL(store),
-										   iter, FALSE);
+		cont = ui_tree_model_iter_any_next(GTK_TREE_MODEL(store), iter, FALSE);
 	}
 	return cont;
 }
@@ -1212,8 +1208,7 @@ static void update_parents_table(GHashTable *table, const TMTag *tag,
 }
 
 
-static GtkTreeIter *parents_table_lookup(GHashTable *table,
-										 const gchar *name,
+static GtkTreeIter *parents_table_lookup(GHashTable *table, const gchar *name,
 										 guint line)
 {
 	GtkTreeIter *parent_search = NULL;
@@ -1665,8 +1660,7 @@ static GeanyFiletype *detect_global_tags_filetype(const gchar *utf8_filename)
  * when CFLAGS includes the relevant path.
  * Example:
  * CFLAGS=-I/home/user/libname-1.x geany -g libname.d.tags libname.h */
-int symbols_generate_global_tags(int argc, char **argv,
-								 gboolean want_preprocess)
+int symbols_generate_global_tags(int argc, char **argv, gboolean want_preprocess)
 {
 	/* -E pre-process, -dD output user macros, -p prof info (?) */
 	const char pre_process[] = "gcc -E -dD -p -I.";
@@ -1995,8 +1989,7 @@ static gboolean show_scope(TMParserType lang)
 	}
 }
 
-static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags,
-							gboolean have_best)
+static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags, gboolean have_best)
 {
 	GtkWidget *first = NULL;
 	GtkWidget *menu;
@@ -2349,10 +2342,11 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
 {
 	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s", type, scope, name); // esh: log
+	
 	GeanyDocument *old_doc = document_get_current();
-	gboolean found = FALSE;
-	GPtrArray *all_tags, *tags;
 	guint current_line = sci_get_current_line(old_doc->editor->sci) + 1;
+	
+	GPtrArray *all_tags, *tags;
 	
 	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
 								 old_doc->file_type->lang);
@@ -2413,7 +2407,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		g_ptr_array_free(tag_list, TRUE);
 	}
 	
-	found = tags->len > 0;
+	gboolean found = tags->len > 0;
 	g_ptr_array_free(tags, TRUE);
 	
 	return found;
@@ -2694,8 +2688,7 @@ static gint get_current_tag_name(GeanyDocument *doc, gchar **tagname,
 }
 
 
-static gint get_current_tag_name_cached(GeanyDocument *doc,
-										const gchar **tagname,
+static gint get_current_tag_name_cached(GeanyDocument *doc, const gchar **tagname,
 										TMTagType tag_types)
 {
 	static gint tag_line = -1;
@@ -2756,27 +2749,25 @@ gint symbols_get_current_scope(GeanyDocument *doc, const gchar **tagname)
 }
 
 
-static void on_symbol_tree_sort_clicked(GtkMenuItem *menuitem,
-										gpointer user_data)
+static void on_symbol_tree_sort_clicked(GtkMenuItem *menuitem, gpointer user_data)
 {
-	gint sort_mode = GPOINTER_TO_INT(user_data);
-	GeanyDocument *doc = document_get_current();
-	
 	if (ignore_callback)
 		return;
 	
+	GeanyDocument *doc = document_get_current();
 	if (doc != NULL)
+	{
+		gint sort_mode = GPOINTER_TO_INT(user_data);
 		doc->has_tags = symbols_recreate_tag_list(doc, sort_mode);
+	}
 }
 
 
-static void on_symbol_tree_menu_show(GtkWidget *widget,
-		gpointer user_data)
+static void on_symbol_tree_menu_show(GtkWidget *widget, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	gboolean enable;
 	
-	enable = doc && doc->has_tags;
+	gboolean enable = doc && doc->has_tags;
 	gtk_widget_set_sensitive(symbol_menu.sort_by_name, enable);
 	gtk_widget_set_sensitive(symbol_menu.sort_by_appearance, enable);
 	gtk_widget_set_sensitive(symbol_menu.expand_all, enable);
@@ -2804,14 +2795,13 @@ static void on_symbol_tree_menu_show(GtkWidget *widget,
 
 static void on_expand_collapse(GtkWidget *widget, gpointer user_data)
 {
-	gboolean expand = GPOINTER_TO_INT(user_data);
 	GeanyDocument *doc = document_get_current();
-	
 	if (!doc)
 		return;
 	
 	g_return_if_fail(doc->priv->tag_tree);
 	
+	gboolean expand = GPOINTER_TO_INT(user_data);
 	if (expand)
 		gtk_tree_view_expand_all(GTK_TREE_VIEW(doc->priv->tag_tree));
 	else
@@ -2821,15 +2811,14 @@ static void on_expand_collapse(GtkWidget *widget, gpointer user_data)
 
 static void on_find_usage(GtkWidget *widget, G_GNUC_UNUSED gpointer unused)
 {
-	GtkTreeIter iter;
-	GtkTreeSelection *selection;
-	GtkTreeModel *model;
-	GeanyDocument *doc;
-	TMTag *tag = NULL;
-	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	if (!doc)
 		return;
+	
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	GtkTreeSelection *selection;
+	TMTag *tag = NULL;
 	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(doc->priv->tag_tree));
 	if (gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -2917,8 +2906,7 @@ static void create_taglist_popup_menu(void)
 }
 
 
-static void on_document_save(G_GNUC_UNUSED GObject *object,
-							 GeanyDocument *doc)
+static void on_document_save(G_GNUC_UNUSED GObject *object, GeanyDocument *doc)
 {
 	gchar *f;
 	

@@ -125,13 +125,12 @@ void on_save_as1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 void on_save_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	guint i, max = (guint)gtk_notebook_get_n_pages(
+	guint max = (guint)gtk_notebook_get_n_pages(
 								GTK_NOTEBOOK(main_widgets.notebook));
-	GeanyDocument *cur_doc = document_get_current();
 	guint count = 0;
 	
 	/* iterate over documents in tabs order */
-	for (i = 0; i < max; i++)
+	for (guint i = 0; i < max; i++)
 	{
 		GeanyDocument *doc = document_get_from_page(i);
 		
@@ -147,6 +146,7 @@ void on_save_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 	ui_set_statusbar(FALSE, ngettext("%d file saved.", "%d files saved.", count),
 					 count);
 	/* saving may have changed window title, sidebar for another doc, so update */
+	GeanyDocument *cur_doc = document_get_current();
 	document_show_tab(cur_doc);
 	sidebar_update_tag_list(cur_doc, TRUE);
 	ui_set_window_title(cur_doc);
@@ -215,7 +215,6 @@ static void on_edit1_deselect(GtkMenuShell *menushell, gpointer user_data)
 void on_undo1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	if (document_can_undo(doc))
@@ -229,7 +228,6 @@ void on_undo1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_redo1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	if (document_can_redo(doc))
@@ -329,7 +327,6 @@ void on_open1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_toolbutton_reload_clicked(GtkAction *action, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	document_reload_prompt(doc, NULL);
@@ -387,13 +384,14 @@ void on_toolbar_search_entry_activate(GtkAction *action, const gchar *text,
 /* search text */
 void on_toolbutton_search_clicked(GtkAction *action, gpointer user_data)
 {
-	GeanyDocument *doc = document_get_current();
 	gboolean result;
 	GtkWidget *entry = toolbar_get_widget_child_by_name("SearchEntry");
 	
 	if (entry != NULL)
 	{
 		const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
+		
+		GeanyDocument *doc = document_get_current();
 		
 		setup_find(text, FALSE);
 		result = document_search_bar_find(doc, search_data.text, FALSE, FALSE);
@@ -418,7 +416,6 @@ static void on_hide_toolbar1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_zoom_in1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	sci_zoom_in(doc->editor->sci);
@@ -429,7 +426,6 @@ void on_zoom_in1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_zoom_out1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	sci_zoom_out(doc->editor->sci);
@@ -439,7 +435,6 @@ void on_zoom_out1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_normal_size1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	sci_zoom_off(doc->editor->sci);
@@ -452,13 +447,11 @@ void on_normal_size1_activate(GtkMenuItem *menuitem, gpointer user_data)
 static void on_notebook1_switch_page_after(GtkNotebook *notebook, gpointer page,
 										   guint page_num, gpointer user_data)
 {
-	GeanyDocument *doc;
-	
 	if (G_UNLIKELY(main_status.opening_session_files ||
 				   main_status.closing_all))
 		return;
 	
-	doc = document_get_from_notebook_child(page);
+	GeanyDocument *doc = document_get_from_notebook_child(page);
 	
 	if (doc != NULL)
 	{
@@ -502,7 +495,6 @@ static void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpointer pag
 static void convert_eol(gint mode)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	/* sci_convert_eols() adds UNDO_SCINTILLA action in on_editor_notify().
@@ -549,7 +541,6 @@ static void on_cr_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 void on_replace_tabs_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	editor_replace_tabs(doc->editor, FALSE);
@@ -561,8 +552,7 @@ gboolean toolbar_popup_menu(GtkWidget *widget, GdkEventButton *event,
 {
 	if (event->button == 3)
 	{
-		gtk_menu_popup(GTK_MENU(ui_widgets.toolbar_menu),
-					   NULL, NULL, NULL, NULL,
+		gtk_menu_popup(GTK_MENU(ui_widgets.toolbar_menu), NULL, NULL, NULL, NULL,
 					   event->button, event->time);
 		return TRUE;
 	}
@@ -573,12 +563,11 @@ gboolean toolbar_popup_menu(GtkWidget *widget, GdkEventButton *event,
 void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	ScintillaObject *sci;
-	gboolean keep_sel = TRUE;
-	
 	g_return_if_fail(doc != NULL);
 	
-	sci = doc->editor->sci;
+	ScintillaObject *sci = doc->editor->sci;
+	gboolean keep_sel = TRUE;
+	
 	if (!sci_has_selection(sci))
 	{
 		keybindings_send_command(GEANY_KEY_GROUP_SELECT,
@@ -628,7 +617,8 @@ void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer user_data)
 static void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem,
 									 gpointer user_data)
 {
-	if (ignore_callback) return;
+	if (ignore_callback)
+		return;
 	
 	toolbar_prefs.visible = (toolbar_prefs.visible) ? FALSE : TRUE;
 	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar),
@@ -764,11 +754,11 @@ static void on_use_auto_indentation1_toggled(GtkCheckMenuItem *checkmenuitem,
 
 static void find_usage(gboolean in_session)
 {
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(doc != NULL);
+	
 	GeanyFindFlags flags;
 	gchar *search_text;
-	GeanyDocument *doc = document_get_current();
-	
-	g_return_if_fail(doc != NULL);
 	
 	if (sci_has_selection(doc->editor->sci))
 	{	/* take selected text if there is a selection */
@@ -804,7 +794,6 @@ void on_find_usage1_activate(GtkMenuItem *menuitem, gpointer user_data)
 static void goto_tag(gboolean definition)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	/* update cursor pos for navigating back afterwards */
@@ -843,13 +832,12 @@ static void on_count_words1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 void on_show_color_chooser1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	gchar colour[9];
 	GeanyDocument *doc = document_get_current();
-	gint pos;
-	
 	g_return_if_fail(doc != NULL);
 	
-	pos = sci_get_current_position(doc->editor->sci);
+	gchar colour[9];
+	gint pos = sci_get_current_position(doc->editor->sci);
+	
 	editor_find_current_word(doc->editor, pos, colour, sizeof colour,
 							 GEANY_WORDCHARS"#");
 	tools_color_chooser(colour);
@@ -929,18 +917,17 @@ static void get_line_and_offset_from_text(const gchar *text,
 void on_go_to_line_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	static gchar value[16] = "";
-	gchar *result;
 	
-	result = dialogs_show_input_goto_line(
+	gchar *result = dialogs_show_input_goto_line(
 							_("Go to Line"), GTK_WINDOW(main_widgets.window),
 							_("Enter the line you want to go to:"), value);
 	if (result != NULL)
 	{
 		GeanyDocument *doc = document_get_current();
+		g_return_if_fail(doc != NULL);
+		
 		gint offset;
 		gint line_no;
-		
-		g_return_if_fail(doc != NULL);
 		
 		get_line_and_offset_from_text(result, &line_no, &offset);
 		if (!editor_goto_line(doc->editor, line_no, offset))
@@ -957,10 +944,10 @@ void on_toolbutton_goto_entry_activate(GtkAction *action, const gchar *text,
 									   gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(doc != NULL);
+	
 	gint offset;
 	gint line_no;
-	
-	g_return_if_fail(doc != NULL);
 	
 	get_line_and_offset_from_text(text, &line_no, &offset);
 	if (!editor_goto_line(doc->editor, line_no, offset))
@@ -987,9 +974,7 @@ void on_toolbutton_goto_clicked(GtkAction *action, gpointer user_data)
 
 void on_help1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	gchar *uri;
-	
-	uri = utils_get_help_url(NULL);
+	gchar *uri = utils_get_help_url(NULL);
 	utils_open_browser(uri);
 	g_free(uri);
 }
@@ -1033,16 +1018,16 @@ static void on_comments_function_activate(GtkMenuItem *menuitem,
 										  gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	gchar *text;
-	const gchar *cur_tag = NULL;
-	gint line = -1, pos = 0;
-	
 	if (doc == NULL || doc->file_type == NULL)
 	{
 		ui_set_statusbar(FALSE, _("Please set the filetype for the current "
 								  "file before using this function."));
 		return;
 	}
+	
+	gchar *text;
+	const gchar *cur_tag = NULL;
+	gint line = -1, pos = 0;
 	
 	/* symbols_get_current_function returns -1 on failure,
 	 * so sci_get_position_from_line returns the current position,
@@ -1103,8 +1088,6 @@ static void on_menu_comments_multiline_activate(GtkMenuItem *menuitem,
 static void insert_comment_template(GeanyDocument *doc, gint pos,
 									guint template)
 {
-	gchar *text;
-	
 	g_return_if_fail(doc != NULL);
 	g_return_if_fail(pos == -1 || pos >= 0);
 	g_return_if_fail(template < GEANY_MAX_TEMPLATES);
@@ -1112,7 +1095,7 @@ static void insert_comment_template(GeanyDocument *doc, gint pos,
 	if (pos == -1)
 		pos = sci_get_current_position(doc->editor->sci);
 	
-	text = templates_get_template_licence(doc, template);
+	gchar *text = templates_get_template_licence(doc, template);
 	
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, pos, text);
@@ -1153,13 +1136,12 @@ static void on_comments_changelog_activate(GtkMenuItem *menuitem,
 										   gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	gchar *text;
-	
 	g_return_if_fail(doc != NULL);
 	
-	text = templates_get_template_changelog(doc);
+	gchar *text = templates_get_template_changelog(doc);
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, 0, text);
+	
 	/* sets the cursor to the right position to type the changelog text,
 	 * the template has 21 chars + length of name and email */
 	sci_goto_pos(doc->editor->sci, 21 + strlen(template_prefs.developer)
@@ -1174,11 +1156,11 @@ static void on_comments_fileheader_activate(GtkMenuItem *menuitem,
 											gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(doc != NULL);
+	
 	gchar *text;
 	const gchar *fname;
 	GeanyFiletype *ft;
-	
-	g_return_if_fail(doc != NULL);
 	
 	ft = doc->file_type;
 	fname = doc->file_name;
@@ -1302,8 +1284,8 @@ static void on_menu_write_unicode_bom1_toggled(GtkCheckMenuItem *checkmenuitem,
 	if (!ignore_callback)
 	{
 		GeanyDocument *doc = document_get_current();
-		
 		g_return_if_fail(doc != NULL);
+		
 		if (doc->readonly)
 		{
 			utils_beep();
@@ -1569,12 +1551,11 @@ static void on_load_tags1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	gchar *word, *command;
-	GError *error = NULL;
 	GeanyDocument *doc = document_get_current();
-	const gchar *check_msg;
-	
 	g_return_if_fail(doc != NULL);
+	
+	gchar *word, *command;
+	const gchar *check_msg;
 	
 	if (sci_has_selection(doc->editor->sci))
 	{	/* take selected text if there is a selection */
@@ -1604,6 +1585,7 @@ void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data)
 		
 		utils_str_replace_all(&command_line, "%s", word);
 		
+		GError *error = NULL;
 		if (!spawn_async(NULL, command_line, NULL, NULL, NULL, &error))
 		{
 			/* G_SHELL_ERROR is parsing error, it may be
@@ -1707,12 +1689,10 @@ gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event,
 
 static void set_indent_type(GtkCheckMenuItem *menuitem, GeanyIndentType type)
 {
-	GeanyDocument *doc;
-	
 	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
 		return;
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
 	editor_set_indent(doc->editor, type, doc->editor->indent_width);
@@ -1742,12 +1722,10 @@ static void on_tabs_and_spaces1_activate(GtkCheckMenuItem *menuitem,
 static void on_strip_trailing_spaces1_activate(GtkMenuItem *menuitem,
 											   gpointer user_data)
 {
-	GeanyDocument *doc;
-	
 	if (ignore_callback)
 		return;
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
 	editor_strip_trailing_spaces(doc->editor, FALSE);
@@ -1778,12 +1756,10 @@ gboolean on_escape_key_press_event(GtkWidget *widget, GdkEventKey *event,
 
 void on_line_breaking1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	GeanyDocument *doc;
-	
 	if (ignore_callback)
 		return;
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
 	doc->editor->line_breaking = !doc->editor->line_breaking;
@@ -1793,7 +1769,6 @@ void on_line_breaking1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_replace_spaces_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	editor_replace_spaces(doc->editor, FALSE);
@@ -1806,12 +1781,11 @@ static void on_search1_activate(GtkMenuItem *menuitem, gpointer user_data)
 											   "next_message1");
 	GtkWidget *previous_message = ui_lookup_widget(main_widgets.window,
 												   "previous_message1");
-	gboolean have_messages;
 	
 	/* enable commands if the messages window has any items */
-	have_messages = gtk_tree_model_iter_n_children(
-									GTK_TREE_MODEL(msgwindow.store_msg),
-									NULL) > 0;
+	gboolean have_messages = gtk_tree_model_iter_n_children(
+										GTK_TREE_MODEL(msgwindow.store_msg),
+										NULL) > 0;
 	
 	gtk_widget_set_sensitive(next_message, have_messages);
 	gtk_widget_set_sensitive(previous_message, have_messages);
@@ -1822,16 +1796,14 @@ static void on_search1_activate(GtkMenuItem *menuitem, gpointer user_data)
  * if user_data is set, it is the GeanyDocument to keep */
 void on_close_other_documents1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	guint i;
 	GeanyDocument *cur_doc = user_data;
 	
 	if (cur_doc == NULL)
 		cur_doc = document_get_current();
 	
-	for (i = 0; i < documents_array->len; i++)
+	for (guint i = 0; i < documents_array->len; i++)
 	{
 		GeanyDocument *doc = documents[i];
-		
 		if (doc == cur_doc || !doc->is_valid)
 			continue;
 		
@@ -2033,18 +2005,14 @@ void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 static void on_indent_width_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	GeanyDocument *doc;
-	gchar *label;
-	gint width;
-	
 	if (ignore_callback)
 		return;
 	
-	label = ui_menu_item_get_text(menuitem);
-	width = atoi(label);
+	gchar *label = ui_menu_item_get_text(menuitem);
+	gint width = atoi(label);
 	g_free(label);
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	if (doc != NULL && width > 0)
 		editor_set_indent_width(doc->editor, width);
 }
@@ -2054,7 +2022,6 @@ static void on_reset_indentation1_activate(GtkMenuItem *menuitem,
 										   gpointer user_data)
 {
 	guint i;
-	
 	foreach_document(i)
 		document_apply_indent_settings(documents[i]);
 	
@@ -2116,9 +2083,8 @@ static void builder_connect_func(GtkBuilder *builder, GObject *object,
 								 GConnectFlags flags, gpointer user_data)
 {
 	GHashTable *hash = user_data;
-	GCallback callback;
 	
-	callback = g_hash_table_lookup(hash, handler_name);
+	GCallback callback = g_hash_table_lookup(hash, handler_name);
 	g_return_if_fail(callback);
 	
 	if (connect_obj == NULL)
@@ -2132,11 +2098,9 @@ static void builder_connect_func(GtkBuilder *builder, GObject *object,
 
 void callbacks_connect(GtkBuilder *builder)
 {
-	GHashTable *hash;
-	
 	g_return_if_fail(GTK_IS_BUILDER(builder));
 	
-	hash = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable *hash = g_hash_table_new(g_str_hash, g_str_equal);
 	
 #define ITEM(n) g_hash_table_insert(hash, (gpointer) #n, G_CALLBACK(n));
 #	include "signallist.i"

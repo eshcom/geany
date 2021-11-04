@@ -459,7 +459,8 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 				else
 					tag->type = tm_parser_get_tag_type(*kind, lang);
 			}
-			else if (strcmp(key, "inherits") == 0) /* comma-separated list of classes this class inherits from */
+			else if (strcmp(key, "inherits") == 0) /* comma-separated list of classes
+													  this class inherits from */
 			{
 				g_free(tag->inheritance);
 				tag->inheritance = g_strdup(value);
@@ -475,7 +476,8 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 					 strcmp(key, "function") == 0 ||
 					 strcmp(key, "struct") == 0 ||
 					 strcmp(key, "union") == 0 ||
-					 strcmp(key, "module") == 0) /* Name of the class/enum/function/struct/union/module in which this tag is a member */
+					 strcmp(key, "module") == 0) /* Name of the class/enum/function/struct/union/module
+													in which this tag is a member */
 			{
 				g_free(tag->scope);
 				tag->scope = g_strdup(value);
@@ -618,11 +620,11 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file,
 gboolean tm_source_file_write_tags_file(const gchar *tags_file,
 										GPtrArray *tags_array)
 {
+	g_return_val_if_fail(tags_array && tags_file, FALSE);
+	
 	guint i;
 	FILE *fp;
 	gboolean ret = TRUE;
-	
-	g_return_val_if_fail(tags_array && tags_file, FALSE);
 	
 	if (!(fp = g_fopen(tags_file, "w")))
 		return FALSE;
@@ -716,7 +718,7 @@ static gboolean tm_source_file_init(TMSourceFile *source_file,
 	if (file_name != NULL)
 	{
 		status = g_stat(file_name, &s);
-		if (0 != status)
+		if (status != 0)
 		{
 			/* g_warning("Unable to stat %s", file_name);*/
 			return FALSE;
@@ -852,16 +854,13 @@ G_DEFINE_BOXED_TYPE(TMSourceFile, tm_source_file,
  @param source_file The source file to parse
  @param text_buf The text buffer to parse
  @param buf_size The size of text_buf.
- @param use_buffer Set FALSE to ignore the buffer and parse the file directly or
- TRUE to parse the buffer and ignore the file content.
+ @param use_buffer Set FALSE to ignore the buffer and parse the file directly
+                   or TRUE to parse the buffer and ignore the file content.
  @return TRUE on success, FALSE on failure
 */
 gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 							  gsize buf_size, gboolean use_buffer)
 {
-	const char *file_name;
-	gboolean retry = TRUE;
-	
 	if (source_file == NULL || source_file->file_name == NULL)
 	{
 		g_warning("Attempt to parse NULL file");
@@ -874,7 +873,7 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 		return FALSE;
 	}
 	
-	file_name = source_file->file_name;
+	const char *file_name = source_file->file_name;
 	
 	if (use_buffer && (text_buf == NULL || buf_size == 0))
 	{
@@ -888,7 +887,7 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 			   source_file->lang, ctags_new_tag, ctags_pass_start,
 			   source_file);
 	
-	return !retry;
+	return FALSE;
 }
 
 /* Gets the name associated with the language index.

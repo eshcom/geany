@@ -33,40 +33,39 @@ static gboolean app_block_termination_cb(GtkosxApplication *app, gpointer data)
 }
 
 
-/* For some reason osx doesn't like when the NSApplicationOpenFile handler blocks for
- * a long time which may be caused by the project_ask_close() below. Finish the
- * NSApplicationOpenFile handler immediately and perform the potentially blocking
- * code on idle in this function. */
+/* For some reason osx doesn't like when the NSApplicationOpenFile handler blocks
+ * for a long time which may be caused by the project_ask_close() below.
+ * Finish the NSApplicationOpenFile handler immediately and perform the
+ * potentially blocking code on idle in this function. */
 static gboolean open_project_idle(gchar *locale_path)
 {
-	gchar *utf8_path;
-	
-	utf8_path = utils_get_utf8_from_locale(locale_path);
+	gchar *utf8_path = utils_get_utf8_from_locale(locale_path);
 	
 	gboolean save_default_session = app->project == NULL;
 	if (app->project == NULL ||
 		(g_strcmp0(utf8_path, app->project->file_name) != 0 && project_ask_close()))
 		project_load_file_with_session(locale_path, save_default_session);
+	
 	g_free(utf8_path);
 	g_free(locale_path);
 	return FALSE;
 }
 
 
-static gboolean app_open_file_cb(GtkosxApplication *osx_app, gchar *path, gpointer user_data)
+static gboolean app_open_file_cb(GtkosxApplication *osx_app, gchar *path,
+								 gpointer user_data)
 {
-	gchar opened = FALSE;
-	gchar *locale_path;
-
-	locale_path = utils_get_locale_from_utf8(path);
-
+	gchar *locale_path = utils_get_locale_from_utf8(path);
+	
 	if (!g_path_is_absolute(locale_path))
 	{
 		gchar *cwd = g_get_current_dir();
 		SETPTR(locale_path, g_build_filename(cwd, locale_path, NULL));
 		g_free(cwd);
 	}
-
+	
+	gboolean opened = FALSE;
+	
 	if (g_str_has_suffix(path, ".geany"))
 	{
 		g_idle_add((GSourceFunc)open_project_idle, locale_path);
@@ -77,7 +76,7 @@ static gboolean app_open_file_cb(GtkosxApplication *osx_app, gchar *path, gpoint
 		opened = document_open_file(locale_path, FALSE, NULL, NULL) != NULL;
 		g_free(locale_path);
 	}
-
+	
 	return opened;
 }
 
@@ -92,27 +91,27 @@ void osx_ui_init(void)
 {
 	GtkWidget *item, *menu;
 	GtkosxApplication *osx_app = gtkosx_application_get();
-
+	
 	item = ui_lookup_widget(main_widgets.window, "menubar1");
 	gtk_widget_hide(item);
 	gtkosx_application_set_menu_bar(osx_app, GTK_MENU_SHELL(item));
-
+	
 	item = ui_lookup_widget(main_widgets.window, "menu_quit1");
 	gtk_widget_hide(item);
-
+	
 	item = ui_lookup_widget(main_widgets.window, "menu_info1");
 	gtkosx_application_insert_app_menu_item(osx_app, item, 0);
-
+	
 	item = ui_lookup_widget(main_widgets.window, "menu_help1");
 	gtkosx_application_set_help_menu(osx_app, GTK_MENU_ITEM(item));
-
+	
 	gtkosx_application_set_use_quartz_accelerators(osx_app, FALSE);
-
+	
 	g_signal_connect(osx_app, "NSApplicationBlockTermination",
-					G_CALLBACK(app_block_termination_cb), NULL);
+					 G_CALLBACK(app_block_termination_cb), NULL);
 	g_signal_connect(osx_app, "NSApplicationOpenFile",
-					G_CALLBACK(app_open_file_cb), NULL);
-
+					 G_CALLBACK(app_open_file_cb), NULL);
+	
 	menu = gtk_menu_new();
 	item = gtk_menu_item_new_with_label("New Window");
 	g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(on_new_window), NULL);

@@ -498,10 +498,10 @@ static void on_project_properties_base_path_button_clicked(GtkWidget *button,
 	g_return_if_fail(GTK_IS_WIDGET(base_path_entry));
 	
 	dialog = gtk_file_chooser_dialog_new(_("Choose Project Base Path"),
-		NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-		NULL);
+										 NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+										 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+										 GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+										 NULL);
 	
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
 	{
@@ -524,6 +524,7 @@ static void insert_build_page(PropertyDialogElements *e)
 	build_table = build_commands_table(doc, GEANY_BCS_PROJ,
 									   &(e->build_properties), ft);
 	gtk_container_set_border_width(GTK_CONTAINER(build_table), 6);
+	
 	label = gtk_label_new(_("Build"));
 	e->build_page_num = gtk_notebook_append_page(GTK_NOTEBOOK(e->notebook),
 												 build_table, label);
@@ -575,14 +576,14 @@ static void create_properties_dialog(PropertyDialogElements *e)
 static void show_project_properties(gboolean show_build)
 {
 	GeanyProject *p = app->project;
+	g_return_if_fail(p != NULL);
+	
 	GtkWidget *widget = NULL;
 	GtkWidget *radio_long_line_custom;
 	static PropertyDialogElements e;
 	GSList *node;
 	gchar *entry_text;
 	GtkTextBuffer *buffer;
-	
-	g_return_if_fail(app->project != NULL);
 	
 	if (e.dialog == NULL)
 		create_properties_dialog(&e);
@@ -665,8 +666,9 @@ void project_build_properties(void)
 }
 
 
-/* checks whether there is an already open project and asks the user if he wants to close it or
- * abort the current action. Returns FALSE when the current action(the caller) should be cancelled
+/* checks whether there is an already open project and asks the user
+ * if he wants to close it or abort the current action. Returns FALSE
+ * when the current action(the caller) should be cancelled
  * and TRUE if we can go ahead */
 gboolean project_ask_close(void)
 {
@@ -675,9 +677,7 @@ gboolean project_ask_close(void)
 		if (dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
 			_("Do you want to close it before proceeding?"),
 			_("The '%s' project is open."), app->project->name))
-		{
 			return project_close(FALSE);
-		}
 		else
 			return FALSE;
 	}
@@ -709,16 +709,14 @@ static GeanyProject *create_project(void)
 /* Verifies data for New & Properties dialogs.
  * Creates app->project if NULL.
  * Returns: FALSE if the user needs to change any data. */
-static gboolean update_config(const PropertyDialogElements *e,
-							  gboolean new_project)
+static gboolean update_config(const PropertyDialogElements *e, gboolean new_project)
 {
+	g_return_val_if_fail(e != NULL, TRUE);
+	
 	const gchar *name, *file_name, *base_path;
 	gchar *locale_filename;
 	gsize name_len;
 	gint err_code = 0;
-	GeanyProject *p;
-	
-	g_return_val_if_fail(e != NULL, TRUE);
 	
 	name = gtk_entry_get_text(GTK_ENTRY(e->name));
 	name_len = strlen(name);
@@ -765,9 +763,7 @@ static gboolean update_config(const PropertyDialogElements *e,
 			
 			create_dir = dialogs_show_question_full(NULL, GTK_STOCK_OK, GTK_STOCK_CANCEL,
 								_("Create the project's base path directory?"),
-								_("The path \"%s\" does not exist."),
-								base_path);
-			
+								_("The path \"%s\" does not exist."), base_path);
 			if (create_dir)
 				err_code = utils_mkdir(locale_path, TRUE);
 			
@@ -808,7 +804,7 @@ static gboolean update_config(const PropertyDialogElements *e,
 		create_project();
 		new_project = TRUE;
 	}
-	p = app->project;
+	GeanyProject *p = app->project;
 	
 	SETPTR(p->name, g_strdup(name));
 	SETPTR(p->file_name, g_strdup(file_name));
@@ -976,15 +972,14 @@ static void on_file_save_button_clicked(GtkButton *button, PropertyDialogElement
 /* sets the project base path and the project file name according to the project name */
 static void on_name_entry_changed(GtkEditable *editable, PropertyDialogElements *e)
 {
-	gchar *base_path;
-	gchar *file_name;
-	gchar *name;
-	const gchar *project_dir = local_prefs.project_file_path;
-	
 	if (e->entries_modified)
 		return;
 	
-	name = gtk_editable_get_chars(editable, 0, -1);
+	gchar *base_path;
+	gchar *file_name;
+	const gchar *project_dir = local_prefs.project_file_path;
+	
+	gchar *name = gtk_editable_get_chars(editable, 0, -1);
 	if (!EMPTY(name))
 	{
 		base_path = g_strconcat(project_dir, G_DIR_SEPARATOR_S,
@@ -1061,8 +1056,8 @@ gboolean project_load_file(const gchar *locale_file_name,
 
 
 /* Reads the given filename and creates a new project with the data found in the file.
- * At this point there should not be an already opened project in Geany otherwise it will just
- * return.
+ * At this point there should not be an already opened project in Geany otherwise
+ * it will just return.
  * The filename is expected in the locale encoding. */
 static gboolean load_config(const gchar *filename, gboolean save_default_session)
 {
@@ -1136,16 +1131,14 @@ static void apply_editor_prefs(void)
  * Returns: TRUE if project file was written successfully. */
 static gboolean write_config(void)
 {
-	GeanyProject *p;
+	GeanyProject *p = app->project;
+	g_return_val_if_fail(p != NULL, FALSE);
+	
 	GKeyFile *config;
 	gchar *filename;
 	gchar *data;
 	gboolean ret = FALSE;
 	GSList *node;
-	
-	g_return_val_if_fail(app->project != NULL, FALSE);
-	
-	p = app->project;
 	
 	config = g_key_file_new();
 	/* try to load an existing config to keep manually added comments */
@@ -1266,16 +1259,15 @@ void project_load_tags_file(const gchar *tags_file,
 /* This is to save project-related global settings, NOT project file settings. */
 void project_save_prefs(GKeyFile *config)
 {
-	GeanyProject *project = app->project;
-	
 	if (cl_options.load_session)
 	{
+		GeanyProject *project = app->project;
 		const gchar *utf8_filename = (project == NULL) ? "" : project->file_name;
 		
 		g_key_file_set_string(config, "project", "session_file", utf8_filename);
 	}
 	g_key_file_set_string(config, "project", "project_file_path",
-		FALLBACK(local_prefs.project_file_path, ""));
+						  FALLBACK(local_prefs.project_file_path, ""));
 }
 
 
@@ -1300,13 +1292,13 @@ void project_load_prefs(GKeyFile *config)
 /* Initialize project-related preferences in the Preferences dialog. */
 void project_setup_prefs(void)
 {
+	g_return_if_fail(local_prefs.project_file_path != NULL);
+	
 	GtkWidget *path_entry = ui_lookup_widget(ui_widgets.prefs_dialog,
 											 "project_file_path_entry");
 	GtkWidget *path_btn = ui_lookup_widget(ui_widgets.prefs_dialog,
 										   "project_file_path_button");
 	static gboolean callback_setup = FALSE;
-	
-	g_return_if_fail(local_prefs.project_file_path != NULL);
 	
 	gtk_entry_set_text(GTK_ENTRY(path_entry), local_prefs.project_file_path);
 	if (!callback_setup)
@@ -1323,22 +1315,19 @@ void project_apply_prefs(void)
 {
 	GtkWidget *path_entry = ui_lookup_widget(ui_widgets.prefs_dialog,
 											 "project_file_path_entry");
-	const gchar *str;
 	
-	str = gtk_entry_get_text(GTK_ENTRY(path_entry));
+	const gchar *str = gtk_entry_get_text(GTK_ENTRY(path_entry));
 	SETPTR(local_prefs.project_file_path, g_strdup(str));
 }
 
 
 static void add_stash_group(StashGroup *group, gboolean apply_defaults)
 {
-	GKeyFile *kf;
-	
 	stash_groups = g_slist_prepend(stash_groups, group);
 	if (!apply_defaults)
 		return;
 	
-	kf = g_key_file_new();
+	GKeyFile *kf = g_key_file_new();
 	stash_group_load_from_key_file(group, kf);
 	g_key_file_free(kf);
 }
@@ -1346,9 +1335,8 @@ static void add_stash_group(StashGroup *group, gboolean apply_defaults)
 
 static void init_stash_prefs(void)
 {
-	StashGroup *group;
+	StashGroup *group = stash_group_new("indentation");
 	
-	group = stash_group_new("indentation");
 	/* copy global defaults */
 	indentation = *editor_get_indent_prefs(NULL);
 	stash_group_set_use_defaults(group, FALSE);

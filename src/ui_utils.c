@@ -366,15 +366,13 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 /* This sets the window title according to the current filename. */
 void ui_set_window_title(GeanyDocument *doc)
 {
-	GString *str;
-	GeanyProject *project = app->project;
-	
 	g_return_if_fail(doc == NULL || doc->is_valid);
 	
 	if (doc == NULL)
 		doc = document_get_current();
 	
-	str = g_string_new(NULL);
+	GString *str = g_string_new(NULL);
+	GeanyProject *project = app->project;
 	
 	//~ esh: changed the logic for generating the title of the main window
 	if (cl_options.new_instance)
