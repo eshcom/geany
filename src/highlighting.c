@@ -103,7 +103,7 @@ enum	/* Geany common styling */
 
 static struct
 {
-	GeanyLexerStyle	 styling[GCS_MAX];
+	GeanyLexerStyle styling[GCS_MAX];
 	
 	/* icon style, 1-4 */
 	gint fold_marker;
@@ -112,7 +112,7 @@ static struct
 	/* horizontal line when folded, 0-2 */
 	gint fold_draw_line;
 	
-	gchar			*wordchars;
+	gchar *wordchars;
 } common_style_set = { { { 0 } }, 0, 0, 0, NULL };
 
 
@@ -130,7 +130,7 @@ static GeanyLexerStyle gsd_default = {0x000000, 0xffffff, FALSE, FALSE};
 static void sci_set_property(ScintillaObject *sci, const gchar *name,
 							 const gchar *value)
 {
-	SSM(sci, SCI_SETPROPERTY, (uptr_t) name, (sptr_t) value);
+	SSM(sci, SCI_SETPROPERTY, (uptr_t)name, (sptr_t)value);
 }
 
 
@@ -145,8 +145,7 @@ static void new_styleset(guint file_type_id, gsize styling_count)
 
 static void free_styleset(guint file_type_id)
 {
-	StyleSet *style_ptr;
-	style_ptr = &style_sets[file_type_id];
+	StyleSet *style_ptr = &style_sets[file_type_id];
 	
 	style_ptr->count = 0;
 	g_free(style_ptr->styling);
@@ -174,20 +173,22 @@ static void get_keyfile_wordchars(GKeyFile *config, GKeyFile *configh,
 								  gchar **wordchars, const gchar *default_wordchars)
 {
 	*wordchars = utils_get_setting(string, configh, config,
-		"settings", "wordchars", default_wordchars);
+								   "settings", "wordchars",
+								   default_wordchars);
 }
 
 
 static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *style)
 {
+	g_return_val_if_fail(named_style, FALSE);
+	
 	GeanyLexerStyle *cs;
 	gchar *comma, *name = NULL;
 	const gchar *bold = NULL;
 	const gchar *italic = NULL;
 	
-	g_return_val_if_fail(named_style, FALSE);
-	name = utils_strdupa(named_style);	/* named_style must not be written to,
-										   may be a static string */
+	name = utils_strdupa(named_style); /* named_style must not be written to,
+										  may be a static string */
 	comma = strstr(name, ",");
 	if (comma)
 	{
@@ -195,8 +196,8 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
 		italic = strstr(comma, ",italic");
 		*comma = '\0';	/* terminate name to make lookup work */
 	}
-	cs = g_hash_table_lookup(named_style_hash, name);
 	
+	cs = g_hash_table_lookup(named_style_hash, name);
 	if (cs)
 	{
 		*style = *cs;
@@ -218,19 +219,16 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
  * location pointed to by `clr`. */
 static void parse_color(GKeyFile *kf, const gchar *str, gint *clr)
 {
-	gint c;
-	gchar *named_color = NULL;
-	
 	g_return_if_fail(clr != NULL);
 	
 	if (G_UNLIKELY(EMPTY(str)))
 		return;
 	
-	named_color = g_key_file_get_string(kf, "named_colors", str, NULL);
+	gchar *named_color = g_key_file_get_string(kf, "named_colors", str, NULL);
 	if (named_color)
 		str = named_color;
 	
-	c = utils_parse_color_to_bgr(str);
+	gint c = utils_parse_color_to_bgr(str);
 	if (c == -1)
 		geany_debug("Bad color '%s'", str);
 	else
@@ -244,8 +242,6 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 								const GeanyLexerStyle *default_style,
 								GeanyLexerStyle *style)
 {
-	gsize len;
-	
 	g_return_if_fail(default_style);
 	g_return_if_fail(style);
 	
@@ -254,7 +250,7 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 	if (!list)
 		return;
 	
-	len = g_strv_length(list);
+	gsize len = g_strv_length(list);
 	if (len == 0)
 		return;
 	else if (len == 1)
@@ -339,14 +335,14 @@ static void get_keyfile_int(GKeyFile *config, GKeyFile *configh,
 							gint fdefault_val, gint sdefault_val,
 							GeanyLexerStyle *style)
 {
-	gchar **list;
-	gsize len;
-	GeanyLexerStyle def = {fdefault_val, sdefault_val, FALSE, FALSE};
-	
 	g_return_if_fail(config);
 	g_return_if_fail(configh);
 	g_return_if_fail(section);
 	g_return_if_fail(key);
+	
+	gchar **list;
+	gsize len;
+	GeanyLexerStyle def = {fdefault_val, sdefault_val, FALSE, FALSE};
 	
 	list = g_key_file_get_string_list(configh, section, key, &len, NULL);
 	if (list == NULL)
@@ -416,18 +412,16 @@ static void set_sci_style(ScintillaObject *sci, guint style, guint ft_id,
 {
 	GeanyLexerStyle *style_ptr = get_style(ft_id, styling_index);
 	
-	SSM(sci, SCI_STYLESETFORE, style,	invert(style_ptr->foreground));
-	SSM(sci, SCI_STYLESETBACK, style,	invert(style_ptr->background));
-	SSM(sci, SCI_STYLESETBOLD, style,	style_ptr->bold);
-	SSM(sci, SCI_STYLESETITALIC, style,	style_ptr->italic);
+	SSM(sci, SCI_STYLESETFORE,	 style, invert(style_ptr->foreground));
+	SSM(sci, SCI_STYLESETBACK,	 style, invert(style_ptr->background));
+	SSM(sci, SCI_STYLESETBOLD,	 style, style_ptr->bold);
+	SSM(sci, SCI_STYLESETITALIC, style, style_ptr->italic);
 }
 
 
 void highlighting_free_styles(void)
 {
-	guint i;
-	
-	for (i = 0; i < filetypes_array->len; i++)
+	for (guint i = 0; i < filetypes_array->len; i++)
 		free_styleset(i);
 	
 	if (named_style_hash)
@@ -437,12 +431,10 @@ void highlighting_free_styles(void)
 }
 
 
-static gchar*
-get_keyfile_whitespace_chars(GKeyFile *config, GKeyFile *configh)
+static gchar *get_keyfile_whitespace_chars(GKeyFile *config, GKeyFile *configh)
 {
-	return utils_get_setting(string, configh, config,
-							 "settings", "whitespace_chars",
-							 GEANY_WHITESPACE_CHARS);
+	return utils_get_setting(string, configh, config, "settings",
+							 "whitespace_chars", GEANY_WHITESPACE_CHARS);
 }
 
 
@@ -495,8 +487,7 @@ static GKeyFile *utils_key_file_new(const gchar *filename)
 {
 	GKeyFile *config = g_key_file_new();
 	
-	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS,
-							  NULL);
+	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	return config;
 }
 
@@ -507,7 +498,7 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 	gboolean free_kf = FALSE;
 	
 	if (named_style_hash)
-		g_hash_table_destroy(named_style_hash);	/* reloading */
+		g_hash_table_destroy(named_style_hash); /* reloading */
 	
 	named_style_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
 											 g_free, g_free);
@@ -622,7 +613,7 @@ static void set_character_classes(ScintillaObject *sci, guint ft_id)
 	gchar *whitespace;
 	guint i, j;
 	
-	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t) word);
+	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t)word);
 	
 	/* setting wordchars resets character classes, so we have
 	 * to set whitespaces after wordchars, but we want wordchars
@@ -635,7 +626,7 @@ static void set_character_classes(ScintillaObject *sci, guint ft_id)
 	}
 	whitespace[j] = 0;
 	
-	SSM(sci, SCI_SETWHITESPACECHARS, 0, (sptr_t) whitespace);
+	SSM(sci, SCI_SETWHITESPACECHARS, 0, (sptr_t)whitespace);
 	
 	g_free(whitespace);
 }
@@ -780,19 +771,19 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 	switch (common_style_set.fold_lines)
 	{
 		case 2:
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNERCURVE);
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNERCURVE);
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNERCURVE);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNERCURVE);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
 			break;
 		default:
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
 			break;
 		case 0:
 			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_EMPTY);
 			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_EMPTY);
-			SSM(sci, SCI_MARKERDEFINE,  SC_MARKNUM_FOLDERSUB, SC_MARK_EMPTY);
+			SSM(sci, SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_EMPTY);
 			break;
 	}
 	{
@@ -805,8 +796,8 @@ static void styleset_common(ScintillaObject *sci, guint ft_id)
 			SC_MARKNUM_FOLDEROPENMID,
 			SC_MARKNUM_FOLDERMIDTAIL
 		};
-		guint i;
 		
+		guint i;
 		foreach_range(i, G_N_ELEMENTS(markers))
 		{
 			SSM(sci, SCI_MARKERSETFORE, markers[i],
@@ -916,9 +907,9 @@ static void styleset_from_mapping(ScintillaObject *sci, guint ft_id, guint lexer
 								  const HLKeyword *keywords, gsize n_keywords,
 								  const HLProperty *properties, gsize n_properties)
 {
-	gsize i;
-	
 	g_assert(ft_id != GEANY_FILETYPES_NONE);
+	
+	gsize i;
 	
 	/* lexer */
 	sci_set_lexer(sci, lexer);
@@ -972,7 +963,6 @@ static void get_key_values(GKeyFile *config, const gchar *group,
 	while (*keys)
 	{
 		gchar *str = g_key_file_get_string(config, group, *keys, NULL);
-		
 		if (str)
 			SETPTR(*values, str);
 		
@@ -1328,14 +1318,13 @@ static void add_color_scheme_item(GtkListStore *store, gchar *name,
 	
 	gtk_list_store_append(store, &iter);
 	gtk_list_store_set(store, &iter, SCHEME_MARKUP, markup,
-		SCHEME_FILE, fn, -1);
+					   SCHEME_FILE, fn, -1);
 	g_free(markup);
 	
 	/* select the current iter if the the color scheme matches, or if it's the
 	 * default (fn == NULL), in case of bad config file.  the default theme is
 	 * first anyway so if a later scheme matches it will override default */
-	if ((!fn || utils_str_equal(fn, editor_prefs.color_scheme))
-		&& current_iter)
+	if ((!fn || utils_str_equal(fn, editor_prefs.color_scheme)) && current_iter)
 		*current_iter = iter;
 }
 
@@ -1411,9 +1400,9 @@ void highlighting_show_color_scheme_dialog(void)
 	GtkTreeIter current_iter;
 	GtkTreePath *path;
 	GtkWidget *vbox, *swin, *tree;
-	GeanyDocument *doc;
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
+	
 	if (doc && doc->file_type->priv->warn_color_scheme)
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_WARNING,
 			_("The current filetype overrides the default style."),
@@ -1437,8 +1426,8 @@ void highlighting_show_color_scheme_dialog(void)
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &current_iter);
 	gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(tree), path, NULL, FALSE, 0, 0);
 	gtk_tree_path_free(path);
-	g_signal_connect(treesel, "changed",
-					 G_CALLBACK(on_color_scheme_changed), NULL);
+	
+	g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
 	
 	/* old dialog may still be showing */
 	if (dialog)
@@ -1482,7 +1471,6 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 {
 	/* Don't forget STRINGEOL, to prevent completion
 	 * whilst typing a string with no closing char. */
-	
 	switch (lexer)
 	{
 		case SCLEX_CPP:

@@ -28,7 +28,7 @@ G_BEGIN_DECLS
 
 void main_reload_configuration(void);
 
-void main_locale_init(const gchar *locale_dir, const gchar *gettext_package);
+void main_locale_init(const gchar *locale_dir, const gchar *package);
 
 gboolean main_is_realized(void);
 
@@ -44,7 +44,7 @@ typedef struct
 	gint		goto_column;
 	gboolean	ignore_global_tags;
 	gboolean	list_documents;
-	gboolean 	readonly;
+	gboolean	readonly;
 }
 CommandLineOptions;
 
@@ -53,10 +53,10 @@ extern CommandLineOptions cl_options;
 
 typedef struct GeanyStatus
 {
-	gboolean	opening_session_files;	/* state at startup while opening session files */
+	gboolean	opening_session_files; /* state at startup while opening session files */
 	gboolean	closing_all; /* the state while closing all tabs
 							  * (used to prevent notebook switch page signals) */
-	gboolean	quitting;	/* state when Geany is quitting completely */
+	gboolean	quitting;	 /* state when Geany is quitting completely */
 	gboolean	main_window_realized;
 }
 GeanyStatus;
@@ -72,7 +72,8 @@ gboolean main_quit(void);
 
 gboolean main_handle_filename(const gchar *locale_filename);
 
-void main_load_project_from_command_line(const gchar *locale_filename, gboolean use_session,
+void main_load_project_from_command_line(const gchar *locale_filename,
+										 gboolean use_session,
 										 gboolean save_default_session);
 
 gint main_lib(gint argc, gchar **argv);

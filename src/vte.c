@@ -345,7 +345,6 @@ void vte_init(void)
 	
 	if (module == NULL)
 	{
-		gint i;
 		const gchar *sonames[] = {
 #if GTK_CHECK_VERSION(3, 0, 0)
 # ifdef __APPLE__
@@ -362,7 +361,7 @@ void vte_init(void)
 #endif
 			NULL
 		};
-		for (i = 0; sonames[i] != NULL && module == NULL; i++)
+		for (gint i = 0; sonames[i] != NULL && module == NULL; i++)
 			module = g_module_open(sonames[i], G_MODULE_BIND_LAZY);
 	}
 	
@@ -632,9 +631,8 @@ static gboolean vte_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		return TRUE;
 	}
 	else if (event->button == 2)
-	{
 		gtk_widget_grab_focus(widget);
-	}
+	
 	return FALSE;
 }
 
@@ -670,10 +668,8 @@ static gboolean vte_is_2_91(void)
 
 static gboolean vte_register_symbols(GModule *mod)
 {
-	#define BIND_SYMBOL_FULL(name, dest) \
-		g_module_symbol(mod, name, (void*)(dest))
-	#define BIND_SYMBOL(field) \
-		BIND_SYMBOL_FULL(#field, &vf->field)
+	#define BIND_SYMBOL_FULL(name, dest) g_module_symbol(mod, name, (void*)(dest))
+	#define BIND_SYMBOL(field) BIND_SYMBOL_FULL(#field, &vf->field)
 	#define BIND_REQUIRED_SYMBOL_FULL(name, dest)									\
 		G_STMT_START {																\
 			if (!BIND_SYMBOL_FULL(name, dest))										\
@@ -695,9 +691,11 @@ static gboolean vte_register_symbols(GModule *mod)
 	BIND_SYMBOL(vte_get_minor_version);
 	BIND_REQUIRED_SYMBOL(vte_terminal_new);
 	BIND_REQUIRED_SYMBOL(vte_terminal_set_size);
+	
 	if (!BIND_SYMBOL(vte_terminal_spawn_sync))
 		/* vte_terminal_spawn_sync() is available only in 0.38 */
 		BIND_REQUIRED_SYMBOL(vte_terminal_fork_command);
+	
 	/* 0.38 removed vte_terminal_set_word_chars() */
 	BIND_SYMBOL(vte_terminal_set_word_chars);
 	/* 0.40 introduced it under a different API */
@@ -712,6 +710,7 @@ static gboolean vte_register_symbols(GModule *mod)
 	BIND_REQUIRED_SYMBOL(vte_terminal_get_has_selection);
 	BIND_REQUIRED_SYMBOL(vte_terminal_copy_clipboard);
 	BIND_REQUIRED_SYMBOL(vte_terminal_paste_clipboard);
+	
 #if GTK_CHECK_VERSION(3, 0, 0)
 	if (vte_is_2_91())
 	{
@@ -731,8 +730,9 @@ static gboolean vte_register_symbols(GModule *mod)
 	BIND_REQUIRED_SYMBOL(vte_terminal_feed_child);
 	BIND_SYMBOL(vte_terminal_im_append_menuitems);
 	if (!BIND_SYMBOL(vte_terminal_set_cursor_blink_mode))
-		/* vte_terminal_set_cursor_blink_mode() is only available since 0.17.1, so if we don't find
-		 * this symbol, we are probably on an older version and use the old API instead */
+		/* vte_terminal_set_cursor_blink_mode() is only available since 0.17.1,
+		 * so if we don't find this symbol, we are probably on an older version
+		 * and use the old API instead */
 		BIND_REQUIRED_SYMBOL(vte_terminal_set_cursor_blinks);
 	BIND_REQUIRED_SYMBOL(vte_terminal_select_all);
 	BIND_REQUIRED_SYMBOL(vte_terminal_set_audible_bell);
@@ -1153,17 +1153,14 @@ void vte_select_all(void)
 
 void vte_send_selection_to_vte(void)
 {
-	GeanyDocument *doc;
+	GeanyDocument *doc = document_get_current();
+	g_return_if_fail(doc != NULL);
+	
 	gchar *text;
 	gsize len;
 	
-	doc = document_get_current();
-	g_return_if_fail(doc != NULL);
-	
 	if (sci_has_selection(doc->editor->sci))
-	{
 		text = sci_get_selection_contents(doc->editor->sci);
-	}
 	else
 	{	/* Get the current line */
 		gint line_num = sci_get_current_line(doc->editor->sci);

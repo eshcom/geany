@@ -361,7 +361,8 @@ static GtkWidget *add_find_checkboxes(GtkDialog *dialog)
 	
 	if (dialog != GTK_DIALOG(find_dlg.dialog))
 	{
-		GtkWidget *check_back = gtk_check_button_new_with_mnemonic(_("Search _backwards"));
+		GtkWidget *check_back = gtk_check_button_new_with_mnemonic(
+													_("Search _backwards"));
 		ui_hookup_widget(dialog, check_back, "check_back");
 		gtk_button_set_focus_on_click(GTK_BUTTON(check_back), FALSE);
 		gtk_container_add(GTK_CONTAINER(fbox), check_back);
@@ -426,9 +427,9 @@ static void setup_find_next(const gchar *text)
  */
 void search_find_selection(GeanyDocument *doc, gboolean search_backwards)
 {
-	gchar *s = NULL;
-	
 	g_return_if_fail(DOC_VALID(doc));
+	
+	gchar *s = NULL;
 	
 #ifdef G_OS_UNIX
 	if (search_prefs.find_selection_type == GEANY_FIND_SEL_X)
@@ -587,13 +588,12 @@ static void set_dialog_position(GtkWidget *dialog, gint *position)
 void search_show_find_dialog(void)
 {
 	GeanyDocument *doc = document_get_current();
-	gchar *sel = NULL;
-	
 	g_return_if_fail(doc != NULL);
 	
+	gchar *sel = NULL;
+	
 	sel = editor_get_default_selection(doc->editor,
-									   search_prefs.use_current_word,
-									   NULL);
+									   search_prefs.use_current_word, NULL);
 	if (find_dlg.dialog == NULL)
 	{
 		create_find_dialog();
@@ -616,6 +616,7 @@ void search_show_find_dialog(void)
 		
 		if (sel != NULL) /* when we have a selection, reset the entry widget's background colour */
 			ui_set_search_entry_background(find_dlg.entry, TRUE);
+		
 		/* bring the dialog back in the foreground in case it is already open but the focus is away */
 		gtk_window_present(GTK_WINDOW(find_dlg.dialog));
 	}
@@ -773,14 +774,13 @@ static void create_replace_dialog(void)
 void search_show_replace_dialog(void)
 {
 	GeanyDocument *doc = document_get_current();
-	gchar *sel = NULL;
-	
 	if (doc == NULL)
 		return;
 	
+	gchar *sel = NULL;
+	
 	sel = editor_get_default_selection(doc->editor,
-									   search_prefs.use_current_word,
-									   NULL);
+									   search_prefs.use_current_word, NULL);
 	if (replace_dlg.dialog == NULL)
 	{
 		create_replace_dialog();
@@ -848,9 +848,8 @@ static void update_file_patterns(GtkWidget *mode_combo, GtkWidget *fcombo)
 			g_free(patterns);
 		}
 		else
-		{
 			gtk_entry_set_text(GTK_ENTRY(entry), "");
-		}
+		
 		gtk_widget_set_sensitive(fcombo, FALSE);
 	}
 }
@@ -1308,12 +1307,13 @@ void geany_match_info_free(GeanyMatchInfo *info)
 static GSList *find_range(ScintillaObject *sci, GeanyFindFlags flags,
 						  struct Sci_TextToFind *ttf)
 {
-	GSList *matches = NULL;
-	GeanyMatchInfo *info;
-	
 	g_return_val_if_fail(sci != NULL && ttf->lpstrText != NULL, NULL);
+	
 	if (!*ttf->lpstrText)
 		return NULL;
+	
+	GSList *matches = NULL;
+	GeanyMatchInfo *info;
 	
 	while (search_find_text(sci, flags, ttf, &info) != -1)
 	{
@@ -1342,10 +1342,6 @@ static GSList *find_range(ScintillaObject *sci, GeanyFindFlags flags,
 gint search_mark_all(GeanyDocument *doc, const gchar *search_text,
 					 GeanyFindFlags flags)
 {
-	gint count = 0;
-	struct Sci_TextToFind ttf;
-	GSList *match, *matches;
-	
 	g_return_val_if_fail(DOC_VALID(doc), 0);
 	
 	/* clear previous search indicators */
@@ -1353,6 +1349,10 @@ gint search_mark_all(GeanyDocument *doc, const gchar *search_text,
 	
 	if (G_UNLIKELY(EMPTY(search_text)))
 		return 0;
+	
+	gint count = 0;
+	struct Sci_TextToFind ttf;
+	GSList *match, *matches;
 	
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
@@ -1419,10 +1419,10 @@ static void on_find_dialog_response(GtkDialog *dialog, gint response,
 	else
 	{
 		GeanyDocument *doc = document_get_current();
-		gboolean check_close = settings.find_close_dialog;
-		
 		if (doc == NULL)
 			return;
+		
+		gboolean check_close = settings.find_close_dialog;
 		
 		search_data.backwards = FALSE;
 		search_data.search_bar = FALSE;
@@ -1700,7 +1700,7 @@ static void append_extra_options(GString *gstr, gchar *extra_options)
 
 static GString *get_grep_options(void)
 {
-	GString *gstr = g_string_new("-nHI");	/* line numbers, filenames, ignore binaries */
+	GString *gstr = g_string_new("-nHI"); /* line numbers, filenames, ignore binaries */
 	
 	if (settings.fif_invert_results)
 		g_string_append_c(gstr, 'v');
@@ -1726,10 +1726,8 @@ static GString *get_grep_options(void)
 	g_strstrip(settings.fif_files);
 	if (settings.fif_files_mode != FILES_MODE_ALL && *settings.fif_files)
 	{
-		GString *tmp;
-		
 		/* put --include= before each pattern */
-		tmp = g_string_new(settings.fif_files);
+		GString *tmp = g_string_new(settings.fif_files);
 		do {} while (utils_string_replace_all(tmp, "  ", " "));
 		g_string_prepend_c(tmp, ' ');
 		utils_string_replace_all(tmp, " ", " --include=");
@@ -1795,6 +1793,9 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 									 const gchar *opts,
 									 const gchar *enc)
 {
+	if (EMPTY(utf8_search_text) || !utf8_dir)
+		return TRUE;
+	
 	gchar **argv_prefix, **argv;
 	gchar *command_grep;
 	gchar *command_line, *dir;
@@ -1802,8 +1803,6 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	GError *error = NULL;
 	gboolean ret = FALSE;
 	gssize utf8_text_len;
-	
-	if (EMPTY(utf8_search_text) || !utf8_dir) return TRUE;
 	
 	command_grep = g_find_program_in_path(tool_prefs.grep_cmd);
 	if (command_grep == NULL)
@@ -1818,11 +1817,11 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	 * (if the text is not valid UTF-8. assume
 	 *  it is already in the preferred encoding) */
 	utf8_text_len = strlen(utf8_search_text);
+	
 	if (enc != NULL && g_utf8_validate(utf8_search_text, utf8_text_len, NULL))
-	{
 		search_text = g_convert(utf8_search_text, utf8_text_len, enc,
 								"UTF-8", NULL, NULL, NULL);
-	}
+	
 	if (search_text == NULL)
 		search_text = g_strdup(utf8_search_text);
 	
@@ -1854,8 +1853,8 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	gtk_list_store_clear(msgwindow.store_msg);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_MESSAGE);
 	
-	/* we can pass 'enc' without strdup'ing it here because it's a global const string and
-	 * always exits longer than the lifetime of this function */
+	/* we can pass 'enc' without strdup'ing it here because it's a global const
+	 * string and always exits longer than the lifetime of this function */
 	if (spawn_with_callbacks(dir, command_line, argv, NULL, 0, NULL, NULL,
 							 search_read_io, (gpointer)enc, 0,
 							 search_read_io_stderr, (gpointer)enc, 0,
@@ -1903,12 +1902,12 @@ static gboolean pattern_list_match(GSList *patterns, const gchar *str)
  * Returns NULL if no files were found, otherwise returned vector should be fully freed. */
 static gchar **search_get_argv(const gchar **argv_prefix, const gchar *dir)
 {
+	g_return_val_if_fail(dir != NULL, NULL);
+	
 	guint prefix_len, list_len, i, j;
 	gchar **argv;
 	GSList *list, *item, *patterns = NULL;
 	GError *error = NULL;
-	
-	g_return_val_if_fail(dir != NULL, NULL);
 	
 	prefix_len = g_strv_length((gchar**)argv_prefix);
 	list = utils_get_file_list(dir, &list_len, &error);
@@ -2135,11 +2134,10 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex,
 	/* Warning: minfo will become invalid when 'text' does! */
 	if (g_match_info_matches(minfo))
 	{
-		guint i;
-		
 		/* copy whole match text and offsets before they become invalid */
 		SETPTR(match->match_text, g_match_info_fetch(minfo, 0));
 		
+		guint i;
 		foreach_range(i, G_N_ELEMENTS(match->matches))
 		{
 			gint start = -1, end = -1;
@@ -2316,13 +2314,13 @@ gint search_find_text(ScintillaObject *sci, GeanyFindFlags flags,
 static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 								GeanyFindFlags flags)
 {
+	g_return_val_if_fail(DOC_VALID(doc), 0);
+	
 	gchar *buffer, *short_file_name;
 	struct Sci_TextToFind ttf;
 	gint count = 0;
 	gint prev_line = -1;
 	GSList *match, *matches;
-	
-	g_return_val_if_fail(DOC_VALID(doc), 0);
 	
 	short_file_name = g_path_get_basename(DOC_FILENAME(doc));
 	
@@ -2356,10 +2354,7 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 void search_find_usage(const gchar *search_text, const gchar *original_search_text,
 					   GeanyFindFlags flags, gboolean in_session)
 {
-	GeanyDocument *doc;
-	gint count = 0;
-	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
 	if (G_UNLIKELY(EMPTY(search_text)))
@@ -2367,6 +2362,8 @@ void search_find_usage(const gchar *search_text, const gchar *original_search_te
 		utils_beep();
 		return;
 	}
+	
+	gint count = 0;
 	
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_MESSAGE);
 	gtk_list_store_clear(msgwindow.store_msg);
@@ -2377,8 +2374,7 @@ void search_find_usage(const gchar *search_text, const gchar *original_search_te
 	}
 	else
 	{
-		guint i;
-		for (i = 0; i < documents_array->len; i++)
+		for (guint i = 0; i < documents_array->len; i++)
 		{
 			if (documents[i]->is_valid)
 				count += find_document_usage(documents[i], search_text, flags);
@@ -2411,14 +2407,14 @@ void search_find_usage(const gchar *search_text, const gchar *original_search_te
 guint search_replace_range(ScintillaObject *sci, struct Sci_TextToFind *ttf,
 						   GeanyFindFlags flags, const gchar *replace_text)
 {
-	gint count = 0;
-	gint offset = 0; /* difference between search pos and replace pos */
-	GSList *match, *matches;
-	
 	g_return_val_if_fail(sci != NULL && ttf->lpstrText != NULL &&
 						 replace_text != NULL, 0);
 	if (!*ttf->lpstrText)
 		return 0;
+	
+	gint count = 0;
+	gint offset = 0; /* difference between search pos and replace pos */
+	GSList *match, *matches;
 	
 	matches = find_range(sci, flags, ttf);
 	foreach_slist(match, matches)
@@ -2449,7 +2445,6 @@ guint search_replace_range(ScintillaObject *sci, struct Sci_TextToFind *ttf,
 void search_find_again(gboolean change_direction)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	g_return_if_fail(doc != NULL);
 	
 	if (search_data.text)

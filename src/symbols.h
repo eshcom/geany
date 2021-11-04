@@ -56,13 +56,11 @@ void symbols_reload_config_files(void);
 
 void symbols_global_tags_loaded(guint file_type_idx);
 
-GString *symbols_find_typenames_as_string(TMParserType lang,
-										  gint typedefs_kind);
+GString *symbols_find_typenames_as_string(TMParserType lang, gint typedefs_kind);
 
 gboolean symbols_recreate_tag_list(GeanyDocument *doc, gint sort_mode);
 
-gint symbols_generate_global_tags(gint argc, gchar **argv,
-								  gboolean want_preprocess);
+gint symbols_generate_global_tags(gint argc, gchar **argv, gboolean want_preprocess);
 
 void symbols_show_load_tags_dialog(void);
 

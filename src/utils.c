@@ -444,9 +444,7 @@ gboolean utils_is_absolute_path(const gchar *path)
  */
 const gchar *utils_path_skip_root(const gchar *path)
 {
-	const gchar *path_relative;
-	
-	path_relative = g_path_skip_root(path);
+	const gchar *path_relative = g_path_skip_root(path);
 	
 	return (path_relative != NULL) ? path_relative : path;
 }
@@ -549,19 +547,17 @@ gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 GEANY_API_SYMBOL
 gchar *utils_str_middle_truncate(const gchar *string, guint truncate_length)
 {
+	g_return_val_if_fail(string != NULL, NULL);
+	
+	guint length = strlen(string);
+	g_return_val_if_fail(g_utf8_validate(string, length, NULL), NULL);
+	
 	GString *truncated;
-	guint length;
 	guint n_chars;
 	guint num_left_chars;
 	guint right_offset;
 	guint delimiter_length;
 	const gchar *delimiter = "\342\200\246";
-	
-	g_return_val_if_fail(string != NULL, NULL);
-	
-	length = strlen(string);
-	
-	g_return_val_if_fail(g_utf8_validate(string, length, NULL), NULL);
 	
 	/* It doesn't make sense to truncate strings to less than the size
 	 * of the delimiter plus 2 characters (one on each side) */
@@ -701,13 +697,11 @@ gint utils_is_file_writable(const gchar *locale_filename)
 void utils_str_replace_all(gchar **haystack, const gchar *needle,
 						   const gchar *replacement)
 {
-	GString *str;
-	
 	g_return_if_fail(*haystack != NULL);
 	
-	str = g_string_new(*haystack);
-	
+	GString *str = g_string_new(*haystack);
 	g_free(*haystack);
+	
 	utils_string_replace_all(str, needle, replacement);
 	
 	*haystack = g_string_free(str, FALSE);
@@ -746,12 +740,12 @@ gint utils_strpos(const gchar *haystack, const gchar *needle)
 GEANY_API_SYMBOL
 gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 {
+	g_return_val_if_fail(format != NULL, NULL);
+	
 	const struct tm *tm;
 	static gchar date[1024];
 	gchar *locale_format;
 	gsize len;
-	
-	g_return_val_if_fail(format != NULL, NULL);
 	
 	if (!g_utf8_validate(format, -1, NULL))
 	{
@@ -815,12 +809,11 @@ GEANY_API_SYMBOL
 gint utils_get_setting_integer(GKeyFile *config, const gchar *section,
 							   const gchar *key, const gint default_value)
 {
-	gint tmp;
-	GError *error = NULL;
-	
 	g_return_val_if_fail(config, default_value);
 	
-	tmp = g_key_file_get_integer(config, section, key, &error);
+	GError *error = NULL;
+	gint tmp = g_key_file_get_integer(config, section, key, &error);
+	
 	if (error)
 	{
 		g_error_free(error);
@@ -846,12 +839,11 @@ GEANY_API_SYMBOL
 gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section,
 								   const gchar *key, const gboolean default_value)
 {
-	gboolean tmp;
-	GError *error = NULL;
-	
 	g_return_val_if_fail(config, default_value);
 	
-	tmp = g_key_file_get_boolean(config, section, key, &error);
+	GError *error = NULL;
+	gboolean tmp = g_key_file_get_boolean(config, section, key, &error);
+	
 	if (error)
 	{
 		g_error_free(error);
@@ -983,9 +975,9 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
  * support of the "0x" prefix as a synonym for "#" */
 gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 {
-	gchar buf[64] = {0};
-	
 	g_return_val_if_fail(spec != NULL, -1);
+	
+	gchar buf[64] = {0};
 	
 	if (spec[0] == '0' && (spec[1] == 'x' || spec[1] == 'X'))
 	{
@@ -1003,6 +995,7 @@ gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 gint utils_color_to_bgr(const GdkColor *c)
 {
 	g_return_val_if_fail(c != NULL, -1);
+	
 	return (c->red / 256) | ((c->green / 256) << 8) | ((c->blue / 256) << 16);
 }
 
@@ -1076,10 +1069,10 @@ GIOChannel *utils_set_up_io_channel(gint fd, GIOCondition cond, gboolean nblock,
  * keep_backslash is used for regex strings to leave '\\' and '\?' in place */
 gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 {
+	g_return_val_if_fail(string != NULL, FALSE);
+	
 	gsize i, j, len;
 	guint unicodechar;
-	
-	g_return_val_if_fail(string != NULL, FALSE);
 	
 	j = 0;
 	len = strlen(string);
@@ -1350,12 +1343,12 @@ void utils_free_pointers(gsize arg_count, ...)
 GEANY_EXPORT_SYMBOL
 gchar **utils_strv_new(const gchar *first, ...)
 {
+	g_return_val_if_fail(first != NULL, NULL);
+	
 	gsize strvlen, i;
 	va_list args;
 	gchar *str;
 	gchar **strv;
-	
-	g_return_val_if_fail(first != NULL, NULL);
 	
 	strvlen = 1;	/* for first argument */
 	
@@ -1392,11 +1385,11 @@ gchar **utils_strv_new(const gchar *first, ...)
 GEANY_API_SYMBOL
 gint utils_mkdir(const gchar *path, gboolean create_parent_dirs)
 {
-	gint mode = 0700;
-	gint result;
-	
 	if (path == NULL || strlen(path) == 0)
 		return EFAULT;
+	
+	gint mode = 0700;
+	gint result;
 	
 	result = (create_parent_dirs) ? g_mkdir_with_parents(path, mode)
 								  : g_mkdir(path, mode);
@@ -1432,13 +1425,14 @@ GEANY_API_SYMBOL
 GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 								 gboolean sort, GError **error)
 {
+	g_return_val_if_fail(path != NULL, NULL);
+	
 	GSList *list = NULL;
 	GDir *dir;
 	const gchar *filename;
 	
 	if (error)
 		*error = NULL;
-	g_return_val_if_fail(path != NULL, NULL);
 	
 	dir = g_dir_open(path, 0, error);
 	if (dir == NULL)
@@ -1454,6 +1448,7 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 	/* sorting last is quicker than on insertion */
 	if (sort)
 		list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
+	
 	return list;
 }
 
@@ -1515,8 +1510,6 @@ gboolean utils_str_has_upper(const gchar *str)
 gint utils_string_find(GString *haystack, gint start, gint end,
 					   const gchar *needle)
 {
-	gint pos;
-	
 	g_return_val_if_fail(haystack != NULL, -1);
 	if (haystack->len == 0)
 		return -1;
@@ -1530,7 +1523,7 @@ gint utils_string_find(GString *haystack, gint start, gint end,
 	if (end < 0)
 		end = haystack->len;
 	
-	pos = utils_strpos(haystack->str + start, needle);
+	gint pos = utils_strpos(haystack->str + start, needle);
 	if (pos == -1)
 		return -1;
 	
@@ -1826,13 +1819,10 @@ gboolean utils_is_remote_path(const gchar *path)
  * @see utils_get_real_path() - also resolves links. */
 void utils_tidy_path(gchar *filename)
 {
-	GString *str;
-	const gchar *needle;
-	gboolean preserve_double_backslash = FALSE;
-	
 	g_return_if_fail(g_path_is_absolute(filename));
 	
-	str = g_string_new(filename);
+	GString *str = g_string_new(filename);
+	gboolean preserve_double_backslash = FALSE;
 	
 	if (str->len >= 2 && strncmp(str->str, "\\\\", 2) == 0)
 		preserve_double_backslash = TRUE;
@@ -1851,7 +1841,8 @@ void utils_tidy_path(gchar *filename)
 		g_string_prepend(str, "\\");
 	
 	/* replace "/../" */
-	needle = G_DIR_SEPARATOR_S ".." G_DIR_SEPARATOR_S;
+	const gchar *needle = G_DIR_SEPARATOR_S ".." G_DIR_SEPARATOR_S;
+	
 	while (1)
 	{
 		const gchar *c = strstr(str->str, needle);
@@ -1879,10 +1870,12 @@ void utils_tidy_path(gchar *filename)
 			g_string_erase(str, pos, sub_len);
 		}
 	}
+	
 	if (str->len <= strlen(filename))
 		memcpy(filename, str->str, str->len + 1);
 	else
 		g_warn_if_reached();
+	
 	g_string_free(str, TRUE);
 }
 
@@ -1901,12 +1894,13 @@ void utils_tidy_path(gchar *filename)
 GEANY_API_SYMBOL
 gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 {
-	const gchar *r;
-	gchar *w = string;
-	
 	g_return_val_if_fail(string, NULL);
+	
 	if (G_UNLIKELY(EMPTY(chars)))
 		return string;
+	
+	const gchar *r;
+	gchar *w = string;
 	
 	foreach_str(r, string)
 	{
@@ -1914,6 +1908,7 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 			*w++ = *r;
 	}
 	*w = 0x0;
+	
 	return string;
 }
 
@@ -2148,6 +2143,9 @@ gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
 GEANY_EXPORT_SYMBOL
 gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 {
+	if (strv_len == 0)
+		return NULL;
+	
 	gchar *first, *_sub, *sub;
 	gsize num;
 	gsize n_chars;
@@ -2155,9 +2153,6 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 	gsize max = 0;
 	char *lcs;
 	gsize found;
-	
-	if (strv_len == 0)
-		return NULL;
 	
 	num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
 	
@@ -2228,16 +2223,16 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 GEANY_API_SYMBOL
 gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 {
+	if (file_names_len == 0)
+		return g_new0(gchar *, 1);
+	
+	g_return_val_if_fail(file_names != NULL, NULL);
+	
 	gsize num;
 	gsize i;
 	gchar *prefix, *lcs, *end;
 	gchar **names;
 	gsize prefix_len = 0, lcs_len = 0;
-	
-	if (file_names_len == 0)
-		return g_new0(gchar *, 1);
-	
-	g_return_val_if_fail(file_names != NULL, NULL);
 	
 	num = (file_names_len == -1) ? g_strv_length(file_names)
 								 : (gsize)file_names_len;
@@ -2322,11 +2317,11 @@ GDate *utils_parse_date(const gchar *input)
 
 gchar *utils_parse_and_format_build_date(const gchar *input)
 {
-	gchar date_buf[255];
 	GDate *date = utils_parse_date(input);
 	
 	if (date != NULL)
 	{
+		gchar date_buf[255];
 		g_date_strftime(date_buf, sizeof(date_buf),
 						GEANY_TEMPLATES_FORMAT_DATE, date);
 		g_date_free(date);
