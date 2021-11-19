@@ -136,6 +136,7 @@ enum GeanyKeyBindingID
 	GEANY_KEYS_GOTO_LINE,						/**< Keybinding. */
 	GEANY_KEYS_DOCUMENT_TOGGLEFOLD,				/**< Keybinding. */
 	GEANY_KEYS_BUILD_COMPILE,					/**< Keybinding. */
+	GEANY_KEYS_BUILD_COMPILE_2,					/**< Keybinding. */
 	GEANY_KEYS_EDITOR_SCROLLTOLINE,				/**< Keybinding. */
 	GEANY_KEYS_DOCUMENT_UNFOLDALL,				/**< Keybinding. */
 	GEANY_KEYS_GOTO_MATCHINGBRACE,				/**< Keybinding. */
@@ -194,6 +195,7 @@ enum GeanyKeyBindingID
 	GEANY_KEYS_GOTO_LINEENDVISUAL,				/**< Keybinding. */
 	GEANY_KEYS_DOCUMENT_REPLACESPACES,			/**< Keybinding. */
 	GEANY_KEYS_FOCUS_EDITOR,					/**< Keybinding. */
+	GEANY_KEYS_FOCUS_EDITOR_2,					/**< Keybinding. */
 	GEANY_KEYS_SELECT_WORDPARTRIGHT,			/**< Keybinding. */
 	GEANY_KEYS_VIEW_MESSAGEWINDOW,				/**< Keybinding. */
 	GEANY_KEYS_FOCUS_SIDEBAR_DOCUMENT_LIST,		/**< Keybinding. */

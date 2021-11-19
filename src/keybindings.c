@@ -648,6 +648,8 @@ static void init_default_kb(void)
 	
 	add_kb(group, GEANY_KEYS_FOCUS_EDITOR, NULL,
 		GDK_F2, 0, "switch_editor", _("Switch to Editor"), NULL);
+	add_kb(group, GEANY_KEYS_FOCUS_EDITOR_2, NULL,
+		0, 0, "switch_editor_2", _("Switch to Editor (second hotkey)"), NULL);
 	add_kb(group, GEANY_KEYS_FOCUS_SEARCHBAR, NULL,
 		GDK_F7, 0, "switch_search_bar", _("Switch to Search Bar"), NULL);
 	add_kb(group, GEANY_KEYS_FOCUS_MESSAGE_WINDOW, NULL,
@@ -726,6 +728,8 @@ static void init_default_kb(void)
 	
 	add_kb(group, GEANY_KEYS_BUILD_COMPILE, NULL,
 		GDK_F8, 0, "build_compile", _("Compile"), NULL);
+	add_kb(group, GEANY_KEYS_BUILD_COMPILE_2, NULL,
+		0, 0, "build_compile_2", _("Compile (second hotkey)"), NULL);
 	add_kb(group, GEANY_KEYS_BUILD_LINK, NULL,
 		GDK_F9, 0, "build_link", _("Build"), NULL);
 	add_kb(group, GEANY_KEYS_BUILD_MAKE, NULL,
@@ -1988,6 +1992,7 @@ static gboolean cb_func_switch_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_FOCUS_EDITOR:
+		case GEANY_KEYS_FOCUS_EDITOR_2:
 		{
 			GeanyDocument *doc = document_get_current();
 			if (doc != NULL)
