@@ -2794,6 +2794,7 @@ gboolean build_keybinding(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_BUILD_COMPILE:
+		case GEANY_KEYS_BUILD_COMPILE_2:
 			item = menu_items->menu_item[GEANY_GBG_FT][GBO_TO_CMD(GEANY_GBO_COMPILE)];
 			break;
 		case GEANY_KEYS_BUILD_LINK:
