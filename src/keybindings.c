@@ -1137,7 +1137,7 @@ static void on_dialog_response(GtkWidget *dialog, gint response,
 void keybindings_show_shortcuts(void)
 {
 	if (key_dialog)
-		gtk_widget_destroy(key_dialog);	/* in case the key_dialog is still visible */
+		gtk_widget_destroy(key_dialog); /* in case the key_dialog is still visible */
 	
 	key_dialog = create_dialog();
 	g_signal_connect(key_dialog, "response", G_CALLBACK(on_dialog_response), NULL);
@@ -1303,7 +1303,7 @@ static gboolean check_vte(GdkModifierType state, guint keyval)
 	/* prevent menubar flickering: */
 	if (state == GDK_SHIFT_MASK && (keyval >= GDK_a && keyval <= GDK_z))
 		return FALSE;
-	if (state == 0 && (keyval < GDK_F1 || keyval > GDK_F35))	/* e.g. backspace */
+	if (state == 0 && (keyval < GDK_F1 || keyval > GDK_F35)) /* e.g. backspace */
 		return FALSE;
 	
 	/* make focus commands override any bash commands */
@@ -1733,11 +1733,18 @@ static gboolean cb_func_search_action(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_SEARCH_FINDINFILES:
-			on_find_in_files1_activate(NULL, NULL); return TRUE;
+			on_find_in_files1_activate(NULL, NULL);
+			return TRUE;
 		case GEANY_KEYS_SEARCH_NEXTMESSAGE:
-			on_next_message1_activate(NULL, NULL); return TRUE;
+			if (interface_prefs.switch_to_msgwin_messages)
+				msgwin_switch_tab(MSG_MESSAGE, FALSE);
+			on_next_message1_activate(NULL, NULL);
+			return TRUE;
 		case GEANY_KEYS_SEARCH_PREVIOUSMESSAGE:
-			on_previous_message1_activate(NULL, NULL); return TRUE;
+			if (interface_prefs.switch_to_msgwin_messages)
+				msgwin_switch_tab(MSG_MESSAGE, FALSE);
+			on_previous_message1_activate(NULL, NULL);
+			return TRUE;
 	}
 	if (!doc)
 		return TRUE;
@@ -2128,7 +2135,7 @@ static void cb_func_move_tab(guint key_id)
 	switch (key_id)
 	{
 		case GEANY_KEYS_NOTEBOOK_MOVETABLEFT:
-			gtk_notebook_reorder_child(nb, child, cur_page - 1);	/* notebook wraps around by default */
+			gtk_notebook_reorder_child(nb, child, cur_page - 1); /* notebook wraps around by default */
 			break;
 		case GEANY_KEYS_NOTEBOOK_MOVETABRIGHT:
 		{
@@ -2140,12 +2147,10 @@ static void cb_func_move_tab(guint key_id)
 			break;
 		}
 		case GEANY_KEYS_NOTEBOOK_MOVETABFIRST:
-			gtk_notebook_reorder_child(nb, child,
-									   (file_prefs.tab_order_ltr) ? 0 : -1);
+			gtk_notebook_reorder_child(nb, child, file_prefs.tab_order_ltr ? 0 : -1);
 			break;
 		case GEANY_KEYS_NOTEBOOK_MOVETABLAST:
-			gtk_notebook_reorder_child(nb, child,
-									   (file_prefs.tab_order_ltr) ? -1 : 0);
+			gtk_notebook_reorder_child(nb, child, file_prefs.tab_order_ltr ? -1 : 0);
 			break;
 	}
 	return;
