@@ -319,7 +319,7 @@ static void save_recent_files(GKeyFile *config, GQueue *queue, gchar const *key)
 
 	for (i = 0; i < file_prefs.mru_length; i++)
 	{
-		if (! g_queue_is_empty(queue))
+		if (!g_queue_is_empty(queue))
 		{
 			/* copy the values, this is necessary when this function is called from the
 			 * preferences dialog or when quitting is canceled to keep the queue intact */
@@ -442,9 +442,9 @@ static void save_dialog_prefs(GKeyFile *config)
 {
 	/* new settings should be added in init_pref_groups() */
 	settings_action(config, SETTING_WRITE);
-
+	
 	/* Some of the key names are not consistent, but this is for backwards compatibility */
-
+	
 	/* general */
 	g_key_file_set_boolean(config, PACKAGE, "pref_main_load_session", prefs.load_session);
 	g_key_file_set_boolean(config, PACKAGE, "pref_main_project_session", project_prefs.project_session);
@@ -456,7 +456,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "switch_msgwin_pages", prefs.switch_to_status);
 	g_key_file_set_boolean(config, PACKAGE, "beep_on_errors", prefs.beep_on_errors);
 	g_key_file_set_boolean(config, PACKAGE, "auto_focus", prefs.auto_focus);
-
+	
 	/* interface */
 	g_key_file_set_boolean(config, PACKAGE, "sidebar_symbol_visible", interface_prefs.sidebar_symbol_visible);
 	g_key_file_set_boolean(config, PACKAGE, "sidebar_openfiles_visible", interface_prefs.sidebar_openfiles_visible);
@@ -470,7 +470,8 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_integer(config, PACKAGE, "tab_pos_editor", interface_prefs.tab_pos_editor);
 	g_key_file_set_integer(config, PACKAGE, "tab_pos_msgwin", interface_prefs.tab_pos_msgwin);
 	g_key_file_set_boolean(config, PACKAGE, "use_native_windows_dialogs", interface_prefs.use_native_windows_dialogs);
-
+	g_key_file_set_boolean(config, PACKAGE, "switch_to_msgwin_messages", interface_prefs.switch_to_msgwin_messages);
+	
 	/* display */
 	g_key_file_set_boolean(config, PACKAGE, "show_indent_guide", editor_prefs.show_indent_guide);
 	g_key_file_set_boolean(config, PACKAGE, "show_white_space", editor_prefs.show_white_space);
@@ -481,7 +482,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_integer(config, PACKAGE, "long_line_type", editor_prefs.long_line_type);
 	g_key_file_set_integer(config, PACKAGE, "long_line_column", editor_prefs.long_line_column);
 	g_key_file_set_string(config, PACKAGE, "long_line_color", editor_prefs.long_line_color);
-
+	
 	/* editor */
 	g_key_file_set_integer(config, PACKAGE, "symbolcompletion_max_height", editor_prefs.symbolcompletion_max_height);
 	g_key_file_set_integer(config, PACKAGE, "symbolcompletion_min_chars", editor_prefs.symbolcompletion_min_chars);
@@ -500,7 +501,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_string(config, PACKAGE, "comment_toggle_mark", editor_prefs.comment_toggle_mark);
 	g_key_file_set_boolean(config, PACKAGE, "scroll_stop_at_last_line", editor_prefs.scroll_stop_at_last_line);
 	g_key_file_set_integer(config, PACKAGE, "autoclose_chars", editor_prefs.autoclose_chars);
-
+	
 	/* files */
 	g_key_file_set_string(config, PACKAGE, "pref_editor_default_new_encoding", encodings[file_prefs.default_new_encoding].charset);
 	if (file_prefs.default_open_encoding == -1)
@@ -512,7 +513,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "pref_editor_ensure_convert_line_endings", file_prefs.ensure_convert_new_lines);
 	g_key_file_set_boolean(config, PACKAGE, "pref_editor_replace_tabs", file_prefs.replace_tabs);
 	g_key_file_set_boolean(config, PACKAGE, "pref_editor_trail_space", file_prefs.strip_trailing_spaces);
-
+	
 	/* toolbar */
 	g_key_file_set_boolean(config, PACKAGE, "pref_toolbar_show", toolbar_prefs.visible);
 	g_key_file_set_boolean(config, PACKAGE, "pref_toolbar_append_to_menu", toolbar_prefs.append_to_menu);
@@ -520,7 +521,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "pref_toolbar_use_gtk_default_icon", toolbar_prefs.use_gtk_default_icon);
 	g_key_file_set_integer(config, PACKAGE, "pref_toolbar_icon_style", toolbar_prefs.icon_style);
 	g_key_file_set_integer(config, PACKAGE, "pref_toolbar_icon_size", toolbar_prefs.icon_size);
-
+	
 	/* templates */
 	g_key_file_set_string(config, PACKAGE, "pref_template_developer", template_prefs.developer);
 	g_key_file_set_string(config, PACKAGE, "pref_template_company", template_prefs.company);
@@ -530,16 +531,16 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_string(config, PACKAGE, "pref_template_year", template_prefs.year_format);
 	g_key_file_set_string(config, PACKAGE, "pref_template_date", template_prefs.date_format);
 	g_key_file_set_string(config, PACKAGE, "pref_template_datetime", template_prefs.datetime_format);
-
+	
 	/* tools settings */
 	g_key_file_set_string(config, "tools", "terminal_cmd", tool_prefs.term_cmd ? tool_prefs.term_cmd : "");
 	g_key_file_set_string(config, "tools", "browser_cmd", tool_prefs.browser_cmd ? tool_prefs.browser_cmd : "");
 	g_key_file_set_string(config, "tools", "grep_cmd", tool_prefs.grep_cmd ? tool_prefs.grep_cmd : "");
 	g_key_file_set_string(config, PACKAGE, "context_action_cmd", tool_prefs.context_action_cmd);
-
+	
 	/* build menu */
 	build_save_menu(config, NULL, GEANY_BCS_PREF);
-
+	
 	/* printing */
 	g_key_file_set_string(config, "printing", "print_cmd", printing_prefs.external_print_cmd ? printing_prefs.external_print_cmd : "");
 	g_key_file_set_boolean(config, "printing", "use_gtk_printing", printing_prefs.use_gtk_printing);
@@ -548,14 +549,14 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, "printing", "print_page_header", printing_prefs.print_page_header);
 	g_key_file_set_boolean(config, "printing", "page_header_basename", printing_prefs.page_header_basename);
 	g_key_file_set_string(config, "printing", "page_header_datefmt", printing_prefs.page_header_datefmt);
-
+	
 	/* VTE */
 #ifdef HAVE_VTE
 	g_key_file_set_boolean(config, "VTE", "load_vte", vte_info.load_vte);
 	if (vte_info.have_vte)
 	{
 		gchar *tmp_string;
-
+		
 		g_key_file_set_string(config, "VTE", "font", vc->font);
 		g_key_file_set_boolean(config, "VTE", "scroll_on_key", vc->scroll_on_key);
 		g_key_file_set_boolean(config, "VTE", "scroll_on_out", vc->scroll_on_out);
@@ -725,7 +726,7 @@ void configuration_load_session_files(GKeyFile *config, gboolean read_recent_fil
 	{
 		g_snprintf(entry, sizeof(entry), "FILE_NAME_%d", i);
 		tmp_array = g_key_file_get_string_list(config, "files", entry, NULL, &error);
-		if (! tmp_array || error)
+		if (!tmp_array || error)
 		{
 			g_error_free(error);
 			error = NULL;
@@ -751,7 +752,7 @@ static void get_setting_color(GKeyFile *config, const gchar *section, const gcha
 		GdkColor *color, const gchar *default_color)
 {
 	gchar *str = utils_get_setting_string(config, section, key, NULL);
-	if (str == NULL || ! utils_parse_color(str, color))
+	if (str == NULL || !utils_parse_color(str, color))
 		utils_parse_color(default_color, color);
 	g_free(str);
 }
@@ -764,25 +765,25 @@ static void load_dialog_prefs(GKeyFile *config)
 	gchar *tmp_string, *tmp_string2;
 	const gchar *default_charset = NULL;
 	gchar *cmd;
-
+	
 	/* compatibility with Geany 0.20 */
 	if (!g_key_file_has_key(config, PACKAGE, atomic_file_saving_key, NULL))
 	{
 		g_key_file_set_boolean(config, PACKAGE, atomic_file_saving_key,
 			utils_get_setting_boolean(config, PACKAGE, "use_safe_file_saving", FALSE));
 	}
-
+	
 	/* compatibility with Geany 0.21 */
 	{
 		gboolean suppress_search_dialogs = utils_get_setting_boolean(config, PACKAGE, "pref_main_suppress_search_dialogs", FALSE);
-
+		
 		if (!g_key_file_has_key(config, "search", "pref_search_always_wrap", NULL))
 			g_key_file_set_boolean(config, "search", "pref_search_always_wrap", suppress_search_dialogs);
-
+		
 		if (!g_key_file_has_key(config, "search", "pref_search_hide_find_dialog", NULL))
 			g_key_file_set_boolean(config, "search", "pref_search_hide_find_dialog", suppress_search_dialogs);
 	}
-
+	
 	/* general */
 	prefs.confirm_exit = utils_get_setting_boolean(config, PACKAGE, "pref_main_confirm_exit", FALSE);
 	prefs.suppress_status_messages = utils_get_setting_boolean(config, PACKAGE, "pref_main_suppress_status_messages", FALSE);
@@ -794,7 +795,7 @@ static void load_dialog_prefs(GKeyFile *config)
 	prefs.beep_on_errors = utils_get_setting_boolean(config, PACKAGE, "beep_on_errors", TRUE);
 	prefs.switch_to_status = utils_get_setting_boolean(config, PACKAGE, "switch_msgwin_pages", FALSE);
 	prefs.auto_focus = utils_get_setting_boolean(config, PACKAGE, "auto_focus", FALSE);
-
+	
 	/* interface */
 	interface_prefs.tab_pos_editor = utils_get_setting_integer(config, PACKAGE, "tab_pos_editor", GTK_POS_TOP);
 	interface_prefs.tab_pos_msgwin = utils_get_setting_integer(config, PACKAGE, "tab_pos_msgwin",GTK_POS_LEFT);
@@ -809,7 +810,8 @@ static void load_dialog_prefs(GKeyFile *config)
 	interface_prefs.tagbar_font = utils_get_setting_string(config, PACKAGE, "tagbar_font", GEANY_DEFAULT_FONT_SYMBOL_LIST);
 	interface_prefs.msgwin_font = utils_get_setting_string(config, PACKAGE, "msgwin_font", GEANY_DEFAULT_FONT_MSG_WINDOW);
 	interface_prefs.use_native_windows_dialogs = utils_get_setting_boolean(config, PACKAGE, "use_native_windows_dialogs", FALSE);
-
+	interface_prefs.switch_to_msgwin_messages = utils_get_setting_boolean(config, PACKAGE, "switch_to_msgwin_messages", FALSE);
+	
 	/* display, editor */
 	editor_prefs.long_line_enabled = utils_get_setting_boolean(config, PACKAGE, "long_line_enabled", TRUE);
 	editor_prefs.long_line_type = utils_get_setting_integer(config, PACKAGE, "long_line_type", 0);
@@ -842,12 +844,12 @@ static void load_dialog_prefs(GKeyFile *config)
 	editor_prefs.auto_continue_multiline = utils_get_setting_boolean(config, PACKAGE, "auto_continue_multiline", TRUE);
 	editor_prefs.comment_toggle_mark = utils_get_setting_string(config, PACKAGE, "comment_toggle_mark", GEANY_TOGGLE_MARK);
 	editor_prefs.autoclose_chars = utils_get_setting_integer(config, PACKAGE, "autoclose_chars", 0);
-
+	
 	/* Files
 	 * use current locale encoding as default for new files (should be UTF-8 in most cases) */
 	g_get_charset(&default_charset);
 	tmp_string = utils_get_setting_string(config, PACKAGE, "pref_editor_default_new_encoding",
-		default_charset);
+										  default_charset);
 	if (tmp_string)
 	{
 		const GeanyEncoding *enc = encodings_get_from_charset(tmp_string);
@@ -855,11 +857,11 @@ static void load_dialog_prefs(GKeyFile *config)
 			file_prefs.default_new_encoding = enc->idx;
 		else
 			file_prefs.default_new_encoding = GEANY_ENCODING_UTF_8;
-
+		
 		g_free(tmp_string);
 	}
 	tmp_string = utils_get_setting_string(config, PACKAGE, "pref_editor_default_open_encoding",
-		"none");
+										  "none");
 	if (tmp_string)
 	{
 		const GeanyEncoding *enc = NULL;
@@ -869,7 +871,7 @@ static void load_dialog_prefs(GKeyFile *config)
 			file_prefs.default_open_encoding = enc->idx;
 		else
 			file_prefs.default_open_encoding = -1;
-
+		
 		g_free(tmp_string);
 	}
 	file_prefs.default_eol_character = utils_get_setting_integer(config, PACKAGE, "default_eol_character", GEANY_DEFAULT_EOL_CHARACTER);
@@ -877,20 +879,20 @@ static void load_dialog_prefs(GKeyFile *config)
 	file_prefs.ensure_convert_new_lines = utils_get_setting_boolean(config, PACKAGE, "pref_editor_ensure_convert_line_endings", FALSE);
 	file_prefs.final_new_line = utils_get_setting_boolean(config, PACKAGE, "pref_editor_new_line", TRUE);
 	file_prefs.strip_trailing_spaces = utils_get_setting_boolean(config, PACKAGE, "pref_editor_trail_space", FALSE);
-
+	
 	/* toolbar */
 	toolbar_prefs.visible = utils_get_setting_boolean(config, PACKAGE, "pref_toolbar_show", TRUE);
 	toolbar_prefs.append_to_menu = utils_get_setting_boolean(config, PACKAGE, "pref_toolbar_append_to_menu", FALSE);
 	{
 		toolbar_prefs.use_gtk_default_style = utils_get_setting_boolean(config, PACKAGE, "pref_toolbar_use_gtk_default_style", TRUE);
-		if (! toolbar_prefs.use_gtk_default_style)
+		if (!toolbar_prefs.use_gtk_default_style)
 			toolbar_prefs.icon_style = utils_get_setting_integer(config, PACKAGE, "pref_toolbar_icon_style", GTK_TOOLBAR_ICONS);
-
+		
 		toolbar_prefs.use_gtk_default_icon = utils_get_setting_boolean(config, PACKAGE, "pref_toolbar_use_gtk_default_icon", TRUE);
-		if (! toolbar_prefs.use_gtk_default_icon)
+		if (!toolbar_prefs.use_gtk_default_icon)
 			toolbar_prefs.icon_size = utils_get_setting_integer(config, PACKAGE, "pref_toolbar_icon_size", GTK_ICON_SIZE_LARGE_TOOLBAR);
 	}
-
+	
 	/* VTE */
 #ifdef HAVE_VTE
 	vte_info.load_vte = utils_get_setting_boolean(config, "VTE", "load_vte", TRUE);
@@ -899,14 +901,14 @@ static void load_dialog_prefs(GKeyFile *config)
 		StashGroup *group;
 		struct passwd *pw = getpwuid(getuid());
 		const gchar *shell = (pw != NULL) ? pw->pw_shell : "/bin/sh";
-
+		
 #ifdef __APPLE__
 		/* Geany is started using launchd on OS X and we don't get any environment variables
 		 * so PS1 isn't defined. Start as a login shell to read the corresponding config files. */
 		if (strcmp(shell, "/bin/bash") == 0)
 			shell = "/bin/bash -l";
 #endif
-
+		
 		vc = g_new0(VteConfig, 1);
 		vte_info.dir = utils_get_setting_string(config, "VTE", "last_dir", NULL);
 		if ((vte_info.dir == NULL || utils_str_equal(vte_info.dir, "")) && pw != NULL)
@@ -915,7 +917,7 @@ static void load_dialog_prefs(GKeyFile *config)
 		else if (vte_info.dir == NULL && pw == NULL)
 			/* fallback to root */
 			vte_info.dir = g_strdup("/");
-
+		
 		vc->shell = utils_get_setting_string(config, "VTE", "shell", shell);
 		vc->font = utils_get_setting_string(config, "VTE", "font", GEANY_DEFAULT_FONT_EDITOR);
 		vc->scroll_on_key = utils_get_setting_boolean(config, "VTE", "scroll_on_key", TRUE);
@@ -929,13 +931,13 @@ static void load_dialog_prefs(GKeyFile *config)
 		vc->scrollback_lines = utils_get_setting_integer(config, "VTE", "scrollback_lines", 500);
 		get_setting_color(config, "VTE", "colour_fore", &vc->colour_fore, "#ffffff");
 		get_setting_color(config, "VTE", "colour_back", &vc->colour_back, "#000000");
-
+		
 		/* various VTE prefs.
 		 * this can't be done in init_pref_groups() because we need to know the value of
 		 * vte_info.load_vte, and `vc` to be initialized */
 		group = stash_group_new("VTE");
 		configuration_add_various_pref_group(group, "terminal");
-
+		
 		stash_group_add_string(group, &vc->send_cmd_prefix, "send_cmd_prefix", "");
 		stash_group_add_boolean(group, &vc->send_selection_unsafe, "send_selection_unsafe", FALSE);
 	}
@@ -946,16 +948,16 @@ static void load_dialog_prefs(GKeyFile *config)
 	tmp_string = utils_get_initials(template_prefs.developer);
 	template_prefs.initials = utils_get_setting_string(config, PACKAGE, "pref_template_initial", tmp_string);
 	g_free(tmp_string);
-
+	
 	template_prefs.version = utils_get_setting_string(config, PACKAGE, "pref_template_version", "1.0");
-
+	
 	tmp_string = g_strdup_printf("%s@%s", g_get_user_name(), g_get_host_name());
 	template_prefs.mail = utils_get_setting_string(config, PACKAGE, "pref_template_mail", tmp_string);
 	g_free(tmp_string);
 	template_prefs.year_format = utils_get_setting_string(config, PACKAGE, "pref_template_year", GEANY_TEMPLATES_FORMAT_YEAR);
 	template_prefs.date_format = utils_get_setting_string(config, PACKAGE, "pref_template_date", GEANY_TEMPLATES_FORMAT_DATE);
 	template_prefs.datetime_format = utils_get_setting_string(config, PACKAGE, "pref_template_datetime", GEANY_TEMPLATES_FORMAT_DATETIME);
-
+	
 	/* tools */
 	cmd = utils_get_setting_string(config, "tools", "terminal_cmd", "");
 	if (EMPTY(cmd))
@@ -980,12 +982,12 @@ static void load_dialog_prefs(GKeyFile *config)
 	tool_prefs.term_cmd = cmd;
 	tool_prefs.browser_cmd = utils_get_setting_string(config, "tools", "browser_cmd", GEANY_DEFAULT_TOOLS_BROWSER);
 	tool_prefs.grep_cmd = utils_get_setting_string(config, "tools", "grep_cmd", GEANY_DEFAULT_TOOLS_GREP);
-
+	
 	tool_prefs.context_action_cmd = utils_get_setting_string(config, PACKAGE, "context_action_cmd", "");
-
+	
 	/* printing */
 	tmp_string2 = g_find_program_in_path(GEANY_DEFAULT_TOOLS_PRINTCMD);
-
+	
 	if (!EMPTY(tmp_string2))
 	{
 	#ifdef G_OS_WIN32
@@ -1000,17 +1002,17 @@ static void load_dialog_prefs(GKeyFile *config)
 	printing_prefs.external_print_cmd = utils_get_setting_string(config, "printing", "print_cmd", tmp_string);
 	g_free(tmp_string);
 	g_free(tmp_string2);
-
+	
 	printing_prefs.use_gtk_printing = utils_get_setting_boolean(config, "printing", "use_gtk_printing", TRUE);
 	printing_prefs.print_line_numbers = utils_get_setting_boolean(config, "printing", "print_line_numbers", TRUE);
 	printing_prefs.print_page_numbers = utils_get_setting_boolean(config, "printing", "print_page_numbers", TRUE);
 	printing_prefs.print_page_header = utils_get_setting_boolean(config, "printing", "print_page_header", TRUE);
 	printing_prefs.page_header_basename = utils_get_setting_boolean(config, "printing", "page_header_basename", FALSE);
 	printing_prefs.page_header_datefmt = utils_get_setting_string(config, "printing", "page_header_datefmt", "%c");
-
+	
 	/* read stash prefs */
 	settings_action(config, SETTING_READ);
-
+	
 	/* build menu
 	 * after stash prefs as it uses some of them */
 	build_set_group_count(GEANY_GBG_FT, build_menu_prefs.number_ft_menu_items);
@@ -1064,7 +1066,7 @@ static void load_ui_prefs(GKeyFile *config)
 	scribble_pos = utils_get_setting_integer(config, PACKAGE, "scribble_pos", -1);
 
 	geo = g_key_file_get_integer_list(config, PACKAGE, "geometry", &geo_len, NULL);
-	if (! geo || geo_len < 5)
+	if (!geo || geo_len < 5)
 	{
 		ui_prefs.geometry[0] = -1;
 		ui_prefs.geometry[1] = -1;
@@ -1159,7 +1161,7 @@ gboolean configuration_load(void)
 	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
 	GKeyFile *config = g_key_file_new();
 
-	if (! g_file_test(configfile, G_FILE_TEST_IS_REGULAR))
+	if (!g_file_test(configfile, G_FILE_TEST_IS_REGULAR))
 	{	/* config file does not (yet) exist, so try to load a global config file which may be */
 		/* created by distributors */
 		geany_debug("No user config file found, trying to use global configuration.");
@@ -1264,7 +1266,7 @@ void configuration_open_files(void)
 
 		if (tmp != NULL && (len = g_strv_length(tmp)) >= 8)
 		{
-			if (! open_session_file(tmp, len))
+			if (!open_session_file(tmp, len))
 				failure = TRUE;
 		}
 		g_strfreev(tmp);

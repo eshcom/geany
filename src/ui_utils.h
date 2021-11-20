@@ -67,6 +67,7 @@ typedef struct GeanyInterfacePrefs
 	gboolean		use_native_windows_dialogs;
 	/** whether compiler messages window is automatically scrolled to show new messages */
 	gboolean		compiler_tab_autoscroll;
+	gboolean		switch_to_msgwin_messages;	/**< whether message window's messages tab is switching when navigating with hotkeys */
 	gint			msgwin_orientation;			/**< orientation of the message window */
 	gint 			symbols_sort_mode;			/**< symbol list sorting mode */
 }
