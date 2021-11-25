@@ -775,7 +775,7 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 }
 
 
-#define CHECK_STRINGEOL()								\
+#define CHECK_STRINGEOL									\
 	Sci_PositionU i = sc.currentPos;					\
 	while (i < endPos && IsASpaceOrTab(styler[i]))		\
 		i++;											\
@@ -1263,7 +1263,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					formatSeq.initFormatState();
 					
 				} else {
-					CHECK_STRINGEOL();
+					CHECK_STRINGEOL;
 				}
 				break;
 				
@@ -1291,7 +1291,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					formatSeq.initFormatState();
 					
 				} else {
-					CHECK_STRINGEOL();
+					CHECK_STRINGEOL;
 				}
 				break;
 				

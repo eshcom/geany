@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:13+0300\n"
+"POT-Creation-Date: 2021-11-26 02:19+0300\n"
 "PO-Revision-Date: 2016-10-31 09:07+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -5142,10 +5142,12 @@ msgstr "Мәліметті беру мен таңдауыңызша команд
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
-"changed. Error message: %s"
+"changed. Error message:\n"
+"%s"
 msgstr ""
 "Орындалған таңдауыңызша команда қатені қайтарды. Таңдалған мәтін "
-"өзгертілмеді. Қате хабарламасы: %s"
+"өзгертілмеді. Қате хабарламасы:\n"
+"%s"
 
 #: ../src/tools.c:247
 msgid "The executed custom command exited with an unsuccessful exit code."

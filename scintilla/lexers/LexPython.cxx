@@ -540,7 +540,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 }
 
 
-#define CHECK_STRINGEOL()							\
+#define CHECK_STRINGEOL								\
 	Sci_PositionU i = sc.currentPos;				\
 	while (i < endPos && IsASpaceOrTab(styler[i]))	\
 		i++;										\
@@ -841,7 +841,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					needEOLCheck = true;
 					
 				} else {
-					CHECK_STRINGEOL();
+					CHECK_STRINGEOL;
 				}
 			}
 		} else if (sc.state == SCE_P_FORMATSEQUENCE) {
@@ -873,7 +873,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					needEOLCheck = true;
 					
 				} else {
-					CHECK_STRINGEOL();
+					CHECK_STRINGEOL;
 				}
 			}
 		} else if (sc.state == SCE_P_STRINGEOL) {

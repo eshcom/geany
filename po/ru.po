@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.35\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:13+0300\n"
+"POT-Creation-Date: 2021-11-26 02:19+0300\n"
 "PO-Revision-Date: 2019-04-16 21:50+0400\n"
 "Last-Translator: Pavel Roschin <rpg89(at)post(dot)ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -5279,10 +5279,12 @@ msgstr "Передаются данные и выполняется пользо
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
-"changed. Error message: %s"
+"changed. Error message:\n"
+"%s"
 msgstr ""
 "Выполнение команды пользователя завершилось с ошибкой. Изменений сделано не "
-"было. Текст сообщения об ошибке: %s"
+"было. Текст сообщения об ошибке:\n"
+"%s"
 
 #: ../src/tools.c:247
 msgid "The executed custom command exited with an unsuccessful exit code."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:13+0300\n"
+"POT-Creation-Date: 2021-11-26 02:19+0300\n"
 "PO-Revision-Date: 2013-02-01 19:00+0530\n"
 "Last-Translator: Asheesh <asheeshranjan1@gmail.com>\n"
 "Language-Team: Hindi\n"
@@ -5059,7 +5059,8 @@ msgstr ""
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
-"changed. Error message: %s"
+"changed. Error message:\n"
+"%s"
 msgstr ""
 
 #: ../src/tools.c:247

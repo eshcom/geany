@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:13+0300\n"
+"POT-Creation-Date: 2021-11-26 02:19+0300\n"
 "PO-Revision-Date: 2008-02-04 12:44+0300\n"
 "Last-Translator: Boris Dibrov <dibrov.bor@gmail.com>\n"
 "Language-Team: \n"
@@ -5530,7 +5530,8 @@ msgstr "Передача даних та виконання власної ко�
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
-"changed. Error message: %s"
+"changed. Error message:\n"
+"%s"
 msgstr ""
 
 #: ../src/tools.c:247

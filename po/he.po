@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:13+0300\n"
+"POT-Creation-Date: 2021-11-26 02:19+0300\n"
 "PO-Revision-Date: 2014-04-01 00:39+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gnome.org>\n"
 "Language-Team: עברית <>\n"
@@ -5193,7 +5193,8 @@ msgstr "העברת נתונים וביצוע פקודה מותאמת אישית:
 #, c-format
 msgid ""
 "The executed custom command returned an error. Your selection was not "
-"changed. Error message: %s"
+"changed. Error message:\n"
+"%s"
 msgstr "פעולה מותאמת אישית להחזרת שגיאה. הבחירה שלך לא השתנתה. הודעת שגיאה: %s"
 
 #: ../src/tools.c:247
