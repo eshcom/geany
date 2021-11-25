@@ -237,7 +237,7 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 			g_warning("%s: %s\n", command, errors->str);
 			ui_set_statusbar(TRUE,
 				_("The executed custom command returned an error. "
-				"Your selection was not changed. Error message: %s"),
+				  "Your selection was not changed. Error message:\n%s"),
 				errors->str);
 		}
 		else if (!SPAWN_WIFEXITED(status) || SPAWN_WEXITSTATUS(status) != EXIT_SUCCESS)
