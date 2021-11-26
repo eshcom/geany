@@ -417,6 +417,33 @@ void run_test_case07()
 	//~ item1: '!', item2: ''
 }
 
+#define GET_STR_CHAR(obj, index) \
+	GET_CHAR(obj, index)
+
+void run_test_case08()
+{
+	gchar *str1 = "123";
+	gchar *str2 = "456";
+	gchar *str3 = "789";
+	
+	inline gchar nested(void)
+	{
+		return str3[0];
+	}
+	
+	#define GET_CHAR(sci, index) \
+		sci[index]
+	printf("c1: %c\n", GET_STR_CHAR(str1, 0));
+	#undef GET_CHAR
+	
+	#define GET_CHAR(chunk, index) \
+		chunk[index]
+	printf("c2: %c\n", GET_STR_CHAR(str2, 0));
+	#undef GET_CHAR
+	
+	printf("c3: %c\n", nested());
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -425,7 +452,8 @@ int main(void)
 	//~ run_test_case04();
 	//~ run_test_case05();
 	//~ run_test_case06();
-	run_test_case07();
+	//~ run_test_case07();
+	run_test_case08();
 	
 	return 0;
 }
