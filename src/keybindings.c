@@ -1905,11 +1905,11 @@ static void get_current_word_and_scope(GeanyDocument *doc,
 		gchar *selection = sci_get_selection_contents(sci);
 		static gchar current_word[GEANY_MAX_WORD_LENGTH];
 		
-		editor_find_word_and_scope_chunk(selection,
-										 doc->editor->document->file_type->lang,
-										 current_word, GEANY_MAX_WORD_LENGTH,
-										 current_scope, GEANY_MAX_WORD_LENGTH,
-										 type);
+		editor_find_word_and_scope(NULL, -1, selection,
+								   doc->editor->document->file_type->lang,
+								   current_word, GEANY_MAX_WORD_LENGTH,
+								   current_scope, GEANY_MAX_WORD_LENGTH,
+								   type);
 		if (*current_word)
 		{
 			*word = g_strdup(current_word);
@@ -1920,7 +1920,7 @@ static void get_current_word_and_scope(GeanyDocument *doc,
 	}
 	else
 	{
-		editor_find_word_and_scope(doc->editor, -1,
+		editor_find_word_and_scope(doc->editor, -1, NULL, -1,
 								   editor_info.current_word, GEANY_MAX_WORD_LENGTH,
 								   current_scope, GEANY_MAX_WORD_LENGTH,
 								   type);
