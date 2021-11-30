@@ -2341,7 +2341,8 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s", type, scope, name); // esh: log
+	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s",
+					 type, scope, name); // esh: log
 	
 	GeanyDocument *old_doc = document_get_current();
 	guint current_line = sci_get_current_line(old_doc->editor->sci) + 1;
