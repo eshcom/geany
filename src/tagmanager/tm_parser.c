@@ -845,7 +845,7 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
 }
 
 gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
-								   gchar prefix, gboolean brackets)
+								   gchar *prefix, gboolean brackets)
 {
 	switch (lang)
 	{
@@ -854,7 +854,7 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 			//		case (module()):test1() of	- "case" is scope
 			//		?module:test1()				- "module" is scope
 			//		Module:test1()				- "Module" is scope
-			if (brackets || prefix == '?' ||
+			if (brackets || g_strcmp0(prefix, "?") == 0 ||
 				!(scope[0] == '\'' || islower(scope[0])))
 				return TRUE;
 			break;
@@ -899,19 +899,22 @@ TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type)
 }
 
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
-						   gchar prefix, gchar suffix)
+						   gchar *prefix, gchar *suffix)
 {
-	//~ esh: this func will expand
+	// this func will be expanded in conjunction with the definitions of
+	// ONE_CHAR_PREFIX_CHARS/MULTI_CHAR_PREFIX_CHARS,
+	// ONE_CHAR_SUFFIX_CHARS/MULTI_CHAR_SUFFIX_CHARS
+	
 	switch (lang)
 	{
 		case TM_PARSER_ERLANG:
-			if (prefix == '?')
+			if (g_strcmp0(prefix, "?") == 0)
 				*type = tm_tag_macro_t;
-			else if (prefix == '#') // record
+			else if (g_strcmp0(prefix, "#") == 0) // record
 				*type = tm_tag_struct_t;
-			else if (suffix == '(')
+			else if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_function_t | tm_tag_typedef_t;
-			else if (suffix == ':')
+			else if (g_strcmp0(suffix, ":") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_macro_t    | tm_tag_struct_t |
 										 tm_tag_function_t | tm_tag_typedef_t);
 			else
@@ -919,23 +922,29 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 			break;
 		case TM_PARSER_C:
 		case TM_PARSER_CPP:
-			if (suffix == '(')
-				*type = tm_tag_function_t | tm_tag_macro_t |
-						tm_tag_macro_with_arg_t;
-			else if (suffix == ':')
+			if (g_strcmp0(prefix, "->") == 0)
+				//~ example: ppo->indentChar
+				*type = tm_tag_member_t;
+			else if (g_strcmp0(suffix, "(") == 0)
+				*type = tm_tag_function_t | tm_tag_macro_with_arg_t;
+			else if (g_strcmp0(suffix, "::") == 0)
+				//~ example: CharacterSet::setNone
+				*type = tm_tag_class_t;
+			else if (g_strcmp0(suffix, ":") == 0)
 				//~ example:
-				//~ class: CharacterSet::setNone
-				//~ enum:  case TM_PARSER_C:
-				*type = tm_tag_class_t | tm_tag_enumerator_t;
+				//~ case TM_PARSER_C:
+				//~ startPos == 0 ? SCE_ERLANG_DEFAULT : styler.StyleAt(startPos - 1);
+				*type = tm_tag_max_t & ~(tm_tag_class_t | tm_tag_function_t |
+										 tm_tag_macro_with_arg_t);
 			break;
 		case TM_PARSER_PYTHON:
-			if (suffix == '=' || suffix == '.') 
+			if (g_strcmp0(suffix, "=") == 0 || g_strcmp0(suffix, ".") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_function_t);
-			else if (suffix == '(')
+			else if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_externvar_t);
 			break;
 		default:
-			if (suffix == '(')
+			if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_function_t       | tm_tag_method_t |
 						tm_tag_macro_with_arg_t | tm_tag_prototype_t;
 			break;

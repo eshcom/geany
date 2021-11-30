@@ -1825,6 +1825,73 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 }
 
 
+static gchar *find_prefix(ScintillaObject *sci, gchar *chunk, gint pos)
+{
+	gchar *prefix = NULL;
+	
+	gint prefix_start = pos;
+	while (prefix_start > 0)
+	{
+		gchar c = sci ? sci_get_char_at(sci, prefix_start - 1)
+					  : chunk[prefix_start - 1];
+		
+		if (strchr(MULTI_CHAR_PREFIX_CHARS, c))
+		{
+			prefix_start--;
+			continue;
+		}
+		else if (strchr(ONE_CHAR_PREFIX_CHARS, c))
+			prefix_start--;
+		break;
+	}
+	if (prefix_start < pos)
+	{
+		if (sci)
+			prefix = sci_get_contents_range(sci, prefix_start, pos);
+		else
+			prefix = g_strndup(&chunk[prefix_start], pos - prefix_start);
+	}
+	return prefix;
+}
+
+static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
+						  gint pos, gint limit)
+{
+	gchar *suffix = NULL;
+	
+	inline gchar get_char_at(gint index)
+	{
+		return sci ? sci_get_char_at(sci, index) : chunk[index];
+	}
+	
+	/* skip whitespaces */
+	while (pos < limit && isspace(get_char_at(pos)))
+		pos++;
+	
+	gint suffix_end = pos;
+	while (suffix_end < limit)
+	{
+		gchar c = get_char_at(suffix_end);
+		if (strchr(MULTI_CHAR_SUFFIX_CHARS, c))
+		{
+			suffix_end++;
+			continue;
+		}
+		else if (strchr(ONE_CHAR_SUFFIX_CHARS, c))
+			suffix_end++;
+		break;
+	}
+	if (pos < suffix_end)
+	{
+		if (sci)
+			suffix = sci_get_contents_range(sci, pos, suffix_end);
+		else
+			suffix = g_strndup(&chunk[pos], suffix_end - pos);
+	}
+	return suffix;
+}
+
+
 static ScopeBound find_next_scope(GeanyEditor *editor,
 								  gchar *chunk, TMParserType lang,
 								  gint pos, const gchar *context_sep,
@@ -1945,16 +2012,15 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 		pos--;
 	
 	// esh: define the type ----------------------------------
-	gchar prefix = pos > 0 ? get_char_at(pos - 1) : ' ';
-	
-	gint endword = wordbound.end;
-	/* skip whitespaces */
-	while (endword < limit && isspace(get_char_at(endword)))
-		endword++;
-	
-	gchar suffix = endword < limit ? get_char_at(endword) : ' ';
+	gchar *prefix = find_prefix(sci, chunk, pos);
+	gchar *suffix = find_suffix(sci, chunk, wordbound.end, limit);
 	
 	tm_parser_define_type(type, lang, prefix, suffix);
+	
+	ui_set_statusbar(TRUE, "word: prefix = '%s', suffix = '%s', type = %d",
+					 prefix, suffix, *type); // esh: log
+	g_free(prefix);
+	g_free(suffix);
 	//--------------------------------------------------------
 	
 	// esh: define the scope ---------------------------------
@@ -1987,11 +2053,13 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				while (pos > 0 && isspace(get_char_at(pos - 1)))
 					pos--;
 				
-				prefix = pos > 0 ? get_char_at(pos - 1) : ' ';
+				prefix = find_prefix(sci, chunk, pos);
 				
 				if (tm_parser_undefined_scope(scope, lang, prefix,
 											  scopebound.brackets))
 					*scope = '\0';
+				
+				g_free(prefix);
 			}
 		}
 	}
