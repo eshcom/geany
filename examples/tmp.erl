@@ -124,6 +124,9 @@ tmp2(Body, Major, Minor, Patch, Build, Mod, Socket, Request) ->
 default() -> ok.
 yield() -> ok.
 
+max(V1, V2) when V1 > V2 -> V1;
+max(_, V2) -> V2.
+
 test(Var) ->
 	Rec = #tstrec{},
 	try throw(123)

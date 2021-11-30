@@ -564,7 +564,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	// esh: this block code not actual with new block code with detect stringState (see below)
 	// 		and new check sc.state on string-state in sc.atLineStart case in loop (see below)
 	
-	//~ // Backtrack to previous line in case need to fix its tab whinging
+	// Backtrack to previous line in case need to fix its tab whinging
 	//~ if (startPos > 0) {
 		//~ if (lineCurrent > 0) {
 			//~ // Look for backslash-continued lines
@@ -579,8 +579,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			//~ Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
 			//~ length += (startPos - newStartPos);
 			//~ startPos = newStartPos;
+			//~ initStyle = startPos == 0 ? SCE_P_DEFAULT
+									  //~ : styler.StyleAt(startPos - 1);
 		//~ }
-		//~ initStyle = startPos == 0 ? SCE_P_DEFAULT : styler.StyleAt(startPos - 1);
 	//~ }
 	
 	const literalsAllowed allowedLiterals = options.AllowedLiterals();

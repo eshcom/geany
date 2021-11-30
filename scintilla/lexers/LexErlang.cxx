@@ -171,6 +171,74 @@ static bool is_radix(int radix, int ch) {
 	return (digit < radix);
 }
 
+#define LOOP_COMMON_BLOCK							\
+		const char ch = styler[pos];				\
+		const char chPrev = styler[pos - 1];		\
+		if (!is_str && (ch == '\"' || ch == '\'')	\
+			&& chPrev != '$' && chPrev != '\\') {	\
+			str_quote = ch;							\
+			is_str = true;							\
+		} else if (is_str) {						\
+			if (ch == str_quote && chPrev != '\\')	\
+				is_str = false;						\
+		}
+
+#define CHECK_ESCAPING chPrev != '$' && chPrev != '\\'
+
+static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
+							   Accessor &styler) {
+	/* find ") ->" or ") when" */
+	bool found_end_bracket = false;
+	bool is_str = false;
+	char str_quote;
+	int brackets = 0;
+	
+	int limit = pos + 300;
+	if (limit > endPos) limit = endPos;
+	
+	while (pos < limit) {
+		LOOP_COMMON_BLOCK
+		  else if (ch == '(' && CHECK_ESCAPING) {
+			brackets++;
+		} else if (ch == ')' && CHECK_ESCAPING && --brackets < 0) {
+			found_end_bracket = true;
+			break;
+		}
+		pos++;
+	}
+	if (found_end_bracket) {
+		pos++; // skip ')'
+		while (pos < endPos && IsASpace(styler[pos]))
+			pos++;
+		if (pos < endPos - 1 && styler[pos] == '-' && styler[pos + 1] == '>')
+			return true;
+		else if (pos < endPos - 3 &&
+				 styler[pos] == 'w' && styler[pos + 1] == 'h' &&
+				 styler[pos + 2] == 'e' && styler[pos + 3] == 'n')
+			return true;
+	}
+	return false;
+}
+
+static Sci_Position find_start_bracket(Sci_Position pos, Accessor &styler)
+{
+	bool is_str = false;
+	char str_quote;
+	int brackets = 0;
+	int limit = pos > 300 ? pos - 300 : 0;
+	
+	while (pos > limit) {
+		LOOP_COMMON_BLOCK
+		  else if (ch == ')' && CHECK_ESCAPING) {
+			brackets++;
+		} else if (ch == '(' && CHECK_ESCAPING && --brackets < 0) {
+			return pos; /* found start bracket */
+		}
+		pos--;
+	}
+	return -1;
+}
+
 typedef enum {
 	NUMERAL_START,
 	NUMERAL_BASE_VALUE,
@@ -185,12 +253,24 @@ typedef enum {
 } module_type_t;
 
 constexpr bool IsSpaceEquiv(int state) noexcept {
-	return (state == SCE_ERLANG_DEFAULT) ||
-		   (state == SCE_ERLANG_COMMENT) ||
-		   (state == SCE_ERLANG_COMMENT_FUNCTION) ||
-		   (state == SCE_ERLANG_COMMENT_MODULE) ||
-		   (state == SCE_ERLANG_COMMENT_DOC) ||
-		   (state == SCE_ERLANG_COMMENT_DOC_MACRO);
+	return (state == SCE_ERLANG_DEFAULT ||
+			state == SCE_ERLANG_COMMENT ||
+			state == SCE_ERLANG_COMMENT_FUNCTION ||
+			state == SCE_ERLANG_COMMENT_MODULE ||
+			state == SCE_ERLANG_COMMENT_DOC ||
+			state == SCE_ERLANG_COMMENT_DOC_MACRO);
+}
+
+constexpr bool IsValidFuncDefinitionStyle(int style) noexcept {
+	return (style == SCE_ERLANG_DEFAULT ||
+			style == SCE_ERLANG_KEYWORD ||
+			style == SCE_ERLANG_OPERATOR ||
+			style == SCE_ERLANG_ATOM ||
+			style == SCE_ERLANG_COMMENT ||
+			style == SCE_ERLANG_COMMENT_FUNCTION ||
+			style == SCE_ERLANG_COMMENT_MODULE ||
+			style == SCE_ERLANG_COMMENT_DOC ||
+			style == SCE_ERLANG_COMMENT_DOC_MACRO);
 }
 
 static inline bool IsAWordChar(const int ch) {
@@ -207,6 +287,39 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	// esh: formatsequence highlighting
 	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
 	ErlFormatSequence formatSeq = ErlFormatSequence();
+	
+	// esh: find func definition for correct highlighting
+	//		(SCE_ERLANG_FUNCTION_NAME or SCE_ERLANG_BIFS)
+	if (IsValidFuncDefinitionStyle(initStyle) && startPos > 0) {
+		Sci_Position lineCurrent = styler.GetLine(startPos);
+		if (lineCurrent > 0) {
+			Sci_PositionU limit = startPos > 300 ? startPos - 300 : 0;
+			Sci_PositionU newStartPos = startPos;
+			bool end_bracket_found = false;
+			while (--newStartPos > limit &&
+				   IsValidFuncDefinitionStyle(styler.StyleAt(newStartPos)))
+				if (styler[newStartPos] == ')') {
+					end_bracket_found = true;
+					break;
+				}
+			if (end_bracket_found) {
+				newStartPos = find_start_bracket(--newStartPos, styler);
+				if (newStartPos > 0) {
+					int style = styler.StyleAt(newStartPos - 1);
+					if (style == SCE_ERLANG_FUNCTION_NAME ||
+						style == SCE_ERLANG_BIFS) {
+						Sci_Position newLine = styler.GetLine(newStartPos);
+						if (newLine < lineCurrent) {
+							newStartPos = styler.LineStart(newLine);
+							length += (startPos - newStartPos);
+							startPos = newStartPos;
+							initStyle = styler.StyleAt(startPos - 1);
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	Sci_PositionU endPos = startPos + length;
 	
@@ -237,7 +350,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	int last_state = SCE_ERLANG_DEFAULT;
 	int last_oper = ' ';
 	
-	bool is_at_symb = false;		// esh: "at" - is "@" symb (for node name)
+	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node name)
 	bool is_var_record_name = false;	// esh: #RecordName{}, #?MODULE{}
 	
 	// esh: for escape sequences highlighting for SCE_ERLANG_CHARACTER
@@ -446,14 +559,19 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					if (reservedWords.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_KEYWORD);
 						
-					} else if (((module_type == NONE_MODULE && sc.ch == '(')
-								|| module_type == ERLANG_MODULE)
-							   && erlangBIFs.InList(cur)) {
+					} else if (module_type == ERLANG_MODULE && erlangBIFs.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_BIFS);
 						
-					} else if (sc.ch == '(') {
+					} else if (module_type == OTHER_MODULE && sc.ch == '(') {
 						sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
 						
+					} else if (module_type == NONE_MODULE && sc.ch == '(') {
+						if (erlangBIFs.InList(cur) &&
+								!is_func_definition(sc.currentPos + 1, endPos, styler)) {
+							sc.ChangeState(SCE_ERLANG_BIFS);
+						} else {
+							sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+						}
 					} else if (sc.ch == '/') {
 						Sci_PositionU i = sc.currentPos + 1;
 						while (i < endPos && IsASpaceOrTab(styler[i]))

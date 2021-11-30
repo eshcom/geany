@@ -169,8 +169,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
 			length += (startPos - newStartPos);
 			startPos = newStartPos;
+			initStyle = startPos == 0 ? SCE_CSS_DEFAULT
+									  : styler.StyleAt(startPos - 1);
 		}
-		initStyle = startPos == 0 ? SCE_CSS_DEFAULT : styler.StyleAt(startPos - 1);
 	}
 	
 	Sci_PositionU endPos = startPos + length;
