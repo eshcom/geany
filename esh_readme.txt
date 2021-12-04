@@ -35,6 +35,7 @@ vte_send_cmd -> vte_terminal_feed_child
 ----------------------------------------------------------------------------------------
 
 keybindings/goto_tag -> symbols/symbols_goto_tag -> symbols/goto_tag
+editor/on_editor_button_press_event -> symbols/symbols_goto_tag -> symbols/goto_tag
 
 ----------------------------------------------------------------------------------------
 
