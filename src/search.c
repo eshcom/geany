@@ -441,7 +441,7 @@ void search_find_selection(GeanyDocument *doc, gboolean search_backwards)
 		{
 			g_free(s);
 			s = NULL;
-		};
+		}
 	}
 #endif
 	
@@ -449,14 +449,13 @@ void search_find_selection(GeanyDocument *doc, gboolean search_backwards)
 		s = sci_get_selection_contents(doc->editor->sci);
 	
 	if (!s && search_prefs.find_selection_type != GEANY_FIND_SEL_AGAIN)
-	{
-		/* get the current word */
+	{	/* get the current word */
 		s = editor_get_default_selection(doc->editor, TRUE, NULL);
 	}
 	
 	if (s)
 	{
-		setup_find_next(s);	/* allow find next/prev */
+		setup_find_next(s); /* allow find next/prev */
 		
 		if (document_find_text(doc, s, NULL, 0, search_backwards,
 							   NULL, FALSE, NULL) > -1)
@@ -464,14 +463,11 @@ void search_find_selection(GeanyDocument *doc, gboolean search_backwards)
 		g_free(s);
 	}
 	else if (search_prefs.find_selection_type == GEANY_FIND_SEL_AGAIN)
-	{
-		/* Repeat last search (in case selection was lost) */
+	{	/* Repeat last search (in case selection was lost) */
 		search_find_again(search_backwards);
 	}
 	else
-	{
 		utils_beep();
-	}
 }
 
 

@@ -5455,7 +5455,7 @@ static ScintillaObject *create_new_sci(GeanyEditor *editor)
 #ifdef G_OS_WIN32
 	rectangular_selection_modifier = SCMOD_ALT;
 #else
-	rectangular_selection_modifier = SCMOD_CTRL;
+	rectangular_selection_modifier = SCMOD_ALT; // esh: was SCMOD_CTRL
 #endif
 	SSM(sci, SCI_SETRECTANGULARSELECTIONMODIFIER,
 		rectangular_selection_modifier, 0);
