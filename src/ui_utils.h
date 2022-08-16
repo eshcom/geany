@@ -25,6 +25,7 @@
 #include "document.h"
 
 #include "gtkcompat.h"
+#include "msgwindow.h" // esh: MsgColors definition
 
 G_BEGIN_DECLS
 
@@ -101,7 +102,9 @@ GeanyMainWidgets;
 
 GtkWidget *ui_dialog_vbox_new(GtkDialog *dialog);
 
-void ui_set_statusbar(gboolean log, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+void ui_set_statusbar(gboolean log, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+void ui_set_statusbar_color(gboolean log, gint text_color, const gchar *format, ...)
+							G_GNUC_PRINTF(3, 4);
 
 void ui_table_add_row(GtkTable *table, gint row, ...) G_GNUC_NULL_TERMINATED;
 
@@ -247,7 +250,7 @@ void ui_setup_open_button_callback(GtkWidget *open_btn, const gchar *title,
 
 void ui_auto_separator_add_ref(GeanyAutoSeparator *autosep, GtkWidget *item);
 
-gpointer ui_builder_get_object (const gchar *name);
+gpointer ui_builder_get_object(const gchar *name);
 
 /* Compatibility functions */
 GtkWidget *create_edit_menu1(void);

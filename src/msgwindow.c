@@ -339,7 +339,7 @@ static void prepare_compiler_tree_view(void)
 					 G_CALLBACK(on_msg_tree_selection_changed), NULL);*/
 }
 
-static const GdkColor *get_color(gint msg_color)
+const GdkColor *get_color(gint msg_color)
 {
 	switch (msg_color)
 	{
@@ -833,8 +833,9 @@ static gboolean goto_compiler_file_line(const gchar *fname, gint line,
 			
 			if (g_file_test(name, G_FILE_TEST_EXISTS))
 			{
-				ui_set_statusbar(FALSE, _("Could not find file '%s' - trying "
-										  "the current document path."), fname);
+				ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+									   _("Could not find file '%s' - trying "
+										 "the current document path."), fname);
 				SETPTR(filename, name);
 			}
 			else

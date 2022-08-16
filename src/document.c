@@ -992,8 +992,8 @@ static gboolean get_mtime(const gchar *locale_filename, time_t *time)
 	{
 		gchar *utf8_filename = utils_get_utf8_from_locale(locale_filename);
 		
-		ui_set_statusbar(TRUE, _("Could not open file %s (%s)"),
-						 utf8_filename, err_msg);
+		ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open file %s (%s)"),
+							   utf8_filename, err_msg);
 		g_free(utf8_filename);
 	}
 	
@@ -1068,7 +1068,7 @@ static gboolean load_text_file(const gchar *locale_filename,
 			dialogs_show_msgbox(GTK_MESSAGE_WARNING, warn_msg,
 								display_filename);
 		
-		ui_set_statusbar(TRUE, warn_msg, display_filename);
+		ui_set_statusbar_color(TRUE, COLOR_RED, warn_msg, display_filename);
 	}
 	
 	return TRUE;
@@ -2185,7 +2185,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		return FALSE;
 	if (doc->readonly)
 	{
-		ui_set_statusbar(TRUE,
+		ui_set_statusbar_color(TRUE, COLOR_RED,
 			_("Cannot save read-only document '%s'!"), DOC_FILENAME(doc));
 		return FALSE;
 	}
@@ -2362,8 +2362,8 @@ gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text,
 	else
 	{
 		if (!inc)
-			ui_set_statusbar(FALSE, _("\"%s\" was not found."), text);
-		
+			ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+								   _("\"%s\" was not found."), text);
 		utils_beep();
 		sci_goto_pos(doc->editor->sci, start_pos, FALSE);	/* clear selection */
 		return FALSE;
@@ -2430,7 +2430,8 @@ gint document_find_text(GeanyDocument *doc, const gchar *text,
 		if ((selection_end == 0 && !search_backwards) ||
 			(selection_end == sci_len && search_backwards))
 		{
-			ui_set_statusbar(FALSE, _("\"%s\" was not found."), original_text);
+			ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+								   _("\"%s\" was not found."), original_text);
 			utils_beep();
 			return -1;
 		}
@@ -2538,8 +2539,8 @@ static void show_replace_summary(GeanyDocument *doc, gint count,
 {
 	if (count == 0)
 	{
-		ui_set_statusbar(FALSE, _("No matches found for \"%s\"."),
-						 original_find_text);
+		ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+					_("No matches found for \"%s\"."), original_find_text);
 		return;
 	}
 	

@@ -82,8 +82,8 @@ static gchar *read_file(const gchar *locale_fname)
 	{
 		gchar *utf8_fname = utils_get_utf8_from_locale(locale_fname);
 		
-		ui_set_statusbar(TRUE, _("Failed to convert template file \"%s\" to UTF-8"),
-						 utf8_fname);
+		ui_set_statusbar_color(TRUE, COLOR_RED, _("Failed to convert template file "
+												  "\"%s\" to UTF-8"), utf8_fname);
 		g_free(utf8_fname);
 		g_free(contents);
 		return NULL;
@@ -230,7 +230,8 @@ static void on_new_with_file_template(GtkMenuItem *menuitem,
 	else
 	{
 		SETPTR(fname, utils_get_utf8_from_locale(fname));
-		ui_set_statusbar(TRUE, _("Could not find file '%s'."), fname);
+		ui_set_statusbar_color(TRUE, COLOR_DARK_RED,
+							   _("Could not find file '%s'."), fname);
 	}
 	g_free(template);
 	g_free(path);

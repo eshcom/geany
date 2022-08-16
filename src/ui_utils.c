@@ -132,7 +132,7 @@ void ui_widget_set_sensitive(GtkWidget *widget, gboolean set)
 
 /* allow_override is TRUE if text can be ignored when another message has been set
  * that didn't use allow_override and has not timed out. */
-static void set_statusbar(const gchar *text, gboolean allow_override)
+static void set_statusbar(const gchar *text, gint text_color, gboolean allow_override)
 {
 	static guint id = 0;
 	static glong last_time = 0;
@@ -152,11 +152,19 @@ static void set_statusbar(const gchar *text, gboolean allow_override)
 		gtk_statusbar_pop(GTK_STATUSBAR(ui_widgets.statusbar), id);
 		gtk_statusbar_push(GTK_STATUSBAR(ui_widgets.statusbar), id, text);
 		last_time = timeval.tv_sec;
+		
+		//~ esh: set statusbar text color
+		const GdkColor *color = get_color(text_color);
+		gtk_widget_modify_fg(GTK_STATUSBAR(ui_widgets.statusbar)->label, GTK_STATE_NORMAL, color);
 	}
 	else if (timeval.tv_sec > last_time + GEANY_STATUS_TIMEOUT)
 	{
 		gtk_statusbar_pop(GTK_STATUSBAR(ui_widgets.statusbar), id);
 		gtk_statusbar_push(GTK_STATUSBAR(ui_widgets.statusbar), id, text);
+		
+		//~ esh: set statusbar text color
+		const GdkColor *color = get_color(text_color);
+		gtk_widget_modify_fg(GTK_STATUSBAR(ui_widgets.statusbar)->label, GTK_STATE_NORMAL, color);
 	}
 }
 
@@ -175,7 +183,27 @@ void ui_set_statusbar(gboolean log, const gchar *format, ...)
 	va_end(args);
 	
 	if (!prefs.suppress_status_messages)
-		set_statusbar(string, FALSE);
+		set_statusbar(string, COLOR_BLACK, FALSE); // esh: COLOR_BLACK - NULL color (default)
+	
+	if (log || prefs.suppress_status_messages)
+		msgwin_status_add("%s", string);
+	
+	g_free(string);
+}
+
+
+GEANY_API_SYMBOL
+void ui_set_statusbar_color(gboolean log, gint text_color, const gchar *format, ...)
+{
+	gchar *string;
+	va_list args;
+	
+	va_start(args, format);
+	string = g_strdup_vprintf(format, args);
+	va_end(args);
+	
+	if (!prefs.suppress_status_messages)
+		set_statusbar(string, text_color, FALSE);
 	
 	if (log || prefs.suppress_status_messages)
 		msgwin_status_add("%s", string);
@@ -353,12 +381,12 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 		stats_str = create_statusbar_statistics(doc, line, vcol, pos);
 		
 		/* can be overridden by status messages */
-		set_statusbar(stats_str, TRUE);
+		set_statusbar(stats_str, COLOR_BLACK, TRUE); // esh: COLOR_BLACK - NULL color (default)
 		g_free(stats_str);
 	}
 	else	/* no documents */
-	{
-		set_statusbar("", TRUE);	/* can be overridden by status messages */
+	{	/* can be overridden by status messages */
+		set_statusbar("", COLOR_BLACK, TRUE); // esh: COLOR_BLACK - NULL color (default)
 	}
 }
 
@@ -639,10 +667,10 @@ static void insert_include_items(GtkMenu *me, GtkMenu *mp,
 		gtk_container_add(GTK_CONTAINER(popup_menu), tmp_popup);
 		g_signal_connect(tmp_menu, "activate",
 						 G_CALLBACK(on_menu_insert_include_activate),
-						 (gpointer) includes[i]);
+						 (gpointer)includes[i]);
 		g_signal_connect(tmp_popup, "activate",
 						 G_CALLBACK(on_popup_insert_include_activate),
-						 (gpointer) includes[i]);
+						 (gpointer)includes[i]);
 		i++;
 	}
 	gtk_widget_show_all(edit_menu_item);
@@ -687,7 +715,7 @@ void ui_create_insert_menu_items(void)
 	gtk_widget_show(blank);
 	g_signal_connect(blank, "activate",
 					 G_CALLBACK(on_menu_insert_include_activate), NULL);
-	blank = gtk_separator_menu_item_new ();
+	blank = gtk_separator_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(menu_edit), blank);
 	gtk_widget_show(blank);
 	
@@ -770,7 +798,8 @@ static void insert_date(GeanyDocument *doc, gint pos, const gchar *date_style)
 	else
 	{
 		utils_beep();
-		ui_set_statusbar(TRUE, _("Date format string could not be "
+		ui_set_statusbar_color(TRUE, COLOR_DARK_RED,
+							   _("Date format string could not be "
 								 "converted (possibly too long)."));
 	}
 }
@@ -1471,7 +1500,7 @@ void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 {
 	guint i;
 	
-	foreach_document (i)
+	foreach_document(i)
 	{
 		GeanyDocument *doc = documents[i];
 		
@@ -2024,7 +2053,7 @@ void ui_setup_open_button_callback(GtkWidget *open_btn, const gchar *title,
 	
 	if (title)
 		g_object_set_data_full(G_OBJECT(open_btn), "title", g_strdup(title),
-							   (GDestroyNotify) g_free);
+							   (GDestroyNotify)g_free);
 	g_object_set_data(G_OBJECT(open_btn), "action", GINT_TO_POINTER(action));
 	g_signal_connect(open_btn, "clicked",
 					 G_CALLBACK(ui_path_box_open_clicked), path_entry);
@@ -2325,8 +2354,8 @@ void ui_swap_sidebar_pos(void)
 	
 	g_object_ref(left);
 	g_object_ref(right);
-	gtk_container_remove (GTK_CONTAINER (pane), left);
-	gtk_container_remove (GTK_CONTAINER (pane), right);
+	gtk_container_remove(GTK_CONTAINER(pane), left);
+	gtk_container_remove(GTK_CONTAINER(pane), right);
 	/* only scintilla notebook should expand */
 	gtk_paned_pack1(GTK_PANED(pane), right, right == main_widgets.notebook, TRUE);
 	gtk_paned_pack2(GTK_PANED(pane), left, left == main_widgets.notebook, TRUE);
@@ -2872,9 +2901,9 @@ GtkWidget *ui_lookup_widget(GtkWidget *widget, const gchar *widget_name)
 /* wraps gtk_builder_get_object()
  * unlike ui_lookup_widget(), it does only support getting object created from the main
  * UI file, but it can fetch any object, not only widgets */
-gpointer ui_builder_get_object (const gchar *name)
+gpointer ui_builder_get_object(const gchar *name)
 {
-	return gtk_builder_get_object (builder, name);
+	return gtk_builder_get_object(builder, name);
 }
 
 
@@ -2888,7 +2917,7 @@ static GtkWidget *progress_bar_create(void)
 	
 	/* Set the progressbar's height to 1 to fit it in the statusbar */
 	gtk_widget_set_size_request(bar, -1, 1);
-	gtk_box_pack_start (GTK_BOX(ui_widgets.statusbar), bar, FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(ui_widgets.statusbar), bar, FALSE, FALSE, 3);
 	
 	return bar;
 }
