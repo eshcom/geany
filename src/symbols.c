@@ -1761,8 +1761,8 @@ void symbols_show_load_tags_dialog(void)
 				ui_set_statusbar(TRUE, _("Loaded %s tags file '%s'."),
 								 filetypes_get_display_name(ft), utf8_fname);
 			else
-				ui_set_statusbar(TRUE, _("Could not load tags file '%s'."),
-								 utf8_fname);
+				ui_set_statusbar_color(TRUE, COLOR_RED,
+								_("Could not load tags file '%s'."), utf8_fname);
 			
 			g_free(utf8_fname);
 			g_free(fname);
@@ -2425,9 +2425,11 @@ gboolean symbols_goto_tag(const gchar *name, const gchar *scope,
 	utils_beep();
 	
 	if (!definition)
-		ui_set_statusbar(FALSE, _("Forward declaration \"%s\" not found."), name);
+		ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+							   _("Forward declaration \"%s\" not found."), name);
 	else
-		ui_set_statusbar(FALSE, _("Definition of \"%s\" not found."), name);
+		ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+							   _("Definition of \"%s\" not found."), name);
 	return FALSE;
 }
 

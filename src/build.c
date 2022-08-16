@@ -755,7 +755,8 @@ static gchar *build_replace_placeholder(const GeanyDocument *doc,
 	}
 	else if (strstr(stack->str, "%p"))
 	{   /* fall back to %d */
-		ui_set_statusbar(FALSE, _("failed to substitute %%p, no project active"));
+		ui_set_statusbar_color(FALSE, COLOR_RED, _("failed to substitute %%p, "
+												   "no project active"));
 		if (doc != NULL && doc->file_name != NULL)
 			replacement = g_path_get_dirname(doc->file_name);
 	}
@@ -890,7 +891,8 @@ static gchar *prepare_run_cmd(GeanyDocument *doc, gchar **working_dir, guint cmd
 	run_cmd = build_create_shellscript(*working_dir, cmd_string, autoclose, &error);
 	if (!run_cmd)
 	{
-		ui_set_statusbar(TRUE, _("Failed to execute \"%s\" (start-script could not be created: %s)"),
+		ui_set_statusbar_color(TRUE, COLOR_RED,
+			_("Failed to execute \"%s\" (start-script could not be created: %s)"),
 			!EMPTY(cmd_string_utf8) ? cmd_string_utf8 : NULL, error->message);
 		g_error_free(error);
 		g_free(*working_dir);

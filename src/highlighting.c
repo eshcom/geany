@@ -1284,7 +1284,8 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	else
 	{
 		SETPTR(fname, utils_get_utf8_from_locale(fname));
-		ui_set_statusbar(TRUE, _("Could not find file '%s'."), fname);
+		ui_set_statusbar_color(TRUE, COLOR_DARK_RED,
+							   _("Could not find file '%s'."), fname);
 	}
 	g_free(path);
 	g_free(fname);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:19+0300\n"
+"POT-Creation-Date: 2022-08-20 01:20+0300\n"
 "PO-Revision-Date: 2013-07-06 15:07+0200\n"
 "Last-Translator: Asier Iturralde Sarasola <asier.iturralde@gmail.com>\n"
 "Language-Team: Euskara <librezale@librezale.org>\n"
@@ -106,11 +106,11 @@ msgstr "_Bilatu"
 msgid "Open Selected F_ile"
 msgstr "Ireki hautatutako _fitxategia"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2884
+#: ../data/geany.glade.h:19 ../src/symbols.c:2887
 msgid "Find _Usage"
 msgstr "Bilatu _erabilera"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2891
+#: ../data/geany.glade.h:20 ../src/symbols.c:2894
 msgid "Find _Document Usage"
 msgstr "Bilatu _dokumentuaren erabilera"
 
@@ -1023,7 +1023,7 @@ msgstr "Kolorea:"
 msgid "Sets the color of the long line marker"
 msgstr "Markatzaile lerro luzearen kolorea ezartzen du"
 
-#: ../data/geany.glade.h:222 ../src/toolbar.c:73 ../src/tools.c:849
+#: ../data/geany.glade.h:222 ../src/toolbar.c:73 ../src/tools.c:851
 msgid "Color Chooser"
 msgstr "Kolore hautatzailea"
 
@@ -1591,7 +1591,7 @@ msgstr "Gorde honela"
 msgid "Sa_ve All"
 msgstr "Gorde denak"
 
-#: ../data/geany.glade.h:353 ../src/document.c:1704 ../src/document.c:3739
+#: ../data/geany.glade.h:353 ../src/document.c:1704 ../src/document.c:3740
 #: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Birkargatu"
@@ -1718,7 +1718,7 @@ msgstr "Bilatu _hurrengoa"
 msgid "Find _Previous"
 msgstr "Bilatu _aurrekoa"
 
-#: ../data/geany.glade.h:384 ../src/symbols.c:2898
+#: ../data/geany.glade.h:384 ../src/symbols.c:2901
 #, fuzzy
 msgid "Find in F_iles..."
 msgstr "Bilatu _fitxategietan"
@@ -1978,7 +1978,7 @@ msgid "_Apply Default Indentation"
 msgstr "_Aplikatu koska lehenetsia"
 
 #. build the code
-#: ../data/geany.glade.h:446 ../src/build.c:2453 ../src/build.c:2724
+#: ../data/geany.glade.h:446 ../src/build.c:2455 ../src/build.c:2726
 msgid "_Build"
 msgstr "_Eraiki"
 
@@ -2284,184 +2284,184 @@ msgstr ""
 msgid "failed to substitute %%p, no project active"
 msgstr "huts egin du %%p ordezkatzean, proiektu aktiborik ez"
 
-#: ../src/build.c:786
+#: ../src/build.c:787
 msgid "Process failed, no working directory"
 msgstr "Prozesuak huts egin du, laneko direktoriorik ez"
 
-#: ../src/build.c:798
+#: ../src/build.c:799
 #, c-format
 msgid "%s (in directory: %s)"
 msgstr "%s (%s direktorioan)"
 
-#: ../src/build.c:823
+#: ../src/build.c:824
 #, c-format
 msgid "Process failed (%s)"
 msgstr "Prozesuak huts egin du (%s)"
 
-#: ../src/build.c:857
+#: ../src/build.c:858
 #, fuzzy, c-format
 msgid "Invalid working directory \"%s\""
 msgstr "Laneko direktorioa"
 
-#: ../src/build.c:893
+#: ../src/build.c:895
 #, c-format
 msgid "Failed to execute \"%s\" (start-script could not be created: %s)"
 msgstr ""
 
-#: ../src/build.c:935
+#: ../src/build.c:937
 msgid ""
 "File not executed because the terminal may contain some input (press Ctrl+C "
 "or Enter to clear it)."
 msgstr ""
 
-#: ../src/build.c:983
+#: ../src/build.c:985
 #, c-format
 msgid ""
 "Cannot execute build command \"%s\": %s. Check the Terminal setting in "
 "Preferences"
 msgstr ""
 
-#: ../src/build.c:1094
+#: ../src/build.c:1096
 msgid "Compilation failed."
 msgstr "Konpilazioak huts egin du."
 
-#: ../src/build.c:1108
+#: ../src/build.c:1110
 msgid "Compilation finished successfully."
 msgstr "Konpilazioa behar burutu da."
 
-#: ../src/build.c:1268
+#: ../src/build.c:1270
 msgid "Custom Text"
 msgstr "Testu pertsonalizatua"
 
-#: ../src/build.c:1269
+#: ../src/build.c:1271
 msgid "Enter custom text here, all entered text is appended to the command."
 msgstr ""
 "Sartu testu pertsonalizatua hemen, sartutako testu guztia gehitzen zaio "
 "komandoari."
 
-#: ../src/build.c:1348
+#: ../src/build.c:1350
 msgid "_Next Error"
 msgstr "_Hurrengo errorea"
 
-#: ../src/build.c:1350
+#: ../src/build.c:1352
 msgid "_Previous Error"
 msgstr "_Aurreko errorea"
 
 #. arguments
-#: ../src/build.c:1360 ../src/build.c:2764
+#: ../src/build.c:1362 ../src/build.c:2766
 msgid "_Set Build Commands"
 msgstr ""
 
-#: ../src/build.c:1635 ../src/toolbar.c:375
+#: ../src/build.c:1637 ../src/toolbar.c:375
 msgid "Build the current file"
 msgstr "Eraiki uneko fitxategia"
 
-#: ../src/build.c:1646
+#: ../src/build.c:1648
 msgid "Build the current file with Make and the default target"
 msgstr "Eraiki uneko fitxategia Make eta helburu lehenetsiarekin"
 
-#: ../src/build.c:1648
+#: ../src/build.c:1650
 msgid "Build the current file with Make and the specified target"
 msgstr "Eraiki uneko fitxategia Make eta zehazturiko helburuarekin"
 
-#: ../src/build.c:1650
+#: ../src/build.c:1652
 msgid "Compile the current file with Make"
 msgstr "Konpilatu uneko fitxategia Make erabiliz"
 
-#: ../src/build.c:1669
+#: ../src/build.c:1671
 #, c-format
 msgid "Process could not be stopped (%s)."
 msgstr "Ezin izan da prozesua gelditu (%s)."
 
-#: ../src/build.c:1683 ../src/build.c:1695
+#: ../src/build.c:1685 ../src/build.c:1697
 msgid "No more build errors."
 msgstr ""
 
-#: ../src/build.c:1808 ../src/build.c:1810
+#: ../src/build.c:1810 ../src/build.c:1812
 msgid "Set menu item label"
 msgstr "Ezarri menuko elementuaren etiketa"
 
-#: ../src/build.c:1835 ../src/symbols.c:539 ../src/tools.c:414
+#: ../src/build.c:1837 ../src/symbols.c:539 ../src/tools.c:416
 msgid "Label"
 msgstr "Etiketa"
 
 #. command column, holding status and command display
-#: ../src/build.c:1836 ../src/symbols.c:534 ../src/tools.c:399
+#: ../src/build.c:1838 ../src/symbols.c:534 ../src/tools.c:401
 msgid "Command"
 msgstr "Komandoa"
 
-#: ../src/build.c:1837
+#: ../src/build.c:1839
 msgid "Working directory"
 msgstr "Laneko direktorioa"
 
-#: ../src/build.c:1838
+#: ../src/build.c:1840
 msgid "Reset"
 msgstr "Berrezarri"
 
-#: ../src/build.c:1895
+#: ../src/build.c:1897
 msgid "Click to set menu item label"
 msgstr "Klikatu menu-elementuaren etiketa ezartzeko"
 
-#: ../src/build.c:1979 ../src/build.c:1981
+#: ../src/build.c:1981 ../src/build.c:1983
 #, c-format
 msgid "%s commands"
 msgstr "%s komando"
 
-#: ../src/build.c:1981
+#: ../src/build.c:1983
 msgid "No filetype"
 msgstr "Fitxategi-motarik ez"
 
-#: ../src/build.c:1990 ../src/build.c:2025
+#: ../src/build.c:1992 ../src/build.c:2027
 msgid "Error regular expression:"
 msgstr ""
 
-#: ../src/build.c:2018
+#: ../src/build.c:2020
 msgid "Independent commands"
 msgstr "Komando independenteak"
 
-#: ../src/build.c:2050
+#: ../src/build.c:2052
 msgid "Note: Item 2 opens a dialog and appends the response to the command."
 msgstr ""
 
-#: ../src/build.c:2059
+#: ../src/build.c:2061
 msgid "Execute commands"
 msgstr "Exekutatu komandoak"
 
-#: ../src/build.c:2071
+#: ../src/build.c:2073
 msgid ""
 "%d, %e, %f, %p, %l are substituted in command and directory fields, see "
 "manual for details."
 msgstr ""
 
-#: ../src/build.c:2229
+#: ../src/build.c:2231
 msgid "Set Build Commands"
 msgstr ""
 
-#: ../src/build.c:2446
+#: ../src/build.c:2448
 msgid "_Compile"
 msgstr "_Konpilatu"
 
-#: ../src/build.c:2460 ../src/build.c:2490 ../src/build.c:2692
+#: ../src/build.c:2462 ../src/build.c:2492 ../src/build.c:2694
 msgid "_Execute"
 msgstr "_Exekutatu"
 
 #. build the code with make custom
-#: ../src/build.c:2505 ../src/build.c:2690 ../src/build.c:2744
+#: ../src/build.c:2507 ../src/build.c:2692 ../src/build.c:2746
 #, fuzzy
 msgid "Make Custom _Target..."
 msgstr "Testu pertsonalizatua"
 
 #. build the code with make object
-#: ../src/build.c:2507 ../src/build.c:2691 ../src/build.c:2752
+#: ../src/build.c:2509 ../src/build.c:2693 ../src/build.c:2754
 msgid "Make _Object"
 msgstr ""
 
-#: ../src/build.c:2509 ../src/build.c:2689
+#: ../src/build.c:2511 ../src/build.c:2691
 msgid "_Make"
 msgstr ""
 
 #. build the code with make all
-#: ../src/build.c:2736
+#: ../src/build.c:2738
 msgid "_Make All"
 msgstr ""
 
@@ -2504,19 +2504,17 @@ msgstr ""
 msgid "Check the path setting in Preferences."
 msgstr ""
 
-#. G_SHELL_ERROR is parsing error, it may be
-#. * caused by %s word with quotes
-#: ../src/callbacks.c:1593
+#: ../src/callbacks.c:1594
 #, fuzzy, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr "Ezin izan da exekutatu konfiguratutako kanpoko komandoa '%s' (%s)."
 
-#: ../src/callbacks.c:1603
+#: ../src/callbacks.c:1602
 msgid "No context action set."
 msgstr ""
 
-#: ../src/dialogs.c:160 ../src/document.c:2365 ../src/document.c:2433
-#: ../src/document.c:2442
+#: ../src/dialogs.c:160 ../src/document.c:2366 ../src/document.c:2434
+#: ../src/document.c:2443
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "Ez da \"%s\" aurkitu."
@@ -2654,7 +2652,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2686 ../src/symbols.c:2703 ../src/ui_utils.c:288
+#: ../src/symbols.c:2689 ../src/symbols.c:2706 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "ezezaguna"
 
@@ -2663,7 +2661,7 @@ msgstr "ezezaguna"
 msgid "%s Properties"
 msgstr "Propietateak"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:320
 msgid "(with BOM)"
 msgstr "(BOMekin)"
 
@@ -2820,21 +2818,21 @@ msgstr ""
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2112 ../src/document.c:3740
+#: ../src/document.c:2112 ../src/document.c:3741
 #, fuzzy
 msgid "_Overwrite"
 msgstr "Gainidatzi?"
 
-#: ../src/document.c:2114 ../src/document.c:3743
+#: ../src/document.c:2114 ../src/document.c:3744
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr ""
 
-#: ../src/document.c:2123 ../src/document.c:3792
+#: ../src/document.c:2123 ../src/document.c:3793
 msgid "Try to resave the file?"
 msgstr "Fitxategia berriz gordetzen saiatu?"
 
-#: ../src/document.c:2124 ../src/document.c:3793
+#: ../src/document.c:2124 ../src/document.c:3794
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "\"%s\" fitxategia ez da diskoan aurkitu!"
@@ -2866,36 +2864,36 @@ msgstr "Errorea fitxategia gordetzean."
 msgid "File %s saved."
 msgstr "%s fitxategia gordeta."
 
-#: ../src/document.c:2441
+#: ../src/document.c:2442
 msgid "Wrap search and find again?"
 msgstr ""
 
-#: ../src/document.c:2541 ../src/search.c:1496 ../src/search.c:1549
+#: ../src/document.c:2543 ../src/search.c:1493 ../src/search.c:1547
 #: ../src/search.c:2386 ../src/search.c:2388
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr ""
 
-#: ../src/document.c:2548
+#: ../src/document.c:2549
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/document.c:3742
+#: ../src/document.c:3743
 msgid "Do you want to reload it?"
 msgstr "Birkargatu nahi duzu?"
 
-#: ../src/editor.c:5019
+#: ../src/editor.c:4968
 msgid "Enter Tab Width"
 msgstr "Sartu tabulazioaren zabalera"
 
-#: ../src/editor.c:5020
+#: ../src/editor.c:4969
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Sartu tabulazio karaktere batekin ordezkatu beharreko zuriune kopurua."
 
-#: ../src/editor.c:5225
+#: ../src/editor.c:5174
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3132,25 +3130,25 @@ msgstr "Adierazpen erregular okerra %s fitxategi-motarentzat: %s"
 msgid "untitled"
 msgstr "izengabea"
 
-#: ../src/highlighting.c:1287 ../src/libmain.c:896 ../src/socket.c:170
-#: ../src/templates.c:233
+#: ../src/highlighting.c:1288 ../src/libmain.c:896 ../src/socket.c:170
+#: ../src/templates.c:234
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Ezin izan da '%s' fitxategia aurkitu."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1367
 msgid "Default"
 msgstr "Lehenetsia"
 
-#: ../src/highlighting.c:1408
+#: ../src/highlighting.c:1409
 msgid "The current filetype overrides the default style."
 msgstr "Uneko fitxategi-motak estilo lehenetsia gainidazten du."
 
-#: ../src/highlighting.c:1409
+#: ../src/highlighting.c:1410
 msgid "This may cause color schemes to display incorrectly."
 msgstr ""
 
-#: ../src/highlighting.c:1436
+#: ../src/highlighting.c:1437
 msgid "Color Schemes"
 msgstr "Kolore-eskemak"
 
@@ -3196,7 +3194,7 @@ msgid "Document"
 msgstr "Dokumentua"
 
 #: ../src/keybindings.c:332 ../src/keybindings.c:734 ../src/project.c:528
-#: ../src/ui_utils.c:2303
+#: ../src/ui_utils.c:2332
 msgid "Build"
 msgstr "Eraiki"
 
@@ -3447,7 +3445,7 @@ msgstr "Txertatu lerro berria unekoaren aurretik"
 msgid "Insert New Line After Current"
 msgstr "Txertatu lerro berria unekoaren ondoren"
 
-#: ../src/keybindings.c:553 ../src/search.c:490
+#: ../src/keybindings.c:553 ../src/search.c:486
 msgid "Find"
 msgstr "Bilatu"
 
@@ -3459,11 +3457,11 @@ msgstr "Bilatu hurrengoa"
 msgid "Find Previous"
 msgstr "Bilatu aurrekoa"
 
-#: ../src/keybindings.c:564 ../src/search.c:652
+#: ../src/keybindings.c:564 ../src/search.c:648
 msgid "Replace"
 msgstr "Ordezkatu"
 
-#: ../src/keybindings.c:567 ../src/search.c:942
+#: ../src/keybindings.c:567 ../src/search.c:938
 msgid "Find in Files"
 msgstr "Bilatu fitxategietan"
 
@@ -3726,7 +3724,7 @@ msgstr "Teklatuko lasterbide hauek konfiguragarriak dira:"
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr ""
 
-#: ../src/keyfile.c:1292
+#: ../src/keyfile.c:1293
 msgid "Failed to load one or more session files."
 msgstr "Huts egin du saio-fitxategi bat edo gehiago kargatzean."
 
@@ -3926,13 +3924,13 @@ msgstr "Kopiatu _dena"
 msgid "_Hide Message Window"
 msgstr "_Ezkutatu mezu-leihoa"
 
-#: ../src/msgwindow.c:836
+#: ../src/msgwindow.c:837
 #, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr ""
 "Ezin izan da '%s' fitxategia aurkitu - uneko dokumentuaren bidean saiatzen."
 
-#: ../src/msgwindow.c:1286
+#: ../src/msgwindow.c:1287
 msgid "The document has been closed."
 msgstr ""
 
@@ -4017,11 +4015,11 @@ msgstr ""
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 
-#: ../src/prefs.c:226 ../src/symbols.c:2847 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Zabaldu dena"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2854 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Tolestu dena"
 
@@ -4259,7 +4257,7 @@ msgstr "Ezin izan da proiektuaren oinarrizko direktorioa sortu (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Ezin izan da proiektu-fitxategia idatzi (%s)."
 
-#: ../src/project.c:792 ../src/search.c:664
+#: ../src/project.c:792 ../src/search.c:660
 msgid "_Replace"
 msgstr "_Ordezkatu"
 
@@ -4283,7 +4281,7 @@ msgstr "\"%s\" proiektua irekita."
 msgid "Project tags loaded."
 msgstr "\"%s\" proiektua itxita."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1036
 msgid "_Use regular expressions"
 msgstr "_Erabili adierazpen erregularrak"
 
@@ -4324,11 +4322,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Bilatu _atzerantz"
 
-#: ../src/search.c:371 ../src/search.c:1050
+#: ../src/search.c:371 ../src/search.c:1046
 msgid "C_ase sensitive"
 msgstr ""
 
-#: ../src/search.c:375 ../src/search.c:1055
+#: ../src/search.c:375 ../src/search.c:1051
 msgid "Match only a _whole word"
 msgstr ""
 
@@ -4336,195 +4334,195 @@ msgstr ""
 msgid "Match from s_tart of word"
 msgstr ""
 
-#: ../src/search.c:499
+#: ../src/search.c:495
 msgid "_Previous"
 msgstr "_Aurrekoa"
 
-#: ../src/search.c:504
+#: ../src/search.c:500
 msgid "_Next"
 msgstr "_Hurrengoa"
 
-#: ../src/search.c:508 ../src/search.c:677 ../src/search.c:956
+#: ../src/search.c:504 ../src/search.c:673 ../src/search.c:952
 msgid "_Search for:"
 msgstr "_Bilatu hau:"
 
 #. Now add the multiple match options
-#: ../src/search.c:536
+#: ../src/search.c:532
 msgid "_Find All"
 msgstr ""
 
-#: ../src/search.c:544
+#: ../src/search.c:540
 msgid "_Mark"
 msgstr "_Markatu"
 
-#: ../src/search.c:546
+#: ../src/search.c:542
 msgid "Mark all matches in the current document"
 msgstr ""
 
-#: ../src/search.c:552 ../src/search.c:737
+#: ../src/search.c:548 ../src/search.c:733
 msgid "In Sessi_on"
 msgstr "_Saioan"
 
-#: ../src/search.c:558 ../src/search.c:743
+#: ../src/search.c:554 ../src/search.c:739
 msgid "_In Document"
 msgstr "_Dokumentuan"
 
 #. close window checkbox
-#: ../src/search.c:565 ../src/search.c:758
+#: ../src/search.c:561 ../src/search.c:754
 msgid "Close _dialog"
 msgstr "Itxi _elkarrizketa"
 
-#: ../src/search.c:569 ../src/search.c:762
+#: ../src/search.c:565 ../src/search.c:758
 msgid "Disable this option to keep the dialog open"
 msgstr "Desgaitu aukera hau elkarrizketa irekita mantentzeko"
 
-#: ../src/search.c:670
+#: ../src/search.c:666
 msgid "Replace & Fi_nd"
 msgstr "Ordezkatu eta _bilatu"
 
-#: ../src/search.c:680
+#: ../src/search.c:676
 msgid "Replace wit_h:"
 msgstr "Ordezkatu _honekin:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:729
+#: ../src/search.c:725
 msgid "Re_place All"
 msgstr "Ordezkatu _guztiak"
 
-#: ../src/search.c:749
+#: ../src/search.c:745
 msgid "In Se_lection"
 msgstr "_Hautapenean"
 
-#: ../src/search.c:751
+#: ../src/search.c:747
 msgid "Replace all matches found in the currently selected text"
 msgstr ""
 
-#: ../src/search.c:869
+#: ../src/search.c:865
 msgid "all"
 msgstr "guztiak"
 
-#: ../src/search.c:871
+#: ../src/search.c:867
 msgid "project"
 msgstr "proiektua"
 
-#: ../src/search.c:873
+#: ../src/search.c:869
 msgid "custom"
 msgstr "pertsonalizatua"
 
-#: ../src/search.c:878
+#: ../src/search.c:874
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
 "Custom: specify file patterns manually"
 msgstr ""
 
-#: ../src/search.c:919
+#: ../src/search.c:915
 msgid "Other options to pass to Grep"
 msgstr ""
 
-#: ../src/search.c:975
+#: ../src/search.c:971
 msgid "Fi_les:"
 msgstr "_Fitxategiak:"
 
-#: ../src/search.c:987
+#: ../src/search.c:983
 msgid "File patterns, e.g. *.c *.h"
 msgstr ""
 
-#: ../src/search.c:1000
+#: ../src/search.c:996
 msgid "_Directory:"
 msgstr "_Direktorioa:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1015
 msgid "E_ncoding:"
 msgstr "_Kodeketa:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1040
 msgid "See grep's manual page for more information"
 msgstr ""
 
-#: ../src/search.c:1046
+#: ../src/search.c:1042
 msgid "_Recurse in subfolders"
 msgstr ""
 
-#: ../src/search.c:1059
+#: ../src/search.c:1055
 msgid "_Invert search results"
 msgstr "_Alderantzikatu bilaketaren emaitzak"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1059
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 
-#: ../src/search.c:1080
+#: ../src/search.c:1076
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "_Aukera gehigarriak:"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1078
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "_Aukera gehigarriak:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1080
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "_Aukera gehigarriak:"
 
-#: ../src/search.c:1499 ../src/search.c:2393 ../src/search.c:2397
+#: ../src/search.c:1496 ../src/search.c:2393 ../src/search.c:2397
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:1555
+#: ../src/search.c:1553
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr ""
 
-#: ../src/search.c:1764
+#: ../src/search.c:1762
 msgid "Invalid directory for find in files."
 msgstr ""
 
-#: ../src/search.c:1784
+#: ../src/search.c:1782
 msgid "No text to find."
 msgstr ""
 
-#: ../src/search.c:1865
+#: ../src/search.c:1863
 msgid "Searching..."
 msgstr "Bilatzen..."
 
-#: ../src/search.c:1867
+#: ../src/search.c:1865
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (%s direktorioan)"
 
-#: ../src/search.c:1876
+#: ../src/search.c:1874
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 
-#: ../src/search.c:1916
+#: ../src/search.c:1914
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Ezin izan da direktorioa ireki (%s)"
 
-#: ../src/search.c:2006
+#: ../src/search.c:2005
 msgid "Search failed."
 msgstr "Bilaketak huts egin du."
 
-#: ../src/search.c:2029
+#: ../src/search.c:2028
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/search.c:2037
+#: ../src/search.c:2036
 msgid "No matches found."
 msgstr ""
 
-#: ../src/search.c:2067
+#: ../src/search.c:2066
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Adierazpen erregular okerra: %s"
@@ -4933,7 +4931,7 @@ msgstr "Geany etiketa-fitxategiak (*.*.tags)"
 msgid "Loaded %s tags file '%s'."
 msgstr ""
 
-#: ../src/symbols.c:1764
+#: ../src/symbols.c:1765
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Ezin izan da '%s' etiketa-fitxategia kargatu."
@@ -4958,21 +4956,21 @@ msgstr ""
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2427
+#: ../src/symbols.c:2429
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr ""
 
-#: ../src/symbols.c:2429
+#: ../src/symbols.c:2432
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Ez da \"%s\"(r)en definiziorik aurkitu."
 
-#: ../src/symbols.c:2865
+#: ../src/symbols.c:2868
 msgid "Sort by _Name"
 msgstr "Ordenatu _izenaren arabera"
 
-#: ../src/symbols.c:2873
+#: ../src/symbols.c:2876
 msgid "Sort by _Appearance"
 msgstr "Antolatu _itxuraren arabera"
 
@@ -4981,7 +4979,7 @@ msgstr "Antolatu _itxuraren arabera"
 msgid "Failed to convert template file \"%s\" to UTF-8"
 msgstr "Huts egin du \"%s\" txantiloi-fitxategia UTF-8ra bihurtzean"
 
-#: ../src/templates.c:628
+#: ../src/templates.c:629
 #, c-format
 msgid ""
 "Cannot execute template command \"%s\". Hint: incorrect paths in the command "
@@ -5165,56 +5163,56 @@ msgstr ""
 msgid "The executed custom command exited with an unsuccessful exit code."
 msgstr ""
 
-#: ../src/tools.c:259
+#: ../src/tools.c:260
 #, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
 "Commands."
 msgstr ""
 
-#: ../src/tools.c:374 ../src/tools.c:643
+#: ../src/tools.c:376 ../src/tools.c:645
 msgid "Set Custom Commands"
 msgstr "Ezarri komando pertsonalizatuak"
 
-#: ../src/tools.c:382
+#: ../src/tools.c:384
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
 msgstr ""
 
-#: ../src/tools.c:396
+#: ../src/tools.c:398
 msgid "ID"
 msgstr "IDa"
 
-#: ../src/tools.c:614
+#: ../src/tools.c:616
 msgid "No custom commands defined."
 msgstr "Ez da komando pertsonalizaturik definitu."
 
-#: ../src/tools.c:713
+#: ../src/tools.c:715
 msgid "Word Count"
 msgstr "Hitz kopurua"
 
-#: ../src/tools.c:722
+#: ../src/tools.c:724
 msgid "selection"
 msgstr "hautapena"
 
-#: ../src/tools.c:727
+#: ../src/tools.c:729
 msgid "whole document"
 msgstr "dokumentu osoa"
 
-#: ../src/tools.c:736
+#: ../src/tools.c:738
 msgid "Range:"
 msgstr "Bitartea:"
 
-#: ../src/tools.c:748
+#: ../src/tools.c:750
 msgid "Lines:"
 msgstr "Lerroak:"
 
-#: ../src/tools.c:762
+#: ../src/tools.c:764
 msgid "Words:"
 msgstr "Hitzak:"
 
-#: ../src/tools.c:776
+#: ../src/tools.c:778
 msgid "Characters:"
 msgstr "Karaktereak:"
 
@@ -5259,140 +5257,140 @@ msgid ""
 msgstr ""
 
 #. L = lines
-#: ../src/ui_utils.c:238
+#: ../src/ui_utils.c:266
 #, c-format
 msgid "%dL"
 msgstr "%dL"
 
 #. RO = read-only
-#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
+#: ../src/ui_utils.c:276 ../src/ui_utils.c:283
 msgid "RO "
 msgstr ""
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:250
+#: ../src/ui_utils.c:278
 msgid "OVR"
 msgstr ""
 
-#: ../src/ui_utils.c:250
+#: ../src/ui_utils.c:278
 msgid "INS"
 msgstr ""
 
-#: ../src/ui_utils.c:264
+#: ../src/ui_utils.c:292
 msgid "TAB"
 msgstr ""
 
 #. SP = space
-#: ../src/ui_utils.c:267
+#: ../src/ui_utils.c:295
 msgid "SP"
 msgstr ""
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:270
+#: ../src/ui_utils.c:298
 msgid "T/S"
 msgstr ""
 
-#: ../src/ui_utils.c:278
+#: ../src/ui_utils.c:306
 msgid "MOD"
 msgstr ""
 
-#: ../src/ui_utils.c:379
+#: ../src/ui_utils.c:407
 msgid "(new instance) "
 msgstr "(instantzia berria) "
 
-#: ../src/ui_utils.c:446
+#: ../src/ui_utils.c:474
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Letra-tipoa eguneratuta (%s)."
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:732
 msgid "C Standard Library"
 msgstr "C liburutegi estandarra"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:734
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:708
+#: ../src/ui_utils.c:736
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C liburutegi estandarra)"
 
-#: ../src/ui_utils.c:710
+#: ../src/ui_utils.c:738
 msgid "C++ Standard Library"
 msgstr "C++ liburutegi estandarra"
 
-#: ../src/ui_utils.c:712
+#: ../src/ui_utils.c:740
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:820
+#: ../src/ui_utils.c:762 ../src/ui_utils.c:849
 msgid "dd.mm.yyyy"
 msgstr "ee.hh.uuuu"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:821
+#: ../src/ui_utils.c:764 ../src/ui_utils.c:850
 msgid "mm.dd.yyyy"
 msgstr "hh.ee.uuuu"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:822
+#: ../src/ui_utils.c:766 ../src/ui_utils.c:851
 msgid "yyyy/mm/dd"
 msgstr "uuuu/hh/ee"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:831
+#: ../src/ui_utils.c:768 ../src/ui_utils.c:860
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "ee.hh.uuuu oo:mm:ss"
 
-#: ../src/ui_utils.c:742 ../src/ui_utils.c:832
+#: ../src/ui_utils.c:770 ../src/ui_utils.c:861
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "hh.ee.uuuu oo:mm:ss"
 
-#: ../src/ui_utils.c:744 ../src/ui_utils.c:833
+#: ../src/ui_utils.c:772 ../src/ui_utils.c:862
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "uuuu/hh/ee oo:mm:ss"
 
-#: ../src/ui_utils.c:746 ../src/ui_utils.c:842
+#: ../src/ui_utils.c:774 ../src/ui_utils.c:871
 msgid "_Use Custom Date Format"
 msgstr "_Erabili data-formatu pertsonalizatua"
 
-#: ../src/ui_utils.c:750
+#: ../src/ui_utils.c:778
 msgid "Custom Date Format"
 msgstr "Data-formatu pertsonalizatua"
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:780
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
 msgstr ""
 
-#: ../src/ui_utils.c:773
+#: ../src/ui_utils.c:802
 msgid "Date format string could not be converted (possibly too long)."
 msgstr ""
 
-#: ../src/ui_utils.c:857
+#: ../src/ui_utils.c:886
 msgid "_Set Custom Date Format"
 msgstr "_Ezarri data-formatu pertsonalizatua"
 
-#: ../src/ui_utils.c:2090
+#: ../src/ui_utils.c:2119
 msgid "Select Folder"
 msgstr "Hautatu karpeta"
 
-#: ../src/ui_utils.c:2090
+#: ../src/ui_utils.c:2119
 msgid "Select File"
 msgstr "Hautatu fitxategia"
 
-#: ../src/ui_utils.c:2263
+#: ../src/ui_utils.c:2292
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "_Birkargatu konfigurazioa"
 
-#: ../src/ui_utils.c:2301
+#: ../src/ui_utils.c:2330
 msgid "Save All"
 msgstr "Gorde dena"
 
-#: ../src/ui_utils.c:2302
+#: ../src/ui_utils.c:2331
 msgid "Close All"
 msgstr "Itxi dena"
 
-#: ../src/ui_utils.c:2541
+#: ../src/ui_utils.c:2570
 msgid "Geany cannot start!"
 msgstr "Ezin da Geany abiarazi!"
 
@@ -5472,7 +5470,7 @@ msgstr "Geany proiektu-fitxategiak"
 msgid "Executables"
 msgstr "Exekutagarriak"
 
-#: ../src/win32.c:798
+#: ../src/win32.c:799
 #, c-format
 msgid "Failed to open URI \"%s\": %s"
 msgstr ""

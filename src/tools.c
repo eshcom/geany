@@ -235,7 +235,7 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 		if (errors->len > 0)
 		{
 			g_warning("%s: %s\n", command, errors->str);
-			ui_set_statusbar(TRUE,
+			ui_set_statusbar_color(TRUE, COLOR_RED,
 				_("The executed custom command returned an error. "
 				  "Your selection was not changed. Error message:\n%s"),
 				errors->str);
@@ -243,7 +243,7 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 		else if (!SPAWN_WIFEXITED(status) || SPAWN_WEXITSTATUS(status) != EXIT_SUCCESS)
 		{
 			/* TODO maybe include the exit code in the error message */
-			ui_set_statusbar(TRUE,
+			ui_set_statusbar_color(TRUE, COLOR_RED,
 				_("The executed custom command exited with an unsuccessful exit code."));
 		}
 		else
@@ -256,8 +256,10 @@ void tools_execute_custom_command(GeanyDocument *doc, const gchar *command)
 	}
 	else
 	{
-		ui_set_statusbar(TRUE, _("Cannot execute custom command \"%s\": %s. "
-			"Check the path setting in Custom Commands."), command, error->message);
+		ui_set_statusbar_color(TRUE, COLOR_RED,
+							   _("Cannot execute custom command \"%s\": %s. "
+								 "Check the path setting in Custom Commands."),
+							   command, error->message);
 		g_error_free(error);
 	}
 	

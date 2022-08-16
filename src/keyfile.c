@@ -1289,7 +1289,8 @@ void configuration_open_files(void)
 	session_files = NULL;
 
 	if (failure)
-		ui_set_statusbar(TRUE, _("Failed to load one or more session files."));
+		ui_set_statusbar_color(TRUE, COLOR_RED,
+							   _("Failed to load one or more session files."));
 	else
 	{
 		/* explicitly trigger a notebook page switch after unsetting main_status.opening_session_files

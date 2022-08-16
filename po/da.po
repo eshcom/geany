@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 02:19+0300\n"
+"POT-Creation-Date: 2022-08-20 01:20+0300\n"
 "PO-Revision-Date: 2019-09-22 16:03+0200\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish\n"
@@ -104,11 +104,11 @@ msgstr "_Søg"
 msgid "Open Selected F_ile"
 msgstr "Åbn _valgte fil"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2884
+#: ../data/geany.glade.h:19 ../src/symbols.c:2887
 msgid "Find _Usage"
 msgstr "Find _anvendelse"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2891
+#: ../data/geany.glade.h:20 ../src/symbols.c:2894
 msgid "Find _Document Usage"
 msgstr "Find _dokumentanvendelse"
 
@@ -1062,7 +1062,7 @@ msgstr "Farve:"
 msgid "Sets the color of the long line marker"
 msgstr "Sætter farven på markøren til lang linje"
 
-#: ../data/geany.glade.h:222 ../src/toolbar.c:73 ../src/tools.c:849
+#: ../data/geany.glade.h:222 ../src/toolbar.c:73 ../src/tools.c:851
 msgid "Color Chooser"
 msgstr "Farvevælger"
 
@@ -1663,7 +1663,7 @@ msgstr "Gem _som..."
 msgid "Sa_ve All"
 msgstr "Gem _alle"
 
-#: ../data/geany.glade.h:353 ../src/document.c:1704 ../src/document.c:3739
+#: ../data/geany.glade.h:353 ../src/document.c:1704 ../src/document.c:3740
 #: ../src/sidebar.c:721
 msgid "_Reload"
 msgstr "_Genindlæs"
@@ -1788,7 +1788,7 @@ msgstr "Find _næste"
 msgid "Find _Previous"
 msgstr "Find f_orrige"
 
-#: ../data/geany.glade.h:384 ../src/symbols.c:2898
+#: ../data/geany.glade.h:384 ../src/symbols.c:2901
 msgid "Find in F_iles..."
 msgstr "Find i f_iler..."
 
@@ -2037,7 +2037,7 @@ msgid "_Apply Default Indentation"
 msgstr "_Anvend standardindrykning"
 
 #. build the code
-#: ../data/geany.glade.h:446 ../src/build.c:2453 ../src/build.c:2724
+#: ../data/geany.glade.h:446 ../src/build.c:2455 ../src/build.c:2726
 msgid "_Build"
 msgstr "_Byg"
 
@@ -2341,31 +2341,31 @@ msgstr ""
 msgid "failed to substitute %%p, no project active"
 msgstr "kunne ikke erstatte %%p, intet aktivt projekt"
 
-#: ../src/build.c:786
+#: ../src/build.c:787
 msgid "Process failed, no working directory"
 msgstr "Processen mislykkedes, ingen arbejdsmappe"
 
-#: ../src/build.c:798
+#: ../src/build.c:799
 #, c-format
 msgid "%s (in directory: %s)"
 msgstr "%s (i mappe: %s)"
 
-#: ../src/build.c:823
+#: ../src/build.c:824
 #, c-format
 msgid "Process failed (%s)"
 msgstr "Processen mislykkedes (%s)"
 
-#: ../src/build.c:857
+#: ../src/build.c:858
 #, c-format
 msgid "Invalid working directory \"%s\""
 msgstr "Ugyldig arbejdsmappe \"%s\""
 
-#: ../src/build.c:893
+#: ../src/build.c:895
 #, c-format
 msgid "Failed to execute \"%s\" (start-script could not be created: %s)"
 msgstr "Kunne ikke eksekvere \"%s\" (start-script kunne ikke oprettes: %s)"
 
-#: ../src/build.c:935
+#: ../src/build.c:937
 msgid ""
 "File not executed because the terminal may contain some input (press Ctrl+C "
 "or Enter to clear it)."
@@ -2373,7 +2373,7 @@ msgstr ""
 "Filen blev ikke eksekveret pga. at terminalen kan indeholde input (tryk på "
 "Ctrl+C eller Enter for at rydde den)."
 
-#: ../src/build.c:983
+#: ../src/build.c:985
 #, c-format
 msgid ""
 "Cannot execute build command \"%s\": %s. Check the Terminal setting in "
@@ -2382,113 +2382,113 @@ msgstr ""
 "Kan ikke eksekvere byggekommandoen \"%s\": %s. Tjek terminalindstillingen i "
 "Præferencer"
 
-#: ../src/build.c:1094
+#: ../src/build.c:1096
 msgid "Compilation failed."
 msgstr "Kompilering mislykkedes."
 
-#: ../src/build.c:1108
+#: ../src/build.c:1110
 msgid "Compilation finished successfully."
 msgstr "Kompilering blev færdig."
 
-#: ../src/build.c:1268
+#: ../src/build.c:1270
 msgid "Custom Text"
 msgstr "Brugerdefineret tekst"
 
-#: ../src/build.c:1269
+#: ../src/build.c:1271
 msgid "Enter custom text here, all entered text is appended to the command."
 msgstr ""
 "Indtast brugerdefineret tekst her, al indtastede tekst tilføjes til "
 "kommandoen."
 
-#: ../src/build.c:1348
+#: ../src/build.c:1350
 msgid "_Next Error"
 msgstr "_Næste fejl"
 
-#: ../src/build.c:1350
+#: ../src/build.c:1352
 msgid "_Previous Error"
 msgstr "_Forrige fejl"
 
 #. arguments
-#: ../src/build.c:1360 ../src/build.c:2764
+#: ../src/build.c:1362 ../src/build.c:2766
 msgid "_Set Build Commands"
 msgstr "_Indstil byggekommandoer"
 
-#: ../src/build.c:1635 ../src/toolbar.c:375
+#: ../src/build.c:1637 ../src/toolbar.c:375
 msgid "Build the current file"
 msgstr "Byg den nuværende fil"
 
-#: ../src/build.c:1646
+#: ../src/build.c:1648
 msgid "Build the current file with Make and the default target"
 msgstr "Byg den nuværende fil med Make og standardmålet"
 
-#: ../src/build.c:1648
+#: ../src/build.c:1650
 msgid "Build the current file with Make and the specified target"
 msgstr "Byg den nuværende fil med Make og det angivne mål"
 
-#: ../src/build.c:1650
+#: ../src/build.c:1652
 msgid "Compile the current file with Make"
 msgstr "Kompilér den nuværende fil med Make"
 
-#: ../src/build.c:1669
+#: ../src/build.c:1671
 #, c-format
 msgid "Process could not be stopped (%s)."
 msgstr "Processen kunne ikke stoppes (%s)."
 
-#: ../src/build.c:1683 ../src/build.c:1695
+#: ../src/build.c:1685 ../src/build.c:1697
 msgid "No more build errors."
 msgstr "Ikke flere byggefejl."
 
-#: ../src/build.c:1808 ../src/build.c:1810
+#: ../src/build.c:1810 ../src/build.c:1812
 msgid "Set menu item label"
 msgstr "Indstil menupunktets etiket"
 
-#: ../src/build.c:1835 ../src/symbols.c:539 ../src/tools.c:414
+#: ../src/build.c:1837 ../src/symbols.c:539 ../src/tools.c:416
 msgid "Label"
 msgstr "Etiket"
 
 #. command column, holding status and command display
-#: ../src/build.c:1836 ../src/symbols.c:534 ../src/tools.c:399
+#: ../src/build.c:1838 ../src/symbols.c:534 ../src/tools.c:401
 msgid "Command"
 msgstr "Kommando"
 
-#: ../src/build.c:1837
+#: ../src/build.c:1839
 msgid "Working directory"
 msgstr "Arbejdsmappe"
 
-#: ../src/build.c:1838
+#: ../src/build.c:1840
 msgid "Reset"
 msgstr "Nulstil"
 
-#: ../src/build.c:1895
+#: ../src/build.c:1897
 msgid "Click to set menu item label"
 msgstr "Klik for at sætte menupunktets etiket"
 
-#: ../src/build.c:1979 ../src/build.c:1981
+#: ../src/build.c:1981 ../src/build.c:1983
 #, c-format
 msgid "%s commands"
 msgstr "%s kommandoer"
 
-#: ../src/build.c:1981
+#: ../src/build.c:1983
 msgid "No filetype"
 msgstr "Ingen filtype"
 
-#: ../src/build.c:1990 ../src/build.c:2025
+#: ../src/build.c:1992 ../src/build.c:2027
 msgid "Error regular expression:"
 msgstr "Fejl i regulært udtryk:"
 
-#: ../src/build.c:2018
+#: ../src/build.c:2020
 msgid "Independent commands"
 msgstr "Uafhængige kommandoer"
 
-#: ../src/build.c:2050
+#: ../src/build.c:2052
 msgid "Note: Item 2 opens a dialog and appends the response to the command."
 msgstr "Bemærk: Post 2 åbner en dialog og tilføjer svaret til kommandoen."
 
-#: ../src/build.c:2059
+#: ../src/build.c:2061
 msgid "Execute commands"
 msgstr "Eksekver-kommandoer"
 
-#: ../src/build.c:2071
+#: ../src/build.c:2073
 msgid ""
 "%d, %e, %f, %p, %l are substituted in command and directory fields, see "
 "manual for details."
@@ -2496,34 +2496,34 @@ msgstr ""
 "%d, %e, %f, %p, %l erstattes i kommando- og mappefelter, se manualen for "
 "detaljer."
 
-#: ../src/build.c:2229
+#: ../src/build.c:2231
 msgid "Set Build Commands"
 msgstr "Indstil byggekommandoer"
 
-#: ../src/build.c:2446
+#: ../src/build.c:2448
 msgid "_Compile"
 msgstr "_Kompilér"
 
-#: ../src/build.c:2460 ../src/build.c:2490 ../src/build.c:2692
+#: ../src/build.c:2462 ../src/build.c:2492 ../src/build.c:2694
 msgid "_Execute"
 msgstr "_Eksekver"
 
 #. build the code with make custom
-#: ../src/build.c:2505 ../src/build.c:2690 ../src/build.c:2744
+#: ../src/build.c:2507 ../src/build.c:2692 ../src/build.c:2746
 msgid "Make Custom _Target..."
 msgstr "Make _brugerdefineret mål..."
 
 #. build the code with make object
-#: ../src/build.c:2507 ../src/build.c:2691 ../src/build.c:2752
+#: ../src/build.c:2509 ../src/build.c:2693 ../src/build.c:2754
 msgid "Make _Object"
 msgstr "Make _objekt"
 
-#: ../src/build.c:2509 ../src/build.c:2689
+#: ../src/build.c:2511 ../src/build.c:2691
 msgid "_Make"
 msgstr "_Make"
 
 #. build the code with make all
-#: ../src/build.c:2736
+#: ../src/build.c:2738
 msgid "_Make All"
 msgstr "_Make alle"
 
@@ -2565,19 +2565,17 @@ msgstr "Tjek stiindstillingen i Filtype-konfiguration."
 msgid "Check the path setting in Preferences."
 msgstr "Tjek stiindstillingen i Præferencer."
 
-#. G_SHELL_ERROR is parsing error, it may be
-#. * caused by %s word with quotes
-#: ../src/callbacks.c:1593
+#: ../src/callbacks.c:1594
 #, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr "Kan ikke eksekvere konteksthandling-kommandoen \"%s\": %s. %s"
 
-#: ../src/callbacks.c:1603
+#: ../src/callbacks.c:1602
 msgid "No context action set."
 msgstr "Ingen konteksthandling sat."
 
-#: ../src/dialogs.c:160 ../src/document.c:2365 ../src/document.c:2433
-#: ../src/document.c:2442
+#: ../src/dialogs.c:160 ../src/document.c:2366 ../src/document.c:2434
+#: ../src/document.c:2443
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "\"%s\" blev ikke fundet."
@@ -2723,7 +2721,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1204 ../src/dialogs.c:1205 ../src/dialogs.c:1206
 #: ../src/dialogs.c:1212 ../src/dialogs.c:1213 ../src/dialogs.c:1214
-#: ../src/symbols.c:2686 ../src/symbols.c:2703 ../src/ui_utils.c:288
+#: ../src/symbols.c:2689 ../src/symbols.c:2706 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "ukendt"
 
@@ -2732,7 +2730,7 @@ msgstr "ukendt"
 msgid "%s Properties"
 msgstr "%s-egenskaber"
 
-#: ../src/dialogs.c:1251 ../src/ui_utils.c:292
+#: ../src/dialogs.c:1251 ../src/ui_utils.c:320
 msgid "(with BOM)"
 msgstr "(med BOM)"
 
@@ -2898,20 +2896,20 @@ msgstr "Kunne ikke skrive filen '%s': fwrite() mislykkedes: %s"
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr "Kunne ikke lukke filen '%s': fclose() mislykkedes: %s"
 
-#: ../src/document.c:2112 ../src/document.c:3740
+#: ../src/document.c:2112 ../src/document.c:3741
 msgid "_Overwrite"
 msgstr "_Overskriv"
 
-#: ../src/document.c:2114 ../src/document.c:3743
+#: ../src/document.c:2114 ../src/document.c:3744
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr "Filen '%s' på disken er nyere end den nuværende buffer."
 
-#: ../src/document.c:2123 ../src/document.c:3792
+#: ../src/document.c:2123 ../src/document.c:3793
 msgid "Try to resave the file?"
 msgstr "Prøv at gemme filen igen?"
 
-#: ../src/document.c:2124 ../src/document.c:3793
+#: ../src/document.c:2124 ../src/document.c:3794
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "Filen \"%s\" blev ikke fundet på disken!"
@@ -2946,36 +2944,36 @@ msgstr "Fejl da filen skulle gemmes."
 msgid "File %s saved."
 msgstr "Gemte filen %s."
 
-#: ../src/document.c:2441
+#: ../src/document.c:2442
 msgid "Wrap search and find again?"
 msgstr "Start søgningen forfra når slutningen og find igen?"
 
-#: ../src/document.c:2541 ../src/search.c:1496 ../src/search.c:1549
+#: ../src/document.c:2543 ../src/search.c:1493 ../src/search.c:1547
 #: ../src/search.c:2386 ../src/search.c:2388
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Ingen match fundet for \"%s\"."
 
-#: ../src/document.c:2548
+#: ../src/document.c:2549
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] "%s: erstattede %d forekomst af \"%s\" med \"%s\"."
 msgstr[1] "%s: erstattede %d forekomster af \"%s\" med \"%s\"."
 
-#: ../src/document.c:3742
+#: ../src/document.c:3743
 msgid "Do you want to reload it?"
 msgstr "Vil du genindlæse den?"
 
-#: ../src/editor.c:5019
+#: ../src/editor.c:4968
 msgid "Enter Tab Width"
 msgstr "Indtast tabulatorbredde"
 
-#: ../src/editor.c:5020
+#: ../src/editor.c:4969
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Indtast mængden af mellemrum som skal erstattes af et tabulatortegn."
 
-#: ../src/editor.c:5225
+#: ../src/editor.c:5174
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Advarsel: ikke-standard hård tabulatorbredde: %d != 8!"
@@ -3209,25 +3207,25 @@ msgstr "Dårligt regulært udtryk for filtypen %s: %s"
 msgid "untitled"
 msgstr "unavngivet"
 
-#: ../src/highlighting.c:1287 ../src/libmain.c:896 ../src/socket.c:170
-#: ../src/templates.c:233
+#: ../src/highlighting.c:1288 ../src/libmain.c:896 ../src/socket.c:170
+#: ../src/templates.c:234
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Kunne ikke finde filen '%s'."
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1367
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/highlighting.c:1408
+#: ../src/highlighting.c:1409
 msgid "The current filetype overrides the default style."
 msgstr "Den nuværende filtype tilsidesætter standardstilen."
 
-#: ../src/highlighting.c:1409
+#: ../src/highlighting.c:1410
 msgid "This may cause color schemes to display incorrectly."
 msgstr "Det kan forårsage at farveskemaer vises forkert."
 
-#: ../src/highlighting.c:1436
+#: ../src/highlighting.c:1437
 msgid "Color Schemes"
 msgstr "Farveskemaer"
 
@@ -3273,7 +3271,7 @@ msgid "Document"
 msgstr "Dokument"
 
 #: ../src/keybindings.c:332 ../src/keybindings.c:734 ../src/project.c:528
-#: ../src/ui_utils.c:2303
+#: ../src/ui_utils.c:2332
 msgid "Build"
 msgstr "Byg"
 
@@ -3517,7 +3515,7 @@ msgstr "Indsæt ny linje før nuværende"
 msgid "Insert New Line After Current"
 msgstr "Indsæt ny linje efter nuværende"
 
-#: ../src/keybindings.c:553 ../src/search.c:490
+#: ../src/keybindings.c:553 ../src/search.c:486
 msgid "Find"
 msgstr "Find"
 
@@ -3529,11 +3527,11 @@ msgstr "Find næste"
 msgid "Find Previous"
 msgstr "Find forrige"
 
-#: ../src/keybindings.c:564 ../src/search.c:652
+#: ../src/keybindings.c:564 ../src/search.c:648
 msgid "Replace"
 msgstr "Erstat"
 
-#: ../src/keybindings.c:567 ../src/search.c:942
+#: ../src/keybindings.c:567 ../src/search.c:938
 msgid "Find in Files"
 msgstr "Find i filer"
 
@@ -3794,7 +3792,7 @@ msgstr "Følgende tastaturgenveje kan konfigureres:"
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "Her kan du skrive hvad du vil, brug det som en opslagstavle/tegneplade"
 
-#: ../src/keyfile.c:1292
+#: ../src/keyfile.c:1293
 msgid "Failed to load one or more session files."
 msgstr "Kunne ikke indlæse en eller flere sessionsfiler."
 
@@ -4000,12 +3998,12 @@ msgstr "Kopiér _alle"
 msgid "_Hide Message Window"
 msgstr "_Skjul meddelelsesvindue"
 
-#: ../src/msgwindow.c:836
+#: ../src/msgwindow.c:837
 #, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr "Kunne ikke finde filen '%s' - prøver den nuværende dokumentsti."
 
-#: ../src/msgwindow.c:1286
+#: ../src/msgwindow.c:1287
 msgid "The document has been closed."
 msgstr "Dokumentet er blevet lukket."
 
@@ -4098,11 +4096,11 @@ msgstr "Indfang tast"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Tryk kombinationen af taster som du vil bruge til \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2847 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:775
 msgid "_Expand All"
 msgstr "_Udfold alle"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2854 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:781
 msgid "_Collapse All"
 msgstr "_Sammenfold alle"
 
@@ -4351,7 +4349,7 @@ msgstr "Kunne ikke oprette projektets grundmappe (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "Kunne ikke skrive projektfilen (%s)."
 
-#: ../src/project.c:792 ../src/search.c:664
+#: ../src/project.c:792 ../src/search.c:660
 msgid "_Replace"
 msgstr "_Erstat"
 
@@ -4375,7 +4373,7 @@ msgstr "Åbnede projektet \"%s\"."
 msgid "Project tags loaded."
 msgstr "Lukkede projektet \"%s\"."
 
-#: ../src/search.c:329 ../src/search.c:1040
+#: ../src/search.c:329 ../src/search.c:1036
 msgid "_Use regular expressions"
 msgstr "_Brug regulære udtryk"
 
@@ -4419,11 +4417,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Søg _baglæns"
 
-#: ../src/search.c:371 ../src/search.c:1050
+#: ../src/search.c:371 ../src/search.c:1046
 msgid "C_ase sensitive"
 msgstr "Der skelnes ikke mellem store og små _bogstaver"
 
-#: ../src/search.c:375 ../src/search.c:1055
+#: ../src/search.c:375 ../src/search.c:1051
 msgid "Match only a _whole word"
 msgstr "Match kun et _helt ord"
 
@@ -4431,82 +4429,82 @@ msgstr "Match kun et _helt ord"
 msgid "Match from s_tart of word"
 msgstr "Match fra _begyndelsen af ord"
 
-#: ../src/search.c:499
+#: ../src/search.c:495
 msgid "_Previous"
 msgstr "_Forrige"
 
-#: ../src/search.c:504
+#: ../src/search.c:500
 msgid "_Next"
 msgstr "_Næste"
 
-#: ../src/search.c:508 ../src/search.c:677 ../src/search.c:956
+#: ../src/search.c:504 ../src/search.c:673 ../src/search.c:952
 msgid "_Search for:"
 msgstr "_Søg efter:"
 
 #. Now add the multiple match options
-#: ../src/search.c:536
+#: ../src/search.c:532
 msgid "_Find All"
 msgstr "_Find alle"
 
-#: ../src/search.c:544
+#: ../src/search.c:540
 msgid "_Mark"
 msgstr "_Mærk"
 
-#: ../src/search.c:546
+#: ../src/search.c:542
 msgid "Mark all matches in the current document"
 msgstr "Mærk alle match i det nuværende dokument"
 
-#: ../src/search.c:552 ../src/search.c:737
+#: ../src/search.c:548 ../src/search.c:733
 msgid "In Sessi_on"
 msgstr "I _session"
 
-#: ../src/search.c:558 ../src/search.c:743
+#: ../src/search.c:554 ../src/search.c:739
 msgid "_In Document"
 msgstr "I _dokument"
 
 #. close window checkbox
-#: ../src/search.c:565 ../src/search.c:758
+#: ../src/search.c:561 ../src/search.c:754
 msgid "Close _dialog"
 msgstr "Luk _dialog"
 
-#: ../src/search.c:569 ../src/search.c:762
+#: ../src/search.c:565 ../src/search.c:758
 msgid "Disable this option to keep the dialog open"
 msgstr "Deaktivér valgmuligheden for at holde dialogen åben"
 
-#: ../src/search.c:670
+#: ../src/search.c:666
 msgid "Replace & Fi_nd"
 msgstr "_Erstat og find"
 
-#: ../src/search.c:680
+#: ../src/search.c:676
 msgid "Replace wit_h:"
 msgstr "Erstat _med:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:729
+#: ../src/search.c:725
 msgid "Re_place All"
 msgstr "Erstat _alle"
 
-#: ../src/search.c:749
+#: ../src/search.c:745
 msgid "In Se_lection"
 msgstr "I _markering"
 
-#: ../src/search.c:751
+#: ../src/search.c:747
 msgid "Replace all matches found in the currently selected text"
 msgstr "Erstat alle match fundet i den nuværende markeret tekst"
 
-#: ../src/search.c:869
+#: ../src/search.c:865
 msgid "all"
 msgstr "alle"
 
-#: ../src/search.c:871
+#: ../src/search.c:867
 msgid "project"
 msgstr "projekt"
 
-#: ../src/search.c:873
+#: ../src/search.c:869
 msgid "custom"
 msgstr "brugerdefineret"
 
-#: ../src/search.c:878
+#: ../src/search.c:874
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4516,87 +4514,87 @@ msgstr ""
 "Projekt: brug filmønstre defineret i projektets indstillinger\n"
 "Brugerdefineret: angiv filmønstre manuelt"
 
-#: ../src/search.c:919
+#: ../src/search.c:915
 msgid "Other options to pass to Grep"
 msgstr "Andre valgmuligheder som skal videregives til Grep"
 
-#: ../src/search.c:975
+#: ../src/search.c:971
 msgid "Fi_les:"
 msgstr "_Filer:"
 
-#: ../src/search.c:987
+#: ../src/search.c:983
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Filmønstre, f.eks. *.c *.h"
 
-#: ../src/search.c:1000
+#: ../src/search.c:996
 msgid "_Directory:"
 msgstr "_Mappe:"
 
-#: ../src/search.c:1019
+#: ../src/search.c:1015
 msgid "E_ncoding:"
 msgstr "_Kodning:"
 
-#: ../src/search.c:1044
+#: ../src/search.c:1040
 msgid "See grep's manual page for more information"
 msgstr "Se greps manualside for mere information"
 
-#: ../src/search.c:1046
+#: ../src/search.c:1042
 msgid "_Recurse in subfolders"
 msgstr "_Rekursiv i undermapper"
 
-#: ../src/search.c:1059
+#: ../src/search.c:1055
 msgid "_Invert search results"
 msgstr "_Omvend søgeresultater"
 
-#: ../src/search.c:1063
+#: ../src/search.c:1059
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Omvend måden hvorpå der matches, for at vælge linjer som ikke matcher"
 
-#: ../src/search.c:1080
+#: ../src/search.c:1076
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "_Ekstra valgmuligheder:"
 
-#: ../src/search.c:1082
+#: ../src/search.c:1078
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "_Ekstra valgmuligheder:"
 
-#: ../src/search.c:1084
+#: ../src/search.c:1080
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "_Ekstra valgmuligheder:"
 
-#: ../src/search.c:1499 ../src/search.c:2393 ../src/search.c:2397
+#: ../src/search.c:1496 ../src/search.c:2393 ../src/search.c:2397
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Fandt %d match for \"%s\"."
 msgstr[1] "Fandt %d match for \"%s\"."
 
-#: ../src/search.c:1555
+#: ../src/search.c:1553
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Erstattede %u match i %u dokumenter."
 
-#: ../src/search.c:1764
+#: ../src/search.c:1762
 msgid "Invalid directory for find in files."
 msgstr "Ugyldig mappe til find i filer."
 
-#: ../src/search.c:1784
+#: ../src/search.c:1782
 msgid "No text to find."
 msgstr "Ingen tekst at finde."
 
-#: ../src/search.c:1865
+#: ../src/search.c:1863
 msgid "Searching..."
 msgstr "Søger..."
 
-#: ../src/search.c:1867
+#: ../src/search.c:1865
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (i mappe: %s)"
 
-#: ../src/search.c:1876
+#: ../src/search.c:1874
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4604,27 +4602,27 @@ msgstr ""
 "Kan ikke eksekvere grep-værktøjet \"%s\": %s. Tjek stiindstillingen i "
 "Præferencer."
 
-#: ../src/search.c:1916
+#: ../src/search.c:1914
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Kunne ikke åbne mappe (%s)"
 
-#: ../src/search.c:2006
+#: ../src/search.c:2005
 msgid "Search failed."
 msgstr "Søgning mislykkedes."
 
-#: ../src/search.c:2029
+#: ../src/search.c:2028
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Søgning færdig med %d match."
 msgstr[1] "Søgning færdig med %d match."
 
-#: ../src/search.c:2037
+#: ../src/search.c:2036
 msgid "No matches found."
 msgstr "Fandt ingen match."
 
-#: ../src/search.c:2067
+#: ../src/search.c:2066
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Dårligt regulært udtryk: %s"
@@ -5031,7 +5029,7 @@ msgstr "Geany tags-fil (*.*.tags)"
 msgid "Loaded %s tags file '%s'."
 msgstr "Indlæste %s tags-filen '%s'."
 
-#: ../src/symbols.c:1764
+#: ../src/symbols.c:1765
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Kunne ikke indlæse tags-filen '%s'."
@@ -5056,21 +5054,21 @@ msgstr "%s: %lu"
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2427
+#: ../src/symbols.c:2429
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Forward-deklarationen \"%s\" blev ikke fundet."
 
-#: ../src/symbols.c:2429
+#: ../src/symbols.c:2432
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Definitionen af \"%s\" blev ikke fundet."
 
-#: ../src/symbols.c:2865
+#: ../src/symbols.c:2868
 msgid "Sort by _Name"
 msgstr "Sortér efter _navn"
 
-#: ../src/symbols.c:2873
+#: ../src/symbols.c:2876
 msgid "Sort by _Appearance"
 msgstr "Sortér efter _udseende"
 
@@ -5079,7 +5077,7 @@ msgstr "Sortér efter _udseende"
 msgid "Failed to convert template file \"%s\" to UTF-8"
 msgstr "Kunne ikke konvertere skabelonfilen \"%s\" til UTF-8"
 
-#: ../src/templates.c:628
+#: ../src/templates.c:629
 #, c-format
 msgid ""
 "Cannot execute template command \"%s\". Hint: incorrect paths in the command "
@@ -5266,7 +5264,7 @@ msgstr ""
 "Den eksekverede brugerdefineret kommando afsluttede med en mislykket "
 "afslutningskode."
 
-#: ../src/tools.c:259
+#: ../src/tools.c:260
 #, c-format
 msgid ""
 "Cannot execute custom command \"%s\": %s. Check the path setting in Custom "
@@ -5275,11 +5273,11 @@ msgstr ""
 "Kan ikke eksekvere brugerdefineret kommando \"%s\": %s. Tjek "
 "stiindstillingen i Brugerdefinerede kommandoer."
 
-#: ../src/tools.c:374 ../src/tools.c:643
+#: ../src/tools.c:376 ../src/tools.c:645
 msgid "Set Custom Commands"
 msgstr "Indstil brugerdefinerede kommandoer"
 
-#: ../src/tools.c:382
+#: ../src/tools.c:384
 msgid ""
 "You can send the current selection to any of these commands and the output "
 "of the command replaces the current selection."
@@ -5287,39 +5285,39 @@ msgstr ""
 "Du kan sende den nuværende markering til alle disse kommandoer og outputtet "
 "af kommandoen erstatter den nuværende markering."
 
-#: ../src/tools.c:396
+#: ../src/tools.c:398
 msgid "ID"
 msgstr "ID"
 
-#: ../src/tools.c:614
+#: ../src/tools.c:616
 msgid "No custom commands defined."
 msgstr "Ingen brugerdefinerede kommandoer defineret."
 
-#: ../src/tools.c:713
+#: ../src/tools.c:715
 msgid "Word Count"
 msgstr "Ordtælling"
 
-#: ../src/tools.c:722
+#: ../src/tools.c:724
 msgid "selection"
 msgstr "markering"
 
-#: ../src/tools.c:727
+#: ../src/tools.c:729
 msgid "whole document"
 msgstr "hele dokumentet"
 
-#: ../src/tools.c:736
+#: ../src/tools.c:738
 msgid "Range:"
 msgstr "Område:"
 
-#: ../src/tools.c:748
+#: ../src/tools.c:750
 msgid "Lines:"
 msgstr "Linjer:"
 
-#: ../src/tools.c:762
+#: ../src/tools.c:764
 msgid "Words:"
 msgstr "Ord:"
 
-#: ../src/tools.c:776
+#: ../src/tools.c:778
 msgid "Characters:"
 msgstr "Tegn:"
 
@@ -5364,105 +5362,105 @@ msgstr ""
 "%M      kodning: %e      filtype: %f      område: %S"
 
 #. L = lines
-#: ../src/ui_utils.c:238
+#: ../src/ui_utils.c:266
 #, c-format
 msgid "%dL"
 msgstr "%d linjer"
 
 #. RO = read-only
-#: ../src/ui_utils.c:248 ../src/ui_utils.c:255
+#: ../src/ui_utils.c:276 ../src/ui_utils.c:283
 msgid "RO "
 msgstr "SKRIVEBESKYTTET "
 
 #. OVR = overwrite/overtype, INS = insert
-#: ../src/ui_utils.c:250
+#: ../src/ui_utils.c:278
 msgid "OVR"
 msgstr "OVR"
 
-#: ../src/ui_utils.c:250
+#: ../src/ui_utils.c:278
 msgid "INS"
 msgstr "IND"
 
-#: ../src/ui_utils.c:264
+#: ../src/ui_utils.c:292
 msgid "TAB"
 msgstr "TABULATOR"
 
 #. SP = space
-#: ../src/ui_utils.c:267
+#: ../src/ui_utils.c:295
 msgid "SP"
 msgstr "MELLEMRUM"
 
 #. T/S = tabs and spaces
-#: ../src/ui_utils.c:270
+#: ../src/ui_utils.c:298
 msgid "T/S"
 msgstr "TABULATOR/MELLEMRUM"
 
-#: ../src/ui_utils.c:278
+#: ../src/ui_utils.c:306
 msgid "MOD"
 msgstr "ÆNDRET"
 
-#: ../src/ui_utils.c:379
+#: ../src/ui_utils.c:407
 msgid "(new instance) "
 msgstr "(ny instans) "
 
-#: ../src/ui_utils.c:446
+#: ../src/ui_utils.c:474
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Skrifttype opdateret (%s)."
 
-#: ../src/ui_utils.c:704
+#: ../src/ui_utils.c:732
 msgid "C Standard Library"
 msgstr "C-standardbibliotek"
 
-#: ../src/ui_utils.c:706
+#: ../src/ui_utils.c:734
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:708
+#: ../src/ui_utils.c:736
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C-standardbibliotek)"
 
-#: ../src/ui_utils.c:710
+#: ../src/ui_utils.c:738
 msgid "C++ Standard Library"
 msgstr "C++-standardbibliotek"
 
-#: ../src/ui_utils.c:712
+#: ../src/ui_utils.c:740
 msgid "C++ STL"
 msgstr "C++-STL"
 
-#: ../src/ui_utils.c:734 ../src/ui_utils.c:820
+#: ../src/ui_utils.c:762 ../src/ui_utils.c:849
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.åååå"
 
-#: ../src/ui_utils.c:736 ../src/ui_utils.c:821
+#: ../src/ui_utils.c:764 ../src/ui_utils.c:850
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.åååå"
 
-#: ../src/ui_utils.c:738 ../src/ui_utils.c:822
+#: ../src/ui_utils.c:766 ../src/ui_utils.c:851
 msgid "yyyy/mm/dd"
 msgstr "åååå/mm/dd"
 
-#: ../src/ui_utils.c:740 ../src/ui_utils.c:831
+#: ../src/ui_utils.c:768 ../src/ui_utils.c:860
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.åååå tt:mm:ss"
 
-#: ../src/ui_utils.c:742 ../src/ui_utils.c:832
+#: ../src/ui_utils.c:770 ../src/ui_utils.c:861
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.åååå tt:mm:ss"
 
-#: ../src/ui_utils.c:744 ../src/ui_utils.c:833
+#: ../src/ui_utils.c:772 ../src/ui_utils.c:862
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "åååå/mm/dd tt:mm:ss"
 
-#: ../src/ui_utils.c:746 ../src/ui_utils.c:842
+#: ../src/ui_utils.c:774 ../src/ui_utils.c:871
 msgid "_Use Custom Date Format"
 msgstr "_Brug brugerdefineret datoformat"
 
-#: ../src/ui_utils.c:750
+#: ../src/ui_utils.c:778
 msgid "Custom Date Format"
 msgstr "Brugerdefineret datoformat"
 
-#: ../src/ui_utils.c:752
+#: ../src/ui_utils.c:780
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5470,35 +5468,35 @@ msgstr ""
 "Indtast et brugerdefineret dato- og klokkeslætformat her. Du kan bruge "
 "enhver konverteringsangivere som kan bruges med ANSI C strftime-funktionen."
 
-#: ../src/ui_utils.c:773
+#: ../src/ui_utils.c:802
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Datoformatstreng kunne ikke konverteres (muligvis for lang)."
 
-#: ../src/ui_utils.c:857
+#: ../src/ui_utils.c:886
 msgid "_Set Custom Date Format"
 msgstr "_Indstil brugerdefineret datoformat"
 
-#: ../src/ui_utils.c:2090
+#: ../src/ui_utils.c:2119
 msgid "Select Folder"
 msgstr "Vælg mappe"
 
-#: ../src/ui_utils.c:2090
+#: ../src/ui_utils.c:2119
 msgid "Select File"
 msgstr "Vælg fil"
 
-#: ../src/ui_utils.c:2263
+#: ../src/ui_utils.c:2292
 msgid "_Filetype Configuration"
 msgstr "_Filtypekonfiguration"
 
-#: ../src/ui_utils.c:2301
+#: ../src/ui_utils.c:2330
 msgid "Save All"
 msgstr "Gem alle"
 
-#: ../src/ui_utils.c:2302
+#: ../src/ui_utils.c:2331
 msgid "Close All"
 msgstr "Luk alle"
 
-#: ../src/ui_utils.c:2541
+#: ../src/ui_utils.c:2570
 msgid "Geany cannot start!"
 msgstr "Geany kan ikke starte!"
 
@@ -5583,7 +5581,7 @@ msgstr "Geany-projektfiler"
 msgid "Executables"
 msgstr "Eksekverbare"
 
-#: ../src/win32.c:798
+#: ../src/win32.c:799
 #, c-format
 msgid "Failed to open URI \"%s\": %s"
 msgstr "Kunne ikke åbne URI'en \"%s\": %s"

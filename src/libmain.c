@@ -897,7 +897,7 @@ static void open_cl_files(gint argc, gchar **argv)
 			
 			g_printerr(msg, filename);	/* also print to the terminal */
 			g_printerr("\n");
-			ui_set_statusbar(TRUE, msg, filename);
+			ui_set_statusbar_color(TRUE, COLOR_DARK_RED, msg, filename);
 		}
 		g_free(filename);
 	}

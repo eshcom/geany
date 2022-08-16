@@ -52,16 +52,16 @@ typedef enum
 } MessageWindowTabNum;
 
 
-void msgwin_status_add(const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+void msgwin_status_add(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void msgwin_status_add_string(const gchar *msg);
 
 void msgwin_compiler_add(gint msg_color, const gchar *format, ...)
-						 G_GNUC_PRINTF (2, 3);
+						 G_GNUC_PRINTF(2, 3);
 void msgwin_compiler_add_string(gint msg_color, const gchar *msg);
 
 void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc,
 					const gchar *format, ...)
-					G_GNUC_PRINTF (4, 5);
+					G_GNUC_PRINTF(4, 5);
 void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 						   const char *msg);
 
@@ -110,6 +110,8 @@ void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 									  gchar **filename, gint *line);
 
 gboolean msgwin_goto_messages_file_line(gboolean focus_editor);
+
+const GdkColor *get_color(gint msg_color);
 
 #endif /* GEANY_PRIVATE */
 

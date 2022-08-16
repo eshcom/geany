@@ -1522,8 +1522,8 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 		else
 		{
 			SETPTR(sel, utils_get_utf8_from_locale(sel));
-			ui_set_statusbar(TRUE, _("Could not open file %s "
-									 "(File not found)"), sel);
+			ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open file %s "
+													  "(File not found)"), sel);
 		}
 		g_free(filename);
 		g_free(sel);
@@ -1590,11 +1590,10 @@ void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data)
 		{
 			/* G_SHELL_ERROR is parsing error, it may be
 			 * caused by %s word with quotes */
-			ui_set_statusbar(TRUE, _("Cannot execute context action "
-									 "command \"%s\": %s. %s"),
-							 error->domain == G_SHELL_ERROR ? command_line
-															: command,
-							 error->message, check_msg);
+			ui_set_statusbar_color(TRUE, COLOR_RED,
+						_("Cannot execute context action command \"%s\": %s. %s"),
+						error->domain == G_SHELL_ERROR ? command_line : command,
+						error->message, check_msg);
 			g_error_free(error);
 		}
 		g_free(command_line);

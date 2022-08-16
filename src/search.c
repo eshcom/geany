@@ -1487,10 +1487,11 @@ static void on_find_dialog_response(GtkDialog *dialog, gint response,
 			case GEANY_RESPONSE_MARK:
 			{
 				gint count = search_mark_all(doc, search_data.text, search_data.flags);
-
+				
 				if (count == 0)
-					ui_set_statusbar(FALSE, _("No matches found for \"%s\"."),
-									 search_data.original_text);
+					ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+										   _("No matches found for \"%s\"."),
+										   search_data.original_text);
 				else
 					ui_set_statusbar(FALSE, ngettext("Found %d match for \"%s\".",
 													 "Found %d matches for \"%s\".",
@@ -1542,7 +1543,8 @@ static void replace_in_session(GeanyDocument *doc, GeanyFindFlags search_flags_r
 	if (file_count == 0)
 	{
 		utils_beep();
-		ui_set_statusbar(FALSE, _("No matches found for \"%s\"."), original_find);
+		ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+							   _("No matches found for \"%s\"."), original_find);
 		return;
 	}
 	/* if only one file was changed, don't override that document's status message
@@ -1909,7 +1911,8 @@ static gchar **search_get_argv(const gchar **argv_prefix, const gchar *dir)
 	list = utils_get_file_list(dir, &list_len, &error);
 	if (error)
 	{
-		ui_set_statusbar(TRUE, _("Could not open directory (%s)"), error->message);
+		ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open directory "
+												  "(%s)"), error->message);
 		g_error_free(error);
 		return NULL;
 	}
@@ -2034,7 +2037,7 @@ static void search_finished(GPid child_pid, gint status, gpointer user_data)
 			/* fall through */
 		default:
 			msgwin_msg_add_string(COLOR_BLUE, -1, NULL, msg);
-			ui_set_statusbar(FALSE, "%s", msg);
+			ui_set_statusbar_color(FALSE, COLOR_DARK_RED, "%s", msg);
 			break;
 	}
 	utils_beep();
@@ -2379,8 +2382,9 @@ void search_find_usage(const gchar *search_text, const gchar *original_search_te
 	
 	if (count == 0) /* no matches were found */
 	{
-		ui_set_statusbar(FALSE, _("No matches found for \"%s\"."),
-						 original_search_text);
+		ui_set_statusbar_color(FALSE, COLOR_DARK_RED,
+							   _("No matches found for \"%s\"."),
+							   original_search_text);
 		msgwin_msg_add(COLOR_BLUE, -1, NULL, _("No matches found for \"%s\"."),
 					   original_search_text);
 	}

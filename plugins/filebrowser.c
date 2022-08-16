@@ -489,9 +489,9 @@ static void open_external(const gchar *fname, gboolean dir_found)
 
 		if (c != NULL)
 			*c = '\0';
-		ui_set_statusbar(TRUE,
-			_("Could not execute configured external command '%s' (%s)."),
-			cmd, error->message);
+		ui_set_statusbar_color(TRUE, COLOR_RED,
+							   _("Could not execute configured external "
+							     "command '%s' (%s)."), cmd, error->message);
 		g_error_free(error);
 	}
 	g_free(locale_cmd);
