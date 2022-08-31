@@ -71,6 +71,7 @@ enum
 	MSG_COL_DOC_ID,
 	MSG_COL_COLOR,
 	MSG_COL_STRING,
+	MSG_COL_MARKUP,
 	MSG_COL_COUNT
 };
 
@@ -255,7 +256,7 @@ static void prepare_msg_tree_view(void)
 	/* line, doc id, fg, str */
 	msgwindow.store_msg = gtk_list_store_new(MSG_COL_COUNT, G_TYPE_INT,
 											 G_TYPE_UINT, GDK_TYPE_COLOR,
-											 G_TYPE_STRING);
+											 G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(msgwindow.tree_msg),
 							GTK_TREE_MODEL(msgwindow.store_msg));
 	g_object_unref(msgwindow.store_msg);
@@ -263,7 +264,7 @@ static void prepare_msg_tree_view(void)
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(NULL, renderer,
 											"foreground-gdk", MSG_COL_COLOR,
-											"text", MSG_COL_STRING, NULL);
+											"markup", MSG_COL_MARKUP, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(msgwindow.tree_msg), column);
 	
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(msgwindow.tree_msg), FALSE);
@@ -399,7 +400,7 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 	if (!g_utf8_validate(msg, -1, NULL))
 		utf8_msg = utils_get_utf8_from_locale(msg);
 	else
-		utf8_msg = (gchar *) msg;
+		utf8_msg = (gchar *)msg;
 	
 	gtk_list_store_append(msgwindow.store_compiler, &iter);
 	gtk_list_store_set(msgwindow.store_compiler, &iter,
@@ -475,7 +476,7 @@ void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc,
 	string = g_strdup_vprintf(format, args);
 	va_end(args);
 	
-	msgwin_msg_add_string(msg_color, line, doc, string);
+	msgwin_msg_add_string(msg_color, line, doc, string, NULL);
 	g_free(string);
 }
 
@@ -491,7 +492,8 @@ void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc,
  * @param line      The document's line where the message belongs to.
  *                  Set to @c -1 to ignore.
  * @param doc       @nullable The document. Set to @c NULL to ignore.
- * @param string    Message to be added.
+ * @param string    Original message to be added/saved.
+ * @param markup    Markup message to be added.
  *
  * @see msgwin_msg_add()
  *
@@ -499,13 +501,13 @@ void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc,
  **/
 GEANY_API_SYMBOL
 void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
-						   const gchar *string)
+						   const gchar *string, const gchar *markup)
 {
 	GtkTreeIter iter;
 	const GdkColor *color = get_color(msg_color);
 	gchar *tmp;
 	gsize len;
-	gchar *utf8_msg;
+	gchar *utf8_msg, *utf8_markup;
 	
 	if (!ui_prefs.msgwindow_visible)
 		msgwin_show_hide(TRUE);
@@ -523,15 +525,30 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	else
 		utf8_msg = tmp;
 	
+	if (!markup)
+		utf8_markup = g_markup_escape_text(utf8_msg, -1);
+	else
+	{
+		if (!g_utf8_validate(markup, -1, NULL))
+			utf8_markup = utils_get_utf8_from_locale(markup);
+		else
+			utf8_markup = (gchar *)markup;
+	}
+	
 	gtk_list_store_append(msgwindow.store_msg, &iter);
 	gtk_list_store_set(msgwindow.store_msg, &iter,
 					   MSG_COL_LINE, line,
 					   MSG_COL_DOC_ID, doc ? doc->id : 0,
 					   MSG_COL_COLOR, color,
-					   MSG_COL_STRING, utf8_msg, -1);
+					   MSG_COL_STRING, utf8_msg,
+					   MSG_COL_MARKUP, utf8_markup, -1);
+	
 	g_free(tmp);
 	if (utf8_msg != tmp)
 		g_free(utf8_msg);
+	
+	if (utf8_markup != markup)
+		g_free(utf8_markup);
 }
 
 
@@ -1294,7 +1311,8 @@ gboolean msgwin_goto_messages_file_line(gboolean focus_editor)
 					gtk_widget_grab_focus(GTK_WIDGET(doc->editor->sci));
 			}
 		}
-		else if (line < 0 && string != NULL)
+		// esh: line can be >= 0 (see search.c: read_fif_io -> msgwin_msg_add_markup)
+		else if (/*line < 0 &&*/ string != NULL)
 		{
 			gchar *filename;
 			

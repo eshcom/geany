@@ -63,7 +63,7 @@ void msgwin_msg_add(gint msg_color, gint line, GeanyDocument *doc,
 					const gchar *format, ...)
 					G_GNUC_PRINTF(4, 5);
 void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
-						   const char *msg);
+						   const gchar *string, const gchar *markup);
 
 void msgwin_clear_tab(gint tabnum);
 

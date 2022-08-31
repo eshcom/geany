@@ -46,6 +46,7 @@
 
 #include "gtkcompat.h"
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
@@ -1853,9 +1854,15 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	
 	/* we can pass 'enc' without strdup'ing it here because it's a global const
 	 * string and always exits longer than the lifetime of this function */
+	
+	// esh: to display markup-strings, we also pass utf8_search_text
+	static gpointer data[2];
+	data[0] = (gpointer)enc;
+	data[1] = (gpointer)utf8_search_text;
+	
 	if (spawn_with_callbacks(dir, command_line, argv, NULL, 0, NULL, NULL,
-							 search_read_io, (gpointer)enc, 0,
-							 search_read_io_stderr, (gpointer)enc, 0,
+							 search_read_io, data, 0,
+							 search_read_io_stderr, data, 0,
 							 search_finished, NULL, NULL, &error))
 	{
 		gchar *utf8_str;
@@ -1865,7 +1872,7 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 		utf8_str = g_strdup_printf(_("%s %s -- %s (in directory: %s)"),
 								   tool_prefs.grep_cmd, opts,
 								   utf8_search_text, utf8_dir);
-		msgwin_msg_add_string(COLOR_BLUE, -1, NULL, utf8_str);
+		msgwin_msg_add_string(COLOR_BLUE, -1, NULL, utf8_str, NULL);
 		g_free(utf8_str);
 		ret = TRUE;
 	}
@@ -1957,14 +1964,60 @@ static gchar **search_get_argv(const gchar **argv_prefix, const gchar *dir)
 }
 
 
+static inline void msgwin_msg_add_markup(
+							gint msg_color, gint line, GeanyDocument *doc,
+							const gchar *search_text, const gchar *escape_search_text,
+							const gchar *filename, const gchar *escape_filename,
+							const gchar *buffer)
+{
+	gchar *string = g_strdup_printf("%s:%d: %s", filename, line, buffer);
+	
+	GString *escape_buffer = g_string_new(NULL);
+	gchar **items = g_strsplit(buffer, search_text, 0);
+	gchar **item = items;
+	while (TRUE)
+	{
+		gchar *escape_item = g_markup_escape_text(*item, -1);
+		g_string_append(escape_buffer, escape_item);
+		g_free(escape_item);
+		
+		if (*(++item))
+		{
+			g_string_append(escape_buffer, "<span color=\"#e62e65\">");
+			g_string_append(escape_buffer, escape_search_text);
+			g_string_append(escape_buffer, "</span>");
+		}
+		else
+			break;
+	}
+	g_strfreev(items);
+	
+	gchar *markup = g_strdup_printf("<span color=\"#c07bb7\">%s</span>"
+									"<span color=\"#838eb3\">:</span>"
+									"<span color=\"#ff8000\">%d</span>"
+									"<span color=\"#838eb3\">:</span>"
+									" %s",
+									escape_filename, line, escape_buffer->str);
+	g_string_free(escape_buffer, TRUE);
+	
+	msgwin_msg_add_string(msg_color, line, doc, string, markup);
+	
+	g_free(markup);
+	g_free(string);
+}
+
+
 static void read_fif_io(gchar *msg, GIOCondition condition,
-						gchar *enc, gint msg_color)
+						gpointer *data, gint msg_color, gboolean markup)
 {
 	if (condition & (G_IO_IN | G_IO_PRI))
 	{
 		gchar *utf8_msg = NULL;
 		
 		g_strstrip(msg);
+		
+		gchar *enc = (gchar *)data[0];
+		
 		/* enc is NULL when encoding is set to UTF-8, so we can skip any conversion */
 		if (enc != NULL)
 		{
@@ -1978,7 +2031,24 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 		else
 			utf8_msg = msg;
 		
-		msgwin_msg_add_string(msg_color, -1, NULL, utf8_msg);
+		if (markup)
+		{
+			gchar *utf8_search_text = (gchar *)data[1];
+			gchar *escape_search_text = g_markup_escape_text(utf8_search_text, -1);
+			
+			gchar **fields = g_strsplit(utf8_msg, ":", 3);
+			
+			gchar *escape_filename = g_markup_escape_text(fields[0], -1);
+			
+			gint line = strtol(fields[1], NULL, 10);
+			
+			msgwin_msg_add_markup(msg_color, line, NULL,
+								  utf8_search_text, escape_search_text,
+								  fields[0], escape_filename, fields[2]);
+			g_strfreev(fields);
+		}
+		else
+			msgwin_msg_add_string(msg_color, -1, NULL, utf8_msg, NULL);
 		
 		if (utf8_msg != msg)
 			g_free(utf8_msg);
@@ -1989,14 +2059,14 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 static void search_read_io(GString *string, GIOCondition condition,
 						   gpointer data)
 {
-	read_fif_io(string->str, condition, data, COLOR_BLACK);
+	read_fif_io(string->str, condition, data, COLOR_BLACK, TRUE);
 }
 
 
 static void search_read_io_stderr(GString *string, GIOCondition condition,
 								  gpointer data)
 {
-	read_fif_io(string->str, condition, data, COLOR_DARK_RED);
+	read_fif_io(string->str, condition, data, COLOR_DARK_RED, FALSE);
 }
 
 
@@ -2036,7 +2106,7 @@ static void search_finished(GPid child_pid, gint status, gpointer user_data)
 			msg = _("No matches found.");
 			/* fall through */
 		default:
-			msgwin_msg_add_string(COLOR_BLUE, -1, NULL, msg);
+			msgwin_msg_add_string(COLOR_BLUE, -1, NULL, msg, NULL);
 			ui_set_statusbar_color(FALSE, COLOR_DARK_RED, "%s", msg);
 			break;
 	}
@@ -2309,19 +2379,22 @@ gint search_find_text(ScintillaObject *sci, GeanyFindFlags flags,
 	return ret;
 }
 
-
 static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 								GeanyFindFlags flags)
 {
 	g_return_val_if_fail(DOC_VALID(doc), 0);
 	
-	gchar *buffer, *short_file_name;
+	gchar *short_filename, *escape_filename;
+	gchar *escape_search_text;
 	struct Sci_TextToFind ttf;
 	gint count = 0;
 	gint prev_line = -1;
 	GSList *match, *matches;
 	
-	short_file_name = g_path_get_basename(DOC_FILENAME(doc));
+	short_filename = g_path_get_basename(DOC_FILENAME(doc));
+	escape_filename = g_markup_escape_text(short_filename, -1);
+	
+	escape_search_text = g_markup_escape_text(search_text, -1);
 	
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
@@ -2335,9 +2408,12 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 		
 		if (line != prev_line)
 		{
-			buffer = sci_get_line(doc->editor->sci, line);
-			msgwin_msg_add(COLOR_BLACK, line + 1, doc, "%s:%d: %s",
-						   short_file_name, line + 1, g_strstrip(buffer));
+			gchar *buffer = sci_get_line(doc->editor->sci, line);
+			
+			msgwin_msg_add_markup(COLOR_BLACK, line + 1, doc,
+								  search_text, escape_search_text,
+								  short_filename, escape_filename,
+								  g_strstrip(buffer));
 			g_free(buffer);
 			prev_line = line;
 		}
@@ -2345,7 +2421,9 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 		geany_match_info_free(info);
 	}
 	g_slist_free(matches);
-	g_free(short_file_name);
+	g_free(short_filename);
+	g_free(escape_filename);
+	g_free(escape_search_text);
 	return count;
 }
 
