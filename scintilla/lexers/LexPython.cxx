@@ -358,8 +358,9 @@ LexicalClass lexicalClasses[] = {
 	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
 	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
 	23, "SCE_P_WORD2_ADD", "identifier", "Highlighted identifiers additional",
-	24, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
-	25, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
+	24, "SCE_P_WORD2_SAME_BIF", "identifier", "Highlighted bif-keywords, but w/o opening brace",
+	25, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+	26, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
 };
 
 }
@@ -369,6 +370,7 @@ class LexerPython : public DefaultLexer {
 	WordList keywordsAdd;
 	WordList keywords2;
 	WordList keywords2Add;
+	WordList keywords2Bif;
 	WordList commonWords;
 	WordList refclassWords;
 	OptionsPython options;
@@ -481,6 +483,9 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		break;
 	case 5:
 		wordListN = &keywords2Add;
+		break;
+	case 6:
+		wordListN = &keywords2Bif;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -741,6 +746,33 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 							style = SCE_P_WORD2;
 					} else {
 						style = SCE_P_WORD2;
+					}
+				} else if (keywords2Bif.InList(s)) {
+					if (options.keywords2NoSubIdentifiers) {
+						// We don't want to highlight keywords2Bif
+						// that are used as a sub-identifier,
+						// i.e. not open in "foo.open".
+						Sci_Position pos = styler.GetStartSegment() - 1;
+						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
+							style = SCE_P_WORD2;
+					} else {
+						style = SCE_P_WORD2;
+					}
+					if (style == SCE_P_WORD2)
+					{
+						Sci_Position pos = sc.currentPos;
+						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
+						while (ch != '\0') {
+							if (ch == '(') {
+								break;
+							} else if (IsASpaceOrTab(ch) || IsACRLF(ch)) {
+								pos++;
+								ch = styler.SafeGetCharAt(pos, '\0');
+							} else {
+								style = SCE_P_WORD2_SAME_BIF;
+								break;
+							}
+						}
 					}
 				} else if (keywords2Add.InList(s)) {
 					if (options.keywords2NoSubIdentifiers) {

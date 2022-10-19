@@ -1325,6 +1325,7 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_REFCLASSWORD,	"refclassword",		FALSE },
 	{ SCE_P_WORD_ADD,		"word_add",			FALSE },
 	{ SCE_P_WORD2_ADD,		"word2_add",		FALSE },
+	{ SCE_P_WORD2_SAME_BIF,	"word2_same_bif",	FALSE },
 	{ SCE_P_ESCAPESEQUENCE,	"escapesequence",	FALSE },
 	{ SCE_P_FORMATSEQUENCE,	"formatsequence",	FALSE }
 };
@@ -1335,7 +1336,8 @@ static const HLKeyword highlighting_keywords_PYTHON[] =
 	{ 2, "commonword",		FALSE },
 	{ 3, "refclassword",	FALSE },
 	{ 4, "primary_add",		FALSE },
-	{ 5, "identifiers_add",	FALSE }
+	{ 5, "identifiers_add",	FALSE },
+	{ 6, "identifiers_bif",	FALSE }
 };
 #define highlighting_properties_PYTHON	EMPTY_PROPERTIES
 
