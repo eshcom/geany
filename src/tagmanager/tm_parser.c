@@ -859,7 +859,7 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 				return TRUE;
 			break;
 		case TM_PARSER_PYTHON:
-			if (g_strcmp0(scope, "self") == 0)
+			if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
 				return TRUE;
 			break;
 		default:
