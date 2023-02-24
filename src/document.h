@@ -203,6 +203,9 @@ void document_set_text_changed(GeanyDocument *doc, gboolean changed);
 
 void document_set_filetype(GeanyDocument *doc, GeanyFiletype *type);
 
+void document_set_filetype_and_indent(GeanyDocument *doc, GeanyFiletype *file_type,
+									  GeanyIndentType indent_type, gint indent_width);
+
 gboolean document_close(GeanyDocument *doc);
 
 GeanyDocument *document_index(gint idx);

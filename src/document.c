@@ -2969,6 +2969,34 @@ void document_set_filetype(GeanyDocument *doc, GeanyFiletype *type)
 }
 
 
+/** esh: Sets the filetype and indent type/width of the document
+ * 		 (for jsonprettifier/pretty-printer plugins)
+ * @param doc The document to use.
+ * @param file_type The filetype.
+ * @param indent_type Indent type.
+ * @param indent_width Indent width. */
+GEANY_API_SYMBOL
+void document_set_filetype_and_indent(GeanyDocument *doc, GeanyFiletype *file_type,
+									  GeanyIndentType indent_type, gint indent_width)
+{
+	g_return_if_fail(doc);
+	
+	if (file_type == NULL)
+		file_type = filetypes[GEANY_FILETYPES_NONE];
+	
+	GeanyFiletype *old_ft = doc->file_type;
+	if (old_ft != file_type)
+	{
+		doc->file_type = file_type;
+		highlighting_set_styles(doc->editor->sci, file_type);
+		g_signal_emit_by_name(geany_object, "document-filetype-set",
+							  doc, old_ft);
+	}
+	
+	editor_set_indent(doc->editor, indent_type, indent_width);
+}
+
+
 void document_reload_config(GeanyDocument *doc)
 {
 	document_load_config(doc, doc->file_type, TRUE);
