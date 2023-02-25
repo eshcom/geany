@@ -73,8 +73,7 @@ br_free_last_value (void)
  * foo = thread_local_store (strdup ("hello")); --> foo == "hello"
  * foo = thread_local_store (strdup ("world")); --> foo == "world"; "hello" is now freed.
  */
-const char *
-br_thread_local_store (char *str)
+const char *br_thread_local_store(char *str)
 {
 	static int initialized = 0;
 
@@ -124,8 +123,7 @@ br_thread_local_store (char *str)
  *	printf ("libfoo is located in: %s\n", br_locate (""));
  * }
  */
-char *
-br_locate (void *symbol)
+char *br_locate(void *symbol)
 {
 	char line[5000];
 	FILE *f;
@@ -190,8 +188,7 @@ br_locate (void *symbol)
  * br_extract_prefix ("/usr/local/lib/libfoo.so");   --> Returns "/usr/local"
  * br_extract_prefix ("/usr/local/libfoo.so");       --> Returns "/usr"
  */
-char *
-br_extract_prefix (const char *path)
+char *br_extract_prefix(const char *path)
 {
 	char *end, *tmp, *result;
 
@@ -236,8 +233,7 @@ br_extract_prefix (const char *path)
  * --> This application is located in /usr/bin/foo
  * br_locate_prefix (&argc);   --> returns: "/usr"
  */
-char *
-br_locate_prefix (void *symbol)
+char *br_locate_prefix(void *symbol)
 {
 	char *path, *prefix;
 
@@ -266,8 +262,7 @@ br_locate_prefix (void *symbol)
  * --> The application is /usr/bin/foo
  * br_prepend_prefix (&argc, "/share/foo/data.png");   --> Returns "/usr/share/foo/data.png"
  */
-char *
-br_prepend_prefix (void *symbol, char *path)
+char *br_prepend_prefix(void *symbol, char *path)
 {
 	char *tmp, *newpath;
 

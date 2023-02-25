@@ -447,9 +447,8 @@ void stash_group_set_use_defaults(StashGroup *group, gboolean use_defaults)
 }
 
 
-static StashPref *
-add_pref(StashGroup *group, GType type, gpointer setting,
-		const gchar *key_name, gpointer default_value)
+static StashPref *add_pref(StashGroup *group, GType type, gpointer setting,
+						   const gchar *key_name, gpointer default_value)
 {
 	StashPref init = {type, setting, key_name, default_value, G_TYPE_NONE, NULL, {NULL}};
 	StashPref *entry = g_slice_new(StashPref);
@@ -631,8 +630,7 @@ lookup_widget(GtkWidget *widget, const gchar *widget_name)
 }
 
 
-static GtkWidget *
-get_widget(GtkWidget *owner, StashWidgetID widget_id)
+static GtkWidget *get_widget(GtkWidget *owner, StashWidgetID widget_id)
 {
 	GtkWidget *widget;
 
@@ -801,10 +799,10 @@ void stash_group_update(StashGroup *group, GtkWidget *owner)
 }
 
 
-static StashPref *
-add_widget_pref(StashGroup *group, GType setting_type, gpointer setting,
-		const gchar *key_name, gpointer default_value,
-		GType widget_type, StashWidgetID widget_id)
+static StashPref *add_widget_pref(StashGroup *group, GType setting_type,
+								  gpointer setting, const gchar *key_name,
+								  gpointer default_value, GType widget_type,
+								  StashWidgetID widget_id)
 {
 	StashPref *entry =
 		add_pref(group, setting_type, setting, key_name, default_value);
