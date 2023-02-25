@@ -675,9 +675,8 @@ TMTag **tm_tags_find(const GPtrArray *tags_array, const char *name,
  @param file_tags A GPtrArray of edited file TMTag pointers.
  @param tag_types the tag types to include in the match
  @return TMTag pointers to owner tag. */
-const TMTag *
-tm_get_current_tag(GPtrArray *file_tags, const gulong line,
-				   const TMTagType tag_types)
+const TMTag *tm_get_current_tag(GPtrArray *file_tags, const gulong line,
+								const TMTagType tag_types)
 {
 	TMTag *matching_tag = NULL;
 	if (file_tags && file_tags->len)

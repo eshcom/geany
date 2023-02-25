@@ -968,11 +968,11 @@ on_input_dialog_response(GtkDialog *dialog, gint response, InputDialogData *data
  * 	in this case the dialog returned is not destroyed on a response,
  * 	and can be reshown.
  * Returns: the dialog widget. */
-static GtkWidget *
-dialogs_show_input_full(const gchar *title, GtkWindow *parent,
-						const gchar *label_text, const gchar *default_text,
-						gboolean persistent, GeanyInputCallback input_cb, gpointer input_cb_data,
-						GCallback insert_text_cb, gpointer insert_text_cb_data)
+static GtkWidget *dialogs_show_input_full(const gchar *title, GtkWindow *parent,
+										  const gchar *label_text, const gchar *default_text,
+										  gboolean persistent, GeanyInputCallback input_cb,
+										  gpointer input_cb_data, GCallback insert_text_cb,
+										  gpointer insert_text_cb_data)
 {
 	GtkWidget *dialog, *vbox;
 	InputDialogData *data = g_malloc(sizeof *data);
@@ -1040,10 +1040,9 @@ dialogs_show_input_full(const gchar *title, GtkWindow *parent,
 
 /* Remember previous entry text in a combo box.
  * Returns: the dialog widget. */
-GtkWidget *
-dialogs_show_input_persistent(const gchar *title, GtkWindow *parent,
-		const gchar *label_text, const gchar *default_text,
-		GeanyInputCallback input_cb, gpointer input_cb_data)
+GtkWidget *dialogs_show_input_persistent(const gchar *title, GtkWindow *parent,
+										 const gchar *label_text, const gchar *default_text,
+										 GeanyInputCallback input_cb, gpointer input_cb_data)
 {
 	return dialogs_show_input_full(title, parent, label_text, default_text, TRUE, input_cb, input_cb_data, NULL, NULL);
 }

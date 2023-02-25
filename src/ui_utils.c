@@ -1662,8 +1662,7 @@ GtkWidget *ui_button_new_with_image(const gchar *stock_id, const gchar *text)
  *  @since 0.16
  */
 GEANY_API_SYMBOL
-GtkWidget *
-ui_image_menu_item_new(const gchar *stock_id, const gchar *label)
+GtkWidget *ui_image_menu_item_new(const gchar *stock_id, const gchar *label)
 {
 	GtkWidget *item = gtk_image_menu_item_new_with_mnemonic(label);
 	GtkWidget *image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_MENU);
