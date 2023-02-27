@@ -4962,7 +4962,10 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 	gchar *text;
 	struct Sci_TextToFind ttf;
 	
-	if (tab_len_f < 0.0)
+	if (editor->indent_type != GEANY_INDENT_TYPE_BOTH)
+		// esh: set amount of spaces from the indent_width param of a specific doc
+		tab_len_f = editor->indent_width;
+	else if (tab_len_f < 0.0)
 		tab_len_f = sci_get_tab_width(editor->sci);
 	
 	if (!dialogs_show_input_numeric(_("Enter Tab Width"),
