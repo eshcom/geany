@@ -4901,8 +4901,10 @@ void editor_replace_tabs(GeanyEditor *editor, gboolean ignore_selection)
 	
 	g_return_if_fail(editor != NULL);
 	
+	gboolean has_selection = sci_has_selection(editor->sci);
+	
 	sci_start_undo_action(editor->sci);
-	if (sci_has_selection(editor->sci) && !ignore_selection)
+	if (has_selection && !ignore_selection)
 	{
 		ttf.chrg.cpMin = sci_get_selection_start(editor->sci);
 		ttf.chrg.cpMax = sci_get_selection_end(editor->sci);
@@ -4945,6 +4947,11 @@ void editor_replace_tabs(GeanyEditor *editor, gboolean ignore_selection)
 			caret_pos += current_tab_true_length - 1;
 	}
 	sci_set_selection(editor->sci, anchor_pos, caret_pos);
+	
+	//~ esh: set type/width indent
+	if (!has_selection)
+		editor_set_indent_type(editor, GEANY_INDENT_TYPE_SPACES);
+	
 	sci_end_undo_action(editor->sci);
 }
 
@@ -4977,8 +4984,10 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 	tab_len = (gint)tab_len_f;
 	text = g_strnfill(tab_len, ' ');
 	
+	gboolean has_selection = sci_has_selection(editor->sci);
+	
 	sci_start_undo_action(editor->sci);
-	if (sci_has_selection(editor->sci) && !ignore_selection)
+	if (has_selection && !ignore_selection)
 	{
 		ttf.chrg.cpMin = sci_get_selection_start(editor->sci);
 		ttf.chrg.cpMax = sci_get_selection_end(editor->sci);
@@ -5017,6 +5026,11 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 			caret_pos -= tab_len - 1;
 	}
 	sci_set_selection(editor->sci, anchor_pos, caret_pos);
+	
+	//~ esh: set type/width indent
+	if (!has_selection)
+		editor_set_indent(editor, GEANY_INDENT_TYPE_TABS, tab_len);
+	
 	sci_end_undo_action(editor->sci);
 	g_free(text);
 }
