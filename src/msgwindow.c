@@ -1001,7 +1001,16 @@ static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 		return;
 	}
 	
-	*filename = g_strdup(fields[data->file_idx]);
+	//~ esh: exclude phrases from the error line,
+	//~ example:
+	//~ In file included from document.h:31:0,
+	//~ 				 from msgwindow.h:24,
+	gchar *field = fields[data->file_idx];
+	gchar *fname = field + strlen(field) - 1;
+	while (fname > field && *(fname - 1) != ' ')
+		fname--;
+	
+	*filename = g_strdup(fname);
 	g_strfreev(fields);
 }
 
