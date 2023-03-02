@@ -1152,6 +1152,19 @@ static void parse_compiler_error_line(const gchar *string,
 		/* All GNU gcc-like error messages */
 		case GEANY_FILETYPES_C:
 		case GEANY_FILETYPES_CPP:
+			//~ esh: there can be one colon and, accordingly, two fields
+			//~ example:
+			//~ In file included from document.h:31:0,
+							 //~ from msgwindow.h:24,
+							 //~ from msgwindow.c:33:
+			if (strstr(string, "libtool --mode=link") == NULL)
+			{
+				data.pattern = ":";
+				data.min_fields = 2;
+				data.line_idx = 1;
+				data.file_idx = 0;
+			}
+			break;
 		case GEANY_FILETYPES_RUBY:
 		case GEANY_FILETYPES_JAVA:
 			/* only gcc is supported, I don't know any other C(++) compilers and
