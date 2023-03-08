@@ -488,6 +488,13 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 			{
 				g_free(tag->arglist);
 				tag->arglist = g_strdup(value);
+				/* esh: fixed goto a macro with arguments
+				 * (you need to use the uctags utility to generate a tag file,
+				 *  see https://github.com/universal-ctags/ctags)
+				 * example, goto SSM macro in sciwrappers.c:
+				 *          SSM(sci, SCI_GETLINECOUNT, 0, 0); */
+				if (tag->type == tm_tag_macro_t)
+					tag->type = tm_tag_macro_with_arg_t;
 			}
 		}
 	}
