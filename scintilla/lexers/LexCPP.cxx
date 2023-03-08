@@ -833,24 +833,22 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 	}
 	
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	
+	// Set continuationLine if last character of previous line is '\'
+	if (lineCurrent > 0) {
+		const Sci_Position endLinePrevious = styler.LineEnd(lineCurrent - 1);
+		if (endLinePrevious > 0) {
+			continuationLine = styler.SafeGetCharAt(endLinePrevious-1) == '\\';
+		}
+	}
+	
 	// esh: added stringState for highlighting JSON-keys and escape sequences
 	// (stringState can be SCE_C_CHARACTER, SCE_C_STRING, SCE_C_STRINGJSONKEY)
 	int stringState = -1;
 	
-	Sci_Position lineCurrent = styler.GetLine(startPos);
 	int maskInitStyle = MaskActive(initStyle);
-	if ((maskInitStyle == SCE_C_PREPROCESSOR) ||
-		(maskInitStyle == SCE_C_COMMENTLINE) ||
-		(maskInitStyle == SCE_C_COMMENTLINEDOC)) {
-		// Set continuationLine if last character of previous line is '\'
-		if (lineCurrent > 0) {
-			const Sci_Position endLinePrevious = styler.LineEnd(lineCurrent - 1);
-			if (endLinePrevious > 0) {
-				continuationLine = styler.SafeGetCharAt(endLinePrevious-1) == '\\';
-			}
-		}
-	// esh: added detect stringState
-	} else if (IsQuoteStringStyle(maskInitStyle)) {
+	if (IsQuoteStringStyle(maskInitStyle)) { // esh: added detect stringState
 		stringState = maskInitStyle;
 		
 	} else if (IsNestedStringStyle(maskInitStyle)) {
@@ -964,6 +962,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (rawStringTerminator != "") {
 				rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 			}
+			continuationLine = false;
 		}
 		
 		// Handle line continuation generically.
@@ -1472,7 +1471,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_C_CHARACTER|activitySet);
 				stringState = SCE_C_CHARACTER;
 				
-			} else if (sc.ch == '#' && visibleChars == 0) {
+			} else if (sc.ch == '#' && visibleChars == 0 && !continuationLine) {
 				// Preprocessor commands are alone on their line
 				sc.SetState(SCE_C_PREPROCESSOR|activitySet);
 				// Skip whitespace between # and preprocessor word
@@ -1620,7 +1619,6 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
 		}
-		continuationLine = false;
 		sc.Forward();
 	}
 	const bool rawStringsChanged = rawStringTerminators.Merge(rawSTNew, lineCurrent);
