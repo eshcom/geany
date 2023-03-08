@@ -284,7 +284,7 @@ t			\ntest';
 }
 
 
-#define GET_CONF_TEXT(name, hotkey_text) G_STMT_START {					\
+#define GET_CONF_TEXT(name, hotkey_text) G_STMT_START {\
 	sft_info->name = utils_get_setting_string(config, "setfiletype",	\
 											  #name, NULL);				\
 } G_STMT_END

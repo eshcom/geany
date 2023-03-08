@@ -974,10 +974,19 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (rawStringTerminator != "") {
 					rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 				}
+				
+				int maskActiveState = MaskActive(sc.state);
 				// esh: fixed highlighting multi-line strings with escape/format sequences
-				if (MaskActive(sc.state) == SCE_C_ESCAPESEQUENCE ||
-					MaskActive(sc.state) == SCE_C_FORMATSEQUENCE) {
+				if (maskActiveState == SCE_C_ESCAPESEQUENCE ||
+					maskActiveState == SCE_C_FORMATSEQUENCE) {
 					sc.SetState(stringState|activitySet);
+				// esh: fixed highlighting backslash (line continuation symbol)
+				} else if (maskActiveState != SCE_C_STRING &&
+						   maskActiveState != SCE_C_CHARACTER &&
+						   maskActiveState != SCE_C_COMMENTLINE &&
+						   maskActiveState != SCE_C_COMMENTLINEDOC &&
+						   maskActiveState != SCE_C_PREPROCESSOR) {
+					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
