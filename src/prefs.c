@@ -425,6 +425,9 @@ static void prefs_init_dialog(void)
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_ask_for_quit");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), prefs.confirm_exit);
 	
+	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_set_caret_to_start_of_line");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), prefs.set_caret_to_start_of_line);
+	
 	/* behaviour */
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_beep");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), prefs.beep_on_errors);
@@ -927,6 +930,9 @@ static void on_prefs_dialog_response(GtkDialog *dialog, gint response,
 		
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_ask_for_quit");
 		prefs.confirm_exit = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		
+		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_set_caret_to_start_of_line");
+		prefs.set_caret_to_start_of_line = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 		
 		/* behaviour */
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_beep");
