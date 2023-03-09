@@ -39,6 +39,7 @@ typedef struct GeanyPrefs
 	gchar			*default_open_path;	/**< Default path to look for files when no other path is appropriate. */
 	gchar			*custom_plugin_path;
 	gboolean		save_wingeom;
+	gboolean		set_caret_to_start_of_line;
 }
 GeanyPrefs;
 

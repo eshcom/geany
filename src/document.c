@@ -44,6 +44,7 @@
 #include "msgwindow.h"
 #include "navqueue.h"
 #include "notebook.h"
+#include "prefs.h"
 #include "project.h"
 #include "sciwrappers.h"
 #include "sidebar.h"
@@ -1091,7 +1092,13 @@ static gint set_cursor_position(GeanyEditor *editor, gint pos)
 	}
 	else if (pos > 0)
 	{
-		sci_set_current_position(editor->sci, pos, FALSE);
+		if (prefs.set_caret_to_start_of_line &&
+			sci_get_col_from_position(editor->sci, pos) > 40)
+			sci_set_current_line(editor->sci,
+								 sci_get_line_from_position(editor->sci, pos));
+		else
+			sci_set_current_position(editor->sci, pos, FALSE);
+		
 		editor->scroll_percent = 0.5F;
 	}
 	
