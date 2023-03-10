@@ -55,7 +55,7 @@ typedef struct GeanyStatus
 {
 	gboolean	opening_session_files; /* state at startup while opening session files */
 	gboolean	closing_all; /* the state while closing all tabs
-							  * (used to prevent notebook switch page signals) */
+							    (used to prevent notebook switch page signals) */
 	gboolean	quitting;	 /* state when Geany is quitting completely */
 	gboolean	main_window_realized;
 }
