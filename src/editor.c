@@ -3978,33 +3978,34 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 	if (!in_block_comment(lexer, style))
 		return;
 	
-	/* Check whether the comment block continues on this line */
 	indent_pos = sci_get_line_indent_position(sci, cur_line);
+	
+	gchar *previous_line = sci_get_line(sci, cur_line - 1);
+	gint len = strlen(previous_line);
+	
+	/* Find and stop at end of multi line comment */
+	gint i = len - 1;
+	while (i >= 0 && isspace(previous_line[i])) i--;
+	
+	if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
+		&& previous_line[i] == '/')
+	{
+		gint indent_len = sci_get_col_from_position(sci, indent_pos);
+		gint indent_width = editor_get_indent_prefs(editor)->width;
+		
+		/* if there is one too many spaces, delete the last space,
+		 * to return to the indent used before the multiline comment was started. */
+		if (indent_len % indent_width != 0)
+			SSM(sci, SCI_DELETEBACKNOTLINE, 0, 0);	/* remove whitespace indent */
+		
+		g_free(previous_line);
+		return;
+	}
+	
+	/* Check whether the comment block continues on this line */
 	if (sci_get_style_at(sci, indent_pos) == style ||
 		indent_pos >= sci_get_length(sci))
-	{
-		gchar *previous_line = sci_get_line(sci, cur_line - 1);
-		gint len = strlen(previous_line);
-		
-		/* find and stop at end of multi line comment */
-		gint i = len - 1;
-		while (i >= 0 && isspace(previous_line[i])) i--;
-		
-		if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
-			&& previous_line[i] == '/')
-		{
-			gint indent_len = sci_get_col_from_position(sci, indent_pos);
-			gint indent_width = editor_get_indent_prefs(editor)->width;
-			
-			/* if there is one too many spaces, delete the last space,
-			 * to return to the indent used before the multiline comment was started. */
-			if (indent_len % indent_width == 1)
-				SSM(sci, SCI_DELETEBACKNOTLINE, 0, 0);	/* remove whitespace indent */
-			
-			g_free(previous_line);
-			return;
-		}
-		/* check whether we are on the second line of multi line comment */
+	{	/* check whether we are on the second line of multi line comment */
 		i = 0;
 		while (i < len && isspace(previous_line[i])) i++; /* get to start of the line */
 		
@@ -4023,10 +4024,9 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 		
 		gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
 		sci_add_text(sci, result);
-		
 		g_free(result);
-		g_free(previous_line);
 	}
+	g_free(previous_line);
 }
 
 
