@@ -3969,13 +3969,12 @@ static gboolean is_comment_char(gchar c, gint lexer)
 static void auto_multiline(GeanyEditor *editor, gint cur_line)
 {
 	ScintillaObject *sci = editor->sci;
-	gint indent_pos, style;
 	gint lexer = sci_get_lexer(sci);
 	
 	/* Use the start of the line enter was pressed on,
 	 * to avoid any doc keyword styles */
-	indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
-	style = sci_get_style_at(sci, indent_pos);
+	gint indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
+	gint style = sci_get_style_at(sci, indent_pos);
 	if (!in_block_comment(lexer, style))
 		return;
 	
@@ -3985,25 +3984,17 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 		indent_pos >= sci_get_length(sci))
 	{
 		gchar *previous_line = sci_get_line(sci, cur_line - 1);
-		/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
-		const gchar *continuation = "*";
-		const gchar *whitespace = ""; /* to hold whitespace if needed */
-		gchar *result;
 		gint len = strlen(previous_line);
-		gint i;
 		
 		/* find and stop at end of multi line comment */
-		i = len - 1;
+		gint i = len - 1;
 		while (i >= 0 && isspace(previous_line[i])) i--;
 		
 		if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
 			&& previous_line[i] == '/')
 		{
-			gint indent_len, indent_width;
-			
-			indent_pos = sci_get_line_indent_position(sci, cur_line);
-			indent_len = sci_get_col_from_position(sci, indent_pos);
-			indent_width = editor_get_indent_prefs(editor)->width;
+			gint indent_len = sci_get_col_from_position(sci, indent_pos);
+			gint indent_width = editor_get_indent_prefs(editor)->width;
 			
 			/* if there is one too many spaces, delete the last space,
 			 * to return to the indent used before the multiline comment was started. */
@@ -4017,6 +4008,7 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 		i = 0;
 		while (i < len && isspace(previous_line[i])) i++; /* get to start of the line */
 		
+		const gchar *whitespace = ""; /* to hold whitespace if needed */
 		if (i + 1 < len && previous_line[i] == '/' &&
 			is_comment_char(previous_line[i + 1], lexer))
 		{ /* we are on the second line of a multi line comment,
@@ -4024,10 +4016,12 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 			whitespace = " ";
 		}
 		
+		/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
+		const gchar *continuation = "*";
 		if (style == SCE_D_COMMENTNESTED)
 			continuation = "+"; /* for nested comments in D */
 		
-		result = g_strconcat(whitespace, continuation, " ", NULL);
+		gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
 		sci_add_text(sci, result);
 		
 		g_free(result);
