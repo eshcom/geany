@@ -1502,13 +1502,30 @@ static gint get_indent_size_after_line(GeanyEditor *editor, gint line)
 }
 
 
-static void insert_indent_after_line(GeanyEditor *editor, gint line)
+static void insert_indent_after_line(GeanyEditor *editor, gint line) // esh: line - is prev line
 {
+	ScintillaObject *sci = editor->sci;
+	gint lexer = sci_get_lexer(sci);
+	
+	if (highlighting_is_code_style(lexer,
+			sci_get_style_at(sci, sci_get_current_position(sci))))
+	{	/* esh: go back to code style, skip comment and string styles */
+		while (line >= 0)
+		{
+			gint indent_pos = sci_get_line_indent_position(sci, line);
+			gint style = sci_get_style_at(sci, indent_pos);
+			if (highlighting_is_comment_style(lexer, style) ||
+				highlighting_is_string_style(lexer, style))
+				line--;
+			else
+				break;
+		}
+	}
+	
 	gint size = get_indent_size_after_line(editor, line);
 	if (size == 0)
 		return;
 	
-	ScintillaObject *sci = editor->sci;
 	gint line_indent = sci_get_line_indentation(sci, line);
 	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
 	gchar *text;
@@ -3980,33 +3997,35 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 	
 	indent_pos = sci_get_line_indent_position(sci, cur_line);
 	
-	gchar *previous_line = sci_get_line(sci, cur_line - 1);
-	gint len = strlen(previous_line);
+	/* Find and stop at end of multi line comment
+	 * esh: after changing the insert_indent_after_line func,
+	 * 		this piece of code is no longer relevant */
+	//~ gint i = len - 1;
+	//~ while (i >= 0 && isspace(previous_line[i])) i--;
 	
-	/* Find and stop at end of multi line comment */
-	gint i = len - 1;
-	while (i >= 0 && isspace(previous_line[i])) i--;
-	
-	if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
-		&& previous_line[i] == '/')
-	{
-		gint indent_len = sci_get_col_from_position(sci, indent_pos);
-		gint indent_width = editor_get_indent_prefs(editor)->width;
+	//~ if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
+		//~ && previous_line[i] == '/')
+	//~ {
+		//~ gint indent_len = sci_get_col_from_position(sci, indent_pos);
+		//~ gint indent_width = editor_get_indent_prefs(editor)->width;
 		
-		/* if there is one too many spaces, delete the last space,
-		 * to return to the indent used before the multiline comment was started. */
-		if (indent_len % indent_width != 0)
-			SSM(sci, SCI_DELETEBACKNOTLINE, 0, 0);	/* remove whitespace indent */
+		//~ /* if there is one too many spaces, delete the last space,
+		 //~ * to return to the indent used before the multiline comment was started. */
+		//~ if (indent_len % indent_width != 0)
+			//~ SSM(sci, SCI_DELETEBACKNOTLINE, 0, 0);	/* remove whitespace indent */
 		
-		g_free(previous_line);
-		return;
-	}
+		//~ g_free(previous_line);
+		//~ return;
+	//~ }
 	
 	/* Check whether the comment block continues on this line */
 	if (sci_get_style_at(sci, indent_pos) == style ||
 		indent_pos >= sci_get_length(sci))
 	{	/* check whether we are on the second line of multi line comment */
-		i = 0;
+		gchar *previous_line = sci_get_line(sci, cur_line - 1);
+		gint len = strlen(previous_line);
+		
+		gint i = 0;
 		while (i < len && isspace(previous_line[i])) i++; /* get to start of the line */
 		
 		const gchar *whitespace = ""; /* to hold whitespace if needed */
@@ -4024,9 +4043,10 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 		
 		gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
 		sci_add_text(sci, result);
+		
 		g_free(result);
+		g_free(previous_line);
 	}
-	g_free(previous_line);
 }
 
 
