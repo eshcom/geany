@@ -3988,64 +3988,60 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 	ScintillaObject *sci = editor->sci;
 	gint lexer = sci_get_lexer(sci);
 	
-	/* Use the start of the line enter was pressed on,
-	 * to avoid any doc keyword styles */
-	gint indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
-	gint style = sci_get_style_at(sci, indent_pos);
-	if (!in_block_comment(lexer, style))
+	gint style;
+	gint prev_line_pos = sci_get_line_end_position(sci, cur_line - 1);
+	if (prev_line_pos > 0)
+	{
+		style = sci_get_style_at(sci, prev_line_pos - 1);
+		if (!in_block_comment(lexer, style))
+			return;
+	}
+	else
 		return;
 	
-	indent_pos = sci_get_line_indent_position(sci, cur_line);
-	
-	/* Find and stop at end of multi line comment
-	 * esh: after changing the insert_indent_after_line func,
-	 * 		this piece of code is no longer relevant */
-	//~ gint i = len - 1;
-	//~ while (i >= 0 && isspace(previous_line[i])) i--;
-	
-	//~ if (i >= 1 && is_comment_char(previous_line[i - 1], lexer)
-		//~ && previous_line[i] == '/')
-	//~ {
-		//~ gint indent_len = sci_get_col_from_position(sci, indent_pos);
-		//~ gint indent_width = editor_get_indent_prefs(editor)->width;
-		
-		//~ /* if there is one too many spaces, delete the last space,
-		 //~ * to return to the indent used before the multiline comment was started. */
-		//~ if (indent_len % indent_width != 0)
-			//~ SSM(sci, SCI_DELETEBACKNOTLINE, 0, 0);	/* remove whitespace indent */
-		
-		//~ g_free(previous_line);
-		//~ return;
-	//~ }
-	
 	/* Check whether the comment block continues on this line */
+	gint indent_pos = sci_get_line_indent_position(sci, cur_line);
 	if (sci_get_style_at(sci, indent_pos) == style ||
 		indent_pos >= sci_get_length(sci))
-	{	/* check whether we are on the second line of multi line comment */
-		gchar *previous_line = sci_get_line(sci, cur_line - 1);
-		gint len = strlen(previous_line);
+	{
+		gint prev_indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
 		
-		gint i = 0;
-		while (i < len && isspace(previous_line[i])) i++; /* get to start of the line */
-		
-		const gchar *whitespace = ""; /* to hold whitespace if needed */
-		if (i + 1 < len && previous_line[i] == '/' &&
-			is_comment_char(previous_line[i + 1], lexer))
-		{ /* we are on the second line of a multi line comment,
-			 so we have to insert white space */
-			whitespace = " ";
+		// esh: check if a multi line comment is a continuation of the code
+		if (!in_block_comment(lexer, sci_get_style_at(sci, prev_indent_pos)))
+		{
+			while (sci_get_style_at(sci, --prev_line_pos - 1) == style);
+			
+			const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
+			
+			gint indent_width = sci_get_col_from_position(sci, prev_line_pos) -
+											sci_get_col_from_position(sci,
+													sci_get_current_position(sci));
+			// +3 is the offset of "/* " (see example comment below at line 4031)
+			gchar *whitespace = get_whitespace(iprefs, indent_width + 3);
+			
+			sci_add_text(sci, whitespace);
+			g_free(whitespace);
 		}
-		
-		/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
-		const gchar *continuation = "*";
-		if (style == SCE_D_COMMENTNESTED)
-			continuation = "+"; /* for nested comments in D */
-		
-		gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
-		sci_add_text(sci, result);
-		
-		g_free(result);
-		g_free(previous_line);
+		else
+		{
+			const gchar *whitespace = ""; /* to hold whitespace if needed */
+			/* check whether we are on the second line of multi line comment */
+			if (sci_get_char_at(sci, prev_indent_pos) == '/' &&
+				is_comment_char(sci_get_char_at(sci, prev_indent_pos + 1), lexer))
+			{ /* we are on the second line of a multi line comment,
+				 so we have to insert white space */
+				whitespace = " ";
+			}
+			
+			/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
+			const gchar *continuation = "*";
+			if (style == SCE_D_COMMENTNESTED)
+				continuation = "+"; /* for nested comments in D */
+			
+			gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
+			sci_add_text(sci, result);
+			g_free(result);
+		}
 	}
 }
 
