@@ -56,6 +56,11 @@
 #define RoleTemplateLocal  { true, "local", "local header" }
 
 /*
+*   DATA DECLARATIONS
+*/
+typedef enum { COMMENT_NONE, COMMENT_C, COMMENT_CPLUS, COMMENT_D } Comment;
+
+/*
 *   FUNCTION PROTOTYPES
 */
 extern bool cppIsBraceFormat (void);
@@ -71,6 +76,8 @@ extern void cppEndStatement (void);
 extern void cppUngetc (const int c);
 extern int cppGetc (void);
 extern int cppSkipOverCComment (void);
+static int skipOverDComment (void);
+static Comment isComment (void);
 
 extern char *cppGetSignature (void);
 extern void cppStartCollectingSignature (void);

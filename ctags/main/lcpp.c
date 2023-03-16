@@ -34,8 +34,6 @@
 /*
 *   DATA DECLARATIONS
 */
-typedef enum { COMMENT_NONE, COMMENT_C, COMMENT_CPLUS, COMMENT_D } Comment;
-
 enum eCppLimits {
 	MaxCppNestingLevel = 20,
 	MaxDirectiveName = 10
@@ -370,7 +368,19 @@ static int directiveDefine (const int c, bool undef)
 			{
 				int lastC = nc;
 				nc = getcAndCollect ();
-				if (nc == '\n' && lastC != '\\')
+				/* esh: fixed bug generating gtags after multi-line comments
+				 * 		in parametrized preprocessor directive
+				 * 		see example ../../src/sidebar.c:205 */
+				if (nc == '/')
+				{
+					const Comment comment = isComment();
+					
+					if (comment == COMMENT_C)
+						nc = cppSkipOverCComment();
+					else if (comment == COMMENT_D)
+						nc = skipOverDComment();
+				}
+				else if (nc == '\n' && lastC != '\\')
 					break;
 			}
 			cppStopCollectingSignature ();
