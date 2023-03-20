@@ -646,10 +646,14 @@ static void init_default_kb(void)
 	
 	group = keybindings_get_core_group(GEANY_KEY_GROUP_FOCUS);
 	
+	add_kb(group, GEANY_KEYS_FOCUS_UP, NULL,
+		0, 0, "switch_up_window", _("Switch to up window"), NULL);
+	add_kb(group, GEANY_KEYS_FOCUS_DOWN, NULL,
+		0, 0, "switch_down_window", _("Switch to down window"), NULL);
+	add_kb(group, GEANY_KEYS_FOCUS_RIGHT, NULL,
+		0, 0, "switch_right_window", _("Switch to right window"), NULL);
 	add_kb(group, GEANY_KEYS_FOCUS_EDITOR, NULL,
 		GDK_F2, 0, "switch_editor", _("Switch to Editor"), NULL);
-	add_kb(group, GEANY_KEYS_FOCUS_EDITOR_2, NULL,
-		0, 0, "switch_editor_2", _("Switch to Editor (second hotkey)"), NULL);
 	add_kb(group, GEANY_KEYS_FOCUS_SEARCHBAR, NULL,
 		GDK_F7, 0, "switch_search_bar", _("Switch to Search Bar"), NULL);
 	add_kb(group, GEANY_KEYS_FOCUS_MESSAGE_WINDOW, NULL,
@@ -1950,28 +1954,36 @@ static void focus_sidebar(void)
 }
 
 
-static GtkWidget *find_focus_widget(GtkWidget *widget)
+static GtkWidget *find_focus_widget(GtkWidget *widget, gboolean focused)
 {
 	GtkWidget *focus = NULL;
 	
 	if (GTK_IS_BIN(widget)) /* optimized simple case */
-		focus = find_focus_widget(gtk_bin_get_child(GTK_BIN(widget)));
+		focus = find_focus_widget(gtk_bin_get_child(GTK_BIN(widget)), focused);
 	else if (GTK_IS_CONTAINER(widget))
 	{
 		GList *children = gtk_container_get_children(GTK_CONTAINER(widget));
 		GList *node;
 		
 		for (node = children; node && !focus; node = node->next)
-			focus = find_focus_widget(node->data);
+			focus = find_focus_widget(node->data, focused);
 		g_list_free(children);
 	}
 	
 	/* Some containers handled above might not have children and be what we want to focus
 	 * (e.g. GtkTreeView), so focus that if possible and we don't have anything better */
-	if (!focus && gtk_widget_get_can_focus(widget))
+	if (!focus &&
+		((!focused && gtk_widget_get_can_focus(widget)) ||
+		 (focused && gtk_widget_has_focus(widget))))
 		focus = widget;
 	
 	return focus;
+}
+
+
+static gboolean has_focus_widget(GtkWidget *widget)
+{
+	return find_focus_widget(widget, TRUE) != NULL;
 }
 
 
@@ -1985,7 +1997,7 @@ static void focus_msgwindow(void)
 								GTK_NOTEBOOK(msgwindow.notebook),
 								page_num);
 		
-		widget = find_focus_widget(widget);
+		widget = find_focus_widget(widget, FALSE);
 		if (widget)
 			gtk_widget_grab_focus(widget);
 		else
@@ -1994,24 +2006,40 @@ static void focus_msgwindow(void)
 }
 
 
+static void focus_editor(void)
+{
+	GeanyDocument *doc = document_get_current();
+	if (doc != NULL)
+	{
+		GtkWidget *sci = GTK_WIDGET(doc->editor->sci);
+		if (gtk_widget_has_focus(sci))
+			ui_update_statusbar(doc, -1);
+		else
+			gtk_widget_grab_focus(sci);
+	}
+}
+
+
 static gboolean cb_func_switch_action(guint key_id)
 {
 	switch (key_id)
 	{
-		case GEANY_KEYS_FOCUS_EDITOR:
-		case GEANY_KEYS_FOCUS_EDITOR_2:
-		{
-			GeanyDocument *doc = document_get_current();
-			if (doc != NULL)
-			{
-				GtkWidget *sci = GTK_WIDGET(doc->editor->sci);
-				if (gtk_widget_has_focus(sci))
-					ui_update_statusbar(doc, -1);
-				else
-					gtk_widget_grab_focus(sci);
-			}
+		case GEANY_KEYS_FOCUS_UP:
+			if (has_focus_widget(main_widgets.message_window_notebook))
+				focus_editor();
 			break;
-		}
+		case GEANY_KEYS_FOCUS_DOWN:
+			if (has_focus_widget(main_widgets.notebook) ||
+				has_focus_widget(main_widgets.sidebar_notebook))
+				focus_msgwindow();
+			break;
+		case GEANY_KEYS_FOCUS_RIGHT:
+			if (has_focus_widget(main_widgets.sidebar_notebook))
+				focus_editor();
+			break;
+		case GEANY_KEYS_FOCUS_EDITOR:
+			focus_editor();
+			break;
 		case GEANY_KEYS_FOCUS_SCRIBBLE:
 			msgwin_switch_tab(MSG_SCRATCH, TRUE);
 			break;
