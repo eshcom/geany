@@ -2279,6 +2279,13 @@ static bool skipPostArgumentStuff (
 							(strcmp ("override", vStringValue (token->name)) == 0 ||
 							 strcmp ("final", vStringValue (token->name)) == 0))
 							;
+						/* esh: fixed bug generating gtags for func declarations with special macros, examples:
+						 * 		void ui_set_statusbar(gboolean log, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
+						 * 		void ui_table_add_row(GtkTable *table, gint row, ...) G_GNUC_NULL_TERMINATED; */
+						else if ((isInputLanguage(Lang_c) || isInputLanguage(Lang_cpp)) &&
+								 isType(token, TOKEN_NAME) &&
+								 strncmp(vStringValue(token->name), "G_", 2) == 0)
+							;
 						else if (isType (token, TOKEN_NONE))
 							;
 						else if (info->isKnrParamList  &&  info->parameterCount > 0)
