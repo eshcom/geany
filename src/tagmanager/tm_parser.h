@@ -140,7 +140,7 @@ gboolean tm_parser_strict_scope(TMParserType lang);
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
 						   gchar *prefix, gchar *suffix);
 
-#define ONE_CHAR_PREFIX_CHARS	"?#"
+#define ONE_CHAR_PREFIX_CHARS	"?#."
 #define MULTI_CHAR_PREFIX_CHARS	"->"
 #define ONE_CHAR_SUFFIX_CHARS	"(=."
 #define MULTI_CHAR_SUFFIX_CHARS	":"

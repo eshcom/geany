@@ -925,6 +925,15 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 			if (g_strcmp0(prefix, "->") == 0)
 				//~ example: ppo->indentChar
 				*type = tm_tag_member_t;
+			else if (g_strcmp0(prefix, ".") == 0)
+			{
+				if (g_strcmp0(suffix, "(") == 0)
+					//~ example: styler.Match(keyword_start,"fun")
+					*type = tm_tag_function_t;
+				else
+					//~ example: wordbound.end
+					*type = tm_tag_member_t;
+			}
 			else if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_function_t | tm_tag_macro_with_arg_t;
 			else if (g_strcmp0(suffix, "::") == 0)
