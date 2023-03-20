@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.32\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-09 21:03+0300\n"
+"POT-Creation-Date: 2023-03-20 22:47+0300\n"
 "PO-Revision-Date: 2019-01-09 14:45+0200\n"
 "Last-Translator: Vangelis Skarmoutsos <skarmoutsosv@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -1280,7 +1280,7 @@ msgstr "Αφαίρεση ακολουθούμενων κενών και tab"
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Διαγράφει τα κενά και τα tab στο τέλος των γραμμών"
 
-#: ../data/geany.glade.h:258 ../src/keybindings.c:706
+#: ../data/geany.glade.h:258 ../src/keybindings.c:710
 msgid "Replace tabs with space"
 msgstr "Αντικατάσταση των tab με κενά"
 
@@ -2055,11 +2055,11 @@ msgstr "Μετατροπή και καθορισμός σε _LF (Unix)"
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Μετατροπή και καθορισμός σε CR (τυπικό _Mac)"
 
-#: ../data/geany.glade.h:434 ../src/keybindings.c:701
+#: ../data/geany.glade.h:434 ../src/keybindings.c:705
 msgid "_Clone"
 msgstr "_Κλωνοποίηση"
 
-#: ../data/geany.glade.h:435 ../src/keybindings.c:703
+#: ../data/geany.glade.h:435 ../src/keybindings.c:707
 msgid "_Strip Trailing Spaces"
 msgstr "_Διαγραφή ακολουθούμενων κενών"
 
@@ -3056,16 +3056,16 @@ msgstr[1] "%s: αντικατάσταση %d εμφανιζόμενων του \
 msgid "Do you want to reload it?"
 msgstr "Θέλετε να το επαναφορτώσετε;"
 
-#: ../src/editor.c:4978
+#: ../src/editor.c:4988
 msgid "Enter Tab Width"
 msgstr "Εισαγωγή πλάτους του Tab"
 
-#: ../src/editor.c:4979
+#: ../src/editor.c:4989
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr ""
 "Εισαγωγή του πλήθους των κενών που θα αντικαθίστανται από έναν χαρακτήρα tab."
 
-#: ../src/editor.c:5191
+#: ../src/editor.c:5201
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Προειδοποίηση: μη τυποποιημένο εύρος tab: %d != 8!"
@@ -3362,12 +3362,12 @@ msgstr "Προβολή"
 msgid "Document"
 msgstr "Έγγραφο"
 
-#: ../src/keybindings.c:332 ../src/keybindings.c:734 ../src/project.c:528
+#: ../src/keybindings.c:332 ../src/keybindings.c:738 ../src/project.c:528
 #: ../src/ui_utils.c:2331
 msgid "Build"
 msgstr "Κατασκευή"
 
-#: ../src/keybindings.c:334 ../src/keybindings.c:759
+#: ../src/keybindings.c:334 ../src/keybindings.c:763
 msgid "Help"
 msgstr "Βοήθεια"
 
@@ -3720,163 +3720,173 @@ msgid "Zoom Reset"
 msgstr "Επαναφορά ζουμ"
 
 #: ../src/keybindings.c:650
-msgid "Switch to Editor"
-msgstr "Μετάβαση στον επεξεργαστή"
+#, fuzzy
+msgid "Switch to up window"
+msgstr "Μετάβαση στο παράθυρο μηνυμάτων"
 
 #: ../src/keybindings.c:652
 #, fuzzy
-msgid "Switch to Editor (second hotkey)"
-msgstr "Μετάβαση στον επεξεργαστή"
+msgid "Switch to down window"
+msgstr "Μετάβαση στο παράθυρο μηνυμάτων"
 
 #: ../src/keybindings.c:654
+#, fuzzy
+msgid "Switch to right window"
+msgstr "Μετάβαση στο δεξί έγγραφο"
+
+#: ../src/keybindings.c:656
+msgid "Switch to Editor"
+msgstr "Μετάβαση στον επεξεργαστή"
+
+#: ../src/keybindings.c:658
 msgid "Switch to Search Bar"
 msgstr "Μετάβαση στη μπάρα αναζήτησης"
 
-#: ../src/keybindings.c:656
+#: ../src/keybindings.c:660
 msgid "Switch to Message Window"
 msgstr "Μετάβαση στο παράθυρο μηνυμάτων"
 
-#: ../src/keybindings.c:658
+#: ../src/keybindings.c:662
 msgid "Switch to Compiler"
 msgstr "Μετάβαση στον μεταγλωττιστή"
 
-#: ../src/keybindings.c:660
+#: ../src/keybindings.c:664
 msgid "Switch to Messages"
 msgstr "Μετάβαση στα μηνύματα"
 
-#: ../src/keybindings.c:662
+#: ../src/keybindings.c:666
 msgid "Switch to Scribble"
 msgstr "Μετάβαση στο σημειωματάριο"
 
-#: ../src/keybindings.c:664
+#: ../src/keybindings.c:668
 msgid "Switch to VTE"
 msgstr "Μετάβαση στο VTE"
 
-#: ../src/keybindings.c:666
+#: ../src/keybindings.c:670
 msgid "Switch to Sidebar"
 msgstr "Μετάβαση στη πλευρική μπάρα"
 
-#: ../src/keybindings.c:668
+#: ../src/keybindings.c:672
 msgid "Switch to Sidebar Symbol List"
 msgstr "Μετάβαση στη πλευρική μπάρα συμβολικής λίστας"
 
-#: ../src/keybindings.c:670
+#: ../src/keybindings.c:674
 msgid "Switch to Sidebar Document List"
 msgstr "Μετάβαση στη πλευρική μπάρα της λίστας εγγράφων"
 
-#: ../src/keybindings.c:676
+#: ../src/keybindings.c:680
 msgid "Switch to left document"
 msgstr "Μετάβαση στο αριστερό έγγραφο"
 
-#: ../src/keybindings.c:679
+#: ../src/keybindings.c:683
 msgid "Switch to right document"
 msgstr "Μετάβαση στο δεξί έγγραφο"
 
-#: ../src/keybindings.c:682
+#: ../src/keybindings.c:686
 msgid "Switch to last used document"
 msgstr "Μετάβαση στο τελευταία χρησιμοποιημένο έγγραφο"
 
-#: ../src/keybindings.c:685
+#: ../src/keybindings.c:689
 msgid "Move document left"
 msgstr "Μετακίνηση εγγράφου αριστερά"
 
-#: ../src/keybindings.c:688
+#: ../src/keybindings.c:692
 msgid "Move document right"
 msgstr "Μετακίνηση εγγράφου δεξιά"
 
-#: ../src/keybindings.c:690
+#: ../src/keybindings.c:694
 msgid "Move document first"
 msgstr "Μετακίνηση εγγράφου ως πρώτο"
 
-#: ../src/keybindings.c:692
+#: ../src/keybindings.c:696
 msgid "Move document last"
 msgstr "Μετακίνηση εγγράφου ως τελευταίο"
 
-#: ../src/keybindings.c:697
+#: ../src/keybindings.c:701
 msgid "Toggle Line wrapping"
 msgstr "Ενεργοποίηση/Απενεργοποίηση αναδίπλωσης γραμμής"
 
-#: ../src/keybindings.c:699
+#: ../src/keybindings.c:703
 msgid "Toggle Line breaking"
 msgstr "Ενεργοποίηση/Απενεργοποίηση σπάσιμο γραμμής"
 
-#: ../src/keybindings.c:708
+#: ../src/keybindings.c:712
 msgid "Replace spaces with tabs"
 msgstr "Αντικατάσταση των κενών με Tab"
 
-#: ../src/keybindings.c:710
+#: ../src/keybindings.c:714
 msgid "Toggle current fold"
 msgstr "Επιλογή/Αποεπιλογή τρέχουσας αναδίπλωσης"
 
-#: ../src/keybindings.c:712
+#: ../src/keybindings.c:716
 msgid "Fold all"
 msgstr "Δίπλωση όλων"
 
-#: ../src/keybindings.c:714
+#: ../src/keybindings.c:718
 msgid "Unfold all"
 msgstr "Αναδίπλωση όλων"
 
-#: ../src/keybindings.c:717
+#: ../src/keybindings.c:721
 msgid "Reload symbol list"
 msgstr "Επαναφόρτωση λίστας συμβόλων"
 
-#: ../src/keybindings.c:719
+#: ../src/keybindings.c:723
 msgid "Remove Markers"
 msgstr "Απομάκρυνση δεικτών"
 
-#: ../src/keybindings.c:721
+#: ../src/keybindings.c:725
 msgid "Remove Error Indicators"
 msgstr "Απομάκρυνση δεικτών σφάλματος"
 
-#: ../src/keybindings.c:725
+#: ../src/keybindings.c:729
 msgid "Remove Markers and Error Indicators"
 msgstr "Απομάκρυνση δεικτών και δεικτών σφάλματος"
 
-#: ../src/keybindings.c:730 ../src/toolbar.c:71
+#: ../src/keybindings.c:734 ../src/toolbar.c:71
 msgid "Compile"
 msgstr "Μεταγλώττιση"
 
-#: ../src/keybindings.c:732
+#: ../src/keybindings.c:736
 msgid "Compile (second hotkey)"
 msgstr ""
 
-#: ../src/keybindings.c:736
+#: ../src/keybindings.c:740
 msgid "Make all"
 msgstr "Δημιουργία όλων"
 
-#: ../src/keybindings.c:739
+#: ../src/keybindings.c:743
 msgid "Make custom target"
 msgstr "Δημιουργία προσαρμοσμένου προορισμού"
 
-#: ../src/keybindings.c:741
+#: ../src/keybindings.c:745
 msgid "Make object"
 msgstr "Δημιουργία αντικειμένου"
 
-#: ../src/keybindings.c:743
+#: ../src/keybindings.c:747
 msgid "Next error"
 msgstr "Επόμενο σφάλμα"
 
-#: ../src/keybindings.c:745
+#: ../src/keybindings.c:749
 msgid "Previous error"
 msgstr "Προηγούμενο σφάλμα"
 
-#: ../src/keybindings.c:747
+#: ../src/keybindings.c:751
 msgid "Run"
 msgstr "Εκτέλεση"
 
-#: ../src/keybindings.c:749
+#: ../src/keybindings.c:753
 msgid "Build options"
 msgstr "Επιλογές κατασκευής"
 
-#: ../src/keybindings.c:754
+#: ../src/keybindings.c:758
 msgid "Show Color Chooser"
 msgstr "Εμφάνιση επιλογέα χρωμάτων"
 
-#: ../src/keybindings.c:1053
+#: ../src/keybindings.c:1057
 msgid "Keyboard Shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: ../src/keybindings.c:1066
+#: ../src/keybindings.c:1070
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Οι ακόλουθες συντομεύσεις πληκτρολογίου είναι διαμορφώσιμες:"
 
