@@ -1082,7 +1082,7 @@ static gboolean load_text_file(const gchar *locale_filename,
  * if cl_options.goto_column is set.
  *
  * returns the new position which may have changed */
-static gint set_cursor_position(GeanyEditor *editor, gint pos)
+static gint set_cursor_position(GeanyEditor *editor, gint pos, gboolean reload)
 {
 	if (cl_options.goto_line >= 0)
 	{	/* goto line which was specified on command line and then undefine the line */
@@ -1092,7 +1092,7 @@ static gint set_cursor_position(GeanyEditor *editor, gint pos)
 	}
 	else if (pos > 0)
 	{
-		if (prefs.set_caret_to_start_of_line &&
+		if (!reload && prefs.set_caret_to_start_of_line &&
 			sci_get_col_from_position(editor->sci, pos) > 40)
 			sci_set_current_line(editor->sci,
 								 sci_get_line_from_position(editor->sci, pos));
@@ -1557,7 +1557,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 	
 	/* set the cursor position according to pos,
 	 * cl_options.goto_line and cl_options.goto_column */
-	pos = set_cursor_position(doc->editor, pos);
+	pos = set_cursor_position(doc->editor, pos, reload);
 	/* now bring the file in front */
 	editor_goto_pos(doc->editor, pos, FALSE);
 	
