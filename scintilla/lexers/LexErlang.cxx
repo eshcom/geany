@@ -692,6 +692,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ERLANG_CHARACTER);
 					}
 					sc.SetState(SCE_ERLANG_DEFAULT);
+					is_char_escape = false;
 				} else {
 					if (sc.ch == '\\') {
 						escapeSeq.initEscapeState(sc.chNext);
