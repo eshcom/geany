@@ -369,3 +369,14 @@ is_session_closed(#tmp{} = S)
     when S#tmp.t1 /= test1 -> true;
 is_session_closed(#tmp{} = S)
     when S#tmp.t1 =/= test2 -> true.
+
+
+runtime_device_ip0(Name) ->
+  Output = os:cmd("ip -j address show dev "++binary_to_list(Name)),
+  try jsx:decode(iolist_to_binary(Output), [return_maps,{labels,atom}]) of
+    Runtime -> {ok, Runtime}
+  catch
+    C:E:ST ->
+      events:error("failed to read ~s address: ~p:~p\n~p\n~p",[Name,C,E,ST,Output]),
+      undefined
+  end.
