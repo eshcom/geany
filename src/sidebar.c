@@ -361,11 +361,16 @@ static gboolean find_tree_iter_dir(GtkTreeIter *iter, const gchar *dir)
 
 static gboolean utils_filename_has_prefix(const gchar *str, const gchar *prefix)
 {
+/* esh: optimization for linux: don't use g_strndup and utils_filenamecmp (strcmp),
+ * 		use strncmp without creating new string */
+#ifdef G_OS_WIN32
 	gchar *head = g_strndup(str, strlen(prefix));
-	gboolean ret = utils_filenamecmp(head, prefix) == 0;
-
+	gboolean ret = utils_str_casecmp(head, prefix) == 0;
 	g_free(head);
 	return ret;
+#else
+	return strncmp(str, prefix, strlen(prefix)) == 0;
+#endif
 }
 
 

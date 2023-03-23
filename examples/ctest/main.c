@@ -444,6 +444,28 @@ void run_test_case08()
 	printf("c3: %c\n", nested());
 }
 
+static gboolean utils_filename_has_prefix1(const gchar *str, const gchar *prefix)
+{
+	gchar *head = g_strndup(str, strlen(prefix));
+	gboolean ret = strcmp(head, prefix) == 0;
+	g_free(head);
+	return ret;
+}
+
+static gboolean utils_filename_has_prefix2(const gchar *str, const gchar *prefix)
+{
+	return strncmp(str, prefix, strlen(prefix)) == 0;
+}
+
+void run_test_case09()
+{
+	gchar *str1 = "1234";
+	gchar *str2 = "123";
+	
+	printf("compare1: %i\n", utils_filename_has_prefix1(str1, str2));
+	printf("compare2: %i\n", utils_filename_has_prefix2(str1, str2));
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -453,7 +475,8 @@ int main(void)
 	//~ run_test_case05();
 	//~ run_test_case06();
 	//~ run_test_case07();
-	run_test_case08();
+	//~ run_test_case08();
+	run_test_case09();
 	
 	return 0;
 }
