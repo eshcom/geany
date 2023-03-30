@@ -29,6 +29,8 @@
 
 #include <glib.h>
 
+#include "gtkcompat.h"
+
 
 G_BEGIN_DECLS
 
@@ -146,6 +148,22 @@ gint search_replace_match(struct _ScintillaObject *sci, const GeanyMatchInfo *ma
 
 guint search_replace_range(struct _ScintillaObject *sci, struct Sci_TextToFind *ttf,
 						   GeanyFindFlags flags, const gchar *replace_text);
+
+typedef enum
+{
+	FIND_SEARCH_COMBO,
+	FIF_SEARCH_COMBO,
+	REPLACE_FIND_COMBO,
+	REPLACE_REPLACE_COMBO
+} ComboIndex;
+
+typedef struct
+{
+	GtkComboBox *widget;
+	gchar *name;
+} ComboName;
+
+const ComboName get_search_combo();
 
 #endif /* GEANY_PRIVATE */
 

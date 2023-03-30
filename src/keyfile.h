@@ -22,6 +22,8 @@
 #ifndef GEANY_KEYFILE_H
 #define GEANY_KEYFILE_H 1
 
+#include "search.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -60,6 +62,9 @@ void configuration_save_session_files(GKeyFile *config);
 /* set some settings which are already read from the config file, but need other things, like the
  * realisation of the main window */
 void configuration_apply_settings(void);
+
+void history_save();
+void history_load(ComboIndex combo_index);
 
 G_END_DECLS
 

@@ -1367,3 +1367,88 @@ void configuration_finalize(void)
 	g_ptr_array_free(keyfile_groups, TRUE);
 	g_ptr_array_free(pref_groups, TRUE);
 }
+
+
+void history_save_items(GKeyFile *config, ComboIndex combo_index)
+{
+	const ComboName combo = get_search_combo(combo_index);
+	if (!combo.widget) return;
+	
+	// clear existing entries first as they might not all be overwritten
+	gchar **ptr;
+	gchar **keys = g_key_file_get_keys(config, combo.name, NULL, NULL);
+	
+	foreach_strv(ptr, keys)
+		g_key_file_remove_key(config, combo.name, *ptr, NULL);
+	
+	g_strfreev(keys);
+	
+	/* store the filenames in the notebook tab order to reopen them the next time */
+	GtkTreeModel *model = gtk_combo_box_get_model(combo.widget);
+	GtkTreeIter iter;
+	
+	if (gtk_tree_model_get_iter_first(model, &iter))
+	{
+		guint i = 0;
+		gchar *value;
+		gchar entry[2];
+		do
+		{
+			gtk_tree_model_get(model, &iter, 0, &value, -1);
+			g_snprintf(entry, sizeof(entry), "%d", i++);
+			g_key_file_set_string(config, combo.name, entry, value);
+			g_free(value);
+		}
+		while (gtk_tree_model_iter_next(model, &iter));
+	}
+}
+
+void history_save()
+{
+	GKeyFile *config = g_key_file_new();
+	gchar *configfile = g_build_filename(app->configdir, "history.conf", NULL);
+	
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	
+	history_save_items(config, FIND_SEARCH_COMBO);
+	history_save_items(config, FIF_SEARCH_COMBO);
+	history_save_items(config, REPLACE_FIND_COMBO);
+	history_save_items(config, REPLACE_REPLACE_COMBO);
+	
+	/* write the file */
+	gchar *data = g_key_file_to_data(config, NULL, NULL);
+	utils_write_file(configfile, data);
+	g_free(data);
+	
+	g_key_file_free(config);
+	g_free(configfile);
+}
+
+void history_load(ComboIndex combo_index)
+{
+	const ComboName combo = get_search_combo(combo_index);
+	if (!combo.widget) return;
+	
+	GKeyFile *config = g_key_file_new();
+	gchar *configfile = g_build_filename(app->configdir, "history.conf", NULL);
+	
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	
+	gchar **keys = g_key_file_get_keys(config, combo.name, NULL, NULL);
+	if (keys)
+	{
+		gchar **ptr;
+		gchar *value;
+		foreach_str(ptr, keys)
+		{
+			value = g_key_file_get_string(config, combo.name, *ptr, NULL);
+			gtk_combo_box_text_append_text(combo.widget, value);
+			g_free(value);
+		}
+		g_strfreev(keys);
+		
+		gtk_combo_box_set_active(combo.widget, 0);
+	}
+	g_key_file_free(config);
+	g_free(configfile);
+}

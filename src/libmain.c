@@ -1307,6 +1307,7 @@ static void queue_free(GQueue *queue)
 static gboolean do_main_quit(void)
 {
 	configuration_save(app->project != NULL);
+	history_save();
 	
 	if (app->project != NULL)
 	{
