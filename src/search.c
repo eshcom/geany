@@ -44,8 +44,6 @@
 #include "ui_utils.h"
 #include "utils.h"
 
-#include "gtkcompat.h"
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -124,11 +122,12 @@ static StashGroup *replace_prefs = NULL;
 static struct
 {
 	GtkWidget	*dialog;
+	GtkWidget	*combo;
 	GtkWidget	*entry;
 	gboolean	all_expanded;
 	gint		position[2]; /* x, y */
 }
-find_dlg = {NULL, NULL, FALSE, {0, 0}};
+find_dlg = {NULL, NULL, NULL, FALSE, {0, 0}};
 
 static struct
 {
@@ -510,6 +509,8 @@ static void create_find_dialog(void)
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label), entry);
 	gtk_entry_set_width_chars(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(entry))), 50);
 	find_dlg.entry = gtk_bin_get_child(GTK_BIN(entry));
+	find_dlg.combo = entry;
+	history_load(FIND_SEARCH_COMBO);
 	
 	g_signal_connect(gtk_bin_get_child(GTK_BIN(entry)), "activate",
 					 G_CALLBACK(on_find_entry_activate), entry);
@@ -683,6 +684,7 @@ static void create_replace_dialog(void)
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label_find), replace_dlg.find_combobox);
 	gtk_entry_set_width_chars(GTK_ENTRY(replace_dlg.find_entry), 50);
 	ui_hookup_widget(replace_dlg.dialog, replace_dlg.find_combobox, "entry_find");
+	history_load(REPLACE_FIND_COMBO);
 	
 	replace_dlg.replace_combobox = gtk_combo_box_text_new_with_entry();
 	replace_dlg.replace_entry = gtk_bin_get_child(GTK_BIN(replace_dlg.replace_combobox));
@@ -690,6 +692,7 @@ static void create_replace_dialog(void)
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label_replace), replace_dlg.replace_combobox);
 	gtk_entry_set_width_chars(GTK_ENTRY(replace_dlg.replace_entry), 50);
 	ui_hookup_widget(replace_dlg.dialog, replace_dlg.replace_combobox, "entry_replace");
+	history_load(REPLACE_REPLACE_COMBO);
 	
 	/* tab from find to the replace entry */
 	g_signal_connect(replace_dlg.find_entry, "key-press-event",
@@ -960,6 +963,7 @@ static void create_fif_dialog(void)
 	gtk_entry_set_width_chars(GTK_ENTRY(entry), 50);
 	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
 	fif_dlg.search_combo = combo;
+	history_load(FIF_SEARCH_COMBO);
 	
 	sbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(sbox), label, FALSE, FALSE, 0);
@@ -2540,4 +2544,35 @@ void search_find_again(gboolean change_direction)
 			ui_set_search_entry_background(
 				toolbar_get_widget_child_by_name("SearchEntry"), (result > -1));
 	}
+}
+
+
+const ComboName get_search_combo(ComboIndex combo_index)
+{
+	GtkWidget *widget;
+	gchar *name;
+	
+	switch (combo_index)
+	{
+		case FIND_SEARCH_COMBO:
+			widget = find_dlg.combo;
+			name = "find_search_combo";
+			break;
+		case FIF_SEARCH_COMBO:
+			widget = fif_dlg.search_combo;
+			name = "fif_search_combo";
+			break;
+		case REPLACE_FIND_COMBO:
+			widget = replace_dlg.find_combobox;
+			name = "replace_find_combo";
+			break;
+		case REPLACE_REPLACE_COMBO:
+			widget = replace_dlg.replace_combobox;
+			name = "replace_replace_combo";
+			break;
+		default:
+			widget = NULL;
+			name = NULL;
+	}
+	return (ComboName){GTK_COMBO_BOX(widget), name};
 }
