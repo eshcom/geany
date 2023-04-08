@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-20 22:47+0300\n"
+"POT-Creation-Date: 2023-04-08 23:32+0300\n"
 "PO-Revision-Date: 2019-09-22 11:47+0100\n"
 "Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
 "Language-Team: Português <palbuquerque73@gmail.com>\n"
@@ -1712,7 +1712,7 @@ msgid "Sa_ve All"
 msgstr "Gra_var tudo"
 
 #: ../data/geany.glade.h:355 ../src/document.c:1711 ../src/document.c:3775
-#: ../src/sidebar.c:721
+#: ../src/sidebar.c:726
 msgid "_Reload"
 msgstr "_Recarregar"
 
@@ -2229,75 +2229,87 @@ msgid "Load tags file when opening a project"
 msgstr "Caminho onde começar ao abrir ficheiros do projecto"
 
 #: ../data/geany.glade.h:481
-msgid "Use a list of objects from the tags file for the lexer"
+msgid ""
+"If the parameter is not set, then the tags file will be loaded on demand "
+"when navigating through the symbol definition/declaration"
 msgstr ""
 
 #: ../data/geany.glade.h:482
+msgid "Load type names from tags file"
+msgstr ""
+
+#: ../data/geany.glade.h:483
+msgid ""
+"Allows to highlight the names of custom types without opening source files "
+"where these types are defined"
+msgstr ""
+
+#: ../data/geany.glade.h:484
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "<b>Ao gravar ficheiros</b>"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 msgid "Size:"
 msgstr "Tamanho:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid "Location:"
 msgstr "Localização:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 msgid "Read-only:"
 msgstr "Só de leitura:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 msgid "Encoding:"
 msgstr "Codificação:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 msgid "Modified:"
 msgstr "Modificado:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 msgid "Changed:"
 msgstr "Alterado:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 msgid "Accessed:"
 msgstr "Acedido:"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 msgid "(only inside Geany)"
 msgstr "(só dentro do Geany)"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 msgid "Permissions:"
 msgstr "Permissões:"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "Read:"
 msgstr "Leitura:"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 msgid "Write:"
 msgstr "Escrita:"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "Execute:"
 msgstr "Executar:"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Owner:"
 msgstr "Dono:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Group:"
 msgstr "Grupo:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Other:"
 msgstr "Outros:"
 
@@ -2999,8 +3011,8 @@ msgstr "Ficheiro %s gravado."
 msgid "Wrap search and find again?"
 msgstr "Terminar procura e localizar de novo?"
 
-#: ../src/document.c:2550 ../src/search.c:1494 ../src/search.c:1548
-#: ../src/search.c:2464 ../src/search.c:2466
+#: ../src/document.c:2550 ../src/search.c:1498 ../src/search.c:1552
+#: ../src/search.c:2468 ../src/search.c:2470
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Ocorrências de \"%s\" não encontradas."
@@ -3566,7 +3578,7 @@ msgstr "Inserir nova linha antes da actual"
 msgid "Insert New Line After Current"
 msgstr "Inserir nova linha depois da actual"
 
-#: ../src/keybindings.c:553 ../src/search.c:487
+#: ../src/keybindings.c:553 ../src/search.c:486
 msgid "Find"
 msgstr "Localizar"
 
@@ -3578,11 +3590,11 @@ msgstr "Localizar seguinte"
 msgid "Find Previous"
 msgstr "Localizar anterior"
 
-#: ../src/keybindings.c:564 ../src/search.c:649
+#: ../src/keybindings.c:564 ../src/search.c:650
 msgid "Replace"
 msgstr "Substituir"
 
-#: ../src/keybindings.c:567 ../src/search.c:939
+#: ../src/keybindings.c:567 ../src/search.c:942
 msgid "Find in Files"
 msgstr "Localizar em ficheiros"
 
@@ -4031,11 +4043,11 @@ msgstr ""
 "Impossível criar o socket IPC, veja Ajuda->Mensagens de depuração para "
 "detalhes."
 
-#: ../src/libmain.c:1446
+#: ../src/libmain.c:1447
 msgid "Do you really want to quit?"
 msgstr "Tem a certeza que quer sair?"
 
-#: ../src/libmain.c:1485
+#: ../src/libmain.c:1486
 msgid "Configuration files reloaded."
 msgstr "Ficheiros de configuração recarregados."
 
@@ -4163,11 +4175,11 @@ msgstr "Capturar tecla"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Prima a combinação de teclas que quer usar para \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:780
 msgid "_Expand All"
 msgstr "_Expandir tudo"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:786
 msgid "_Collapse All"
 msgstr "_Colapsar tudo"
 
@@ -4417,7 +4429,7 @@ msgstr "A pasta base do projecto não pôde ser criada (%s)."
 msgid "Project file could not be written (%s)."
 msgstr "O ficheiro de projecto não pôde ser escrito (%s)."
 
-#: ../src/project.c:792 ../src/search.c:661
+#: ../src/project.c:792 ../src/search.c:662
 msgid "_Replace"
 msgstr "Substitui_r"
 
@@ -4441,11 +4453,11 @@ msgstr "Projecto \"%s\" aberto."
 msgid "Project tags loaded."
 msgstr "Projecto \"%s\" fechado."
 
-#: ../src/search.c:330 ../src/search.c:1037
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "_Usar expressões regulares"
 
-#: ../src/search.c:333
+#: ../src/search.c:332
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
@@ -4453,11 +4465,11 @@ msgstr ""
 "Use expressões regular tipo Perl. Para informação detalhada sobre expressões "
 "regulares, por favor consulte a documentação."
 
-#: ../src/search.c:340
+#: ../src/search.c:339
 msgid "Use _escape sequences"
 msgstr "Usar sequências de _escape"
 
-#: ../src/search.c:344
+#: ../src/search.c:343
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4465,11 +4477,11 @@ msgstr ""
 "Substituir \\\\, \\t, \\n, \\r e \\uXXXX (caracteres Unicode) pelos "
 "caracteres de controlo correspondentes"
 
-#: ../src/search.c:347
+#: ../src/search.c:346
 msgid "Use multi-line matchin_g"
 msgstr "Usar comparação multi-_linha"
 
-#: ../src/search.c:352
+#: ../src/search.c:351
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4481,98 +4493,98 @@ msgstr ""
 "linhas. Neste modo, caracteres de nova linha são parte da entrada e podem "
 "ser capturados como caracteres normais pelo padrão."
 
-#: ../src/search.c:366
+#: ../src/search.c:365
 msgid "Search _backwards"
 msgstr "Procurar para _trás"
 
-#: ../src/search.c:372 ../src/search.c:1047
+#: ../src/search.c:371 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Sensível a  m_aiúsculas/minúsculas"
 
-#: ../src/search.c:376 ../src/search.c:1052
+#: ../src/search.c:375 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Só palavras _completas"
 
-#: ../src/search.c:380
+#: ../src/search.c:379
 msgid "Match from s_tart of word"
 msgstr "Comparar do _início da palavra"
 
-#: ../src/search.c:496
+#: ../src/search.c:495
 msgid "_Previous"
 msgstr "An_terior"
 
-#: ../src/search.c:501
+#: ../src/search.c:500
 msgid "_Next"
 msgstr "Segui_nte"
 
-#: ../src/search.c:505 ../src/search.c:674 ../src/search.c:953
+#: ../src/search.c:504 ../src/search.c:675 ../src/search.c:956
 msgid "_Search for:"
 msgstr "_Procurar por:"
 
 #. Now add the multiple match options
-#: ../src/search.c:533
+#: ../src/search.c:534
 msgid "_Find All"
 msgstr "Localizar t_udo"
 
-#: ../src/search.c:541
+#: ../src/search.c:542
 msgid "_Mark"
 msgstr "_Marcar"
 
-#: ../src/search.c:543
+#: ../src/search.c:544
 msgid "Mark all matches in the current document"
 msgstr "Marcar todas as ocorrências no documento activo"
 
-#: ../src/search.c:549 ../src/search.c:734
+#: ../src/search.c:550 ../src/search.c:737
 msgid "In Sessi_on"
 msgstr "Na sessã_o"
 
-#: ../src/search.c:555 ../src/search.c:740
+#: ../src/search.c:556 ../src/search.c:743
 msgid "_In Document"
 msgstr "No _documento"
 
 #. close window checkbox
-#: ../src/search.c:562 ../src/search.c:755
+#: ../src/search.c:563 ../src/search.c:758
 msgid "Close _dialog"
 msgstr "Fechar _diálogo"
 
-#: ../src/search.c:566 ../src/search.c:759
+#: ../src/search.c:567 ../src/search.c:762
 msgid "Disable this option to keep the dialog open"
 msgstr "Desactive esta opção para manter o diálogo aberto"
 
-#: ../src/search.c:667
+#: ../src/search.c:668
 msgid "Replace & Fi_nd"
 msgstr "Substituir & Proc_urar"
 
-#: ../src/search.c:677
+#: ../src/search.c:678
 msgid "Replace wit_h:"
 msgstr "Substituir po_r:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:726
+#: ../src/search.c:729
 msgid "Re_place All"
 msgstr "Su_bstituir tudo"
 
-#: ../src/search.c:746
+#: ../src/search.c:749
 msgid "In Se_lection"
 msgstr "Na se_lecção"
 
-#: ../src/search.c:748
+#: ../src/search.c:751
 msgid "Replace all matches found in the currently selected text"
 msgstr "Substituir todas as ocorrências no texto que se encontra seleccionado"
 
-#: ../src/search.c:866
+#: ../src/search.c:869
 msgid "all"
 msgstr "todos"
 
-#: ../src/search.c:868
+#: ../src/search.c:871
 msgid "project"
 msgstr "projecto"
 
-#: ../src/search.c:870
+#: ../src/search.c:873
 msgid "custom"
 msgstr "personalizar"
 
-#: ../src/search.c:875
+#: ../src/search.c:878
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4582,87 +4594,87 @@ msgstr ""
 "Projecto: usa padrões de ficheiros definidos nas definições do projecto.\n"
 "Personalizado: especificar os padrões de ficheiros manualmente."
 
-#: ../src/search.c:916
+#: ../src/search.c:919
 msgid "Other options to pass to Grep"
 msgstr "Opções adicionais a passar ao grep"
 
-#: ../src/search.c:972
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "Fi_cheiros:"
 
-#: ../src/search.c:984
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Padrões de ficheiros, ex. *.c *.h:"
 
-#: ../src/search.c:997
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "_Pasta:"
 
-#: ../src/search.c:1016
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "Codi_ficação:"
 
-#: ../src/search.c:1041
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Consulte o manual do grep para mais informações"
 
-#: ../src/search.c:1043
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "_Recursivo em subpastas"
 
-#: ../src/search.c:1056
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "_Inverter o resultado da procura"
 
-#: ../src/search.c:1060
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Inverte a comparação, para seleccionar linhas diferentes da expressão"
 
-#: ../src/search.c:1077
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Opções e_xtra:"
 
-#: ../src/search.c:1079
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Opções e_xtra:"
 
-#: ../src/search.c:1081
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Opções e_xtra:"
 
-#: ../src/search.c:1497 ../src/search.c:2471 ../src/search.c:2475
+#: ../src/search.c:1501 ../src/search.c:2475 ../src/search.c:2479
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Encontrada %d ocorrência de \"%s\"."
 msgstr[1] "Encontradas %d ocorrências de \"%s\"."
 
-#: ../src/search.c:1554
+#: ../src/search.c:1558
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Substituídas %u ocorrências em %u documentos."
 
-#: ../src/search.c:1763
+#: ../src/search.c:1767
 msgid "Invalid directory for find in files."
 msgstr "Pasta inválida para Localizar em ficheiros."
 
-#: ../src/search.c:1783
+#: ../src/search.c:1787
 msgid "No text to find."
 msgstr "Nenhum texto para localizar."
 
-#: ../src/search.c:1870
+#: ../src/search.c:1874
 msgid "Searching..."
 msgstr "A procurar..."
 
-#: ../src/search.c:1872
+#: ../src/search.c:1876
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (na pasta: %s)"
 
-#: ../src/search.c:1881
+#: ../src/search.c:1885
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4670,27 +4682,27 @@ msgstr ""
 "Erro ao executar o comando grep \"%s\": %s. Verifique a definição do caminho "
 "nas Preferências."
 
-#: ../src/search.c:1921
+#: ../src/search.c:1925
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Impossível abrir a pasta (%s)"
 
-#: ../src/search.c:2075
+#: ../src/search.c:2079
 msgid "Search failed."
 msgstr "A procura falhou."
 
-#: ../src/search.c:2098
+#: ../src/search.c:2102
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Procura completa com %d ocorrência."
 msgstr[1] "Procura completa com %d ocorrências."
 
-#: ../src/search.c:2106
+#: ../src/search.c:2110
 msgid "No matches found."
 msgstr "Nenhuma ocorrência encontrada."
 
-#: ../src/search.c:2136
+#: ../src/search.c:2140
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Má expressão regular: %s"
@@ -5391,31 +5403,31 @@ msgstr "Caracteres:"
 msgid "No symbols found"
 msgstr "Nenhum símbolo encontrado"
 
-#: ../src/sidebar.c:605
+#: ../src/sidebar.c:610
 msgid "Show S_ymbol List"
 msgstr "Mostrar lista de sí_mbolos"
 
-#: ../src/sidebar.c:617
+#: ../src/sidebar.c:622
 msgid "Show _Document List"
 msgstr "Mostrar lista de _documentos"
 
-#: ../src/sidebar.c:629 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:634 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "_Ocultar a barra lateral"
 
-#: ../src/sidebar.c:735
+#: ../src/sidebar.c:740
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:742
+#: ../src/sidebar.c:747
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:754 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:759 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "Localizar em _ficheiros..."
 
-#: ../src/sidebar.c:764
+#: ../src/sidebar.c:769
 msgid "Show _Paths"
 msgstr "Mostrar camin_hos"
 

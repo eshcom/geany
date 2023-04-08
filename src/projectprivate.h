@@ -32,7 +32,7 @@ typedef struct GeanyProjectPrivate
 {
 	// tags prefs
 	gboolean	load_tags_file_on_open;
-	gboolean	use_tags_file_for_lexer;
+	gboolean	load_typenames_from_tags_file;
 	
 	// file prefs
 	gboolean	final_new_line;

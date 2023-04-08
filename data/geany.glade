@@ -9519,6 +9519,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">If the parameter is not set, then the tags file will be loaded on demand when navigating through the symbol definition/declaration</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                               </object>
@@ -9529,11 +9530,12 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkCheckButton" id="check_use_tags_file_for_lexer">
-                                <property name="label" translatable="yes">Use a list of objects from the tags file for the lexer</property>
+                              <object class="GtkCheckButton" id="check_load_typenames_from_tags_file">
+                                <property name="label" translatable="yes">Load type names from tags file</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Allows to highlight the names of custom types without opening source files where these types are defined</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                               </object>
