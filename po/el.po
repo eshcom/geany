@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.32\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-20 22:47+0300\n"
+"POT-Creation-Date: 2023-04-08 23:32+0300\n"
 "PO-Revision-Date: 2019-01-09 14:45+0200\n"
 "Last-Translator: Vangelis Skarmoutsos <skarmoutsosv@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -1739,7 +1739,7 @@ msgid "Sa_ve All"
 msgstr "Αποθήκευση όλων"
 
 #: ../data/geany.glade.h:355 ../src/document.c:1711 ../src/document.c:3775
-#: ../src/sidebar.c:721
+#: ../src/sidebar.c:726
 msgid "_Reload"
 msgstr "_Επαναφόρτωση"
 
@@ -2260,75 +2260,87 @@ msgid "Load tags file when opening a project"
 msgstr "Η διαδρομή από την οποία θα ξεκινά για άνοιγμα των αρχείων του έργου"
 
 #: ../data/geany.glade.h:481
-msgid "Use a list of objects from the tags file for the lexer"
+msgid ""
+"If the parameter is not set, then the tags file will be loaded on demand "
+"when navigating through the symbol definition/declaration"
 msgstr ""
 
 #: ../data/geany.glade.h:482
+msgid "Load type names from tags file"
+msgstr ""
+
+#: ../data/geany.glade.h:483
+msgid ""
+"Allows to highlight the names of custom types without opening source files "
+"where these types are defined"
+msgstr ""
+
+#: ../data/geany.glade.h:484
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "<b>Αποθήκευση αρχείων</b>"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 msgid "Size:"
 msgstr "Μέγεθος:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 msgid "Read-only:"
 msgstr "Μόνο για ανάγνωση:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 msgid "Encoding:"
 msgstr "Kωδικοποίηση:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 msgid "Modified:"
 msgstr "Τροποποιημένο:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 msgid "Changed:"
 msgstr "Αλλαγμένο:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 msgid "Accessed:"
 msgstr "Προσπελάστηκε:"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 msgid "(only inside Geany)"
 msgstr "(μόνο εντός Geany)"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 msgid "Permissions:"
 msgstr "Δικαιώματα:"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "Read:"
 msgstr "Ανάγνωση:"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 msgid "Write:"
 msgstr "Εγγραφή:"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "Execute:"
 msgstr "Εκτέλεση:"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Owner:"
 msgstr "Κάτοχος:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Group:"
 msgstr "Ομάδα:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Other:"
 msgstr "Άλλοι:"
 
@@ -3039,8 +3051,8 @@ msgstr "Το αρχείο %s αποθηκεύτηκε."
 msgid "Wrap search and find again?"
 msgstr "Ολοκλήρωση αναζήτησης και εύρεση ξανά;"
 
-#: ../src/document.c:2550 ../src/search.c:1494 ../src/search.c:1548
-#: ../src/search.c:2464 ../src/search.c:2466
+#: ../src/document.c:2550 ../src/search.c:1498 ../src/search.c:1552
+#: ../src/search.c:2468 ../src/search.c:2470
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Δεν βρέθηκαν αποτελέσματα για \"%s\"."
@@ -3607,7 +3619,7 @@ msgstr "Εισαγωγή νέας γραμμής πριν την τρέχουσ�
 msgid "Insert New Line After Current"
 msgstr "Εισαγωγή νέας γραμμής μετά την τρέχουσα"
 
-#: ../src/keybindings.c:553 ../src/search.c:487
+#: ../src/keybindings.c:553 ../src/search.c:486
 msgid "Find"
 msgstr "Εύρεση"
 
@@ -3619,11 +3631,11 @@ msgstr "Εύρεση επόμενου"
 msgid "Find Previous"
 msgstr "Εύρεση προηγούμενου"
 
-#: ../src/keybindings.c:564 ../src/search.c:649
+#: ../src/keybindings.c:564 ../src/search.c:650
 msgid "Replace"
 msgstr "Αντικατάσταση"
 
-#: ../src/keybindings.c:567 ../src/search.c:939
+#: ../src/keybindings.c:567 ../src/search.c:942
 msgid "Find in Files"
 msgstr "Εύρεση σε αρχεία"
 
@@ -4077,11 +4089,11 @@ msgstr "Δεν ήταν δυνατόν να δημιουργηθεί ο φάκε
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1446
+#: ../src/libmain.c:1447
 msgid "Do you really want to quit?"
 msgstr "Θέλετε πραγματικά να εγκαταλείψετε;"
 
-#: ../src/libmain.c:1485
+#: ../src/libmain.c:1486
 msgid "Configuration files reloaded."
 msgstr "Τα αρχεία ρυθμίσεων επαναφορτώθηκαν."
 
@@ -4209,11 +4221,11 @@ msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr ""
 "Πατήστε τον συνδυασμό πλήκτρων που θέλετε να χρησιμοποιήσετε για \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:780
 msgid "_Expand All"
 msgstr "_Επέκταση όλων"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:786
 msgid "_Collapse All"
 msgstr "_αναδίπλωση όλων"
 
@@ -4464,7 +4476,7 @@ msgstr "Δεν ήταν δυνατόν να δημιουργηθεί ο βασι
 msgid "Project file could not be written (%s)."
 msgstr "Το αρχείο του έργου δεν ήταν δυνατόν να γραφεί (%s)."
 
-#: ../src/project.c:792 ../src/search.c:661
+#: ../src/project.c:792 ../src/search.c:662
 msgid "_Replace"
 msgstr "Αν_τικατάσταση"
 
@@ -4488,11 +4500,11 @@ msgstr "Το έργο \"%s\" άνοιξε."
 msgid "Project tags loaded."
 msgstr "Το έργο \"%s\" έκλεισε."
 
-#: ../src/search.c:330 ../src/search.c:1037
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "_Χρήση κανονικών εκφράσεων"
 
-#: ../src/search.c:333
+#: ../src/search.c:332
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
@@ -4500,11 +4512,11 @@ msgstr ""
 "Χρήση κανονικών εκφράσεων τύπου Perl. Για λεπτομερείς πληροφορίες σχετικά με "
 "τη χρήση κανονικών εκφράσεων, παρακαλούμε διαβάστε την τεκμηρίωση."
 
-#: ../src/search.c:340
+#: ../src/search.c:339
 msgid "Use _escape sequences"
 msgstr "Χρήση ακολουθιών _διαφυγής"
 
-#: ../src/search.c:344
+#: ../src/search.c:343
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4512,11 +4524,11 @@ msgstr ""
 "Αντικατάσταση \\\\, \\t, \\n, \\r και \\uXXXX (Unicode χαρακτήρες) με τους "
 "αντίστοιχους χαρακτήρες ελέγχου"
 
-#: ../src/search.c:347
+#: ../src/search.c:346
 msgid "Use multi-line matchin_g"
 msgstr "Χρήση ταιριάσματος σε πολλές _γραμμές"
 
-#: ../src/search.c:352
+#: ../src/search.c:351
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4529,98 +4541,98 @@ msgstr ""
 "μέρος της εισόδου και μπορούν να καταγράφονται ως κανονικοί χαρακτήρες από "
 "το πρότυπο αναζήτησης."
 
-#: ../src/search.c:366
+#: ../src/search.c:365
 msgid "Search _backwards"
 msgstr "Αναζήτηση προς τα _πίσω"
 
-#: ../src/search.c:372 ../src/search.c:1047
+#: ../src/search.c:371 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Δ_ιάκριση κεφαλαίων/πεζών"
 
-#: ../src/search.c:376 ../src/search.c:1052
+#: ../src/search.c:375 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Ταίριασμα μόνο _ολόκληρης λέξης"
 
-#: ../src/search.c:380
+#: ../src/search.c:379
 msgid "Match from s_tart of word"
 msgstr "Ταίριασμα από την _αρχή της λέξης"
 
-#: ../src/search.c:496
+#: ../src/search.c:495
 msgid "_Previous"
 msgstr "_Προηγούμενο"
 
-#: ../src/search.c:501
+#: ../src/search.c:500
 msgid "_Next"
 msgstr "_Επόμενο"
 
-#: ../src/search.c:505 ../src/search.c:674 ../src/search.c:953
+#: ../src/search.c:504 ../src/search.c:675 ../src/search.c:956
 msgid "_Search for:"
 msgstr "_Αναζήτηση για:"
 
 #. Now add the multiple match options
-#: ../src/search.c:533
+#: ../src/search.c:534
 msgid "_Find All"
 msgstr "Εύρεση όλ_ων"
 
-#: ../src/search.c:541
+#: ../src/search.c:542
 msgid "_Mark"
 msgstr "_Μαρκάρισμα"
 
-#: ../src/search.c:543
+#: ../src/search.c:544
 msgid "Mark all matches in the current document"
 msgstr "Μαρκάρει τα ευρήματα της αναζήτησης στο τρέχον έγγραφο"
 
-#: ../src/search.c:549 ../src/search.c:734
+#: ../src/search.c:550 ../src/search.c:737
 msgid "In Sessi_on"
 msgstr "Στη _συνεδρία"
 
-#: ../src/search.c:555 ../src/search.c:740
+#: ../src/search.c:556 ../src/search.c:743
 msgid "_In Document"
 msgstr "Στο έγγρα_φο"
 
 #. close window checkbox
-#: ../src/search.c:562 ../src/search.c:755
+#: ../src/search.c:563 ../src/search.c:758
 msgid "Close _dialog"
 msgstr "Κλείσιμο διαλόγο_υ"
 
-#: ../src/search.c:566 ../src/search.c:759
+#: ../src/search.c:567 ../src/search.c:762
 msgid "Disable this option to keep the dialog open"
 msgstr "Απενεργοποίηση αυτής της επιλογής για να παραμένει ο διάλογος ανοιχτός"
 
-#: ../src/search.c:667
+#: ../src/search.c:668
 msgid "Replace & Fi_nd"
 msgstr "Αντικατάσταση & εύ_ρεση"
 
-#: ../src/search.c:677
+#: ../src/search.c:678
 msgid "Replace wit_h:"
 msgstr "Αντικα_τάσταση με:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:726
+#: ../src/search.c:729
 msgid "Re_place All"
 msgstr "Αντι_κατάσταση όλων"
 
-#: ../src/search.c:746
+#: ../src/search.c:749
 msgid "In Se_lection"
 msgstr "Στην επιλο_γή"
 
-#: ../src/search.c:748
+#: ../src/search.c:751
 msgid "Replace all matches found in the currently selected text"
 msgstr "Αντικαθιστά τα ευρήματα της αναζήτησης στο τρέχον επιλεγμένο κείμενο"
 
-#: ../src/search.c:866
+#: ../src/search.c:869
 msgid "all"
 msgstr "όλα"
 
-#: ../src/search.c:868
+#: ../src/search.c:871
 msgid "project"
 msgstr "έργο"
 
-#: ../src/search.c:870
+#: ../src/search.c:873
 msgid "custom"
 msgstr "προσαρμοσμένο"
 
-#: ../src/search.c:875
+#: ../src/search.c:878
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4630,89 +4642,89 @@ msgstr ""
 "Έργο: χρήση πρότυπων αρχείων που καθορίστηκαν στις ρυθμίσεις έργου\n"
 "Προσαρμοσμένα: καθορισμός πρότυπων αρχείων χειροκίνητα"
 
-#: ../src/search.c:916
+#: ../src/search.c:919
 msgid "Other options to pass to Grep"
 msgstr "Άλλες επιλογές για να προστεθούν στο Grep"
 
-#: ../src/search.c:972
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "Α_ρχεία:"
 
-#: ../src/search.c:984
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Πρότυπα αρχείων, π.χ. *.c *.h"
 
-#: ../src/search.c:997
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "Φάκε_λος:"
 
-#: ../src/search.c:1016
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "Κ_ωδικοποίηση:"
 
-#: ../src/search.c:1041
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Δείτε τη τεκμηρίωση για περισσότερες πληροφορίες σχετικά με το grep"
 
-#: ../src/search.c:1043
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "_Επανάληψη στους υποφακέλους"
 
-#: ../src/search.c:1056
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "_Αντιστροφή αποτελεσμάτων αναζήτησης"
 
-#: ../src/search.c:1060
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Αντιστροφή των αποτελεσμάτων αναζήτησης, για επιλογή των γραμμών που δεν "
 "είχαν αποτελέσματα αναζήτησης"
 
-#: ../src/search.c:1077
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Έ_ξτρα επιλογές:"
 
-#: ../src/search.c:1079
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Έ_ξτρα επιλογές:"
 
-#: ../src/search.c:1081
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Έ_ξτρα επιλογές:"
 
-#: ../src/search.c:1497 ../src/search.c:2471 ../src/search.c:2475
+#: ../src/search.c:1501 ../src/search.c:2475 ../src/search.c:2479
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Βρέθηκαν %d αποτελέσματα αναζήτησης για \"%s\"."
 msgstr[1] "Βρέθηκαν %d αποτελέσματα αναζήτησης για \"%s\"."
 
-#: ../src/search.c:1554
+#: ../src/search.c:1558
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Αντικαταστάθηκαν %u αποτελέσματα σε %u έγγραφα."
 
-#: ../src/search.c:1763
+#: ../src/search.c:1767
 msgid "Invalid directory for find in files."
 msgstr "Ο φάκελος για αναζήτηση σε αρχεία δεν υπάρχει."
 
-#: ../src/search.c:1783
+#: ../src/search.c:1787
 msgid "No text to find."
 msgstr "Δεν υπάρχει κείμενο για αναζήτηση."
 
-#: ../src/search.c:1870
+#: ../src/search.c:1874
 msgid "Searching..."
 msgstr "Αναζήτηση..."
 
-#: ../src/search.c:1872
+#: ../src/search.c:1876
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (στον φάκελο: %s)"
 
-#: ../src/search.c:1881
+#: ../src/search.c:1885
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4720,27 +4732,27 @@ msgstr ""
 "Αδυναμία εκτέλεσης εργαλείου grep \"%s\": %s. Ελέγξτε τη ρύθμιση διαδρομής "
 "στις Ιδιότητες."
 
-#: ../src/search.c:1921
+#: ../src/search.c:1925
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Δεν ήταν δυνατόν να ανοιχτεί ο φάκελος (%s)"
 
-#: ../src/search.c:2075
+#: ../src/search.c:2079
 msgid "Search failed."
 msgstr "Η αναζήτηση απέτυχε."
 
-#: ../src/search.c:2098
+#: ../src/search.c:2102
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Η αναζήτηση ολοκληρώθηκε με %d αποτελέσματα."
 msgstr[1] "Η αναζήτηση ολοκληρώθηκε με %d αποτελέσματα."
 
-#: ../src/search.c:2106
+#: ../src/search.c:2110
 msgid "No matches found."
 msgstr "Δεν υπάρχουν αποτελέσματα αναζήτησης."
 
-#: ../src/search.c:2136
+#: ../src/search.c:2140
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Bad regex: %s"
@@ -5443,31 +5455,31 @@ msgstr "Χαρακτήρες:"
 msgid "No symbols found"
 msgstr "Δεν βρέθηκαν σύμβολα"
 
-#: ../src/sidebar.c:605
+#: ../src/sidebar.c:610
 msgid "Show S_ymbol List"
 msgstr "Εμφάνιση λίστας _συμβόλων"
 
-#: ../src/sidebar.c:617
+#: ../src/sidebar.c:622
 msgid "Show _Document List"
 msgstr "Εμφάνιση λίστας ε_γγράφων"
 
-#: ../src/sidebar.c:629 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:634 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "Από_κρυψη πλευρικής μπάρας"
 
-#: ../src/sidebar.c:735
+#: ../src/sidebar.c:740
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:742
+#: ../src/sidebar.c:747
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:754 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:759 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "_Εύρεση σε αρχεία..."
 
-#: ../src/sidebar.c:764
+#: ../src/sidebar.c:769
 msgid "Show _Paths"
 msgstr "Εμφάνιση _διαδρομής"
 

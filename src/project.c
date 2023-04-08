@@ -1250,7 +1250,7 @@ void project_load_tags_file(const gchar *tags_file,
 		GeanyProjectPrivate *priv = app->project->priv;
 		
 		if (tm_workspace_load_project_tags(tags_file, source_path,
-										   priv->use_tags_file_for_lexer))
+										   priv->load_typenames_from_tags_file))
 			ui_set_statusbar(TRUE, _("Project tags loaded."));
 	}
 }
@@ -1386,8 +1386,8 @@ static void init_stash_prefs(void)
 	group = stash_group_new("tags_prefs");
 	stash_group_add_toggle_button(group, &priv.load_tags_file_on_open,
 		"load_tags_file_on_open", FALSE, "check_load_tags_file_on_open");
-	stash_group_add_toggle_button(group, &priv.use_tags_file_for_lexer,
-		"use_tags_file_for_lexer", FALSE, "check_use_tags_file_for_lexer");
+	stash_group_add_toggle_button(group, &priv.load_typenames_from_tags_file,
+		"load_typenames_from_tags_file", FALSE, "check_load_typenames_from_tags_file");
 	add_stash_group(group, TRUE);
 }
 

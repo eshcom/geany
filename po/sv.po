@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.35\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-20 22:47+0300\n"
+"POT-Creation-Date: 2023-04-08 23:32+0300\n"
 "PO-Revision-Date: 2019-06-03 09:55+0200\n"
 "Last-Translator: Tony Mattsson <superxorn@gmail.com>\n"
 "Language-Team: Swedish <geany-i18n@uvena.de>\n"
@@ -1677,7 +1677,7 @@ msgid "Sa_ve All"
 msgstr "Spara alla"
 
 #: ../data/geany.glade.h:355 ../src/document.c:1711 ../src/document.c:3775
-#: ../src/sidebar.c:721
+#: ../src/sidebar.c:726
 msgid "_Reload"
 msgstr "Ladda om"
 
@@ -2193,75 +2193,87 @@ msgid "Load tags file when opening a project"
 msgstr "Sökväg att starta i när projektfiler öppnas"
 
 #: ../data/geany.glade.h:481
-msgid "Use a list of objects from the tags file for the lexer"
+msgid ""
+"If the parameter is not set, then the tags file will be loaded on demand "
+"when navigating through the symbol definition/declaration"
 msgstr ""
 
 #: ../data/geany.glade.h:482
+msgid "Load type names from tags file"
+msgstr ""
+
+#: ../data/geany.glade.h:483
+msgid ""
+"Allows to highlight the names of custom types without opening source files "
+"where these types are defined"
+msgstr ""
+
+#: ../data/geany.glade.h:484
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "<b>Spara</b>"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 msgid "Size:"
 msgstr "Storlek:"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid "Location:"
 msgstr "Plats:"
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 msgid "Read-only:"
 msgstr "Skrivskyddad:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 msgid "Encoding:"
 msgstr "Teckenkodning:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 msgid "Modified:"
 msgstr "Modifierad:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 msgid "Changed:"
 msgstr "Ändrad:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 msgid "Accessed:"
 msgstr "Senaste åtkomst:"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 msgid "(only inside Geany)"
 msgstr "(endast inom Geany)"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 msgid "Permissions:"
 msgstr "Behörighet:"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "Read:"
 msgstr "Läs:"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 msgid "Write:"
 msgstr "Skriv:"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "Execute:"
 msgstr "Exekvera:"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Group:"
 msgstr "Grupp:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Other:"
 msgstr "Annat:"
 
@@ -2958,8 +2970,8 @@ msgstr "Fil %s sparad."
 msgid "Wrap search and find again?"
 msgstr "Vill du fortsätta sökningen från början av dokumentet?"
 
-#: ../src/document.c:2550 ../src/search.c:1494 ../src/search.c:1548
-#: ../src/search.c:2464 ../src/search.c:2466
+#: ../src/document.c:2550 ../src/search.c:1498 ../src/search.c:1552
+#: ../src/search.c:2468 ../src/search.c:2470
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Inga träffar hittades för \"%s\"."
@@ -3525,7 +3537,7 @@ msgstr "Infoga ny rad före nuvarande"
 msgid "Insert New Line After Current"
 msgstr "Infoga ny rad efter nuvarande"
 
-#: ../src/keybindings.c:553 ../src/search.c:487
+#: ../src/keybindings.c:553 ../src/search.c:486
 msgid "Find"
 msgstr "Sök"
 
@@ -3537,11 +3549,11 @@ msgstr "Sök nästa"
 msgid "Find Previous"
 msgstr "Sök föregående"
 
-#: ../src/keybindings.c:564 ../src/search.c:649
+#: ../src/keybindings.c:564 ../src/search.c:650
 msgid "Replace"
 msgstr "Ersätt"
 
-#: ../src/keybindings.c:567 ../src/search.c:939
+#: ../src/keybindings.c:567 ../src/search.c:942
 msgid "Find in Files"
 msgstr "Sök i filer"
 
@@ -3987,11 +3999,11 @@ msgstr ""
 "IPC-socket kunde inte skapas, se Hjälp -> Debugmeddelanden för mer "
 "information."
 
-#: ../src/libmain.c:1446
+#: ../src/libmain.c:1447
 msgid "Do you really want to quit?"
 msgstr "Vill du verkligen avsluta?"
 
-#: ../src/libmain.c:1485
+#: ../src/libmain.c:1486
 msgid "Configuration files reloaded."
 msgstr "Konfigurationsfilerna laddades om."
 
@@ -4116,11 +4128,11 @@ msgstr "Läs av tangent"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Skriv in den tangentbordskombination du vill använda för  \"%s\"."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:775
+#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:780
 msgid "_Expand All"
 msgstr "Expandera alla"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:781
+#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:786
 msgid "_Collapse All"
 msgstr "Stäng alla"
 
@@ -4369,7 +4381,7 @@ msgstr "Projektets basmapp kunde inte skapas (%s)"
 msgid "Project file could not be written (%s)."
 msgstr "Projektfilen kunde inte skrivas (%s)."
 
-#: ../src/project.c:792 ../src/search.c:661
+#: ../src/project.c:792 ../src/search.c:662
 msgid "_Replace"
 msgstr "Ersätt"
 
@@ -4393,11 +4405,11 @@ msgstr "Projekt \"%s\" öppnad."
 msgid "Project tags loaded."
 msgstr "Projekt \"%s\" stängt."
 
-#: ../src/search.c:330 ../src/search.c:1037
+#: ../src/search.c:329 ../src/search.c:1041
 msgid "_Use regular expressions"
 msgstr "Använd reguljära uttryck"
 
-#: ../src/search.c:333
+#: ../src/search.c:332
 msgid ""
 "Use Perl-like regular expressions. For detailed information about using "
 "regular expressions, please refer to the manual."
@@ -4405,11 +4417,11 @@ msgstr ""
 "Använd Perl-liknande reguljära uttryck. För mer information, se "
 "dokumentationen."
 
-#: ../src/search.c:340
+#: ../src/search.c:339
 msgid "Use _escape sequences"
 msgstr "Använd escape-sekvenser"
 
-#: ../src/search.c:344
+#: ../src/search.c:343
 msgid ""
 "Replace \\\\, \\t, \\n, \\r and \\uXXXX (Unicode characters) with the "
 "corresponding control characters"
@@ -4417,11 +4429,11 @@ msgstr ""
 "Ersätt \\\\, \\t, \\n, \\r and \\uXXXX (Unicode tecken) med korresponderande "
 "specialtecken"
 
-#: ../src/search.c:347
+#: ../src/search.c:346
 msgid "Use multi-line matchin_g"
 msgstr "Använd flerraders matchning"
 
-#: ../src/search.c:352
+#: ../src/search.c:351
 msgid ""
 "Perform regular expression matching on the whole buffer at once rather than "
 "line by line, allowing matches to span multiple lines. In this mode, newline "
@@ -4433,98 +4445,98 @@ msgstr ""
 "detta läge uppfattas radslutstecken som en del av matchningen och uppfattas "
 "som vanliga tecken."
 
-#: ../src/search.c:366
+#: ../src/search.c:365
 msgid "Search _backwards"
 msgstr "Sök bakåt"
 
-#: ../src/search.c:372 ../src/search.c:1047
+#: ../src/search.c:371 ../src/search.c:1051
 msgid "C_ase sensitive"
 msgstr "Gör skillnad mellan versaler och gemener"
 
-#: ../src/search.c:376 ../src/search.c:1052
+#: ../src/search.c:375 ../src/search.c:1056
 msgid "Match only a _whole word"
 msgstr "Sök endast hela ord"
 
-#: ../src/search.c:380
+#: ../src/search.c:379
 msgid "Match from s_tart of word"
 msgstr "Sök i början av ord"
 
-#: ../src/search.c:496
+#: ../src/search.c:495
 msgid "_Previous"
 msgstr "Föregående"
 
-#: ../src/search.c:501
+#: ../src/search.c:500
 msgid "_Next"
 msgstr "Nästa"
 
-#: ../src/search.c:505 ../src/search.c:674 ../src/search.c:953
+#: ../src/search.c:504 ../src/search.c:675 ../src/search.c:956
 msgid "_Search for:"
 msgstr "Sök efter:"
 
 #. Now add the multiple match options
-#: ../src/search.c:533
+#: ../src/search.c:534
 msgid "_Find All"
 msgstr "Hitta alla"
 
-#: ../src/search.c:541
+#: ../src/search.c:542
 msgid "_Mark"
 msgstr "Markera"
 
-#: ../src/search.c:543
+#: ../src/search.c:544
 msgid "Mark all matches in the current document"
 msgstr "Markera alla träffar i detta dokument"
 
-#: ../src/search.c:549 ../src/search.c:734
+#: ../src/search.c:550 ../src/search.c:737
 msgid "In Sessi_on"
 msgstr "I öppna dokument"
 
-#: ../src/search.c:555 ../src/search.c:740
+#: ../src/search.c:556 ../src/search.c:743
 msgid "_In Document"
 msgstr "I dokumentet"
 
 #. close window checkbox
-#: ../src/search.c:562 ../src/search.c:755
+#: ../src/search.c:563 ../src/search.c:758
 msgid "Close _dialog"
 msgstr "Stäng dialogruta"
 
-#: ../src/search.c:566 ../src/search.c:759
+#: ../src/search.c:567 ../src/search.c:762
 msgid "Disable this option to keep the dialog open"
 msgstr "Avaktivera detta tillval för att hålla dialogrutan öppen"
 
-#: ../src/search.c:667
+#: ../src/search.c:668
 msgid "Replace & Fi_nd"
 msgstr "Sök & ersätt"
 
-#: ../src/search.c:677
+#: ../src/search.c:678
 msgid "Replace wit_h:"
 msgstr "Ersätt med:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:726
+#: ../src/search.c:729
 msgid "Re_place All"
 msgstr "Ersätt alla"
 
-#: ../src/search.c:746
+#: ../src/search.c:749
 msgid "In Se_lection"
 msgstr "I markering"
 
-#: ../src/search.c:748
+#: ../src/search.c:751
 msgid "Replace all matches found in the currently selected text"
 msgstr "Ersätt alla träffar i markerad text"
 
-#: ../src/search.c:866
+#: ../src/search.c:869
 msgid "all"
 msgstr "alla"
 
-#: ../src/search.c:868
+#: ../src/search.c:871
 msgid "project"
 msgstr "projekt"
 
-#: ../src/search.c:870
+#: ../src/search.c:873
 msgid "custom"
 msgstr "användardefinierad"
 
-#: ../src/search.c:875
+#: ../src/search.c:878
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4534,87 +4546,87 @@ msgstr ""
 "Projekt: använd filmönstren definierade i projektinställningarna\n"
 "Användaranpassad: ange filmönster manuellt"
 
-#: ../src/search.c:916
+#: ../src/search.c:919
 msgid "Other options to pass to Grep"
 msgstr "Andra tillval att skicka till Grep"
 
-#: ../src/search.c:972
+#: ../src/search.c:976
 msgid "Fi_les:"
 msgstr "Filer:"
 
-#: ../src/search.c:984
+#: ../src/search.c:988
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Filmönster, exepelvis *.c *.h"
 
-#: ../src/search.c:997
+#: ../src/search.c:1001
 msgid "_Directory:"
 msgstr "Sökväg:"
 
-#: ../src/search.c:1016
+#: ../src/search.c:1020
 msgid "E_ncoding:"
 msgstr "Teckenkodning:"
 
-#: ../src/search.c:1041
+#: ../src/search.c:1045
 msgid "See grep's manual page for more information"
 msgstr "Läs Grep's manualsida för mer information"
 
-#: ../src/search.c:1043
+#: ../src/search.c:1047
 msgid "_Recurse in subfolders"
 msgstr "Gå igenom undermappar"
 
-#: ../src/search.c:1056
+#: ../src/search.c:1060
 msgid "_Invert search results"
 msgstr "Invertera sökresultat"
 
-#: ../src/search.c:1060
+#: ../src/search.c:1064
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr "Invertera träffar, välj de rader som inte har några träffar"
 
-#: ../src/search.c:1077
+#: ../src/search.c:1081
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1079
+#: ../src/search.c:1083
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1081
+#: ../src/search.c:1085
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Extra inställningar:"
 
-#: ../src/search.c:1497 ../src/search.c:2471 ../src/search.c:2475
+#: ../src/search.c:1501 ../src/search.c:2475 ../src/search.c:2479
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "Hittat %d träff för \"%s\"."
 msgstr[1] "Hittat %d träffar för \"%s\"."
 
-#: ../src/search.c:1554
+#: ../src/search.c:1558
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "Ersatt %u träffar i %u dokument."
 
-#: ../src/search.c:1763
+#: ../src/search.c:1767
 msgid "Invalid directory for find in files."
 msgstr "Ogiltig mapp för att söka i filer."
 
-#: ../src/search.c:1783
+#: ../src/search.c:1787
 msgid "No text to find."
 msgstr "Ingen text att söka efter."
 
-#: ../src/search.c:1870
+#: ../src/search.c:1874
 msgid "Searching..."
 msgstr "Söker..."
 
-#: ../src/search.c:1872
+#: ../src/search.c:1876
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (i sökväg: %s)"
 
-#: ../src/search.c:1881
+#: ../src/search.c:1885
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4622,27 +4634,27 @@ msgstr ""
 "Kan inte exekvera grep-verktyget \"%s\": %s. Kontrollera sökvägen i "
 "Inställningar."
 
-#: ../src/search.c:1921
+#: ../src/search.c:1925
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Kan inte öppna sökväg (%s)"
 
-#: ../src/search.c:2075
+#: ../src/search.c:2079
 msgid "Search failed."
 msgstr "Sökningen misslyckades."
 
-#: ../src/search.c:2098
+#: ../src/search.c:2102
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Sökning avslutad med %d träff."
 msgstr[1] "Sökning avslutad med %d träffar."
 
-#: ../src/search.c:2106
+#: ../src/search.c:2110
 msgid "No matches found."
 msgstr "Inga träffar hittade."
 
-#: ../src/search.c:2136
+#: ../src/search.c:2140
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Felaktig rexex: %s"
@@ -5337,31 +5349,31 @@ msgstr "Tecken:"
 msgid "No symbols found"
 msgstr "Inga symboler hittade"
 
-#: ../src/sidebar.c:605
+#: ../src/sidebar.c:610
 msgid "Show S_ymbol List"
 msgstr "Visa symbollistan"
 
-#: ../src/sidebar.c:617
+#: ../src/sidebar.c:622
 msgid "Show _Document List"
 msgstr "Visa dokumentlistan"
 
-#: ../src/sidebar.c:629 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:634 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "Göm sidolist"
 
-#: ../src/sidebar.c:735
+#: ../src/sidebar.c:740
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:742
+#: ../src/sidebar.c:747
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:754 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:759 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "Sök i filer..."
 
-#: ../src/sidebar.c:764
+#: ../src/sidebar.c:769
 msgid "Show _Paths"
 msgstr "Visa sökvägar"
 
