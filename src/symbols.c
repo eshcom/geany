@@ -209,7 +209,7 @@ void symbols_global_tags_loaded(guint file_type_idx)
 }
 
 
-GString *symbols_find_typenames_as_string(TMParserType lang, gint typedefs_kind)
+GString *symbols_find_typenames_as_string(TMParserType lang, gboolean global)
 {
 	guint j;
 	TMTag *tag;
@@ -217,21 +217,8 @@ GString *symbols_find_typenames_as_string(TMParserType lang, gint typedefs_kind)
 	GPtrArray *typedefs;
 	TMParserType tag_lang;
 	
-	switch (typedefs_kind)
-	{
-		case TYPENAMES_SOURCE:
-			typedefs = app->tm_workspace->typename_array;
-			break;
-		case TYPENAMES_GLOBAL:
-			typedefs = app->tm_workspace->global_typename_array;
-			break;
-		case TYPENAMES_PROJECT:
-			typedefs = app->tm_workspace->project_typename_array;
-			break;
-		default:
-			typedefs = NULL;
-			break;
-	}
+	typedefs = global ? app->tm_workspace->global_typename_array
+					  : app->tm_workspace->typename_array;
 	
 	if (typedefs && typedefs->len > 0)
 	{
