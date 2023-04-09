@@ -209,36 +209,62 @@ void symbols_global_tags_loaded(guint file_type_idx)
 }
 
 
+void symbols_find_typenames(TMParserType lang, const GPtrArray *typedefs,
+							GString *s)
+{
+	TMTag *tag;
+	TMParserType tag_lang;
+	const gchar *last_name = "";
+	
+	for (guint j = 0; j < typedefs->len; ++j)
+	{
+		tag = TM_TAG(typedefs->pdata[j]);
+		tag_lang = tag->lang;
+		
+		if (tag->name && tm_parser_langs_compatible(lang, tag_lang) &&
+			strcmp(tag->name, last_name) != 0)
+		{
+			if (j != 0)
+				g_string_append_c(s, ' ');
+			g_string_append(s, tag->name);
+			last_name = tag->name;
+		}
+	}
+}
+
 GString *symbols_find_typenames_as_string(TMParserType lang, gboolean global)
 {
-	guint j;
-	TMTag *tag;
 	GString *s = NULL;
 	GPtrArray *typedefs;
-	TMParserType tag_lang;
 	
-	typedefs = global ? app->tm_workspace->global_typename_array
-					  : app->tm_workspace->typename_array;
+	if (global)
+		typedefs = app->tm_workspace->global_typename_array;
+	else
+	{
+		GPtrArray *prj_typedefs = app->tm_workspace->project_typename_array;
+		GPtrArray *src_typedefs = app->tm_workspace->typename_array;
+		
+		if (prj_typedefs && prj_typedefs->len > 0 &&
+			src_typedefs && src_typedefs->len > 0)
+		{
+			s = g_string_sized_new((prj_typedefs->len + src_typedefs->len) * 10);
+			
+			symbols_find_typenames(lang, prj_typedefs, s);
+			g_string_append_c(s, ' ');
+			symbols_find_typenames(lang, src_typedefs, s);
+			
+			return s;
+		}
+		else if (prj_typedefs && prj_typedefs->len > 0)
+			typedefs = prj_typedefs;
+		else
+			typedefs = src_typedefs;
+	}
 	
 	if (typedefs && typedefs->len > 0)
 	{
-		const gchar *last_name = "";
-		
 		s = g_string_sized_new(typedefs->len * 10);
-		for (j = 0; j < typedefs->len; ++j)
-		{
-			tag = TM_TAG(typedefs->pdata[j]);
-			tag_lang = tag->lang;
-			
-			if (tag->name && tm_parser_langs_compatible(lang, tag_lang) &&
-				strcmp(tag->name, last_name) != 0)
-			{
-				if (j != 0)
-					g_string_append_c(s, ' ');
-				g_string_append(s, tag->name);
-				last_name = tag->name;
-			}
-		}
+		symbols_find_typenames(lang, typedefs, s);
 	}
 	return s;
 }
