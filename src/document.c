@@ -2832,7 +2832,9 @@ void document_highlight_tags(GeanyDocument *doc)
 		default:
 			return; /* early out if type keywords are not supported */
 	}
-	if (!app->tm_workspace->tags_array)
+	
+	if (!app->tm_workspace->typename_array &&
+		!app->tm_workspace->project_typename_array)
 		return;
 	
 	/* get any type keywords and tell scintilla about them
