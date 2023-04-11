@@ -82,6 +82,13 @@ enum
 	COMPILER_COL_COUNT
 };
 
+enum
+{
+	STATUS_COL_STRING = 0,
+	STATUS_COL_MARKUP,
+	STATUS_COL_COUNT
+};
+
 
 static GdkColor color_error = {0, 0xFFFF, 0, 0};
 static GdkColor color_context = {0, 0x7FFF, 0, 0};
@@ -224,14 +231,16 @@ static void prepare_status_tree_view(void)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	
-	msgwindow.store_status = gtk_list_store_new(1, G_TYPE_STRING);
+	msgwindow.store_status = gtk_list_store_new(STATUS_COL_COUNT, G_TYPE_STRING,
+												G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(msgwindow.tree_status),
 							GTK_TREE_MODEL(msgwindow.store_status));
 	g_object_unref(msgwindow.store_status);
 	
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("Status messages"),
-													  renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes(_("Status messages"), renderer,
+													  "markup", STATUS_COL_MARKUP,
+													  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(msgwindow.tree_status), column);
 	
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(msgwindow.tree_status), FALSE);
@@ -567,17 +576,26 @@ GEANY_API_SYMBOL
 void msgwin_status_add_string(const gchar *string)
 {
 	GtkTreeIter iter;
-	gchar *statusmsg, *time_str;
+	gchar *statusmsg, *markupmsg, *time_str;
+	
+	gchar *escape_string = g_markup_escape_text(string, -1);
 	
 	/* add a timestamp to status messages */
 	time_str = utils_get_current_time_string();
 	statusmsg = g_strconcat(time_str, ": ", string, NULL);
+	markupmsg = g_strdup_printf("<span color=\""COLOR_NUMBER"\">%s</span>"
+								"<span color=\""COLOR_OPERATOR"\">:</span>"
+								" %s", time_str, escape_string);
 	g_free(time_str);
+	g_free(escape_string);
 	
 	/* add message to Status window */
 	gtk_list_store_append(msgwindow.store_status, &iter);
-	gtk_list_store_set(msgwindow.store_status, &iter, 0, statusmsg, -1);
+	gtk_list_store_set(msgwindow.store_status, &iter,
+					   STATUS_COL_STRING, statusmsg,
+					   STATUS_COL_MARKUP, markupmsg, -1);
 	g_free(statusmsg);
+	g_free(markupmsg);
 	
 	if (G_LIKELY(main_status.main_window_realized))
 	{
@@ -633,28 +651,34 @@ static void on_message_treeview_clear_activate(GtkMenuItem *menuitem,
 static void on_compiler_treeview_copy_activate(GtkMenuItem *menuitem,
 											   gpointer user_data)
 {
-	GtkWidget *tv = NULL;
-	GtkTreeSelection *selection;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	gint str_idx = COMPILER_COL_STRING;
+	GtkWidget *tv;
+	gint str_idx;
 	
 	switch (GPOINTER_TO_INT(user_data))
 	{
 		case MSG_STATUS:
 			tv = msgwindow.tree_status;
-			str_idx = 0;
+			str_idx = STATUS_COL_STRING;
 			break;
-		
+			
 		case MSG_COMPILER:
 			tv = msgwindow.tree_compiler;
+			str_idx = COMPILER_COL_STRING;
 			break;
-		
+			
 		case MSG_MESSAGE:
 			tv = msgwindow.tree_msg;
 			str_idx = MSG_COL_STRING;
 			break;
+			
+		default:
+			return;
 	}
+	
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tv));
 	
 	if (gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -675,28 +699,33 @@ static void on_compiler_treeview_copy_activate(GtkMenuItem *menuitem,
 static void on_compiler_treeview_copy_all_activate(GtkMenuItem *menuitem,
 												   gpointer user_data)
 {
-	GtkListStore *store = msgwindow.store_compiler;
-	GtkTreeIter iter;
-	GString *str = g_string_new("");
-	gint str_idx = COMPILER_COL_STRING;
-	gboolean valid;
+	GtkListStore *store;
+	gint str_idx;
 	
 	switch (GPOINTER_TO_INT(user_data))
 	{
 		case MSG_STATUS:
 			store = msgwindow.store_status;
-			str_idx = 0;
+			str_idx = STATUS_COL_STRING;
 			break;
-		
+			
 		case MSG_COMPILER:
-			/* default values */
+			store = msgwindow.store_compiler;
+			str_idx = COMPILER_COL_STRING;
 			break;
-		
+			
 		case MSG_MESSAGE:
 			store = msgwindow.store_msg;
 			str_idx = MSG_COL_STRING;
 			break;
+			
+		default:
+			return;
 	}
+	
+	GString *str = g_string_new("");
+	GtkTreeIter iter;
+	gboolean valid;
 	
 	/* walk through the list and copy every line into a string */
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
@@ -719,8 +748,7 @@ static void on_compiler_treeview_copy_all_activate(GtkMenuItem *menuitem,
 	if (str->len > 0)
 		gtk_clipboard_set_text(
 			gtk_clipboard_get(gdk_atom_intern("CLIPBOARD", FALSE)),
-			str->str,
-			str->len);
+			str->str, str->len);
 	
 	g_string_free(str, TRUE);
 }

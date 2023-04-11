@@ -1987,7 +1987,7 @@ static inline void msgwin_msg_add_markup(
 		
 		if (*(++item))
 		{
-			g_string_append(escape_buffer, "<span color=\"#e62e65\">");
+			g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
 			g_string_append(escape_buffer, escape_search_text);
 			g_string_append(escape_buffer, "</span>");
 		}
@@ -1996,10 +1996,10 @@ static inline void msgwin_msg_add_markup(
 	}
 	g_strfreev(items);
 	
-	gchar *markup = g_strdup_printf("<span color=\"#c07bb7\">%s</span>"
-									"<span color=\"#838eb3\">:</span>"
-									"<span color=\"#ff8000\">%d</span>"
-									"<span color=\"#838eb3\">:</span>"
+	gchar *markup = g_strdup_printf("<span color=\""COLOR_FILEPATH"\">%s</span>"
+									"<span color=\""COLOR_OPERATOR"\">:</span>"
+									"<span color=\""COLOR_NUMBER"\">%d</span>"
+									"<span color=\""COLOR_OPERATOR"\">:</span>"
 									" %s",
 									escape_filename, line, escape_buffer->str);
 	g_string_free(escape_buffer, TRUE);
