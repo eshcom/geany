@@ -52,6 +52,12 @@ typedef enum
 } MessageWindowTabNum;
 
 
+#define COLOR_SELECTED "#e62e65"
+#define COLOR_FILEPATH "#c07bb7"
+#define COLOR_OPERATOR "#838eb3"
+#define COLOR_NUMBER "#ff8000"
+
+
 void msgwin_status_add(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void msgwin_status_add_string(const gchar *msg);
 
