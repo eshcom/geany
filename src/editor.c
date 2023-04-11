@@ -1514,9 +1514,17 @@ static void insert_indent_after_line(GeanyEditor *editor, gint line) // esh: lin
 		{
 			gint indent_pos = sci_get_line_indent_position(sci, line);
 			gint style = sci_get_style_at(sci, indent_pos);
-			if (highlighting_is_comment_style(lexer, style) ||
-				highlighting_is_string_style(lexer, style))
+			if (highlighting_is_comment_style(lexer, style))
 				line--;
+			else if (highlighting_is_string_style(lexer, style) &&
+					 indent_pos > 0)
+			{
+				gint prev_style = sci_get_style_at(sci, indent_pos - 1);
+				if (highlighting_is_string_style(lexer, prev_style))
+					line--;
+				else
+					break;
+			}
 			else
 				break;
 		}
