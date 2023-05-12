@@ -460,7 +460,8 @@ static const HLStyle highlighting_styles_CONF[] =
 	{ SCE_PROPS_OPER_VALUE,		"oper_value",		FALSE },
 	{ SCE_PROPS_VARIABLE,		"variable",			FALSE },
 	{ SCE_PROPS_SUBVAR_OPER,	"subvar_oper",		FALSE },
-	{ SCE_PROPS_ESCAPESEQUENCE,	"escapesequence",	FALSE }
+	{ SCE_PROPS_ESCAPESEQUENCE,	"escapesequence",	FALSE },
+	{ SCE_PROPS_ERROR,			"error",			FALSE }
 };
 static const HLKeyword highlighting_keywords_CONF[] =
 {
