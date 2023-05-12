@@ -25,6 +25,13 @@
 
 using namespace Scintilla;
 
+enum
+{
+	PROPS_SECTION_OPEN,
+	PROPS_SECTION_NAME,
+	PROPS_SECTION_CLOSE
+};
+
 static inline bool IsAssignChar(const int ch) {
 	return (ch == '=') || (ch == ':');
 }
@@ -211,6 +218,9 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 	int hexColorLen = 0;
 	int levelSqBrackets = 0;
 	
+	int levelSectionSqBrcks = 0;
+	int stateSection = 0;
+	
 	bool isSubVar = false;
 	int beforeSubVarState = -1;
 	int beforeStringState = -1;
@@ -222,6 +232,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.atLineStart && stringCode == 0) {
 			if (!allowInitialSpaces && IsASpaceOrTab(sc.ch)) {
 				// don't allow initial spaces
+				sc.SetState(SCE_PROPS_ERROR);
 				goToLineEnd = true;
 				continue;
 			}
@@ -241,6 +252,8 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					goToLineEnd = true;
 				} else if (sc.ch == '[') {
 					sc.SetState(SCE_PROPS_SECTION);
+					stateSection = PROPS_SECTION_OPEN;
+					levelSectionSqBrcks = 1;
 				} else if (sc.ch == '@') {
 					sc.SetState(SCE_PROPS_DEFVAL);
 					if (IsAssignChar(sc.chNext))
@@ -260,22 +273,59 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				continue;
 				
 			case SCE_PROPS_SECTION:
-				if (sc.ch == ']') {
-					sc.ForwardSetState(SCE_PROPS_DEFAULT);
-				} else if (sc.atLineEnd) {
-					// incomplete section -> changing to SCE_PROPS_DEFAULT
-					sc.ChangeState(SCE_PROPS_DEFAULT);
+				switch (stateSection) {
+					case PROPS_SECTION_OPEN:
+						if (sc.atLineEnd) { // incomplete section
+							sc.ChangeState(SCE_PROPS_ERROR);
+							sc.SetState(SCE_PROPS_DEFAULT);
+						} else if (sc.ch == '[') {
+							levelSectionSqBrcks++;
+						} else if (sc.ch == ']') { // missing section name
+							sc.ChangeState(SCE_PROPS_ERROR);
+							goToLineEnd = true;
+						} else if (!IsASpaceOrTab(sc.ch)) {
+							stateSection = PROPS_SECTION_NAME;
+						}
+						break;
+					case PROPS_SECTION_NAME:
+						if (sc.atLineEnd) { // incomplete section
+							sc.ChangeState(SCE_PROPS_ERROR);
+							sc.SetState(SCE_PROPS_DEFAULT);
+						} else if (sc.ch == ']') {
+							stateSection = PROPS_SECTION_CLOSE;
+							levelSectionSqBrcks--;
+						} else if (sc.ch == '[') {
+							sc.ChangeState(SCE_PROPS_ERROR);
+							goToLineEnd = true;
+						}
+						break;
+					case PROPS_SECTION_CLOSE:
+						if (sc.atLineEnd) {
+							if (levelSectionSqBrcks == 0) {
+								sc.SetState(SCE_PROPS_DEFAULT);
+							} else { // incomplete section
+								sc.ChangeState(SCE_PROPS_ERROR);
+								sc.SetState(SCE_PROPS_DEFAULT);
+							}
+						} else if (sc.ch == ']') {
+							levelSectionSqBrcks--;
+						} else if (!IsASpaceOrTab(sc.ch)) {
+							sc.ChangeState(SCE_PROPS_ERROR);
+							goToLineEnd = true;
+						}
+						break;
 				}
 				continue;
-				
+			
 			case SCE_PROPS_KEY:
 				if (IsAssignChar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
 					sc.ForwardSetState(SCE_PROPS_VALUE);
 					break;
 				} else if (sc.atLineEnd) {
-					// incomplete key -> changing to SCE_PROPS_DEFAULT
-					sc.ChangeState(SCE_PROPS_DEFAULT);
+					// incomplete key -> changing to SCE_PROPS_ERROR
+					sc.ChangeState(SCE_PROPS_ERROR);
+					sc.SetState(SCE_PROPS_DEFAULT);
 				}
 				continue;
 		}
