@@ -1,5 +1,6 @@
 # For complete documentation of this file, please see Geany's main documentation
 [styling=C]
+bifs=keyword_2
 
 [keywords]
 # all items must be in one line
@@ -11,6 +12,8 @@ docComment=a addindex addtogroup anchor arg attention author authors b brief bug
 commonword=nil true false
 # Other classes
 otherclass=
+# Built-in functions
+bifs=append cap clear close complex copy delete imag len make max min new panic print println real recover 
 
 [lexer_properties=C]
 lexer.cpp.backquoted.strings=1

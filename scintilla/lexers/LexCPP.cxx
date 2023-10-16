@@ -493,6 +493,7 @@ LexicalClass lexicalClasses[] = {
 	29, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
 	30, "SCE_C_OTHERCLASS", "identifier", "Other classes",
 	31, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
+	40, "SCE_C_BIFS", "bifs", "Built-in functions for Golang",
 };
 
 }
@@ -516,6 +517,7 @@ class LexerCPP : public ILexerWithMetaData {
 	WordList markerList;
 	WordList commonWords;
 	WordList otherClasses;
+	WordList bifs;
 	struct SymbolValue {
 		std::string value;
 		std::string arguments;
@@ -731,6 +733,9 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 		break;
 	case 7:
 		wordListN = &otherClasses;	//Other classes and typedefs
+		break;
+	case 8:
+		wordListN = &bifs;			//Built-in functions for Golang
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -1045,6 +1050,18 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
 					} else if (otherClasses.InList(s)) {				//Other classes and typedefs
 						sc.ChangeState(SCE_C_OTHERCLASS|activitySet);
+					} else if (bifs.InList(s)) {						//Built-in functions for Golang
+						Sci_Position pos = sc.currentPos;
+						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
+						while (ch != '\0') {
+							if (IsASpaceOrTab(ch)) {
+								ch = styler.SafeGetCharAt(++pos, '\0');
+								continue;
+							} else if (ch == '(') {
+								sc.ChangeState(SCE_C_BIFS|activitySet);
+							}
+							break;
+						}
 					} else {
 						int subStyle = classifierIdentifiers.ValueFor(s);
 						if (subStyle >= 0) {
