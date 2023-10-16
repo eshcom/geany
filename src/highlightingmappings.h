@@ -264,7 +264,8 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_FORMATSEQUENCE,			"formatsequence",			FALSE },
 	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
 	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE },
-	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE }
+	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE },
+	{ SCE_C_BIFS,					"bifs",						FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {
@@ -275,7 +276,8 @@ static const HLKeyword highlighting_keywords_C[] =
 	/* SCI_SETKEYWORDS = 3 is for current session types -
 	 * see document_highlight_tags() */
 	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 7, "otherclass",	FALSE },
+	{ 8, "bifs",		FALSE }
 };
 static const HLProperty highlighting_properties_C[] =
 {
