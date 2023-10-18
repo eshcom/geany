@@ -1143,9 +1143,11 @@ static const HLKeyword highlighting_keywords_OBJECTIVEC[] =
 	{ 0, "primary",		FALSE },
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
 	{ 1, "secondary",	TRUE },
-	{ 2, "docComment",	FALSE }
+	{ 2, "docComment",	FALSE },
 	/* SCI_SETKEYWORDS = 3 is for current session types -
 	 * see document_highlight_tags() */
+	{ 6, "commonword",	FALSE },
+	{ 7, "otherclass",	FALSE }
 };
 #define highlighting_properties_OBJECTIVEC	highlighting_properties_C
 
