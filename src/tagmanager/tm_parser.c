@@ -858,10 +858,12 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 				!(scope[0] == '\'' || islower(scope[0])))
 				return TRUE;
 			break;
+		
 		case TM_PARSER_PYTHON:
 			if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
 				return TRUE;
 			break;
+		
 		default:
 			break;
 	}
@@ -875,6 +877,7 @@ gboolean tm_parser_strict_scope(TMParserType lang)
 	{
 		case TM_PARSER_NONE:
 		case TM_PARSER_PYTHON:
+		case TM_PARSER_GO:		// as long as ctags does not contain scope (package name)
 			return FALSE;
 		default:
 			return TRUE;
@@ -920,6 +923,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 			else
 				*type = tm_tag_max_t & ~(tm_tag_macro_t | tm_tag_typedef_t);
 			break;
+		
 		case TM_PARSER_C:
 		case TM_PARSER_CPP:
 			if (g_strcmp0(prefix, "->") == 0)
@@ -946,12 +950,21 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 				*type = tm_tag_max_t & ~(tm_tag_class_t | tm_tag_function_t |
 										 tm_tag_macro_with_arg_t);
 			break;
+		
 		case TM_PARSER_PYTHON:
 			if (g_strcmp0(suffix, "=") == 0 || g_strcmp0(suffix, ".") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_function_t);
 			else if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_externvar_t);
 			break;
+		
+		case TM_PARSER_GO:
+			if (g_strcmp0(suffix, "(") == 0)
+				*type = tm_tag_function_t;
+			else if (g_strcmp0(suffix, "{") == 0)
+				*type = tm_tag_struct_t;
+			break;
+		
 		default:
 			if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_function_t       | tm_tag_method_t |

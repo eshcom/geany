@@ -142,7 +142,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 
 #define ONE_CHAR_PREFIX_CHARS	"?#."
 #define MULTI_CHAR_PREFIX_CHARS	"->"
-#define ONE_CHAR_SUFFIX_CHARS	"(=."
+#define ONE_CHAR_SUFFIX_CHARS	"{(=."
 #define MULTI_CHAR_SUFFIX_CHARS	":"
 
 #endif /* GEANY_PRIVATE */
