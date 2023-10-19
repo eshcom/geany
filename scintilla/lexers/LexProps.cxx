@@ -98,47 +98,40 @@ static inline bool IsUrl(const char *pref, Accessor &styler,
 
 static inline bool IsEmail(Accessor &styler, Sci_PositionU pos,
 						   Sci_PositionU endPos) {
+	// ([a-zA-Z0-9_-]+[a-zA-Z0-9_-.]*[a-zA-Z0-9]+@[a-zA-Z0-9]+[a-zA-Z0-9_-.]*[a-zA-Z0-9]+\.[a-zA-Z0-9_-]+)
 	int mailState = 0;
+	bool isLastDot = false, isDomainDot = false;
 	for (; pos < endPos; pos++) {
-		if (IsACRLF(styler[pos])) { // end of line
-			while (--pos > 0 && IsASpaceOrTab(styler[pos]));
-			if (!IsUpperOrLowerCase(styler[pos]))
-				mailState = 0;
-			break;
-		} else if (mailState == 0) {
+		if (mailState == 0) {					// login
 			if (styler[pos] == '@' && pos > 0 && pos < (endPos - 1)
 				&& isalnum(styler[pos - 1])
 				&& isalnum(styler[pos + 1])) {
 				mailState = 1;
+				pos++;
 			} else if (!IsAWordChar(styler[pos]) && styler[pos] != '.') {
 				break;
 			}
-		} else if (mailState == 1) {
-			if (IsAWordChar(styler[pos])) {
-				mailState = 2;
-			} else {
-				break;
-			}
-		} else if (mailState == 2) {
+		} else if (mailState == 1) {			// domain
 			if (styler[pos] == '.') {
-				mailState = 3;
-			} else if (!IsAWordChar(styler[pos])) {
+				if (isLastDot) {
+					break;
+				}
+				isDomainDot = true;
+				isLastDot = true;
+			} else if (IsAWordChar(styler[pos])) {
+				isLastDot = false;
+			} else if (IsASpaceOrTab(styler[pos]) || IsACRLF(styler[pos]) ||
+						pos == (endPos - 1)) {
+				if (isDomainDot && !isLastDot) {
+					mailState = 2;
+				}
 				break;
-			}
-		} else if (mailState == 3) {
-			if (IsAWordChar(styler[pos])) {
-				mailState = 4;
 			} else {
-				break;
-			}
-		} else if (mailState == 4) {
-			if (!IsAWordChar(styler[pos]) && styler[pos] != '.') {
-				mailState = 0;
 				break;
 			}
 		}
 	}
-	return mailState == 4;
+	return mailState == 2;
 }
 
 static inline bool CheckSubVar(StyleContext &sc, Accessor &styler,
@@ -464,6 +457,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				else if (numDotCnt != 0)									// bad hexnum
 					sc.ChangeState(SCE_PROPS_VALUE);
 				break;
+				
+			case SCE_PROPS_URL_VALUE:
+			case SCE_PROPS_MAIL_VALUE:
+				if (!IsASpaceOrTab(sc.ch) && !IsACRLF(sc.ch))
+					continue;
+				sc.SetState(SCE_PROPS_VALUE);
+				break;
 		}
 		
 		// Determine if a new value-state should be entered.
@@ -603,13 +603,11 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			// check url:
 			if (IsUrl(word2, styler, sc.currentPos, endPos)) {
 				sc.ChangeState(SCE_PROPS_URL_VALUE);
-				goToLineEnd = true;
 				continue;
 			}
 			// check email:
 			if (IsEmail(styler, sc.currentPos, endPos)) {
 				sc.ChangeState(SCE_PROPS_MAIL_VALUE);
-				goToLineEnd = true;
 				continue;
 			}
 			// find a word to defined lists:
@@ -634,7 +632,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_PROPS_DEFAULT);
 		} else if (IsOperValue(sc.ch) || sc.ch == '-') {
 			sc.SetState(SCE_PROPS_OPER_VALUE);
-		} else if (sc.state != SCE_PROPS_VALUE) {
+		} else { // cut off undefined props value
 			sc.SetState(SCE_PROPS_VALUE);
 		}
 	}
