@@ -988,8 +988,12 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// esh: fixed highlighting backslash (line continuation symbol)
 				} else if (maskActiveState != SCE_C_STRING &&
 						   maskActiveState != SCE_C_CHARACTER &&
+						   maskActiveState != SCE_C_COMMENT &&
+						   maskActiveState != SCE_C_COMMENTDOC &&
 						   maskActiveState != SCE_C_COMMENTLINE &&
 						   maskActiveState != SCE_C_COMMENTLINEDOC &&
+						   maskActiveState != SCE_C_COMMENTDOCKEYWORD &&
+						   maskActiveState != SCE_C_COMMENTDOCKEYWORDERROR &&
 						   maskActiveState != SCE_C_PREPROCESSOR) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
