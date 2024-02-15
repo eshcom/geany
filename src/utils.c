@@ -2528,8 +2528,14 @@ TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 GEANY_API_SYMBOL
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
 {
+	MatchDirs matchdirs = utils_match_dirs_obj(dir1, dir2);
+	return matchdirs.match;
+}
+
+MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2)
+{
 	if (EMPTY(dir1) || EMPTY(dir2))
-		return MATCH_DIRS_NOT;
+		return (MatchDirs){MATCH_DIRS_NOT, NULL};
 	
 	dir1++;
 	dir2++;
@@ -2539,33 +2545,33 @@ gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
 		if (*dir1 == '\0')
 		{
 			if (*dir2 == '\0')
-				return MATCH_DIRS_FULL;
+				return (MatchDirs){MATCH_DIRS_FULL, NULL};
 			else if (*(--dir1) == G_DIR_SEPARATOR)
-				return MATCH_DIRS_PREF_1;
+				return (MatchDirs){MATCH_DIRS_PREF_1, dir2};
 			else if (*dir2 == G_DIR_SEPARATOR)
 			{
 				if (*(++dir2) == '\0')
-					return MATCH_DIRS_FULL;
+					return (MatchDirs){MATCH_DIRS_FULL, NULL};
 				else
-					return MATCH_DIRS_PREF_1;
+					return (MatchDirs){MATCH_DIRS_PREF_1, dir2};
 			}
-			return MATCH_DIRS_NOT;
+			return (MatchDirs){MATCH_DIRS_NOT, NULL};
 		}
 		if (*dir2 == '\0')
 		{
 			if (*(--dir2) == G_DIR_SEPARATOR)
-				return MATCH_DIRS_PREF_2;
+				return (MatchDirs){MATCH_DIRS_PREF_2, dir1};
 			else if (*dir1 == G_DIR_SEPARATOR)
 			{
 				if (*(++dir1) == '\0')
-					return MATCH_DIRS_FULL;
+					return (MatchDirs){MATCH_DIRS_FULL, NULL};
 				else
-					return MATCH_DIRS_PREF_2;
+					return (MatchDirs){MATCH_DIRS_PREF_2, dir1};
 			}
-			return MATCH_DIRS_NOT;
+			return (MatchDirs){MATCH_DIRS_NOT, NULL};
 		}
 		if (*dir1 != *dir2)
-			return MATCH_DIRS_NOT;
+			return (MatchDirs){MATCH_DIRS_NOT, NULL};
 		
 		dir1++;
 		dir2++;

@@ -243,7 +243,14 @@ enum
 	MATCH_DIRS_PREF_2
 };
 
+typedef struct
+{
+	gint match;
+	const gchar *suff;
+} MatchDirs;
+
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
+MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2);
 
 #ifdef GEANY_PRIVATE
 

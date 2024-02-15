@@ -391,6 +391,22 @@ void ui_update_statusbar(GeanyDocument *doc, gint pos)
 }
 
 
+void add_short_home_dir(GString *str, const gchar *dirname)
+{
+	const gchar *home_dir = g_get_home_dir();
+	MatchDirs matchdirs = utils_match_dirs_obj(home_dir, dirname);
+	
+	if (matchdirs.match == MATCH_DIRS_PREF_1)
+	{
+		g_string_append(str, "~/");
+		g_string_append(str, matchdirs.suff);
+	}
+	else if (matchdirs.match == MATCH_DIRS_FULL)
+		g_string_append(str, "~");
+	else
+		g_string_append(str, dirname);
+}
+
 /* This sets the window title according to the current filename. */
 void ui_set_window_title(GeanyDocument *doc)
 {
@@ -419,7 +435,7 @@ void ui_set_window_title(GeanyDocument *doc)
 		if (doc != NULL)
 		{
 			if (project != NULL)
-				g_string_append(str, " - ");
+				g_string_append(str, "  -  ");
 			
 			if (doc->file_name == NULL)
 			{
@@ -429,12 +445,31 @@ void ui_set_window_title(GeanyDocument *doc)
 			}
 			else
 			{
-				gchar *short_name = document_get_basename_for_display(doc, 30);
+				// esh: increased filename length limit (30 -> 45)
+				gchar *short_name = document_get_basename_for_display(doc, 45);
 				gchar *dirname = g_path_get_dirname(DOC_FILENAME(doc));
 				
 				if (dirname)
 				{
-					g_string_append(str, dirname);
+					gchar *base_path = project_get_base_path();
+					if (base_path)
+					{
+						MatchDirs matchdirs = utils_match_dirs_obj(base_path, dirname);
+						g_free(base_path);
+						
+						if (matchdirs.match == MATCH_DIRS_PREF_1)
+						{
+							g_string_append(str, "@/");
+							g_string_append(str, matchdirs.suff);
+						}
+						else if (matchdirs.match == MATCH_DIRS_FULL)
+							g_string_append(str, "@");
+						else
+							add_short_home_dir(str, dirname);
+					}
+					else
+						add_short_home_dir(str, dirname);
+					
 					g_string_append(str, "/");
 				}
 				if (doc->changed)
