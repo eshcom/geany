@@ -393,13 +393,14 @@ static gchar *get_doc_folder(const gchar *path)
 		if (project_base_path[len-1] == G_DIR_SEPARATOR)
 			project_base_path[--len] = '\0';
 
-		/* check whether the dir name matches or uses the project base path */
+		/* check whether the dir name matches or uses the project base path,
+		 * esh: if matches, replace with @ */
 		if (utils_filename_has_prefix(tmp_dirname, project_base_path))
 		{
 			rest = tmp_dirname + len;
 			if (*rest == G_DIR_SEPARATOR || *rest == '\0')
 			{
-				dirname = g_strdup_printf("%s%s", app->project->name, rest);
+				dirname = g_strdup_printf("@%s", rest);
 			}
 		}
 		g_free(project_base_path);
