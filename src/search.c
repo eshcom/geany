@@ -2037,18 +2037,20 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 		
 		if (markup)
 		{
-			gchar *utf8_search_text = (gchar *)data[1];
-			gchar *escape_search_text = g_markup_escape_text(utf8_search_text, -1);
-			
 			gchar **fields = g_strsplit(utf8_msg, ":", 3);
 			
-			gchar *escape_filename = g_markup_escape_text(fields[0], -1);
-			
-			gint line = strtol(fields[1], NULL, 10);
-			
-			msgwin_msg_add_markup(msg_color, line, NULL,
-								  utf8_search_text, escape_search_text,
-								  fields[0], escape_filename, fields[2]);
+			if (fields[1])
+			{
+				gchar *utf8_search_text = (gchar *)data[1];
+				gchar *escape_search_text = g_markup_escape_text(utf8_search_text, -1);
+				gchar *escape_filename = g_markup_escape_text(fields[0], -1);
+				
+				gint line = strtol(fields[1], NULL, 10);
+				
+				msgwin_msg_add_markup(msg_color, line, NULL,
+									  utf8_search_text, escape_search_text,
+									  fields[0], escape_filename, fields[2]);
+			}
 			g_strfreev(fields);
 		}
 		else
