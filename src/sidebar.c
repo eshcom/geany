@@ -87,7 +87,8 @@ enum
 	DOCUMENTS_SHORTNAME,	/* dirname for parents, basename for children */
 	DOCUMENTS_DOCUMENT,
 	DOCUMENTS_COLOR,
-	DOCUMENTS_FILENAME		/* full filename */
+	DOCUMENTS_FILENAME,		/* full filename */
+	DOCUMENTS_SORTKEY		/* for sorting in a tree */
 };
 
 static GtkTreeStore	*store_openfiles;
@@ -260,17 +261,13 @@ void sidebar_update_tag_list(GeanyDocument *doc, gboolean update)
 static gint documents_sort_func(GtkTreeModel *model, GtkTreeIter *iter_a,
 								GtkTreeIter *iter_b, gpointer data)
 {
-	gchar *name_a, *name_b;
+	gchar *key_a, *key_b;
 	
-	gtk_tree_model_get(model, iter_a, DOCUMENTS_SHORTNAME, &name_a, -1);
-	gchar *key_a = g_utf8_collate_key_for_filename(name_a, -1);
-	g_free(name_a);
-	
-	gtk_tree_model_get(model, iter_b, DOCUMENTS_SHORTNAME, &name_b, -1);
-	gchar *key_b = g_utf8_collate_key_for_filename(name_b, -1);
-	g_free(name_b);
+	gtk_tree_model_get(model, iter_a, DOCUMENTS_SORTKEY, &key_a, -1);
+	gtk_tree_model_get(model, iter_b, DOCUMENTS_SORTKEY, &key_b, -1);
 	
 	gint cmp = strcmp(key_a, key_b);
+	
 	g_free(key_b);
 	g_free(key_a);
 	
@@ -285,9 +282,9 @@ static void prepare_openfiles(void)
 	
 	/* store the icon and the short filename to show, and the index as reference,
 	 * the colour (black/red/green) and the full name for the tooltip */
-	store_openfiles = gtk_tree_store_new(5, G_TYPE_ICON, G_TYPE_STRING,
+	store_openfiles = gtk_tree_store_new(6, G_TYPE_ICON, G_TYPE_STRING,
 										 G_TYPE_POINTER, GDK_TYPE_COLOR,
-										 G_TYPE_STRING);
+										 G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tv.tree_openfiles),
 							GTK_TREE_MODEL(store_openfiles));
 	
@@ -317,9 +314,9 @@ static void prepare_openfiles(void)
 	
 	/* sort opened filenames in the store_openfiles treeview */
 	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(GTK_TREE_MODEL(store_openfiles));
-	gtk_tree_sortable_set_sort_func(sortable, DOCUMENTS_SHORTNAME,
+	gtk_tree_sortable_set_sort_func(sortable, DOCUMENTS_SORTKEY,
 									documents_sort_func, NULL, NULL);
-	gtk_tree_sortable_set_sort_column_id(sortable, DOCUMENTS_SHORTNAME,
+	gtk_tree_sortable_set_sort_column_id(sortable, DOCUMENTS_SORTKEY,
 										 GTK_SORT_ASCENDING);
 	
 	ui_widget_modify_font_from_string(tv.tree_openfiles,
@@ -458,11 +455,30 @@ static GtkTreeIter *get_doc_parent(GeanyDocument *doc)
 	if (!dir_icon)
 		dir_icon = ui_get_mime_icon("inode/directory");
 	
-	gtk_tree_store_append(store_openfiles, &parent, NULL);
-	gtk_tree_store_set(store_openfiles, &parent, DOCUMENTS_ICON, dir_icon,
-		DOCUMENTS_FILENAME, path,
-		DOCUMENTS_SHORTNAME, doc->file_name ? dirname : GEANY_STRING_UNTITLED, -1);
+	// esh: define the sorting of dir groups
+	const gchar *shortname = doc->file_name ? dirname : GEANY_STRING_UNTITLED;
+	gchar *sortname;
+	if (doc->file_name == NULL)
+		sortname = g_strdup("f");
+	else if (*shortname == '@')
+		sortname = g_strconcat("a", shortname + 1, NULL);
+	else if (*shortname == '~')
+		sortname = g_strconcat("b", shortname + 1, NULL);
+	else if (*shortname == G_DIR_SEPARATOR)
+		sortname = g_strconcat("c", shortname, NULL);
+	else
+		sortname = g_strconcat("d", G_DIR_SEPARATOR_S, shortname, NULL);
+	gchar *sortkey = g_utf8_collate_key_for_filename(sortname, -1);
+	g_free(sortname);
 	
+	gtk_tree_store_append(store_openfiles, &parent, NULL);
+	gtk_tree_store_set(store_openfiles, &parent,
+		DOCUMENTS_ICON, dir_icon,
+		DOCUMENTS_SHORTNAME, shortname,
+		DOCUMENTS_FILENAME, path,
+		DOCUMENTS_SORTKEY, sortkey, -1);
+	
+	g_free(sortkey);
 	g_free(dirname);
 	g_free(path);
 	return &parent;
@@ -496,11 +512,18 @@ void sidebar_openfiles_add(GeanyDocument *doc)
 	
 	const GdkColor *color = document_get_status_color(doc);
 	gchar *basename = g_path_get_basename(DOC_FILENAME(doc));
+	gchar *sortkey = g_utf8_collate_key_for_filename(basename, -1);
+	
 	gtk_tree_store_set(store_openfiles, iter,
 		DOCUMENTS_ICON, (doc->file_type && doc->file_type->icon) ?
 											doc->file_type->icon : file_icon,
-		DOCUMENTS_SHORTNAME, basename, DOCUMENTS_DOCUMENT, doc,
-		DOCUMENTS_COLOR, color, DOCUMENTS_FILENAME, DOC_FILENAME(doc), -1);
+		DOCUMENTS_DOCUMENT, doc,
+		DOCUMENTS_COLOR, color,
+		DOCUMENTS_SHORTNAME, basename,
+		DOCUMENTS_FILENAME, DOC_FILENAME(doc),
+		DOCUMENTS_SORTKEY, sortkey, -1);
+	
+	g_free(sortkey);
 	g_free(basename);
 }
 
