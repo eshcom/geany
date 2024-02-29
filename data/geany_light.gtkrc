@@ -67,5 +67,12 @@ widget "*.geany-compiler-error" style "geany-compiler-error-style"
 widget "*.geany-compiler-context" style "geany-compiler-context-style"
 widget "*.geany-compiler-message" style "geany-compiler-message-style"
 
+# dark khaki (102,95,56) #665F38
+style "geany-sidebar-parent-style" {
+    fg[NORMAL] = "#66665f5f3838"
+    fg[ACTIVE] = "#66665f5f3838"
+}
+widget "*.geany-sidebar-parent" style "geany-sidebar-parent-style"
+
 # red "Terminal" label when terminal dirty
 widget "*.geany-terminal-dirty" style "geany-document-status-changed-style"
