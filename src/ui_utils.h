@@ -145,6 +145,8 @@ const gchar *ui_lookup_stock_label(const gchar *stock_id);
 
 void ui_tree_view_set_tooltip_text_column(GtkTreeView *tree_view, gint column);
 
+void ui_load_color(const gchar *color_name, GdkColor *color);
+
 
 #ifndef GEANY_DISABLE_DEPRECATED
 GtkWidget *ui_frame_new_with_alignment(const gchar *label_text,

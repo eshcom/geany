@@ -3388,3 +3388,40 @@ gboolean ui_encodings_combo_box_set_active_encoding(GtkComboBox *combo, gint enc
 	}
 	return FALSE;
 }
+
+
+/** Set a GdkColor object by color name (see data/geany.gtkrc).
+ * @param color_name Color name, for example "geany-compiler-message"
+ * @param color GdkColor object */
+GEANY_API_SYMBOL
+void ui_load_color(const gchar *color_name, GdkColor *color)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+	GdkRGBA rgba_color;
+	GtkWidgetPath *path = gtk_widget_path_new();
+	GtkStyleContext *ctx = gtk_style_context_new();
+	
+	gtk_widget_path_append_type(path, GTK_TYPE_WINDOW);
+	gtk_widget_path_iter_set_name(path, -1, color_name);
+	gtk_style_context_set_screen(ctx, gdk_screen_get_default());
+	gtk_style_context_set_path(ctx, path);
+	gtk_style_context_get_color(ctx, gtk_style_context_get_state(ctx),
+								&rgba_color);
+	
+	color->red   = 0xffff * rgba_color.red;
+	color->green = 0xffff * rgba_color.green;
+	color->blue  = 0xffff * rgba_color.blue;
+	
+	gtk_widget_path_unref(path);
+	g_object_unref(ctx);
+#else
+	gchar *path = g_strconcat("*.", color_name, NULL);
+	
+	GtkSettings *settings = gtk_settings_get_default();
+	GtkStyle *style = gtk_rc_get_style_by_paths(settings, path, NULL,
+												GTK_TYPE_WIDGET);
+	*color = style->fg[GTK_STATE_NORMAL];
+	
+	g_free(path);
+#endif
+}

@@ -133,39 +133,6 @@ void msgwin_set_messages_dir(const gchar *messages_dir)
 }
 
 
-static void load_color(const gchar *color_name, GdkColor *color)
-{
-#if GTK_CHECK_VERSION(3, 0, 0)
-	GdkRGBA rgba_color;
-	GtkWidgetPath *path = gtk_widget_path_new();
-	GtkStyleContext *ctx = gtk_style_context_new();
-	
-	gtk_widget_path_append_type(path, GTK_TYPE_WINDOW);
-	gtk_widget_path_iter_set_name(path, -1, color_name);
-	gtk_style_context_set_screen(ctx, gdk_screen_get_default());
-	gtk_style_context_set_path(ctx, path);
-	gtk_style_context_get_color(ctx, gtk_style_context_get_state(ctx),
-								&rgba_color);
-	
-	color->red   = 0xffff * rgba_color.red;
-	color->green = 0xffff * rgba_color.green;
-	color->blue  = 0xffff * rgba_color.blue;
-	
-	gtk_widget_path_unref(path);
-	g_object_unref(ctx);
-#else
-	gchar *path = g_strconcat("*.", color_name, NULL);
-	
-	GtkSettings *settings = gtk_settings_get_default();
-	GtkStyle *style = gtk_rc_get_style_by_paths(settings, path, NULL,
-												GTK_TYPE_WIDGET);
-	*color = style->fg[GTK_STATE_NORMAL];
-	
-	g_free(path);
-#endif
-}
-
-
 void msgwin_init(void)
 {
 	msgwindow.notebook = ui_lookup_widget(main_widgets.window, "notebook_info");
@@ -187,9 +154,9 @@ void msgwin_init(void)
 	g_signal_connect(msgwindow.scribble, "populate-popup",
 					 G_CALLBACK(on_scribble_populate), NULL);
 	
-	load_color("geany-compiler-error", &color_error);
-	load_color("geany-compiler-context", &color_context);
-	load_color("geany-compiler-message", &color_message);
+	ui_load_color("geany-compiler-error", &color_error);
+	ui_load_color("geany-compiler-context", &color_context);
+	ui_load_color("geany-compiler-message", &color_message);
 }
 
 
