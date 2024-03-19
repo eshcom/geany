@@ -2058,6 +2058,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			static gchar tmp_scope[GEANY_MAX_WORD_LENGTH];
 			ScopeBound tmp_bound, scopebound;
 			
+			guint scope_parts_cnt = 0;
+			
 			while (TRUE)
 			{
 				tmp_bound = find_next_scope(editor, chunk, lang, pos, context_sep,
@@ -2068,6 +2070,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				g_strlcpy(scope, tmp_scope, scopelen);
 				scopebound = tmp_bound;
 				pos = scopebound.bound.start;
+				
+				scope_parts_cnt++;
 			}
 			
 			if (*scope != '\0')
@@ -2082,8 +2086,12 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 				
 				if (tm_parser_undefined_scope(scope, lang, prefix,
 											  scopebound.brackets))
-					*scope = '\0';
-				
+				{
+					if (tm_parser_complex_scope(scope_parts_cnt, lang))
+						g_strlcpy(scope, "*", scopelen);
+					else
+						*scope = '\0';
+				}
 				g_free(prefix);
 			}
 		}

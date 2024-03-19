@@ -466,6 +466,15 @@ void run_test_case09()
 	printf("compare2: %i\n", utils_filename_has_prefix2(str1, str2));
 }
 
+void run_test_case10()
+{
+	gchar *str1 = NULL;
+	gchar *str2 = "*";
+	
+	printf("compare1: %i\n", g_strcmp0(str1, "*"));
+	printf("compare2: %i\n", g_strcmp0(str2, "*"));
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -476,7 +485,8 @@ int main(void)
 	//~ run_test_case06();
 	//~ run_test_case07();
 	//~ run_test_case08();
-	run_test_case09();
+	//~ run_test_case09();
+	run_test_case10();
 	
 	return 0;
 }
