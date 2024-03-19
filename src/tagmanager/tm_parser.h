@@ -135,6 +135,8 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang);
 gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 								   gchar *prefix, gboolean brackets);
 
+gboolean tm_parser_complex_scope(guint scope_parts_cnt, TMParserType lang);
+
 gboolean tm_parser_strict_scope(TMParserType lang);
 
 void tm_parser_define_type(TMTagType *type, TMParserType lang,

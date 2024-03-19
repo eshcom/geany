@@ -870,6 +870,21 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 	return FALSE;
 }
 
+gboolean tm_parser_complex_scope(guint scope_parts_cnt, TMParserType lang)
+{
+	switch (lang)
+	{
+		case TM_PARSER_PYTHON:
+			if (scope_parts_cnt > 1)
+				return TRUE;
+			break;
+		
+		default:
+			break;
+	}
+	return FALSE;
+}
+
 gboolean tm_parser_strict_scope(TMParserType lang)
 {
 	//~ esh: add langs to exclude here as needed
