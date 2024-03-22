@@ -194,6 +194,7 @@ inline T MakeLowerCase(T ch) {
 
 int CompareCaseInsensitive(const char *a, const char *b);
 int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
+void RemoveAllSpaces(char *s);
 
 // esh: moved from LexCPP.cxx
 struct EscapeSequence {

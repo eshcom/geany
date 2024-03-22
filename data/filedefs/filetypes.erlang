@@ -23,9 +23,11 @@ macro_quoted=default
 record_quoted=default
 node_name_quoted=default
 bifs=keyword_2
+bims=default
 modules=default
-modules_att=preprocessor
+module_att=preprocessor
 other_att=preprocessor
+predef_macro=preprocessor
 unknown=default
 atom_spec=default
 escapesequence=string_1
@@ -36,15 +38,17 @@ map_oper=operator
 # all items must be in one line
 keywords=after and andalso band begin bnot bor bsl bsr bxor case catch cond div end fun if let not of or orelse query receive rem try when xor
 # Erlang built-in functions (BIFs)
-bifs=abs adler32 adler32_combine append_element apply atom_to_binary atom_to_list binary_to_atom binary_to_existing_atom binary_to_list binary_to_term bit_size bitstring_to_list bump_reductions byte_size cancel_timer check_process_code concat_binary crc32 crc32_combine date decode_packet delete_module demonitor disconnect_node display element erase error exit float float_to_list fun_info fun_to_list function_exported garbage_collect get get_cookie get_keys get_stacktrace group_leader halt hash hd hibernate integer_to_list iolist_size iolist_to_binary is_alive is_atom is_binary is_bitstring is_boolean is_builtin is_float is_function is_integer is_list is_number is_pid is_port is_process_alive is_record is_reference is_tuple length link list_to_atom list_to_binary list_to_bitstring list_to_existing_atom list_to_float list_to_integer list_to_pid list_to_tuple load_module load_nif loaded localtime localtime_to_universaltime make_ref make_tuple max md5 md5_final md5_init md5_update memory min module_loaded monitor monitor_node node nodes now open_port phash phash2 pid_to_list port_call port_close port_command port_connect port_control port_info port_to_list ports pre_loaded process_display process_flag process_info processes purge_module put raise read_timer ref_to_list register registered resume_process round self send send_after send_nosuspend set_cookie setelement size spawn spawn_link spawn_monitor spawn_opt split_binary start_timer statistics suspend_process system_flag system_info system_monitor system_profile term_to_binary throw time tl trace trace_delivered trace_info trace_pattern trunc tuple_size tuple_to_list universaltime universaltime_to_localtime unlink unregister whereis yield
+bifs=abs adler32 adler32_combine alias append_element apply atom_to_binary atom_to_list binary_part binary_to_atom binary_to_existing_atom binary_to_float binary_to_integer binary_to_list binary_to_term bit_size bitstring_to_list bump_reductions byte_size cancel_timer ceil check_old_code check_process_code concat_binary convert_time_unit crc32 crc32_combine date decode_packet delete_element delete_module demonitor disconnect_node display dist_ctrl_get_data dist_ctrl_get_data_notification dist_ctrl_get_opt dist_ctrl_input_handler dist_ctrl_put_data dist_ctrl_set_opt element erase error exit external_size float float_to_binary float_to_list floor fun_info fun_to_list function_exported garbage_collect get get_cookie get_keys get_stacktrace group_leader halt hash hd hibernate insert_element integer_to_binary integer_to_list iolist_size iolist_to_binary iolist_to_iovec is_alive is_atom is_binary is_bitstring is_boolean is_builtin is_float is_function is_integer is_list is_map is_map_key is_number is_pid is_port is_process_alive is_record is_reference is_tuple length link list_to_atom list_to_binary list_to_bitstring list_to_existing_atom list_to_float list_to_integer list_to_pid list_to_port list_to_ref list_to_tuple load_module load_nif loaded localtime localtime_to_universaltime make_ref make_tuple map_get map_size match_spec_test max md5 md5_final md5_init md5_update memory min module_loaded monitor monitor_node monotonic_time nif_error node nodes now open_port phash phash2 pid_to_list port_call port_close port_command port_connect port_control port_info port_to_list ports pre_loaded process_display process_flag process_info processes purge_module put raise read_timer record_info ref_to_list register registered resume_process round self send send_after send_nosuspend set_cookie setelement size spawn spawn_link spawn_monitor spawn_opt spawn_request spawn_request_abandon split_binary start_timer statistics suspend_process system_flag system_info system_monitor system_profile system_time term_to_binary term_to_iovec throw time time_offset timestamp tl trace trace_delivered trace_info trace_pattern trunc tuple_size tuple_to_list unalias unique_integer universaltime universaltime_to_localtime unlink unregister whereis yield
+# Erlang built-in modules (BIMs)
+bims=application argparse array auth base64 beam_lib binary c calendar code crypto dets dict digraph digraph_utils disk_log edlin edlin_expand epp erl_anno erl_boot_server erl_ddll erl_epmd erl_error erl_eval erl_expand_records erl_features erl_id_trans erl_internal erl_lint erl_parse erl_pp erl_prim_loader erl_scan erl_tar erlang erpc error error_handler error_logger ets exit file file_sorter filelib filename gb_sets gb_trees gen_event gen_fsm gen_sctp gen_server gen_statem gen_tcp gen_udp global global_group heart inet inet_res init io io_lib jsx lists log_mf_h logger logger_disk_log_h logger_filters logger_formatter logger_std_h maps math ms_transform net net_adm net_kernel orddict ordsets os peer pg pool proc_lib proplists qlc queue rand random re rpc seq_trace sets shell shell_default shell_docs slave socket sofs string supervisor supervisor_bridge sys throw timer unicode uri_string win32reg wrap_log_reader zip zlib
 # Erlang preprocessor instructions
 preproc=-define -elif -else -endif -error -if -ifdef -ifndef -include -include_lib -undef -warning
 # Erlang module attributes
-module=-behavior -behaviour -callback -compile -export -export_type -file -import -module -on_load -opaque -record -spec -type -vsn
-# Erlang other attributes
-other_att=-author -created -created_by -modified -modified_by -revision -version
+module_att=-behavior -behaviour -callback -compile -dialyzer -export -export_type -feature -file -import -module -nifs -on_load -opaque -record -spec -type -vsn
+# Erlang predefined macros
+predef_macro=?FEATURE_AVAILABLE ?FEATURE_ENABLED ?FILE ?FUNCTION_ARITY ?FUNCTION_NAME ?LINE ?MACHINE ?MODULE ?MODULE_STRING ?OTP_RELEASE
 # Erlang documentation helpers
-doc=@author @clear @copyright @deprecated @doc @docfile @end @equiv @headerfile @hidden @private @reference @see @since @spec @throws @title @todo @TODO @type @version
+doc=@author @clear @copyright @deprecated @doc @docfile @end @equiv @headerfile @hidden @private @reference @see @since @spec @throws @title @todo @TODO
 # Erlang documentation macros
 doc_macro=@date @docRoot @link @module @package @section @time @type @version
 # Erlang atom special
