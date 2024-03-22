@@ -2663,7 +2663,7 @@ fun void Colourise=4003(position start, position end)
 set void SetProperty=4004(string key, string value)
 
 # Maximum value of keywordSet parameter of SetKeyWords.
-val KEYWORDSET_MAX=8
+val KEYWORDSET_MAX=10
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)
@@ -3915,14 +3915,16 @@ val SCE_ERLANG_MACRO_QUOTED=19
 val SCE_ERLANG_RECORD_QUOTED=20
 val SCE_ERLANG_NODE_NAME_QUOTED=21
 val SCE_ERLANG_BIFS=22
-val SCE_ERLANG_MODULES=23
-val SCE_ERLANG_MODULES_ATT=24
-val SCE_ERLANG_OTHER_ATT=25
-val SCE_ERLANG_ATOM_SPEC=26
-val SCE_ERLANG_ESCAPESEQUENCE=27
-val SCE_ERLANG_FORMATSEQUENCE=28
-val SCE_ERLANG_MAP_OPER=29
-val SCE_ERLANG_UNKNOWN=31
+val SCE_ERLANG_BIMS=23
+val SCE_ERLANG_MODULES=24
+val SCE_ERLANG_MODULE_ATT=25
+val SCE_ERLANG_OTHER_ATT=26
+val SCE_ERLANG_PREDEF_MACRO=27
+val SCE_ERLANG_ATOM_SPEC=28
+val SCE_ERLANG_ESCAPESEQUENCE=29
+val SCE_ERLANG_FORMATSEQUENCE=30
+val SCE_ERLANG_MAP_OPER=31
+val SCE_ERLANG_UNKNOWN=40
 # Lexical states for SCLEX_OCTAVE are identical to MatLab
 lex Octave=SCLEX_OCTAVE SCE_MATLAB_
 # Lexical states for SCLEX_MSSQL

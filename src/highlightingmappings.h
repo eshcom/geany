@@ -604,9 +604,11 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_RECORD_QUOTED,		"record_quoted",		FALSE },
 	{ SCE_ERLANG_NODE_NAME_QUOTED,	"node_name_quoted",		FALSE },
 	{ SCE_ERLANG_BIFS,				"bifs",					FALSE },
+	{ SCE_ERLANG_BIMS,				"bims",					FALSE },
 	{ SCE_ERLANG_MODULES,			"modules",				FALSE },
-	{ SCE_ERLANG_MODULES_ATT,		"modules_att",			FALSE },
+	{ SCE_ERLANG_MODULE_ATT,		"module_att",			FALSE },
 	{ SCE_ERLANG_OTHER_ATT,			"other_att",			FALSE },
+	{ SCE_ERLANG_PREDEF_MACRO,		"predef_macro",			FALSE },
 	{ SCE_ERLANG_ATOM_SPEC,			"atom_spec",			FALSE },
 	{ SCE_ERLANG_ESCAPESEQUENCE,	"escapesequence",		FALSE },
 	{ SCE_ERLANG_FORMATSEQUENCE,	"formatsequence",		FALSE },
@@ -615,14 +617,15 @@ static const HLStyle highlighting_styles_ERLANG[] =
 };
 static const HLKeyword highlighting_keywords_ERLANG[] =
 {
-	{ 0, "keywords",	FALSE },
-	{ 1, "bifs",		FALSE },
-	{ 2, "preproc",		FALSE },
-	{ 3, "module",		FALSE },
-	{ 4, "other_att",	FALSE },
-	{ 5, "doc",			FALSE },
-	{ 6, "doc_macro",	FALSE },
-	{ 7, "atom_spec",	FALSE }
+	{ 0, "keywords",		FALSE },
+	{ 1, "bifs",			FALSE },
+	{ 2, "bims",			FALSE },
+	{ 3, "preproc",			FALSE },
+	{ 4, "module_att",		FALSE },
+	{ 5, "predef_macro",	FALSE },
+	{ 6, "doc",				FALSE },
+	{ 7, "doc_macro",		FALSE },
+	{ 8, "atom_spec",		FALSE }
 };
 #define highlighting_properties_ERLANG	EMPTY_PROPERTIES
 
