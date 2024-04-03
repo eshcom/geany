@@ -475,6 +475,24 @@ void run_test_case10()
 	printf("compare2: %i\n", g_strcmp0(str2, "*"));
 }
 
+void run_test_case11()
+{
+	printf("0 & 31: %i\n", 0 & 31);		// 0
+	printf("3 & 31: %i\n", 3 & 31);		// 3
+	printf("4 & 31: %i\n", 4 & 31);		// 4
+	printf("6 & 31: %i\n", 6 & 31);		// 6
+	printf("7 & 31: %i\n", 7 & 31);		// 7
+	printf("16 & 31: %i\n", 16 & 31);	// 16
+	printf("17 & 31: %i\n", 17 & 31);	// 17
+	printf("18 & 31: %i\n", 18 & 31);	// 18
+	printf("19 & 31: %i\n", 19 & 31);	// 19
+	printf("30 & 31: %i\n", 30 & 31);	// 30
+	printf("31 & 31: %i\n", 31 & 31);	// 31
+	printf("32 & 31: %i\n", 32 & 31);	// 0
+	printf("40 & 31: %i\n", 40 & 31);	// 8
+	printf("41 & 31: %i\n", 41 & 31);	// 9
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -486,7 +504,8 @@ int main(void)
 	//~ run_test_case07();
 	//~ run_test_case08();
 	//~ run_test_case09();
-	run_test_case10();
+	//~ run_test_case10();
+	run_test_case11();
 	
 	return 0;
 }
