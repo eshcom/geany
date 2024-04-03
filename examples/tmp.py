@@ -41,14 +41,34 @@ timeit.timeit("""name = "Eric"
 				 age = 74
 				 f'{name} is {age}.'""", number = 10000)
 
+test = f"{70 + 4}"			# '74'
 test = f"{{70 + 4}}"		# '{70 + 4}'
 test = f"{{{70 + 4}}}"		# '{74}'
 test = f"{{{{70 + 4}}}}"	# '{{70 + 4}}'
+test = f""{70 + 4}""		# invalid syntax
+test = f"""{70 + 4}"""		# '74'
 
-test = f"{'Eric Idle'}"
-test = f'{"Eric Idle"}'
-test = f"""Eric Idle"""
-test = f'''Eric Idle'''
+test = f'{70 + 4}'			# '74'
+test = f'{{70 + 4}}'		# '{70 + 4}'
+test = f'{{{70 + 4}}}'		# '{74}'
+test = f'{{{{70 + 4}}}}'	# '{{70 + 4}}'
+test = f''{70 + 4}''		# invalid syntax
+test = f'''{70 + 4}'''		# '74'
+
+test = f'{'					# invalid syntax
+test = f"{"					# invalid syntax
+test = f'''{'''				# invalid syntax
+test = f"""{"""				# invalid syntax
+
+test = f'\'%d\n%s'		% (123, "test") # "'123\ntest"
+test = f"\"%d\n%s"		% (123, "test") # '"123\ntest'
+test = f'''\'%d\n%s'''	% (123, "test") # "'123\ntest"
+test = f"""\"%d\n%s"""	% (123, "test") # '"123\ntest'
+
+test = f"{'Eric Idle'}"		# 'Eric Idle'
+test = f'{"Eric Idle"}'		# 'Eric Idle'
+test = f"""Eric Idle"""		# 'Eric Idle'
+test = f'''Eric Idle'''		# 'Eric Idle'
 test = f"The \"comedian\" is {name}, aged {age}."
 test = f"{new_comedian!r}"
 test = f"{name.lower()} is funny."
