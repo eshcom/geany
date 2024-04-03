@@ -18,10 +18,12 @@ operator=operator
 identifier=identifier_1
 commentblock=comment
 stringeol=string_eol
-# word2 - style for identifiers and identifiers_bif keywords
+# word2 - style for identifiers keywords
 word2=keyword_2
-# word2_add - style for identifiers_add keywords
-word2_add=keyword_2
+# word2_bie - style for identifiers_bie keywords
+word2_bie=keyword_2
+# word2_bif - style for identifiers_bif keywords
+word2_bif=keyword_2
 # word2_same_bif - style for identifiers_bif keywords, but w/o opening brace
 word2_same_bif=keyword_2
 decorator=decorator
@@ -41,12 +43,12 @@ formatsequence=string_1
 primary=and as assert async await break class continue def del elif else except exec finally for from global if import in is lambda nonlocal not or pass print raise return try while with yield
 # Python 2&3 keywords additional
 primary_add=
-# Python 2&3 builtins (minus ones in primary and primary_add)
-identifiers=ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StandardError StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError __build_class__ __debug__ __doc__ __import__ __loader__ __name__ __package__ __spec__ abs all any apply ascii basestring bin bool breakpoint buffer bytearray bytes callable chr classmethod cmp coerce compile complex copyright credits delattr dict dir divmod enumerate eval execfile exit file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len license list locals long map max memoryview min next object oct open ord pow property quit range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip
-# Python 2&3 built-in functions (will be highlighted as identifiers)
+# Python 2&3 built-in (minus ones in primary and primary_add)
+identifiers=ArithmeticError AssertionError AttributeError BaseException BaseExceptionGroup BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EncodingWarning EnvironmentError Exception ExceptionGroup FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StandardError StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError __build_class__ __debug__ __doc__ __import__ __loader__ __name__ __package__ __spec__ abs aiter all anext any apply ascii basestring bin bool breakpoint buffer bytearray bytes callable chr classmethod cmp coerce compile complex copyright credits delattr dict dir divmod enumerate eval execfile exit file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len license list locals long map max memoryview min next object oct open ord pow property quit range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip
+# Python 2&3 built-in exceptions
+identifiers_bie=
+# Python 2&3 built-in functions
 identifiers_bif=
-# Python 2&3 builtins additional
-identifiers_add=
 # Common keywords
 commonword=None True False
 # Reference name to the current class instance (eg. self)

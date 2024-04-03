@@ -439,3 +439,13 @@ class CellRendererGraph(gtk.GenericCellRenderer):
 			ctx.set_dash(dashes)
 		ctx.stroke()
 		ctx.set_dash([])
+
+if __name__ == "__main__":
+	from rabbitvcs.ui import main
+	(options, url) = main(
+		usage="Usage: rabbitvcs browser [url]"
+	)
+	
+	window = browser_factory(url[0])
+	window.register_gtk_quit()
+	gtk.main()

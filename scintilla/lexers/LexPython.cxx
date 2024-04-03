@@ -274,9 +274,12 @@ struct OptionsPython {
 
 static const char *const pythonWordListDesc[] = {
 	"Keywords",
-	"Highlighted identifiers",
-	"Common keywords and identifiers",
+	"Built-in identifiers (everything that didn't fall into built-in exceptions/functions)",
+	"Common keywords (eg. True/False/None)",
 	"Reference name to the current class instance (eg. self)",
+	"Additional keywords (eg. import)",
+	"Built-in exceptions",
+	"Built-in functions",
 	0
 };
 
@@ -357,10 +360,11 @@ LexicalClass lexicalClasses[] = {
 	20, "SCE_P_COMMONWORD", "keyword", "Common keywords (None True False)",
 	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
 	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
-	23, "SCE_P_WORD2_ADD", "identifier", "Highlighted identifiers additional",
-	24, "SCE_P_WORD2_SAME_BIF", "identifier", "Highlighted bif-keywords, but w/o opening brace",
-	25, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
-	26, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
+	23, "SCE_P_WORD2_BIE", "identifier", "Highlighted Built-in Exceptions",
+	24, "SCE_P_WORD2_BIF", "identifier", "Highlighted Built-in Functions",
+	25, "SCE_P_WORD2_SAME_BIF", "identifier", "Highlighted BIFs, but w/o opening brace",
+	26, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+	27, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
 };
 
 }
@@ -369,7 +373,7 @@ class LexerPython : public DefaultLexer {
 	WordList keywords;
 	WordList keywordsAdd;
 	WordList keywords2;
-	WordList keywords2Add;
+	WordList keywords2Bie;
 	WordList keywords2Bif;
 	WordList commonWords;
 	WordList refclassWords;
@@ -467,25 +471,25 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 	WordList *wordListN = 0;
 	switch (n) {
 	case 0:
-		wordListN = &keywords;
+		wordListN = &keywords;			// primary
 		break;
 	case 1:
-		wordListN = &keywords2;
+		wordListN = &keywords2;			// identifiers
 		break;
 	case 2:
-		wordListN = &commonWords;
+		wordListN = &commonWords;		// commonword
 		break;
 	case 3:
-		wordListN = &refclassWords;
+		wordListN = &refclassWords;		// refclassword
 		break;
 	case 4:
-		wordListN = &keywordsAdd;
+		wordListN = &keywordsAdd;		// primary_add
 		break;
 	case 5:
-		wordListN = &keywords2Add;
+		wordListN = &keywords2Bie;		// identifiers_bie
 		break;
 	case 6:
-		wordListN = &keywords2Bif;
+		wordListN = &keywords2Bif;		// identifiers_bif
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -754,11 +758,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
 						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
-							style = SCE_P_WORD2;
+							style = SCE_P_WORD2_BIF;
 					} else {
-						style = SCE_P_WORD2;
+						style = SCE_P_WORD2_BIF;
 					}
-					if (style == SCE_P_WORD2)
+					if (style == SCE_P_WORD2_BIF)
 					{
 						Sci_Position pos = sc.currentPos;
 						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
@@ -774,16 +778,16 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 							}
 						}
 					}
-				} else if (keywords2Add.InList(s)) {
+				} else if (keywords2Bie.InList(s)) {
 					if (options.keywords2NoSubIdentifiers) {
-						// We don't want to highlight keywords2Add
+						// We don't want to highlight keywords2Bie
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
 						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
-							style = SCE_P_WORD2_ADD;
+							style = SCE_P_WORD2_BIE;
 					} else {
-						style = SCE_P_WORD2_ADD;
+						style = SCE_P_WORD2_BIE;
 					}
 				} else {
 					int subStyle = classifierIdentifiers.ValueFor(s);
