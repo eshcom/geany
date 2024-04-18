@@ -612,37 +612,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	
-	// esh: this block code not actual with new block code with detect stringState (see below)
-	// 		and new check sc.state on string-state in sc.atLineStart case in loop (see below)
-	
-	// Backtrack to previous line in case need to fix its tab whinging
-	//~ if (startPos > 0) {
-		//~ if (lineCurrent > 0) {
-			//~ // Look for backslash-continued lines
-			//~ int eolStyle;
-			//~ while (--lineCurrent > 0) {
-				//~ eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
-				//~ if (eolStyle != SCE_P_STRING
-					//~ && eolStyle != SCE_P_CHARACTER
-					//~ && eolStyle != SCE_P_STRINGEOL)
-					//~ break;
-			//~ }
-			//~ Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
-			//~ length += (startPos - newStartPos);
-			//~ startPos = newStartPos;
-			//~ initStyle = startPos == 0 ? SCE_P_DEFAULT
-									  //~ : styler.StyleAt(startPos - 1);
-		//~ }
-	//~ }
-	
 	const literalsAllowed allowedLiterals = options.AllowedLiterals();
 	
 	initStyle = initStyle & 31;
-	// esh: in line 806 we added check (sc.state == SCE_P_STRINGEOL),
-	// 		which solves this case better, this block code not actual:
-	//~ if (initStyle == SCE_P_STRINGEOL) {
-		//~ initStyle = SCE_P_DEFAULT;
-	//~ }
 	
 	// esh: added stringState for escape sequences highlighting
 	int stringState = -1;
