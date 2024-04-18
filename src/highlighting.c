@@ -1510,7 +1510,9 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_P_FTRIPLEDOUBLE ||
 					style == SCE_P_STRINGEOL ||
 					style == SCE_P_ESCAPESEQUENCE ||
-					style == SCE_P_FORMATSEQUENCE);
+					style == SCE_P_FORMATSEQUENCE ||
+					style == SCE_P_FSTRING_SUBOPER ||
+					style == SCE_P_FSTRING_OPTION);
 		
 		case SCLEX_F77:
 		case SCLEX_FORTRAN:
