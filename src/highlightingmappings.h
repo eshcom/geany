@@ -1338,7 +1338,8 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_ESCAPESEQUENCE,		"escapesequence",	FALSE },
 	{ SCE_P_FORMATSEQUENCE,		"formatsequence",	FALSE },
 	{ SCE_P_FSTRING_SUBOPER,	"fstring_suboper",	FALSE },
-	{ SCE_P_FSTRING_OPTION,		"fstring_option",	FALSE }
+	{ SCE_P_FSTRING_OPTION,		"fstring_option",	FALSE },
+	{ SCE_P_STRING_CONTINUED,	"string_continued",	FALSE }
 };
 static const HLKeyword highlighting_keywords_PYTHON[] =
 {
