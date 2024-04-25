@@ -95,12 +95,14 @@ bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
 bool IsPyNestedStringState(int st) {
 	return (st == SCE_P_ESCAPESEQUENCE ||
 			st == SCE_P_FORMATSEQUENCE ||
-			st == SCE_P_STRINGEOL);
+			st == SCE_P_STRINGEOL ||
+			st == SCE_P_STRING_CONTINUED);
 }
 
 int GetSaveStringState(int st, int stringState) {
 	return (st == SCE_P_ESCAPESEQUENCE ||
-			st == SCE_P_FORMATSEQUENCE) ? stringState : st;
+			st == SCE_P_FORMATSEQUENCE ||
+			st == SCE_P_STRING_CONTINUED) ? stringState : st;
 }
 
 bool IsPyFStringState(int st, int stringState) {
@@ -382,6 +384,7 @@ LexicalClass lexicalClasses[] = {
 	27, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
 	28, "SCE_P_FSTRING_SUBOPER", "literal string", "F-String sub-oper",
 	29, "SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
+	30, "SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
 };
 
 }
@@ -548,6 +551,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		
 	} else if (IsPySingleQuoteStringState(saveState)) {
 		if (inContinuedString || options.stringsOverNewline) {
+			sc.SetState(saveState);
 			inContinuedString = false;
 		} else {
 			sc.ChangeState(SCE_P_STRINGEOL);
@@ -585,8 +589,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	if (sc.ch == '\\') {													\
 		if (IsPySingleQuoteStringState(stringState) &&						\
 			(IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos)) {		\
-			sc.SetState(stringState);										\
-																			\
+			sc.SetState(SCE_P_STRING_CONTINUED);							\
 			inContinuedString = true;										\
 			if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))			\
 				sc.Forward();												\
@@ -939,6 +942,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		} else if (IsPySingleQuoteStringState(sc.state)) {
 			if (sc.ch == '\\') {
 				if (IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos) {
+					stringState = sc.state;
+					sc.SetState(SCE_P_STRING_CONTINUED);
 					inContinuedString = true;
 					if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
 						sc.Forward();
