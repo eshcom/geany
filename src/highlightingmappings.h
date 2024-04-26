@@ -265,7 +265,8 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
 	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE },
 	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE },
-	{ SCE_C_BIFS,					"bifs",						FALSE }
+	{ SCE_C_BIFS,					"bifs",						FALSE },
+	{ SCE_C_STRING_CONTINUED,		"string_continued",			FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {

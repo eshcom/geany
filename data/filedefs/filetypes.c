@@ -33,6 +33,7 @@ escapesequence=string_1
 formatsequence=string_1
 commonword=keyword_1
 otherclass=class
+string_continued=string_1
 
 [keywords]
 # all items must be in one line
