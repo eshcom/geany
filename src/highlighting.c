@@ -1485,7 +1485,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_C_REGEX ||
 					style == SCE_C_HASHQUOTEDSTRING ||
 					style == SCE_C_ESCAPESEQUENCE ||
-					style == SCE_C_FORMATSEQUENCE);
+					style == SCE_C_FORMATSEQUENCE ||
+					style == SCE_C_STRING_CONTINUED);
 		
 		case SCLEX_PASCAL:
 			return (style == SCE_PAS_CHARACTER ||

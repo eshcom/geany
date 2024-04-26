@@ -206,13 +206,19 @@ constexpr bool IsStreamCommentStyle(int style) noexcept {
 constexpr bool IsNestedStringStyle(int style) noexcept {
 	return (style == SCE_C_ESCAPESEQUENCE ||
 			style == SCE_C_FORMATSEQUENCE ||
-			style == SCE_C_STRINGEOL);
+			style == SCE_C_STRINGEOL ||
+			style == SCE_C_STRING_CONTINUED);
 }
 
 constexpr bool IsQuoteStringStyle(int style) noexcept {
 	return (style == SCE_C_STRING ||
 			style == SCE_C_STRINGJSONKEY ||
 			style == SCE_C_CHARACTER);
+}
+
+constexpr int GetSaveStringStyle(int style, int stringStyle) {
+	return (style == SCE_C_ESCAPESEQUENCE ||
+			style == SCE_C_FORMATSEQUENCE) ? stringStyle : style;
 }
 
 struct PPDefinition {
@@ -495,6 +501,7 @@ LexicalClass lexicalClasses[] = {
 	30, "SCE_C_OTHERCLASS", "identifier", "Other classes",
 	31, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
 	40, "SCE_C_BIFS", "bifs", "Built-in functions for Golang",
+	41, "SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
 };
 
 }
@@ -1017,24 +1024,26 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					rawSTNew.Set(lineCurrent - 1, rawStringTerminator);
 				}
 				
-				int maskActiveState = MaskActive(sc.state);
-				// esh: fixed highlighting multi-line strings with escape/format sequences
-				if (maskActiveState == SCE_C_ESCAPESEQUENCE ||
-					maskActiveState == SCE_C_FORMATSEQUENCE) {
-					sc.SetState(stringState|activitySet);
-				// esh: fixed highlighting backslash (line continuation symbol)
-				} else if (maskActiveState != SCE_C_STRING &&
-						   maskActiveState != SCE_C_CHARACTER &&
-						   maskActiveState != SCE_C_COMMENT &&
-						   maskActiveState != SCE_C_COMMENTDOC &&
-						   maskActiveState != SCE_C_COMMENTLINE &&
-						   maskActiveState != SCE_C_COMMENTLINEDOC &&
-						   maskActiveState != SCE_C_COMMENTDOCKEYWORD &&
-						   maskActiveState != SCE_C_COMMENTDOCKEYWORDERROR &&
-						   maskActiveState != SCE_C_PREPROCESSOR) {
+				int maskActiveState = GetSaveStringStyle(MaskActive(sc.state),
+														 stringState);
+				if (maskActiveState == SCE_C_STRING ||
+					maskActiveState == SCE_C_CHARACTER) {
+					sc.SetState(SCE_C_STRING_CONTINUED|activitySet);
+					sc.ForwardSetState(maskActiveState|activitySet);
+					
+				} else if (maskActiveState == SCE_C_COMMENT ||
+						   maskActiveState == SCE_C_COMMENTDOC ||
+						   maskActiveState == SCE_C_COMMENTLINE ||
+						   maskActiveState == SCE_C_COMMENTLINEDOC ||
+						   maskActiveState == SCE_C_COMMENTDOCKEYWORD ||
+						   maskActiveState == SCE_C_COMMENTDOCKEYWORDERROR ||
+						   maskActiveState == SCE_C_PREPROCESSOR) {
+					sc.Forward();
+				} else {
+					// esh: fixed highlighting backslash (line continuation symbol)
 					sc.SetState(SCE_C_DEFAULT|activitySet);
+					sc.Forward();
 				}
-				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					// Even in UTF-8, \r and \n are separate
 					sc.Forward();
