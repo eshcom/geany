@@ -430,7 +430,7 @@ public:
 		gtk_im_context_get_preedit_string(im_context, &str, &attrs, &cursor_pos);
 		validUTF8 = g_utf8_validate(str, strlen(str), nullptr);
 		uniStr = g_utf8_to_ucs4_fast(str, strlen(str), &uniStrLen);
-		pscript = pango_script_for_unichar(uniStr[0]);
+		pscript = (PangoScript)g_unichar_get_script(uniStr[0]);
 	}
 	~PreEditString() {
 		g_free(str);
