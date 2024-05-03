@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 #  Copyright 2015 The Geany contributors
 #
@@ -100,13 +100,13 @@ class DoxygenProcess(object):
     def __init__(self):
         self.at = None
 
-    # http://stackoverflow.com/questions/4624062/get-all-text-inside-a-tag-in-lxml
+    # https://stackoverflow.com/questions/4624062/get-all-text-inside-a-tag-in-lxml
     @staticmethod
     def stringify_children(node):
         from lxml.etree import tostring
         from itertools import chain
         parts = ([node.text] +
-                 list(chain(*([c.text, tostring(c).decode("utf-8"), c.tail] for c in node.getchildren()))) +
+                 list(chain(*([c.text, tostring(c, encoding='unicode'), c.tail] for c in node.getchildren()))) +
                  [node.tail])
         # filter removes possible Nones in texts and tails
         return "".join(filter(None, parts))
@@ -121,9 +121,9 @@ class DoxygenProcess(object):
                 # <sp/> tags must be replaced with spaces, then just use the text
                 h = l.find("highlight")
                 if h is not None:
-                    html = tostring(h).decode("utf-8")
+                    html = tostring(h, encoding='unicode')
                     html = html.replace("<sp/>", " ")
-                    arr.append("  " + tostring(etree.HTML(html), method="text").decode("utf-8"))
+                    arr.append("  " + tostring(etree.HTML(html), method="text", encoding='unicode'))
         arr.append("]|")
         return "\n".join(arr)
 

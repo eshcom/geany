@@ -98,10 +98,10 @@ See `Committing`_ for more information.
 
 Windows tools
 -------------
-* Git: http://git-scm.com/ and http://msysgit.github.io/
-* diff, grep, etc: http://mingw.org/ or http://unxutils.sourceforge.net/
+* Git: https://git-scm.com/ and https://gitforwindows.org/
+* diff, grep, etc: https://www.msys2.org/ or https://unxutils.sourceforge.net/
 
-See also the 'Building on Windows' document on the website.
+See also the Geany wiki on how to build Geany on Windows at https://wiki.geany.org/howtos/win32/msys2.
 
 File organization
 -----------------
@@ -113,7 +113,7 @@ it's for.
 Plugin API code
 ---------------
 Please be aware that anything with a doc-comment (a comment with an
-extra asterix: ``/**``) is something in the plugin API. Things like
+extra asterisk: ``/**``) is something in the plugin API. Things like
 enums and structs can usually still be appended to, ensuring that all
 the existing elements stay in place - this will keep the ABI stable.
 
@@ -126,10 +126,18 @@ the existing elements stay in place - this will keep the ABI stable.
 
 Keeping the plugin ABI stable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Before the 1.0 release series, the ABI can change when necessary, and
-even the API can change. An ABI change just means that all plugins will
-not load and they must be rebuilt. An API change means that some plugins
-might not build correctly.
+In general the ABI changes as little as we can manage. The ABI number
+must match exactly between Geany and plugins, so an ABI change breaks
+all plugins until they are re-compiled. But sometimes it is absolutely
+necessary. Removing a feature or significantly changing the semantics
+of an existing feature require an ABI change since existing plugins may
+no longer work with the modified version of Geany.
+
+The API identifying number is increased whenever anything is added to
+the API so plugins can test if the feature is available. The API number
+required by a plugin needs only to be lower than the API Geany provides,
+so an increase in API number without a change in ABI will not stop
+plugins that need a lower number from working.
 
 If you're reordering or changing existing elements of structs that are
 used as part of the plugin API, you must increment GEANY_ABI_VERSION
@@ -167,11 +175,11 @@ unmanageable diffs.
 
 GTK versions & API documentation
 --------------------------------
-Geany requires GTK >= 2.24 or GTK 3 (with the --enable-gtk3 configure option)
-and GLib >= 2.32. API symbols from newer GTK/GLib versions should be 
-avoided or made optional to keep the source code building on older systems.
+Geany requires GTK >= 3.0 and GLib >= 2.32. API symbols from newer GTK/GLib
+versions should be avoided or made optional to keep the source code building
+on older systems.
 
-It is recommended to use the 2.24 API documentation of the GTK
+It is recommended to use the 3.0 API documentation of the GTK
 libs (including GLib, GDK and Pango) has the advantages
 that you don't get confused by any newer API additions and you
 don't have to take care about whether you can use them or not.
@@ -196,10 +204,7 @@ Coding
   them down into smaller static functions where possible. This makes code
   much easier to read and maintain.
 * Use GLib types and functions - gint not int, g_free() not free().
-* Your code should build against GLib 2.32 and GTK 2.24. At least for the
-  moment, we want to keep the minimum requirement for GTK at 2.24 (of
-  course, you can use the GTK_CHECK_VERSION macro to protect code using
-  later versions).
+* Your code should build against GLib 2.32 and GTK 3.24.
 * Variables should be declared (and initialized) as close as practical
   to their first use. This reduces the chances of intervening code being
   inserted between declaration and use, where the variable may be
@@ -489,16 +494,16 @@ Libraries
 ---------
 We try to use an unmodified version of Scintilla - any new lexers or
 other changes should be passed on to the maintainers at
-http://scintilla.org. We normally update to a new Scintilla release
+https://scintilla.org. We normally update to a new Scintilla release
 shortly after one is made. See also scintilla/README.
 
-Tagmanager was originally taken from Anjuta 1.2.2, and parts of it
-(notably c.c) have been merged from later versions of Anjuta and
-CTags. The independent Tagmanager library itself ceased development
-before Geany was started. It's source code parsing is mostly taken from
-Exuberant CTags (see http://ctags.sf.net). If appropriate it's good to
-pass language parser changes back to the CTags project.
-
+We use an unmodified subset of universal-ctags sources
+(https://github.com/universal-ctags/ctags) to parse open documents. We
+also use the great majority of unmodified universal-ctags parsers except
+a few outliers that are maintained by us (those whose file names start
+with `geany_`). We normally update to the latest version of
+universal-ctags shortly after making a Geany release and keep this
+version during the rest of the development cycle.
 
 Notes
 =====
@@ -517,7 +522,7 @@ printf("Prefix: %s", GEANY_PREFIX);
 
 Adding a source file foo.[hc] in src/ or plugins/
 -------------------------------------------------
-* Add foo.c, foo.h to SRCS in path/Makefile.am.
+* Add foo.c, foo.h to SRCS in path/Makefile.am and meson.build.
 * Add path/foo.c to po/POTFILES.in (for string translation).
 
 Adding a filetype
@@ -531,7 +536,7 @@ first (scintilla or ctags).
 If you want to reuse an existing lexer and/or tag parser, making a
 custom filetype is probably easier - it doesn't require any
 changes to the source code. Follow instructions in the manual:
-http://geany.org/manual/index.html#custom-filetypes. Don't forget to
+https://geany.org/manual/index.html#custom-filetypes. Don't forget to
 update the ``[Groups]`` section in ``filetype_extensions.conf``.
 
 .. warning::
@@ -550,9 +555,9 @@ The remaining notes relate mostly to built-in filetypes.
 
 filetypes.* configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-All languages need a data/filetypes.foo configuration file. See
+All languages need a data/filedefs/filetypes.foo configuration file. See
 the "Filetype definition files" section in the manual and/or
-data/filetypes.c for an example.
+data/filedefs/filetypes.c for an example.
 
 Programming languages should have:
 
@@ -577,10 +582,12 @@ LexFoo.cxx. Try the official Scintilla project first.
     Scintilla. All new lexers should be submitted back to the Scintilla
     project to save duplication of work.
 
-When adding a lexer, update:
+When adding a lexer:
 
-* scintilla/Makefile.am
-* scintilla/src/Catalogue.cxx - add a LINK_LEXER command *manually*
+* add LexFoo.cxx to scintilla/lexilla/lexers
+* add `&lmFoo` to scintilla/lexilla/src/Lexilla.cxx and
+  scintilla/scintilla_changes.patch
+* update scintilla/Makefile.am and meson.build
 
 For syntax highlighting, you will need to edit highlighting.c and
 highlightingmappings.h and add the following things:
@@ -608,8 +615,8 @@ highlightingmappings.h and add the following things:
    a. Add ``init_styleset_case(FOO);`` in ``highlighting_init_styles()``.
    b. Add ``styleset_case(FOO);`` in ``highlighting_set_styles()``.
 
-3. Write data/filetypes.foo configuration file [styling] section. See
-   the manual and see data/filetypes.d for a named style example.
+3. Write data/filedefs/filetypes.foo configuration file [styling] section. See
+   the manual and see data/filedefs/filetypes.d for a named style example.
 
 .. note::
     Please try to make your styles fit in with the other filetypes'
@@ -640,54 +647,47 @@ For brace indentation, update lexer_has_braces() in editor.c;
 indentation after ':' is done from on_new_line_added().
 
 If the Scintilla lexer supports user type keyword highlighting (e.g.
-SCLEX_CPP), update document_update_tags() in document.c.
+SCLEX_CPP), update document_highlight_tags() in document.c.
 
-Adding a TagManager parser
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+If the filetype is a scripting language and the interpreter can be started
+using a shebang, update find_shebang() in filetypes.c.
+
+Update editor_set_indentation_guides() in editor.c if needed.
+
+Adding a CTags parser
+^^^^^^^^^^^^^^^^^^^^^
 This assumes the filetype for Geany already exists.
 
 First write or find a CTags compatible parser, foo.c. Check this fork:
 https://github.com/universal-ctags/ctags
 
-There may be some unmerged language patches for CTags at:
-http://sf.net/projects/ctags - see the tracker.
-
-(You can also try the Anjuta project's anjuta-tags codebase.)
-
-.. note::
-    From Geany 1.22 GLib's GRegex engine is used instead of POSIX
-    regex, unlike CTags. It should be close enough to POSIX to work
-    OK.
-    We no longer support regex parsers with the "b" regex flag
-    option set and Geany will print debug warnings if it's used.
-    CTags supports it but doesn't currently (2011) include any
-    parsers that use it. It should be easy to convert to extended
-    regex syntax anyway.
-
 Method
 ``````
-* Add foo.c to SRCS in Makefile.am.
-* Add Foo to parsers.h
+* Add ctags/parsers/foo.c to ``parsers`` in ctags/Makefile.am and to the
+  ``ctags`` library in meson.build.
+* Add Foo to src/tagmanager/tm_parsers.h
 * Add TM_PARSER_FOO to src/tagmanager/tm_parser.h.  The list here must follow
-  exactly the order in parsers.h.
+  exactly the order in src/tagmanager/tm_parsers.h.
 
 In src/tagmanager/tm_parser.c:
 Add a map_FOO TMParserMapEntry mapping each kind's letter from foo.c's
 FooKinds to the appropriate TMTagType, and add the corresponding
 MAP_ENTRY(FOO) to parser_map.
-(You may want to make the symbols.c change before doing this).
 
 In src/tagmanager/tm_parser.c:
-Update tm_parser_context_separator() and tm_parser_has_full_context() to
-handle the new parser if applicable, by adding a TM_PARSER_FOO case entry.
+Add a group_FOO TMParserMapGroup defining root nodes of the symbol tree,
+used icons and TMTagType values grouped under the specified root.
+Multiple TMTagType values can be combined under a single root using |
+(bitwise OR).
+
+In src/tagmanager/tm_parser.c:
+Update various functions at the end of tm_parser.c to adjust Geany
+behavior to the behavior of the added parser. In particular, update
+tm_parser_scope_separator() and tm_parser_has_full_scope() so
+scope-related functionality works correctly.
 
 In filetypes.c, init_builtin_filetypes():
 Set the 2nd argument of the FT_INIT() macro for this filetype to FOO.
-
-In symbols.c:
-Unless your parser uses C-like tag type kinds, update
-add_top_level_items() for foo, calling tag_list_add_groups(). See
-get_tag_type_iter() for which tv_iters fields to use.
 
 Tests
 `````
@@ -704,13 +704,17 @@ It can be either long or short, depending on what it tests.
 
 The expected output should be in the file ``tests/ctags/mytest.ext.tags``
 (which is the same name as the source, but with ``.tags`` appended), and
-should be in the format generated by ``geany -g``. This file contains
-the tag information expected to be generated from the corresponding
-source file.
+should be in the format generated by::
+
+    $ geany -g tmp.ext.tags tests/ctags/mytest.ext
+    $ scripts/print-tags.py < tmp.ext.tags > tests/ctags/mytest.ext.tags
+
+This file contains the tag information expected to be generated from
+the corresponding source file together with its human-readable form.
 
 When you have these two files, you have to list your new test along the
-other ones in the ``test_source`` variable in ``tests/ctags/Makefile.am``.
-Please keep this list sorted alphabetically.
+other ones in the ``test_source`` variable in ``tests/ctags/Makefile.am``
+and ``tests/meson.build``. Please keep this list sorted alphabetically.
 
 Upgrading Scintilla
 -------------------
@@ -790,9 +794,6 @@ Building Plugins
 
 The geany-plugins autotools script automatically detects the
 installed system Geany and builds the plugins against that.
-
-Plugins will build with either GTK2 or GTK3, whichever the detected
-Geany was built with.
 
 To use plugins with a development version of Geany built with
 a different prefix, the plugins will need to be compiled against

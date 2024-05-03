@@ -44,7 +44,6 @@ typedef struct
 {
 	GtkWidget *vte;
 	GtkWidget *menu;
-	GtkWidget *im_submenu;
 	gboolean scroll_on_key;
 	gboolean scroll_on_out;
 	gboolean ignore_menu_bar_accel;
@@ -61,8 +60,8 @@ typedef struct
 	GdkColor colour_fore;
 	GdkColor colour_back;
 } VteConfig;
-extern VteConfig *vc;
 
+extern VteConfig vte_config;
 
 void vte_init(void);
 

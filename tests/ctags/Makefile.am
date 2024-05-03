@@ -19,6 +19,13 @@ test_sources = \
 	actionscript/method-attributes.as	\
 	actionscript/packages.as		\
 	actionscript/sampler.as			\
+	ada-adb.adb						\
+	ada-ads.ads						\
+	ada-expression-function.adb		\
+	ada-expression-function-generic.adb	\
+	ada-overriding.ads				\
+	ada-package-generic.ads			\
+	ada-task.adb					\
 	angle_bracket.cpp				\
 	anonymous_functions.php			\
 	arraylist.js					\
@@ -166,6 +173,9 @@ test_sources = \
 	fortran_associate.f90			\
 	fortran_line_continuation.f90	\
 	func_typedef.h					\
+	gdscript-inner-class.gd			\
+	gdscript-modifiers.gd			\
+	gdscript-no-implicit-class.gd	\
 	geany.nsi						\
 	general.cs						\
 	hex2dec.sql						\
@@ -192,6 +202,7 @@ test_sources = \
 	js-string-continuation.js		\
 	js-sub-block-scope.js			\
 	js-unknown-construct-nesting.js	\
+	julia-corner_cases.jl	\
 	jsFunc_tutorial.js				\
 	keyword_abstract.cs				\
 	keyword_catch_try.cs			\
@@ -241,6 +252,7 @@ test_sources = \
 	namespace.cpp					\
 	namespaces2.php					\
 	namespaces.php					\
+	nested_anon.c					\
 	no_terminator.js				\
 	non-ascii-ident1.php			\
 	numlib.f90						\
@@ -283,7 +295,10 @@ test_sources = \
 	signature.cpp					\
 	simple.abc						\
 	simple.asciidoc					\
+	simple.au3						\
 	simple.bas						\
+	simple.bat						\
+	simple.clj						\
 	simple.conf						\
 	simple.d						\
 	simple.diff						\
@@ -295,17 +310,21 @@ test_sources = \
 	simple.js						\
 	simple.json						\
 	simple.ksh						\
+	simple.lisp						\
 	simple.lua						\
 	simple.mak						\
 	simple.md						\
+	simple.ml						\
 	simple.php						\
 	simple.pl						\
 	simple.ps1						\
 	simple.py						\
+	simple.raku						\
 	simple.rb						\
 	simple.rst						\
 	simple.sh						\
 	simple.tcl						\
+	simple.ts						\
 	simple.vala						\
 	simple.zep						\
 	size_t_wchar_t_alias.d			\
@@ -323,7 +342,6 @@ test_sources = \
 	test.erl						\
 	test.go							\
 	test.py							\
-	test.vhd						\
 	test_input.rs					\
 	test_input2.rs					\
 	titles.t2t						\
@@ -333,12 +351,19 @@ test_sources = \
 	union.f							\
 	value.f							\
 	var-and-return-type.cpp			\
+	vhdl-component.vhd				\
+	vhdl-local.vhd					\
+	vhdl-port.vhd					\
+	vhdl-process.vhd				\
+	vhdl-type.vhd					\
 	whitespaces.php					\
 	$(NULL)
 test_results = $(test_sources:=.tags)
 
 TEST_EXTENSIONS = .tags
 TAGS_LOG_COMPILER = $(srcdir)/runner.sh
+AM_TAGS_LOG_FLAGS = $(top_builddir)/src/geany$(EXEEXT)
+AM_TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) top_builddir=$(top_builddir)
 
 TESTS = $(test_results)
 EXTRA_DIST = $(test_sources) $(test_results)
@@ -349,6 +374,6 @@ check_processing_order_sources = \
 EXTRA_DIST += $(check_processing_order_sources)
 .PHONY: check-processing-order
 check-processing-order: $(check_processing_order_sources)
-	srcdir="$(srcdir)" top_builddir="$(top_builddir)" \
-	$(srcdir)/runner.sh --result $(check_processing_order_sources:%=$(srcdir)/%)
+	$(AM_TESTS_ENVIRONMENT) \
+	$(srcdir)/runner.sh $(top_builddir)/src/geany$(EXEEXT) --result $(check_processing_order_sources:%=$(srcdir)/%)
 check-local: check-processing-order

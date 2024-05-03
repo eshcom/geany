@@ -1,11 +1,22 @@
-# format=tagmanager
 buildÃ16Œmaze÷0
+function:   maze :: build
 generateÃ16Œmaze÷0
+function:   maze :: generate
+mazeÃ256÷0
+namespace:  maze
 pickÃ16Œmaze÷0
+function:   maze :: pick
 scrambleÃ16Œmaze÷0
+function:   maze :: scramble
 seedÃ16Œmaze÷0
+function:   maze :: seed
 tot_getÃ16Œmaze÷0
+function:   maze :: tot_get
 tot_newÃ16Œmaze÷0
+function:   maze :: tot_new
 tot_printÃ16Œmaze÷0
+function:   maze :: tot_print
 tot_print_tupleÃ16Œmaze÷0
+function:   maze :: tot_print_tuple
 tot_putÃ16Œmaze÷0
+function:   maze :: tot_put

@@ -21,6 +21,7 @@
 		(c) == '-' || /* allowed char */ \
 		(c) == '+' || /* allow all sibling in a single tag */ \
 		(c) == '>' || /* allow all child in a single tag */ \
+		(c) == '~' || /* allow general sibling combinator */ \
 		(c) == '|' || /* allow namespace separator */ \
 		(c) == '(' || /* allow pseudo-class arguments */ \
 		(c) == ')' || \
@@ -143,7 +144,7 @@ static cssKind classifySelector (const vString *const selector)
 
 	for (i = vStringLength (selector); i > 0; --i)
 	{
-		char c = vStringItem (selector, i - 1);
+		char c = vStringChar (selector, i - 1);
 		if (c == '.')
 			return K_CLASS;
 		else if (c == '#')

@@ -227,7 +227,7 @@ signal void (*build_start)(GObject *obj, gpointer user_data);
  * @param obj a GeanyObject instance, should be ignored.
  * @param word the current word (in UTF-8 encoding) below the cursor position
  *        where the popup menu will be opened.
- * @param click_pos the cursor position where the popup will be opened.
+ * @param pos the cursor position where the popup will be opened.
  * @param doc the current document.
  * @param user_data user data.
  */
@@ -238,7 +238,7 @@ signal void (*update_editor_menu)(GObject *obj, const gchar *word, gint pos, Gea
  *
  * E.g. Character added, fold level changes, clicks to the line number margin.
  * A detailed description of possible notifications and the SCNotification can be found at
- * http://www.scintilla.org/ScintillaDoc.html#Notifications.
+ * https://www.scintilla.org/ScintillaDoc.html#Notifications.
  *
  * If you connect to this signal, you must check @c nt->nmhdr.code for the notification type
  * to prevent handling unwanted notifications. This is important because for instance SCN_UPDATEUI

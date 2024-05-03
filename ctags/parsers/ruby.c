@@ -15,6 +15,7 @@
 */
 #include "general.h"  /* must always come first */
 
+#include <ctype.h>
 #include <string.h>
 
 #include "debug.h"
@@ -23,28 +24,64 @@
 #include "nestlevel.h"
 #include "read.h"
 #include "routines.h"
+#include "strlist.h"
 #include "vstring.h"
 
 /*
 *   DATA DECLARATIONS
 */
 typedef enum {
-	K_UNDEFINED = -1, K_CLASS, K_METHOD, K_MODULE, K_SINGLETON,
+	K_UNDEFINED = -1,
+	K_CLASS,
+	K_METHOD,
+	K_MODULE,
+	K_SINGLETON,
+	K_CONST,
+	K_ACCESSOR,
+	K_ALIAS,
+	K_LIBRARY,
 } rubyKind;
+
+typedef enum {
+	RUBY_LIBRARY_REQUIRED,
+	RUBY_LIBRARY_REQUIRED_REL,
+	RUBY_LIBRARY_LOADED,
+} rubyLibraryRole;
 
 /*
 *   DATA DEFINITIONS
 */
+
+static roleDefinition RubyLibraryRoles [] = {
+	{ true, "required",  "loaded by \"require\" method" },
+	{ true, "requiredRel", "loaded by \"require_relative\" method" },
+	{ true, "loaded", "loaded by \"load\" method" },
+};
+
 static kindDefinition RubyKinds [] = {
 	{ true, 'c', "class",  "classes" },
 	{ true, 'f', "method", "methods" },
 	{ true, 'm', "module", "modules" },
-	{ true, 'F', "singletonMethod", "singleton methods" },
-#if 0
-	/* Following two kinds are reserved. */
-	{ true, 'd', "describe", "describes and contexts for Rspec" },
+	{ true, 'S', "singletonMethod", "singleton methods" },
 	{ true, 'C', "constant", "constants" },
-#endif
+	{ true, 'A', "accessor", "accessors" },
+	{ true, 'a', "alias",    "aliases" },
+	{ true, 'L', "library",  "libraries",
+	  .referenceOnly = true, ATTACH_ROLES(RubyLibraryRoles) },
+};
+
+typedef enum {
+	F_MIXIN,
+} rubyField;
+
+static fieldDefinition RubyFields[] = {
+	{ .name = "mixin",
+	  .description = "how the class or module is mixed in (mixin:HOW:MODULE)",
+	  .enabled = true },
+};
+
+struct blockData {
+	stringList *mixin;
 };
 
 static NestingLevels* nesting = NULL;
@@ -72,7 +109,7 @@ static vString* nestingLevelsToScope (const NestingLevels* nls)
 	vString* result = vStringNew ();
 	for (i = 0; i < nls->n; ++i)
 	{
-	    NestingLevel *nl = nestingLevelsGetNth (nls, i);
+	    NestingLevel *nl = nestingLevelsGetNthFromRoot (nls, i);
 	    tagEntryInfo *e = getEntryOfNestingLevel (nl);
 	    if (e && strlen (e->name) > 0 && (!e->placeholder))
 	    {
@@ -122,14 +159,24 @@ static bool notIdentChar (int c)
 	return ! isIdentChar (c);
 }
 
+static bool isOperatorChar (int c)
+{
+	return (c == '[' || c == ']' ||
+	        c == '=' || c == '!' || c == '~' ||
+	        c == '+' || c == '-' ||
+	        c == '@' || c == '*' || c == '/' || c == '%' ||
+	        c == '<' || c == '>' ||
+	        c == '&' || c == '^' || c == '|');
+}
+
 static bool notOperatorChar (int c)
 {
-	return ! (c == '[' || c == ']' ||
-	          c == '=' || c == '!' || c == '~' ||
-	          c == '+' || c == '-' ||
-	          c == '@' || c == '*' || c == '/' || c == '%' ||
-	          c == '<' || c == '>' ||
-	          c == '&' || c == '^' || c == '|');
+	return ! isOperatorChar (c);
+}
+
+static bool isSigilChar (int c)
+{
+	return (c == '@' || c == '$');
 }
 
 static bool isWhitespace (int c)
@@ -137,9 +184,70 @@ static bool isWhitespace (int c)
 	return c == 0 || isspace (c);
 }
 
+/*
+ * Advance 's' while the passed predicate is true. Returns true if
+ * advanced by at least one position.
+ */
+static bool advanceWhile (const unsigned char** s, bool (*predicate) (int))
+{
+	const unsigned char* original_pos = *s;
+
+	while (**s != '\0')
+	{
+		if (! predicate (**s))
+		{
+			return *s != original_pos;
+		}
+
+		(*s)++;
+	}
+
+	return *s != original_pos;
+}
+
 static bool canMatchKeyword (const unsigned char** s, const char* literal)
 {
 	return canMatch (s, literal, notIdentChar);
+}
+
+/*
+ * Extends canMatch. Works similarly, but allows assignment to precede
+ * the keyword, as block assignment is a common Ruby idiom.
+ */
+static bool canMatchKeywordWithAssign (const unsigned char** s, const char* literal)
+{
+	const unsigned char* original_pos = *s;
+
+	if (canMatchKeyword (s, literal))
+	{
+		return true;
+	}
+
+	advanceWhile (s, isSigilChar);
+
+	if (! advanceWhile (s, isIdentChar))
+	{
+		*s = original_pos;
+		return false;
+	}
+
+	advanceWhile (s, isWhitespace);
+
+	if (! (advanceWhile (s, isOperatorChar) && *(*s - 1) == '='))
+	{
+		*s = original_pos;
+		return false;
+	}
+
+	advanceWhile (s, isWhitespace);
+
+	if (canMatchKeyword (s, literal))
+	{
+		return true;
+	}
+
+	*s = original_pos;
+	return false;
 }
 
 /*
@@ -177,7 +285,7 @@ static bool parseRubyOperator (vString* name, const unsigned char** cp)
 /*
 * Emits a tag for the given 'name' of kind 'kind' at the current nesting.
 */
-static void emitRubyTag (vString* name, rubyKind kind)
+static int emitRubyTagFull (vString* name, rubyKind kind, bool pushLevel, bool clearName)
 {
 	tagEntryInfo tag;
 	vString* scope;
@@ -188,9 +296,9 @@ static void emitRubyTag (vString* name, rubyKind kind)
 	const char *qualified_name;
 	int r;
 
-	if (!RubyKinds[kind].enabled) {
-		return;
-	}
+        if (!RubyKinds[kind].enabled) {
+            return CORK_NIL;
+        }
 
 	scope = nestingLevelsToScope (nesting);
 	lvl = nestingLevelsGetCurrent (nesting);
@@ -217,7 +325,11 @@ static void emitRubyTag (vString* name, rubyKind kind)
 		unqualified_name = qualified_name;
 
 	initTagEntry (&tag, unqualified_name, kind);
-	if (vStringLength (scope) > 0) {
+
+	/* Don't fill the scope field for a tag entry representing
+	 * a global variable. */
+	if (unqualified_name[0] != '$'
+		&& vStringLength (scope) > 0) {
 		Assert (0 <= parent_kind &&
 		        (size_t) parent_kind < (ARRAY_SIZE (RubyKinds)));
 
@@ -226,10 +338,19 @@ static void emitRubyTag (vString* name, rubyKind kind)
 	}
 	r = makeTagEntry (&tag);
 
-	nestingLevelsPush (nesting, r);
+	if (pushLevel)
+		nestingLevelsPush (nesting, r);
 
-	vStringClear (name);
+	if (clearName)
+		vStringClear (name);
 	vStringDelete (scope);
+
+	return r;
+}
+
+static int emitRubyTag (vString* name, rubyKind kind)
+{
+	return emitRubyTagFull (name, kind, kind != K_CONST, true);
 }
 
 /* Tests whether 'ch' is a character in 'list'. */
@@ -331,8 +452,81 @@ static rubyKind parseIdentifier (
 	return kind;
 }
 
-static void readAndEmitTag (const unsigned char** cp, rubyKind expected_kind)
+static void parseString (const unsigned char** cp, unsigned char boundary, vString* vstr)
 {
+	while (**cp != 0 && **cp != boundary)
+	{
+		if (vstr)
+			vStringPut (vstr, **cp);
+		++*cp;
+	}
+
+	/* skip the last found '"' */
+	if (**cp == boundary)
+		++*cp;
+}
+
+static void parseSignature (const unsigned char** cp, vString* vstr)
+{
+	int depth = 1;
+
+	while (1)
+	{
+		/* FIXME:
+		 * - handle string literals including ( or ), and
+		 * - skip comments.
+		 */
+		while (! (depth == 0 || **cp == '\0'))
+		{
+			if (**cp == '(' || **cp == ')')
+			{
+				depth += (**cp == '(')? 1: -1;
+				vStringPut (vstr, **cp);
+			}
+			else if (**cp == '#')
+			{
+				++*cp;
+				while (**cp != '\0')
+					++*cp;
+				break;
+			}
+			else if (**cp == '\'' || **cp == '"')
+			{
+				unsigned char b = **cp;
+				vStringPut (vstr, b);
+				++*cp;
+				parseString (cp, b, vstr);
+				vStringPut (vstr, b);
+				continue;
+			}
+			else if (isspace (vStringLast (vstr)))
+			{
+				if (! (isspace (**cp)))
+				{
+					if (**cp == ',')
+						vStringChop (vstr);
+					vStringPut (vstr, **cp);
+				}
+			}
+			else
+				vStringPut (vstr, **cp);
+			++*cp;
+		}
+		if (depth == 0)
+			return;
+
+		const unsigned char *line = readLineFromInputFile ();
+		if (line == NULL)
+			return;
+		else
+			*cp = line;
+	}
+}
+
+static int readAndEmitTagFull (const unsigned char** cp, rubyKind expected_kind,
+							   bool pushLevel, bool clearName)
+{
+	int r = CORK_NIL;
 	if (isspace (**cp))
 	{
 		vString *name = vStringNew ();
@@ -363,9 +557,76 @@ static void readAndEmitTag (const unsigned char** cp, rubyKind expected_kind)
 		}
 		else
 		{
-			emitRubyTag (name, actual_kind);
+			r = emitRubyTagFull (name, actual_kind, pushLevel, clearName);
 		}
 		vStringDelete (name);
+	}
+	return r;
+}
+
+static int readAndEmitTag (const unsigned char** cp, rubyKind expected_kind)
+{
+	return readAndEmitTagFull (cp, expected_kind, expected_kind != K_CONST, true);
+}
+
+static void readAndStoreMixinSpec (const unsigned char** cp, const char *how_mixin)
+{
+
+	NestingLevel *nl = NULL;
+	tagEntryInfo *e = NULL;
+	int ownerLevel = 0;
+
+	for (ownerLevel = 0; ownerLevel < nesting->n; ownerLevel++)
+	{
+		nl = nestingLevelsGetNthParent (nesting, ownerLevel);
+		e = nl? getEntryOfNestingLevel (nl): NULL;
+
+		/* Ignore "if", "unless", "while" ... */
+		if ((nl && (nl->corkIndex == CORK_NIL)) || (e && e->placeholder))
+			continue;
+		break;
+	}
+
+	if (!e)
+		return;
+
+	if (e->kindIndex == K_SINGLETON)
+	{
+		nl = nestingLevelsGetNthParent (nesting,
+										ownerLevel + 1);
+		if (nl == NULL)
+			return;
+		e = getEntryOfNestingLevel (nl);
+	}
+
+	if (!e)
+		return;
+
+	if (! (e->kindIndex == K_CLASS || e->kindIndex == K_MODULE))
+		return;
+
+	if (isspace (**cp) || (**cp == '('))
+	{
+		if (isspace (**cp))
+			skipWhitespace (cp);
+		if (**cp == '(')
+			++*cp;
+
+		vString *spec = vStringNewInit (how_mixin);
+		vStringPut(spec, ':');
+
+		size_t len = vStringLength (spec);
+		parseIdentifier (cp, spec, K_MODULE);
+		if (len == vStringLength (spec))
+		{
+			vStringDelete (spec);
+			return;
+		}
+
+		struct blockData *bdata =  nestingLevelGetUserData (nl);
+		if (bdata->mixin == NULL)
+			bdata->mixin = stringListNew ();
+		stringListAdd (bdata->mixin, spec);
 	}
 }
 
@@ -385,12 +646,230 @@ static void enterUnnamedScope (void)
 	nestingLevelsPush (nesting, r);
 }
 
+static void attachMixinField (int corkIndex, stringList *mixinSpec)
+{
+	vString *mixinField = stringListItem (mixinSpec, 0);
+	for (unsigned int i = 1; i < stringListCount (mixinSpec); i++)
+	{
+		vStringPut (mixinField, ',');
+		vStringCat (mixinField, stringListItem (mixinSpec, i));
+	}
+
+	attachParserFieldToCorkEntry (corkIndex, RubyFields [F_MIXIN].ftype,
+								  vStringValue (mixinField));
+}
+
+static void deleteBlockData (NestingLevel *nl)
+{
+	struct blockData *bdata = nestingLevelGetUserData (nl);
+
+	if (nl->corkIndex != CORK_NIL
+		&& bdata->mixin != NULL
+		&& stringListCount (bdata->mixin) > 0)
+		attachMixinField (nl->corkIndex, bdata->mixin);
+
+	tagEntryInfo *e = getEntryInCorkQueue (nl->corkIndex);
+	if (e && !e->placeholder)
+			e->extensionFields.endLine = getInputLineNumber ();
+
+	if (bdata->mixin)
+		stringListDelete (bdata->mixin);
+}
+
+static bool doesLineIncludeConstant (const unsigned char **cp, vString *constant)
+{
+	const unsigned char **p = cp;
+
+	if (isspace (**p))
+		skipWhitespace (p);
+
+	if (isupper (**p))
+	{
+		while (**p != 0 && isIdentChar (**p))
+		{
+			vStringPut (constant, **p);
+			++*p;
+		}
+		if (isspace (**p))
+			skipWhitespace (p);
+
+		if (**p == '=')
+		{
+			*cp = *p;
+			return true;
+		}
+		vStringClear (constant);
+	}
+
+	return false;
+}
+
+static void emitRubyAccessorTags (vString *a, bool reader, bool writer)
+{
+	if (vStringLength (a) == 0)
+		return;
+
+	if (reader)
+		emitRubyTagFull (a, K_ACCESSOR, false, !writer);
+	if (writer)
+	{
+		vStringPut (a, '=');
+		emitRubyTagFull (a, K_ACCESSOR, false, true);
+	}
+}
+
+static void readAttrsAndEmitTags (const unsigned char **cp, bool reader, bool writer)
+{
+	vString *a = vStringNew ();
+
+	skipWhitespace (cp);
+	if (**cp == '(')
+		++*cp;
+
+	do {
+		skipWhitespace (cp);
+		if (**cp == ':')
+		{
+			++*cp;
+			if (K_METHOD == parseIdentifier (cp, a, K_METHOD))
+			{
+				emitRubyAccessorTags (a, reader, writer);
+				skipWhitespace (cp);
+				if (**cp == ',')
+				{
+					++*cp;
+					continue;
+				}
+			}
+		}
+		else if (**cp == '"' || **cp == '\'')
+		{
+			unsigned char b = **cp;
+			++*cp;
+			parseString (cp, b, a);
+
+			emitRubyAccessorTags (a, reader, writer);
+			skipWhitespace (cp);
+			if (**cp == ',')
+			{
+				++*cp;
+				continue;
+			}
+		}
+		break;
+	} while (1);
+
+	vStringDelete (a);
+}
+
+static int readAliasMethodAndEmitTags (const unsigned char **cp)
+{
+	int r = CORK_NIL;
+	vString *a = vStringNew ();
+
+	skipWhitespace (cp);
+	if (**cp == '(')
+		++*cp;
+
+	skipWhitespace (cp);
+	if (**cp == ':')
+	{
+		++*cp;
+		if (K_METHOD != parseIdentifier (cp, a, K_METHOD))
+			vStringClear (a);
+	}
+	else if (**cp == '"' || **cp == '\'')
+	{
+		unsigned char b = **cp;
+		++*cp;
+		parseString (cp, b, a);
+	}
+
+	if (vStringLength (a) > 0)
+		r = emitRubyTagFull (a, K_ALIAS, false, false);
+
+	vStringDelete (a);
+	return r;
+}
+
+static int readStringAndEmitTag (const unsigned char **cp, rubyKind kind, int role)
+{
+	int r = CORK_NIL;
+	vString *s = NULL;
+
+	skipWhitespace (cp);
+	if (**cp == '(')
+		++*cp;
+
+	skipWhitespace (cp);
+	if (**cp == '"' || **cp == '\'')
+	{
+		unsigned char b = **cp;
+		++*cp;
+		s = vStringNew ();
+		parseString (cp, b, s);
+	}
+
+	if (s && vStringLength (s) > 0)
+		r = makeSimpleRefTag (s, kind, role);
+
+	vStringDelete (s);
+	return r;
+}
+
+static int readAndEmitDef (const unsigned char **cp)
+{
+	rubyKind kind = K_METHOD;
+	NestingLevel *nl = nestingLevelsGetCurrent (nesting);
+	tagEntryInfo *e_scope  = getEntryOfNestingLevel (nl);
+
+	/* if the def is inside an unnamed scope at the class level, assume
+	 * it's from a singleton from a construct like this:
+	 *
+	 * class C
+	 *   class << self
+	 *     def singleton
+	 *       ...
+	 *     end
+	 *   end
+	 * end
+	 */
+	if (e_scope && e_scope->kindIndex == K_CLASS && strlen (e_scope->name) == 0)
+		kind = K_SINGLETON;
+	int corkIndex = readAndEmitTag (cp, kind);
+	tagEntryInfo *e = getEntryInCorkQueue (corkIndex);
+
+	/* Fill signature: field. */
+	if (e)
+	{
+		vString *signature = vStringNewInit ("(");
+		skipWhitespace (cp);
+		if (**cp == '(')
+		{
+			++(*cp);
+			parseSignature (cp, signature);
+			if (vStringLast(signature) != ')')
+			{
+				vStringDelete (signature);
+				signature = NULL;
+			}
+		}
+		else
+			vStringPut (signature, ')');
+		e->extensionFields.signature = vStringDeleteUnwrap (signature);
+		signature = NULL;;
+		vStringDelete (signature);
+	}
+	return corkIndex;
+}
+
 static void findRubyTags (void)
 {
 	const unsigned char *line;
 	bool inMultiLineComment = false;
+	vString *constant = vStringNew ();
 
-	nesting = nestingLevelsNew (0);
+	nesting = nestingLevelsNewFull (sizeof (struct blockData), deleteBlockData);
 
 	/* FIXME: this whole scheme is wrong, because Ruby isn't line-based.
 	* You could perfectly well write:
@@ -428,29 +907,22 @@ static void findRubyTags (void)
 		*
 		*   return if <exp>
 		*
-		* FIXME: this is fooled by code such as
-		*
-		*   result = if <exp>
-		*               <a>
-		*            else
-		*               <b>
-		*            end
-		*
-		* FIXME: we're also fooled if someone does something heinous such as
+		* FIXME: we're fooled if someone does something heinous such as
 		*
 		*   puts("hello") \
 		*       unless <exp>
 		*/
-		if (canMatchKeyword (&cp, "for") ||
-		    canMatchKeyword (&cp, "until") ||
-		    canMatchKeyword (&cp, "while"))
+
+		if (canMatchKeywordWithAssign (&cp, "for") ||
+		    canMatchKeywordWithAssign (&cp, "until") ||
+		    canMatchKeywordWithAssign (&cp, "while"))
 		{
 			expect_separator = true;
 			enterUnnamedScope ();
 		}
-		else if (canMatchKeyword (&cp, "case") ||
-		         canMatchKeyword (&cp, "if") ||
-		         canMatchKeyword (&cp, "unless"))
+		else if (canMatchKeywordWithAssign (&cp, "case") ||
+		         canMatchKeywordWithAssign (&cp, "if") ||
+		         canMatchKeywordWithAssign (&cp, "unless"))
 		{
 			enterUnnamedScope ();
 		}
@@ -459,35 +931,106 @@ static void findRubyTags (void)
 		* "module M", "class C" and "def m" should only be at the beginning
 		* of a line.
 		*/
-		if (canMatchKeyword (&cp, "module"))
+		if (canMatchKeywordWithAssign (&cp, "module"))
 		{
 			readAndEmitTag (&cp, K_MODULE);
 		}
-		else if (canMatchKeyword (&cp, "class"))
+		else if (canMatchKeywordWithAssign (&cp, "class"))
 		{
-			readAndEmitTag (&cp, K_CLASS);
-		}
-		else if (canMatchKeyword (&cp, "def"))
-		{
-			rubyKind kind = K_METHOD;
-			NestingLevel *nl = nestingLevelsGetCurrent (nesting);
-			tagEntryInfo *e  = getEntryOfNestingLevel (nl);
+			int r = readAndEmitTag (&cp, K_CLASS);
+			tagEntryInfo *e = getEntryInCorkQueue (r);
 
-			/* if the def is inside an unnamed scope at the class level, assume
-			 * it's from a singleton from a construct like this:
-			 *
-			 * class C
-			 *   class << self
-			 *     def singleton
-			 *       ...
-			 *     end
-			 *   end
-			 * end
-			 */
-			if (e && e->kindIndex == K_CLASS && strlen (e->name) == 0)
-				kind = K_SINGLETON;
-			readAndEmitTag (&cp, kind);
+			if (e)
+			{
+				skipWhitespace (&cp);
+				if (*cp == '<' && *(cp + 1) != '<')
+				{
+					cp++;
+					vString *parent = vStringNew ();
+					parseIdentifier (&cp, parent, K_CLASS);
+					if (vStringLength (parent) > 0)
+						e->extensionFields.inheritance = vStringDeleteUnwrap (parent);
+					else
+						vStringDelete (parent);
+				}
+			}
 		}
+		else if (canMatchKeywordWithAssign (&cp, "include"))
+		{
+			readAndStoreMixinSpec (&cp, "include");
+		}
+		else if (canMatchKeywordWithAssign (&cp, "prepend"))
+		{
+			readAndStoreMixinSpec (&cp, "prepend");
+		}
+		else if (canMatchKeywordWithAssign (&cp, "extend"))
+		{
+			readAndStoreMixinSpec (&cp, "extend");
+		}
+		else if (canMatchKeywordWithAssign (&cp, "def"))
+		{
+			readAndEmitDef (&cp);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "attr_reader"))
+		{
+			readAttrsAndEmitTags (&cp, true, false);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "attr_writer"))
+		{
+			readAttrsAndEmitTags (&cp, false, true);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "attr_accessor"))
+		{
+			readAttrsAndEmitTags (&cp, true, true);
+		}
+		else if (doesLineIncludeConstant (&cp, constant))
+		{
+			emitRubyTag (constant, K_CONST);
+			vStringClear (constant);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "require"))
+		{
+			readStringAndEmitTag (&cp, K_LIBRARY, RUBY_LIBRARY_REQUIRED);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "require_relative"))
+		{
+			readStringAndEmitTag (&cp, K_LIBRARY, RUBY_LIBRARY_REQUIRED_REL);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "load"))
+		{
+			readStringAndEmitTag (&cp, K_LIBRARY, RUBY_LIBRARY_LOADED);
+		}
+		else if (canMatchKeywordWithAssign (&cp, "alias"))
+		{
+			if (!readAndEmitTagFull (&cp, K_ALIAS, false, true)
+				&& (*cp == '$'))
+			{
+				/* Alias for a global variable. */
+				++cp;
+				vString *alias = vStringNew ();
+				vStringPut (alias, '$');
+				if (K_METHOD == parseIdentifier (&cp, alias, K_METHOD)
+					&& vStringLength (alias) > 0)
+					emitRubyTagFull (alias, K_ALIAS, false, false);
+				vStringDelete (alias);
+			}
+		}
+		else if (canMatchKeywordWithAssign (&cp, "alias_method"))
+			readAliasMethodAndEmitTags (&cp);
+		else if ((canMatchKeywordWithAssign (&cp, "private")
+				  || canMatchKeywordWithAssign (&cp, "protected")
+				  || canMatchKeywordWithAssign (&cp, "public")
+				  || canMatchKeywordWithAssign (&cp, "private_class_method")
+				  || canMatchKeywordWithAssign (&cp, "public_class_method")))
+		{
+			skipWhitespace (&cp);
+			if (canMatchKeywordWithAssign (&cp, "def"))
+				readAndEmitDef (&cp);
+			/* TODO: store the method for controlling visibility
+			 * to the "access:" field of the tag.*/
+		}
+
+
 		while (*cp != '\0')
 		{
 			/* FIXME: we don't cope with here documents,
@@ -524,16 +1067,14 @@ static void findRubyTags (void)
 				/* Leave the most recent scope. */
 				nestingLevelsPop (nesting);
 			}
-			else if (*cp == '"')
+			else if (*cp == '"' || *cp == '\'')
 			{
+				unsigned char b = *cp;
 				/* Skip string literals.
 				 * FIXME: should cope with escapes and interpolation.
 				 */
-				do {
-					++cp;
-				} while (*cp != 0 && *cp != '"');
-				if (*cp == '"')
-					cp++; /* skip the last found '"' */
+				++cp;
+				parseString (&cp, b, NULL);
 			}
 			else if (*cp == ';')
 			{
@@ -549,16 +1090,19 @@ static void findRubyTags (void)
 		}
 	}
 	nestingLevelsFree (nesting);
+	vStringDelete (constant);
 }
 
 extern parserDefinition* RubyParser (void)
 {
 	static const char *const extensions [] = { "rb", "ruby", NULL };
-	parserDefinition* def = parserNewFull ("Ruby", KIND_FILE_ALT);
-	def->kindTable  = RubyKinds;
+	parserDefinition* def = parserNew ("Ruby");
+	def->kindTable      = RubyKinds;
 	def->kindCount  = ARRAY_SIZE (RubyKinds);
 	def->extensions = extensions;
 	def->parser     = findRubyTags;
-	def->useCork    = true;
+	def->fieldTable = RubyFields;
+	def->fieldCount = ARRAY_SIZE (RubyFields);
+	def->useCork    = CORK_QUEUE;
 	return def;
 }

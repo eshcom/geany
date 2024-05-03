@@ -64,8 +64,10 @@
 /**
  *  Tries to open the given URI in a browser.
  *  On Windows, the system's default browser is opened.
- *  On non-Windows systems, the browser command set in the preferences dialog is used. In case
- *  that fails or it is unset, the user is asked to correct or fill it.
+ *  On non-Windows systems, the browser command can be set in the preferences dialog.
+ *    If unset (empty) the system's default browser is used. If set it specifies the
+ *    command to execute. Either way, if it fails the user is prompted to correct the
+ *    pref.
  *
  *  @param uri The URI to open in the web browser.
  *
@@ -78,15 +80,26 @@ void utils_open_browser(const gchar *uri)
 	g_return_if_fail(uri != NULL);
 	win32_open_browser(uri);
 #else
-	gchar *argv[2] = { (gchar *) uri, NULL };
+	gchar *new_cmd, *argv[2] = { (gchar *) uri, NULL };
 
 	g_return_if_fail(uri != NULL);
 
-	while (!spawn_async(NULL, tool_prefs.browser_cmd, argv, NULL, NULL, NULL))
+	while (1)
 	{
-		gchar *new_cmd = dialogs_show_input(_("Select Browser"), GTK_WINDOW(main_widgets.window),
-			_("Failed to spawn the configured browser command. "
-			  "Please correct it or enter another one."),
+		/* Uses the user's default browser akin to xdg-open (in flatpak through a portal) */
+		if (EMPTY(tool_prefs.browser_cmd))
+		{
+			if (gtk_show_uri_on_window(GTK_WINDOW(main_widgets.window), uri, GDK_CURRENT_TIME, NULL))
+				break;
+		}
+		else if (spawn_async(NULL, tool_prefs.browser_cmd, argv, NULL, NULL, NULL))
+			break;
+
+		/* Allow the user to correct the pref. new_cmd may become empty. */
+		new_cmd = dialogs_show_input(_("Select Browser"), GTK_WINDOW(main_widgets.window),
+			_("Failed to spawn the configured browser command. Please "
+			  "enter a valid command or leave it empty in order "
+			  "to spawn the system default browser."),
 			tool_prefs.browser_cmd);
 
 		if (new_cmd == NULL) /* user canceled */
@@ -468,7 +481,7 @@ gdouble utils_scale_round(gdouble val, gdouble factor)
 
 /* like g_utf8_strdown() but if @str is not valid UTF8, convert it from locale first.
  * returns NULL on charset conversion failure */
-static gchar *utf8_strdown(const gchar *str)
+gchar *utils_utf8_strdown(const gchar *str)
 {
 	gchar *down;
 
@@ -512,10 +525,10 @@ gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 	g_return_val_if_fail(s2 != NULL, -1);
 
 	/* ensure strings are UTF-8 and lowercase */
-	tmp1 = utf8_strdown(s1);
+	tmp1 = utils_utf8_strdown(s1);
 	if (! tmp1)
 		return 1;
-	tmp2 = utf8_strdown(s2);
+	tmp2 = utils_utf8_strdown(s2);
 	if (! tmp2)
 	{
 		g_free(tmp1);
@@ -720,12 +733,11 @@ gint utils_strpos(const gchar *haystack, const gchar *needle)
 
 
 /**
- *  Retrieves a formatted date/time string from strftime().
- *  This function should be preferred to directly calling strftime() since this function
- *  works on UTF-8 encoded strings.
+ *  Retrieves a formatted date/time string from GDateTime.
+ *  This function works on UTF-8 encoded strings.
  *
- *  @param format The format string to pass to strftime(3). See the strftime(3)
- *                documentation for details, in UTF-8 encoding.
+ *  @param format The format string to pass to g_date_time_format, in UTF-8 encoding.
+                  See https://docs.gtk.org/glib/method.DateTime.format.html for details.
  *  @param time_to_use @nullable The date/time to use, in time_t format or @c NULL to use the current time.
  *
  *  @return A newly-allocated string, should be freed when no longer needed.
@@ -735,57 +747,56 @@ gint utils_strpos(const gchar *haystack, const gchar *needle)
 GEANY_API_SYMBOL
 gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 {
-	const struct tm *tm;
-	static gchar date[1024];
-	gchar *locale_format;
-	gsize len;
+	time_t unixtime;
+	gchar *datetime_formatted;
+	GDateTime *datetime;
 
 	g_return_val_if_fail(format != NULL, NULL);
 
-	if (! g_utf8_validate(format, -1, NULL))
-	{
-		locale_format = g_locale_from_utf8(format, -1, NULL, NULL, NULL);
-		if (locale_format == NULL)
-			return NULL;
-	}
-	else
-		locale_format = g_strdup(format);
-
 	if (time_to_use != NULL)
-		tm = localtime(time_to_use);
+		unixtime = *time_to_use;
 	else
-	{
-		time_t tp = time(NULL);
-		tm = localtime(&tp);
-	}
+		unixtime = time(NULL);
 
-	len = strftime(date, 1024, locale_format, tm);
-	g_free(locale_format);
-	if (len == 0)
-		return NULL;
+	datetime = g_date_time_new_from_unix_local(unixtime);
+	datetime_formatted = g_date_time_format(datetime, format);
 
-	if (! g_utf8_validate(date, len, NULL))
-		return g_locale_to_utf8(date, len, NULL, NULL, NULL);
-	else
-		return g_strdup(date);
+	g_date_time_unref(datetime);
+	return datetime_formatted;
 }
 
 
+/* Extracts initials from @p name, with basic Unicode support */
+GEANY_EXPORT_SYMBOL
 gchar *utils_get_initials(const gchar *name)
 {
-	gint i = 1, j = 1;
-	gchar *initials = g_malloc0(5);
+	GString *initials;
+	gchar *composed;
+	gboolean at_bound = TRUE;
 
-	initials[0] = name[0];
-	while (name[i] != '\0' && j < 4)
+	g_return_val_if_fail(name != NULL, NULL);
+
+	composed = g_utf8_normalize(name, -1, G_NORMALIZE_ALL_COMPOSE);
+	g_return_val_if_fail(composed != NULL, NULL);
+
+	initials = g_string_new(NULL);
+	for (const gchar *p = composed; *p; p = g_utf8_next_char(p))
 	{
-		if (name[i] == ' ' && name[i + 1] != ' ')
+		gunichar ch = g_utf8_get_char(p);
+
+		if (g_unichar_isspace(ch))
+			at_bound = TRUE;
+		else if (at_bound)
 		{
-			initials[j++] = name[i + 1];
+			const gchar *end = g_utf8_next_char(p);
+			g_string_append_len(initials, p, end - p);
+			at_bound = FALSE;
 		}
-		i++;
 	}
-	return initials;
+
+	g_free(composed);
+
+	return g_string_free(initials, FALSE);
 }
 
 
@@ -842,6 +853,37 @@ gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section, const
 	g_return_val_if_fail(config, default_value);
 
 	tmp = g_key_file_get_boolean(config, section, key, &error);
+	if (error)
+	{
+		g_error_free(error);
+		return default_value;
+	}
+	return tmp;
+}
+
+
+/**
+ *  Wraps g_key_file_get_double() to add a default value argument.
+ *
+ *  @param config A GKeyFile object.
+ *  @param section The group name to look in for the key.
+ *  @param key The key to find.
+ *  @param default_value The default value which will be returned when @a section or @a key
+ *         don't exist.
+ *
+ *  @return The value associated with @a key as an integer, or the given default value if the value
+ *          could not be retrieved.
+ **/
+GEANY_API_SYMBOL
+gdouble utils_get_setting_double(GKeyFile *config, const gchar *section, const gchar *key,
+							   const gdouble default_value)
+{
+	gdouble tmp;
+	GError *error = NULL;
+
+	g_return_val_if_fail(config, default_value);
+
+	tmp = g_key_file_get_double(config, section, key, &error);
 	if (error)
 	{
 		g_error_free(error);
@@ -922,55 +964,6 @@ void utils_beep(void)
 }
 
 
-/* taken from busybox, thanks */
-gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
-									 gulong display_unit)
-{
-	/* The code will adjust for additional (appended) units. */
-	static const gchar zero_and_units[] = { '0', 0, 'K', 'M', 'G', 'T' };
-	static const gchar fmt[] = "%Lu %c%c";
-	static const gchar fmt_tenths[] = "%Lu.%d %c%c";
-
-	guint64 val;
-	gint frac;
-	const gchar *u;
-	const gchar *f;
-
-	u = zero_and_units;
-	f = fmt;
-	frac = 0;
-
-	val = size * block_size;
-	if (val == 0)
-		return g_strdup(u);
-
-	if (display_unit)
-	{
-		val += display_unit/2;	/* Deal with rounding. */
-		val /= display_unit;	/* Don't combine with the line above!!! */
-	}
-	else
-	{
-		++u;
-		while ((val >= 1024) && (u < zero_and_units + sizeof(zero_and_units) - 1))
-		{
-			f = fmt_tenths;
-			++u;
-			frac = ((((gint)(val % 1024)) * 10) + (1024 / 2)) / 1024;
-			val /= 1024;
-		}
-		if (frac >= 10)
-		{		/* We need to round up here. */
-			++val;
-			frac = 0;
-		}
-	}
-
-	/* If f==fmt then 'frac' and 'u' are ignored. */
-	return g_strdup_printf(f, val, frac, *u, 'b');
-}
-
-
 /* converts a color representation using gdk_color_parse(), with additional
  * support of the "0x" prefix as a synonym for "#" */
 gboolean utils_parse_color(const gchar *spec, GdkColor *color)
@@ -1012,16 +1005,21 @@ gint utils_parse_color_to_bgr(const gchar *spec)
 }
 
 
-/* Returns: newly allocated string with the current time formatted HH:MM:SS. */
-gchar *utils_get_current_time_string(void)
+/* Returns: newly allocated string with the current time formatted HH:MM:SS.
+ * If "include_microseconds" is TRUE, microseconds are appended.
+ *
+ * The returned string should be freed with g_free(). */
+gchar *utils_get_current_time_string(gboolean include_microseconds)
 {
-	const time_t tp = time(NULL);
-	const struct tm *tmval = localtime(&tp);
-	gchar *result = g_malloc0(9);
+	// "%f" specifier for microseconds is only available since GLib 2.66
+	if (glib_check_version(2, 66, 0) != NULL)
+		include_microseconds = FALSE;
 
-	strftime(result, 9, "%H:%M:%S", tmval);
-	result[8] = '\0';
-	return result;
+	GDateTime *now = g_date_time_new_now_local();
+	const gchar *format = include_microseconds ? "%H:%M:%S.%f" : "%H:%M:%S";
+	gchar *time_string = g_date_time_format(now, format);
+	g_date_time_unref(now);
+	return time_string;
 }
 
 
@@ -1912,7 +1910,7 @@ gchar *utils_get_help_url(const gchar *suffix)
 	if (! g_file_test(uri + skip, G_FILE_TEST_IS_REGULAR))
 	{	/* fall back to online documentation if it is not found on the hard disk */
 		g_free(uri);
-		uri = g_strconcat(GEANY_HOMEPAGE, "manual/", VERSION, "/index.html", NULL);
+		uri = g_strconcat(GEANY_HOMEPAGE, "manual/", PACKAGE_VERSION, "/index.html", NULL);
 	}
 
 	if (suffix != NULL)

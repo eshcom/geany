@@ -43,14 +43,13 @@
 #include "support.h"
 #include "ui_utils.h"
 #include "utils.h"
-#include "win32.h"
 
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
 
 
-ProjectPrefs project_prefs = { NULL, FALSE, FALSE };
+ProjectPrefs project_prefs = { NULL, FALSE };
 
 
 static GeanyProjectPrivate priv;
@@ -83,6 +82,8 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 static void on_file_save_button_clicked(GtkButton *button, PropertyDialogElements *e);
 static gboolean load_config(const gchar *filename);
 static gboolean write_config(void);
+static void update_new_project_dlg(GtkEditable *editable, PropertyDialogElements *e,
+	const gchar *base_p);
 static void on_name_entry_changed(GtkEditable *editable, PropertyDialogElements *e);
 static void on_entries_changed(GtkEditable *editable, PropertyDialogElements *e);
 static void on_radio_long_line_custom_toggled(GtkToggleButton *radio, GtkWidget *spin_long_line);
@@ -112,7 +113,7 @@ static gboolean have_session_docs(void)
 
 static gboolean handle_current_session(void)
 {
-	if (!app->project && project_prefs.project_session)
+	if (!app->project)
 	{
 		/* save session in case the dialog is cancelled */
 		configuration_save_default_session();
@@ -141,7 +142,7 @@ static gboolean handle_current_session(void)
 /* TODO: this should be ported to Glade like the project preferences dialog,
  * then we can get rid of the PropertyDialogElements struct altogether as
  * widgets pointers can be accessed through ui_lookup_widget(). */
-void project_new(void)
+void project_new(gboolean from_folder)
 {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -150,7 +151,27 @@ void project_new(void)
 	GtkWidget *bbox;
 	GtkWidget *label;
 	gchar *tooltip;
+	gchar *base_path = NULL;
 	PropertyDialogElements e = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, FALSE };
+
+	if (from_folder)
+	{
+		GeanyDocument *doc = document_get_current();
+		gchar *start_path;
+
+		if (doc && doc->file_name)
+			start_path = g_path_get_dirname(doc->file_name);
+		else if (!EMPTY(local_prefs.project_file_path))
+			start_path = g_strdup(local_prefs.project_file_path);
+		else
+			start_path = utils_get_utf8_from_locale(g_get_home_dir());
+
+		base_path = ui_get_project_directory(start_path);
+		g_free(start_path);
+
+		if (!base_path)
+			return;
+	}
 
 	e.dialog = gtk_dialog_new_with_buttons(_("New Project"), GTK_WINDOW(main_widgets.window),
 										 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -185,7 +206,7 @@ void project_new(void)
 	e.file_name = gtk_entry_new();
 	gtk_entry_set_activates_default(GTK_ENTRY(e.file_name), TRUE);
 	ui_entry_add_clear_icon(GTK_ENTRY(e.file_name));
-	gtk_entry_set_width_chars(GTK_ENTRY(e.file_name), 30);
+	gtk_entry_set_width_chars(GTK_ENTRY(e.file_name), 40);
 	tooltip = g_strdup_printf(
 		_("Path of the file representing the project and storing its settings. "
 		"It should normally have the \"%s\" extension."), "."GEANY_PROJECT_EXT);
@@ -195,7 +216,7 @@ void project_new(void)
 	g_signal_connect(button, "clicked", G_CALLBACK(on_file_save_button_clicked), &e);
 	image = gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
 	gtk_container_add(GTK_CONTAINER(button), image);
-	bbox = gtk_hbox_new(FALSE, 6);
+	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(bbox), e.file_name, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
 
@@ -218,13 +239,20 @@ void project_new(void)
 
 	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
 
-	/* signals */
-	g_signal_connect(e.name, "changed", G_CALLBACK(on_name_entry_changed), &e);
-	/* run the callback manually to initialise the base_path and file_name fields */
-	on_name_entry_changed(GTK_EDITABLE(e.name), &e);
+	if (base_path)
+	{
+		update_new_project_dlg(GTK_EDITABLE(e.name), &e, base_path);
+		g_free(base_path);
+	}
+	else
+	{
+		/* signals */
+		g_signal_connect(e.name, "changed", G_CALLBACK(on_name_entry_changed), &e);
+		g_signal_connect(e.file_name, "changed", G_CALLBACK(on_entries_changed), &e);
+		g_signal_connect(e.base_path, "changed", G_CALLBACK(on_entries_changed), &e);
 
-	g_signal_connect(e.file_name, "changed", G_CALLBACK(on_entries_changed), &e);
-	g_signal_connect(e.base_path, "changed", G_CALLBACK(on_entries_changed), &e);
+		update_new_project_dlg(GTK_EDITABLE(e.name), &e, NULL);
+	}
 
 	gtk_widget_show_all(e.dialog);
 	run_new_dialog(&e);
@@ -265,8 +293,8 @@ static void run_new_dialog(PropertyDialogElements *e)
 	else
 	{
 		// reload any documents that were closed
-		configuration_reload_default_session();
-		configuration_open_files();
+		configuration_load_default_session();
+		configuration_open_default_session();
 	}
 }
 
@@ -275,12 +303,10 @@ gboolean project_load_file_with_session(const gchar *locale_file_name)
 {
 	if (project_load_file(locale_file_name))
 	{
-		if (project_prefs.project_session)
-		{
-			configuration_open_files();
-			document_new_file_if_non_open();
-			ui_focus_current_document();
-		}
+		configuration_open_files(app->project->priv->session_files);
+		app->project->priv->session_files = NULL;
+		document_new_file_if_non_open();
+		ui_focus_current_document();
 		return TRUE;
 	}
 	return FALSE;
@@ -314,66 +340,46 @@ static void run_open_dialog(GtkDialog *dialog)
 void project_open(void)
 {
 	const gchar *dir = local_prefs.project_file_path;
+	gchar *locale_path;
+	GtkWidget *dialog;
+	GtkFileFilter *filter;
 
-#ifdef G_OS_WIN32
-	if (interface_prefs.use_native_windows_dialogs)
+	dialog = gtk_file_chooser_dialog_new(_("Open Project"), GTK_WINDOW(main_widgets.window),
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	gtk_widget_set_name(dialog, "GeanyDialogProject");
+
+	/* set default Open, so pressing enter can open multiple files */
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(dialog), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(main_widgets.window));
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+
+	/* add FileFilters */
+	filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter, _("All files"));
+	gtk_file_filter_add_pattern(filter, "*");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+	filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter, _("Project files"));
+	gtk_file_filter_add_pattern(filter, "*." GEANY_PROJECT_EXT);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+	locale_path = utils_get_locale_from_utf8(dir);
+	if (g_file_test(locale_path, G_FILE_TEST_EXISTS) &&
+		g_file_test(locale_path, G_FILE_TEST_IS_DIR))
 	{
-		gchar *file = win32_show_project_open_dialog(main_widgets.window, _("Open Project"), dir, FALSE, TRUE);
-		if (file != NULL)
-		{
-			if (app->project && !project_close(FALSE)) {}
-			/* try to load the config */
-			else if (! project_load_file_with_session(file))
-			{
-				SHOW_ERR1(_("Project file \"%s\" could not be loaded."), file);
-			}
-			g_free(file);
-		}
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), locale_path);
 	}
-	else
-#endif
-	{
-		GtkWidget *dialog;
-		GtkFileFilter *filter;
-		gchar *locale_path;
+	g_free(locale_path);
 
-		dialog = gtk_file_chooser_dialog_new(_("Open Project"), GTK_WINDOW(main_widgets.window),
-				GTK_FILE_CHOOSER_ACTION_OPEN,
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-		gtk_widget_set_name(dialog, "GeanyDialogProject");
-
-		/* set default Open, so pressing enter can open multiple files */
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
-		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(dialog), TRUE);
-		gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
-		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(main_widgets.window));
-		gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-
-		/* add FileFilters */
-		filter = gtk_file_filter_new();
-		gtk_file_filter_set_name(filter, _("All files"));
-		gtk_file_filter_add_pattern(filter, "*");
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-		filter = gtk_file_filter_new();
-		gtk_file_filter_set_name(filter, _("Project files"));
-		gtk_file_filter_add_pattern(filter, "*." GEANY_PROJECT_EXT);
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
-
-		locale_path = utils_get_locale_from_utf8(dir);
-		if (g_file_test(locale_path, G_FILE_TEST_EXISTS) &&
-			g_file_test(locale_path, G_FILE_TEST_IS_DIR))
-		{
-			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), locale_path);
-		}
-		g_free(locale_path);
-
-		gtk_widget_show_all(dialog);
-		run_open_dialog(GTK_DIALOG(dialog));
-		gtk_widget_destroy(GTK_WIDGET(dialog));
-	}
+	gtk_widget_show_all(dialog);
+	run_open_dialog(GTK_DIALOG(dialog));
+	gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 
@@ -413,12 +419,10 @@ gboolean project_close(gboolean open_default)
 	if (!write_config())
 		g_warning("Project file \"%s\" could not be written", app->project->file_name);
 
-	if (project_prefs.project_session)
-	{
-		/* close all existing tabs first */
-		if (!document_close_all())
-			return FALSE;
-	}
+	/* close all existing tabs first */
+	if (!document_close_all())
+		return FALSE;
+
 	ui_set_statusbar(TRUE, _("Project \"%s\" closed."), app->project->name);
 	destroy_project(open_default);
 	return TRUE;
@@ -461,16 +465,13 @@ static void destroy_project(gboolean open_default)
 
 	apply_editor_prefs(); /* ensure that global settings are restored */
 
-	if (project_prefs.project_session)
+	/* after closing all tabs let's open the tabs found in the default config */
+	if (open_default && cl_options.load_session)
 	{
-		/* after closing all tabs let's open the tabs found in the default config */
-		if (open_default && cl_options.load_session)
-		{
-			configuration_reload_default_session();
-			configuration_open_files();
-			document_new_file_if_non_open();
-			ui_focus_current_document();
-		}
+		configuration_load_default_session();
+		configuration_open_default_session();
+		document_new_file_if_non_open();
+		ui_focus_current_document();
 	}
 	g_signal_emit_by_name(geany_object, "project-close");
 
@@ -661,7 +662,8 @@ gboolean project_ask_close(void)
 {
 	if (app->project != NULL)
 	{
-		if (dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
+		if (!interface_prefs.warn_on_project_close ||
+			dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
 			_("Do you want to close it before proceeding?"),
 			_("The '%s' project is open."), app->project->name))
 		{
@@ -873,7 +875,6 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 }
 
 
-#ifndef G_OS_WIN32
 static void run_dialog(GtkWidget *dialog, GtkWidget *entry)
 {
 	/* set filename in the file chooser dialog */
@@ -924,20 +925,10 @@ static void run_dialog(GtkWidget *dialog, GtkWidget *entry)
 	}
 	gtk_widget_destroy(dialog);
 }
-#endif
 
 
 static void on_file_save_button_clicked(GtkButton *button, PropertyDialogElements *e)
 {
-#ifdef G_OS_WIN32
-	gchar *path = win32_show_project_open_dialog(e->dialog, _("Choose Project Filename"),
-						gtk_entry_get_text(GTK_ENTRY(e->file_name)), TRUE, TRUE);
-	if (path != NULL)
-	{
-		gtk_entry_set_text(GTK_ENTRY(e->file_name), path);
-		g_free(path);
-	}
-#else
 	GtkWidget *dialog;
 
 	/* initialise the dialog */
@@ -952,39 +943,67 @@ static void on_file_save_button_clicked(GtkButton *button, PropertyDialogElement
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
 	run_dialog(dialog, e->file_name);
-#endif
 }
 
 
-/* sets the project base path and the project file name according to the project name */
-static void on_name_entry_changed(GtkEditable *editable, PropertyDialogElements *e)
+/* sets the New Project dialog entries according to the base path or project name */
+static void update_new_project_dlg(GtkEditable *editable, PropertyDialogElements *e,
+	const gchar *base_p)
 {
 	gchar *base_path;
 	gchar *file_name;
-	gchar *name;
-	const gchar *project_dir = local_prefs.project_file_path;
+	gchar *project_dir = NULL;
 
 	if (e->entries_modified)
 		return;
 
-	name = gtk_editable_get_chars(editable, 0, -1);
-	if (!EMPTY(name))
+	if (!EMPTY(local_prefs.project_file_path))
+		project_dir = g_strdup(local_prefs.project_file_path);
+	else
 	{
-		base_path = g_strconcat(project_dir, G_DIR_SEPARATOR_S,
-			name, G_DIR_SEPARATOR_S, NULL);
+		GeanyDocument *doc = document_get_current();
+
+		if (doc && doc->file_name)
+			project_dir = g_path_get_dirname(doc->file_name);
+		else
+			project_dir = utils_get_utf8_from_locale(g_get_home_dir());
+	}
+
+	if (!EMPTY(base_p))
+	{
+		gchar *name = g_path_get_basename(base_p);
+
+		base_path = g_strdup(base_p);
+		gtk_entry_set_text(GTK_ENTRY(e->name), name);
 		if (project_prefs.project_file_in_basedir)
-			file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S, name, G_DIR_SEPARATOR_S,
+			file_name = g_strconcat(base_path, G_DIR_SEPARATOR_S,
 				name, "." GEANY_PROJECT_EXT, NULL);
 		else
 			file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S,
 				name, "." GEANY_PROJECT_EXT, NULL);
+		g_free(name);
 	}
 	else
 	{
-		base_path = g_strconcat(project_dir, G_DIR_SEPARATOR_S, NULL);
-		file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S, NULL);
+		gchar *name = gtk_editable_get_chars(editable, 0, -1);
+		if (!EMPTY(name))
+		{
+			base_path = g_strconcat(project_dir, G_DIR_SEPARATOR_S,
+				name, G_DIR_SEPARATOR_S, NULL);
+			if (project_prefs.project_file_in_basedir)
+				file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S, name, G_DIR_SEPARATOR_S,
+					name, "." GEANY_PROJECT_EXT, NULL);
+			else
+				file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S,
+					name, "." GEANY_PROJECT_EXT, NULL);
+		}
+		else
+		{
+			base_path = g_strconcat(project_dir, G_DIR_SEPARATOR_S, NULL);
+			file_name = g_strconcat(project_dir, G_DIR_SEPARATOR_S, NULL);
+		}
+		g_free(name);
 	}
-	g_free(name);
 
 	gtk_entry_set_text(GTK_ENTRY(e->base_path), base_path);
 	gtk_entry_set_text(GTK_ENTRY(e->file_name), file_name);
@@ -993,6 +1012,13 @@ static void on_name_entry_changed(GtkEditable *editable, PropertyDialogElements 
 
 	g_free(base_path);
 	g_free(file_name);
+	g_free(project_dir);
+}
+
+
+static void on_name_entry_changed(GtkEditable *editable, PropertyDialogElements *e)
+{
+	update_new_project_dlg(editable, e, NULL);
 }
 
 
@@ -1071,15 +1097,15 @@ static gboolean load_config(const gchar *filename)
 	apply_editor_prefs();
 
 	build_load_menu(config, GEANY_BCS_PROJ, (gpointer)p);
-	if (project_prefs.project_session)
+	/* save current (non-project) session (it could have been changed since program startup) */
+	if (!main_status.opening_session_files)
 	{
-		/* save current (non-project) session (it could have been changed since program startup) */
 		configuration_save_default_session();
 		/* now close all open files */
 		document_close_all();
-		/* read session files so they can be opened with configuration_open_files() */
-		configuration_load_session_files(config, FALSE);
 	}
+	/* read session files so they can be opened with configuration_open_files() */
+	p->priv->session_files = configuration_load_session_files(config);
 	g_signal_emit_by_name(geany_object, "project-open", config);
 	g_key_file_free(config);
 
@@ -1134,8 +1160,7 @@ static gboolean write_config(void)
 	g_key_file_set_integer(config, "long line marker", "long_line_column", p->priv->long_line_column);
 
 	/* store the session files into the project too */
-	if (project_prefs.project_session)
-		configuration_save_session_files(config);
+	configuration_save_session_files(config);
 	build_save_menu(config, (gpointer)p, GEANY_BCS_PROJ);
 	g_signal_emit_by_name(geany_object, "project-save", config);
 	/* write the file */

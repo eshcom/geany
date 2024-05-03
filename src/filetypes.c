@@ -136,17 +136,17 @@ static void init_builtin_filetypes(void)
 	FT_INIT( ASM,        ASM,          "ASM",              "Assembler",               SOURCE_FILE, COMPILED );
 	FT_INIT( BASIC,      FREEBASIC,    "FreeBasic",        NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( FORTRAN,    FORTRAN,      "Fortran",          "Fortran (F90)",           SOURCE_FILE, COMPILED );
-	FT_INIT( F77,        F77,          "F77",              "Fortran (F77)",           SOURCE_FILE, COMPILED );
-	FT_INIT( GLSL,       GLSL,         "GLSL",             NULL,                      SOURCE_FILE, COMPILED );
-	FT_INIT( CAML,       NONE,         "CAML",             "(O)Caml",                 SOURCE_FILE, COMPILED );
+	FT_INIT( F77,        FORTRAN,      "F77",              "Fortran (F77)",           SOURCE_FILE, COMPILED );
+	FT_INIT( GLSL,       C,            "GLSL",             NULL,                      SOURCE_FILE, COMPILED );
+	FT_INIT( CAML,       OCAML,        "CAML",             "(O)Caml",                 SOURCE_FILE, COMPILED );
 	FT_INIT( PERL,       PERL,         "Perl",             NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( PHP,        PHP,          "PHP",              NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( JS,         JAVASCRIPT,   "Javascript",       NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( PYTHON,     PYTHON,       "Python",           NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( RUBY,       RUBY,         "Ruby",             NULL,                      SOURCE_FILE, SCRIPT   );
-	FT_INIT( TCL,        TCL,          "Tcl",              NULL,                      SOURCE_FILE, SCRIPT   );
+	FT_INIT( TCL,        TCLOO,        "Tcl",              NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( LUA,        LUA,          "Lua",              NULL,                      SOURCE_FILE, SCRIPT   );
-	FT_INIT( FERITE,     FERITE,       "Ferite",           NULL,                      SOURCE_FILE, SCRIPT   );
+	FT_INIT( GDSCRIPT,   GDSCRIPT,     "GDScript",         NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( HASKELL,    HASKELL,      "Haskell",          NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( MARKDOWN,   MARKDOWN,     "Markdown",         NULL,                      SOURCE_FILE, MARKUP   );
 	FT_INIT( TXT2TAGS,   TXT2TAGS,     "Txt2tags",         NULL,                      SOURCE_FILE, MARKUP   );
@@ -164,7 +164,7 @@ static void init_builtin_filetypes(void)
 	FT_INIT( VHDL,       VHDL,         "VHDL",             NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( VERILOG,    VERILOG,      "Verilog",          NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( DIFF,       DIFF,         "Diff",             NULL,                      FILE,        MISC     );
-	FT_INIT( LISP,       NONE,         "Lisp",             NULL,                      SOURCE_FILE, SCRIPT   );
+	FT_INIT( LISP,       LISP,         "Lisp",             NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( ERLANG,     ERLANG,       "Erlang",           NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( CONF,       CONF,         "Conf",             _("Config"),               FILE,        MISC     );
 	FT_INIT( PO,         NONE,         "Po",               _("Gettext translation"),  FILE,        MISC     );
@@ -176,17 +176,20 @@ static void init_builtin_filetypes(void)
 	FT_INIT( YAML,       NONE,         "YAML",             NULL,                      FILE,        MISC     );
 	FT_INIT( CMAKE,      NONE,         "CMake",            NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( NSIS,       NSIS,         "NSIS",             NULL,                      SOURCE_FILE, SCRIPT   );
-	FT_INIT( ADA,        NONE,         "Ada",              NULL,                      SOURCE_FILE, COMPILED );
+	FT_INIT( ADA,        ADA,          "Ada",              NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( FORTH,      NONE,         "Forth",            NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( ASCIIDOC,   ASCIIDOC,     "Asciidoc",         NULL,                      SOURCE_FILE, MARKUP   );
 	FT_INIT( ABAQUS,     ABAQUS,       "Abaqus",           NULL,                      SOURCE_FILE, SCRIPT   );
-	FT_INIT( BATCH,      NONE,         "Batch",            NULL,                      SCRIPT,      SCRIPT   );
+	FT_INIT( BATCH,      BATCH,        "Batch",            NULL,                      SCRIPT,      SCRIPT   );
 	FT_INIT( POWERSHELL, POWERSHELL,   "PowerShell",       NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( RUST,       RUST,         "Rust",             NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( COFFEESCRIPT, NONE,       "CoffeeScript",     NULL,                      SOURCE_FILE, SCRIPT   );
 	FT_INIT( GO,         GO,           "Go",               NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( ZEPHIR,     ZEPHIR,       "Zephir",           NULL,                      SOURCE_FILE, COMPILED );
 	FT_INIT( SMALLTALK,  NONE,         "Smalltalk",        NULL,                      SOURCE_FILE, SCRIPT   );
+	FT_INIT( JULIA,      JULIA,        "Julia",            NULL,                      SOURCE_FILE, SCRIPT   );
+	FT_INIT( AU3,        AUTOIT,       "AutoIt",           NULL,                      SCRIPT,      SCRIPT   );
+	FT_INIT( RAKU,       RAKU,         "Raku",             NULL,                      SOURCE_FILE, SCRIPT   );
 }
 
 
@@ -512,7 +515,8 @@ static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 
 
 /* Detect filetype only based on the filename extension.
- * utf8_filename can include the full path. */
+ * utf8_filename can include the full path.
+ * Returns: non-NULL */
 GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename)
 {
 	gchar *base_filename;
@@ -601,6 +605,8 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename, const gchar *line
 			{ "sh",		GEANY_FILETYPES_SH },
 			{ "bash",	GEANY_FILETYPES_SH },
 			{ "dash",	GEANY_FILETYPES_SH },
+			{ "raku",	GEANY_FILETYPES_RAKU },
+			{ "perl6",	GEANY_FILETYPES_RAKU },
 			{ "perl",	GEANY_FILETYPES_PERL },
 			{ "python",	GEANY_FILETYPES_PYTHON },
 			{ "php",	GEANY_FILETYPES_PHP },
@@ -841,8 +847,7 @@ static void filetype_free(gpointer data, G_GNUC_UNUSED gpointer user_data)
 
 	if (ft->priv->error_regex)
 		g_regex_unref(ft->priv->error_regex);
-	g_slist_foreach(ft->priv->tag_files, (GFunc) g_free, NULL);
-	g_slist_free(ft->priv->tag_files);
+	g_slist_free_full(ft->priv->tag_files, g_free);
 
 	g_free(ft->priv);
 	g_free(ft);

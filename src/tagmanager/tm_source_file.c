@@ -29,10 +29,12 @@
 # include <windows.h> /* for GetFullPathName */
 #endif
 
+#include "readtags.h"
+
 #include "tm_source_file.h"
 #include "tm_tag.h"
 #include "tm_parser.h"
-#include "ctags-api.h"
+#include "tm_ctags.h"
 
 typedef struct
 {
@@ -65,7 +67,7 @@ enum
 	TA_IMPL,
 	TA_LANG,
 	TA_INACTIVE, /* Obsolete */
-	TA_POINTER
+	TA_FLAGS
 };
 
 
@@ -86,7 +88,7 @@ static int get_path_max(const char *path)
 
 
 #if defined(G_OS_WIN32) && !defined(HAVE_REALPATH)
-/* realpath implementation for Windows found at http://bugzilla.gnome.org/show_bug.cgi?id=342926
+/* realpath implementation for Windows found at https://bugzilla.gnome.org/show_bug.cgi?id=342926
  * this one is better than e.g. liberty's lrealpath because this one uses Win32 API and works
  * with special chars within the filename */
 static char *realpath (const char *pathname, char *resolved_path)
@@ -136,7 +138,7 @@ gchar *tm_get_real_path(const gchar *file_name)
 	return NULL;
 }
 
-static char get_tag_impl(const char *impl)
+gchar tm_source_file_get_tag_impl(const gchar *impl)
 {
 	if ((0 == strcmp("virtual", impl))
 	 || (0 == strcmp("pure virtual", impl)))
@@ -148,7 +150,7 @@ static char get_tag_impl(const char *impl)
 	return TAG_IMPL_UNKNOWN;
 }
 
-static char get_tag_access(const char *access)
+gchar tm_source_file_get_tag_access(const gchar *access)
 {
 	if (0 == strcmp("public", access))
 		return TAG_ACCESS_PUBLIC;
@@ -168,59 +170,6 @@ static char get_tag_access(const char *access)
 }
 
 /*
- Initializes a TMTag structure with information from a ctagsTag struct
- used by the ctags parsers. Note that the TMTag structure must be malloc()ed
- before calling this function.
- @param tag The TMTag structure to initialize
- @param file Pointer to a TMSourceFile struct (it is assigned to the file member)
- @param tag_entry Tag information gathered by the ctags parser
- @return TRUE on success, FALSE on failure
-*/
-static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_entry)
-{
-	TMTagType type;
-
-	if (!tag_entry)
-		return FALSE;
-
-	type = tm_parser_get_tag_type(tag_entry->kindLetter, tag_entry->lang);
-	if (file->lang != tag_entry->lang)  /* this is a tag from a subparser */
-	{
-		/* check for possible re-definition of subparser type */
-		type = tm_parser_get_subparser_type(file->lang, tag_entry->lang, type);
-	}
-
-	if (!tag_entry->name || type == tm_tag_undef_t)
-		return FALSE;
-
-	tag->name = g_strdup(tag_entry->name);
-	tag->type = type;
-	tag->local = tag_entry->isFileScope;
-	tag->pointerOrder = 0;	/* backward compatibility (use var_type instead) */
-	tag->line = tag_entry->lineNumber;
-	if (NULL != tag_entry->signature)
-		tag->arglist = g_strdup(tag_entry->signature);
-	if ((NULL != tag_entry->scopeName) &&
-		(0 != tag_entry->scopeName[0]))
-		tag->scope = g_strdup(tag_entry->scopeName);
-	if (tag_entry->inheritance != NULL)
-		tag->inheritance = g_strdup(tag_entry->inheritance);
-	if (tag_entry->varType != NULL)
-		tag->var_type = g_strdup(tag_entry->varType);
-	if (tag_entry->access != NULL)
-		tag->access = get_tag_access(tag_entry->access);
-	if (tag_entry->implementation != NULL)
-		tag->impl = get_tag_impl(tag_entry->implementation);
-	if ((tm_tag_macro_t == tag->type) && (NULL != tag->arglist))
-		tag->type = tm_tag_macro_with_arg_t;
-	tag->file = file;
-	/* redefine lang also for subparsers because the rest of Geany assumes that
-	 * tags from a single file are from a single language */
-	tag->lang = file->lang;
-	return TRUE;
-}
-
-/*
  Initializes an already malloc()ed TMTag structure by reading a tag entry
  line from a file. The structure should be allocated beforehand.
  @param tag The TMTag structure to populate
@@ -228,7 +177,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file, const ctagsTag *tag_ent
  @param fp FILE pointer from where the tag line is read
  @return TRUE on success, FALSE on FAILURE
 */
-static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp)
+static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp, TMParserType lang)
 {
 	guchar buf[BUFSIZ];
 	guchar *start, *end;
@@ -251,7 +200,11 @@ static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp)
 			if (!isprint(*start))
 				return FALSE;
 			else
+			{
 				tag->name = g_strdup((gchar*)start);
+				if (tm_parser_is_anon_name(lang, tag->name))
+					tag->flags |= tm_tag_flag_anon_t;
+			}
 		}
 		else
 		{
@@ -272,8 +225,8 @@ static gboolean init_tag_from_file(TMTag *tag, TMSourceFile *file, FILE *fp)
 				case TA_SCOPE:
 					tag->scope = g_strdup((gchar*)start + 1);
 					break;
-				case TA_POINTER:
-					tag->pointerOrder = atoi((gchar*)start + 1);
+				case TA_FLAGS:
+					tag->flags |= atoi((gchar*)start + 1);
 					break;
 				case TA_VARTYPE:
 					tag->var_type = g_strdup((gchar*)start + 1);
@@ -352,120 +305,132 @@ static gboolean init_tag_from_file_alt(TMTag *tag, TMSourceFile *file, FILE *fp)
 	return TRUE;
 }
 
-/*
- CTags tag file format (http://ctags.sourceforge.net/FORMAT)
-*/
-static gboolean init_tag_from_file_ctags(TMTag *tag, TMSourceFile *file, FILE *fp, TMParserType lang)
+
+static void read_ctags_file(const gchar *tags_file, TMParserType lang, GPtrArray *file_tags)
 {
-	gchar buf[BUFSIZ];
-	gchar *p, *tab;
+	tagEntry entry;
+	tagFile *f = tagsOpen(tags_file, NULL);
+	const gchar *lang_kinds = tm_ctags_get_lang_kinds(lang);
+	GArray *unknown_fields = g_array_sized_new(FALSE, FALSE, sizeof(guint), 10);
 
-	tag->refcount = 1;
-	tag->type = tm_tag_function_t; /* default type is function if no kind is specified */
-	do
+	while (tagsNext(f, &entry))
 	{
-		if ((NULL == fgets(buf, BUFSIZ, fp)) || ('\0' == *buf))
-			return FALSE;
-	}
-	while (strncmp(buf, "!_TAG_", 6) == 0); /* skip !_TAG_ lines */
+		TMTagType type;
+		TMTag *tag;
 
-	p = buf;
+		if (!entry.kind)
+			continue;
 
-	/* tag name */
-	if (! (tab = strchr(p, '\t')) || p == tab)
-		return FALSE;
-	tag->name = g_strndup(p, (gsize)(tab - p));
-	p = tab + 1;
+		if (entry.kind[0] && entry.kind[1])
+			type = tm_parser_get_tag_type(tm_ctags_get_kind_from_name(entry.kind, lang), lang);  /* 'K' field */
+		else
+			type = tm_parser_get_tag_type(*entry.kind, lang);  /* 'k' field */
 
-	/* tagfile, unused */
-	if (! (tab = strchr(p, '\t')))
-	{
-		g_free(tag->name);
-		tag->name = NULL;
-		return FALSE;
-	}
-	p = tab + 1;
-	/* Ex command, unused */
-	if (*p == '/' || *p == '?')
-	{
-		gchar c = *p;
-		for (++p; *p && *p != c; p++)
+		if (type == tm_tag_undef_t)
+			continue;
+
+		tag = tm_tag_new();
+		tag->refcount = 1;
+		tag->name = g_strdup(entry.name);
+		tag->type = type;
+		tag->lang = lang;
+		tag->local = entry.fileScope;  /* 'f' field */
+		tag->line = entry.address.lineNumber;  /* 'n' field */
+		tag->file = NULL;
+
+		if (tm_parser_is_anon_name(lang, tag->name))
+			tag->flags |= tm_tag_flag_anon_t;
+
+		for (guint i = 0; i < entry.fields.count; i++)
 		{
-			if (*p == '\\' && p[1])
-				p++;
-		}
-	}
-	else /* assume a line */
-		tag->line = atol(p);
-	tab = strstr(p, ";\"");
-	/* read extension fields */
-	if (tab)
-	{
-		p = tab + 2;
-		while (*p && *p != '\n' && *p != '\r')
-		{
-			gchar *end;
-			const gchar *key, *value = NULL;
+			const gchar *key = entry.fields.list[i].key;
+			const gchar *value = entry.fields.list[i].value;
 
-			/* skip leading tabulations */
-			while (*p && *p == '\t') p++;
-			/* find the separator (:) and end (\t) */
-			key = end = p;
-			while (*end && *end != '\t' && *end != '\n' && *end != '\r')
+			if (strcmp(key, "scope") == 0)  /* 'sZ' field */
 			{
-				if (*end == ':' && ! value)
+				/* scope:class:A::B::C */
+				const gchar *val = strchr(value, ':');
+				if (val && *(++val))
 				{
-					*end = 0; /* terminate the key */
-					value = end + 1;
+					g_free(tag->scope);
+					tag->scope = g_strdup(val);
 				}
-				end++;
 			}
-			/* move p paste the so we won't stop parsing by setting *end=0 below */
-			p = *end ? end + 1 : end;
-			*end = 0; /* terminate the value (or key if no value) */
-
-			if (! value || 0 == strcmp(key, "kind")) /* tag kind */
-			{
-				const gchar *kind = value ? value : key;
-
-				if (kind[0] && kind[1])
-					tag->type = tm_parser_get_tag_type(ctagsGetKindFromName(kind, lang), lang);
-				else
-					tag->type = tm_parser_get_tag_type(*kind, lang);
-			}
-			else if (0 == strcmp(key, "inherits")) /* comma-separated list of classes this class inherits from */
-			{
-				g_free(tag->inheritance);
-				tag->inheritance = g_strdup(value);
-			}
-			else if (0 == strcmp(key, "implementation")) /* implementation limit */
-				tag->impl = get_tag_impl(value);
-			else if (0 == strcmp(key, "line")) /* line */
-				tag->line = atol(value);
-			else if (0 == strcmp(key, "access")) /* access */
-				tag->access = get_tag_access(value);
-			else if (0 == strcmp(key, "class") ||
-					 0 == strcmp(key, "enum") ||
-					 0 == strcmp(key, "function") ||
-					 0 == strcmp(key, "struct") ||
-					 0 == strcmp(key, "union")) /* Name of the class/enum/function/struct/union in which this tag is a member */
-			{
-				g_free(tag->scope);
-				tag->scope = g_strdup(value);
-			}
-			else if (0 == strcmp(key, "file")) /* static (local) tag */
-				tag->local = TRUE;
-			else if (0 == strcmp(key, "signature")) /* arglist */
+			else if (strcmp(key, "signature") == 0)  /* 'S' field */
 			{
 				g_free(tag->arglist);
 				tag->arglist = g_strdup(value);
 			}
+			else if (strcmp(key, "inherits") == 0)  /* 'i' field */
+			{
+				g_free(tag->inheritance);
+				tag->inheritance = g_strdup(value);
+			}
+			else if (strcmp(key, "typeref") == 0)  /* 't' field */
+			{
+				/* typeref:typename:int */
+				const gchar *val = strchr(value, ':');
+				if (val && *(++val) &&
+					(g_str_has_prefix(value, "typename:") || g_str_has_prefix(value, "unknown:")))
+				{
+					/* "unknown:" above is used by the php parser, all other parsers use "typename:" */
+					g_free(tag->var_type);
+					tag->var_type = g_strdup(val);
+				}
+			}
+			else if (strcmp(key, "extras") == 0)  /* 'E' field */
+			{
+				/* extras may contain multiple values such as extras:fileScope,anonymous */
+				if (strstr(value, "anonymous"))
+					tag->flags |= tm_tag_flag_anon_t;
+			}
+			else if (strcmp(key, "implementation") == 0)  /* 'm' field */
+				tag->impl = tm_source_file_get_tag_impl(value);
+			else if (strcmp(key, "access") == 0)  /* 'a' field */
+				tag->access = tm_source_file_get_tag_access(value);
+			else if (strcmp(key, "language") == 0)  /* 'l' field */
+			{
+				TMParserType tag_lang = tm_ctags_get_named_lang(value);
+				if (tag_lang >= 0)
+					tag->lang = tag_lang;
+			}
+			else
+				g_array_append_val(unknown_fields, i);
 		}
+
+		if (!tag->scope)
+		{
+			/* search for scope introduced by scope kind name only after going
+			 * through all extension fields and having tag->lang updated when
+			 * "language" field is present */
+			for (guint i = 0; !tag->scope && i < unknown_fields->len; i++)
+			{
+				const guint idx = g_array_index(unknown_fields, guint, i);
+				const gchar *key = entry.fields.list[idx].key;
+				const gchar *value = entry.fields.list[idx].value;
+
+				for (gint j = 0; lang_kinds[j]; j++)
+				{
+					const gchar kind = lang_kinds[j];
+					const gchar *name = tm_ctags_get_kind_name(kind, tag->lang);
+					if (strcmp(key, name) == 0)
+					{
+						/* 's' field - scope without the 'scope:' prefix */
+						tag->scope = g_strdup(value);
+						break;
+					}
+				}
+			}
+		}
+
+		unknown_fields->len = 0;
+		g_ptr_array_add(file_tags, tag);
 	}
 
-	tag->file = file;
-	return TRUE;
+	g_array_unref(unknown_fields);
+	tagsClose(f);
 }
+
 
 static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType mode, TMFileFormat format)
 {
@@ -475,13 +440,13 @@ static TMTag *new_tag_from_tags_file(TMSourceFile *file, FILE *fp, TMParserType 
 	switch (format)
 	{
 		case TM_FILE_FORMAT_TAGMANAGER:
-			result = init_tag_from_file(tag, file, fp);
+			result = init_tag_from_file(tag, file, fp, mode);
 			break;
 		case TM_FILE_FORMAT_PIPE:
 			result = init_tag_from_file_alt(tag, file, fp);
 			break;
 		case TM_FILE_FORMAT_CTAGS:
-			result = init_tag_from_file_ctags(tag, file, fp, mode);
+			g_warn_if_reached();  /* this should never be reached; ctags files are handled separately */
 			break;
 	}
 
@@ -516,8 +481,8 @@ static gboolean write_tag(TMTag *tag, FILE *fp, TMTagAttrType attrs)
 		fprintf(fp, "%c%s", TA_SCOPE, tag->scope);
 	if ((attrs & tm_tag_attr_inheritance_t) && (NULL != tag->inheritance))
 		fprintf(fp, "%c%s", TA_INHERITS, tag->inheritance);
-	if (attrs & tm_tag_attr_pointer_t)
-		fprintf(fp, "%c%d", TA_POINTER, tag->pointerOrder);
+	if (attrs & tm_tag_attr_flags_t)
+		fprintf(fp, "%c%d", TA_FLAGS, tag->flags);
 	if ((attrs & tm_tag_attr_vartype_t) && (NULL != tag->var_type))
 		fprintf(fp, "%c%s", TA_VARTYPE, tag->var_type);
 	if ((attrs & tm_tag_attr_access_t) && (TAG_ACCESS_UNKNOWN != tag->access))
@@ -553,7 +518,10 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 		else if (buf[0] == '#' && strstr((gchar*) buf, "format=tagmanager") != NULL)
 			format = TM_FILE_FORMAT_TAGMANAGER;
 		else if (buf[0] == '#' && strstr((gchar*) buf, "format=ctags") != NULL)
+		{
 			format = TM_FILE_FORMAT_CTAGS;
+			g_warning("# format=ctags directive is no longer supported; please remove it from %s", tags_file);
+		}
 		else if (strncmp((gchar*) buf, "!_TAG_", 6) == 0)
 			format = TM_FILE_FORMAT_CTAGS;
 		else
@@ -578,9 +546,17 @@ GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mo
 	}
 
 	file_tags = g_ptr_array_new();
-	while (NULL != (tag = new_tag_from_tags_file(NULL, fp, mode, format)))
-		g_ptr_array_add(file_tags, tag);
-	fclose(fp);
+	if (format == TM_FILE_FORMAT_CTAGS)
+	{
+		fclose(fp);  /* the readtags library opens the file by itself */
+		read_ctags_file(tags_file, mode, file_tags);
+	}
+	else
+	{
+		while (NULL != (tag = new_tag_from_tags_file(NULL, fp, mode, format)))
+			g_ptr_array_add(file_tags, tag);
+		fclose(fp);
+	}
 
 	return file_tags;
 }
@@ -604,7 +580,7 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_
 
 		ret = write_tag(tag, fp, tm_tag_attr_type_t
 		  | tm_tag_attr_scope_t | tm_tag_attr_arglist_t | tm_tag_attr_vartype_t
-		  | tm_tag_attr_pointer_t);
+		  | tm_tag_attr_flags_t);
 
 		if (!ret)
 			break;
@@ -614,64 +590,6 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_
 	return ret;
 }
 
-/* add argument list of __init__() Python methods to the class tag */
-static void update_python_arglist(const TMTag *tag, TMSourceFile *current_source_file)
-{
-	guint i;
-	const char *parent_tag_name;
-
-	if (tag->type != tm_tag_method_t || tag->scope == NULL ||
-		g_strcmp0(tag->name, "__init__") != 0)
-		return;
-
-	parent_tag_name = strrchr(tag->scope, '.');
-	if (parent_tag_name)
-		parent_tag_name++;
-	else
-		parent_tag_name = tag->scope;
-
-	/* going in reverse order because the tag was added recently */
-	for (i = current_source_file->tags_array->len; i > 0; i--)
-	{
-		TMTag *prev_tag = (TMTag *) current_source_file->tags_array->pdata[i - 1];
-		if (g_strcmp0(prev_tag->name, parent_tag_name) == 0)
-		{
-			g_free(prev_tag->arglist);
-			prev_tag->arglist = g_strdup(tag->arglist);
-			break;
-		}
-	}
-}
-
-/* new parsing pass ctags callback function */
-static bool ctags_pass_start(void *user_data)
-{
-	TMSourceFile *current_source_file = user_data;
-
-	tm_tags_array_free(current_source_file->tags_array, FALSE);
-	return TRUE;
-}
-
-/* new tag ctags callback function */
-static bool ctags_new_tag(const ctagsTag *const tag,
-	void *user_data)
-{
-	TMSourceFile *current_source_file = user_data;
-	TMTag *tm_tag = tm_tag_new();
-
-	if (!init_tag(tm_tag, current_source_file, tag))
-	{
-		tm_tag_unref(tm_tag);
-		return TRUE;
-	}
-
-	if (tm_tag->lang == TM_PARSER_PYTHON)
-		update_python_arglist(tm_tag, current_source_file);
-
-	g_ptr_array_add(current_source_file->tags_array, tm_tag);
-
-	return TRUE;
-}
 
 /* Initializes a TMSourceFile structure from a file name. */
 static gboolean tm_source_file_init(TMSourceFile *source_file, const char *file_name,
@@ -698,7 +616,7 @@ static gboolean tm_source_file_init(TMSourceFile *source_file, const char *file_
 			return FALSE;
 		}
 		source_file->file_name = tm_get_real_path(file_name);
-		source_file->short_name = strrchr(source_file->file_name, '/');
+		source_file->short_name = strrchr(source_file->file_name, G_DIR_SEPARATOR);
 		if (source_file->short_name)
 			++ source_file->short_name;
 		else
@@ -710,7 +628,26 @@ static gboolean tm_source_file_init(TMSourceFile *source_file, const char *file_
 	if (name == NULL)
 		source_file->lang = TM_PARSER_NONE;
 	else
-		source_file->lang = ctagsGetNamedLang(name);
+		source_file->lang = tm_ctags_get_named_lang(name);
+
+	source_file->trust_file_scope = TRUE;
+
+	if (source_file->lang == TM_PARSER_C || source_file->lang == TM_PARSER_CPP)
+	{
+		const gchar **ext;
+		const gchar *common_src_exts[] =
+			{".c", ".C", ".cc", ".cp", ".cpp", ".cxx", ".c++", ".CPP", ".CXX", NULL};
+
+		source_file->trust_file_scope = FALSE;
+		for (ext = common_src_exts; *ext; ext++)
+		{
+			if (g_str_has_suffix(source_file->short_name, *ext))
+			{
+				source_file->trust_file_scope = TRUE;
+				break;
+			}
+		}
+	}
 
 	return TRUE;
 }
@@ -827,8 +764,8 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar* text_buf, gsize
 
 	tm_tags_array_free(source_file->tags_array, FALSE);
 
-	ctagsParse(use_buffer ? text_buf : NULL, buf_size, file_name,
-		source_file->lang, ctags_new_tag, ctags_pass_start, source_file);
+	tm_ctags_parse(use_buffer ? text_buf : NULL, buf_size, file_name,
+		source_file->lang, source_file);
 
 	return !retry;
 }
@@ -839,7 +776,7 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar* text_buf, gsize
 */
 const gchar *tm_source_file_get_lang_name(TMParserType lang)
 {
-	return ctagsGetLangName(lang);
+	return tm_ctags_get_lang_name(lang);
 }
 
 /* Gets the language index for \a name.
@@ -848,5 +785,5 @@ const gchar *tm_source_file_get_lang_name(TMParserType lang)
 */
 TMParserType tm_source_file_get_named_lang(const gchar *name)
 {
-	return ctagsGetNamedLang(name);
+	return tm_ctags_get_named_lang(name);
 }

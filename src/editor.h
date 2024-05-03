@@ -115,6 +115,7 @@ typedef struct GeanyEditorPrefs
 	gboolean	unfold_all_children;
 	gboolean	disable_dnd;
 	gboolean	use_tab_to_indent;	/* makes tab key indent instead of insert a tab char */
+	gboolean	backspace_unindent;	/* makes backspace char unindent instead of deleting one char */
 	gboolean	smart_home_key;
 	gboolean	newline_strip;
 	gboolean	auto_complete_symbols;
@@ -138,6 +139,9 @@ typedef struct GeanyEditorPrefs
 	gint		autocompletion_update_freq;
 	gint		scroll_lines_around_cursor;
 	gint		ime_interaction; /* input method editor's candidate window behaviour */
+	gboolean	show_line_endings_only_when_differ;
+	gboolean	change_history_markers;
+	gboolean	change_history_indicators;
 }
 GeanyEditorPrefs;
 
@@ -319,13 +323,11 @@ void editor_set_indent(GeanyEditor *editor, GeanyIndentType type, gint width);
 
 void editor_set_line_wrapping(GeanyEditor *editor, gboolean wrap);
 
-gboolean editor_goto_line(GeanyEditor *editor, gint line_no, gint offset);
+gboolean editor_goto_line(GeanyEditor *editor, gint line_no, gboolean offset);
 
 void editor_set_indentation_guides(GeanyEditor *editor);
 
 void editor_apply_update_prefs(GeanyEditor *editor);
-
-gchar *editor_get_calltip_text(GeanyEditor *editor, const TMTag *tag);
 
 void editor_toggle_fold(GeanyEditor *editor, gint line, gint modifiers);
 

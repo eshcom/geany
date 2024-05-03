@@ -10,6 +10,7 @@ filetypes_dist = \
 	filedefs/filetypes.Arduino.conf \
 	filedefs/filetypes.asciidoc \
 	filedefs/filetypes.asm \
+	filedefs/filetypes.autoit \
 	filedefs/filetypes.batch \
 	filedefs/filetypes.bibtex \
 	filedefs/filetypes.c \
@@ -30,10 +31,10 @@ filetypes_dist = \
 	filedefs/filetypes.docbook \
 	filedefs/filetypes.erlang \
 	filedefs/filetypes.f77 \
-	filedefs/filetypes.ferite \
 	filedefs/filetypes.forth \
 	filedefs/filetypes.fortran \
 	filedefs/filetypes.freebasic \
+	filedefs/filetypes.gdscript \
 	filedefs/filetypes.Genie.conf \
 	filedefs/filetypes.glsl \
 	filedefs/filetypes.go \
@@ -44,6 +45,7 @@ filetypes_dist = \
 	filedefs/filetypes.html \
 	filedefs/filetypes.java \
 	filedefs/filetypes.javascript \
+	filedefs/filetypes.julia \
 	filedefs/filetypes.JSON.conf \
 	filedefs/filetypes.latex \
 	filedefs/filetypes.lisp \
@@ -52,6 +54,7 @@ filetypes_dist = \
 	filedefs/filetypes.makefile \
 	filedefs/filetypes.markdown \
 	filedefs/filetypes.matlab \
+	filedefs/filetypes.Meson.conf \
 	filedefs/filetypes.Nim.conf \
 	filedefs/filetypes.nsis \
 	filedefs/filetypes.objectivec \
@@ -61,6 +64,7 @@ filetypes_dist = \
 	filedefs/filetypes.po \
 	filedefs/filetypes.powershell \
 	filedefs/filetypes.r \
+	filedefs/filetypes.raku \
 	filedefs/filetypes.restructuredtext \
 	filedefs/filetypes.ruby \
 	filedefs/filetypes.rust \
@@ -100,6 +104,7 @@ template_files = \
 	templates/files/main.cxx \
 	templates/files/main.d \
 	templates/files/main.java \
+	templates/files/main.md \
 	templates/files/main.py \
 	templates/files/main.vala \
 	templates/files/module.erl \
@@ -121,17 +126,8 @@ nobase_dist_pkgdata_DATA = \
 	filetype_extensions.conf \
 	snippets.conf \
 	ui_toolbar.xml \
-	geany.glade
+	geany.glade \
+	geany.css
 
 nobase_pkgdata_DATA = \
 	$(filetypes_nodist)
-
-if GTK3
-nobase_dist_pkgdata_DATA += \
-	geany-3.0.css \
-	geany-3.20.css \
-	geany.css
-else
-nobase_dist_pkgdata_DATA += geany.gtkrc
-endif
-

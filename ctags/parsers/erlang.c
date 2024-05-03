@@ -16,8 +16,8 @@
 #include <string.h>
 
 #include "entry.h"
-#include "options.h"
 #include "read.h"
+#include "parse.h"
 #include "routines.h"
 #include "vstring.h"
 
@@ -148,7 +148,7 @@ static void parseDirective (const unsigned char *cp, vString *const module)
 	else if (strcmp (drtv, "module") == 0)
 		parseModuleTag (cp, module);
 	/* Otherwise, it was an import, export, etc. */
-	
+
 	vStringDelete (directive);
 }
 

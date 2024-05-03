@@ -51,11 +51,10 @@
 #include "win32.h"
 #include "osx.h"
 
-#include "gtkcompat.h"
-
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
 
@@ -64,12 +63,12 @@
 	"col: %c\t "         \
 	"sel: %s\t "         \
 	"%w      %t      %m" \
-	"mode: %M      "     \
+	"EOL: %M      "      \
 	"encoding: %e      " \
 	"filetype: %f      " \
 	"scope: %S")
 
-GeanyInterfacePrefs	interface_prefs;
+GEANY_EXPORT_SYMBOL GeanyInterfacePrefs interface_prefs;
 GeanyMainWidgets	main_widgets;
 
 UIPrefs			ui_prefs;
@@ -119,7 +118,6 @@ static void recent_file_loaded(const gchar *utf8_filename, GeanyRecentFiles *grf
 static void recent_file_activate_cb(GtkMenuItem *menuitem, gpointer user_data);
 static void recent_project_activate_cb(GtkMenuItem *menuitem, gpointer user_data);
 static GtkWidget *progress_bar_create(void);
-static void ui_menu_sort_by_label(GtkMenu *menu);
 
 
 /* simple wrapper for gtk_widget_set_sensitive() to allow widget being NULL */
@@ -228,7 +226,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc,
 				break;
 			case 's':
 			{
-				gint len = sci_get_selected_text_length(sci) - 1;
+				gint len = sci_get_selected_text_length2(sci);
 				/* check if whole lines are selected */
 				if (!len || sci_get_col_from_position(sci,
 						sci_get_selection_start(sci)) != 0 ||
@@ -242,7 +240,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc,
 			}
 			case 'n' :
 				g_string_append_printf(stats_str, "%d",
-					sci_get_selected_text_length(doc->editor->sci) - 1);
+					sci_get_selected_text_length2(doc->editor->sci));
 				break;
 			case 'w':
 				/* RO = read-only */
@@ -384,7 +382,7 @@ void ui_set_window_title(GeanyDocument *doc)
 			g_string_append(str, DOC_FILENAME(doc));
 		else
 		{
-			gchar *short_name = document_get_basename_for_display(doc, 30);
+			gchar *short_name = document_get_basename_for_display(doc, interface_prefs.tab_label_len);
 			gchar *dirname = g_path_get_dirname(DOC_FILENAME(doc));
 
 			g_string_append(str, short_name);
@@ -729,7 +727,7 @@ static void insert_date(GeanyDocument *doc, gint pos, const gchar *date_style)
 	{
 		gchar *str = dialogs_show_input(_("Custom Date Format"), GTK_WINDOW(main_widgets.window),
 				_("Enter here a custom date and time format. "
-				"You can use any conversion specifiers which can be used with the ANSI C strftime function."),
+				"For a list of available conversion specifiers see https://docs.gtk.org/glib/method.DateTime.format.html."),
 				ui_prefs.custom_date_format);
 		if (str)
 			SETPTR(ui_prefs.custom_date_format, str);
@@ -1103,8 +1101,13 @@ void ui_document_show_hide(GeanyDocument *doc)
 }
 
 
+/* success = FALSE indicates an error for widget */
 void ui_set_search_entry_background(GtkWidget *widget, gboolean success)
 {
+	// set the entry, not just the button
+	if (GTK_IS_COMBO_BOX(widget))
+		widget = gtk_bin_get_child(GTK_BIN(widget));
+
 	gtk_widget_set_name(widget, success ? NULL : "geany-search-entry-no-match");
 }
 
@@ -1499,7 +1502,7 @@ GtkWidget *ui_frame_new_with_alignment(const gchar *label_text, GtkWidget **alig
 GEANY_API_SYMBOL
 GtkWidget *ui_dialog_vbox_new(GtkDialog *dialog)
 {
-	GtkWidget *vbox = gtk_vbox_new(FALSE, 12);	/* need child vbox to set a separate border. */
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);	/* need child vbox to set a separate border. */
 
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox, TRUE, TRUE, 0);
@@ -1634,7 +1637,7 @@ void ui_entry_add_activate_backward_signal(GtkEntry *entry)
 			G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION, 0, NULL, NULL,
 			g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 		binding_set = gtk_binding_set_by_class(GTK_ENTRY_GET_CLASS(entry));
-		gtk_binding_entry_add_signal(binding_set, GDK_Return, GDK_SHIFT_MASK, "activate-backward", 0);
+		gtk_binding_entry_add_signal(binding_set, GDK_KEY_Return, GDK_SHIFT_MASK, "activate-backward", 0);
 	}
 }
 
@@ -1919,11 +1922,11 @@ GtkWidget *ui_path_box_new(const gchar *title, GtkFileChooserAction action, GtkE
 {
 	GtkWidget *vbox, *dirbtn, *openimg, *hbox, *path_entry, *parent, *next_parent;
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	path_entry = GTK_WIDGET(entry);
 
 	/* prevent path_entry being vertically stretched to the height of dirbtn */
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	parent = path_entry;
 	while ((next_parent = gtk_widget_get_parent(parent)) != NULL)
@@ -1998,6 +2001,21 @@ static gchar *run_file_chooser(const gchar *title, GtkFileChooserAction action,
 	return ret_path;
 }
 #endif
+
+
+gchar *ui_get_project_directory(const gchar *path)
+{
+	gchar *utf8_path;
+	const gchar *title = _("Select Project Base Path");
+
+#ifdef G_OS_WIN32
+	utf8_path = win32_show_folder_dialog(ui_widgets.prefs_dialog, title, path);
+#else
+	utf8_path = run_file_chooser(title, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, path);
+#endif
+
+	return utf8_path;
+}
 
 
 static void ui_path_box_open_clicked(GtkButton *button, gpointer user_data)
@@ -2082,6 +2100,33 @@ void ui_table_add_row(GtkTable *table, gint row, ...)
 }
 
 
+/* comment-out all lines that are not already commented out except sections */
+static void comment_conf_files(ScintillaObject *sci)
+{
+	gint line, line_count;
+
+	line_count = sci_get_line_count(sci);
+	for (line = 0; line < line_count; line++)
+	{
+		gint pos_start = sci_get_position_from_line(sci, line);
+		gint pos_end = sci_get_line_end_position(sci, line);
+		gint pos;
+
+		for (pos = pos_start; pos < pos_end; pos++)
+		{
+			gchar c = sci_get_char_at(sci, pos);
+			if (c == '[' || c == '#')
+				break;
+			if (!isspace(c))
+			{
+				sci_insert_text(sci, pos_start, "#");
+				break;
+			}
+		}
+	}
+}
+
+
 static void on_config_file_clicked(GtkWidget *widget, gpointer user_data)
 {
 	const gchar *file_name = user_data;
@@ -2119,11 +2164,9 @@ static void on_config_file_clicked(GtkWidget *widget, gpointer user_data)
 			g_file_get_contents(global_file, &global_content, NULL, NULL);
 
 		doc = document_new_file(utf8_filename, ft, global_content);
-		if (global_content)
+		if (global_content && doc->file_type->id == GEANY_FILETYPES_CONF)
 		{
-			sci_select_all(doc->editor->sci);
-			keybindings_send_command(GEANY_KEY_GROUP_FORMAT,
-				GEANY_KEYS_FORMAT_COMMENTLINETOGGLE);
+			comment_conf_files(doc->editor->sci);
 			sci_set_current_line(doc->editor->sci, 0);
 			document_set_text_changed(doc, FALSE);
 			sci_empty_undo_buffer(doc->editor->sci);
@@ -2218,11 +2261,11 @@ static void add_stock_icons(const GtkStockItem *items, gsize count)
 
 void ui_init_stock_items(void)
 {
-	GtkStockItem items[] =
+	const GtkStockItem items[] =
 	{
-		{ GEANY_STOCK_SAVE_ALL, N_("Save All"), 0, 0, GETTEXT_PACKAGE },
-		{ GEANY_STOCK_CLOSE_ALL, N_("Close All"), 0, 0, GETTEXT_PACKAGE },
-		{ GEANY_STOCK_BUILD, N_("Build"), 0, 0, GETTEXT_PACKAGE }
+		{ (gchar *) GEANY_STOCK_SAVE_ALL, (gchar *) N_("Save All"), 0, 0, (gchar *) GETTEXT_PACKAGE },
+		{ (gchar *) GEANY_STOCK_CLOSE_ALL, (gchar *) N_("Close All"), 0, 0, (gchar *) GETTEXT_PACKAGE },
+		{ (gchar *) GEANY_STOCK_BUILD, (gchar *) N_("Build"), 0, 0, (gchar *) GETTEXT_PACKAGE }
 	};
 
 	gtk_stock_add(items, G_N_ELEMENTS(items));
@@ -2353,6 +2396,10 @@ void ui_init_prefs(void)
 		"msgwin_messages_visible", TRUE);
 	stash_group_add_boolean(group, &interface_prefs.msgwin_scribble_visible,
 		"msgwin_scribble_visible", TRUE);
+	stash_group_add_boolean(group, &interface_prefs.warn_on_project_close,
+		"warn_on_project_close", TRUE);
+	stash_group_add_spin_button_integer(group, &interface_prefs.tab_label_len,
+		"tab_label_length", 1000, "spin_tab_label_len");
 }
 
 
@@ -2505,7 +2552,6 @@ void ui_init_builder(void)
 }
 
 
-#if GTK_CHECK_VERSION(3, 0, 0)
 static void load_css_theme(const gchar *fn, guint priority)
 {
 	GtkCssProvider *provider = gtk_css_provider_new();
@@ -2526,7 +2572,6 @@ static void load_css_theme(const gchar *fn, guint priority)
 }
 
 
-// see setup_gtk2_styles() in libmain.c for GTK+ 2-specific theme initialization
 static void init_css_styles(void)
 {
 	gchar *theme_fn;
@@ -2535,31 +2580,6 @@ static void init_css_styles(void)
 	theme_fn = g_build_filename(app->datadir, "geany.css", NULL);
 	load_css_theme(theme_fn, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	g_free(theme_fn);
-
-	// load themes to handle breakage between various GTK+ versions
-	const struct
-	{
-		guint min_version;
-		guint max_version;
-		const gchar *file;
-	}
-	css_files[] =
-	{
-		{ 20, G_MAXUINT, "geany-3.20.css" },
-		{ 0, 19, "geany-3.0.css" },
-	};
-
-	guint gtk_version = gtk_get_minor_version();
-	for (guint i = 0; i < G_N_ELEMENTS(css_files); i++)
-	{
-		if (gtk_version >= css_files[i].min_version &&
-			gtk_version <= css_files[i].max_version)
-		{
-			theme_fn = g_build_filename(app->datadir, css_files[i].file, NULL);
-			load_css_theme(theme_fn, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-			g_free(theme_fn);
-		}
-	}
 
 	// if the user provided a geany.css file in their config dir, try and load that
 	theme_fn = g_build_filename(app->configdir, "geany.css", NULL);
@@ -2576,15 +2596,11 @@ static void add_css_config_file_item(void)
 	ui_add_config_file_menu_item(theme_fn, NULL, NULL);
 	g_free(theme_fn);
 }
-#endif // GTK3
 
 
 void ui_init(void)
 {
-#if GTK_CHECK_VERSION(3, 0, 0)
 	init_css_styles();
-#endif
-
 	init_recent_files();
 
 	ui_widgets.statusbar = ui_lookup_widget(main_widgets.window, "statusbar");
@@ -2632,9 +2648,7 @@ void ui_init(void)
 	init_document_widgets();
 
 	create_config_files_menu();
-#if GTK_CHECK_VERSION(3, 0, 0)
 	add_css_config_file_item();
-#endif
 }
 
 
@@ -2867,11 +2881,11 @@ static gint compare_menu_item_labels(gconstpointer a, gconstpointer b)
 	gchar *sa, *sb;
 	gint result;
 
-	/* put entries with submenus at the end of the menu */
+	/* put entries with submenus at the start of the menu */
 	if (gtk_menu_item_get_submenu(item_a) && !gtk_menu_item_get_submenu(item_b))
-		return 1;
-	else if (!gtk_menu_item_get_submenu(item_a) && gtk_menu_item_get_submenu(item_b))
 		return -1;
+	else if (!gtk_menu_item_get_submenu(item_a) && gtk_menu_item_get_submenu(item_b))
+		return 1;
 
 	sa = ui_menu_item_get_text(item_a);
 	sb = ui_menu_item_get_text(item_b);
@@ -2883,7 +2897,7 @@ static gint compare_menu_item_labels(gconstpointer a, gconstpointer b)
 
 
 /* Currently @a menu should contain only GtkMenuItems with labels. */
-static void ui_menu_sort_by_label(GtkMenu *menu)
+void ui_menu_sort_by_label(GtkMenu *menu)
 {
 	GList *list = gtk_container_get_children(GTK_CONTAINER(menu));
 	GList *node;
@@ -3009,7 +3023,7 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 
 /** Checks whether the passed @a keyval is the Enter or Return key.
  * There are three different Enter/Return key values
- * (@c GDK_Return, @c GDK_ISO_Enter, @c GDK_KP_Enter).
+ * (@c GDK_KEY_Return, @c GDK_KEY_ISO_Enter, @c GDK_KEY_KP_Enter).
  * This is just a convenience function.
  * @param keyval A keyval.
  * @return @c TRUE if @a keyval is the one of the Enter/Return key values, otherwise @c FALSE.
@@ -3017,12 +3031,12 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 GEANY_API_SYMBOL
 gboolean ui_is_keyval_enter_or_return(guint keyval)
 {
-	return (keyval == GDK_Return || keyval == GDK_ISO_Enter|| keyval == GDK_KP_Enter);
+	return (keyval == GDK_KEY_Return || keyval == GDK_KEY_ISO_Enter|| keyval == GDK_KEY_KP_Enter);
 }
 
 
 /** Reads an integer from the GTK default settings registry
- * (see http://library.gnome.org/devel/gtk/stable/GtkSettings.html).
+ * (see https://docs.gtk.org/gtk3/class.Settings.html).
  * @param property_name The property to read.
  * @param default_value The default value in case the value could not be read.
  * @return The value for the property if it exists, otherwise the @a default_value.

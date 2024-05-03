@@ -35,6 +35,7 @@ typedef struct TMSourceFile
 	char *file_name; /**< Full file name (inc. path) */
 	char *short_name; /**< Just the name of the file (without the path) */
 	GPtrArray *tags_array; /**< Sorted tag array obtained by parsing the object. @elementtype{TMTag} */
+	gboolean trust_file_scope;
 } TMSourceFile;
 
 GType tm_source_file_get_type(void);
@@ -61,6 +62,10 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar* text_buf, gsize
 GPtrArray *tm_source_file_read_tags_file(const gchar *tags_file, TMParserType mode);
 
 gboolean tm_source_file_write_tags_file(const gchar *tags_file, GPtrArray *tags_array);
+
+gchar tm_source_file_get_tag_impl(const gchar *impl);
+
+gchar tm_source_file_get_tag_access(const gchar *access);
 
 #endif /* GEANY_PRIVATE */
 

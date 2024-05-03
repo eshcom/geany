@@ -20,13 +20,13 @@
 
 /** @file sciwrappers.h
  * Wrapper functions for the Scintilla editor widget @c SCI_* messages.
- * You should also check the http://scintilla.org documentation, as it is more detailed.
+ * You should also check the https://scintilla.org documentation, as it is more detailed.
  *
  * To get Scintilla notifications, use the
  * @link pluginsignals.c @c "editor-notify" signal @endlink.
  *
  * @note These functions were originally from the cssed project
- * (http://cssed.sf.net, thanks).
+ * (https://sourceforge.net/projects/cssed/, thanks).
  * @see scintilla_send_message().
  */
 
@@ -35,7 +35,9 @@
 #endif
 
 #include "sciwrappers.h"
+#include <Lexilla.h> /* ILexer5 */
 
+#include "editor.h"
 #include "utils.h"
 
 #include <string.h>
@@ -144,10 +146,47 @@ void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column, const
 }
 
 
+/* Calls SCI_TEXTHEIGHT but tries very hard to cache the result as it's a very
+ * expensive operation */
+static gint sci_text_height_cached(ScintillaObject *sci)
+{
+	struct height_spec {
+		gchar *font;
+		gint size;
+		gint zoom;
+		gint extra;
+	};
+	static struct height_spec cache = {0};
+	static gint cache_value = 0;
+	struct height_spec current;
+
+	current.font = sci_get_string(sci, SCI_STYLEGETFONT, 0);
+	current.size = SSM(sci, SCI_STYLEGETSIZEFRACTIONAL, 0, 0);
+	current.zoom = SSM(sci, SCI_GETZOOM, 0, 0);
+	current.extra = SSM(sci, SCI_GETEXTRAASCENT, 0, 0) + SSM(sci, SCI_GETEXTRADESCENT, 0, 0);
+
+	if (g_strcmp0(current.font, cache.font) == 0 &&
+		current.size == cache.size &&
+		current.zoom == cache.zoom &&
+		current.extra == cache.extra)
+	{
+		g_free(current.font);
+	}
+	else
+	{
+		g_free(cache.font);
+		cache = current;
+
+		cache_value = SSM(sci, SCI_TEXTHEIGHT, 0, 0);
+	}
+
+	return cache_value;
+}
+
 /* compute margin width based on ratio of line height */
 static gint margin_width_from_line_height(ScintillaObject *sci, gdouble ratio, gint threshold)
 {
-	const gint line_height = SSM(sci, SCI_TEXTHEIGHT, 0, 0);
+	const gint line_height = sci_text_height_cached(sci);
 	gint width;
 
 	width = line_height * ratio;
@@ -231,6 +270,30 @@ gint sci_get_eol_mode(ScintillaObject *sci)
 void sci_set_eol_mode(ScintillaObject *sci, gint eolmode)
 {
 	SSM(sci, SCI_SETEOLMODE, (uptr_t) eolmode, 0);
+	sci_set_eol_representation_characters(sci, eolmode);
+}
+
+
+/* Show only EOL characters if they differ from the file default EOL character */
+void sci_set_eol_representation_characters(ScintillaObject *sci, gint new_eolmode)
+{
+	const gchar *eolchar = NULL;
+	const gchar *new_eolchar = NULL;
+	gboolean visible = FALSE;
+	gint *eolmode;
+	gint appearance;
+	gint eol_modes[3] = {SC_EOL_CRLF, SC_EOL_CR, SC_EOL_LF};
+
+	foreach_c_array(eolmode, eol_modes, 3)
+	{
+		visible = (*eolmode != new_eolmode) || ! editor_prefs.show_line_endings_only_when_differ;
+		new_eolchar = (visible) ? utils_get_eol_short_name(*eolmode) : "";
+		appearance = (visible) ? SC_REPRESENTATION_BLOB : SC_REPRESENTATION_PLAIN;
+		eolchar = utils_get_eol_char(*eolmode);
+
+		SSM(sci, SCI_SETREPRESENTATION, (sptr_t) eolchar, (sptr_t) new_eolchar);
+		SSM(sci, SCI_SETREPRESENTATIONAPPEARANCE, (sptr_t) eolchar, appearance);
+	}
 }
 
 
@@ -637,7 +700,17 @@ void sci_set_lexer(ScintillaObject *sci, guint lexer_id)
 {
 	gint old = sci_get_lexer(sci);
 
-	SSM(sci, SCI_SETLEXER, lexer_id, 0);
+	/* TODO, LexerNameFromID() is already deprecated */
+	const char *lexer_name = LexerNameFromID(lexer_id);
+	if (! lexer_name)
+	{
+		g_warning("Failed to find lexer for ID %u", lexer_id);
+		return;
+	}
+
+	ILexer5 *lexer = CreateLexer(lexer_name);
+
+	SSM(sci, SCI_SETILEXER, 0, (uintptr_t) lexer);
 
 	if (old != (gint)lexer_id)
 		SSM(sci, SCI_CLEARDOCUMENTSTYLE, 0, 0);
@@ -685,11 +758,12 @@ gchar *sci_get_line(ScintillaObject *sci, gint line_num)
  *
  * @param sci Scintilla widget.
  * @param len Length of @a text buffer, usually sci_get_length() + 1.
- * @param text Text buffer; must be allocated @a len + 1 bytes for null-termination. */
+ * @param text Text buffer; must be allocated @a len bytes for null-termination. */
 GEANY_API_SYMBOL
 void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 {
-	SSM(sci, SCI_GETTEXT, (uptr_t) len, (sptr_t) text);
+	g_return_if_fail(len > 0);
+	SSM(sci, SCI_GETTEXT, (uptr_t) len - 1, (sptr_t) text);
 }
 
 
@@ -707,11 +781,13 @@ gchar *sci_get_contents(ScintillaObject *sci, gint buffer_len)
 {
 	gchar *text;
 
+	g_return_val_if_fail(buffer_len != 0, NULL);
+
 	if (buffer_len < 0)
 		buffer_len = sci_get_length(sci) + 1;
 
 	text = g_malloc(buffer_len);
-	SSM(sci, SCI_GETTEXT, (uptr_t) buffer_len, (sptr_t) text);
+	SSM(sci, SCI_GETTEXT, (uptr_t) buffer_len - 1, (sptr_t) text);
 	return text;
 }
 
@@ -719,6 +795,9 @@ gchar *sci_get_contents(ScintillaObject *sci, gint buffer_len)
 /** Gets selected text.
  * @deprecated sci_get_selected_text is deprecated and should not be used in newly-written code.
  * Use sci_get_selection_contents() instead.
+ *
+ * @note You must ensure NUL termination yourself, this function does
+ * not NUL terminate the buffer itself.
  *
  * @param sci Scintilla widget.
  * @param text Text buffer; must be allocated sci_get_selected_text_length() + 1 bytes
@@ -744,11 +823,23 @@ gchar *sci_get_selection_contents(ScintillaObject *sci)
 }
 
 
-/** Gets selected text length.
+/** Gets selected text length including the terminating NUL character.
+ * @deprecated sci_get_selected_text_length is deprecated and should not be used in newly-written code.
+ * Use sci_get_selected_text_length2() instead.
  * @param sci Scintilla widget.
  * @return Length. */
 GEANY_API_SYMBOL
 gint sci_get_selected_text_length(ScintillaObject *sci)
+{
+	return (gint) SSM(sci, SCI_GETSELTEXT, 0, 0) + 1;
+}
+
+
+/** Gets selected text length without the terminating NUL character.
+ * @param sci Scintilla widget.
+ * @return Length. */
+GEANY_API_SYMBOL
+gint sci_get_selected_text_length2(ScintillaObject *sci)
 {
 	return (gint) SSM(sci, SCI_GETSELTEXT, 0, 0);
 }
@@ -1135,7 +1226,7 @@ void sci_set_readonly(ScintillaObject *sci, gboolean readonly)
 /** Sends Scintilla commands without any parameters.
  * @param sci The Scintilla @c GtkWidget.
  * @param cmd @c SCI_COMMAND.
- * @see http://scintilla.org for the documentation.
+ * @see https://scintilla.org for the documentation.
  *
  *  @since 0.16
  */
@@ -1406,4 +1497,3 @@ gint sci_word_end_position(ScintillaObject *sci, gint position, gboolean onlyWor
 {
 	return SSM(sci, SCI_WORDENDPOSITION, position, onlyWordCharacters);
 }
-

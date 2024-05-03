@@ -86,7 +86,7 @@ https://www.geany.org/Support/PluginWishlist to get an idea about what users wis
 
 For authors of plugins for Geany, we created a dedicated @a geany-plugins project
 on Sourceforge and GitHub to ease development of plugins and help new authors.
-All information about this project you can find at http://plugins.geany.org/
+All information about this project you can find at https://plugins.geany.org/
 
 To add a new plugin to this project, get in touch with the people on the
 geany-devel-mailing list and create a fork of the geany-plugins project
@@ -106,7 +106,7 @@ If you don't want your plugin to be part of the geany-plugins project it is also
 Just skip the part about forking geany-plugins and sending a pull request.
 In this case it is of course also a good idea to post some kind of announcement
 to geany-devel and maybe to the main geany mailing list -- it's up to you.
-You can also ask for your plugin to be listed on the http://plugins.geany.org/
+You can also ask for your plugin to be listed on the https://plugins.geany.org/
 website as a third party plugin, helping Geany user to know about your plugin.
 
 At time of writing, there are some plugins already available in the
@@ -159,7 +159,7 @@ following.
 First you need to have Geany installed. Then install the development files for GTK
 and its dependencies. The easiest way to do this is to use your distribution's package
 management system, e.g. on Debian and Ubuntu systems you can use
-@code apt-get install libgtk2.0-dev intltool @endcode
+@code apt-get install libgtk-3-dev autoconf automake autopoint gettext @endcode
 This will install all necessary files to be able to compile plugins for Geany. On other
 distributions, the package names and commands to use may differ.
 
@@ -671,7 +671,7 @@ The @ref plugin_callbacks array is supported by assigning the GeanyPluginFuncs::
 the array.
 
 @ref plugin_fields is not supported anymore. Use ui_add_document_sensitive() instead.
-@ref PLUGIN_KEY_GROUP and @ref plugin_key_group are also not supported anymore. Use
+@c PLUGIN_KEY_GROUP and @ref plugin_key_group are also not supported anymore. Use
 plugin_set_key_group() and keybindings_set_item() respectively.
 
 Additionally, Geany traditionally set a few variables. This is not the case anymore. @ref

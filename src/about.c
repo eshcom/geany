@@ -37,7 +37,7 @@
 #include "ui_utils.h"
 #include "utils.h"
 
-#include "gtkcompat.h"
+#include <gtk/gtk.h>
 
 #define HEADER "<span size=\"larger\" weight=\"bold\">Geany %s</span>"
 #define INFO "<span size=\"larger\" weight=\"bold\">%s</span>"
@@ -87,7 +87,7 @@ static const gchar *translators[][2] = {
 	{ "sv", "Tony Mattsson &lt;superxorn@gmail.com&gt;" },
 	{ "sr", "Nikola Radovanovic &lt;cobisimo@gmail.com&gt;"},
 	{ "tr", "Gürkan Gür &lt;seqizz@gmail.com&gt;"},
-	{ "uk", "Boris Dibrov &lt;dibrov.bor@gmail.com&gt;" },
+	{ "uk", "Artur Shepilko &lt;nomadbyte@gmail.com&gt;" },
 	{ "vi_VN", "Clytie Siddall &lt;clytie@riverland.net.au&gt;" },
 	{ "zh_CN", "Dormouse Young &lt;mouselinux@163.com&gt;,\nXhacker Liu &lt;liu.dongyuan@gmail.com&gt;" },
 	{ "zh_TW", "KoViCH &lt;kovich.ian@gmail.com&gt;\nWei-Lun Chao &lt;chaoweilun@gmail.com&gt;" }
@@ -98,7 +98,8 @@ static const gchar *prev_translators[][2] = {
 	{ "es", "Damián Viano &lt;debian@damianv.com.ar&gt;\nNacho Cabanes &lt;ncabanes@gmail.com&gt;" },
 	{ "pl", "Jacek Wolszczak &lt;shutdownrunner@o2.pl&gt;\nJarosław Foksa &lt;jfoksa@gmail.com&gt;" },
 	{ "nl", "Kurt De Bree &lt;kdebree@telenet.be&gt;" },
-	{ "sk", "Tomáš Vadina &lt;kyberdev@gmail.com&gt;" }
+	{ "sk", "Tomáš Vadina &lt;kyberdev@gmail.com&gt;" },
+	{ "uk", "Boris Dibrov &lt;dibrov.bor@gmail.com&gt;" }
 };
 static const guint prev_translators_len = G_N_ELEMENTS(prev_translators);
 
@@ -179,7 +180,7 @@ static GtkWidget *create_dialog(void)
 	/* create header */
 	header_eventbox = gtk_event_box_new();
 	gtk_widget_show(header_eventbox);
-	header_hbox = gtk_hbox_new(FALSE, 12);
+	header_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(header_hbox), 4);
 	gtk_widget_show(header_hbox);
 	gtk_container_add(GTK_CONTAINER(header_eventbox), header_hbox);
@@ -205,7 +206,7 @@ static GtkWidget *create_dialog(void)
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), notebook, TRUE, TRUE, 0);
 
 	/* create "Info" tab */
-	info_box = gtk_vbox_new(FALSE, 0);
+	info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(info_box), 6);
 	gtk_widget_show(info_box);
 
@@ -258,7 +259,7 @@ static GtkWidget *create_dialog(void)
 	gtk_widget_show(runtime_label);
 	gtk_box_pack_start(GTK_BOX(info_box), runtime_label, FALSE, FALSE, 0);
 
-	box = gtk_hbutton_box_new();
+	box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	url_button = gtk_button_new();
 	gtk_button_set_relief(GTK_BUTTON(url_button), GTK_RELIEF_NONE);
 	g_signal_connect(url_button, "clicked", G_CALLBACK(homepage_clicked), (gpointer)GEANY_HOMEPAGE);

@@ -1,4 +1,102 @@
-Geany 1.38 (unreleased)
+Geany 2.1 (unreleased)
+
+
+Geany 2.0 (October 19, 2023)
+
+    General
+    * Split "session data" into session.conf, preferences are written to
+      and read from geany.conf (PR#2776, PR#2779, PR#3014, PR#3125 and more).
+    * Add new build system Meson (experimental) (PR#2761).
+    * Require GTK 3.24 (#3580).
+
+    Bug fixes
+    * (Re-)Add ability to scroll over document tabs (Luke Horwell, PR#3134).
+    * Fix keyword colorization on filetype change (PR#3553).
+    * Fix startup files order when placing tabs next to the current one
+      (PR#3611).
+
+    Interface
+    * The document list in the sidebar has a new tree view. This mode is the
+      new default and existing installations automatically use it (PR#1813).
+    * Use dark-theme friendly colors for compiler messages (PR#3013).
+    * Add a confirmation dialog on search & replace for the whole session
+      (PR#3033).
+    * Filter entry for symbol tree (PR#3055).
+    * Simplify project creation from existing directories with sources
+      (PR#3042).
+    * Add option to show symbols in symbol tree without category groups
+      (PR#3172).
+    * Add option to only show line endings if they differ from file default
+      (PR#3287).
+    * Make tab label length and window title length configurable
+      (Abdul Rafey, #3365).
+    * Make Go to Symbol commands show signature list (PR#3475).
+
+    Editor
+    * Update Scintilla to 5.3.7 and Lexilla to 5.2.7 (PR#2867, PR#3551).
+    * Add "Change history" feature (disabled by default) (PR#3551).
+
+    Filetypes
+    * Sync many parsers from the Universal Ctags project, this leads to
+      updated symbol parsers (PR#2990, PR#2991, PR#3032).
+    * Improved support for the ctags file format, which is now the
+      recommended format for tags files (PR#3049).
+    * Update Kotlin filetype config (PR#3456).
+    * Apply Markdown header style to the complete header
+      (Robert Di Pardo, PR#3602).
+    * Update Nim filetype config (Zoom, PR#2988).
+    * Update PHP filetype config (PR#3488).
+    * Update Python filetype config (PR#3039).
+    * Add AutoIt filetype (Skif-off, PR#1752).
+    * Add GDScript filetype (David Yang, PR#3012).
+    * Remove Ferite filetype (PR#3075).
+    * Enable local variables and improve autocompletion for C/C++ and
+      some other languages (PR#3185, PR#3275).
+
+    Windows
+    * Remove native file and color dialogs on Windows, GTK dialogs will
+      be used instead (#3219).
+    * Use "Prof-Gnome" GTK theme by default (same theme as used on macOS)
+      for a better experience, the "Adwaita" theme can still be activated
+      (PR#3129).
+
+    Internationalization
+    * Updated translations: cz, da, de, fr, es, kk, lv, it, nl, pt, sk, ru, ua
+    * Added translations: si
+
+
+Geany 1.38 (October 09, 2021)
+
+    General
+    * Increase speed when opening documents, especially on startup
+      (Justin Blanchard, Issue#2883, Issue#2649, Issue#2791, PR#2884, PR#2747).
+    * Synchronize Geany's Ctags implementation with Universal Ctags, this
+      leads to updated symbol parsers (Jiří Techet, PR#2666).
+    * Remove GTK+2 Support (PR#2602).
+    * Geany needs a C++17 compiler to build (PR#2862).
+
+    Bug fixes
+    * Workaround crashes when pasting into VTE without having focus
+      (Issue#2813, PR#2843).
+
+    Interface
+    * Add keybinding to reload all open documents (David Yang, PR#2859).
+
+    Filetypes
+    * Add Julia filetype (getzze, Issue#434, PR#2584).
+    * Add Meson filetype (Andy Alt, PR#2850).
+
+    Plugins
+    * SaveActions: add configurable target directory for instantly saved files
+      (Issue#640, PR#2769).
+
+    Windows
+    * Fix message window height after restart (Issue#2591, PR#2892).
+    * Switch Windows builds to GTK3 and x86_64 (PR#2590).
+
+    Internationalization
+    * Updated translations: da, de, el, es, et, fr, it, ja, nl pt, pt BR,
+      sk, tr, uk, zh_CN
 
 
 Geany 1.37.1 (November 08, 2020)

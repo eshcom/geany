@@ -46,8 +46,8 @@ GeanyData *geany_data;
 
 PLUGIN_VERSION_CHECK(GEANY_API_VERSION)
 
-PLUGIN_SET_INFO(_("File Browser"), _("Adds a file browser tab to the sidebar."), VERSION,
-	_("The Geany developer team"))
+PLUGIN_SET_INFO(_("File Browser"), _("Adds a file browser tab to the sidebar."),
+	PACKAGE_VERSION, _("The Geany developer team"))
 
 
 /* Keybinding(s) */
@@ -526,8 +526,7 @@ static void on_external_open(GtkMenuItem *menuitem, gpointer user_data)
 		}
 	}
 
-	g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free(list);
+	g_list_free_full(list, (GDestroyNotify) gtk_tree_path_free);
 }
 
 
@@ -551,8 +550,7 @@ static void open_selected_files(GList *list, gboolean do_not_focus)
 	if (doc != NULL && ! do_not_focus)
 		keybindings_send_command(GEANY_KEY_GROUP_FOCUS, GEANY_KEYS_FOCUS_EDITOR);
 
-	g_slist_foreach(files, (GFunc) g_free, NULL);	/* free filenames */
-	g_slist_free(files);
+	g_slist_free_full(files, g_free);
 }
 
 
@@ -589,8 +587,7 @@ static void on_open_clicked(GtkMenuItem *menuitem, gpointer user_data)
 	else
 		open_selected_files(list, GPOINTER_TO_INT(user_data));
 
-	g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free(list);
+	g_list_free_full(list, (GDestroyNotify) gtk_tree_path_free);
 }
 
 
@@ -620,8 +617,7 @@ static void on_find_in_files(GtkMenuItem *menuitem, gpointer user_data)
 	else
 		dir = g_strdup(current_dir);
 
-	g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free(list);
+	g_list_free_full(list, (GDestroyNotify) gtk_tree_path_free);
 
 	SETPTR(dir, utils_get_utf8_from_locale(dir));
 	search_show_find_in_files_dialog(dir);
@@ -743,7 +739,7 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, gpoint
 
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(popup_items.show_hidden_files),
 			show_hidden_files);
-		gtk_menu_popup(GTK_MENU(popup_menu), NULL, NULL, NULL, NULL, event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(popup_menu), (GdkEvent *) event);
 		/* don't return TRUE here, unless the selection won't be changed */
 	}
 	return FALSE;
@@ -758,20 +754,20 @@ static gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer dat
 		return TRUE;
 	}
 
-	if (event->keyval == GDK_space)
+	if (event->keyval == GDK_KEY_space)
 	{
 		on_open_clicked(NULL, GINT_TO_POINTER(TRUE));
 		return TRUE;
 	}
 
-	if (( (event->keyval == GDK_Up || event->keyval == GDK_KP_Up) && (event->state & GDK_MOD1_MASK)) || /* FIXME: Alt-Up doesn't seem to work! */
-		(event->keyval == GDK_BackSpace) )
+	if (( (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up) && (event->state & GDK_MOD1_MASK)) || /* FIXME: Alt-Up doesn't seem to work! */
+		(event->keyval == GDK_KEY_BackSpace) )
 	{
 		on_go_up();
 		return TRUE;
 	}
 
-	if ((event->keyval == GDK_F10 && event->state & GDK_SHIFT_MASK) || event->keyval == GDK_Menu)
+	if ((event->keyval == GDK_KEY_F10 && event->state & GDK_SHIFT_MASK) || event->keyval == GDK_KEY_Menu)
 	{
 		GdkEventButton button_event;
 
@@ -942,7 +938,7 @@ static GtkWidget *make_filterbar(void)
 {
 	GtkWidget *label, *filterbar;
 
-	filterbar = gtk_hbox_new(FALSE, 1);
+	filterbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
 
 	label = gtk_label_new(_("Filter:"));
 
@@ -1133,7 +1129,7 @@ void plugin_init(GeanyData *data)
 
 	filter = NULL;
 
-	file_view_vbox = gtk_vbox_new(FALSE, 0);
+	file_view_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	toolbar = make_toolbar();
 	gtk_box_pack_start(GTK_BOX(file_view_vbox), toolbar, FALSE, FALSE, 0);
 
@@ -1261,8 +1257,8 @@ GtkWidget *plugin_configure(GtkDialog *dialog)
 	GtkWidget *label, *entry, *checkbox_of, *checkbox_hf, *checkbox_fp, *checkbox_pb, *vbox;
 	GtkWidget *box, *align;
 
-	vbox = gtk_vbox_new(FALSE, 6);
-	box = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 
 	label = gtk_label_new(_("External open command:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
@@ -1287,7 +1283,7 @@ GtkWidget *plugin_configure(GtkDialog *dialog)
 	pref_widgets.show_hidden_checkbox = checkbox_hf;
 	g_signal_connect(checkbox_hf, "toggled", on_toggle_hidden, NULL);
 
-	box = gtk_vbox_new(FALSE, 3);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	checkbox_of = gtk_check_button_new_with_label(_("Hide file extensions:"));
 	gtk_button_set_focus_on_click(GTK_BUTTON(checkbox_of), FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox_of), hide_object_files);

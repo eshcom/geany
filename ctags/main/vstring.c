@@ -130,6 +130,12 @@ extern void vStringNCatS (
 	stringCat (string, s, len);
 }
 
+extern void vStringNCatSUnsafe (
+		vString *const string, const char *const s, const size_t length)
+{
+	stringCat (string, s, length);
+}
+
 extern void vStringCat (vString *const string, const vString *const s)
 {
 	size_t len = vStringLength (s);
@@ -146,18 +152,21 @@ extern void vStringCatS (vString *const string, const char *const s)
 
 /*  Strip trailing newline from string.
  */
-extern void vStringStripNewline (vString *const string)
+extern bool vStringStripNewline (vString *const string)
 {
 	const size_t final = string->length - 1;
 
 	if (string->length == 0)
-		return;
+		return false;
 
 	if (string->buffer [final] == '\n')
 	{
 		string->buffer [final] = '\0';
 		string->length--;
+		return true;
 	}
+
+	return false;
 }
 
 /*  Strip leading white space from string.
@@ -275,6 +284,14 @@ extern char    *vStringDeleteUnwrap       (vString *const string)
 	}
 
 	return buffer;
+}
+
+extern char    *vStringStrdup (const vString *const string)
+{
+	char *str = xMalloc (vStringLength(string) + 1, char);
+	str[vStringLength(string)] = '\0';
+	memcpy (str, string->buffer, vStringLength(string));
+	return str;
 }
 
 static char valueToXDigit (int v)

@@ -12,14 +12,16 @@
 *   INCLUDE FILES
 */
 #include "general.h"  /* must always come first */
-#include "debug.h"
 
 #include <string.h>
 
 #include "entry.h"
-#include "options.h"
+#include "perl.h"
+#include "promise.h"
 #include "read.h"
 #include "routines.h"
+#include "selectors.h"
+#include "subparser.h"
 #include "vstring.h"
 #include "xtag.h"
 
@@ -29,15 +31,13 @@
 /*
 *   DATA DEFINITIONS
 */
-typedef enum {
-	K_NONE = -1,
-	K_CONSTANT,
-	K_FORMAT,
-	K_LABEL,
-	K_PACKAGE,
-	K_SUBROUTINE,
-	K_SUBROUTINE_DECLARATION
-} perlKind;
+typedef enum PerlKindType perlKind;
+typedef enum PerlModuleRoleType perlModuleRole;
+
+static roleDefinition PerlModuleRoles [] = {
+	{ true, "used",   "specified in `use' built-in function" },
+	{ true, "unused", "specified in `no' built-in function" },
+};
 
 static kindDefinition PerlKinds [] = {
 	{ true,  'c', "constant",               "constants" },
@@ -46,11 +46,64 @@ static kindDefinition PerlKinds [] = {
 	{ true,  'p', "package",                "packages" },
 	{ true,  's', "subroutine",             "subroutines" },
 	{ false, 'd', "subroutineDeclaration",  "subroutine declarations" },
+	{ false, 'M', "module",                 "modules",
+	  .referenceOnly = true,  ATTACH_ROLES(PerlModuleRoles)},
 };
 
 /*
 *   FUNCTION DEFINITIONS
 */
+
+static void notifyEnteringPod ()
+{
+	subparser *sub;
+
+	foreachSubparser (sub, false)
+	{
+		perlSubparser *perlsub = (perlSubparser *)sub;
+		if (perlsub->enteringPodNotify)
+		{
+			enterSubparser (sub);
+			perlsub->enteringPodNotify (perlsub);
+			leaveSubparser ();
+		}
+	}
+}
+
+static void notifyLeavingPod ()
+{
+	subparser *sub;
+
+	foreachSubparser (sub, false)
+	{
+		perlSubparser *perlsub = (perlSubparser *)sub;
+		if (perlsub->leavingPodNotify)
+		{
+			enterSubparser (sub);
+			perlsub->leavingPodNotify (perlsub);
+			leaveSubparser ();
+		}
+	}
+}
+
+static void notifyFindingQuotedWord (int moduleIndex,
+									 const char *qwd)
+{
+	subparser *sub;
+
+	foreachSubparser (sub, false)
+	{
+		perlSubparser *perlsub = (perlSubparser *)sub;
+		if (perlsub->findingQuotedWordNotify)
+		{
+			enterSubparser (sub);
+			perlsub->findingQuotedWordNotify (perlsub,
+											  moduleIndex,
+											  qwd);
+			leaveSubparser ();
+		}
+	}
+}
 
 static bool isIdentifier1 (int c)
 {
@@ -64,28 +117,34 @@ static bool isIdentifier (int c)
 
 static bool isPodWord (const char *word)
 {
-	bool result = false;
-	if (isalpha (*word))
-	{
-		const char *const pods [] = {
-			"head1", "head2", "head3", "head4", "over", "item", "back",
-			"pod", "begin", "end", "for"
-		};
-		const size_t count = ARRAY_SIZE (pods);
-		const char *white = strpbrk (word, " \t");
-		const size_t len = (white!=NULL) ? (size_t)(white-word) : strlen (word);
-		char *const id = (char*) eMalloc (len + 1);
-		size_t i;
-		strncpy (id, word, len);
-		id [len] = '\0';
-		for (i = 0  ;  i < count  &&  ! result  ;  ++i)
-		{
-			if (strcmp (id, pods [i]) == 0)
-				result = true;
-		}
-		eFree (id);
+	/* Perl POD words are three to eight characters in size.  We use this
+	 * fact to find (or not find) the right side of the word and then
+	 * perform comparisons, if necessary, of POD words of that size.
+	 */
+	size_t len;
+	for (len = 0; len < 9; ++len)
+		if ('\0' == word[len] || ' ' == word[len] || '\t' == word[len])
+			break;
+	switch (len) {
+		case 3:
+			return 0 == strncmp(word, "end", 3)
+				|| 0 == strncmp(word, "for", 3)
+				|| 0 == strncmp(word, "pod", 3);
+		case 4:
+			return 0 == strncmp(word, "back", 4)
+				|| 0 == strncmp(word, "item", 4)
+				|| 0 == strncmp(word, "over", 4);
+		case 5:
+			return 0 == strncmp(word, "begin", 5)
+				|| 0 == strncmp(word, "head1", 5)
+				|| 0 == strncmp(word, "head2", 5)
+				|| 0 == strncmp(word, "head3", 5)
+				|| 0 == strncmp(word, "head4", 5);
+		case 8:
+			return 0 == strncmp(word, "encoding", 8);
+		default:
+			return false;
 	}
-	return result;
 }
 
 /*
@@ -138,11 +197,9 @@ SUB_DECL_SWITCH:
 				case ';':
 					if (!nparens)
 						return true;
-					/* fall through */
 				case '{':
 					if (!nparens)
 						return false;
-					/* fall through */
 				default:
 					if (attr) {
 						if (isIdentifier1(*cp)) {
@@ -166,6 +223,146 @@ SUB_DECL_SWITCH:
 	return false;
 }
 
+/* `end' points to the equal sign.  Parse from right to left to get the
+ * identifier.  Assume we're dealing with something of form \s*\w+\s*=>
+ */
+static void makeTagFromLeftSide (const char *begin, const char *end,
+	vString *name, vString *package)
+{
+	tagEntryInfo entry;
+	const char *b, *e;
+	if (! PerlKinds[KIND_PERL_CONSTANT].enabled)
+		return;
+	for (e = end - 1; e > begin && isspace(*e); --e)
+		;
+	if (e < begin)
+		return;
+	for (b = e; b >= begin && isIdentifier(*b); --b)
+		;
+	/* Identifier must be either beginning of line of have some whitespace
+	 * on its left:
+	 */
+	if (b < begin || isspace(*b) || ',' == *b)
+		++b;
+	else if (b != begin)
+		return;
+	if (e - b + 1 <= 0)
+		return;			/* Left side of => has an invalid identifier. */
+	vStringClear(name);
+	vStringNCatS(name, b, e - b + 1);
+	initTagEntry(&entry, vStringValue(name), KIND_PERL_CONSTANT);
+	makeTagEntry(&entry);
+	if (isXtagEnabled (XTAG_QUALIFIED_TAGS) && package && vStringLength(package)) {
+		vStringClear(name);
+		vStringCopy(name, package);
+		vStringNCatS(name, b, e - b + 1);
+		initTagEntry(&entry, vStringValue(name), KIND_PERL_CONSTANT);
+		markTagExtraBit (&entry, XTAG_QUALIFIED_TAGS);
+		makeTagEntry(&entry);
+	}
+}
+
+static int makeTagForModule (const char *name, int role)
+{
+	tagEntryInfo entry;
+	initRefTagEntry(&entry, name, KIND_PERL_MODULE, role);
+	return makeTagEntry(&entry);
+}
+
+enum const_state { CONST_STATE_NEXT_LINE, CONST_STATE_HIT_END };
+
+/* Parse a single line, find as many NAME => VALUE pairs as we can and try
+ * to detect the end of the hashref.
+ */
+static enum const_state parseConstantsFromLine (const char *cp,
+	vString *name, vString *package)
+{
+	while (1) {
+		const size_t sz = strcspn(cp, "#}=");
+		switch (cp[sz]) {
+			case '=':
+				if ('>' == cp[sz + 1])
+					makeTagFromLeftSide(cp, cp + sz, name, package);
+				break;
+			case '}':	/* Assume this is the end of the hashref. */
+				return CONST_STATE_HIT_END;
+			case '\0':	/* End of the line. */
+			case '#':	/* Assume this is a comment and thus end of the line. */
+				return CONST_STATE_NEXT_LINE;
+		}
+		cp += sz + 1;
+	}
+}
+
+/* Parse constants declared via hash reference, like this:
+ * use constant {
+ *   A => 1,
+ *   B => 2,
+ * };
+ * The approach we take is simplistic, but it covers the vast majority of
+ * cases well.  There can be some false positives.
+ * Returns 0 if found the end of the hashref, -1 if we hit EOF
+ */
+static int parseConstantsFromHashRef (const unsigned char *cp,
+	vString *name, vString *package)
+{
+	while (1) {
+		enum const_state state =
+			parseConstantsFromLine((const char *) cp, name, package);
+		switch (state) {
+			case CONST_STATE_NEXT_LINE:
+				cp = readLineFromInputFile();
+				if (cp)
+					break;
+				else
+					return -1;
+			case CONST_STATE_HIT_END:
+				return 0;
+		}
+	}
+}
+
+static void parseQuotedWords(const unsigned char *cp,
+							 vString *name, int moduleIndex)
+{
+	unsigned char end = *cp++;
+	switch (end)
+	{
+	case '[': end = ']'; break;
+	case '(': end = ')'; break;
+	case '{': end = '}'; break;
+	case '<': end = '>'; break;
+	}
+
+	do {
+		while (*cp && *cp != end)
+		{
+			if (isspace(*cp))
+			{
+				notifyFindingQuotedWord (moduleIndex, vStringValue(name));
+				vStringClear(name);
+				cp++;
+				continue;
+			}
+
+			if (*cp == '\\')
+			{
+				cp++;
+				if (*cp == '\0')
+					break;
+			}
+
+			vStringPut(name, *cp);
+			cp++;
+		}
+		if (!vStringIsEmpty(name))
+			notifyFindingQuotedWord (moduleIndex, vStringValue(name));
+
+		if (*cp == end)
+			break;
+	} while ((cp = readLineFromInputFile()) != NULL);
+}
+
 /* Algorithm adapted from from GNU etags.
  * Perl support by Bart Robinson <lomew@cs.utah.edu>
  * Perl sub names: look for /^ [ \t\n]sub [ \t\n]+ [^ \t\n{ (]+/
@@ -176,31 +373,91 @@ static void findPerlTags (void)
 	vString *package = NULL;
 	bool skipPodDoc = false;
 	const unsigned char *line;
+	unsigned long podStart = 0UL;
+
+	/* A pod area can be after __END__ marker.
+	 * Perl parser itself doesn't need to parse the area
+	 * after the marker. Parsing the area is needed only
+	 * if Perl parser runs Pod parser as a guest.
+	 * This variable is set true when it is needed.
+	 */
+	bool parse_only_pod_area = false;
+
+	/* Core modules AutoLoader and SelfLoader support delayed compilation
+	 * by allowing Perl code that follows __END__ and __DATA__ tokens,
+	 * respectively.  When we detect that one of these modules is used
+	 * in the file, we continue processing even after we see the
+	 * corresponding token that would usually terminate parsing of the
+	 * file.
+	 */
+	enum {
+		RESPECT_END		= (1 << 0),
+		RESPECT_DATA	= (1 << 1),
+	} respect_token = RESPECT_END | RESPECT_DATA;
 
 	while ((line = readLineFromInputFile ()) != NULL)
 	{
 		bool spaceRequired = false;
 		bool qualified = false;
 		const unsigned char *cp = line;
-		perlKind kind = K_NONE;
+		perlKind kind = KIND_PERL_NONE;
 		tagEntryInfo e;
 
 		if (skipPodDoc)
 		{
 			if (strncmp ((const char*) line, "=cut", (size_t) 4) == 0)
+			{
 				skipPodDoc = false;
+				if (podStart != 0UL)
+				{
+					notifyLeavingPod ();
+					makePromise ("Pod",
+						     podStart, 0,
+						     getInputLineNumber(), 0,
+						     getSourceLineNumber());
+					podStart = 0UL;
+				}
+			}
 			continue;
 		}
 		else if (line [0] == '=')
 		{
 			skipPodDoc = isPodWord ((const char*)line + 1);
+			if (skipPodDoc)
+			{
+				podStart = getSourceLineNumber ();
+				notifyEnteringPod ();
+			}
 			continue;
 		}
 		else if (strcmp ((const char*) line, "__DATA__") == 0)
-			break;
+		{
+			if (respect_token & RESPECT_DATA)
+			{
+				if (isXtagEnabled (XTAG_GUEST))
+					parse_only_pod_area = true;
+				else
+					break;
+			}
+			else
+				continue;
+		}
 		else if (strcmp ((const char*) line, "__END__") == 0)
-			break;
+		{
+			if (respect_token & RESPECT_END)
+			{
+				if (isXtagEnabled (XTAG_GUEST))
+					parse_only_pod_area = true;
+				else
+					break;
+			}
+			else
+				continue;
+		}
 		else if (line [0] == '#')
+			continue;
+
+		if (parse_only_pod_area)
 			continue;
 
 		while (isspace (*cp))
@@ -210,7 +467,7 @@ static void findPerlTags (void)
 		{
 			TRACE("this looks like a sub\n");
 			cp += 3;
-			kind = K_SUBROUTINE;
+			kind = KIND_PERL_SUBROUTINE;
 			spaceRequired = true;
 			qualified = true;
 		}
@@ -221,41 +478,124 @@ static void findPerlTags (void)
 				continue;
 			while (*cp && isspace (*cp))
 				++cp;
-			if (strncmp((const char*) cp, "constant", (size_t) 8) != 0)
+			if (strncmp((const char*) cp, "AutoLoader", (size_t) 10) == 0) {
+				respect_token &= ~RESPECT_END;
+				makeTagForModule("AutoLoader", ROLE_PERL_MODULE_USED);
 				continue;
-			cp += 8;
-			kind = K_CONSTANT;
-			spaceRequired = true;
+			}
+			if (strncmp((const char*) cp, "SelfLoader", (size_t) 10) == 0) {
+				respect_token &= ~RESPECT_DATA;
+				makeTagForModule("SelfLoader", ROLE_PERL_MODULE_USED);
+				continue;
+			}
+
+			vString *module = NULL;
+			while (isalnum(*cp) || *cp == ':' || *cp == '.') {
+				if (!module)
+					module = vStringNew();
+				vStringPut(module, *cp);
+				++cp;
+			}
+			if (!module)
+				continue;
+
+			int q = makeTagForModule(vStringValue(module), ROLE_PERL_MODULE_USED);
+			bool isConstant = (strcmp(vStringValue(module), "constant") == 0);
+			vStringDelete(module);
+			if (!isConstant)
+			{
+				while (isspace(*cp))
+					cp++;
+				if (strncmp("qw", (const char *)cp, 2) != 0)
+					continue;
+				cp += 2;
+				while (isspace(*cp))
+					cp++;
+				if (*cp == '\0')
+					continue;
+				vStringClear (name);
+
+				parseQuotedWords(cp, name, q);
+				vStringClear (name);
+				continue;
+			}
+
+			/* Skip up to the first non-space character, skipping empty
+			 * and comment lines.
+			 */
+			while (isspace(*cp))
+				cp++;
+			while (!*cp || '#' == *cp) {
+				cp = readLineFromInputFile ();
+				if (!cp)
+					goto END_MAIN_WHILE;
+				while (isspace (*cp))
+					cp++;
+			}
+			if ('{' == *cp) {
+				++cp;
+				if (0 == parseConstantsFromHashRef(cp, name, package)) {
+					vStringClear(name);
+					continue;
+				} else
+					goto END_MAIN_WHILE;
+			}
+			kind = KIND_PERL_CONSTANT;
+			spaceRequired = false;
 			qualified = true;
 		}
-		else if (strncmp((const char*) cp, "package", (size_t) 7) == 0)
+		else if (strncmp((const char*) cp, "no", (size_t) 2) == 0 && isspace(cp[2]))
 		{
-			/* This will point to space after 'package' so that a tag
-			   can be made */
-			const unsigned char *space = cp += 7;
-
+			cp += 3;
+			while (isspace (*cp))
+				cp++;
+			vString *module = NULL;
+			while (isalnum(*cp) || *cp == ':' || *cp == '.') {
+				if (!module)
+					module = vStringNew();
+				vStringPut(module, *cp);
+				++cp;
+			}
+			if (module) {
+				makeTagForModule(vStringValue(module), ROLE_PERL_MODULE_UNUSED);
+				vStringDelete(module);
+			}
+			continue;
+		}
+		else if (strncmp((const char*) cp, "package", (size_t) 7) == 0 &&
+				 ('\0' == cp[7] || isspace(cp[7])))
+		{
+			cp += 7;
+			while (isspace (*cp))
+				cp++;
+			while (!*cp || '#' == *cp) {
+				cp = readLineFromInputFile ();
+				if (!cp)
+					goto END_MAIN_WHILE;
+				while (isspace (*cp))
+					cp++;
+			}
 			if (package == NULL)
 				package = vStringNew ();
 			else
 				vStringClear (package);
-			while (isspace (*cp))
-				cp++;
-			while ((int) *cp != ';'  &&  !isspace ((int) *cp))
+			const unsigned char *const first = cp;
+			while (*cp && (int) *cp != ';'  &&  !isspace ((int) *cp))
 			{
 				vStringPut (package, (int) *cp);
 				cp++;
 			}
 			vStringCatS (package, "::");
 
-			cp = space;	 /* Rewind */
-			kind = K_PACKAGE;
-			spaceRequired = true;
+			cp = first;	 /* Rewind */
+			kind = KIND_PERL_PACKAGE;
+			spaceRequired = false;
 			qualified = true;
 		}
 		else if (strncmp((const char*) cp, "format", (size_t) 6) == 0)
 		{
 			cp += 6;
-			kind = K_FORMAT;
+			kind = KIND_PERL_FORMAT;
 			spaceRequired = true;
 			qualified = true;
 		}
@@ -269,10 +609,10 @@ static void findPerlTags (void)
 				while (isspace (*p))
 					++p;
 				if ((int) *p == ':' && (int) *(p + 1) != ':')
-					kind = K_LABEL;
+					kind = KIND_PERL_LABEL;
 			}
 		}
-		if (kind != K_NONE)
+		if (kind != KIND_PERL_NONE)
 		{
 			TRACE("cp0: %s\n", (const char *) cp);
 			if (spaceRequired && *cp && !isspace (*cp))
@@ -291,13 +631,13 @@ static void findPerlTags (void)
 					cp++;
 			}
 
-			while (isIdentifier (*cp) || (K_PACKAGE == kind && ':' == *cp))
+			while (isIdentifier (*cp) || (KIND_PERL_PACKAGE == kind && ':' == *cp))
 			{
 				vStringPut (name, (int) *cp);
 				cp++;
 			}
 
-			if (K_FORMAT == kind &&
+			if (KIND_PERL_FORMAT == kind &&
 				vStringLength (name) == 0 && /* cp did not advance */
 				'=' == *cp)
 			{
@@ -306,40 +646,44 @@ static void findPerlTags (void)
 				vStringCatS (name, "STDOUT");
 			}
 
-			TRACE("name: %s\n", name->buffer);
+			TRACE("name: %s\n", vStringValue (name));
 
 			if (0 == vStringLength(name)) {
 				vStringClear(name);
 				continue;
 			}
 
-			if (K_SUBROUTINE == kind)
+			if (KIND_PERL_SUBROUTINE == kind)
 			{
 				/*
 				 * isSubroutineDeclaration() may consume several lines.  So
 				 * we record line positions.
 				 */
-				initTagEntry(&e, vStringValue(name), kind);
+				initTagEntry(&e, vStringValue(name), KIND_GHOST_INDEX);
 
 				if (true == isSubroutineDeclaration(cp)) {
-					if (true == PerlKinds[K_SUBROUTINE_DECLARATION].enabled) {
-						kind = K_SUBROUTINE_DECLARATION;
-						e.kindIndex = kind;
+					if (true == PerlKinds[KIND_PERL_SUBROUTINE_DECLARATION].enabled) {
+						kind = KIND_PERL_SUBROUTINE_DECLARATION;
 					} else {
 						vStringClear (name);
 						continue;
 					}
+				} else if (! PerlKinds[kind].enabled) {
+					continue;
 				}
+
+				e.kindIndex = kind;
 
 				makeTagEntry(&e);
 
-				if (isXtagEnabled(XTAG_QUALIFIED_TAGS) && qualified &&
+				if (isXtagEnabled (XTAG_QUALIFIED_TAGS) && qualified &&
 					package != NULL  && vStringLength (package) > 0)
 				{
 					vString *const qualifiedName = vStringNew ();
 					vStringCopy (qualifiedName, package);
 					vStringCat (qualifiedName, name);
 					e.name = vStringValue(qualifiedName);
+					markTagExtraBit (&e, XTAG_QUALIFIED_TAGS);
 					makeTagEntry(&e);
 					vStringDelete (qualifiedName);
 				}
@@ -347,13 +691,16 @@ static void findPerlTags (void)
 			{
 				makeSimpleTag (name, kind);
 				if (isXtagEnabled(XTAG_QUALIFIED_TAGS) && qualified &&
-					K_PACKAGE != kind &&
+					KIND_PERL_PACKAGE != kind &&
 					package != NULL  && vStringLength (package) > 0)
 				{
+					tagEntryInfo fqe;
 					vString *const qualifiedName = vStringNew ();
 					vStringCopy (qualifiedName, package);
 					vStringCat (qualifiedName, name);
-					makeSimpleTag (qualifiedName, kind);
+					initTagEntry (&fqe, vStringValue (qualifiedName), kind);
+					markTagExtraBit (&fqe, XTAG_QUALIFIED_TAGS);
+					makeTagEntry (&fqe);
 					vStringDelete (qualifiedName);
 				}
 			}
@@ -369,11 +716,23 @@ END_MAIN_WHILE:
 
 extern parserDefinition* PerlParser (void)
 {
-	static const char *const extensions [] = { "pl", "pm", "plx", "perl", NULL };
+	static const char *const extensions [] = { "pl", "pm", "ph", "plx", "perl", NULL };
+	static const char *const aliases [] = {
+		/* cperl is an Emacs' editing mode for Perl source code  */
+		"cperl",
+		NULL };
+	static selectLanguage selectors [] = { selectByPickingPerlVersion,
+					       NULL };
 	parserDefinition* def = parserNew ("Perl");
-	def->kindTable  = PerlKinds;
+	def->kindTable      = PerlKinds;
 	def->kindCount  = ARRAY_SIZE (PerlKinds);
 	def->extensions = extensions;
 	def->parser     = findPerlTags;
+	def->selectLanguage = selectors;
+	def->aliases    = aliases;
+
+	/* Subparsers need this */
+	def->useCork = CORK_QUEUE;
+
 	return def;
 }

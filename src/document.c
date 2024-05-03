@@ -54,8 +54,6 @@
 #include "vte.h"
 #include "win32.h"
 
-#include "gtkcompat.h"
-
 #ifdef HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
@@ -78,6 +76,7 @@
 /*#define USE_GIO_FILEMON 1*/
 #include <gio/gio.h>
 
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
 
@@ -105,6 +104,7 @@ enum
 };
 
 
+static guint show_tab_idle = 0;
 static guint doc_id_counter = 0;
 
 
@@ -115,9 +115,9 @@ static void document_redo_add(GeanyDocument *doc, guint type, gpointer data);
 static gboolean remove_page(guint page_num);
 static GtkWidget* document_show_message(GeanyDocument *doc, GtkMessageType msgtype,
 	void (*response_cb)(GtkWidget *info_bar, gint response_id, GeanyDocument *doc),
-	const gchar *btn_1, GtkResponseType response_1,
-	const gchar *btn_2, GtkResponseType response_2,
-	const gchar *btn_3, GtkResponseType response_3,
+	const gchar *btn_1, gint response_1,
+	const gchar *btn_2, gint response_2,
+	const gchar *btn_3, gint response_3,
 	const gchar *extra_text, const gchar *format, ...) G_GNUC_PRINTF(11, 12);
 
 
@@ -435,7 +435,7 @@ void document_update_tab_label(GeanyDocument *doc)
 
 	g_return_if_fail(doc != NULL);
 
-	short_name = document_get_basename_for_display(doc, -1);
+	short_name = document_get_basename_for_display(doc, interface_prefs.tab_label_len);
 
 	/* we need to use the event box for the tooltip, labels don't get the necessary events */
 	parent = gtk_widget_get_parent(doc->priv->tab_label);
@@ -610,13 +610,6 @@ void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget)
 }
 
 
-static gboolean on_idle_focus(gpointer doc)
-{
-	document_try_focus(doc, NULL);
-	return FALSE;
-}
-
-
 /* Creates a new document and editor, adding a tab in the notebook.
  * @return The created document */
 static GeanyDocument *document_create(const gchar *utf8_filename)
@@ -648,6 +641,8 @@ static GeanyDocument *document_create(const gchar *utf8_filename)
 
 	/* initialize default document settings */
 	doc->priv = g_new0(GeanyDocumentPrivate, 1);
+	doc->priv->tag_filter = g_strdup("");
+	doc->priv->symbols_group_by_type = TRUE;
 	doc->id = ++doc_id_counter;
 	doc->index = new_idx;
 	doc->file_name = g_strdup(utf8_filename);
@@ -735,6 +730,7 @@ static gboolean remove_page(guint page_num)
 	}
 	g_free(doc->encoding);
 	g_free(doc->priv->saved_encoding.encoding);
+	g_free(doc->priv->tag_filter);
 	g_free(doc->file_name);
 	g_free(doc->real_path);
 	if (doc->tm_file)
@@ -863,9 +859,6 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 
 	document_set_filetype(doc, ft); /* also re-parses tags */
 
-	/* now the document is fully ready, display it (see notebook_new_tab()) */
-	gtk_widget_show(document_get_notebook_child(doc));
-
 	ui_set_window_title(doc);
 	build_menu_update(doc);
 	document_set_text_changed(doc, FALSE);
@@ -874,7 +867,6 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft, 
 	sci_set_line_numbers(doc->editor->sci, editor_prefs.show_linenumber_margin);
 	/* bring it in front, jump to the start and grab the focus */
 	editor_goto_pos(doc->editor, 0, FALSE);
-	document_try_focus(doc, NULL);
 
 #ifdef USE_GIO_FILEMON
 	monitor_file_setup(doc);
@@ -1006,34 +998,33 @@ static gboolean load_text_file(const gchar *locale_filename, const gchar *displa
 	}
 
 	if (! encodings_convert_to_utf8_auto(&filedata->data, &filedata->len, forced_enc,
-				&filedata->enc, &filedata->bom, &filedata->readonly))
+				&filedata->enc, &filedata->bom, &filedata->readonly, &err))
 	{
 		if (forced_enc)
-		{
-			ui_set_statusbar(TRUE, _("The file \"%s\" is not valid %s."),
-				display_filename, forced_enc);
-		}
+			ui_set_statusbar(TRUE, _("Failed to load file \"%s\" as %s: %s."),
+				display_filename, forced_enc, err->message);
 		else
-		{
-			ui_set_statusbar(TRUE,
-	_("The file \"%s\" does not look like a text file or the file encoding is not supported."),
-			display_filename);
-		}
+			ui_set_statusbar(TRUE, _("Failed to load file \"%s\": %s."),
+				display_filename, err->message);
+		g_error_free(err);
 		g_free(filedata->data);
 		return FALSE;
 	}
 
 	if (filedata->readonly)
 	{
-		const gchar *warn_msg = _(
-			"The file \"%s\" could not be opened properly and has been truncated. " \
-			"This can occur if the file contains a NULL byte. " \
-			"Be aware that saving it can cause data loss.\nThe file was set to read-only.");
+		gchar *warn_msg = g_strdup_printf(_(
+			"The file \"%s\" could not be opened properly and has been truncated. "
+			"This can occur if the file contains a NULL byte. "
+			"Be aware that saving it can cause data loss.\nThe file was set to read-only."),
+			display_filename);
 
 		if (main_status.main_window_realized)
-			dialogs_show_msgbox(GTK_MESSAGE_WARNING, warn_msg, display_filename);
+			dialogs_show_msgbox(GTK_MESSAGE_WARNING, "%s", warn_msg);
 
-		ui_set_statusbar(TRUE, warn_msg, display_filename);
+		ui_set_statusbar(TRUE, "%s", warn_msg);
+
+		g_free(warn_msg);
 	}
 
 	return TRUE;
@@ -1273,8 +1264,40 @@ void document_apply_indent_settings(GeanyDocument *doc)
 
 void document_show_tab(GeanyDocument *doc)
 {
+	if (show_tab_idle)
+	{
+		g_source_remove(show_tab_idle);
+		show_tab_idle = 0;
+	}
+
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(main_widgets.notebook),
 		document_get_notebook_page(doc));
+
+	/* finally, let the editor widget grab the focus so you can start coding
+	 * right away */
+	document_try_focus(doc, NULL);
+}
+
+
+static gboolean show_tab_cb(gpointer data)
+{
+	GeanyDocument *doc = (GeanyDocument *) data;
+
+	show_tab_idle = 0;
+	/* doc might not be valid e.g. if user closed a tab whilst Geany is opening files */
+	if (DOC_VALID(doc))
+		document_show_tab(doc);
+
+	return G_SOURCE_REMOVE;
+}
+
+
+void document_show_tab_idle(GeanyDocument *doc)
+{
+	if (show_tab_idle)
+		g_source_remove(show_tab_idle);
+
+	show_tab_idle = g_idle_add(show_tab_cb, doc);
 }
 
 
@@ -1325,8 +1348,6 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		if (doc != NULL)
 		{
 			ui_add_recent_document(doc);	/* either add or reorder recent item */
-			/* show the doc before reload dialog */
-			document_show_tab(doc);
 			document_check_disk_status(doc, TRUE);	/* force a file changed check */
 		}
 	}
@@ -1496,9 +1517,6 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 				display_filename, gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)),
 				(readonly) ? _(", read-only") : "");
 		}
-
-		/* now the document is fully ready, display it (see notebook_new_tab()) */
-		gtk_widget_show(document_get_notebook_child(doc));
 	}
 
 	g_free(display_filename);
@@ -1510,9 +1528,6 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 	/* now bring the file in front */
 	editor_goto_pos(doc->editor, pos, FALSE);
 
-	/* finally, let the editor widget grab the focus so you can start coding
-	 * right away */
-	g_idle_add(on_idle_focus, doc);
 	return doc;
 }
 
@@ -1858,9 +1873,6 @@ gboolean document_save_file_as(GeanyDocument *doc, const gchar *utf8_fname)
 	 * to ignore any earlier events */
 	monitor_file_setup(doc);
 	doc->priv->file_disk_status = FILE_IGNORE;
-
-	if (ret)
-		ui_add_recent_document(doc);
 	return ret;
 }
 
@@ -2036,6 +2048,7 @@ static gchar *save_doc(GeanyDocument *doc, const gchar *locale_filename,
 		doc->real_path = utils_get_real_path(locale_filename);
 		doc->priv->is_remote = utils_is_remote_path(locale_filename);
 		monitor_file_setup(doc);
+		ui_add_recent_document(doc);
 	}
 	return NULL;
 }
@@ -2810,6 +2823,9 @@ static void document_load_config(GeanyDocument *doc, GeanyFiletype *type,
 		editor_set_indentation_guides(doc->editor);
 		build_menu_update(doc);
 		queue_colourise(doc);
+		/* forces re-setting SCI_SETKEYWORDS which seems to be needed with
+		 * Scintilla 5 to colorize them properly */
+		doc->priv->keyword_hash = 0;
 		if (type->priv->symbol_list_sort_mode == SYMBOLS_SORT_USE_PREVIOUS)
 			doc->priv->symbol_list_sort_mode = interface_prefs.symbols_sort_mode;
 		else
@@ -3285,7 +3301,6 @@ const GdkColor *document_get_status_color(GeanyDocument *doc)
 		return NULL;
 	if (! document_status_styles[status].loaded)
 	{
-#if GTK_CHECK_VERSION(3, 0, 0)
 		GdkRGBA color;
 		GtkWidgetPath *path = gtk_widget_path_new();
 		GtkStyleContext *ctx = gtk_style_context_new();
@@ -3303,16 +3318,6 @@ const GdkColor *document_get_status_color(GeanyDocument *doc)
 		document_status_styles[status].loaded = TRUE;
 		gtk_widget_path_unref(path);
 		g_object_unref(ctx);
-#else
-		GtkSettings *settings = gtk_widget_get_settings(GTK_WIDGET(doc->editor->sci));
-		gchar *path = g_strconcat("GeanyMainWindow.GtkHBox.GtkNotebook.",
-				document_status_styles[status].name, NULL);
-		GtkStyle *style = gtk_rc_get_style_by_paths(settings, path, NULL, GTK_TYPE_LABEL);
-
-		document_status_styles[status].color = style->fg[GTK_STATE_NORMAL];
-		document_status_styles[status].loaded = TRUE;
-		g_free(path);
-#endif
 	}
 	return &document_status_styles[status].color;
 }
@@ -3443,9 +3448,9 @@ gboolean document_close_all(void)
  * */
 static GtkWidget* document_show_message(GeanyDocument *doc, GtkMessageType msgtype,
 	void (*response_cb)(GtkWidget *info_bar, gint response_id, GeanyDocument *doc),
-	const gchar *btn_1, GtkResponseType response_1,
-	const gchar *btn_2, GtkResponseType response_2,
-	const gchar *btn_3, GtkResponseType response_3,
+	const gchar *btn_1, gint response_1,
+	const gchar *btn_2, gint response_2,
+	const gchar *btn_3, gint response_3,
 	const gchar *extra_text, const gchar *format, ...)
 {
 	va_list args;
@@ -3482,7 +3487,7 @@ static GtkWidget* document_show_message(GeanyDocument *doc, GtkMessageType msgty
 
 	g_signal_connect(info_widget, "response", G_CALLBACK(response_cb), doc);
 
-	hbox = gtk_hbox_new(FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_box_pack_start(GTK_BOX(content_area), hbox, TRUE, TRUE, 0);
 
 	switch (msgtype)
@@ -3509,7 +3514,7 @@ static GtkWidget* document_show_message(GeanyDocument *doc, GtkMessageType msgty
 
 	if (extra_text)
 	{
-		GtkWidget *vbox = gtk_vbox_new(FALSE, 6);
+		GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 		GtkWidget *extra_label = geany_wrap_label_new(extra_text);
 
 		gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
@@ -3568,15 +3573,15 @@ static gboolean on_sci_key(GtkWidget *widget, GdkEventKey *event, gpointer data)
 
 	switch (event->keyval)
 	{
-		case GDK_Tab:
-		case GDK_ISO_Left_Tab:
+		case GDK_KEY_Tab:
+		case GDK_KEY_ISO_Left_Tab:
 		{
 			GtkWidget *action_area = gtk_info_bar_get_action_area(bar);
-			GtkDirectionType dir = event->keyval == GDK_Tab ? GTK_DIR_TAB_FORWARD : GTK_DIR_TAB_BACKWARD;
+			GtkDirectionType dir = event->keyval == GDK_KEY_Tab ? GTK_DIR_TAB_FORWARD : GTK_DIR_TAB_BACKWARD;
 			gtk_widget_child_focus(action_area, dir);
 			return TRUE;
 		}
-		case GDK_Escape:
+		case GDK_KEY_Escape:
 		{
 			gtk_info_bar_response(bar, GTK_RESPONSE_CANCEL);
 			return TRUE;

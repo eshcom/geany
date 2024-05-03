@@ -22,7 +22,7 @@
 #ifndef GEANY_DOCUMENT_PRIVATE_H
 #define GEANY_DOCUMENT_PRIVATE_H 1
 
-#include "gtkcompat.h"
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -112,6 +112,10 @@ typedef struct GeanyDocumentPrivate
 	GtkWidget		*info_bars[NUM_MSG_TYPES];
 	/* Keyed Data List to attach arbitrary data to the document */
 	GData			*data;
+	/* Text used for filtering symbol tree. */
+	gchar			*tag_filter;
+	/* Group symbols in symbol tree by their type. */
+	gboolean		symbols_group_by_type;
 }
 GeanyDocumentPrivate;
 

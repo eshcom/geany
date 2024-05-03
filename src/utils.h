@@ -106,8 +106,7 @@ G_BEGIN_DECLS
  * @param idx @c guint index into @a ptr_array.
  * @param ptr_array @c GPtrArray to traverse. */
 #define foreach_ptr_array(item, idx, ptr_array) \
-	for (idx = 0, item = ((ptr_array)->len > 0 ? g_ptr_array_index((ptr_array), 0) : NULL); \
-		idx < (ptr_array)->len; ++idx, item = g_ptr_array_index((ptr_array), idx))
+	for (idx = 0; idx < (ptr_array)->len && (item = g_ptr_array_index((ptr_array), idx), TRUE); ++idx)
 
 /** Iterates all the nodes in @a list.
  * @param node should be a (@c GList*).
@@ -182,6 +181,8 @@ gboolean utils_get_setting_boolean(GKeyFile *config, const gchar *section, const
 
 gint utils_get_setting_integer(GKeyFile *config, const gchar *section, const gchar *key, const gint default_value);
 
+gdouble utils_get_setting_double(GKeyFile *config, const gchar *section, const gchar *key, const gdouble default_value);
+
 gchar *utils_get_setting_string(GKeyFile *config, const gchar *section, const gchar *key, const gchar *default_value);
 
 gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
@@ -191,6 +192,8 @@ gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env, GSpawnFla
 gboolean utils_spawn_async(const gchar *dir, gchar **argv, gchar **env, GSpawnFlags flags,
 						   GSpawnChildSetupFunc child_setup, gpointer user_data, GPid *child_pid,
 						   GError **error);
+
+gchar *utils_utf8_strdown(const gchar *str);
 
 gint utils_str_casecmp(const gchar *s1, const gchar *s2);
 
@@ -215,6 +218,10 @@ gchar *utils_get_real_path(const gchar *file_name);
 gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len);
 
 #ifdef GEANY_PRIVATE
+
+/* Casts a GDestroyNotify to a GClosureNotify without a warning.
+ * This is kinda shady, but likely works with platforms where GTK does. */
+#define CLOSURE_NOTIFY(f) ((GClosureNotify) (void(*)(void)) (GDestroyNotify) (f))
 
 typedef enum
 {
@@ -278,16 +285,13 @@ gchar *utils_get_current_file_dir_utf8(void);
 
 void utils_beep(void);
 
-gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
-									 gulong display_unit);
-
 gboolean utils_parse_color(const gchar *spec, GdkColor *color);
 
 gint utils_color_to_bgr(const GdkColor *color);
 
 gint utils_parse_color_to_bgr(const gchar *spec);
 
-gchar *utils_get_current_time_string(void);
+gchar *utils_get_current_time_string(gboolean include_microseconds);
 
 GIOChannel *utils_set_up_io_channel(gint fd, GIOCondition cond, gboolean nblock,
 									GIOFunc func, gpointer data);

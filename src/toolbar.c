@@ -398,9 +398,7 @@ GtkWidget *toolbar_init(void)
 	gtk_ui_manager_insert_action_group(uim, group, 0);
 
 	toolbar = toolbar_reload(NULL);
-#if GTK_CHECK_VERSION(3, 0, 0)
 	gtk_style_context_add_class(gtk_widget_get_style_context(toolbar), "primary-toolbar");
-#endif
 
 	gtk_settings = gtk_widget_get_settings(GTK_WIDGET(toolbar));
 	if (gtk_settings != NULL)
@@ -603,7 +601,7 @@ typedef struct
 
 static const GtkTargetEntry tb_editor_dnd_targets[] =
 {
-	{ "GEANY_TB_EDITOR_ROW", 0, 0 }
+	{ (gchar *) "GEANY_TB_EDITOR_ROW", 0, 0 }
 };
 static const gint tb_editor_dnd_targets_len = G_N_ELEMENTS(tb_editor_dnd_targets);
 
@@ -889,7 +887,7 @@ static void tb_editor_write_markup(TBEditorWidget *tbw)
 	/* <ui> must be the first tag, otherwise gtk_ui_manager_add_ui_from_string() will fail. */
 	const gchar *template = "<ui>\n<!--\n\
 This is Geany's toolbar UI definition.\nThe DTD can be found at \n\
-http://library.gnome.org/devel/gtk/stable/GtkUIManager.html#GtkUIManager.description.\n\n\
+https://docs.gtk.org/gtk3/class.UIManager.html.\n\n\
 You can re-order all items and freely add and remove available actions.\n\
 You cannot add new actions which are not listed in the documentation.\n\
 Everything you add or change must be inside the /ui/toolbar/ path.\n\n\
@@ -1031,14 +1029,14 @@ static TBEditorWidget *tb_editor_create_dialog(GtkWindow *parent)
 	g_signal_connect(button_add, "clicked", G_CALLBACK(tb_editor_btn_add_clicked_cb), tbw);
 	g_signal_connect(button_remove, "clicked", G_CALLBACK(tb_editor_btn_remove_clicked_cb), tbw);
 
-	vbox_buttons = gtk_vbox_new(FALSE, 6);
+	vbox_buttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	/* FIXME this is a little hack'ish, any better ideas? */
 	gtk_box_pack_start(GTK_BOX(vbox_buttons), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_buttons), button_add, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_buttons), button_remove, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_buttons), gtk_label_new(""), TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), swin_available, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox_buttons, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), swin_used, TRUE, TRUE, 0);
@@ -1120,8 +1118,7 @@ void toolbar_configure(GtkWindow *parent)
 
 	gtk_widget_destroy(tbw->dialog);
 
-	g_slist_foreach(used_items, (GFunc) g_free, NULL);
-	g_slist_free(used_items);
+	g_slist_free_full(used_items, g_free);
 	g_list_free(all_items);
 	tb_editor_free_path(tbw);
 	g_free(tbw);

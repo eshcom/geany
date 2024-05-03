@@ -37,8 +37,7 @@
 #include "ui_utils.h"
 #include "utils.h"
 
-#include "gtkcompat.h"
-
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
 
@@ -46,14 +45,14 @@
 
 static const GtkTargetEntry drag_targets[] =
 {
-	{GEANY_DND_NOTEBOOK_TAB_TYPE, GTK_TARGET_SAME_APP | GTK_TARGET_SAME_WIDGET, 0}
+	{ (gchar *) GEANY_DND_NOTEBOOK_TAB_TYPE, GTK_TARGET_SAME_APP | GTK_TARGET_SAME_WIDGET, 0 }
 };
 
-static GtkTargetEntry files_drop_targets[] = {
-	{ "STRING",			0, 0 },
-	{ "UTF8_STRING",	0, 0 },
-	{ "text/plain",		0, 0 },
-	{ "text/uri-list",	0, 0 }
+static const GtkTargetEntry files_drop_targets[] = {
+	{ (gchar *) "STRING",			0, 0 },
+	{ (gchar *) "UTF8_STRING",		0, 0 },
+	{ (gchar *) "text/plain",		0, 0 },
+	{ (gchar *) "text/uri-list",	0, 0 }
 };
 
 static const gsize MAX_MRU_DOCS = 20;
@@ -148,18 +147,18 @@ static gboolean is_modifier_key(guint keyval)
 {
 	switch (keyval)
 	{
-		case GDK_Shift_L:
-		case GDK_Shift_R:
-		case GDK_Control_L:
-		case GDK_Control_R:
-		case GDK_Meta_L:
-		case GDK_Meta_R:
-		case GDK_Alt_L:
-		case GDK_Alt_R:
-		case GDK_Super_L:
-		case GDK_Super_R:
-		case GDK_Hyper_L:
-		case GDK_Hyper_R:
+		case GDK_KEY_Shift_L:
+		case GDK_KEY_Shift_R:
+		case GDK_KEY_Control_L:
+		case GDK_KEY_Control_R:
+		case GDK_KEY_Meta_L:
+		case GDK_KEY_Meta_R:
+		case GDK_KEY_Alt_L:
+		case GDK_KEY_Alt_R:
+		case GDK_KEY_Super_L:
+		case GDK_KEY_Super_R:
+		case GDK_KEY_Hyper_L:
+		case GDK_KEY_Hyper_R:
 			return TRUE;
 		default:
 			return FALSE;
@@ -199,7 +198,7 @@ static GtkWidget *create_switch_dialog(void)
 	gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_default_size(GTK_WINDOW(dialog), 200, -1);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 12);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
 
@@ -219,9 +218,9 @@ static GtkWidget *create_switch_dialog(void)
 static void update_filename_label(void)
 {
 	guint i;
-	gchar *msg = NULL;
 	guint queue_length;
 	GeanyDocument *doc;
+	GString *markup = g_string_new(NULL);
 
 	if (!switch_dialog)
 	{
@@ -235,8 +234,10 @@ static void update_filename_label(void)
 		gchar *basename;
 
 		basename = g_path_get_basename(DOC_FILENAME(doc));
+		SETPTR(basename, g_markup_escape_text(basename, -1));
+
 		if (i == mru_pos)
-			msg = g_markup_printf_escaped ("<b>%s</b>", basename);
+			g_string_printf(markup, "<b>%s</b>", basename);
 		else if (i % queue_length == mru_pos)    /* && i != mru_pos */
 		{
 			/* We have wrapped around and got to the starting document again */
@@ -245,13 +246,15 @@ static void update_filename_label(void)
 		}
 		else
 		{
-			SETPTR(basename, g_markup_printf_escaped ("\n%s", basename));
-			SETPTR(msg, g_strconcat(msg, basename, NULL));
+			g_string_append(markup, "\n");
+			if (doc->changed)
+				SETPTR(basename, g_strconcat("<span color='red'>", basename, "</span>", NULL));
+			g_string_append(markup, basename);
 		}
 		g_free(basename);
 	}
-	gtk_label_set_markup(GTK_LABEL(switch_dialog_label), msg);
-	g_free(msg);
+	gtk_label_set_markup(GTK_LABEL(switch_dialog_label), markup->str);
+	g_string_free(markup, TRUE);
 }
 
 
@@ -464,7 +467,7 @@ static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 		menu = gtk_menu_new();
 
 	/* clear the old menu items */
-	gtk_container_foreach(GTK_CONTAINER(menu), (GtkCallback) gtk_widget_destroy, NULL);
+	gtk_container_foreach(GTK_CONTAINER(menu), (GtkCallback) (void(*)(void)) gtk_widget_destroy, NULL);
 
 	ui_menu_add_document_items(GTK_MENU(menu), document_get_current(),
 		G_CALLBACK(tab_bar_menu_activate_cb));
@@ -509,7 +512,7 @@ static void show_tab_bar_popup_menu(GdkEventButton *event, GeanyDocument *doc)
 	gtk_container_add(GTK_CONTAINER(menu), menu_item);
 	g_signal_connect(menu_item, "activate", G_CALLBACK(on_close_all1_activate), NULL);
 
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(menu), (GdkEvent *) event);
 }
 
 
@@ -545,6 +548,33 @@ static gboolean notebook_tab_bar_click_cb(GtkWidget *widget, GdkEventButton *eve
 }
 
 
+static gboolean notebook_tab_bar_scroll_cb(GtkWidget *widget, GdkEventScroll *event)
+{
+	GtkNotebook *notebook = GTK_NOTEBOOK(widget);
+	GtkWidget *child;
+
+	child = gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook));
+	if (child == NULL)
+		return FALSE;
+
+	switch (event->direction)
+	{
+		case GDK_SCROLL_RIGHT:
+		case GDK_SCROLL_DOWN:
+			gtk_notebook_next_page(notebook);
+			break;
+		case GDK_SCROLL_LEFT:
+		case GDK_SCROLL_UP:
+			gtk_notebook_prev_page(notebook);
+			break;
+		default:
+			break;
+	}
+
+	return TRUE;
+}
+
+
 void notebook_init(void)
 {
 	g_signal_connect_after(main_widgets.notebook, "button-press-event",
@@ -558,6 +588,9 @@ void notebook_init(void)
 		G_CALLBACK(on_notebook_switch_page), NULL);
 	g_signal_connect(geany_object, "document-close",
 		G_CALLBACK(on_document_close), NULL);
+
+	gtk_widget_add_events(main_widgets.notebook, GDK_SCROLL_MASK);
+	g_signal_connect(main_widgets.notebook, "scroll-event", G_CALLBACK(notebook_tab_bar_scroll_cb), NULL);
 
 	/* in case the switch dialog misses an event while drawing the dialog */
 	g_signal_connect(main_widgets.window, "key-release-event", G_CALLBACK(on_key_release_event), NULL);
@@ -679,9 +712,11 @@ gint notebook_new_tab(GeanyDocument *this)
 	g_return_val_if_fail(this != NULL, -1);
 
 	/* page is packed into a vbox so we can stack infobars above it */
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	page = GTK_WIDGET(this->editor->sci);
 	gtk_box_pack_start(GTK_BOX(vbox), page, TRUE, TRUE, 0);
+
+	gtk_widget_show_all(vbox);
 
 	this->priv->tab_label = gtk_label_new(NULL);
 
@@ -694,7 +729,11 @@ gint notebook_new_tab(GeanyDocument *this)
 	g_signal_connect_after(ebox, "button-release-event",
 		G_CALLBACK(focus_sci), NULL);
 
-	hbox = gtk_hbox_new(FALSE, 2);
+    /* switch tab by scrolling - GTK2 behaviour for GTK3 */
+	gtk_widget_add_events(GTK_WIDGET(ebox), GDK_SCROLL_MASK);
+	gtk_widget_add_events(GTK_WIDGET(this->priv->tab_label), GDK_SCROLL_MASK);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_box_pack_start(GTK_BOX(hbox), this->priv->tab_label, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(ebox), hbox);
 
@@ -725,16 +764,21 @@ gint notebook_new_tab(GeanyDocument *this)
 
 	document_update_tab_label(this);
 
-	if (file_prefs.tab_order_beside)
+	if (main_status.opening_session_files)
+		cur_page = -1; /* last page */
+	else if (file_prefs.tab_order_beside)
+	{
 		cur_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_widgets.notebook));
+		if (file_prefs.tab_order_ltr)
+			cur_page++;
+	}
+	else if (file_prefs.tab_order_ltr)
+		cur_page = -1; /* last page */
 	else
-		cur_page = file_prefs.tab_order_ltr ? -2 /* hack: -2 + 1 = -1, last page */ : 0;
-	if (file_prefs.tab_order_ltr)
-		tabnum = gtk_notebook_insert_page_menu(GTK_NOTEBOOK(main_widgets.notebook), vbox,
-			ebox, NULL, cur_page + 1);
-	else
-		tabnum = gtk_notebook_insert_page_menu(GTK_NOTEBOOK(main_widgets.notebook), vbox,
-			ebox, NULL, cur_page);
+		cur_page = 0;
+
+	tabnum = gtk_notebook_insert_page_menu(GTK_NOTEBOOK(main_widgets.notebook), vbox,
+		ebox, NULL, cur_page);
 
 	tab_count_changed();
 

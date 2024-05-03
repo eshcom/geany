@@ -36,14 +36,12 @@
 #include "support.h"
 #include "ui_utils.h"
 #include "utils.h"
-#include "win32.h"
-
-#include "gtkcompat.h"
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <gtk/gtk.h>
 
 
 enum
@@ -427,7 +425,7 @@ static void cc_show_dialog_custom_commands(void)
 		}
 	}
 
-	buttonbox = gtk_hbutton_box_new();
+	buttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_set_spacing(GTK_BOX(buttonbox), 6);
 	gtk_box_pack_start(GTK_BOX(vbox), buttonbox, FALSE, FALSE, 0);
 	cc.button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
@@ -831,14 +829,6 @@ void tools_color_chooser(const gchar *color)
 {
 	GdkColor gc;
 	GtkWidget *colorsel;
-
-#ifdef G_OS_WIN32
-	if (interface_prefs.use_native_windows_dialogs)
-	{
-		win32_show_color_dialog(color);
-		return;
-	}
-#endif
 
 	if (ui_widgets.open_colorsel == NULL)
 	{
