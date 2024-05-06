@@ -194,4 +194,15 @@ FILE_NAME_3=45397;C;0;EUTF-8;1;1;0;%2Fhome%2Fesh%2Fprojects%2Fgithub%2Fgeany%2Fs
 Т.е. оказывается перенос строк можно устанавливать индивидуально для каждого файла.
 
 ----------------------------------------------------------------------------------------
+gchar **part, **parts = g_strsplit_set(search_text, "\n\r", -1);
+foreach_strv(part, parts)
+{
+	if (!EMPTY(*part))
+	{
+		gtk_entry_set_text(entry, *part);
+		break;
+	}
+}
+g_strfreev(parts);
 
+----------------------------------------------------------------------------------------
