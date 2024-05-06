@@ -1740,6 +1740,26 @@ static GString *get_grep_options(void)
 	return gstr;
 }
 
+// esh: if there are EOL separators in the search text, take the first non-empty line
+static const gchar *get_search_text(GtkWidget *search_combo)
+{
+	GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(search_combo)));
+	const gchar *search_text = gtk_entry_get_text(entry);
+	
+	gchar **part, **parts = g_strsplit_set(search_text, "\n\r", -1);
+	foreach_strv(part, parts)
+	{
+		if (!EMPTY(*part))
+		{
+			gtk_entry_set_text(entry, *part);
+			break;
+		}
+	}
+	g_strfreev(parts);
+	
+	return gtk_entry_get_text(entry);
+}
+
 
 static void on_find_in_files_dialog_response(GtkDialog *dialog, gint response,
 											 G_GNUC_UNUSED gpointer user_data)
@@ -1753,10 +1773,9 @@ static void on_find_in_files_dialog_response(GtkDialog *dialog, gint response,
 	if (response == GTK_RESPONSE_ACCEPT)
 	{
 		GtkWidget *search_combo = fif_dlg.search_combo;
-		const gchar *search_text = gtk_entry_get_text(GTK_ENTRY(
-										gtk_bin_get_child(GTK_BIN(search_combo))));
-		GtkWidget *dir_combo = fif_dlg.dir_combo;
+		const gchar *search_text = get_search_text(search_combo);
 		
+		GtkWidget *dir_combo = fif_dlg.dir_combo;
 		const gchar *utf8_dir = gtk_entry_get_text(GTK_ENTRY(
 										gtk_bin_get_child(GTK_BIN(dir_combo))));
 		
