@@ -1997,21 +1997,34 @@ static inline void msgwin_msg_add_markup(
 	
 	GString *escape_buffer = g_string_new(NULL);
 	gchar **items = g_strsplit(buffer, search_text, 0);
-	gchar **item = items;
-	while (TRUE)
+	
+	if (!items[1])
+	{	// the first and only element is the search text
+		g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
+		g_string_append(escape_buffer, items[0]);
+		g_string_append(escape_buffer, "</span>");
+	}
+	else
 	{
-		gchar *escape_item = g_markup_escape_text(*item, -1);
-		g_string_append(escape_buffer, escape_item);
-		g_free(escape_item);
+		gchar **item = items;
 		
-		if (*(++item))
+		while (TRUE)
 		{
-			g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
-			g_string_append(escape_buffer, escape_search_text);
-			g_string_append(escape_buffer, "</span>");
+			if (*item && **item)
+			{
+				gchar *escape_item = g_markup_escape_text(*item, -1);
+				g_string_append(escape_buffer, escape_item);
+				g_free(escape_item);
+			}
+			if (*(++item))
+			{
+				g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
+				g_string_append(escape_buffer, escape_search_text);
+				g_string_append(escape_buffer, "</span>");
+			}
+			else
+				break;
 		}
-		else
-			break;
 	}
 	g_strfreev(items);
 	
@@ -2409,18 +2422,17 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 {
 	g_return_val_if_fail(DOC_VALID(doc), 0);
 	
-	gchar *short_filename, *escape_filename;
-	gchar *escape_search_text;
-	struct Sci_TextToFind ttf;
 	gint count = 0;
 	gint prev_line = -1;
 	GSList *match, *matches;
 	
-	short_filename = g_path_get_basename(DOC_FILENAME(doc));
-	escape_filename = g_markup_escape_text(short_filename, -1);
+	gchar *short_filename = g_path_get_basename(DOC_FILENAME(doc));
+	gchar *escape_filename = g_markup_escape_text(short_filename, -1);
 	
-	escape_search_text = g_markup_escape_text(search_text, -1);
+	gchar *trim_search_text = g_strstrip(g_strdup(search_text));
+	gchar *escape_search_text = g_markup_escape_text(trim_search_text, -1);
 	
+	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
 	ttf.lpstrText = (gchar *)search_text;
@@ -2436,7 +2448,7 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 			gchar *buffer = sci_get_line(doc->editor->sci, line);
 			
 			msgwin_msg_add_markup(COLOR_BLACK, line + 1, doc,
-								  search_text, escape_search_text,
+								  trim_search_text, escape_search_text,
 								  short_filename, escape_filename,
 								  g_strstrip(buffer));
 			g_free(buffer);
@@ -2448,6 +2460,7 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 	g_slist_free(matches);
 	g_free(short_filename);
 	g_free(escape_filename);
+	g_free(trim_search_text);
 	g_free(escape_search_text);
 	return count;
 }
