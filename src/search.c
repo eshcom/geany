@@ -1775,6 +1775,12 @@ static void on_find_in_files_dialog_response(GtkDialog *dialog, gint response,
 		GtkWidget *search_combo = fif_dlg.search_combo;
 		const gchar *search_text = get_search_text(search_combo);
 		
+		// esh: fixed a bug that caused geany to crash
+		const gchar *tmp_search_text = search_text;
+		if (tmp_search_text)
+			while (*tmp_search_text && isspace(*tmp_search_text))
+				tmp_search_text++;
+		
 		GtkWidget *dir_combo = fif_dlg.dir_combo;
 		const gchar *utf8_dir = gtk_entry_get_text(GTK_ENTRY(
 										gtk_bin_get_child(GTK_BIN(dir_combo))));
@@ -1784,7 +1790,8 @@ static void on_find_in_files_dialog_response(GtkDialog *dialog, gint response,
 		
 		if (G_UNLIKELY(EMPTY(utf8_dir)))
 			ui_set_statusbar(FALSE, _("Invalid directory for find in files."));
-		else if (!EMPTY(search_text))
+		
+		else if (!EMPTY(tmp_search_text))
 		{
 			GString *opts = get_grep_options();
 			const gchar *enc = (enc_idx == GEANY_ENCODING_UTF_8) ? NULL :
@@ -2472,7 +2479,13 @@ void search_find_usage(const gchar *search_text, const gchar *original_search_te
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
-	if (G_UNLIKELY(EMPTY(search_text)))
+	// esh: fixed a bug that caused geany to crash
+	const gchar *tmp_search_text = search_text;
+	if (tmp_search_text)
+		while (*tmp_search_text && isspace(*tmp_search_text))
+			tmp_search_text++;
+	
+	if (G_UNLIKELY(EMPTY(tmp_search_text)))
 	{
 		utils_beep();
 		return;
