@@ -74,13 +74,12 @@
 GEANY_API_SYMBOL
 void utils_open_browser(const gchar *uri)
 {
-#ifdef G_OS_WIN32
 	g_return_if_fail(uri != NULL);
+	
+#ifdef G_OS_WIN32
 	win32_open_browser(uri);
 #else
 	gchar *argv[2] = { (gchar *)uri, NULL };
-	
-	g_return_if_fail(uri != NULL);
 	
 	while (!spawn_async(NULL, tool_prefs.browser_cmd, argv, NULL, NULL, NULL))
 	{
@@ -2443,8 +2442,7 @@ void utils_start_new_geany_instance(const gchar *doc_path)
 		}
 		argv[argc] = NULL;
 		
-		if (!utils_spawn_async(NULL, (gchar **)argv, NULL, 0,
-							   NULL, NULL, NULL, &err))
+		if (!spawn_async(NULL, NULL, (gchar **)argv, NULL, NULL, &err))
 		{
 			g_printerr("Unable to open new window: %s\n", err->message);
 			g_error_free(err);
