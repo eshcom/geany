@@ -618,12 +618,19 @@ static void monitor_file_setup(GeanyDocument *doc)
 }
 
 
-void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget)
+void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget,
+						gboolean force)
 {
 	/* doc might not be valid e.g. if user closed a tab whilst Geany is opening files */
-	if (DOC_VALID(doc))
+	if (!DOC_VALID(doc))
+		return;
+	
+	GtkWidget *sci = GTK_WIDGET(doc->editor->sci);
+	
+	if (force && !gtk_widget_has_focus(sci))
+		gtk_widget_grab_focus(sci);
+	else
 	{
-		GtkWidget *sci = GTK_WIDGET(doc->editor->sci);
 		GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
 		
 		if (source_widget == NULL)
@@ -637,7 +644,7 @@ void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget)
 
 static gboolean on_idle_focus(gpointer doc)
 {
-	document_try_focus(doc, NULL);
+	document_try_focus(doc, NULL, FALSE);
 	return FALSE;
 }
 
@@ -904,7 +911,7 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft,
 	sci_set_line_numbers(doc->editor->sci, editor_prefs.show_linenumber_margin);
 	/* bring it in front, jump to the start and grab the focus */
 	editor_goto_pos(doc->editor, 0, FALSE);
-	document_try_focus(doc, NULL);
+	document_try_focus(doc, NULL, prefs.force_focus_to_new_doc);
 	
 #ifdef USE_GIO_FILEMON
 	monitor_file_setup(doc);
@@ -918,9 +925,7 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft,
 	
 	g_signal_emit_by_name(geany_object, "document-new", doc);
 	
-	msgwin_status_add(_("New file \"%s\" opened."),
-		DOC_FILENAME(doc));
-	
+	msgwin_status_add(_("New file \"%s\" opened."), DOC_FILENAME(doc));
 	return doc;
 }
 

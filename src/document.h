@@ -260,7 +260,8 @@ void document_init_doclist(void);
 
 void document_finalize(void);
 
-void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget);
+void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget,
+						gboolean force);
 
 gboolean document_account_for_unsaved(void);
 

@@ -974,7 +974,7 @@ static void on_openfiles_document_action(GtkMenuItem *menuitem,
 static void change_focus_to_editor(GeanyDocument *doc, GtkWidget *source_widget)
 {
 	if (may_steal_focus)
-		document_try_focus(doc, source_widget);
+		document_try_focus(doc, source_widget, FALSE);
 	may_steal_focus = FALSE;
 }
 
