@@ -643,15 +643,13 @@ static void templates_replace_command(GString *text,
 									  const gchar *file_type,
 									  const gchar *func_name)
 {
-	gchar *match;
-	
 	g_return_if_fail(text != NULL);
 	
+	gchar *match;
 	while ((match = strstr(text->str, "{command:")) != NULL)
 	{
 		gchar *wildcard;
 		gchar *cmd = match;
-		gchar *result;
 		
 		while (*match != '}' && *match != '\0')
 			match++;
@@ -659,11 +657,10 @@ static void templates_replace_command(GString *text,
 		wildcard = g_strndup(cmd, (gsize)(match - cmd + 1));
 		cmd = g_strndup(wildcard + 9, strlen(wildcard) - 10);
 		
-		result = run_command(cmd, file_name, file_type, func_name);
+		gchar *result = run_command(cmd, file_name, file_type, func_name);
 		if (result != NULL)
 		{
-			result = g_strstrip(result);
-			utils_string_replace_first(text, wildcard, result);
+			utils_string_replace_first(text, wildcard, g_strstrip(result));
 			g_free(result);
 		}
 		else

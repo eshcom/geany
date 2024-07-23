@@ -3046,16 +3046,11 @@ static void snippets_make_replacements(GeanyEditor *editor, GString *pattern)
 static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos,
 											 const gchar *word)
 {
-	ScintillaObject *sci = editor->sci;
-	gchar *str;
-	const gchar *completion;
-	gint str_len;
 	gint ft_id = editor->document->file_type->id;
+	gchar *str = g_strstrip(g_strdup(word));
 	
-	str = g_strdup(word);
-	g_strstrip(str);
-	
-	completion = snippets_find_completion_by_name(filetypes[ft_id]->name, str);
+	const gchar *completion = snippets_find_completion_by_name(
+									filetypes[ft_id]->name, str);
 	if (completion == NULL)
 	{
 		g_free(str);
@@ -3066,7 +3061,9 @@ static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos,
 	 * (not really necessary but this makes the auto completion more flexible,
 	 *  e.g. with a completion like hi=hello, so typing "hi<TAB>"
 	 *  will result in "hello") */
-	str_len = strlen(str);
+	ScintillaObject *sci = editor->sci;
+	gint str_len = strlen(str);
+	
 	sci_set_selection_start(sci, pos - str_len);
 	sci_set_selection_end(sci, pos);
 	sci_replace_sel(sci, "");

@@ -616,9 +616,7 @@ static void print_external(GeanyDocument *doc)
 			g_error_free(error);
 		}
 		else
-		{
 			msgwin_status_add(_("File %s printed."), doc->file_name);
-		}
 	}
 	g_free(cmdline);
 }

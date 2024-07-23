@@ -870,9 +870,8 @@ static gchar *strip_type(const gchar *scoped_name, TMParserType lang)
 		
 		/* remove pointers */
 		g_strdelimit(name, "*^", ' ');
-		g_strstrip(name);
 		
-		return name;
+		return g_strstrip(name);
 	}
 	return NULL;
 }
