@@ -456,6 +456,7 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, PACKAGE, "switch_msgwin_pages", prefs.switch_to_status);
 	g_key_file_set_boolean(config, PACKAGE, "beep_on_errors", prefs.beep_on_errors);
 	g_key_file_set_boolean(config, PACKAGE, "auto_focus", prefs.auto_focus);
+	g_key_file_set_boolean(config, PACKAGE, "force_focus_to_new_doc", prefs.force_focus_to_new_doc);
 	g_key_file_set_boolean(config, PACKAGE, "set_caret_to_start_of_line", prefs.set_caret_to_start_of_line);
 	
 	/* interface */
@@ -796,6 +797,7 @@ static void load_dialog_prefs(GKeyFile *config)
 	prefs.beep_on_errors = utils_get_setting_boolean(config, PACKAGE, "beep_on_errors", TRUE);
 	prefs.switch_to_status = utils_get_setting_boolean(config, PACKAGE, "switch_msgwin_pages", FALSE);
 	prefs.auto_focus = utils_get_setting_boolean(config, PACKAGE, "auto_focus", FALSE);
+	prefs.force_focus_to_new_doc = utils_get_setting_boolean(config, PACKAGE, "force_focus_to_new_doc", FALSE);
 	prefs.set_caret_to_start_of_line = utils_get_setting_boolean(config, PACKAGE, "set_caret_to_start_of_line", FALSE);
 	
 	/* interface */

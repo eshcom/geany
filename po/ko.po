@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-08 23:32+0300\n"
+"POT-Creation-Date: 2024-07-23 15:38+0300\n"
 "PO-Revision-Date: 2008-10-14 19:27+0100\n"
 "Last-Translator: Song Hyeon Sik <hyeonsiksong@gmail.com>\n"
 "Language-Team: Korean\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:348
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:350
 msgid "Geany"
 msgstr "지니"
 
@@ -108,11 +108,11 @@ msgstr "찾기(_S)"
 msgid "Open Selected F_ile"
 msgstr "선택한 파일 열기(_i)"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2887
+#: ../data/geany.glade.h:19 ../src/symbols.c:2910
 msgid "Find _Usage"
 msgstr "사용법 찾기(_U)"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2894
+#: ../data/geany.glade.h:20 ../src/symbols.c:2917
 msgid "Find _Document Usage"
 msgstr "문서 사용법 찾기(_D)"
 
@@ -327,41 +327,50 @@ msgstr ""
 "편집창, 낙서탭, 찾기와 이동 도구모음, VTE에 작동함."
 
 #: ../data/geany.glade.h:63
+#, fuzzy
+msgid "Always set focus to new document"
+msgstr "항상 찾기 반복하고 찾기 대화상자 감추기"
+
+#: ../data/geany.glade.h:64
+msgid "After creating a new document, set focus to the document editor window"
+msgstr ""
+
+#: ../data/geany.glade.h:65
 msgid "Use Windows native dialogs"
 msgstr ""
 
-#: ../data/geany.glade.h:64
+#: ../data/geany.glade.h:66
 msgid ""
 "Defines whether to use the Windows native dialogs or whether to use the GTK "
 "default dialogs"
 msgstr ""
 
-#: ../data/geany.glade.h:65
+#: ../data/geany.glade.h:67
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>기타</b>"
 
-#: ../data/geany.glade.h:66
+#: ../data/geany.glade.h:68
 msgid "Always wrap search"
 msgstr ""
 
-#: ../data/geany.glade.h:67
+#: ../data/geany.glade.h:69
 #, fuzzy
 msgid "Always wrap search around the document"
 msgstr "항상 찾기 반복하고 찾기 대화상자 감추기"
 
-#: ../data/geany.glade.h:68
+#: ../data/geany.glade.h:70
 msgid "Hide the Find dialog"
 msgstr "찾기 대화상자 숨기기"
 
-#: ../data/geany.glade.h:69
+#: ../data/geany.glade.h:71
 msgid "Hide the Find dialog after clicking Find Next/Previous"
 msgstr "다음/이전 버튼 누른 후 찾기 대화 상자 숨기기"
 
-#: ../data/geany.glade.h:70
+#: ../data/geany.glade.h:72
 msgid "Use the current word under the cursor for Find dialogs"
 msgstr "찾기 대화상자에 커서아래의 단어 사용하기"
 
-#: ../data/geany.glade.h:71
+#: ../data/geany.glade.h:73
 #, fuzzy
 msgid ""
 "Use current word under the cursor when opening the Find, Find in Files or "
@@ -370,35 +379,35 @@ msgstr ""
 "찾기, 파일에서 찾기, 바꾸기 대화상자를 열 때 현재 커서아래의 단어를 선택되지 "
 "않은 상태로 사용함."
 
-#: ../data/geany.glade.h:72
+#: ../data/geany.glade.h:74
 msgid "Use the current file's directory for Find in Files"
 msgstr "파일에서 찾을 때 현재파일이 들어있는 폴더를 사용함"
 
-#: ../data/geany.glade.h:73
+#: ../data/geany.glade.h:75
 #, fuzzy
 msgid "Use the current project's directory for Find in Files"
 msgstr "파일에서 찾을 때 현재파일이 들어있는 폴더를 사용함"
 
-#: ../data/geany.glade.h:74
+#: ../data/geany.glade.h:76
 msgid "<b>Search</b>"
 msgstr "<b>찾기</b>"
 
-#: ../data/geany.glade.h:75
+#: ../data/geany.glade.h:77
 msgid "Use project-based session files"
 msgstr "프로젝트 기반 세션 파일 사용"
 
-#: ../data/geany.glade.h:76
+#: ../data/geany.glade.h:78
 #, fuzzy
 msgid ""
 "Whether to store a project's session files and open them when re-opening the "
 "project"
 msgstr "프로젝트 세션 파일을 저장하고 프로젝트를 다시 열 때 복원 여부."
 
-#: ../data/geany.glade.h:77
+#: ../data/geany.glade.h:79
 msgid "Store project file inside the project base directory"
 msgstr "프로젝트 기반 폴더 안에 프로젝트 파일 저장하기"
 
-#: ../data/geany.glade.h:78
+#: ../data/geany.glade.h:80
 #, fuzzy
 msgid ""
 "When enabled, a project file is stored by default inside the project base "
@@ -411,11 +420,11 @@ msgstr ""
 "\n"
 "프로젝트 파일의 경로는 \"새 프로젝트 대화상자\"에서 바꿀 수 있음."
 
-#: ../data/geany.glade.h:79
+#: ../data/geany.glade.h:81
 msgid "<b>Projects</b>"
 msgstr "<b>프로젝트</b>"
 
-#: ../data/geany.glade.h:80 ../src/dialogs.c:231
+#: ../data/geany.glade.h:82 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "기타"
 
@@ -423,115 +432,115 @@ msgstr "기타"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:81 ../src/prefs.c:1635
+#: ../data/geany.glade.h:83 ../src/prefs.c:1641
 msgid "General"
 msgstr "일반"
 
-#: ../data/geany.glade.h:82
+#: ../data/geany.glade.h:84
 msgid "Show symbol list"
 msgstr "심볼 목록 보기"
 
-#: ../data/geany.glade.h:83
+#: ../data/geany.glade.h:85
 msgid "Toggle the symbol list on and off"
 msgstr "심볼 목록 보기전환"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:86
 msgid "Default symbol sorting mode"
 msgstr ""
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:87
 msgid "Default sorting mode:"
 msgstr "기본 정렬 모드"
 
-#: ../data/geany.glade.h:86 ../src/stash.c:1175
+#: ../data/geany.glade.h:88 ../src/stash.c:1175
 msgid "Name"
 msgstr "이름"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:89
 msgid "Appearance"
 msgstr "모양새"
 
-#: ../data/geany.glade.h:88
+#: ../data/geany.glade.h:90
 msgid "Show documents list"
 msgstr "문서 목록 보기"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:91
 msgid "Toggle the documents list on and off"
 msgstr "문서 목록 보기 전환"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:92
 msgid "Show sidebar"
 msgstr "가장자리창 보기"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:93
 msgid "Position:"
 msgstr "위치"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:94
 msgid "<b>Sidebar</b>"
 msgstr "<b>가장자리창</b>"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:95
 msgid "Switch to messages tab when navigating with hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:96
 msgid "Switch to messages tab when navigating messages using hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:97
 msgid "<b>Message window</b>"
 msgstr "<b>메시지창</b>"
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:98
 msgid "Symbol list:"
 msgstr "심볼 목록:"
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:99
 msgid "Message window:"
 msgstr "메시지창:"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:100
 msgid "Editor:"
 msgstr "편집창:"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:101
 msgid "Sets the font for the message window"
 msgstr "메시지창 글꼴 설정"
 
-#: ../data/geany.glade.h:100
+#: ../data/geany.glade.h:102
 msgid "Sets the font for the symbol list"
 msgstr "심볼 목록 글꼴 설정"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:103
 msgid "Sets the editor font"
 msgstr "편집창 글꼴 설정"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:104
 msgid "<b>Fonts</b>"
 msgstr "<b>글꼴</b>"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:105
 msgid "Show status bar"
 msgstr "상태바 보기"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:106
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr "메인창의 아래쪽에 상태바의 보여줄 지 여부."
 
-#: ../data/geany.glade.h:105 ../src/prefs.c:1637
+#: ../data/geany.glade.h:107 ../src/prefs.c:1643
 msgid "Interface"
 msgstr "인터페이스"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:108
 msgid "Show editor tabs"
 msgstr "편집창 탭보기"
 
-#: ../data/geany.glade.h:107
+#: ../data/geany.glade.h:109
 msgid "Show close buttons"
 msgstr "닫기 단추 보기"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:110
 #, fuzzy
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
@@ -540,138 +549,138 @@ msgstr ""
 "파일을 쉽게 닫을 수 있게 파일탭에 작은 X자 단추를 보여줌.\n"
 "(지니를 다시 시작해야 함)"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:111
 msgid "Placement of new file tabs:"
 msgstr "새 파일탭 위치:"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:112
 msgid "File tabs will be placed on the left of the notebook"
 msgstr "파일탭을 메시지창 왼쪽에 놓기"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:113
 msgid "File tabs will be placed on the right of the notebook"
 msgstr "파일탭을 메시지창 오른쪽에 놓기"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:114
 msgid "Next to current"
 msgstr "다음으로"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:115
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
 msgstr ""
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:116
 msgid "Double-clicking hides all additional widgets"
 msgstr "더블 클릭시 모든 부가적인 위젯 숨기기"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:117
 #, fuzzy
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr "모든 부가적인 위젯 보기 전환"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:118
 msgid "Switch to last used document after closing a tab"
 msgstr "탭을 종료후 최근 사용했던 문서로 전환"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:119
 msgid "<b>Editor tabs</b>"
 msgstr "<b>편지창 탭</b>"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:120
 msgid "Sidebar:"
 msgstr "가장자리창:"
 
-#: ../data/geany.glade.h:119
+#: ../data/geany.glade.h:121
 msgid "<b>Tab positions</b>"
 msgstr "<b>탭 위치</b>"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:122
 #, fuzzy
 msgid "Notebook tabs"
 msgstr "노트북 탭"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:123
 msgid "Show t_oolbar"
 msgstr "도구모음 보기(_o)"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:124
 msgid "_Append toolbar to the menu"
 msgstr ""
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:125
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr ""
 
-#: ../data/geany.glade.h:124 ../src/toolbar.c:943
+#: ../data/geany.glade.h:126 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "도구모음 사용자화"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:127
 msgid "System _default"
 msgstr ""
 
-#: ../data/geany.glade.h:126
+#: ../data/geany.glade.h:128
 msgid "Images _and text"
 msgstr "이미지와 텍스트(_a)"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:129
 msgid "_Images only"
 msgstr "이미지만(_I)"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:130
 msgid "_Text only"
 msgstr "텍스트만(_T)"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:131
 msgid "<b>Icon style</b>"
 msgstr "<b>아이콘 스타일</b>"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:132
 msgid "S_ystem default"
 msgstr "시스팀 기본(_y)"
 
-#: ../data/geany.glade.h:131
+#: ../data/geany.glade.h:133
 msgid "_Small icons"
 msgstr "작은 아이콘(_S)"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:134
 msgid "_Very small icons"
 msgstr "매우 작은 아이콘(_V)"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:135
 msgid "_Large icons"
 msgstr "큰 아이콘(_L)"
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:136
 msgid "<b>Icon size</b>"
 msgstr "<b>아이콘 크기:</b>"
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:137
 msgid "<b>Toolbar</b>"
 msgstr "<b>도구모음</b>"
 
-#: ../data/geany.glade.h:136 ../src/prefs.c:1639
+#: ../data/geany.glade.h:138 ../src/prefs.c:1645
 msgid "Toolbar"
 msgstr "도구모음"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:139
 msgid "Line wrapping"
 msgstr "줄바꾸기"
 
-#: ../data/geany.glade.h:138
+#: ../data/geany.glade.h:140
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
 "disabled on slow machines."
 msgstr "자동으로 줄바꾸기. 주의:느린 시스템에서는 사용 지양."
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:141
 msgid "\"Smart\" home key"
 msgstr "\"똑똑한\" 홈키"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:142
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -685,11 +694,11 @@ msgstr ""
 "활성화하지 않으면 현재 위치에 상관없이 언제나 캐럿을 행의 맨처음으로 이동시킵"
 "니다."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:143
 msgid "Disable Drag and Drop"
 msgstr "드래그 앤 드롭 비활성"
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:144
 #, fuzzy
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
@@ -698,15 +707,15 @@ msgstr ""
 "드래그 앤 드롭을 비활성화하면 편집창의 내/외부 어디에서도 선택한 부분을 드래"
 "그 앤 드롭 할 수 없습니다."
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:145
 msgid "Code folding"
 msgstr "코드 접기"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:146
 msgid "Fold/unfold all children of a fold point"
 msgstr "접기 지점의 모든 자식 접기/펼치기"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:147
 #, fuzzy
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
@@ -715,35 +724,35 @@ msgstr ""
 "접기 지점의 모든 자식을 접거나 펼칩니다. 접기 심볼을 클릭할 때 Shift 키를 누"
 "르면반대의 행동을 합니다."
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:148
 msgid "Use indicators to show compile errors"
 msgstr "컴파일 오류 표시에 지표 사용"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:149
 #, fuzzy
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
 msgstr "컴파일러가 찾은 경고 및 오류 표시에 지표(구불부불한 밑줄) 사용 여부."
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:150
 msgid "Newline strips trailing spaces"
 msgstr "새로운 줄에 질질끌리는 공백 지우기"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:151
 #, fuzzy
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr "새로운 줄에 이전 줄에서부터 질질끌리는 공백 지우기 활성."
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:152
 msgid "Line breaking column:"
 msgstr "행 분리 열:"
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:153
 msgid "Comment toggle marker:"
 msgstr "표지 전환 주석:"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:154
 #, fuzzy
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
@@ -751,128 +760,128 @@ msgid ""
 msgstr ""
 "소스파일 내의 한줄 주석을 전환할 때 추가된 문자열.주석이 전환되었음을 표시함."
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:155
 msgid "<b>Features</b>"
 msgstr "<b>기능</b>"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:156
 msgid "Features"
 msgstr "기능"
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:157
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
 msgstr ""
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:158
 #, fuzzy
 msgid "_Width:"
 msgstr "너비:"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:159
 msgid "The width in chars of a single indent"
 msgstr "한단계 들여쓰기의 문자 너비"
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:160
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "자동들여쓰기 모드:"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:161
 msgid "Detect type from file"
 msgstr "파일에서 추정"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:162
 #, fuzzy
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
 msgstr "파일 열기시 파일 내용으로 들여쓰기 추정 여부."
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:163
 msgid "T_abs and spaces"
 msgstr "탭과 스페이스(_a)"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:164
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr "들여쓰기가 탭 너비보다 작으면 스페이스 사용, 그렇지 않으면 둘 다 사용"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:165
 msgid "_Spaces"
 msgstr "스페이스(_S)"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:166
 msgid "Use spaces when inserting indentation"
 msgstr "들여쓰기에 스페이스 사용"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:167
 msgid "_Tabs"
 msgstr "탭(_T)"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:168
 msgid "Use one tab per indent"
 msgstr "들여쓰기에 탭 사용"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:169
 msgid "Detect width from file"
 msgstr "파일에서 추정"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:170
 #, fuzzy
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
 "opened"
 msgstr "파일 열기시 파일 내용으로 들여쓰기 추정 여부."
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:171
 msgid "Type:"
 msgstr "형식:"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:172
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "탭 키 들여쓰기"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:173
 #, fuzzy
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr "탭 문자 입력 대신 탭키 및 shift-탭키로 들여쓰기 및 들여쓰기해제."
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:174
 msgid "<b>Indentation</b>"
 msgstr "<b>들여쓰기</b>"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:175
 msgid "Indentation"
 msgstr "들여쓰기"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:176
 msgid "Snippet completion"
 msgstr "토막 완성"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:177
 #, fuzzy
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
 msgstr "정의된 짧은 문자열을 입력하면 복잡한 문자열로 완성함."
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:178
 msgid "XML/HTML tag auto-closing"
 msgstr "XML tag 자동 닫기"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:179
 msgid "Insert matching closing tag for XML/HTML"
 msgstr ""
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:180
 msgid "Automatic continuation of multi-line comments"
 msgstr "여러줄 주석 자동 잇기"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:181
 #, fuzzy
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
@@ -881,208 +890,208 @@ msgstr ""
 "C, C++, Java등의 소스파일에서 여러줄 주석내에 새줄을 입력할 때 자동으로그 줄"
 "도 기존의 주석으로 이어줌."
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:182
 msgid "Autocomplete symbols"
 msgstr ""
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:183
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
 msgstr "열린 파일내의 함수명, 전역변수등등의 알려진 심볼을 자동으로 완성함."
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:184
 msgid "Autocomplete all words in document"
 msgstr ""
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:185
 msgid "Drop rest of word on completion"
 msgstr ""
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:186
 msgid "Max. symbol name suggestions:"
 msgstr "최대 심볼 이름 제안 횟수:"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:187
 msgid "Completion list height:"
 msgstr "자동완성 목록 높이:"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:188
 #, fuzzy
 msgid "Characters to type for autocompletion:"
 msgstr "자동완성 필요문자 수:"
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:189
 #, fuzzy
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
 msgstr "심볼 자동완성 목록을 나타내기 위해 필요한 문자의 수."
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:190
 #, fuzzy
 msgid "Display height in rows for the autocompletion list"
 msgstr "자동완성 목록 줄 높이."
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:191
 #, fuzzy
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr "자동완성 목록 최대 표시 수."
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:192
 msgid "Symbol list update frequency:"
 msgstr ""
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:193
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
 "with large files. A delay of 0 disables real-time updates."
 msgstr ""
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:194
 msgid "<b>Completions</b>"
 msgstr "<b>자동완성</b>"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:195
 msgid "Parenthesis ( )"
 msgstr "괄호 ( )"
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:196
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr ""
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:197
 msgid "Curly brackets { }"
 msgstr "중괄호 { }"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:198
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr ""
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:199
 msgid "Square brackets [ ]"
 msgstr "대괄호 [ ]"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:200
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr ""
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:201
 msgid "Single quotes ' '"
 msgstr "따옴표 ' '"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:202
 msgid "Auto-close single quote when typing an opening one"
 msgstr ""
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:203
 msgid "Double quotes \" \""
 msgstr "큰따옴표 \" \""
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:204
 msgid "Auto-close double quote when typing an opening one"
 msgstr ""
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:205
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr ""
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:206
 msgid "Completions"
 msgstr "자동완성"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:207
 msgid "Invert syntax highlighting colors"
 msgstr "구문강조 색상 반전"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:208
 #, fuzzy
 msgid "Invert all colors, by default using white text on a black background"
 msgstr "검정 배경 흰색 글자."
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:209
 msgid "Show indentation guides"
 msgstr "들여쓰기 보조선 보기"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:210
 #, fuzzy
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr "들여쓰기 보조용 작은 점선 보기."
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:211
 msgid "Show white space"
 msgstr "공백 표시 보기"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:212
 #, fuzzy
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr "스페이스 대신 점, 탭 대신 화살표를 표시함."
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:213
 msgid "Show line endings"
 msgstr "줄끝 표시 보기"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:214
 msgid "Shows the line ending character"
 msgstr "줄끝 표시 문자 보여줌."
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:215
 msgid "Show line numbers"
 msgstr "줄번호 보기"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:216
 msgid "Shows or hides the Line Number margin"
 msgstr "줄번호 여백 보기 전환."
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:217
 #, fuzzy
 msgid "Show markers margin"
 msgstr "표지 여백 보기(_M)"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:218
 #, fuzzy
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
 msgstr "줄번호 우측의 줄 표지 여백 보기 전환."
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:219
 msgid "Stop scrolling at last line"
 msgstr "마지막 줄에서 스크롤 멈추기"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:220
 #, fuzzy
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr "문서의 마지막 줄에서 스크롤을 멈출지 여부."
 
-#: ../data/geany.glade.h:219
+#: ../data/geany.glade.h:221
 msgid "Lines visible _around the cursor:"
 msgstr ""
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:222
 msgid "<b>Display</b>"
 msgstr "<b>표시</b>"
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:223
 #, fuzzy
 msgid "Column:"
 msgstr "회사명:"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:224
 #, fuzzy
 msgid "Color:"
 msgstr "색상"
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:225
 msgid "Sets the color of the long line marker"
 msgstr "긴줄 표지 색상 설정"
 
-#: ../data/geany.glade.h:224 ../src/toolbar.c:73 ../src/tools.c:851
+#: ../data/geany.glade.h:226 ../src/toolbar.c:73 ../src/tools.c:851
 msgid "Color Chooser"
 msgstr "색상 선택기"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:227
 #, fuzzy
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
@@ -1092,22 +1101,22 @@ msgstr ""
 "긴줄 표지는 편집창내의 긴줄을 표사해주거나 행분리 힌트를 주는 얇은 세로선입니"
 "다. 0보다 큰 수를 지정하여 어느 열에 긴줄 표지를 나타낼지 설정하십시오."
 
-#: ../data/geany.glade.h:226
+#: ../data/geany.glade.h:228
 msgid "Line"
 msgstr "선"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:229
 #, fuzzy
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
 msgstr "편집창내의 설정된 열에 세로선을 표시함."
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:230
 msgid "Background"
 msgstr "배경색"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:231
 #, fuzzy
 msgid ""
 "The background color of characters after the given cursor position (see "
@@ -1117,86 +1126,86 @@ msgstr ""
 "설정된 열 이후의 문자 배경을 아래의 색상으로 바꿈.\n"
 "(가변폭 글꼴 사용시 권함)"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:232
 msgid "Enabled"
 msgstr "사용함"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:233
 msgid "<b>Long line marker</b>"
 msgstr "<b>긴줄 표지</b>"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:234
 msgid "Disabled"
 msgstr "사용안함"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:235
 msgid "Do not show virtual spaces"
 msgstr ""
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:236
 msgid "Only for rectangular selections"
 msgstr ""
 
-#: ../data/geany.glade.h:235
+#: ../data/geany.glade.h:237
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
 msgstr ""
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:238
 msgid "Always"
 msgstr ""
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:239
 #, fuzzy
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "질질 끌리는 스페이스, 탭, 줄끝표시 지우기"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:240
 #, fuzzy
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>도구 경로</b>"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:241
 msgid "Display"
 msgstr "표시"
 
-#: ../data/geany.glade.h:240 ../src/keybindings.c:321 ../src/prefs.c:1641
+#: ../data/geany.glade.h:242 ../src/keybindings.c:321 ../src/prefs.c:1647
 msgid "Editor"
 msgstr "편집기"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:243
 msgid "Open new documents from the command-line"
 msgstr "명령행에서 새 문서 열기"
 
-#: ../data/geany.glade.h:242
+#: ../data/geany.glade.h:244
 #, fuzzy
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr "각 명령행 파일 이름으로 새로운 문서 시작."
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:245
 msgid "Default end of line characters:"
 msgstr "줄끝 표시문자 기본값:"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:246
 msgid "<b>New files</b>"
 msgstr "<b>새 파일</b>"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:247
 msgid "Default encoding (new files):"
 msgstr "인코딩 기본값 (새 파일):"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:248
 #, fuzzy
 msgid "Sets the default encoding for newly created files"
 msgstr "새로 생성된 파일 인코딩 기본값 설정."
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:249
 #, fuzzy
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "파일 열 때 고정된 인코딩 사용."
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:250
 #, fuzzy
 msgid ""
 "This option disables the automatic detection of the file encoding when "
@@ -1206,72 +1215,72 @@ msgstr ""
 "파일 열 때 인코딩 자동 추정을 비활성화하고 지정한 인코딩으로 파일을 업니다.\n"
 "(보통의 경우 필요없음)"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:251
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "인코딩 기본값 (기존의 유니코드가 아닌 파일):"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:252
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr "기존의 유니코드가 아닌 파일 열 때 인코딩 기본값 설정."
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:253
 msgid "<b>Encodings</b>"
 msgstr "<b>인코딩</b>"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:254
 msgid "Ensure new line at file end"
 msgstr "파일 끝 개행표시 조치"
 
-#: ../data/geany.glade.h:253
+#: ../data/geany.glade.h:255
 msgid "Ensures that at the end of the file is a new line"
 msgstr "파일 끝의 개행표시를 조치합니다."
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:256
 #, fuzzy
 msgid "Ensure consistent line endings"
 msgstr "파일 끝 개행표시 조치"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:257
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
 msgstr ""
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:258
 msgid "Strip trailing spaces and tabs"
 msgstr "질질 끌리는 스페이스와 탭 지우기"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:259
 #, fuzzy
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "질질 끌리는 스페이스, 탭, 줄끝표시 지우기"
 
-#: ../data/geany.glade.h:258 ../src/keybindings.c:710
+#: ../data/geany.glade.h:260 ../src/keybindings.c:710
 msgid "Replace tabs with space"
 msgstr "탭을 스페이스로 바꾸기"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:261
 msgid "Replaces all tabs in document with spaces"
 msgstr "문서내의 모든 탭을 스페이스로 바꿈."
 
-#: ../data/geany.glade.h:260
+#: ../data/geany.glade.h:262
 msgid "<b>Saving files</b>"
 msgstr "파일 저장"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:263
 msgid "Recent files list length:"
 msgstr "최근 파일목록 길이:"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:264
 #, fuzzy
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr "최근 파일목록에 저장할 갯수 지정."
 
-#: ../data/geany.glade.h:263
+#: ../data/geany.glade.h:265
 msgid "Disk check timeout:"
 msgstr "디스크 검사 간격:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:266
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1279,43 +1288,43 @@ msgstr ""
 "디스크의 문서파일 변경 검사 간격을 \"초\"단위로 지정.\n"
 "0으로 지정하면 검사하지 않음."
 
-#: ../data/geany.glade.h:265 ../src/prefs.c:1643 ../src/symbols.c:482
+#: ../data/geany.glade.h:267 ../src/prefs.c:1649 ../src/symbols.c:495
 #: ../plugins/filebrowser.c:1158
 msgid "Files"
 msgstr "파일"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:268
 msgid "Terminal:"
 msgstr "터미널 프로그램:"
 
-#: ../data/geany.glade.h:267
+#: ../data/geany.glade.h:269
 msgid "Browser:"
 msgstr "웹브라우저:"
 
-#: ../data/geany.glade.h:269
+#: ../data/geany.glade.h:271
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
 "filename)"
 msgstr ""
 
-#: ../data/geany.glade.h:270
+#: ../data/geany.glade.h:272
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr "선호하는 브라우저의 경로와 가능한 추가적인 인수"
 
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:273
 msgid "Grep:"
 msgstr "grep 프로그램:"
 
-#: ../data/geany.glade.h:272
+#: ../data/geany.glade.h:274
 msgid "<b>Tool paths</b>"
 msgstr "<b>도구 경로</b>"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:275
 msgid "Context action:"
 msgstr "컨텍스트 행동:"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:277
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1325,67 +1334,67 @@ msgstr ""
 "현재 선택한 단어를 인수로 지정한 명령을 실행합니다.\n"
 "예) \"geany %s\"은(는) 선택한 단어와 같은 이름의 파일을 geany로 편집합니다. "
 
-#: ../data/geany.glade.h:276
+#: ../data/geany.glade.h:278
 msgid "<b>Commands</b>"
 msgstr "<b>명령</b>"
 
-#: ../data/geany.glade.h:277 ../src/keybindings.c:333 ../src/prefs.c:1645
+#: ../data/geany.glade.h:279 ../src/keybindings.c:333 ../src/prefs.c:1651
 msgid "Tools"
 msgstr "도구"
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:280
 msgid "Email address of the developer"
 msgstr "개발자의 이메일 주소"
 
-#: ../data/geany.glade.h:279
+#: ../data/geany.glade.h:281
 msgid "Initials of the developer name"
 msgstr "개발자의 이니셜"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:282
 msgid "Initial version:"
 msgstr "최초 버전:"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:283
 msgid "Version number, which a new file initially has"
 msgstr "새 파일의 최초 버전 번호"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:284
 msgid "Company name"
 msgstr "회사명"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:285
 msgid "Developer:"
 msgstr "개발자:"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:286
 msgid "Company:"
 msgstr "회사명:"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:287
 msgid "Mail address:"
 msgstr "이메일 주소:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:288
 msgid "Initials:"
 msgstr "이니셜:"
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:289
 msgid "The name of the developer"
 msgstr "개발자 이름"
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:290
 msgid "Year:"
 msgstr "년도:"
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:291
 msgid "Date:"
 msgstr "일자:"
 
-#: ../data/geany.glade.h:290
+#: ../data/geany.glade.h:292
 msgid "Date & time:"
 msgstr "일자 & 시간:"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:293
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1393,7 +1402,7 @@ msgstr ""
 "{날짜시간} 형식지정.\n"
 "ANSI C의 strftime 함수의 모든 식별기호 사용가능."
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:294
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1401,7 +1410,7 @@ msgstr ""
 "{년도} 형식지정.\n"
 "ANSI C의 strftime 함수의 모든 식별기호 사용가능."
 
-#: ../data/geany.glade.h:293
+#: ../data/geany.glade.h:295
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1409,63 +1418,63 @@ msgstr ""
 "{날짜} 형식지정.\n"
 "ANSI C의 strftime 함수의 모든 식별기호 사용가능."
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:296
 msgid "<b>Template data</b>"
 msgstr "<b>템플릿 데이터</b>"
 
-#: ../data/geany.glade.h:295 ../src/prefs.c:1647
+#: ../data/geany.glade.h:297 ../src/prefs.c:1653
 msgid "Templates"
 msgstr "템플릿"
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:298
 msgid "C_hange"
 msgstr "바꾸기(_h)"
 
-#: ../data/geany.glade.h:297
+#: ../data/geany.glade.h:299
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>바로 가기</b>"
 
-#: ../data/geany.glade.h:298 ../src/plugins.c:1950 ../src/plugins.c:1987
-#: ../src/prefs.c:1649
+#: ../data/geany.glade.h:300 ../src/plugins.c:1950 ../src/plugins.c:1987
+#: ../src/prefs.c:1655
 msgid "Keybindings"
 msgstr "바로 가기"
 
-#: ../data/geany.glade.h:299
+#: ../data/geany.glade.h:301
 msgid "Command:"
 msgstr "명령:"
 
-#: ../data/geany.glade.h:301
+#: ../data/geany.glade.h:303
 #, fuzzy, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr "인쇄 명령의 경로(인수 %f은(는) 파일 이름)."
 
-#: ../data/geany.glade.h:302
+#: ../data/geany.glade.h:304
 msgid "Use an external command for printing"
 msgstr "외부명령으로 인쇄하기"
 
-#: ../data/geany.glade.h:303 ../src/printing.c:237
+#: ../data/geany.glade.h:305 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "줄 번호 인쇄"
 
-#: ../data/geany.glade.h:304 ../src/printing.c:239
+#: ../data/geany.glade.h:306 ../src/printing.c:239
 #, fuzzy
 msgid "Add line numbers to the printed page"
 msgstr "줄 번호를 추가해서 인쇄하기."
 
-#: ../data/geany.glade.h:305 ../src/printing.c:242
+#: ../data/geany.glade.h:307 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "쪽 번호 인쇄"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:244
+#: ../data/geany.glade.h:308 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr "각 쪽의 하단에 쪽 번호를 인쇄함. 2줄을 사용함."
 
-#: ../data/geany.glade.h:307 ../src/printing.c:247
+#: ../data/geany.glade.h:309 ../src/printing.c:247
 msgid "Print page header"
 msgstr "머리말 인쇄"
 
-#: ../data/geany.glade.h:308 ../src/printing.c:249
+#: ../data/geany.glade.h:310 ../src/printing.c:249
 #, fuzzy
 msgid ""
 "Add a little header to every page containing the page number, the filename "
@@ -1474,19 +1483,19 @@ msgstr ""
 "각쪽의 상단에 쪽 번호, 파일 이름, 현재날짜를 포함하는 작은 머리말을 인쇄함(아"
 "래 참조).3줄을 사용함."
 
-#: ../data/geany.glade.h:309 ../src/printing.c:265
+#: ../data/geany.glade.h:311 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "기본이름만 사용"
 
-#: ../data/geany.glade.h:310
+#: ../data/geany.glade.h:312
 msgid "Print only the basename (without the path) of the printed file"
 msgstr "경로명이 없는 기본이름만 인쇄."
 
-#: ../data/geany.glade.h:311 ../src/printing.c:273
+#: ../data/geany.glade.h:313 ../src/printing.c:273
 msgid "Date format:"
 msgstr "날짜 형식:"
 
-#: ../data/geany.glade.h:312 ../src/printing.c:279
+#: ../data/geany.glade.h:314 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1495,110 +1504,110 @@ msgstr ""
 "각쪽의 머리말에 추가된 날짜와 인쇄시간 형식을 지정함.\n"
 "ANSI C의 strftime 함수의 모든 식별자를 사용할 수 있음."
 
-#: ../data/geany.glade.h:313
+#: ../data/geany.glade.h:315
 msgid "Use native GTK printing"
 msgstr "GTK 고유 인쇄 사용"
 
-#: ../data/geany.glade.h:314
+#: ../data/geany.glade.h:316
 msgid "<b>Printing</b>"
 msgstr "<b>인쇄</b>"
 
-#: ../data/geany.glade.h:315 ../src/prefs.c:1651
+#: ../data/geany.glade.h:317 ../src/prefs.c:1657
 msgid "Printing"
 msgstr "인쇄"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:318
 msgid "Font:"
 msgstr "폰트:"
 
-#: ../data/geany.glade.h:317
+#: ../data/geany.glade.h:319
 msgid "Sets the font for the terminal widget"
 msgstr "터미널 위젯용 글꼴 설정."
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:320
 msgid "Choose Terminal Font"
 msgstr "터미널 글꼴 선택"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:321
 msgid "Foreground color:"
 msgstr "글자색:"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:322
 msgid "Background color:"
 msgstr "배경색:"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:323
 msgid "Scrollback lines:"
 msgstr "명령기록 횟수:"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:324
 msgid "Shell:"
 msgstr "셸:"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:325
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr "터미널 위젯의 전경 글자색 설정."
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:326
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "터미널 위젯의 배경 글자색 설정."
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:327
 #, fuzzy
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
 msgstr "터미널 위젯에서 몇개의 명령을 기록해 놓을지 지정."
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:328
 #, fuzzy
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
 msgstr "터미널 에뮬레이터에서 사용할 셸 지정."
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:329
 msgid "Scroll on keystroke"
 msgstr "키누르면 스크롤"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:330
 #, fuzzy
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "키를 누르면 스크롤할지 여부."
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:331
 msgid "Scroll on output"
 msgstr "출력있으면 스크롤"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:332
 #, fuzzy
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "출력이 생기면 스크롤할지 여부."
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:333
 msgid "Cursor blinks"
 msgstr ""
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:334
 #, fuzzy
 msgid "Whether to blink the cursor"
 msgstr "코드 접기 활성 여부"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:335
 msgid "Override Geany keybindings"
 msgstr "지니 단축키 변경"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:336
 #, fuzzy
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr "VTE에서 바로 가기 허가 (포커스 명령 별개)."
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:337
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "메뉴 바로 가기 (F10) 비활성"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:338
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1607,20 +1616,20 @@ msgstr ""
 "팝업메뉴 단축키 F10을 비활성화 합니다.\n"
 "Midnight Commander등의 프로그램을 VTE안에서 사용할 때 유용합니다."
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:339
 msgid "Follow path of the current file"
 msgstr "현재파일 경로 따르기"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:340
 #, fuzzy
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr "열린 문서간을 이동할 때 \"cd 경로명\"을 실행할지 여부."
 
-#: ../data/geany.glade.h:339
+#: ../data/geany.glade.h:341
 msgid "Execute programs in the VTE"
 msgstr "VTE내에서 프로그램 실행"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:342
 #, fuzzy
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
@@ -1629,11 +1638,11 @@ msgstr ""
 "새로운 터미널창을 열지 않고 VTE내에서 프로그램 실행하기.\n"
 "주의: VTE안에서 실행한 프로그램은 멀출 수 없습니다."
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:343
 msgid "Don't use run script"
 msgstr "스크립트 실행 사용하지 않음"
 
-#: ../data/geany.glade.h:342
+#: ../data/geany.glade.h:344
 #, fuzzy
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
@@ -1642,542 +1651,542 @@ msgstr ""
 "실행된 프로그램의 끝내기 상태를 나타내는 간단한 스크립트 실행을 사용하지 않"
 "음."
 
-#: ../data/geany.glade.h:343
+#: ../data/geany.glade.h:345
 msgid "<b>Terminal</b>"
 msgstr "<b>터미널</b>"
 
-#: ../data/geany.glade.h:344 ../src/prefs.c:1655 ../src/vte.c:460
+#: ../data/geany.glade.h:346 ../src/prefs.c:1661 ../src/vte.c:460
 msgid "Terminal"
 msgstr "터미널"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:347
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr ""
 
-#: ../data/geany.glade.h:346
+#: ../data/geany.glade.h:348
 msgid "<b>Various preferences</b>"
 msgstr "<b>다양한 설정</b>"
 
-#: ../data/geany.glade.h:347 ../src/prefs.c:1653
+#: ../data/geany.glade.h:349 ../src/prefs.c:1659
 msgid "Various"
 msgstr "다양한"
 
-#: ../data/geany.glade.h:349
+#: ../data/geany.glade.h:351
 msgid "_File"
 msgstr "파일(_F)"
 
-#: ../data/geany.glade.h:350
+#: ../data/geany.glade.h:352
 msgid "New (with _Template)"
 msgstr "템플릿으로 새로 만들기(_T)"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:353
 msgid "_Open..."
 msgstr "열기(_O)"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:354
 msgid "Recent _Files"
 msgstr "최근에 사용한 파일들(_F)"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:355
 msgid "Save _As..."
 msgstr "다른 이름으로 저장(_A)"
 
-#: ../data/geany.glade.h:354
+#: ../data/geany.glade.h:356
 msgid "Sa_ve All"
 msgstr "모두 저장(_v)"
 
-#: ../data/geany.glade.h:355 ../src/document.c:1711 ../src/document.c:3775
-#: ../src/sidebar.c:726
+#: ../data/geany.glade.h:357 ../src/document.c:1716 ../src/document.c:3775
+#: ../src/sidebar.c:761
 msgid "_Reload"
 msgstr "다시 열기(_R)"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:358
 msgid "R_eload As"
 msgstr "다른 언어로 다시열기(_e)"
 
-#: ../data/geany.glade.h:357
+#: ../data/geany.glade.h:359
 msgid "Page Set_up"
 msgstr "페이지 설정(_u)"
 
-#: ../data/geany.glade.h:358
+#: ../data/geany.glade.h:360
 msgid "_Print..."
 msgstr "인쇄(_P)"
 
-#: ../data/geany.glade.h:359 ../src/notebook.c:495
+#: ../data/geany.glade.h:361 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "다른 문서 닫기(_h)"
 
-#: ../data/geany.glade.h:360 ../src/notebook.c:507
+#: ../data/geany.glade.h:362 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "모두 닫기(_l)"
 
-#: ../data/geany.glade.h:361
+#: ../data/geany.glade.h:363
 msgid "Co_mmands"
 msgstr "명령(_m)"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:453
+#: ../data/geany.glade.h:364 ../src/keybindings.c:453
 msgid "Cu_t Current Line(s)"
 msgstr "현재 줄(들) 잘라내기(_t)"
 
-#: ../data/geany.glade.h:363 ../src/keybindings.c:450
+#: ../data/geany.glade.h:365 ../src/keybindings.c:450
 msgid "_Copy Current Line(s)"
 msgstr "현재 줄(들) 복사(_C)"
 
-#: ../data/geany.glade.h:364 ../src/keybindings.c:398
+#: ../data/geany.glade.h:366 ../src/keybindings.c:398
 msgid "_Delete Current Line(s)"
 msgstr "현재 줄(들) 지우기(_D)"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:395
+#: ../data/geany.glade.h:367 ../src/keybindings.c:395
 msgid "D_uplicate Line or Selection"
 msgstr "선택한 부분 복제(_u)"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:465
+#: ../data/geany.glade.h:368 ../src/keybindings.c:465
 msgid "S_elect Current Line(s)"
 msgstr "현재 줄(들) 선택(_e)"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:468
+#: ../data/geany.glade.h:369 ../src/keybindings.c:468
 msgid "Se_lect Current Paragraph"
 msgstr "현재 문단 선택(_l)"
 
-#: ../data/geany.glade.h:368
+#: ../data/geany.glade.h:370
 msgid "_Move Line(s) Up"
 msgstr "줄(들)을 위로 이동(_M)"
 
-#: ../data/geany.glade.h:369
+#: ../data/geany.glade.h:371
 msgid "M_ove Line(s) Down"
 msgstr "줄(들)을 아래로 이동(_o)"
 
-#: ../data/geany.glade.h:370 ../src/keybindings.c:521
+#: ../data/geany.glade.h:372 ../src/keybindings.c:521
 msgid "_Send Selection to Terminal"
 msgstr "선택한 부분 터미널로 보내기(_S)"
 
-#: ../data/geany.glade.h:371 ../src/keybindings.c:525
+#: ../data/geany.glade.h:373 ../src/keybindings.c:525
 msgid "_Reflow Lines/Block"
 msgstr ""
 
-#: ../data/geany.glade.h:372 ../src/keybindings.c:478
+#: ../data/geany.glade.h:374 ../src/keybindings.c:478
 msgid "T_oggle Case of Selection"
 msgstr "선택한 부분 활자케이스전환(_o)"
 
-#: ../data/geany.glade.h:373
+#: ../data/geany.glade.h:375
 msgid "_Comment Line(s)"
 msgstr "주석만들기(_C)"
 
-#: ../data/geany.glade.h:374
+#: ../data/geany.glade.h:376
 msgid "U_ncomment Line(s)"
 msgstr "주석 해제(_n)"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:377
 msgid "_Toggle Line Commentation"
 msgstr "한줄 주석 전환(_T)"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:378
 msgid "_Increase Indent"
 msgstr "들여쓰기 증가(_I)"
 
-#: ../data/geany.glade.h:377
+#: ../data/geany.glade.h:379
 msgid "_Decrease Indent"
 msgstr "들여쓰기 감소(_D)"
 
-#: ../data/geany.glade.h:378 ../src/keybindings.c:497
+#: ../data/geany.glade.h:380 ../src/keybindings.c:497
 msgid "S_mart Line Indent"
 msgstr "똑똑한 한줄 들여쓰기(_m)"
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:381
 msgid "_Send Selection to"
 msgstr "선택한 부분 보내기(_S)"
 
-#: ../data/geany.glade.h:380
+#: ../data/geany.glade.h:382
 msgid "I_nsert Comments"
 msgstr "주석 삽입(_n)"
 
-#: ../data/geany.glade.h:381
+#: ../data/geany.glade.h:383
 msgid "Preference_s"
 msgstr "기본 설정(_s)"
 
-#: ../data/geany.glade.h:382 ../src/keybindings.c:548
+#: ../data/geany.glade.h:384 ../src/keybindings.c:548
 msgid "P_lugin Preferences"
 msgstr "플러그인 기본 설정(_l)"
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:385
 msgid "_Find..."
 msgstr "찾기(_F)"
 
-#: ../data/geany.glade.h:384
+#: ../data/geany.glade.h:386
 msgid "Find _Next"
 msgstr "다음 찾기(_N)"
 
-#: ../data/geany.glade.h:385
+#: ../data/geany.glade.h:387
 msgid "Find _Previous"
 msgstr "이전 찾기(_P)"
 
-#: ../data/geany.glade.h:386 ../src/symbols.c:2901
+#: ../data/geany.glade.h:388 ../src/symbols.c:2924
 msgid "Find in F_iles..."
 msgstr "파일 안에서 찾기(_i)"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:389
 msgid "_Replace..."
 msgstr "바꾸기(_R)"
 
-#: ../data/geany.glade.h:388
+#: ../data/geany.glade.h:390
 msgid "Next Me_ssage"
 msgstr "다음 메시지(_s)"
 
-#: ../data/geany.glade.h:389
+#: ../data/geany.glade.h:391
 msgid "Pr_evious Message"
 msgstr "이전 메시지(_e)"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:598
+#: ../data/geany.glade.h:392 ../src/keybindings.c:598
 msgid "Go to Ne_xt Marker"
 msgstr "다음 표시로 이동(_x)"
 
-#: ../data/geany.glade.h:391 ../src/keybindings.c:601
+#: ../data/geany.glade.h:393 ../src/keybindings.c:601
 msgid "Go to Pre_vious Marker"
 msgstr "이전 표시로 이동(_v)"
 
-#: ../data/geany.glade.h:392
+#: ../data/geany.glade.h:394
 msgid "_Go to Line..."
 msgstr "줄로 이동(_G)"
 
-#: ../data/geany.glade.h:393 ../src/keybindings.c:560
+#: ../data/geany.glade.h:395 ../src/keybindings.c:560
 msgid "Find Next _Selection"
 msgstr "다음 선택부분 찾기(_S)"
 
-#: ../data/geany.glade.h:394 ../src/keybindings.c:562
+#: ../data/geany.glade.h:396 ../src/keybindings.c:562
 #, fuzzy
 msgid "Find Pre_vious Selection"
 msgstr "이전 선택부분 찾기"
 
-#: ../data/geany.glade.h:395 ../src/keybindings.c:580
+#: ../data/geany.glade.h:397 ../src/keybindings.c:580
 msgid "_Mark All"
 msgstr "전부 표시(_M)"
 
-#: ../data/geany.glade.h:396
+#: ../data/geany.glade.h:398
 #, fuzzy
 msgid "Go to Symbol Decl_aration"
 msgstr "태그 선언으로 이동"
 
-#: ../data/geany.glade.h:397
+#: ../data/geany.glade.h:399
 msgid "_View"
 msgstr "보기(_V)"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:400
 msgid "Change _Font..."
 msgstr "글꼴 바꾸기(_F)"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:401
 msgid "Change _Color Scheme..."
 msgstr "색상 선택기(_C)"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:402
 msgid "Show _Markers Margin"
 msgstr "표지 여백 보기(_M)"
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:403
 msgid "Show _Line Numbers"
 msgstr "줄번호 보기(_L)"
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:404
 msgid "Show White S_pace"
 msgstr "공백 표시 보기(_p)"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:405
 msgid "Show Line _Endings"
 msgstr "줄끝 표시 보기(_E)"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:406
 msgid "Show Indentation _Guides"
 msgstr "들여쓰기 보조선 보기(_G)"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:407
 msgid "Full_screen"
 msgstr "전체 화면(_s)"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:408
 msgid "Toggle All _Additional Widgets"
 msgstr "모든 부가적인 위젯 보기 전환(_g)"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:409
 msgid "Show Message _Window"
 msgstr "메시지창 보기(_W)"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:410
 msgid "Show _Toolbar"
 msgstr "도구모음 보기(_T)"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:411
 msgid "Show Side_bar"
 msgstr "가장자리창 보기(_b)"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:412
 msgid "_Document"
 msgstr "문서(_D)"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:413
 msgid "_Line Wrapping"
 msgstr "자동 줄바꾸기(_L)"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:414
 msgid "Line _Breaking"
 msgstr "자동 줄나누기(_B)"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:415
 msgid "_Auto-indentation"
 msgstr "자동 들여쓰기(_A)"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:416
 msgid "In_dent Type"
 msgstr "들여쓰기 형식(_d)"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:417
 msgid "_Detect from Content"
 msgstr "파일에서 추정(_D)"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:418
 msgid "T_abs and Spaces"
 msgstr "탭과 스페이스(_a)"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:419
 msgid "Indent Widt_h"
 msgstr ""
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:420
 msgid "_1"
 msgstr ""
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:421
 msgid "_2"
 msgstr ""
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:422
 msgid "_3"
 msgstr ""
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:423
 msgid "_4"
 msgstr ""
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:424
 msgid "_5"
 msgstr ""
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:425
 msgid "_6"
 msgstr ""
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:426
 msgid "_7"
 msgstr ""
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:427
 msgid "_8"
 msgstr ""
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:428
 msgid "Read _Only"
 msgstr "읽기 전용(_O)"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:429
 msgid "_Write Unicode BOM"
 msgstr "유니코드 BOM 삽입(_W)"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:430
 msgid "Set File_type"
 msgstr "파일 형식 지정(_t)"
 
-#: ../data/geany.glade.h:429
+#: ../data/geany.glade.h:431
 msgid "Set _Encoding"
 msgstr "인코딩 형식 지정(_E)"
 
-#: ../data/geany.glade.h:430
+#: ../data/geany.glade.h:432
 msgid "Set Line E_ndings"
 msgstr "줄바꾸기 형식 지정(_n)"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:433
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "CR/LF(윈도우즈)로 변환(_C)"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:434
 msgid "Convert and Set to _LF (Unix)"
 msgstr "LF(유닉스)로 변환(_L)"
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:435
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "CR(매킨토시)로 변환(_M)"
 
-#: ../data/geany.glade.h:434 ../src/keybindings.c:705
+#: ../data/geany.glade.h:436 ../src/keybindings.c:705
 msgid "_Clone"
 msgstr "복제(_C)"
 
-#: ../data/geany.glade.h:435 ../src/keybindings.c:707
+#: ../data/geany.glade.h:437 ../src/keybindings.c:707
 msgid "_Strip Trailing Spaces"
 msgstr "질질끌리는 공백 지우기(_S)"
 
-#: ../data/geany.glade.h:436
+#: ../data/geany.glade.h:438
 msgid "Replace Tabs with S_paces"
 msgstr "탭을 스페이스로 바꾸기(_R)"
 
-#: ../data/geany.glade.h:437
+#: ../data/geany.glade.h:439
 msgid "_Replace Spaces with Tabs..."
 msgstr "스페이스를 탭으로 바꾸기(_R)"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:440
 msgid "_Fold All"
 msgstr "모두 접기(_F)"
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:441
 msgid "_Unfold All"
 msgstr "모두 펴기(_U)"
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:442
 msgid "Remove _Markers"
 msgstr "표지 지우기(_M)"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:443
 msgid "Remove Error _Indicators"
 msgstr "오류 지표 지우기(_I)"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:444
 msgid "_Project"
 msgstr "프로젝트(_P)"
 
-#: ../data/geany.glade.h:443
+#: ../data/geany.glade.h:445
 msgid "_New..."
 msgstr "새로 만들기(_N)"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:446
 msgid "_Recent Projects"
 msgstr "최근 프로젝트(_R)"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:447
 msgid "_Close"
 msgstr "닫기(_C)"
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:448
 msgid "Apply the default indentation settings to all documents"
 msgstr "기본 들여쓰기 설정을 모든 문서에 적용"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:449
 msgid "_Apply Default Indentation"
 msgstr "기본 들여쓰기 적용(_A)"
 
 #. build the code
-#: ../data/geany.glade.h:448 ../src/build.c:2455 ../src/build.c:2726
+#: ../data/geany.glade.h:450 ../src/build.c:2455 ../src/build.c:2726
 msgid "_Build"
 msgstr "제작(_B)"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:451
 msgid "_Tools"
 msgstr "도구(_T)"
 
-#: ../data/geany.glade.h:450
+#: ../data/geany.glade.h:452
 msgid "_Reload Configuration"
 msgstr "환경설정 다시 불러오기(_R)"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:453
 msgid "C_onfiguration Files"
 msgstr "환경설정 파일(_o)"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:454
 msgid "_Color Chooser"
 msgstr "색상 선택기(_C)"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:455
 msgid "_Word Count"
 msgstr "단어 세기(_W)"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:456
 #, fuzzy
 msgid "Load Ta_gs File..."
 msgstr "Tags 불러오기(_g)"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:457
 msgid "_Help"
 msgstr "도움말(_H)"
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:458
 msgid "Keyboard _Shortcuts"
 msgstr "바로 가기(_K)"
 
-#: ../data/geany.glade.h:457
+#: ../data/geany.glade.h:459
 msgid "Debug _Messages"
 msgstr "디버그 메시지(_M)"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:460
 msgid "_Website"
 msgstr "웹사이트(_W)"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:461
 msgid "Wi_ki"
 msgstr "위키(_k)"
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:462
 msgid "Report a _Bug..."
 msgstr "버그 제보(_B)"
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:463
 msgid "_Donate..."
 msgstr "기부하기(_D)"
 
-#: ../data/geany.glade.h:462 ../src/sidebar.c:129
+#: ../data/geany.glade.h:464 ../src/sidebar.c:131
 msgid "Symbols"
 msgstr "심볼"
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:465
 msgid "Documents"
 msgstr "문서"
 
-#: ../data/geany.glade.h:464
+#: ../data/geany.glade.h:466
 msgid "Status"
 msgstr "상태"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:467
 msgid "Compiler"
 msgstr "컴파일러"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:468
 msgid "Messages"
 msgstr "메시지"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:469
 msgid "Scribble"
 msgstr "낙서"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:470
 msgid "Project Properties"
 msgstr "프로젝트 속성"
 
-#: ../data/geany.glade.h:469 ../src/project.c:183
+#: ../data/geany.glade.h:471 ../src/project.c:183
 msgid "Filename:"
 msgstr "파일 이름:"
 
-#: ../data/geany.glade.h:470
+#: ../data/geany.glade.h:472
 #, fuzzy
 msgid "_Name:"
 msgstr "이름:"
 
-#: ../data/geany.glade.h:471
+#: ../data/geany.glade.h:473
 #, fuzzy
 msgid "_Description:"
 msgstr "설명:"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:474
 #, fuzzy
 msgid "_Base path:"
 msgstr "기반 경로:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:475
 #, fuzzy
 msgid "File _patterns:"
 msgstr "파일 패턴:"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:476
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
 msgstr ""
 
-#: ../data/geany.glade.h:475 ../src/project.c:212
+#: ../data/geany.glade.h:477 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2186,109 +2195,109 @@ msgstr ""
 "프로젝트를 구성하는 모든 파일들의 기반 폴더. 새로 만들거나, 기존 폴더를 사용"
 "할 수 있습니다. 프로젝트 파일 이름에 상대경로를 사용할 수 있게합니다."
 
-#: ../data/geany.glade.h:476 ../src/keybindings.c:331
+#: ../data/geany.glade.h:478 ../src/keybindings.c:331
 msgid "Project"
 msgstr "프로젝트"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:479
 msgid "Display:"
 msgstr "표시:"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:480
 msgid "Custom"
 msgstr "사용자화"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:481
 msgid "Use global settings"
 msgstr ""
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:482
 #, fuzzy
 msgid "Load tags file when opening a project"
 msgstr "프로젝트 열기의 시작 경로"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:483
 msgid ""
 "If the parameter is not set, then the tags file will be loaded on demand "
 "when navigating through the symbol definition/declaration"
 msgstr ""
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:484
 msgid "Load type names from tags file"
 msgstr ""
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid ""
 "Allows to highlight the names of custom types without opening source files "
 "where these types are defined"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "파일 저장"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 msgid "Size:"
 msgstr "크기:"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 msgid "Location:"
 msgstr "위치:"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 msgid "Read-only:"
 msgstr "읽기전용:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 msgid "Encoding:"
 msgstr "인코딩:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 msgid "Modified:"
 msgstr "수정됨:"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 msgid "Changed:"
 msgstr "변경됨:"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 msgid "Accessed:"
 msgstr "접근됨:"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "(only inside Geany)"
 msgstr "(지니 내부에서만)"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 msgid "Permissions:"
 msgstr "권한:"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "Read:"
 msgstr "읽기:"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Write:"
 msgstr "쓰기:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Execute:"
 msgstr "실행:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Owner:"
 msgstr "소유자:"
 
-#: ../data/geany.glade.h:499
+#: ../data/geany.glade.h:501
 msgid "Group:"
 msgstr "그룹:"
 
-#: ../data/geany.glade.h:500
+#: ../data/geany.glade.h:502
 msgid "Other:"
 msgstr "기타:"
 
@@ -2477,12 +2486,12 @@ msgstr "제작오류 더이상 없음."
 msgid "Set menu item label"
 msgstr ""
 
-#: ../src/build.c:1837 ../src/symbols.c:539 ../src/tools.c:416
+#: ../src/build.c:1837 ../src/symbols.c:552 ../src/tools.c:416
 msgid "Label"
 msgstr "라벨"
 
 #. command column, holding status and command display
-#: ../src/build.c:1838 ../src/symbols.c:534 ../src/tools.c:401
+#: ../src/build.c:1838 ../src/symbols.c:547 ../src/tools.c:401
 msgid "Command"
 msgstr "명령"
 
@@ -2608,8 +2617,8 @@ msgstr "맞춤 외부 명령 '%s' 실행 실패 (%s)."
 msgid "No context action set."
 msgstr "컨텍스트 행동:"
 
-#: ../src/dialogs.c:160 ../src/document.c:2373 ../src/document.c:2441
-#: ../src/document.c:2450
+#: ../src/dialogs.c:160 ../src/document.c:2378 ../src/document.c:2446
+#: ../src/document.c:2455
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "\"%s\" 가 존재하지 않습니다."
@@ -2692,7 +2701,7 @@ msgstr ""
 "읽기전용으로 파일 열기. 하나 이상의 파일을 열으면 모든 파일은 읽기전용으로열"
 "립니다."
 
-#: ../src/dialogs.c:535 ../src/document.c:2120
+#: ../src/dialogs.c:535 ../src/document.c:2125
 msgid "Overwrite?"
 msgstr "덮어씌울까요?"
 
@@ -2756,7 +2765,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1203 ../src/dialogs.c:1204 ../src/dialogs.c:1205
 #: ../src/dialogs.c:1211 ../src/dialogs.c:1212 ../src/dialogs.c:1213
-#: ../src/symbols.c:2689 ../src/symbols.c:2706 ../src/ui_utils.c:316
+#: ../src/symbols.c:2712 ../src/symbols.c:2729 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "알 수 없음"
 
@@ -2773,34 +2782,34 @@ msgstr "(BOM과 함께)"
 msgid "(without BOM)"
 msgstr "(BOM 없이)"
 
-#: ../src/document.c:759
+#: ../src/document.c:766
 #, c-format
 msgid "File %s closed."
 msgstr "%s 파일 닫음."
 
-#: ../src/document.c:921
+#: ../src/document.c:928
 #, c-format
 msgid "New file \"%s\" opened."
 msgstr "새로운 \"%s\" 파일 열음."
 
-#: ../src/document.c:996
+#: ../src/document.c:1001
 #, c-format
 msgid "Could not open file %s (%s)"
 msgstr "%s 파일 열 수 없음 (%s)"
 
-#: ../src/document.c:1049
+#: ../src/document.c:1054
 #, c-format
 msgid "The file \"%s\" is not valid %s."
 msgstr "\"%s\" 파일은 올바르지 않은 %s 입니다."
 
-#: ../src/document.c:1052
+#: ../src/document.c:1057
 #, c-format
 msgid ""
 "The file \"%s\" does not look like a text file or the file encoding is not "
 "supported."
 msgstr "\"%s\" 파일은 텍스트 파일이 아니거나 지원되지 않는 인코딩 형식입니다."
 
-#: ../src/document.c:1063
+#: ../src/document.c:1068
 #, c-format
 msgid ""
 "The file \"%s\" could not be opened properly and has been truncated. This "
@@ -2814,31 +2823,31 @@ msgstr ""
 "\n"
 "파일을 읽기전용으로 설정함"
 
-#: ../src/document.c:1284
+#: ../src/document.c:1289
 msgid "Spaces"
 msgstr "스페이스"
 
-#: ../src/document.c:1287
+#: ../src/document.c:1292
 msgid "Tabs"
 msgstr "탭"
 
-#: ../src/document.c:1290
+#: ../src/document.c:1295
 msgid "Tabs and Spaces"
 msgstr "탭과 스페이스"
 
 #. For translators: first wildcard is the indentation mode
 #. * (Spaces, Tabs, Tabs and Spaces), the second one is the filename
-#: ../src/document.c:1295
+#: ../src/document.c:1300
 #, c-format
 msgid "Setting %s indentation mode for %s."
 msgstr "%2$s 파일 %1$s 들여쓰기모드 설정."
 
-#: ../src/document.c:1305
+#: ../src/document.c:1310
 #, c-format
 msgid "Setting indentation width to %d for %s."
 msgstr "%d 만큼 세로로 %s 파일 들여쓰기모드 설정."
 
-#: ../src/document.c:1536
+#: ../src/document.c:1541
 #, c-format
 msgid "File %s reloaded."
 msgstr "%s 파일 다시 불러옴."
@@ -2847,20 +2856,20 @@ msgstr "%s 파일 다시 불러옴."
 #. * %d is the number of the newly opened file,
 #. * %s indicates whether the file is opened read-only
 #. * (it is replaced with the string ", read-only").
-#: ../src/document.c:1545
+#: ../src/document.c:1550
 #, fuzzy, c-format
 msgid "File %s opened (%d%s)."
 msgstr "%s 파일 열음(%d%s)."
 
-#: ../src/document.c:1548
+#: ../src/document.c:1553
 msgid ", read-only"
 msgstr ", 읽기전용"
 
-#: ../src/document.c:1677
+#: ../src/document.c:1682
 msgid "Discard history"
 msgstr ""
 
-#: ../src/document.c:1678
+#: ../src/document.c:1683
 msgid ""
 "The buffer's previous state is stored in the history and undoing restores "
 "it. You can disable this by discarding the history upon reload. This message "
@@ -2868,28 +2877,28 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: ../src/document.c:1683
+#: ../src/document.c:1688
 msgid "The file has been reloaded."
 msgstr "파일 다시 불러옴."
 
-#: ../src/document.c:1712
+#: ../src/document.c:1717
 msgid "Any unsaved changes will be lost."
 msgstr "저장되지 않은 모든 변경사항 무시됩니다."
 
-#: ../src/document.c:1713
+#: ../src/document.c:1718
 msgid "Undo history will be lost."
 msgstr "취소내역이 손실 됩니다."
 
-#: ../src/document.c:1714
+#: ../src/document.c:1719
 #, c-format
 msgid "Are you sure you want to reload '%s'?"
 msgstr "정말로 '%s' 파일을 다시 불러올까요"
 
-#: ../src/document.c:1826
+#: ../src/document.c:1831
 msgid "Error renaming file."
 msgstr "파일 이름 변경 오류."
 
-#: ../src/document.c:1949
+#: ../src/document.c:1954
 #, c-format
 msgid ""
 "An error occurred while converting the file from UTF-8 in \"%s\". The file "
@@ -2898,7 +2907,7 @@ msgstr ""
 "UTF-8로부터 변환이 \"%s\"에서 실패함.\n"
 " 파일 저장되지 않음."
 
-#: ../src/document.c:1971
+#: ../src/document.c:1976
 #, c-format
 msgid ""
 "Error message: %s\n"
@@ -2907,55 +2916,55 @@ msgstr ""
 "오류 메시지: %s\n"
 "\"%s\"에서 오류 발생(%d행, %d열)"
 
-#: ../src/document.c:1977
+#: ../src/document.c:1982
 #, c-format
 msgid "Error message: %s."
 msgstr "오류 메시지: %s."
 
-#: ../src/document.c:2040
+#: ../src/document.c:2045
 #, c-format
 msgid "Failed to open file '%s' for writing: fopen() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2058
+#: ../src/document.c:2063
 #, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2072
+#: ../src/document.c:2077
 #, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2119 ../src/document.c:3776
+#: ../src/document.c:2124 ../src/document.c:3776
 msgid "_Overwrite"
 msgstr "덮어씌우기(_O)"
 
-#: ../src/document.c:2121 ../src/document.c:3779
+#: ../src/document.c:2126 ../src/document.c:3779
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr "디스크에 있는 '%s' 파일이 현재 작성하는 버퍼보다 새롭습니다."
 
-#: ../src/document.c:2130 ../src/document.c:3828
+#: ../src/document.c:2135 ../src/document.c:3828
 msgid "Try to resave the file?"
 msgstr "다시 저장할까요?"
 
-#: ../src/document.c:2131 ../src/document.c:3829
+#: ../src/document.c:2136 ../src/document.c:3829
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "\"%s\"파일이 디스크에 존재하지 않습니다!"
 
-#: ../src/document.c:2196
+#: ../src/document.c:2201
 #, c-format
 msgid "Cannot save read-only document '%s'!"
 msgstr "'%s'를 읽기전용 문서로 저장 할 수 없습니다!"
 
-#: ../src/document.c:2262
+#: ../src/document.c:2267
 #, c-format
 msgid "Error saving file (%s)."
 msgstr "%s 파일 저장 오류."
 
-#: ../src/document.c:2267
+#: ../src/document.c:2272
 #, c-format
 msgid ""
 "%s\n"
@@ -2963,26 +2972,26 @@ msgid ""
 "The file on disk may now be truncated!"
 msgstr ""
 
-#: ../src/document.c:2271
+#: ../src/document.c:2276
 msgid "Error saving file."
 msgstr "파일 저장 오류."
 
-#: ../src/document.c:2295
+#: ../src/document.c:2300
 #, c-format
 msgid "File %s saved."
 msgstr "%s 파일 저장됨."
 
-#: ../src/document.c:2449
+#: ../src/document.c:2454
 msgid "Wrap search and find again?"
 msgstr "다시 처음부터 찾을까요?"
 
-#: ../src/document.c:2550 ../src/search.c:1498 ../src/search.c:1552
-#: ../src/search.c:2468 ../src/search.c:2470
+#: ../src/document.c:2555 ../src/search.c:1498 ../src/search.c:1552
+#: ../src/search.c:2515 ../src/search.c:2517
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "\"%s\" 찾을 수 없음."
 
-#: ../src/document.c:2556
+#: ../src/document.c:2561
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
@@ -2992,15 +3001,15 @@ msgstr[0] "%s: %d번 \"%s\" -> \"%s\" 바꿈."
 msgid "Do you want to reload it?"
 msgstr "다시 불러올까요?"
 
-#: ../src/editor.c:4988
+#: ../src/editor.c:5004
 msgid "Enter Tab Width"
 msgstr "탭 너비 입력"
 
-#: ../src/editor.c:4989
+#: ../src/editor.c:5005
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "탭을 몇개의 스페이스로 구성할지 입력하시오."
 
-#: ../src/editor.c:5201
+#: ../src/editor.c:5217
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3234,31 +3243,31 @@ msgstr "%s 파일형식에 맞지 않는 정규표현식: %s"
 msgid "untitled"
 msgstr "무제"
 
-#: ../src/highlighting.c:1288 ../src/libmain.c:896 ../src/socket.c:170
+#: ../src/highlighting.c:1287 ../src/libmain.c:896 ../src/socket.c:170
 #: ../src/templates.c:234
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "'%s' 파일을 찾을 수 없습니다."
 
-#: ../src/highlighting.c:1367
+#: ../src/highlighting.c:1366
 msgid "Default"
 msgstr ""
 
-#: ../src/highlighting.c:1409
+#: ../src/highlighting.c:1408
 #, fuzzy
 msgid "The current filetype overrides the default style."
 msgstr "현재 파일을 make 도구를 사용해서 제작 (기본타겟)"
 
-#: ../src/highlighting.c:1410
+#: ../src/highlighting.c:1409
 msgid "This may cause color schemes to display incorrectly."
 msgstr ""
 
-#: ../src/highlighting.c:1437
+#: ../src/highlighting.c:1436
 msgid "Color Schemes"
 msgstr "색상 선택기(_C)"
 
 #. visual group order
-#: ../src/keybindings.c:320 ../src/symbols.c:509
+#: ../src/keybindings.c:320 ../src/symbols.c:522
 msgid "File"
 msgstr "파일"
 
@@ -3294,12 +3303,12 @@ msgstr "이동"
 msgid "View"
 msgstr "보기"
 
-#: ../src/keybindings.c:330 ../src/symbols.c:660
+#: ../src/keybindings.c:330 ../src/symbols.c:673
 msgid "Document"
 msgstr "문서"
 
 #: ../src/keybindings.c:332 ../src/keybindings.c:738 ../src/project.c:528
-#: ../src/ui_utils.c:2331
+#: ../src/ui_utils.c:2366
 msgid "Build"
 msgstr "제작"
 
@@ -3339,7 +3348,7 @@ msgstr "다른 이름으로 저장"
 msgid "Save all"
 msgstr "모두 저장"
 
-#: ../src/keybindings.c:359 ../src/symbols.c:745
+#: ../src/keybindings.c:359 ../src/symbols.c:758
 msgid "Properties"
 msgstr "속성"
 
@@ -3843,11 +3852,11 @@ msgstr "바로 가기"
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "다음 바로 가기는 변경 가능:"
 
-#: ../src/keyfile.c:1067
+#: ../src/keyfile.c:1069
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "메모 및 낙서로 사용할 문자열을 입력하십시오."
 
-#: ../src/keyfile.c:1295
+#: ../src/keyfile.c:1297
 msgid "Failed to load one or more session files."
 msgstr "하나 또는 그 이상의 세션 파일 불러오기 실패함."
 
@@ -4033,28 +4042,28 @@ msgstr "디버그 메시지"
 msgid "Cl_ear"
 msgstr "클리어(_e)"
 
-#: ../src/msgwindow.c:233
+#: ../src/msgwindow.c:208
 msgid "Status messages"
 msgstr "상태 메시지"
 
-#: ../src/msgwindow.c:748
+#: ../src/msgwindow.c:743
 msgid "C_opy"
 msgstr "복사(_o)"
 
-#: ../src/msgwindow.c:758
+#: ../src/msgwindow.c:753
 msgid "Copy _All"
 msgstr "모두 복사(_A)"
 
-#: ../src/msgwindow.c:790
+#: ../src/msgwindow.c:785
 msgid "_Hide Message Window"
 msgstr "메시지창 감추기(_H)"
 
-#: ../src/msgwindow.c:854
+#: ../src/msgwindow.c:849
 #, fuzzy, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr "현재 문서의 모든 오류 지표를 지우기."
 
-#: ../src/msgwindow.c:1326
+#: ../src/msgwindow.c:1321
 msgid "The document has been closed."
 msgstr "문서는 이미 닫혔습니다."
 
@@ -4140,11 +4149,11 @@ msgstr "키 가로채기"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "\"%s\"에 할당하고싶은 키 조합을 누르십시오."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:780
+#: ../src/prefs.c:226 ../src/symbols.c:2873 ../src/sidebar.c:820
 msgid "_Expand All"
 msgstr "모두 펼치기(_E)"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:786
+#: ../src/prefs.c:231 ../src/symbols.c:2880 ../src/sidebar.c:826
 msgid "_Collapse All"
 msgstr "모두 접기(_C)"
 
@@ -4156,31 +4165,31 @@ msgstr "행동"
 msgid "Shortcut"
 msgstr "바로 가기"
 
-#: ../src/prefs.c:1517
+#: ../src/prefs.c:1523
 msgid "_Allow"
 msgstr "허용(_A)"
 
-#: ../src/prefs.c:1519
+#: ../src/prefs.c:1525
 msgid "_Override"
 msgstr "변경(_O)"
 
-#: ../src/prefs.c:1520
+#: ../src/prefs.c:1526
 msgid "Override that keybinding?"
 msgstr "단축키를 변경하시겠습니까?"
 
-#: ../src/prefs.c:1521
+#: ../src/prefs.c:1527
 #, c-format
 msgid "The combination '%s' is already used for \"%s\"."
 msgstr "'%s'은(는) 이미 \"%s\"에 할당되어 있습니다."
 
 #. add manually GeanyWrapLabels because they can't be added with Glade
 #. page Tools
-#: ../src/prefs.c:1730
+#: ../src/prefs.c:1736
 msgid "Enter tool paths below. Tools you do not need can be left blank."
 msgstr "도구 경로 입력."
 
 #. page Templates
-#: ../src/prefs.c:1735
+#: ../src/prefs.c:1741
 msgid ""
 "Set the information to be used in templates. See the documentation for "
 "details."
@@ -4189,7 +4198,7 @@ msgstr ""
 "자세한 내용은 도움 문서 참고."
 
 #. page Keybindings
-#: ../src/prefs.c:1740
+#: ../src/prefs.c:1746
 msgid ""
 "Here you can change keyboard shortcuts for various actions. Select one and "
 "press the Change button to enter a new shortcut, or double click on an "
@@ -4200,7 +4209,7 @@ msgstr ""
 "직접 단축키표현을 입력합니다."
 
 #. page Editor->Indentation
-#: ../src/prefs.c:1745
+#: ../src/prefs.c:1751
 msgid ""
 "<i>Warning: these settings are overridden by the current project. See "
 "<b>Project->Properties</b>.</i>"
@@ -4598,7 +4607,7 @@ msgstr "추가 옵션(_x):"
 msgid "E_xtra options 3:"
 msgstr "추가 옵션(_x):"
 
-#: ../src/search.c:1501 ../src/search.c:2475 ../src/search.c:2479
+#: ../src/search.c:1501 ../src/search.c:2522 ../src/search.c:2526
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
@@ -4609,50 +4618,50 @@ msgstr[0] "%d번의 \"%s\" 일치 찾음."
 msgid "Replaced %u matches in %u documents."
 msgstr "현재 문서의 모든 일치하는 부분 표시."
 
-#: ../src/search.c:1767
+#: ../src/search.c:1792
 msgid "Invalid directory for find in files."
 msgstr "올바르지 않은 폴더."
 
-#: ../src/search.c:1787
+#: ../src/search.c:1813
 msgid "No text to find."
 msgstr "문자열 찾을 수 없음."
 
-#: ../src/search.c:1874
+#: ../src/search.c:1900
 msgid "Searching..."
 msgstr "찾는 중"
 
-#: ../src/search.c:1876
+#: ../src/search.c:1902
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (폴더: %s)"
 
-#: ../src/search.c:1885
+#: ../src/search.c:1911
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
 msgstr ""
 "grep 도구 \"%s\" : %s 실행 실패; 기본 설정에서 경로설정을 점검하십시오."
 
-#: ../src/search.c:1925
+#: ../src/search.c:1951
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "%s 폴더를 열 수 없습니다."
 
-#: ../src/search.c:2079
+#: ../src/search.c:2120
 msgid "Search failed."
 msgstr "찾기 실패함."
 
-#: ../src/search.c:2102
+#: ../src/search.c:2143
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] ""
 
-#: ../src/search.c:2110
+#: ../src/search.c:2151
 msgid "No matches found."
 msgstr "일치 없음."
 
-#: ../src/search.c:2140
+#: ../src/search.c:2181
 #, c-format
 msgid "Bad regex: %s"
 msgstr "올바르지 않은 정규 표현식: %s"
@@ -4694,330 +4703,330 @@ msgstr "프로세스 생성 중 알 수 없는 오류 발생"
 msgid "Value"
 msgstr "값"
 
-#: ../src/symbols.c:488 ../src/symbols.c:540 ../src/symbols.c:650
+#: ../src/symbols.c:501 ../src/symbols.c:553 ../src/symbols.c:663
 msgid "Chapter"
 msgstr ""
 
-#: ../src/symbols.c:489 ../src/symbols.c:536 ../src/symbols.c:651
+#: ../src/symbols.c:502 ../src/symbols.c:549 ../src/symbols.c:664
 msgid "Section"
 msgstr ""
 
-#: ../src/symbols.c:490
+#: ../src/symbols.c:503
 msgid "Sect1"
 msgstr ""
 
-#: ../src/symbols.c:491
+#: ../src/symbols.c:504
 msgid "Sect2"
 msgstr ""
 
-#: ../src/symbols.c:492
+#: ../src/symbols.c:505
 msgid "Sect3"
 msgstr ""
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:506
 msgid "Appendix"
 msgstr ""
 
-#: ../src/symbols.c:494 ../src/symbols.c:541 ../src/symbols.c:566
-#: ../src/symbols.c:582 ../src/symbols.c:597 ../src/symbols.c:608
-#: ../src/symbols.c:709 ../src/symbols.c:720 ../src/symbols.c:733
-#: ../src/symbols.c:748 ../src/symbols.c:760 ../src/symbols.c:772
-#: ../src/symbols.c:789 ../src/symbols.c:818 ../src/symbols.c:850
+#: ../src/symbols.c:507 ../src/symbols.c:554 ../src/symbols.c:579
+#: ../src/symbols.c:595 ../src/symbols.c:610 ../src/symbols.c:621
+#: ../src/symbols.c:722 ../src/symbols.c:733 ../src/symbols.c:746
+#: ../src/symbols.c:761 ../src/symbols.c:773 ../src/symbols.c:785
+#: ../src/symbols.c:802 ../src/symbols.c:831 ../src/symbols.c:863
 msgid "Other"
 msgstr "그외"
 
-#: ../src/symbols.c:500 ../src/symbols.c:780 ../src/symbols.c:828
+#: ../src/symbols.c:513 ../src/symbols.c:793 ../src/symbols.c:841
 msgid "Module"
 msgstr "모듈"
 
-#: ../src/symbols.c:501 ../src/symbols.c:593 ../src/symbols.c:705
-#: ../src/symbols.c:758 ../src/symbols.c:770 ../src/symbols.c:785
-#: ../src/symbols.c:799
+#: ../src/symbols.c:514 ../src/symbols.c:606 ../src/symbols.c:718
+#: ../src/symbols.c:771 ../src/symbols.c:783 ../src/symbols.c:798
+#: ../src/symbols.c:812
 msgid "Types"
 msgstr "타입"
 
-#: ../src/symbols.c:502
+#: ../src/symbols.c:515
 msgid "Type constructors"
 msgstr "생성자 타입"
 
-#: ../src/symbols.c:503 ../src/symbols.c:527 ../src/symbols.c:548
-#: ../src/symbols.c:565 ../src/symbols.c:577 ../src/symbols.c:590
-#: ../src/symbols.c:605 ../src/symbols.c:619 ../src/symbols.c:629
-#: ../src/symbols.c:693 ../src/symbols.c:744 ../src/symbols.c:767
-#: ../src/symbols.c:812 ../src/symbols.c:836
+#: ../src/symbols.c:516 ../src/symbols.c:540 ../src/symbols.c:561
+#: ../src/symbols.c:578 ../src/symbols.c:590 ../src/symbols.c:603
+#: ../src/symbols.c:618 ../src/symbols.c:632 ../src/symbols.c:642
+#: ../src/symbols.c:706 ../src/symbols.c:757 ../src/symbols.c:780
+#: ../src/symbols.c:825 ../src/symbols.c:849
 msgid "Functions"
 msgstr "함수"
 
-#: ../src/symbols.c:508
+#: ../src/symbols.c:521
 msgid "Program"
 msgstr "프로그램"
 
-#: ../src/symbols.c:510
+#: ../src/symbols.c:523
 msgid "Divisions"
 msgstr ""
 
-#: ../src/symbols.c:511 ../src/symbols.c:520 ../src/symbols.c:526
+#: ../src/symbols.c:524 ../src/symbols.c:533 ../src/symbols.c:539
 msgid "Sections"
 msgstr ""
 
-#: ../src/symbols.c:512
+#: ../src/symbols.c:525
 msgid "Paragraph"
 msgstr ""
 
-#: ../src/symbols.c:513
+#: ../src/symbols.c:526
 msgid "Group"
 msgstr "그룹"
 
-#: ../src/symbols.c:514
+#: ../src/symbols.c:527
 msgid "Data"
 msgstr ""
 
-#: ../src/symbols.c:515
+#: ../src/symbols.c:528
 msgid "Copies"
 msgstr ""
 
-#: ../src/symbols.c:521
+#: ../src/symbols.c:534
 msgid "Keys"
 msgstr "키"
 
-#: ../src/symbols.c:528 ../src/symbols.c:579 ../src/symbols.c:595
-#: ../src/symbols.c:621 ../src/symbols.c:694 ../src/symbols.c:719
-#: ../src/symbols.c:746 ../src/symbols.c:759 ../src/symbols.c:768
-#: ../src/symbols.c:784 ../src/symbols.c:819 ../src/symbols.c:848
+#: ../src/symbols.c:541 ../src/symbols.c:592 ../src/symbols.c:608
+#: ../src/symbols.c:634 ../src/symbols.c:707 ../src/symbols.c:732
+#: ../src/symbols.c:759 ../src/symbols.c:772 ../src/symbols.c:781
+#: ../src/symbols.c:797 ../src/symbols.c:832 ../src/symbols.c:861
 msgid "Variables"
 msgstr "변수"
 
-#: ../src/symbols.c:535
+#: ../src/symbols.c:548
 msgid "Environment"
 msgstr "환경"
 
-#: ../src/symbols.c:537 ../src/symbols.c:652
+#: ../src/symbols.c:550 ../src/symbols.c:665
 msgid "Subsection"
 msgstr ""
 
-#: ../src/symbols.c:538 ../src/symbols.c:653
+#: ../src/symbols.c:551 ../src/symbols.c:666
 msgid "Subsubsection"
 msgstr ""
 
-#: ../src/symbols.c:549 ../src/symbols.c:574
+#: ../src/symbols.c:562 ../src/symbols.c:587
 msgid "Structures"
 msgstr "구조체"
 
-#: ../src/symbols.c:556
+#: ../src/symbols.c:569
 msgid "Parts"
 msgstr ""
 
-#: ../src/symbols.c:557
+#: ../src/symbols.c:570
 msgid "Assembly"
 msgstr ""
 
-#: ../src/symbols.c:558
+#: ../src/symbols.c:571
 msgid "Steps"
 msgstr ""
 
-#: ../src/symbols.c:573 ../src/symbols.c:671 ../src/symbols.c:717
+#: ../src/symbols.c:586 ../src/symbols.c:684 ../src/symbols.c:730
 msgid "Modules"
 msgstr "모듈"
 
-#: ../src/symbols.c:575 ../src/symbols.c:622
+#: ../src/symbols.c:588 ../src/symbols.c:635
 msgid "Traits"
 msgstr ""
 
-#: ../src/symbols.c:576
+#: ../src/symbols.c:589
 msgid "Implementations"
 msgstr ""
 
-#: ../src/symbols.c:578 ../src/symbols.c:839
+#: ../src/symbols.c:591 ../src/symbols.c:852
 msgid "Typedefs / Enums"
 msgstr ""
 
-#: ../src/symbols.c:580 ../src/symbols.c:797 ../src/symbols.c:806
-#: ../src/symbols.c:845
+#: ../src/symbols.c:593 ../src/symbols.c:810 ../src/symbols.c:819
+#: ../src/symbols.c:858
 msgid "Macros"
 msgstr "매크로"
 
-#: ../src/symbols.c:581 ../src/symbols.c:674 ../src/symbols.c:683
-#: ../src/symbols.c:692 ../src/symbols.c:730 ../src/symbols.c:757
+#: ../src/symbols.c:594 ../src/symbols.c:687 ../src/symbols.c:696
+#: ../src/symbols.c:705 ../src/symbols.c:743 ../src/symbols.c:770
 msgid "Methods"
 msgstr "메소드"
 
-#: ../src/symbols.c:589 ../src/symbols.c:604 ../src/symbols.c:702
-#: ../src/symbols.c:727 ../src/symbols.c:741
+#: ../src/symbols.c:602 ../src/symbols.c:617 ../src/symbols.c:715
+#: ../src/symbols.c:740 ../src/symbols.c:754
 msgid "Package"
 msgstr "패키지"
 
-#: ../src/symbols.c:591 ../src/symbols.c:617 ../src/symbols.c:728
-#: ../src/symbols.c:742 ../src/symbols.c:755 ../src/symbols.c:782
-#: ../src/symbols.c:835
+#: ../src/symbols.c:604 ../src/symbols.c:630 ../src/symbols.c:741
+#: ../src/symbols.c:755 ../src/symbols.c:768 ../src/symbols.c:795
+#: ../src/symbols.c:848
 msgid "Interfaces"
 msgstr "인터페이스"
 
-#: ../src/symbols.c:592 ../src/symbols.c:838
+#: ../src/symbols.c:605 ../src/symbols.c:851
 msgid "Structs"
 msgstr "구조체"
 
-#: ../src/symbols.c:594 ../src/symbols.c:607 ../src/symbols.c:620
-#: ../src/symbols.c:747 ../src/symbols.c:769
+#: ../src/symbols.c:607 ../src/symbols.c:620 ../src/symbols.c:633
+#: ../src/symbols.c:760 ../src/symbols.c:782
 msgid "Constants"
 msgstr "상수"
 
-#: ../src/symbols.c:596 ../src/symbols.c:731 ../src/symbols.c:837
+#: ../src/symbols.c:609 ../src/symbols.c:744 ../src/symbols.c:850
 msgid "Members"
 msgstr "멤버"
 
-#: ../src/symbols.c:606 ../src/symbols.c:771 ../src/symbols.c:796
+#: ../src/symbols.c:619 ../src/symbols.c:784 ../src/symbols.c:809
 msgid "Labels"
 msgstr "라벨"
 
-#: ../src/symbols.c:616 ../src/symbols.c:681 ../src/symbols.c:831
+#: ../src/symbols.c:629 ../src/symbols.c:694 ../src/symbols.c:844
 msgid "Namespaces"
 msgstr "네임스페이스"
 
-#: ../src/symbols.c:618 ../src/symbols.c:640 ../src/symbols.c:672
-#: ../src/symbols.c:682 ../src/symbols.c:691 ../src/symbols.c:729
-#: ../src/symbols.c:743 ../src/symbols.c:756 ../src/symbols.c:834
+#: ../src/symbols.c:631 ../src/symbols.c:653 ../src/symbols.c:685
+#: ../src/symbols.c:695 ../src/symbols.c:704 ../src/symbols.c:742
+#: ../src/symbols.c:756 ../src/symbols.c:769 ../src/symbols.c:847
 msgid "Classes"
 msgstr "클래스"
 
-#: ../src/symbols.c:630
+#: ../src/symbols.c:643
 msgid "Anchors"
 msgstr ""
 
-#: ../src/symbols.c:631
+#: ../src/symbols.c:644
 msgid "H1 Headings"
 msgstr ""
 
-#: ../src/symbols.c:632
+#: ../src/symbols.c:645
 msgid "H2 Headings"
 msgstr ""
 
-#: ../src/symbols.c:633
+#: ../src/symbols.c:646
 msgid "H3 Headings"
 msgstr ""
 
-#: ../src/symbols.c:641
+#: ../src/symbols.c:654
 msgid "ID Selectors"
 msgstr ""
 
-#: ../src/symbols.c:642
+#: ../src/symbols.c:655
 msgid "Type Selectors"
 msgstr ""
 
-#: ../src/symbols.c:661
+#: ../src/symbols.c:674
 msgid "Section Level 1"
 msgstr ""
 
-#: ../src/symbols.c:662
+#: ../src/symbols.c:675
 msgid "Section Level 2"
 msgstr ""
 
-#: ../src/symbols.c:663
+#: ../src/symbols.c:676
 msgid "Section Level 3"
 msgstr ""
 
-#: ../src/symbols.c:664
+#: ../src/symbols.c:677
 msgid "Section Level 4"
 msgstr ""
 
-#: ../src/symbols.c:673
+#: ../src/symbols.c:686
 msgid "Singletons"
 msgstr ""
 
-#: ../src/symbols.c:684 ../src/symbols.c:813
+#: ../src/symbols.c:697 ../src/symbols.c:826
 msgid "Procedures"
 msgstr ""
 
-#: ../src/symbols.c:695 ../src/symbols.c:740
+#: ../src/symbols.c:708 ../src/symbols.c:753
 msgid "Imports"
 msgstr ""
 
-#: ../src/symbols.c:703
+#: ../src/symbols.c:716
 msgid "Entities"
 msgstr ""
 
-#: ../src/symbols.c:704
+#: ../src/symbols.c:717
 msgid "Architectures"
 msgstr "설계"
 
-#: ../src/symbols.c:706
+#: ../src/symbols.c:719
 msgid "Functions / Procedures"
 msgstr ""
 
-#: ../src/symbols.c:707
+#: ../src/symbols.c:720
 msgid "Variables / Signals"
 msgstr ""
 
-#: ../src/symbols.c:708
+#: ../src/symbols.c:721
 msgid "Processes / Blocks / Components"
 msgstr ""
 
-#: ../src/symbols.c:716
+#: ../src/symbols.c:729
 msgid "Events"
 msgstr "이벤트"
 
-#: ../src/symbols.c:718
+#: ../src/symbols.c:731
 msgid "Functions / Tasks"
 msgstr ""
 
-#: ../src/symbols.c:732 ../src/symbols.c:788
+#: ../src/symbols.c:745 ../src/symbols.c:801
 msgid "Enums"
 msgstr "열거형"
 
-#: ../src/symbols.c:781
+#: ../src/symbols.c:794
 msgid "Programs"
 msgstr "프로그램"
 
-#: ../src/symbols.c:783
+#: ../src/symbols.c:796
 msgid "Functions / Subroutines"
 msgstr "함수 / 서브루틴"
 
-#: ../src/symbols.c:786
+#: ../src/symbols.c:799
 msgid "Components"
 msgstr "요소"
 
-#: ../src/symbols.c:787
+#: ../src/symbols.c:800
 msgid "Blocks"
 msgstr "블럭"
 
-#: ../src/symbols.c:798
+#: ../src/symbols.c:811
 msgid "Defines"
 msgstr "정의"
 
-#: ../src/symbols.c:805
+#: ../src/symbols.c:818
 msgid "Targets"
 msgstr "타겟"
 
-#: ../src/symbols.c:814
+#: ../src/symbols.c:827
 msgid "Indexes"
 msgstr ""
 
-#: ../src/symbols.c:815
+#: ../src/symbols.c:828
 msgid "Tables"
 msgstr ""
 
-#: ../src/symbols.c:816
+#: ../src/symbols.c:829
 msgid "Triggers"
 msgstr ""
 
-#: ../src/symbols.c:817
+#: ../src/symbols.c:830
 msgid "Views"
 msgstr ""
 
-#: ../src/symbols.c:849
+#: ../src/symbols.c:862
 msgid "Extern Variables"
 msgstr "외부 변수"
 
-#: ../src/symbols.c:1683
+#: ../src/symbols.c:1696
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "\"%s\" : 알 수 없는 파일확장자.\n"
 
-#: ../src/symbols.c:1710
+#: ../src/symbols.c:1723
 #, fuzzy, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr "태그 파일 만들기 실패했습니다. 태그가 없는 것 같습니다.\n"
 
-#: ../src/symbols.c:1717
+#: ../src/symbols.c:1730
 #, fuzzy, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -5026,7 +5035,7 @@ msgstr ""
 "사용법: %s -g <태그파일> <파일목록>\n"
 "\n"
 
-#: ../src/symbols.c:1718
+#: ../src/symbols.c:1731
 #, c-format
 msgid ""
 "Example:\n"
@@ -5037,63 +5046,63 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1732
+#: ../src/symbols.c:1745
 #, fuzzy
 msgid "Load Tags File"
 msgstr "태그 불러오기"
 
-#: ../src/symbols.c:1740
+#: ../src/symbols.c:1753
 #, fuzzy
 msgid "Geany tags file (*.*.tags)"
 msgstr "지니 태그 파일 (*.*.tags)"
 
 #. For translators: the first wildcard is the filetype,
 #. * the second the filename
-#: ../src/symbols.c:1761
+#: ../src/symbols.c:1774
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "태그파일 %s 불러옴 '%s'."
 
-#: ../src/symbols.c:1765
+#: ../src/symbols.c:1778
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "'%s' 태그파일 불러오기 실패."
 
-#: ../src/symbols.c:2025
+#: ../src/symbols.c:2038
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>표시</b>"
 
-#: ../src/symbols.c:2028
+#: ../src/symbols.c:2041
 #, fuzzy, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>표시</b>"
 
-#: ../src/symbols.c:2034
+#: ../src/symbols.c:2047
 #, c-format
 msgid "%s: %lu  (%s)"
 msgstr ""
 
-#: ../src/symbols.c:2037
+#: ../src/symbols.c:2050
 #, c-format
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2429
+#: ../src/symbols.c:2452
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "\"%s\" 선언을 찾을 수 없습니다."
 
-#: ../src/symbols.c:2432
+#: ../src/symbols.c:2455
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "\"%s\" 정의를 찾을 수 없습니다."
 
-#: ../src/symbols.c:2868
+#: ../src/symbols.c:2891
 msgid "Sort by _Name"
 msgstr "이름순으로 정렬(_N)"
 
-#: ../src/symbols.c:2876
+#: ../src/symbols.c:2899
 msgid "Sort by _Appearance"
 msgstr "형태순으로 정렬(_A)"
 
@@ -5343,36 +5352,36 @@ msgstr "단어:"
 msgid "Characters:"
 msgstr "문자열:"
 
-#: ../src/sidebar.c:181
+#: ../src/sidebar.c:186
 #, fuzzy
 msgid "No symbols found"
 msgstr "태그 없음"
 
-#: ../src/sidebar.c:610
+#: ../src/sidebar.c:638
 msgid "Show S_ymbol List"
 msgstr "심볼 목록 보기(_y)"
 
-#: ../src/sidebar.c:622
+#: ../src/sidebar.c:651
 msgid "Show _Document List"
 msgstr "문서 목록 보기(_D)"
 
-#: ../src/sidebar.c:634 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:664 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "가장자리창 감추기(_i)"
 
-#: ../src/sidebar.c:740
+#: ../src/sidebar.c:777
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:747
+#: ../src/sidebar.c:785
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:759 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:798 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "파일에서 찾기(_F)"
 
-#: ../src/sidebar.c:769
+#: ../src/sidebar.c:808
 msgid "Show _Paths"
 msgstr "경로 보기(_P)"
 
@@ -5420,69 +5429,69 @@ msgstr "탭/스페이스"
 msgid "MOD"
 msgstr "수정됨"
 
-#: ../src/ui_utils.c:407
+#: ../src/ui_utils.c:423
 #, fuzzy
 msgid "(new instance) "
 msgstr "상속"
 
-#: ../src/ui_utils.c:474
+#: ../src/ui_utils.c:509
 #, c-format
 msgid "Font updated (%s)."
 msgstr "글꼴 바꿈 (%s)."
 
-#: ../src/ui_utils.c:732
+#: ../src/ui_utils.c:767
 msgid "C Standard Library"
 msgstr "C 표준 라이브러리"
 
-#: ../src/ui_utils.c:734
+#: ../src/ui_utils.c:769
 msgid "ISO C99"
 msgstr "ISO C99 표준"
 
-#: ../src/ui_utils.c:736
+#: ../src/ui_utils.c:771
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C 표준 라이브러리)"
 
-#: ../src/ui_utils.c:738
+#: ../src/ui_utils.c:773
 msgid "C++ Standard Library"
 msgstr "C++ 표준 라이브러리"
 
-#: ../src/ui_utils.c:740
+#: ../src/ui_utils.c:775
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:762 ../src/ui_utils.c:849
+#: ../src/ui_utils.c:797 ../src/ui_utils.c:884
 msgid "dd.mm.yyyy"
 msgstr "일.월.년"
 
-#: ../src/ui_utils.c:764 ../src/ui_utils.c:850
+#: ../src/ui_utils.c:799 ../src/ui_utils.c:885
 msgid "mm.dd.yyyy"
 msgstr "월.일.년"
 
-#: ../src/ui_utils.c:766 ../src/ui_utils.c:851
+#: ../src/ui_utils.c:801 ../src/ui_utils.c:886
 msgid "yyyy/mm/dd"
 msgstr "년/월/일"
 
-#: ../src/ui_utils.c:768 ../src/ui_utils.c:860
+#: ../src/ui_utils.c:803 ../src/ui_utils.c:895
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "일.월.년 시:분:초"
 
-#: ../src/ui_utils.c:770 ../src/ui_utils.c:861
+#: ../src/ui_utils.c:805 ../src/ui_utils.c:896
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "월.일.년 시:분:초"
 
-#: ../src/ui_utils.c:772 ../src/ui_utils.c:862
+#: ../src/ui_utils.c:807 ../src/ui_utils.c:897
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "년/월/일 시:분:초"
 
-#: ../src/ui_utils.c:774 ../src/ui_utils.c:871
+#: ../src/ui_utils.c:809 ../src/ui_utils.c:906
 msgid "_Use Custom Date Format"
 msgstr "맞춤 날짜 형식 사용(_U)"
 
-#: ../src/ui_utils.c:778
+#: ../src/ui_utils.c:813
 msgid "Custom Date Format"
 msgstr "맞춤 날짜 형식"
 
-#: ../src/ui_utils.c:780
+#: ../src/ui_utils.c:815
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5490,69 +5499,69 @@ msgstr ""
 "원하는 날짜와 시간 형식을 입력하십시오. ANSI C strftime함수의 모든 식별기호 "
 "사용가능."
 
-#: ../src/ui_utils.c:802
+#: ../src/ui_utils.c:837
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "날짜형식 변환 실패: 너무 김."
 
-#: ../src/ui_utils.c:886
+#: ../src/ui_utils.c:921
 msgid "_Set Custom Date Format"
 msgstr "맞춤 날짜 형식 설정(_S)"
 
-#: ../src/ui_utils.c:2118
+#: ../src/ui_utils.c:2153
 msgid "Select Folder"
 msgstr "폴더 선택"
 
-#: ../src/ui_utils.c:2118
+#: ../src/ui_utils.c:2153
 msgid "Select File"
 msgstr "파일 선택"
 
-#: ../src/ui_utils.c:2291
+#: ../src/ui_utils.c:2326
 msgid "_Filetype Configuration"
 msgstr "파일형식 설정(_F)"
 
-#: ../src/ui_utils.c:2329
+#: ../src/ui_utils.c:2364
 msgid "Save All"
 msgstr "모두 저장"
 
-#: ../src/ui_utils.c:2330
+#: ../src/ui_utils.c:2365
 msgid "Close All"
 msgstr "모두 닫기"
 
-#: ../src/ui_utils.c:2569
+#: ../src/ui_utils.c:2604
 msgid "Geany cannot start!"
 msgstr ""
 
-#: ../src/utils.c:87
+#: ../src/utils.c:86
 msgid "Select Browser"
 msgstr "브라우저 선택"
 
-#: ../src/utils.c:89
+#: ../src/utils.c:88
 msgid ""
 "Failed to spawn the configured browser command. Please correct it or enter "
 "another one."
 msgstr ""
 
-#: ../src/utils.c:376
+#: ../src/utils.c:375
 msgid "Windows (CRLF)"
 msgstr "윈도우즈 (CRLF)"
 
-#: ../src/utils.c:377
+#: ../src/utils.c:376
 msgid "Classic Mac (CR)"
 msgstr "매킨토시 (CR)"
 
-#: ../src/utils.c:378
+#: ../src/utils.c:377
 msgid "Unix (LF)"
 msgstr "유닉스 (LF)"
 
-#: ../src/utils.c:387
+#: ../src/utils.c:386
 msgid "CRLF"
 msgstr ""
 
-#: ../src/utils.c:388
+#: ../src/utils.c:387
 msgid "CR"
 msgstr ""
 
-#: ../src/utils.c:389
+#: ../src/utils.c:388
 msgid "LF"
 msgstr ""
 

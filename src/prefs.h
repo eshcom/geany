@@ -36,6 +36,7 @@ typedef struct GeanyPrefs
 	gboolean		suppress_status_messages;
 	gboolean		switch_to_status;
 	gboolean		auto_focus;
+	gboolean		force_focus_to_new_doc;
 	gchar			*default_open_path;	/**< Default path to look for files when no other path is appropriate. */
 	gchar			*custom_plugin_path;
 	gboolean		save_wingeom;

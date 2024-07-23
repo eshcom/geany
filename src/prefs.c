@@ -441,6 +441,9 @@ static void prefs_init_dialog(void)
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_auto_focus");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), prefs.auto_focus);
 	
+	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_force_focus_to_new_doc");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), prefs.force_focus_to_new_doc);
+	
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_native_windows_dialogs");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget),
 								 interface_prefs.use_native_windows_dialogs);
@@ -946,6 +949,9 @@ static void on_prefs_dialog_response(GtkDialog *dialog, gint response,
 		
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_auto_focus");
 		prefs.auto_focus = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		
+		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_force_focus_to_new_doc");
+		prefs.force_focus_to_new_doc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 		
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_native_windows_dialogs");
 		interface_prefs.use_native_windows_dialogs =

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-08 23:32+0300\n"
+"POT-Creation-Date: 2024-07-23 15:38+0300\n"
 "PO-Revision-Date: 2009-09-29 21:16+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Generator: LocFactoryEditor 1.8\n"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:348
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:350
 msgid "Geany"
 msgstr "Geany"
 
@@ -110,11 +110,11 @@ msgstr "_Tìm"
 msgid "Open Selected F_ile"
 msgstr "Mở tập t_in đã chọn"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2887
+#: ../data/geany.glade.h:19 ../src/symbols.c:2910
 msgid "Find _Usage"
 msgstr "Tìm chỗ _sử dụng"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2894
+#: ../data/geany.glade.h:20 ../src/symbols.c:2917
 msgid "Find _Document Usage"
 msgstr "Tìm chỗ sử _dụng trong tài liệu"
 
@@ -336,45 +336,54 @@ msgstr ""
 "thanh công cụ, các trường đi tới dòng riêng, và VTE."
 
 #: ../data/geany.glade.h:63
+#, fuzzy
+msgid "Always set focus to new document"
+msgstr "Luôn luôn cuộn việc tìm và ẩn hộp thoại Tìm"
+
+#: ../data/geany.glade.h:64
+msgid "After creating a new document, set focus to the document editor window"
+msgstr ""
+
+#: ../data/geany.glade.h:65
 msgid "Use Windows native dialogs"
 msgstr ""
 
-#: ../data/geany.glade.h:64
+#: ../data/geany.glade.h:66
 msgid ""
 "Defines whether to use the Windows native dialogs or whether to use the GTK "
 "default dialogs"
 msgstr ""
 
-#: ../data/geany.glade.h:65
+#: ../data/geany.glade.h:67
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Lặt vặt</b>"
 
-#: ../data/geany.glade.h:66
+#: ../data/geany.glade.h:68
 msgid "Always wrap search"
 msgstr ""
 
-#: ../data/geany.glade.h:67
+#: ../data/geany.glade.h:69
 #, fuzzy
 msgid "Always wrap search around the document"
 msgstr "Luôn luôn cuộn việc tìm và ẩn hộp thoại Tìm"
 
-#: ../data/geany.glade.h:68
+#: ../data/geany.glade.h:70
 #, fuzzy
 msgid "Hide the Find dialog"
 msgstr "Luôn luôn cuộn việc tìm và ẩn hộp thoại Tìm"
 
-#: ../data/geany.glade.h:69
+#: ../data/geany.glade.h:71
 #, fuzzy
 msgid "Hide the Find dialog after clicking Find Next/Previous"
 msgstr ""
 "Lúc nào cũng cuộn vòng việc tìm qua tài liệu và ẩn hộp thoại Tìm sau khi "
 "nhấn vào mục Tìm tiếp/trước"
 
-#: ../data/geany.glade.h:70
+#: ../data/geany.glade.h:72
 msgid "Use the current word under the cursor for Find dialogs"
 msgstr "Dùng từ hiện thời nằm dưới con trỏ cho các hộp thoại Tìm"
 
-#: ../data/geany.glade.h:71
+#: ../data/geany.glade.h:73
 msgid ""
 "Use current word under the cursor when opening the Find, Find in Files or "
 "Replace dialog and there is no selection"
@@ -382,24 +391,24 @@ msgstr ""
 "Dùng từ hiện thời nằm dưới con trỏ khi mở hộp thoại kiểu Tìm, Tìm trong Tập "
 "tin, hay Thay thế mà không có chuỗi đã chọn"
 
-#: ../data/geany.glade.h:72
+#: ../data/geany.glade.h:74
 msgid "Use the current file's directory for Find in Files"
 msgstr "Dùng thư mục của tập tin hiện thời khi Tìm trong Tập tin"
 
-#: ../data/geany.glade.h:73
+#: ../data/geany.glade.h:75
 #, fuzzy
 msgid "Use the current project's directory for Find in Files"
 msgstr "Dùng thư mục của tập tin hiện thời khi Tìm trong Tập tin"
 
-#: ../data/geany.glade.h:74
+#: ../data/geany.glade.h:76
 msgid "<b>Search</b>"
 msgstr "<b>Tìm kiếm</b>"
 
-#: ../data/geany.glade.h:75
+#: ../data/geany.glade.h:77
 msgid "Use project-based session files"
 msgstr "Dùng tập tin phiên chạy dựa vào dự án"
 
-#: ../data/geany.glade.h:76
+#: ../data/geany.glade.h:78
 msgid ""
 "Whether to store a project's session files and open them when re-opening the "
 "project"
@@ -407,11 +416,11 @@ msgstr ""
 "Có nên cất giữ các tập tin phiên chạy của dự án, và mở lại chúng khi lại mở "
 "dự án đó, hay không"
 
-#: ../data/geany.glade.h:77
+#: ../data/geany.glade.h:79
 msgid "Store project file inside the project base directory"
 msgstr "Lưu tập tin dự án vào thư mục cơ bản của dự án"
 
-#: ../data/geany.glade.h:78
+#: ../data/geany.glade.h:80
 msgid ""
 "When enabled, a project file is stored by default inside the project base "
 "directory when creating new projects instead of one directory above the base "
@@ -423,11 +432,11 @@ msgstr ""
 "vẫn còn có khả năng thay đổi đường dẫn của tập tin dự án trong hộp thoại Dự "
 "án Mới."
 
-#: ../data/geany.glade.h:79
+#: ../data/geany.glade.h:81
 msgid "<b>Projects</b>"
 msgstr "<b>Dự án</b>"
 
-#: ../data/geany.glade.h:80 ../src/dialogs.c:231
+#: ../data/geany.glade.h:82 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "Linh tinh"
 
@@ -435,122 +444,122 @@ msgstr "Linh tinh"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:81 ../src/prefs.c:1635
+#: ../data/geany.glade.h:83 ../src/prefs.c:1641
 msgid "General"
 msgstr "Chung"
 
-#: ../data/geany.glade.h:82
+#: ../data/geany.glade.h:84
 msgid "Show symbol list"
 msgstr "Hiện danh sách ký hiệu"
 
-#: ../data/geany.glade.h:83
+#: ../data/geany.glade.h:85
 msgid "Toggle the symbol list on and off"
 msgstr "Hiện/ẩn danh sách ký hiệu"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:86
 msgid "Default symbol sorting mode"
 msgstr ""
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:87
 #, fuzzy
 msgid "Default sorting mode:"
 msgstr "Bảng mã mặc định (tập tin mới):"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../data/geany.glade.h:86 ../src/stash.c:1175
+#: ../data/geany.glade.h:88 ../src/stash.c:1175
 #, fuzzy
 msgid "Name"
 msgstr "Tên:"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:89
 #, fuzzy
 msgid "Appearance"
 msgstr "<b>Diện mạo</b>"
 
-#: ../data/geany.glade.h:88
+#: ../data/geany.glade.h:90
 msgid "Show documents list"
 msgstr "Hiện danh sách tài liệu"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:91
 msgid "Toggle the documents list on and off"
 msgstr "Hiện/ẩn danh sách tài liệu"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:92
 #, fuzzy
 msgid "Show sidebar"
 msgstr "Hiện khung _lề"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:93
 #, fuzzy
 msgid "Position:"
 msgstr "Mô tả:"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:94
 msgid "<b>Sidebar</b>"
 msgstr "<b>Khung lề</b>"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:95
 msgid "Switch to messages tab when navigating with hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:96
 msgid "Switch to messages tab when navigating messages using hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:97
 #, fuzzy
 msgid "<b>Message window</b>"
 msgstr "Cửa sổ thông điệp:"
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:98
 msgid "Symbol list:"
 msgstr "Danh sách ký hiệu :"
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:99
 msgid "Message window:"
 msgstr "Cửa sổ thông điệp:"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:100
 msgid "Editor:"
 msgstr "Bộ soạn thảo :"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:101
 msgid "Sets the font for the message window"
 msgstr "Đặt phông chữ cho cửa sổ thông điệp"
 
-#: ../data/geany.glade.h:100
+#: ../data/geany.glade.h:102
 msgid "Sets the font for the symbol list"
 msgstr "Đặt phông chữ cho danh sách các ký hiệu"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:103
 msgid "Sets the editor font"
 msgstr "Đặt phông soạn thảo"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:104
 msgid "<b>Fonts</b>"
 msgstr "<b>Phông</b>"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:105
 msgid "Show status bar"
 msgstr "Hiện thanh trạng thái"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:106
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr "Có nên hiển thị thanh trạng thái ở dưới cửa sổ chính hay không"
 
-#: ../data/geany.glade.h:105 ../src/prefs.c:1637
+#: ../data/geany.glade.h:107 ../src/prefs.c:1643
 msgid "Interface"
 msgstr "Giao diện"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:108
 msgid "Show editor tabs"
 msgstr "Hiện các thanh soạn thảo"
 
-#: ../data/geany.glade.h:107
+#: ../data/geany.glade.h:109
 msgid "Show close buttons"
 msgstr "Hiện nút Đóng"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:110
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
 "clicking on it (requires restart of Geany)"
@@ -558,139 +567,139 @@ msgstr ""
 "Hiển thị một cái nút chữ thập nhỏ trên mỗi thẻ tập tin: nhấn vào thì dễ đóng "
 "tập tin (tùy chọn này yêu cầu khởi chạy lại Geany)"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:111
 msgid "Placement of new file tabs:"
 msgstr "Vị trí thanh tập tin mới:"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:112
 msgid "File tabs will be placed on the left of the notebook"
 msgstr "Các thanh tập tin mới sẽ nằm bên trái cuốn vở"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:113
 msgid "File tabs will be placed on the right of the notebook"
 msgstr "Các thanh tập tin mới sẽ nằm bên phải cuốn vở"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:114
 #, fuzzy
 msgid "Next to current"
 msgstr "Lưu tập tin hiện thời"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:115
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
 msgstr ""
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:116
 msgid "Double-clicking hides all additional widgets"
 msgstr "Nhấn đôi thì ẩn mọi ô điều khiển bổ sung"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:117
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr "Gọi chức năng Xem > Bật/tắt mọi ô điều khiển bổ sung"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:118
 #, fuzzy
 msgid "Switch to last used document after closing a tab"
 msgstr "Chuyển sang tài liệu dùng cuối"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:119
 msgid "<b>Editor tabs</b>"
 msgstr "<b>Thẻ trình soạn thảo</b>"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:120
 msgid "Sidebar:"
 msgstr "Khung lề:"
 
-#: ../data/geany.glade.h:119
+#: ../data/geany.glade.h:121
 msgid "<b>Tab positions</b>"
 msgstr "<b>Vị trí thẻ</b>"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:122
 #, fuzzy
 msgid "Notebook tabs"
 msgstr "Thẻ vở"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:123
 #, fuzzy
 msgid "Show t_oolbar"
 msgstr "Hiện Th_anh công cụ"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:124
 #, fuzzy
 msgid "_Append toolbar to the menu"
 msgstr "_Phụ thêm Thanh công cụ vào Trình đơn"
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:125
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr ""
 "Gắn thanh công cụ với trình đơn chính để tiết kiệm sức chứa theo chiều dọc"
 
-#: ../data/geany.glade.h:124 ../src/toolbar.c:943
+#: ../data/geany.glade.h:126 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "Tùy chỉnh thanh công cụ"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:127
 msgid "System _default"
 msgstr ""
 
-#: ../data/geany.glade.h:126
+#: ../data/geany.glade.h:128
 #, fuzzy
 msgid "Images _and text"
 msgstr "Ảnh _và Nhãn"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:129
 #, fuzzy
 msgid "_Images only"
 msgstr "_Chỉ ảnh"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:130
 #, fuzzy
 msgid "_Text only"
 msgstr "Chỉ _nhãn"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:131
 #, fuzzy
 msgid "<b>Icon style</b>"
 msgstr "<b>Phông</b>"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:132
 msgid "S_ystem default"
 msgstr ""
 
-#: ../data/geany.glade.h:131
+#: ../data/geany.glade.h:133
 #, fuzzy
 msgid "_Small icons"
 msgstr "Biểu tượng _nhỏ"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:134
 #, fuzzy
 msgid "_Very small icons"
 msgstr "Biểu tượng _rất nhỏ"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:135
 #, fuzzy
 msgid "_Large icons"
 msgstr "Biểu tượng _lớn"
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:136
 #, fuzzy
 msgid "<b>Icon size</b>"
 msgstr "<b>Cỡ :</b>"
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:137
 msgid "<b>Toolbar</b>"
 msgstr "<b>Thanh công cụ</b>"
 
-#: ../data/geany.glade.h:136 ../src/prefs.c:1639
+#: ../data/geany.glade.h:138 ../src/prefs.c:1645
 msgid "Toolbar"
 msgstr "Thanh công cụ"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:139
 msgid "Line wrapping"
 msgstr "Ngắt dòng"
 
-#: ../data/geany.glade.h:138
+#: ../data/geany.glade.h:140
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
@@ -700,12 +709,12 @@ msgstr ""
 "năng ngắt dòng trong tài liệu lớn chiếm hiệu suất nhiều, vì vậy nó nên bị "
 "tắt trên máy chạy chậm."
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:141
 #, fuzzy
 msgid "\"Smart\" home key"
 msgstr "Bật phím Home khéo"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:142
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -718,11 +727,11 @@ msgstr ""
 "này thì phím HOME lúc nào cũng di chuyển về đầu của dòng hiện tại, bất chấp "
 "vị trí hiện thời."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:143
 msgid "Disable Drag and Drop"
 msgstr "Tắt Kéo và Thả"
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:144
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
 "drop any selections within or outside of the editor window"
@@ -730,16 +739,16 @@ msgstr ""
 "Tắt hoàn toàn khả năng Kéo và Thả trong cửa sổ soạn thảo nên không thể kéo "
 "và thả vùng chọn nào bên trong hay bên ngoài cửa sổ đó"
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:145
 #, fuzzy
 msgid "Code folding"
 msgstr "Bật gấp lại"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:146
 msgid "Fold/unfold all children of a fold point"
 msgstr "Gấp lại/Mở ra mọi điểm con của một điểm gấp"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:147
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
 "clicking on a fold symbol the contrary behavior is used."
@@ -747,11 +756,11 @@ msgstr ""
 "Gấp lại hay mở ra tất cả các điểm con của một điểm gấp. Ấn giữ phím Shift "
 "trong khi nhấn vào ký hiệu gấp để đảo ngược ứng xử này"
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:148
 msgid "Use indicators to show compile errors"
 msgstr "Dùng cái chỉ để hiển thị lỗi biên dịch"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:149
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
@@ -759,23 +768,23 @@ msgstr ""
 "Có nên dùng cái chỉ (dấu gạch dưới vặn vẹo) hay không để tô sáng mỗi dòng "
 "trên đó bộ biên dịch tìm cảnh báo hay lỗi"
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:150
 msgid "Newline strips trailing spaces"
 msgstr "Dòng mới bỏ dấu cách theo sau"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:151
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr "Hiệu lực dòng mới để bỏ các dấu cách theo sau trên dòng trước"
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:152
 msgid "Line breaking column:"
 msgstr "Cột ngắt dòng:"
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:153
 msgid "Comment toggle marker:"
 msgstr "Dấu bật/tắt ghi chú :"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:154
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
 "used to mark the comment as toggled."
@@ -783,40 +792,40 @@ msgstr ""
 "Một chuỗi được thêm khi bật/tắt một ghi chú dòng trong một tập tin nguồn; nó "
 "dùng để đánh dấu ghi chú đã được bật/tắt."
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:155
 msgid "<b>Features</b>"
 msgstr "<b>Tính năng</b>"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:156
 msgid "Features"
 msgstr "Tính năng"
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:157
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
 msgstr ""
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:158
 #, fuzzy
 msgid "_Width:"
 msgstr "Rộng:"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:159
 msgid "The width in chars of a single indent"
 msgstr "Chiều rộng theo ký tự của một khoảng thụt lề riêng lẻ"
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:160
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "Chế độ tự động thụt lề:"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:161
 #, fuzzy
 msgid "Detect type from file"
 msgstr "Phát hiện từ tập tin"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:162
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
@@ -824,40 +833,40 @@ msgstr ""
 "Có nên phát hiện cách thụt lề dựa vào nội dung tập tin khi mở tập tin, hay "
 "không"
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:163
 #, fuzzy
 msgid "T_abs and spaces"
 msgstr "T_ab và Dấu cách"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:164
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr ""
 "Dùng các dấu cách nếu khoảng thụt lề vẫn nhỏ hơn chiều rộng của khoảng tab, "
 "không thì dùng cả hai"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:165
 msgid "_Spaces"
 msgstr "_Dấu cách"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:166
 msgid "Use spaces when inserting indentation"
 msgstr "Dùng dấu cách khi chèn khoảng thụt lề"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:167
 msgid "_Tabs"
 msgstr "_Tab"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:168
 msgid "Use one tab per indent"
 msgstr "Thụt lề theo một khoảng tab"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:169
 #, fuzzy
 msgid "Detect width from file"
 msgstr "Phát hiện từ tập tin"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:170
 #, fuzzy
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
@@ -866,35 +875,35 @@ msgstr ""
 "Có nên phát hiện cách thụt lề dựa vào nội dung tập tin khi mở tập tin, hay "
 "không"
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:171
 msgid "Type:"
 msgstr "Kiểu :"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:172
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "Thụt lề phím Tab"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:173
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
 "Bấm phím Tab hay Shift+Tab thì thụt lề hay bỏ thụt lề thay vào chèn một ký "
 "tự tab"
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:174
 msgid "<b>Indentation</b>"
 msgstr "<b>Thụt lề</b>"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:175
 msgid "Indentation"
 msgstr "Thụt lề"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:176
 msgid "Snippet completion"
 msgstr "Làm xong đoạn"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:177
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
@@ -902,20 +911,20 @@ msgstr ""
 "Gõ một dãy ký tự ngắn đã định sẵn và bấm một phím nào đó để điền nốt chuỗi "
 "phức tạp hơn"
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:178
 #, fuzzy
 msgid "XML/HTML tag auto-closing"
 msgstr "Tự động điền nốt thẻ XML"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:179
 msgid "Insert matching closing tag for XML/HTML"
 msgstr ""
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:180
 msgid "Automatic continuation of multi-line comments"
 msgstr "Tự động tiếp tục ghi chú đa dòng"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:181
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
 "when a new line is entered inside such a comment"
@@ -923,11 +932,11 @@ msgstr ""
 "Tự động tiếp tục ghi chú đa dòng bằng ngôn ngữ như C, C++ và Java khi xuống "
 "dòng bên trong một ghi chú như vậy"
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:182
 msgid "Autocomplete symbols"
 msgstr "Tự động điền nốt ký hiệu"
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:183
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
@@ -935,188 +944,188 @@ msgstr ""
 "Tự động gõ xong các ký hiệu đã biết trong tập tin được mở (tên hàm, biến "
 "toàn cục v.v.)"
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:184
 msgid "Autocomplete all words in document"
 msgstr "Tự động điền nốt mọi từ trong tài liệu"
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:185
 msgid "Drop rest of word on completion"
 msgstr "Bỏ phần từ còn lại một khi điền nốt"
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:186
 msgid "Max. symbol name suggestions:"
 msgstr "Số tối đa các góp ý tên ký hiệu :"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:187
 msgid "Completion list height:"
 msgstr "Bề cao danh sách điền nốt:"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:188
 msgid "Characters to type for autocompletion:"
 msgstr "Ký tự cần gõ để tự động điền nốt:"
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:189
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
 msgstr "Số các ký tự cần thiết để hiển thị danh sách tự động điền nốt ký hiệu"
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:190
 msgid "Display height in rows for the autocompletion list"
 msgstr "Chiều cao hiển thị theo hàng cho danh sách tự động điền nốt"
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:191
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr "Số tối đa các mục nhập cần hiển thị trong danh sách tự động điền nốt"
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:192
 msgid "Symbol list update frequency:"
 msgstr ""
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:193
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
 "with large files. A delay of 0 disables real-time updates."
 msgstr ""
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:194
 msgid "<b>Completions</b>"
 msgstr "<b>Làm xong</b>"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:195
 msgid "Parenthesis ( )"
 msgstr "Ngoặc đơn ( )"
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:196
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr "Tự động điền nốt một cặp dấu ngoặc đơn khi nhập một dấu ngoặc đơn mở"
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:197
 msgid "Curly brackets { }"
 msgstr "Ngoặc móc { }"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:198
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr "Tự động điền nốt một cặp dấu ngoặc móc khi nhập một dấu ngoặc móc mở"
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:199
 msgid "Square brackets [ ]"
 msgstr "Ngoặc vuông [ ]"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:200
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr "Tự động điền nốt một cặp dấu ngoặc vuông khi gõ một dấu ngoặc vuông mở"
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:201
 msgid "Single quotes ' '"
 msgstr "Nháy đơn ' '"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:202
 #, fuzzy
 msgid "Auto-close single quote when typing an opening one"
 msgstr "Tự động điền nốt một cặp dấu nháy đơn khi nhập một dấu nháy đơn mở"
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:203
 msgid "Double quotes \" \""
 msgstr "Nháy kép \" \""
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:204
 msgid "Auto-close double quote when typing an opening one"
 msgstr "Tự động điền nốt một cặp dấu nháy kép khi nhập một dấu nháy kép mở"
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:205
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr "<b>Tự động điền nốt Nháy và Ngoặc</b>"
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:206
 msgid "Completions"
 msgstr "Mục điền nốt"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:207
 msgid "Invert syntax highlighting colors"
 msgstr "Đảo ngược màu sắc tô sáng cú pháp"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:208
 msgid "Invert all colors, by default using white text on a black background"
 msgstr ""
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:209
 msgid "Show indentation guides"
 msgstr "Hiện nét dẫn thụt lề"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:210
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr "Hiển thị đường chấm chấm nhỏ để giúp bạn thụt lề đúng"
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:211
 msgid "Show white space"
 msgstr "Hiện khoảng trắng"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:212
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr "Nhãn dấu cách bằng chấm và tab bằng mũi tên"
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:213
 msgid "Show line endings"
 msgstr "Hiện kết thúc dòng"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:214
 msgid "Shows the line ending character"
 msgstr "Hiện ký tự kết thúc dòng"
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:215
 msgid "Show line numbers"
 msgstr "Hiện số thứ tự dòng"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:216
 msgid "Shows or hides the Line Number margin"
 msgstr "Hiện/ẩn lề số thứ tự dòng"
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:217
 msgid "Show markers margin"
 msgstr "Hiện lề đánh dấu"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:218
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
 msgstr "Hiện/ẩn lề nhỏ bên phải các số thứ tự dòng, được dùng để đánh dấu dòng"
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:219
 msgid "Stop scrolling at last line"
 msgstr "Dừng cuộn ở dòng cuối"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:220
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr "Có nên dừng cuộn lại một trang đằng sau dòng cuối cùng của tài liệu"
 
-#: ../data/geany.glade.h:219
+#: ../data/geany.glade.h:221
 msgid "Lines visible _around the cursor:"
 msgstr ""
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:222
 msgid "<b>Display</b>"
 msgstr "<b>Hiển thị</b>"
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:223
 #, fuzzy
 msgid "Column:"
 msgstr "Công ty:"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:224
 msgid "Color:"
 msgstr ""
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:225
 msgid "Sets the color of the long line marker"
 msgstr "Đặt màu của dấu dòng dài"
 
-#: ../data/geany.glade.h:224 ../src/toolbar.c:73 ../src/tools.c:851
+#: ../data/geany.glade.h:226 ../src/toolbar.c:73 ../src/tools.c:851
 msgid "Color Chooser"
 msgstr "Bộ chọn màu"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:227
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
 "long lines, or as a hint to break the line. Set this value to a value "
@@ -1126,11 +1135,11 @@ msgstr ""
 "dấu dòng dài, hoặc nhắc nhở bạn ngắt dòng đó. Đặt giá trị này thành một giá "
 "trị hơn 0 để xác định vị trí của cột này."
 
-#: ../data/geany.glade.h:226
+#: ../data/geany.glade.h:228
 msgid "Line"
 msgstr "Dòng"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:229
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
@@ -1138,11 +1147,11 @@ msgstr ""
 "In ra một đường nằm dọc trong cửa sổ trình soạn thảo tại vị trí con trỏ đã "
 "cho (xem dưới)."
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:230
 msgid "Background"
 msgstr "Nền"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:231
 msgid ""
 "The background color of characters after the given cursor position (see "
 "below) changed to the color set below, (this is recommended if you use "
@@ -1151,86 +1160,86 @@ msgstr ""
 "Màu nền của các ký tự nằm sau vị trí con trỏ đã cho (xem dưới) được thay đổi "
 "thành màu được đặt bên dưới. (Khuyến khích nếu bạn sử dụng phông tỷ lệ.)"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:232
 #, fuzzy
 msgid "Enabled"
 msgstr "_Bật"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:233
 msgid "<b>Long line marker</b>"
 msgstr "<b>Dấu dòng dài</b>"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:234
 msgid "Disabled"
 msgstr "Bị tắt"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:235
 msgid "Do not show virtual spaces"
 msgstr ""
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:236
 msgid "Only for rectangular selections"
 msgstr ""
 
-#: ../data/geany.glade.h:235
+#: ../data/geany.glade.h:237
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
 msgstr ""
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:238
 msgid "Always"
 msgstr ""
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:239
 #, fuzzy
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "Gỡ bỏ các dấu cách theo sau, tab, và kết thúc dòng"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:240
 #, fuzzy
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>Đường dẫn công cụ</b>"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:241
 msgid "Display"
 msgstr "Hiển thị"
 
-#: ../data/geany.glade.h:240 ../src/keybindings.c:321 ../src/prefs.c:1641
+#: ../data/geany.glade.h:242 ../src/keybindings.c:321 ../src/prefs.c:1647
 msgid "Editor"
 msgstr "Trình soạn thảo"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:243
 msgid "Open new documents from the command-line"
 msgstr "Mở tài liệu mới từ dòng lệnh"
 
-#: ../data/geany.glade.h:242
+#: ../data/geany.glade.h:244
 #, fuzzy
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr "Tạo một tập tin mới cho mỗi tên tập tin dòng lệnh không tồn tại"
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:245
 msgid "Default end of line characters:"
 msgstr "Ký tự kết thúc dòng mặc định:"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:246
 msgid "<b>New files</b>"
 msgstr "<b>Tập tin mới</b>"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:247
 msgid "Default encoding (new files):"
 msgstr "Bảng mã mặc định (tập tin mới):"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:248
 msgid "Sets the default encoding for newly created files"
 msgstr "Đặt bảng mã mặc định cho tập tin mới tạo"
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:249
 #, fuzzy
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "Dùng bảng mã cố định khi mở tập tin"
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:250
 #, fuzzy
 msgid ""
 "This option disables the automatic detection of the file encoding when "
@@ -1240,74 +1249,74 @@ msgstr ""
 "Tùy chọn này tắt chức năng tự động phát hiện bảng mã tập tin khi mở tập tin, "
 "và mở tập tin bằng bảng mã đã ghi rõ (thường không cần)"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:251
 #, fuzzy
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "Bảng mã mặc định (tập tin đã có):"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:252
 #, fuzzy
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr "Đặt bảng mã mặc định để mở tập tin đã có"
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:253
 msgid "<b>Encodings</b>"
 msgstr "<b>Bảng mã</b>"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:254
 msgid "Ensure new line at file end"
 msgstr "Đảm bảo có ký tự dòng mới tại kết thúc tập tin"
 
-#: ../data/geany.glade.h:253
+#: ../data/geany.glade.h:255
 msgid "Ensures that at the end of the file is a new line"
 msgstr "Đảm bảo có ký tự dòng mới tại kết thúc tập tin"
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:256
 #, fuzzy
 msgid "Ensure consistent line endings"
 msgstr "Đảm bảo có ký tự dòng mới tại kết thúc tập tin"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:257
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
 msgstr ""
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:258
 msgid "Strip trailing spaces and tabs"
 msgstr "Bỏ dấu cách và Tab theo sau"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:259
 #, fuzzy
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr "Gỡ bỏ các dấu cách theo sau, tab, và kết thúc dòng"
 
-#: ../data/geany.glade.h:258 ../src/keybindings.c:710
+#: ../data/geany.glade.h:260 ../src/keybindings.c:710
 msgid "Replace tabs with space"
 msgstr "Thay thế các tab bằng dấu cách"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:261
 msgid "Replaces all tabs in document with spaces"
 msgstr "Thay thế bằng dấu cách mọi tab trong tài liệu"
 
-#: ../data/geany.glade.h:260
+#: ../data/geany.glade.h:262
 msgid "<b>Saving files</b>"
 msgstr "<b>Lưu tập tin</b>"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:263
 msgid "Recent files list length:"
 msgstr "Độ dài danh sách tập tin gần đây:"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:264
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Xác định số tối đa các tập tin được giữ lại trong danh sách Tập tin gần đây"
 
-#: ../data/geany.glade.h:263
+#: ../data/geany.glade.h:265
 msgid "Disk check timeout:"
 msgstr "Thời hạn kiểm tra đĩa:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:266
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1315,44 +1324,44 @@ msgstr ""
 "Có nên kiểm tra có thay đổi trong tập tin tài liệu trên đĩa thường xuyên cỡ "
 "nào, theo giây. Số không tắt chức năng kiểm tra."
 
-#: ../data/geany.glade.h:265 ../src/prefs.c:1643 ../src/symbols.c:482
+#: ../data/geany.glade.h:267 ../src/prefs.c:1649 ../src/symbols.c:495
 #: ../plugins/filebrowser.c:1158
 msgid "Files"
 msgstr "Tập tin"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:268
 msgid "Terminal:"
 msgstr "Thiết bị cuối:"
 
-#: ../data/geany.glade.h:267
+#: ../data/geany.glade.h:269
 msgid "Browser:"
 msgstr "Bộ duyệt:"
 
-#: ../data/geany.glade.h:269
+#: ../data/geany.glade.h:271
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
 "filename)"
 msgstr ""
 
-#: ../data/geany.glade.h:270
+#: ../data/geany.glade.h:272
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr "Đường dẫn (có thể thêm đối số) đến bộ duyệt ưa thích của bạn"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:273
 msgid "Grep:"
 msgstr "Grep:"
 
-#: ../data/geany.glade.h:272
+#: ../data/geany.glade.h:274
 msgid "<b>Tool paths</b>"
 msgstr "<b>Đường dẫn công cụ</b>"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:275
 msgid "Context action:"
 msgstr "Hành động ngữ cảnh:"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:277
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1363,68 +1372,68 @@ msgstr ""
 "%s. Nó có thể nằm ở mọi vị trí trong lệnh đã cho, cũng sẽ được thay thế "
 "trước khi thực hiện."
 
-#: ../data/geany.glade.h:276
+#: ../data/geany.glade.h:278
 msgid "<b>Commands</b>"
 msgstr "<b>Lệnh</b>"
 
-#: ../data/geany.glade.h:277 ../src/keybindings.c:333 ../src/prefs.c:1645
+#: ../data/geany.glade.h:279 ../src/keybindings.c:333 ../src/prefs.c:1651
 msgid "Tools"
 msgstr "Công cụ"
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:280
 msgid "Email address of the developer"
 msgstr "Địa chỉ thư của nhà phát triển"
 
-#: ../data/geany.glade.h:279
+#: ../data/geany.glade.h:281
 msgid "Initials of the developer name"
 msgstr "Tên tắt của nhà phát triển"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:282
 msgid "Initial version:"
 msgstr "Phiên bản đầu tiên:"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:283
 msgid "Version number, which a new file initially has"
 msgstr "Số hiệu phiên bản đầu tiên của tập tin mới"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:284
 msgid "Company name"
 msgstr "Tên công ty"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:285
 msgid "Developer:"
 msgstr "Nhà phát triển:"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:286
 msgid "Company:"
 msgstr "Công ty:"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:287
 msgid "Mail address:"
 msgstr "Địa chỉ bưu điện:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:288
 msgid "Initials:"
 msgstr "Tên tắt:"
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:289
 msgid "The name of the developer"
 msgstr "Tên của nhà phát triển"
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:290
 msgid "Year:"
 msgstr "Năm:"
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:291
 msgid "Date:"
 msgstr "Ngày:"
 
-#: ../data/geany.glade.h:290
+#: ../data/geany.glade.h:292
 #, fuzzy
 msgid "Date & time:"
 msgstr "Ngày Giờ :"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:293
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1432,7 +1441,7 @@ msgstr ""
 "Ghi rõ định dạng cho ký hiệu đại diện ngày/giờ {datetime}. Có thể sử dụng "
 "bất cứ đặc tả chuyển đổi nào tương thích với hàm strftime C ANSI."
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:294
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1440,7 +1449,7 @@ msgstr ""
 "Ghi rõ định dạng cho ký hiệu đại diện năm {year}. Có thể sử dụng bất cứ đặc "
 "tả chuyển đổi nào tương thích với hàm strftime C ANSI."
 
-#: ../data/geany.glade.h:293
+#: ../data/geany.glade.h:295
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1448,62 +1457,62 @@ msgstr ""
 "Ghi rõ định dạng cho ký hiệu đại diện ngày tháng {date}. Có thể sử dụng bất "
 "cứ đặc tả chuyển đổi nào tương thích với hàm strftime C ANSI."
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:296
 msgid "<b>Template data</b>"
 msgstr "<b>Dữ liệu mẫu</b>"
 
-#: ../data/geany.glade.h:295 ../src/prefs.c:1647
+#: ../data/geany.glade.h:297 ../src/prefs.c:1653
 msgid "Templates"
 msgstr "Biểu mẫu"
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:298
 msgid "C_hange"
 msgstr "Đổ_i"
 
-#: ../data/geany.glade.h:297
+#: ../data/geany.glade.h:299
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>Phím tắt</b>"
 
-#: ../data/geany.glade.h:298 ../src/plugins.c:1950 ../src/plugins.c:1987
-#: ../src/prefs.c:1649
+#: ../data/geany.glade.h:300 ../src/plugins.c:1950 ../src/plugins.c:1987
+#: ../src/prefs.c:1655
 msgid "Keybindings"
 msgstr "Tổ hợp phím"
 
-#: ../data/geany.glade.h:299
+#: ../data/geany.glade.h:301
 msgid "Command:"
 msgstr "Lệnh:"
 
-#: ../data/geany.glade.h:301
+#: ../data/geany.glade.h:303
 #, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr "Đường dẫn tới lệnh để in tập tin (dùng %f thay cho tên tập tin)."
 
-#: ../data/geany.glade.h:302
+#: ../data/geany.glade.h:304
 msgid "Use an external command for printing"
 msgstr "Dùng lệnh bên ngoài để in"
 
-#: ../data/geany.glade.h:303 ../src/printing.c:237
+#: ../data/geany.glade.h:305 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "In số thứ tự dòng"
 
-#: ../data/geany.glade.h:304 ../src/printing.c:239
+#: ../data/geany.glade.h:306 ../src/printing.c:239
 msgid "Add line numbers to the printed page"
 msgstr "Thêm vào trang in các số thứ tự dòng"
 
-#: ../data/geany.glade.h:305 ../src/printing.c:242
+#: ../data/geany.glade.h:307 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "In số thứ tự trang"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:244
+#: ../data/geany.glade.h:308 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr "Thêm số thứ tự dòng vào đáy từng trang (chiếm 2 dòng của trang)."
 
-#: ../data/geany.glade.h:307 ../src/printing.c:247
+#: ../data/geany.glade.h:309 ../src/printing.c:247
 msgid "Print page header"
 msgstr "In phần đầu trang"
 
-#: ../data/geany.glade.h:308 ../src/printing.c:249
+#: ../data/geany.glade.h:310 ../src/printing.c:249
 msgid ""
 "Add a little header to every page containing the page number, the filename "
 "and the current date (see below). It takes 3 lines of the page."
@@ -1511,19 +1520,19 @@ msgstr ""
 "Thêm vào mỗi trang một phần đầu trang nhỏ chứa số thứ tự trang, tên tập tin "
 "và ngày tháng hiện thời (xem bên dưới). Phần này chiếm 3 dòng của trang."
 
-#: ../data/geany.glade.h:309 ../src/printing.c:265
+#: ../data/geany.glade.h:311 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "Dùng tên cơ bản của tập tin đã in"
 
-#: ../data/geany.glade.h:310
+#: ../data/geany.glade.h:312
 msgid "Print only the basename (without the path) of the printed file"
 msgstr "In chỉ tên cơ bản (không có phần đường dẫn) của tập tin in ra."
 
-#: ../data/geany.glade.h:311 ../src/printing.c:273
+#: ../data/geany.glade.h:313 ../src/printing.c:273
 msgid "Date format:"
 msgstr "Định dạng ngày tháng:"
 
-#: ../data/geany.glade.h:312 ../src/printing.c:279
+#: ../data/geany.glade.h:314 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1533,58 +1542,58 @@ msgstr ""
 "trang. Bạn có khả năng sử dụng bất cứ ký hiệu chuyển đổi nào dùng được với "
 "hàm strftime kiểu C ANSI. Xem « man strftime » để tìm thêm thông tin."
 
-#: ../data/geany.glade.h:313
+#: ../data/geany.glade.h:315
 msgid "Use native GTK printing"
 msgstr "Dùng chức năng in GTK sở hữu"
 
-#: ../data/geany.glade.h:314
+#: ../data/geany.glade.h:316
 #, fuzzy
 msgid "<b>Printing</b>"
 msgstr "<b>Bảng mã:</b>"
 
-#: ../data/geany.glade.h:315 ../src/prefs.c:1651
+#: ../data/geany.glade.h:317 ../src/prefs.c:1657
 msgid "Printing"
 msgstr "In"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:318
 msgid "Font:"
 msgstr ""
 
-#: ../data/geany.glade.h:317
+#: ../data/geany.glade.h:319
 msgid "Sets the font for the terminal widget"
 msgstr "Đặt phông chữ cho ô điều khiển thiết bị cuối"
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:320
 #, fuzzy
 msgid "Choose Terminal Font"
 msgstr "Phông dòng lệnh:"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:321
 msgid "Foreground color:"
 msgstr "Màu cảnh gần:"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:322
 msgid "Background color:"
 msgstr "Màu nền:"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:323
 msgid "Scrollback lines:"
 msgstr "Dòng cuộn ngược:"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:324
 msgid "Shell:"
 msgstr "Trình bao :"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:325
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr "Đặt màu cảnh gần của văn bản trong ô điều khiển thiết bị cuối"
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:326
 #, fuzzy
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "Đặt màu nền của văn bản trong ô điều khiển thiết bị cuối"
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:327
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
@@ -1592,7 +1601,7 @@ msgstr ""
 "Xác định lịch sử theo dòng, mà bạn có thể cuộn ngược trong ô điều khiển "
 "thiết bị cuối"
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:328
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
@@ -1600,44 +1609,44 @@ msgstr ""
 "Đặt đường dẫn tới trình bao (mà nên được khởi chạy bên trong mô phỏng thiết "
 "bị cuối)"
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:329
 msgid "Scroll on keystroke"
 msgstr "Cuộn khi ấn phím"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:330
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "Có nên cuộn đến đáy khi được ấn phím hay không"
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:331
 msgid "Scroll on output"
 msgstr "Cuộn kết xuất"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:332
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "Có nên cuộn đến đáy khi kết xuất được tạo ra hay không"
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:333
 msgid "Cursor blinks"
 msgstr "Nháy con chạy"
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:334
 msgid "Whether to blink the cursor"
 msgstr "Có nên nháy con chạy hay không"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:335
 msgid "Override Geany keybindings"
 msgstr "Ghi đè lên tổ hợp phím Geany"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:336
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr "Cho phép VTE nhận tín hiệu phím tắt (ra khỏi lệnh đặt tiêu điểm)"
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:337
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "Tắt phím tắt trình đơn (mặc định F10)"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:338
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1647,24 +1656,24 @@ msgstr ""
 "năng F10). Việc tắt nó có ích nếu, chẳng hạn, bạn dùng Midnight Commander "
 "bên trong VTE."
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:339
 #, fuzzy
 msgid "Follow path of the current file"
 msgstr "Theo đường dẫn đến tập tin hiện thời"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:340
 #, fuzzy
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr ""
 "Có nên thực hiện câu lệnh « cd $path » hay không khi bạn chuyển đổi giữa các "
 "tập tin còn mở"
 
-#: ../data/geany.glade.h:339
+#: ../data/geany.glade.h:341
 #, fuzzy
 msgid "Execute programs in the VTE"
 msgstr "Thực hiện chương trình trong VTE"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:342
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
@@ -1672,11 +1681,11 @@ msgstr ""
 "Chạy chương trình trong VTE thay vào mở một cửa sổ mô phỏng thiết bị cuối. "
 "Ghi chú rằng chương trình được thực hiện trong VTE thì không dừng chạy được"
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:343
 msgid "Don't use run script"
 msgstr "Đừng dùng văn lệnh chạy"
 
-#: ../data/geany.glade.h:342
+#: ../data/geany.glade.h:344
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
@@ -1684,581 +1693,581 @@ msgstr ""
 "Đừng dùng văn lệnh chạy đơn giản thường dùng để hiển thị trạng thái thoát "
 "của chương trình đã thực hiện"
 
-#: ../data/geany.glade.h:343
+#: ../data/geany.glade.h:345
 #, fuzzy
 msgid "<b>Terminal</b>"
 msgstr "<b>Quyền hạn:</b>"
 
-#: ../data/geany.glade.h:344 ../src/prefs.c:1655 ../src/vte.c:460
+#: ../data/geany.glade.h:346 ../src/prefs.c:1661 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Thiết bị cuối"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:347
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr ""
 
-#: ../data/geany.glade.h:346
+#: ../data/geany.glade.h:348
 #, fuzzy
 msgid "<b>Various preferences</b>"
 msgstr "<b>Đường dẫn công cụ</b>"
 
-#: ../data/geany.glade.h:347 ../src/prefs.c:1653
+#: ../data/geany.glade.h:349 ../src/prefs.c:1659
 #, fuzzy
 msgid "Various"
 msgstr "T_rước"
 
-#: ../data/geany.glade.h:349
+#: ../data/geany.glade.h:351
 msgid "_File"
 msgstr "_Tập tin"
 
-#: ../data/geany.glade.h:350
+#: ../data/geany.glade.h:352
 msgid "New (with _Template)"
 msgstr "Mới (dùng Mẫ_u)"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:353
 #, fuzzy
 msgid "_Open..."
 msgstr "_Mở"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:354
 msgid "Recent _Files"
 msgstr "Tập tin _gần đây"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:355
 #, fuzzy
 msgid "Save _As..."
 msgstr "Lưu dạng"
 
-#: ../data/geany.glade.h:354
+#: ../data/geany.glade.h:356
 msgid "Sa_ve All"
 msgstr "Lưu tất _cả"
 
-#: ../data/geany.glade.h:355 ../src/document.c:1711 ../src/document.c:3775
-#: ../src/sidebar.c:726
+#: ../data/geany.glade.h:357 ../src/document.c:1716 ../src/document.c:3775
+#: ../src/sidebar.c:761
 msgid "_Reload"
 msgstr "Tải _lại"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:358
 msgid "R_eload As"
 msgstr "Tải lại _dạng"
 
-#: ../data/geany.glade.h:357
+#: ../data/geany.glade.h:359
 msgid "Page Set_up"
 msgstr "Thiết lập tr_ang"
 
-#: ../data/geany.glade.h:358
+#: ../data/geany.glade.h:360
 #, fuzzy
 msgid "_Print..."
 msgstr "In"
 
-#: ../data/geany.glade.h:359 ../src/notebook.c:495
+#: ../data/geany.glade.h:361 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "Đóng các tập tin k_hác"
 
-#: ../data/geany.glade.h:360 ../src/notebook.c:507
+#: ../data/geany.glade.h:362 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "Đóng tất _cả"
 
-#: ../data/geany.glade.h:361
+#: ../data/geany.glade.h:363
 #, fuzzy
 msgid "Co_mmands"
 msgstr "Lệnh"
 
-#: ../data/geany.glade.h:362 ../src/keybindings.c:453
+#: ../data/geany.glade.h:364 ../src/keybindings.c:453
 #, fuzzy
 msgid "Cu_t Current Line(s)"
 msgstr "Cắt các dòng hiện tại"
 
-#: ../data/geany.glade.h:363 ../src/keybindings.c:450
+#: ../data/geany.glade.h:365 ../src/keybindings.c:450
 #, fuzzy
 msgid "_Copy Current Line(s)"
 msgstr "Chép các dòng hiện tại"
 
-#: ../data/geany.glade.h:364 ../src/keybindings.c:398
+#: ../data/geany.glade.h:366 ../src/keybindings.c:398
 #, fuzzy
 msgid "_Delete Current Line(s)"
 msgstr "Xoá các dòng hiện tại"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:395
+#: ../data/geany.glade.h:367 ../src/keybindings.c:395
 #, fuzzy
 msgid "D_uplicate Line or Selection"
 msgstr "_Nhân đôi dòng hay vùng chọn"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:465
+#: ../data/geany.glade.h:368 ../src/keybindings.c:465
 #, fuzzy
 msgid "S_elect Current Line(s)"
 msgstr "Chọn các dòng hiện tại"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:468
+#: ../data/geany.glade.h:369 ../src/keybindings.c:468
 #, fuzzy
 msgid "Se_lect Current Paragraph"
 msgstr "Chọn đoạn văn hiện tại"
 
-#: ../data/geany.glade.h:368
+#: ../data/geany.glade.h:370
 #, fuzzy
 msgid "_Move Line(s) Up"
 msgstr "Ghi chú dòng"
 
-#: ../data/geany.glade.h:369
+#: ../data/geany.glade.h:371
 #, fuzzy
 msgid "M_ove Line(s) Down"
 msgstr "Ghi chú dòng"
 
-#: ../data/geany.glade.h:370 ../src/keybindings.c:521
+#: ../data/geany.glade.h:372 ../src/keybindings.c:521
 msgid "_Send Selection to Terminal"
 msgstr "_Gửi vùng chọn cho Thiết bị cuối"
 
-#: ../data/geany.glade.h:371 ../src/keybindings.c:525
+#: ../data/geany.glade.h:373 ../src/keybindings.c:525
 #, fuzzy
 msgid "_Reflow Lines/Block"
 msgstr "Cuộn lại dòng/khối"
 
-#: ../data/geany.glade.h:372 ../src/keybindings.c:478
+#: ../data/geany.glade.h:374 ../src/keybindings.c:478
 msgid "T_oggle Case of Selection"
 msgstr "Chuyển đổi chữ h_oa/thường của vùng chọn"
 
-#: ../data/geany.glade.h:373
+#: ../data/geany.glade.h:375
 msgid "_Comment Line(s)"
 msgstr "Ghi _chú dòng"
 
-#: ../data/geany.glade.h:374
+#: ../data/geany.glade.h:376
 msgid "U_ncomment Line(s)"
 msgstr "Hủy ghi chú dò_ng"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:377
 msgid "_Toggle Line Commentation"
 msgstr "Bật/_tắt ghi chú dòng"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:378
 msgid "_Increase Indent"
 msgstr "_Thụt lề thêm"
 
-#: ../data/geany.glade.h:377
+#: ../data/geany.glade.h:379
 msgid "_Decrease Indent"
 msgstr "Thụt lề _kém"
 
-#: ../data/geany.glade.h:378 ../src/keybindings.c:497
+#: ../data/geany.glade.h:380 ../src/keybindings.c:497
 #, fuzzy
 msgid "S_mart Line Indent"
 msgstr "Thụt lề dòng khéo"
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:381
 msgid "_Send Selection to"
 msgstr "_Gửi vùng chọn cho"
 
-#: ../data/geany.glade.h:380
+#: ../data/geany.glade.h:382
 msgid "I_nsert Comments"
 msgstr "Chè_n chú thích"
 
-#: ../data/geany.glade.h:381
+#: ../data/geany.glade.h:383
 msgid "Preference_s"
 msgstr "Tù_y thích"
 
-#: ../data/geany.glade.h:382 ../src/keybindings.c:548
+#: ../data/geany.glade.h:384 ../src/keybindings.c:548
 #, fuzzy
 msgid "P_lugin Preferences"
 msgstr "Tùy thích"
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:385
 #, fuzzy
 msgid "_Find..."
 msgstr "Tìm"
 
-#: ../data/geany.glade.h:384
+#: ../data/geany.glade.h:386
 msgid "Find _Next"
 msgstr "Tìm tiế_p"
 
-#: ../data/geany.glade.h:385
+#: ../data/geany.glade.h:387
 msgid "Find _Previous"
 msgstr "Tìm t_rước"
 
-#: ../data/geany.glade.h:386 ../src/symbols.c:2901
+#: ../data/geany.glade.h:388 ../src/symbols.c:2924
 #, fuzzy
 msgid "Find in F_iles..."
 msgstr "Tìm trong tập t_in"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:389
 #, fuzzy
 msgid "_Replace..."
 msgstr "Tha_y thế"
 
-#: ../data/geany.glade.h:388
+#: ../data/geany.glade.h:390
 msgid "Next Me_ssage"
 msgstr "Thông điệp tiế_p"
 
-#: ../data/geany.glade.h:389
+#: ../data/geany.glade.h:391
 msgid "Pr_evious Message"
 msgstr "Thông điệp t_rước"
 
-#: ../data/geany.glade.h:390 ../src/keybindings.c:598
+#: ../data/geany.glade.h:392 ../src/keybindings.c:598
 #, fuzzy
 msgid "Go to Ne_xt Marker"
 msgstr "Tới dấu tiếp"
 
-#: ../data/geany.glade.h:391 ../src/keybindings.c:601
+#: ../data/geany.glade.h:393 ../src/keybindings.c:601
 #, fuzzy
 msgid "Go to Pre_vious Marker"
 msgstr "Về dấu trước"
 
-#: ../data/geany.glade.h:392
+#: ../data/geany.glade.h:394
 #, fuzzy
 msgid "_Go to Line..."
 msgstr "Tới dòn_g"
 
-#: ../data/geany.glade.h:393 ../src/keybindings.c:560
+#: ../data/geany.glade.h:395 ../src/keybindings.c:560
 #, fuzzy
 msgid "Find Next _Selection"
 msgstr "Tìm vùng _chọn tiếp"
 
-#: ../data/geany.glade.h:394 ../src/keybindings.c:562
+#: ../data/geany.glade.h:396 ../src/keybindings.c:562
 #, fuzzy
 msgid "Find Pre_vious Selection"
 msgstr "Tìm vùng _chọn trước"
 
 # Literal: don't translate/Nghĩa chữ : đừng dịch
-#: ../data/geany.glade.h:395 ../src/keybindings.c:580
+#: ../data/geany.glade.h:397 ../src/keybindings.c:580
 #, fuzzy
 msgid "_Mark All"
 msgstr "Đánh dấu tất cả"
 
-#: ../data/geany.glade.h:396
+#: ../data/geany.glade.h:398
 #, fuzzy
 msgid "Go to Symbol Decl_aration"
 msgstr "Tới chỗ khai báo thẻ"
 
-#: ../data/geany.glade.h:397
+#: ../data/geany.glade.h:399
 msgid "_View"
 msgstr "_Xem"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:400
 #, fuzzy
 msgid "Change _Font..."
 msgstr "Đổi _phông"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:401
 #, fuzzy
 msgid "Change _Color Scheme..."
 msgstr "Bảng _chọn màu"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:402
 msgid "Show _Markers Margin"
 msgstr "Hiện lề đánh _dấu"
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:403
 msgid "Show _Line Numbers"
 msgstr "Hiện _số hiệu dòng"
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:404
 msgid "Show White S_pace"
 msgstr "Hiện kh_oảng trắng"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:405
 msgid "Show Line _Endings"
 msgstr "Hiện _kết thúc dòng"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:406
 msgid "Show Indentation _Guides"
 msgstr "H_iện nét dẫn thụt lề"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:407
 msgid "Full_screen"
 msgstr "T_oàn màn hình"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:408
 msgid "Toggle All _Additional Widgets"
 msgstr "Bật/tắt mọi ô điều khiển bổ sun_g"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:409
 msgid "Show Message _Window"
 msgstr "Hiện cửa _sổ thông điệp"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:410
 msgid "Show _Toolbar"
 msgstr "Hiện _thanh công cụ"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:411
 msgid "Show Side_bar"
 msgstr "Hiện khung _lề"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:412
 msgid "_Document"
 msgstr "_Tài liệu"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:413
 msgid "_Line Wrapping"
 msgstr "N_gắt dòng"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:414
 msgid "Line _Breaking"
 msgstr "N_gắt dòng"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:415
 msgid "_Auto-indentation"
 msgstr "_Tự động thụt lề"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:416
 msgid "In_dent Type"
 msgstr "_Kiểu thụt lề"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:417
 #, fuzzy
 msgid "_Detect from Content"
 msgstr "Phát hiện từ tập tin"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:418
 msgid "T_abs and Spaces"
 msgstr "T_ab và Dấu cách"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:419
 msgid "Indent Widt_h"
 msgstr "Độ _rộng thụt lề"
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:420
 msgid "_1"
 msgstr ""
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:421
 msgid "_2"
 msgstr ""
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:422
 msgid "_3"
 msgstr ""
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:423
 msgid "_4"
 msgstr ""
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:424
 msgid "_5"
 msgstr ""
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:425
 msgid "_6"
 msgstr ""
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:426
 msgid "_7"
 msgstr ""
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:427
 msgid "_8"
 msgstr ""
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:428
 msgid "Read _Only"
 msgstr "_Chỉ đọc"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:429
 msgid "_Write Unicode BOM"
 msgstr "Ghi _BOM Unicode"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:430
 msgid "Set File_type"
 msgstr "Đặt kiểu _tập tin"
 
-#: ../data/geany.glade.h:429
+#: ../data/geany.glade.h:431
 msgid "Set _Encoding"
 msgstr "Đặt _bảng mã"
 
-#: ../data/geany.glade.h:430
+#: ../data/geany.glade.h:432
 msgid "Set Line E_ndings"
 msgstr "Đặt kết thúc dò_ng"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:433
 #, fuzzy
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "Chuyển đổi và đặt thành _CR/LF (Win)"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:434
 msgid "Convert and Set to _LF (Unix)"
 msgstr "Chuyển đổi và đặt thành _LF (UNIX)"
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:435
 #, fuzzy
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Chuyển đổi và đặt thành CR (_Mac)"
 
-#: ../data/geany.glade.h:434 ../src/keybindings.c:705
+#: ../data/geany.glade.h:436 ../src/keybindings.c:705
 #, fuzzy
 msgid "_Clone"
 msgstr "Đón_g"
 
-#: ../data/geany.glade.h:435 ../src/keybindings.c:707
+#: ../data/geany.glade.h:437 ../src/keybindings.c:707
 msgid "_Strip Trailing Spaces"
 msgstr "Bỏ dấu cách theo _sau"
 
-#: ../data/geany.glade.h:436
+#: ../data/geany.glade.h:438
 msgid "Replace Tabs with S_paces"
 msgstr "Tha_y thế các tab bằng dấu cách"
 
-#: ../data/geany.glade.h:437
+#: ../data/geany.glade.h:439
 #, fuzzy
 msgid "_Replace Spaces with Tabs..."
 msgstr "Tha_y thế các dấu cách bằng Tab"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:440
 msgid "_Fold All"
 msgstr "_Gấp tất cả"
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:441
 msgid "_Unfold All"
 msgstr "_Mở lại tất cả"
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:442
 msgid "Remove _Markers"
 msgstr "Bỏ _dấu"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:443
 msgid "Remove Error _Indicators"
 msgstr "Bỏ mọi cá_i chỉ lỗi"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:444
 msgid "_Project"
 msgstr "_Dự án"
 
-#: ../data/geany.glade.h:443
+#: ../data/geany.glade.h:445
 #, fuzzy
 msgid "_New..."
 msgstr "Mớ_i"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:446
 msgid "_Recent Projects"
 msgstr "Dự án _vừa mở"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:447
 msgid "_Close"
 msgstr "Đón_g"
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:448
 msgid "Apply the default indentation settings to all documents"
 msgstr "Áp dụng thiết lập mặc định cho _mọi tài liệu"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:449
 #, fuzzy
 msgid "_Apply Default Indentation"
 msgstr "_Tự động thụt lề"
 
 #. build the code
-#: ../data/geany.glade.h:448 ../src/build.c:2455 ../src/build.c:2726
+#: ../data/geany.glade.h:450 ../src/build.c:2455 ../src/build.c:2726
 msgid "_Build"
 msgstr "_Xây dựng"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:451
 msgid "_Tools"
 msgstr "_Công cụ"
 
-#: ../data/geany.glade.h:450
+#: ../data/geany.glade.h:452
 msgid "_Reload Configuration"
 msgstr "Nạp _lại cấu hình"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:453
 msgid "C_onfiguration Files"
 msgstr "Tập tin Cấ_u hình"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:454
 msgid "_Color Chooser"
 msgstr "Bảng _chọn màu"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:455
 msgid "_Word Count"
 msgstr "_Tổng từ"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:456
 #, fuzzy
 msgid "Load Ta_gs File..."
 msgstr "Nạ_p thẻ"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:457
 msgid "_Help"
 msgstr "Trợ _giúp"
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:458
 msgid "Keyboard _Shortcuts"
 msgstr "_Phím tắt"
 
-#: ../data/geany.glade.h:457
+#: ../data/geany.glade.h:459
 #, fuzzy
 msgid "Debug _Messages"
 msgstr "Thông điệp Gỡ lỗi"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:460
 msgid "_Website"
 msgstr "Chỗ _Mạng"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:461
 msgid "Wi_ki"
 msgstr ""
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:462
 msgid "Report a _Bug..."
 msgstr ""
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:463
 #, fuzzy
 msgid "_Donate..."
 msgstr "_Không lưu"
 
-#: ../data/geany.glade.h:462 ../src/sidebar.c:129
+#: ../data/geany.glade.h:464 ../src/sidebar.c:131
 msgid "Symbols"
 msgstr "Ký hiệu"
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:465
 msgid "Documents"
 msgstr "Tài liệu"
 
-#: ../data/geany.glade.h:464
+#: ../data/geany.glade.h:466
 msgid "Status"
 msgstr "Trạng thái"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:467
 msgid "Compiler"
 msgstr "Bộ biên dịch"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:468
 msgid "Messages"
 msgstr "Thông điệp"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:469
 msgid "Scribble"
 msgstr "Viết tháu"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:470
 msgid "Project Properties"
 msgstr "Thuộc tính dự án"
 
-#: ../data/geany.glade.h:469 ../src/project.c:183
+#: ../data/geany.glade.h:471 ../src/project.c:183
 msgid "Filename:"
 msgstr "Tên tập tin:"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../data/geany.glade.h:470
+#: ../data/geany.glade.h:472
 #, fuzzy
 msgid "_Name:"
 msgstr "Tên:"
 
-#: ../data/geany.glade.h:471
+#: ../data/geany.glade.h:473
 #, fuzzy
 msgid "_Description:"
 msgstr "Mô tả:"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:474
 #, fuzzy
 msgid "_Base path:"
 msgstr "Đường dẫn cơ bản:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:475
 #, fuzzy
 msgid "File _patterns:"
 msgstr "Mẫu tập tin:"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:476
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
 msgstr ""
 
-#: ../data/geany.glade.h:475 ../src/project.c:212
+#: ../data/geany.glade.h:477 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2268,118 +2277,118 @@ msgstr ""
 "mục tồn tại cũng được. Bạn cũng có thể đặt đường dẫn tương đối so với tên "
 "tập tin dự án."
 
-#: ../data/geany.glade.h:476 ../src/keybindings.c:331
+#: ../data/geany.glade.h:478 ../src/keybindings.c:331
 msgid "Project"
 msgstr "Dự án"
 
-#: ../data/geany.glade.h:477
+#: ../data/geany.glade.h:479
 #, fuzzy
 msgid "Display:"
 msgstr "Hiển thị"
 
-#: ../data/geany.glade.h:478
+#: ../data/geany.glade.h:480
 #, fuzzy
 msgid "Custom"
 msgstr "Cắt"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:481
 msgid "Use global settings"
 msgstr ""
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:482
 #, fuzzy
 msgid "Load tags file when opening a project"
 msgstr "Đường dẫn trong đó cần bắt đầu khi mở tập tin dự án"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:483
 msgid ""
 "If the parameter is not set, then the tags file will be loaded on demand "
 "when navigating through the symbol definition/declaration"
 msgstr ""
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:484
 msgid "Load type names from tags file"
 msgstr ""
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid ""
 "Allows to highlight the names of custom types without opening source files "
 "where these types are defined"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "<b>Lưu tập tin</b>"
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 msgid "Size:"
 msgstr ""
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 #, fuzzy
 msgid "Location:"
 msgstr "<b>Vị trí:</b>"
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 #, fuzzy
 msgid "Read-only:"
 msgstr ", chỉ đọc"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 #, fuzzy
 msgid "Encoding:"
 msgstr "Bả_ng mã:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 #, fuzzy
 msgid "Modified:"
 msgstr "<b>Sửa đổi:</b>"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 #, fuzzy
 msgid "Changed:"
 msgstr "Đổ_i"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 #, fuzzy
 msgid "Accessed:"
 msgstr "<b>Truy cập:</b>"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "(only inside Geany)"
 msgstr "(chỉ bên trong Geany)"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 #, fuzzy
 msgid "Permissions:"
 msgstr "<b>Quyền hạn:</b>"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "Read:"
 msgstr "Đọc:"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Write:"
 msgstr "Ghi:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Execute:"
 msgstr "Thực hiện:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Owner:"
 msgstr "Sở hữu :"
 
-#: ../data/geany.glade.h:499
+#: ../data/geany.glade.h:501
 msgid "Group:"
 msgstr "Nhóm:"
 
-#: ../data/geany.glade.h:500
+#: ../data/geany.glade.h:502
 msgid "Other:"
 msgstr "Khác:"
 
@@ -2571,12 +2580,12 @@ msgstr "Không có lỗi xây dựng nào nữa."
 msgid "Set menu item label"
 msgstr ""
 
-#: ../src/build.c:1837 ../src/symbols.c:539 ../src/tools.c:416
+#: ../src/build.c:1837 ../src/symbols.c:552 ../src/tools.c:416
 msgid "Label"
 msgstr "Nhãn"
 
 #. command column, holding status and command display
-#: ../src/build.c:1838 ../src/symbols.c:534 ../src/tools.c:401
+#: ../src/build.c:1838 ../src/symbols.c:547 ../src/tools.c:401
 msgid "Command"
 msgstr "Lệnh"
 
@@ -2715,8 +2724,8 @@ msgstr "Không thể thực hiện câu lệnh bên ngoài đã cấu hình « %
 msgid "No context action set."
 msgstr "Hành động ngữ cảnh:"
 
-#: ../src/dialogs.c:160 ../src/document.c:2373 ../src/document.c:2441
-#: ../src/document.c:2450
+#: ../src/dialogs.c:160 ../src/document.c:2378 ../src/document.c:2446
+#: ../src/document.c:2455
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "Không tìm thấy « %s »."
@@ -2803,7 +2812,7 @@ msgstr ""
 "Mở tập tin trong chế độ chỉ đọc. Nếu bạn chọn mở nhiều tập tin, tất cả các "
 "tập tin đó sẽ được mở chỉ-đọc."
 
-#: ../src/dialogs.c:535 ../src/document.c:2120
+#: ../src/dialogs.c:535 ../src/document.c:2125
 msgid "Overwrite?"
 msgstr "Ghi đè ?"
 
@@ -2865,7 +2874,7 @@ msgstr "Gặp lỗi hoặc không thể lấy thông tin về tập tin (v.d. t�
 
 #: ../src/dialogs.c:1203 ../src/dialogs.c:1204 ../src/dialogs.c:1205
 #: ../src/dialogs.c:1211 ../src/dialogs.c:1212 ../src/dialogs.c:1213
-#: ../src/symbols.c:2689 ../src/symbols.c:2706 ../src/ui_utils.c:316
+#: ../src/symbols.c:2712 ../src/symbols.c:2729 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "không rõ"
 
@@ -2882,27 +2891,27 @@ msgstr "(có BOM)"
 msgid "(without BOM)"
 msgstr "(không có BOM)"
 
-#: ../src/document.c:759
+#: ../src/document.c:766
 #, c-format
 msgid "File %s closed."
 msgstr "Tập tin %s đã được đóng."
 
-#: ../src/document.c:921
+#: ../src/document.c:928
 #, c-format
 msgid "New file \"%s\" opened."
 msgstr "Tập tin mới « %s » đã được mở."
 
-#: ../src/document.c:996
+#: ../src/document.c:1001
 #, c-format
 msgid "Could not open file %s (%s)"
 msgstr "Không thể mở tập tin: %s (%s)"
 
-#: ../src/document.c:1049
+#: ../src/document.c:1054
 #, c-format
 msgid "The file \"%s\" is not valid %s."
 msgstr "Tập tin « %s » không phải là %s hợp lệ."
 
-#: ../src/document.c:1052
+#: ../src/document.c:1057
 #, c-format
 msgid ""
 "The file \"%s\" does not look like a text file or the file encoding is not "
@@ -2911,7 +2920,7 @@ msgstr ""
 "Tập tin « %s » có vẻ không phải là tập tin văn bản, hoặc bảng mã tập tin "
 "không được hỗ trợ."
 
-#: ../src/document.c:1063
+#: ../src/document.c:1068
 #, c-format
 msgid ""
 "The file \"%s\" could not be opened properly and has been truncated. This "
@@ -2924,31 +2933,31 @@ msgstr ""
 "tin này có thể gây ra dữ liệu bị mất.\n"
 "Tập tin đã được đặt thành tình trạng chỉ đọc."
 
-#: ../src/document.c:1284
+#: ../src/document.c:1289
 msgid "Spaces"
 msgstr "Dấu cách"
 
-#: ../src/document.c:1287
+#: ../src/document.c:1292
 msgid "Tabs"
 msgstr "Thẻ"
 
-#: ../src/document.c:1290
+#: ../src/document.c:1295
 msgid "Tabs and Spaces"
 msgstr "Tab và Dấu cách"
 
 #. For translators: first wildcard is the indentation mode
 #. * (Spaces, Tabs, Tabs and Spaces), the second one is the filename
-#: ../src/document.c:1295
+#: ../src/document.c:1300
 #, c-format
 msgid "Setting %s indentation mode for %s."
 msgstr "Đang đặt chế độ thụt lề %s cho %s."
 
-#: ../src/document.c:1305
+#: ../src/document.c:1310
 #, fuzzy, c-format
 msgid "Setting indentation width to %d for %s."
 msgstr "Đang đặt chế độ thụt lề %s cho %s."
 
-#: ../src/document.c:1536
+#: ../src/document.c:1541
 #, c-format
 msgid "File %s reloaded."
 msgstr "Tập tin %s đã được tải lại."
@@ -2957,20 +2966,20 @@ msgstr "Tập tin %s đã được tải lại."
 #. * %d is the number of the newly opened file,
 #. * %s indicates whether the file is opened read-only
 #. * (it is replaced with the string ", read-only").
-#: ../src/document.c:1545
+#: ../src/document.c:1550
 #, fuzzy, c-format
 msgid "File %s opened (%d%s)."
 msgstr "Tập tin %s đã được mở (%d%s)."
 
-#: ../src/document.c:1548
+#: ../src/document.c:1553
 msgid ", read-only"
 msgstr ", chỉ đọc"
 
-#: ../src/document.c:1677
+#: ../src/document.c:1682
 msgid "Discard history"
 msgstr ""
 
-#: ../src/document.c:1678
+#: ../src/document.c:1683
 msgid ""
 "The buffer's previous state is stored in the history and undoing restores "
 "it. You can disable this by discarding the history upon reload. This message "
@@ -2978,30 +2987,30 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: ../src/document.c:1683
+#: ../src/document.c:1688
 #, fuzzy
 msgid "The file has been reloaded."
 msgstr "Tập tin %s đã được tải lại."
 
-#: ../src/document.c:1712
+#: ../src/document.c:1717
 msgid "Any unsaved changes will be lost."
 msgstr "Các thay đổi chưa lưu sẽ bị mất."
 
-#: ../src/document.c:1713
+#: ../src/document.c:1718
 #, fuzzy
 msgid "Undo history will be lost."
 msgstr "Các thay đổi chưa lưu sẽ bị mất."
 
-#: ../src/document.c:1714
+#: ../src/document.c:1719
 #, c-format
 msgid "Are you sure you want to reload '%s'?"
 msgstr "Bạn có chắc muốn tải lại « %s » không?"
 
-#: ../src/document.c:1826
+#: ../src/document.c:1831
 msgid "Error renaming file."
 msgstr "Gặp lỗi khi thay đổi tên của tập tin."
 
-#: ../src/document.c:1949
+#: ../src/document.c:1954
 #, c-format
 msgid ""
 "An error occurred while converting the file from UTF-8 in \"%s\". The file "
@@ -3010,7 +3019,7 @@ msgstr ""
 "Gặp lỗi khi chuyển đổi tập tin từ UTF-8 trong « %s ». Tập tin vẫn còn chưa "
 "được lưu."
 
-#: ../src/document.c:1971
+#: ../src/document.c:1976
 #, c-format
 msgid ""
 "Error message: %s\n"
@@ -3019,58 +3028,58 @@ msgstr ""
 "Thông điệp lỗi: %s\n"
 "Lỗi xảy ra ở « %s » (dòng %d, cột %d)."
 
-#: ../src/document.c:1977
+#: ../src/document.c:1982
 #, c-format
 msgid "Error message: %s."
 msgstr "Thông điệp lỗi: %s."
 
-#: ../src/document.c:2040
+#: ../src/document.c:2045
 #, c-format
 msgid "Failed to open file '%s' for writing: fopen() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2058
+#: ../src/document.c:2063
 #, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2072
+#: ../src/document.c:2077
 #, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr ""
 
-#: ../src/document.c:2119 ../src/document.c:3776
+#: ../src/document.c:2124 ../src/document.c:3776
 #, fuzzy
 msgid "_Overwrite"
 msgstr "Ghi đè ?"
 
-#: ../src/document.c:2121 ../src/document.c:3779
+#: ../src/document.c:2126 ../src/document.c:3779
 #, fuzzy, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr ""
 "Tập tin « %s » nằm trên đĩa là mới hơn\n"
 "bộ đệm hiện thời."
 
-#: ../src/document.c:2130 ../src/document.c:3828
+#: ../src/document.c:2135 ../src/document.c:3828
 msgid "Try to resave the file?"
 msgstr "Thử lưu lại tập tin ?"
 
-#: ../src/document.c:2131 ../src/document.c:3829
+#: ../src/document.c:2136 ../src/document.c:3829
 #, fuzzy, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "Không tìm thấy tập tin « %s » trên đĩa."
 
-#: ../src/document.c:2196
+#: ../src/document.c:2201
 #, c-format
 msgid "Cannot save read-only document '%s'!"
 msgstr ""
 
-#: ../src/document.c:2262
+#: ../src/document.c:2267
 #, c-format
 msgid "Error saving file (%s)."
 msgstr "Gặp lỗi khi lưu tập tin (%s)."
 
-#: ../src/document.c:2267
+#: ../src/document.c:2272
 #, c-format
 msgid ""
 "%s\n"
@@ -3078,26 +3087,26 @@ msgid ""
 "The file on disk may now be truncated!"
 msgstr ""
 
-#: ../src/document.c:2271
+#: ../src/document.c:2276
 msgid "Error saving file."
 msgstr "Gặp lỗi khi lưu tập tin."
 
-#: ../src/document.c:2295
+#: ../src/document.c:2300
 #, c-format
 msgid "File %s saved."
 msgstr "Tập tin %s đã được lưu."
 
-#: ../src/document.c:2449
+#: ../src/document.c:2454
 msgid "Wrap search and find again?"
 msgstr "Cuộn qua việc tìm và tìm lại không?"
 
-#: ../src/document.c:2550 ../src/search.c:1498 ../src/search.c:1552
-#: ../src/search.c:2468 ../src/search.c:2470
+#: ../src/document.c:2555 ../src/search.c:1498 ../src/search.c:1552
+#: ../src/search.c:2515 ../src/search.c:2517
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "Không tìm thấy cái nào tương ứng với « %s »."
 
-#: ../src/document.c:2556
+#: ../src/document.c:2561
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
@@ -3107,15 +3116,15 @@ msgstr[0] "%s: mới thay thế %d lần gặp « %s » bằng « %s »."
 msgid "Do you want to reload it?"
 msgstr "Bạn có muốn tải lại nó không?"
 
-#: ../src/editor.c:4988
+#: ../src/editor.c:5004
 msgid "Enter Tab Width"
 msgstr "Nhập chiều rộng của khoảng tab"
 
-#: ../src/editor.c:4989
+#: ../src/editor.c:5005
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "Hãy nhập số các dấu cách nên bị một ký tự tab thay thế."
 
-#: ../src/editor.c:5201
+#: ../src/editor.c:5217
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr ""
@@ -3361,32 +3370,32 @@ msgstr "Sai đặt biểu thức chính quy cho dạng tập tin %s: %s"
 msgid "untitled"
 msgstr "không tên"
 
-#: ../src/highlighting.c:1288 ../src/libmain.c:896 ../src/socket.c:170
+#: ../src/highlighting.c:1287 ../src/libmain.c:896 ../src/socket.c:170
 #: ../src/templates.c:234
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "Không tìm thấy tập tin « %s »."
 
-#: ../src/highlighting.c:1367
+#: ../src/highlighting.c:1366
 msgid "Default"
 msgstr ""
 
-#: ../src/highlighting.c:1409
+#: ../src/highlighting.c:1408
 #, fuzzy
 msgid "The current filetype overrides the default style."
 msgstr "Xây dựng tập tin hiện thời, dùng công cụ Make và đích đến mặc định"
 
-#: ../src/highlighting.c:1410
+#: ../src/highlighting.c:1409
 msgid "This may cause color schemes to display incorrectly."
 msgstr ""
 
-#: ../src/highlighting.c:1437
+#: ../src/highlighting.c:1436
 #, fuzzy
 msgid "Color Schemes"
 msgstr "Bảng _chọn màu"
 
 #. visual group order
-#: ../src/keybindings.c:320 ../src/symbols.c:509
+#: ../src/keybindings.c:320 ../src/symbols.c:522
 msgid "File"
 msgstr "Tập tin"
 
@@ -3422,12 +3431,12 @@ msgstr "Đi tới"
 msgid "View"
 msgstr "Xem"
 
-#: ../src/keybindings.c:330 ../src/symbols.c:660
+#: ../src/keybindings.c:330 ../src/symbols.c:673
 msgid "Document"
 msgstr "Tài liệu"
 
 #: ../src/keybindings.c:332 ../src/keybindings.c:738 ../src/project.c:528
-#: ../src/ui_utils.c:2331
+#: ../src/ui_utils.c:2366
 msgid "Build"
 msgstr "Xây dựng"
 
@@ -3467,7 +3476,7 @@ msgstr "Lưu dạng"
 msgid "Save all"
 msgstr "Lưu tất cả"
 
-#: ../src/keybindings.c:359 ../src/symbols.c:745
+#: ../src/keybindings.c:359 ../src/symbols.c:758
 msgid "Properties"
 msgstr "Thuộc tính"
 
@@ -3979,11 +3988,11 @@ msgstr "Phím tắt"
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Có thể cấu hình những phím tắt này:"
 
-#: ../src/keyfile.c:1067
+#: ../src/keyfile.c:1069
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr "Gõ bất cứ đoạn nào vào đây: dùng nó là bảng thông báo/viết tháu"
 
-#: ../src/keyfile.c:1295
+#: ../src/keyfile.c:1297
 msgid "Failed to load one or more session files."
 msgstr "Lỗi nạp một hay nhiều tập tin phiên chạy."
 
@@ -4176,29 +4185,29 @@ msgstr "Thông điệp Gỡ lỗi"
 msgid "Cl_ear"
 msgstr "_Tìm"
 
-#: ../src/msgwindow.c:233
+#: ../src/msgwindow.c:208
 msgid "Status messages"
 msgstr "Thông điệp trạng thái"
 
-#: ../src/msgwindow.c:748
+#: ../src/msgwindow.c:743
 #, fuzzy
 msgid "C_opy"
 msgstr "Chép"
 
-#: ../src/msgwindow.c:758
+#: ../src/msgwindow.c:753
 msgid "Copy _All"
 msgstr "Ché_p tất cả"
 
-#: ../src/msgwindow.c:790
+#: ../src/msgwindow.c:785
 msgid "_Hide Message Window"
 msgstr "Ẩn cửa sổ t_hông điệp"
 
-#: ../src/msgwindow.c:854
+#: ../src/msgwindow.c:849
 #, c-format
 msgid "Could not find file '%s' - trying the current document path."
 msgstr ""
 
-#: ../src/msgwindow.c:1326
+#: ../src/msgwindow.c:1321
 msgid "The document has been closed."
 msgstr ""
 
@@ -4285,11 +4294,11 @@ msgstr "Bắt phím"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Gõ tổ hợp phím nên đại diện « %s »."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2850 ../src/sidebar.c:780
+#: ../src/prefs.c:226 ../src/symbols.c:2873 ../src/sidebar.c:820
 msgid "_Expand All"
 msgstr "Giãn _ra tất cả"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2857 ../src/sidebar.c:786
+#: ../src/prefs.c:231 ../src/symbols.c:2880 ../src/sidebar.c:826
 msgid "_Collapse All"
 msgstr "_Co lại tất cả"
 
@@ -4301,31 +4310,31 @@ msgstr "Hành động"
 msgid "Shortcut"
 msgstr "Phím tắt"
 
-#: ../src/prefs.c:1517
+#: ../src/prefs.c:1523
 msgid "_Allow"
 msgstr ""
 
-#: ../src/prefs.c:1519
+#: ../src/prefs.c:1525
 msgid "_Override"
 msgstr "_Ghi đè"
 
-#: ../src/prefs.c:1520
+#: ../src/prefs.c:1526
 msgid "Override that keybinding?"
 msgstr "Ghi đè lên tổ hợp phím đó không?"
 
-#: ../src/prefs.c:1521
+#: ../src/prefs.c:1527
 #, c-format
 msgid "The combination '%s' is already used for \"%s\"."
 msgstr "Tổ hợp « %s » đã được dùng cho « %s »."
 
 #. add manually GeanyWrapLabels because they can't be added with Glade
 #. page Tools
-#: ../src/prefs.c:1730
+#: ../src/prefs.c:1736
 msgid "Enter tool paths below. Tools you do not need can be left blank."
 msgstr "Hãy nhập bên dưới những đường dẫn công; bỏ trống công cụ không cần."
 
 #. page Templates
-#: ../src/prefs.c:1735
+#: ../src/prefs.c:1741
 msgid ""
 "Set the information to be used in templates. See the documentation for "
 "details."
@@ -4334,7 +4343,7 @@ msgstr ""
 "tìm chi tiết."
 
 #. page Keybindings
-#: ../src/prefs.c:1740
+#: ../src/prefs.c:1746
 msgid ""
 "Here you can change keyboard shortcuts for various actions. Select one and "
 "press the Change button to enter a new shortcut, or double click on an "
@@ -4345,7 +4354,7 @@ msgstr ""
 "nào để chỉnh sửa trực tiếp chuỗi đại diện phím tắt đó."
 
 #. page Editor->Indentation
-#: ../src/prefs.c:1745
+#: ../src/prefs.c:1751
 msgid ""
 "<i>Warning: these settings are overridden by the current project. See "
 "<b>Project->Properties</b>.</i>"
@@ -4751,7 +4760,7 @@ msgstr "Tù_y chọn thêm:"
 msgid "E_xtra options 3:"
 msgstr "Tù_y chọn thêm:"
 
-#: ../src/search.c:1501 ../src/search.c:2475 ../src/search.c:2479
+#: ../src/search.c:1501 ../src/search.c:2522 ../src/search.c:2526
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
@@ -4762,24 +4771,24 @@ msgstr[0] "Tìm %d mục tương ứng với « %s »."
 msgid "Replaced %u matches in %u documents."
 msgstr "Thay thế văn bản trong tài liệu hiện thời"
 
-#: ../src/search.c:1767
+#: ../src/search.c:1792
 msgid "Invalid directory for find in files."
 msgstr "Thư mục không hợp lệ để tìm trong tập tin."
 
-#: ../src/search.c:1787
+#: ../src/search.c:1813
 msgid "No text to find."
 msgstr "Không có đoạn cần tìm."
 
-#: ../src/search.c:1874
+#: ../src/search.c:1900
 msgid "Searching..."
 msgstr "Đang tìm kiếm..."
 
-#: ../src/search.c:1876
+#: ../src/search.c:1902
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (trong thư mục: %s)"
 
-#: ../src/search.c:1885
+#: ../src/search.c:1911
 #, fuzzy, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4787,27 +4796,27 @@ msgstr ""
 "Không thể thực hiện công cụ grep « %s »: kiểm tra xem thiết lập đường dẫn là "
 "đúng trong Tùy thích."
 
-#: ../src/search.c:1925
+#: ../src/search.c:1951
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "Không thể mở thư mục (%s)"
 
-#: ../src/search.c:2079
+#: ../src/search.c:2120
 #, fuzzy
 msgid "Search failed."
 msgstr "Tìm _kiếm:"
 
-#: ../src/search.c:2102
+#: ../src/search.c:2143
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "Hoàn tất tìm kiếm: có %d kết quả."
 
-#: ../src/search.c:2110
+#: ../src/search.c:2151
 msgid "No matches found."
 msgstr "Không tìm thấy."
 
-#: ../src/search.c:2140
+#: ../src/search.c:2181
 #, fuzzy, c-format
 msgid "Bad regex: %s"
 msgstr "Sai đặt biểu thức chính quy cho dạng tập tin %s: %s"
@@ -4851,346 +4860,346 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: ../src/symbols.c:488 ../src/symbols.c:540 ../src/symbols.c:650
+#: ../src/symbols.c:501 ../src/symbols.c:553 ../src/symbols.c:663
 msgid "Chapter"
 msgstr "Chương"
 
-#: ../src/symbols.c:489 ../src/symbols.c:536 ../src/symbols.c:651
+#: ../src/symbols.c:502 ../src/symbols.c:549 ../src/symbols.c:664
 msgid "Section"
 msgstr "Phần"
 
-#: ../src/symbols.c:490
+#: ../src/symbols.c:503
 msgid "Sect1"
 msgstr "Phần 1"
 
-#: ../src/symbols.c:491
+#: ../src/symbols.c:504
 msgid "Sect2"
 msgstr "Phần 2"
 
-#: ../src/symbols.c:492
+#: ../src/symbols.c:505
 msgid "Sect3"
 msgstr "Phần 3"
 
-#: ../src/symbols.c:493
+#: ../src/symbols.c:506
 msgid "Appendix"
 msgstr "Phụ lục"
 
-#: ../src/symbols.c:494 ../src/symbols.c:541 ../src/symbols.c:566
-#: ../src/symbols.c:582 ../src/symbols.c:597 ../src/symbols.c:608
-#: ../src/symbols.c:709 ../src/symbols.c:720 ../src/symbols.c:733
-#: ../src/symbols.c:748 ../src/symbols.c:760 ../src/symbols.c:772
-#: ../src/symbols.c:789 ../src/symbols.c:818 ../src/symbols.c:850
+#: ../src/symbols.c:507 ../src/symbols.c:554 ../src/symbols.c:579
+#: ../src/symbols.c:595 ../src/symbols.c:610 ../src/symbols.c:621
+#: ../src/symbols.c:722 ../src/symbols.c:733 ../src/symbols.c:746
+#: ../src/symbols.c:761 ../src/symbols.c:773 ../src/symbols.c:785
+#: ../src/symbols.c:802 ../src/symbols.c:831 ../src/symbols.c:863
 msgid "Other"
 msgstr "Khác"
 
-#: ../src/symbols.c:500 ../src/symbols.c:780 ../src/symbols.c:828
+#: ../src/symbols.c:513 ../src/symbols.c:793 ../src/symbols.c:841
 msgid "Module"
 msgstr "Mô-đun"
 
-#: ../src/symbols.c:501 ../src/symbols.c:593 ../src/symbols.c:705
-#: ../src/symbols.c:758 ../src/symbols.c:770 ../src/symbols.c:785
-#: ../src/symbols.c:799
+#: ../src/symbols.c:514 ../src/symbols.c:606 ../src/symbols.c:718
+#: ../src/symbols.c:771 ../src/symbols.c:783 ../src/symbols.c:798
+#: ../src/symbols.c:812
 msgid "Types"
 msgstr "Kiểu"
 
-#: ../src/symbols.c:502
+#: ../src/symbols.c:515
 msgid "Type constructors"
 msgstr "Hàm tạo kiểu"
 
-#: ../src/symbols.c:503 ../src/symbols.c:527 ../src/symbols.c:548
-#: ../src/symbols.c:565 ../src/symbols.c:577 ../src/symbols.c:590
-#: ../src/symbols.c:605 ../src/symbols.c:619 ../src/symbols.c:629
-#: ../src/symbols.c:693 ../src/symbols.c:744 ../src/symbols.c:767
-#: ../src/symbols.c:812 ../src/symbols.c:836
+#: ../src/symbols.c:516 ../src/symbols.c:540 ../src/symbols.c:561
+#: ../src/symbols.c:578 ../src/symbols.c:590 ../src/symbols.c:603
+#: ../src/symbols.c:618 ../src/symbols.c:632 ../src/symbols.c:642
+#: ../src/symbols.c:706 ../src/symbols.c:757 ../src/symbols.c:780
+#: ../src/symbols.c:825 ../src/symbols.c:849
 msgid "Functions"
 msgstr "Hàm"
 
-#: ../src/symbols.c:508
+#: ../src/symbols.c:521
 msgid "Program"
 msgstr ""
 
-#: ../src/symbols.c:510
+#: ../src/symbols.c:523
 msgid "Divisions"
 msgstr ""
 
-#: ../src/symbols.c:511 ../src/symbols.c:520 ../src/symbols.c:526
+#: ../src/symbols.c:524 ../src/symbols.c:533 ../src/symbols.c:539
 msgid "Sections"
 msgstr "Phần"
 
-#: ../src/symbols.c:512
+#: ../src/symbols.c:525
 msgid "Paragraph"
 msgstr ""
 
-#: ../src/symbols.c:513
+#: ../src/symbols.c:526
 #, fuzzy
 msgid "Group"
 msgstr "Nhóm:"
 
-#: ../src/symbols.c:514
+#: ../src/symbols.c:527
 msgid "Data"
 msgstr ""
 
-#: ../src/symbols.c:515
+#: ../src/symbols.c:528
 msgid "Copies"
 msgstr ""
 
-#: ../src/symbols.c:521
+#: ../src/symbols.c:534
 msgid "Keys"
 msgstr "Khoá"
 
-#: ../src/symbols.c:528 ../src/symbols.c:579 ../src/symbols.c:595
-#: ../src/symbols.c:621 ../src/symbols.c:694 ../src/symbols.c:719
-#: ../src/symbols.c:746 ../src/symbols.c:759 ../src/symbols.c:768
-#: ../src/symbols.c:784 ../src/symbols.c:819 ../src/symbols.c:848
+#: ../src/symbols.c:541 ../src/symbols.c:592 ../src/symbols.c:608
+#: ../src/symbols.c:634 ../src/symbols.c:707 ../src/symbols.c:732
+#: ../src/symbols.c:759 ../src/symbols.c:772 ../src/symbols.c:781
+#: ../src/symbols.c:797 ../src/symbols.c:832 ../src/symbols.c:861
 msgid "Variables"
 msgstr "Biến"
 
-#: ../src/symbols.c:535
+#: ../src/symbols.c:548
 msgid "Environment"
 msgstr "Môi trường"
 
-#: ../src/symbols.c:537 ../src/symbols.c:652
+#: ../src/symbols.c:550 ../src/symbols.c:665
 msgid "Subsection"
 msgstr "Phần phụ"
 
-#: ../src/symbols.c:538 ../src/symbols.c:653
+#: ../src/symbols.c:551 ../src/symbols.c:666
 msgid "Subsubsection"
 msgstr "Phần phụ con"
 
-#: ../src/symbols.c:549 ../src/symbols.c:574
+#: ../src/symbols.c:562 ../src/symbols.c:587
 msgid "Structures"
 msgstr "Cấu trúc"
 
-#: ../src/symbols.c:556
+#: ../src/symbols.c:569
 msgid "Parts"
 msgstr ""
 
-#: ../src/symbols.c:557
+#: ../src/symbols.c:570
 msgid "Assembly"
 msgstr ""
 
-#: ../src/symbols.c:558
+#: ../src/symbols.c:571
 msgid "Steps"
 msgstr ""
 
-#: ../src/symbols.c:573 ../src/symbols.c:671 ../src/symbols.c:717
+#: ../src/symbols.c:586 ../src/symbols.c:684 ../src/symbols.c:730
 msgid "Modules"
 msgstr "Mô-đun"
 
-#: ../src/symbols.c:575 ../src/symbols.c:622
+#: ../src/symbols.c:588 ../src/symbols.c:635
 msgid "Traits"
 msgstr ""
 
-#: ../src/symbols.c:576
+#: ../src/symbols.c:589
 #, fuzzy
 msgid "Implementations"
 msgstr "Thụt lề"
 
-#: ../src/symbols.c:578 ../src/symbols.c:839
+#: ../src/symbols.c:591 ../src/symbols.c:852
 msgid "Typedefs / Enums"
 msgstr "Xác định kiểu / Đánh số"
 
-#: ../src/symbols.c:580 ../src/symbols.c:797 ../src/symbols.c:806
-#: ../src/symbols.c:845
+#: ../src/symbols.c:593 ../src/symbols.c:810 ../src/symbols.c:819
+#: ../src/symbols.c:858
 msgid "Macros"
 msgstr "Vĩ lệnh"
 
-#: ../src/symbols.c:581 ../src/symbols.c:674 ../src/symbols.c:683
-#: ../src/symbols.c:692 ../src/symbols.c:730 ../src/symbols.c:757
+#: ../src/symbols.c:594 ../src/symbols.c:687 ../src/symbols.c:696
+#: ../src/symbols.c:705 ../src/symbols.c:743 ../src/symbols.c:770
 msgid "Methods"
 msgstr "Phương pháp"
 
-#: ../src/symbols.c:589 ../src/symbols.c:604 ../src/symbols.c:702
-#: ../src/symbols.c:727 ../src/symbols.c:741
+#: ../src/symbols.c:602 ../src/symbols.c:617 ../src/symbols.c:715
+#: ../src/symbols.c:740 ../src/symbols.c:754
 msgid "Package"
 msgstr "Gói"
 
-#: ../src/symbols.c:591 ../src/symbols.c:617 ../src/symbols.c:728
-#: ../src/symbols.c:742 ../src/symbols.c:755 ../src/symbols.c:782
-#: ../src/symbols.c:835
+#: ../src/symbols.c:604 ../src/symbols.c:630 ../src/symbols.c:741
+#: ../src/symbols.c:755 ../src/symbols.c:768 ../src/symbols.c:795
+#: ../src/symbols.c:848
 msgid "Interfaces"
 msgstr "Giao diện"
 
-#: ../src/symbols.c:592 ../src/symbols.c:838
+#: ../src/symbols.c:605 ../src/symbols.c:851
 msgid "Structs"
 msgstr "Cấu trúc"
 
-#: ../src/symbols.c:594 ../src/symbols.c:607 ../src/symbols.c:620
-#: ../src/symbols.c:747 ../src/symbols.c:769
+#: ../src/symbols.c:607 ../src/symbols.c:620 ../src/symbols.c:633
+#: ../src/symbols.c:760 ../src/symbols.c:782
 msgid "Constants"
 msgstr "Hằng"
 
-#: ../src/symbols.c:596 ../src/symbols.c:731 ../src/symbols.c:837
+#: ../src/symbols.c:609 ../src/symbols.c:744 ../src/symbols.c:850
 msgid "Members"
 msgstr "Bộ phạn"
 
-#: ../src/symbols.c:606 ../src/symbols.c:771 ../src/symbols.c:796
+#: ../src/symbols.c:619 ../src/symbols.c:784 ../src/symbols.c:809
 msgid "Labels"
 msgstr "Nhãn"
 
-#: ../src/symbols.c:616 ../src/symbols.c:681 ../src/symbols.c:831
+#: ../src/symbols.c:629 ../src/symbols.c:694 ../src/symbols.c:844
 msgid "Namespaces"
 msgstr "Miền tên"
 
-#: ../src/symbols.c:618 ../src/symbols.c:640 ../src/symbols.c:672
-#: ../src/symbols.c:682 ../src/symbols.c:691 ../src/symbols.c:729
-#: ../src/symbols.c:743 ../src/symbols.c:756 ../src/symbols.c:834
+#: ../src/symbols.c:631 ../src/symbols.c:653 ../src/symbols.c:685
+#: ../src/symbols.c:695 ../src/symbols.c:704 ../src/symbols.c:742
+#: ../src/symbols.c:756 ../src/symbols.c:769 ../src/symbols.c:847
 msgid "Classes"
 msgstr "Hạng"
 
-#: ../src/symbols.c:630
+#: ../src/symbols.c:643
 msgid "Anchors"
 msgstr "Neo"
 
-#: ../src/symbols.c:631
+#: ../src/symbols.c:644
 msgid "H1 Headings"
 msgstr "Tiêu đề H1"
 
-#: ../src/symbols.c:632
+#: ../src/symbols.c:645
 msgid "H2 Headings"
 msgstr "Tiêu đề H2"
 
-#: ../src/symbols.c:633
+#: ../src/symbols.c:646
 msgid "H3 Headings"
 msgstr "Tiêu đề H3"
 
-#: ../src/symbols.c:641
+#: ../src/symbols.c:654
 msgid "ID Selectors"
 msgstr "Bộ chọn ID"
 
-#: ../src/symbols.c:642
+#: ../src/symbols.c:655
 msgid "Type Selectors"
 msgstr "Bộ chọn kiểu"
 
-#: ../src/symbols.c:661
+#: ../src/symbols.c:674
 #, fuzzy
 msgid "Section Level 1"
 msgstr "Phần"
 
-#: ../src/symbols.c:662
+#: ../src/symbols.c:675
 #, fuzzy
 msgid "Section Level 2"
 msgstr "Phần"
 
-#: ../src/symbols.c:663
+#: ../src/symbols.c:676
 #, fuzzy
 msgid "Section Level 3"
 msgstr "Phần"
 
-#: ../src/symbols.c:664
+#: ../src/symbols.c:677
 #, fuzzy
 msgid "Section Level 4"
 msgstr "Phần"
 
-#: ../src/symbols.c:673
+#: ../src/symbols.c:686
 msgid "Singletons"
 msgstr "Vật đơn"
 
-#: ../src/symbols.c:684 ../src/symbols.c:813
+#: ../src/symbols.c:697 ../src/symbols.c:826
 msgid "Procedures"
 msgstr "Thủ tục"
 
-#: ../src/symbols.c:695 ../src/symbols.c:740
+#: ../src/symbols.c:708 ../src/symbols.c:753
 msgid "Imports"
 msgstr "Nhập khẩu"
 
-#: ../src/symbols.c:703
+#: ../src/symbols.c:716
 #, fuzzy
 msgid "Entities"
 msgstr "không tên"
 
-#: ../src/symbols.c:704
+#: ../src/symbols.c:717
 #, fuzzy
 msgid "Architectures"
 msgstr "Cấu trúc"
 
-#: ../src/symbols.c:706
+#: ../src/symbols.c:719
 #, fuzzy
 msgid "Functions / Procedures"
 msgstr "Thủ tục"
 
-#: ../src/symbols.c:707
+#: ../src/symbols.c:720
 #, fuzzy
 msgid "Variables / Signals"
 msgstr "Biến"
 
-#: ../src/symbols.c:708
+#: ../src/symbols.c:721
 msgid "Processes / Blocks / Components"
 msgstr ""
 
-#: ../src/symbols.c:716
+#: ../src/symbols.c:729
 msgid "Events"
 msgstr ""
 
-#: ../src/symbols.c:718
+#: ../src/symbols.c:731
 #, fuzzy
 msgid "Functions / Tasks"
 msgstr "Hàm"
 
-#: ../src/symbols.c:732 ../src/symbols.c:788
+#: ../src/symbols.c:745 ../src/symbols.c:801
 msgid "Enums"
 msgstr ""
 
-#: ../src/symbols.c:781
+#: ../src/symbols.c:794
 msgid "Programs"
 msgstr ""
 
-#: ../src/symbols.c:783
+#: ../src/symbols.c:796
 #, fuzzy
 msgid "Functions / Subroutines"
 msgstr "Thủ tục"
 
-#: ../src/symbols.c:786
+#: ../src/symbols.c:799
 #, fuzzy
 msgid "Components"
 msgstr "Mục điền nốt"
 
-#: ../src/symbols.c:787
+#: ../src/symbols.c:800
 msgid "Blocks"
 msgstr "Khối"
 
-#: ../src/symbols.c:798
+#: ../src/symbols.c:811
 msgid "Defines"
 msgstr "Xác định"
 
-#: ../src/symbols.c:805
+#: ../src/symbols.c:818
 msgid "Targets"
 msgstr "Đích"
 
-#: ../src/symbols.c:814
+#: ../src/symbols.c:827
 msgid "Indexes"
 msgstr ""
 
-#: ../src/symbols.c:815
+#: ../src/symbols.c:828
 #, fuzzy
 msgid "Tables"
 msgstr "Biến"
 
-#: ../src/symbols.c:816
+#: ../src/symbols.c:829
 msgid "Triggers"
 msgstr ""
 
-#: ../src/symbols.c:817
+#: ../src/symbols.c:830
 #, fuzzy
 msgid "Views"
 msgstr "Xem"
 
-#: ../src/symbols.c:849
+#: ../src/symbols.c:862
 #, fuzzy
 msgid "Extern Variables"
 msgstr "Biến"
 
-#: ../src/symbols.c:1683
+#: ../src/symbols.c:1696
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "Gặp phần mở rộng kiểu tập tin lạ cho « %s ».\n"
 
-#: ../src/symbols.c:1710
+#: ../src/symbols.c:1723
 #, fuzzy, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr "Lỗi tạo tập tin thẻ, có lẽ vì không tìm thấy thẻ.\n"
 
-#: ../src/symbols.c:1717
+#: ../src/symbols.c:1730
 #, fuzzy, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -5199,7 +5208,7 @@ msgstr ""
 "Sử dụng: %s -g <tập tin thẻ> <danh sách tập tin>\n"
 "\n"
 
-#: ../src/symbols.c:1718
+#: ../src/symbols.c:1731
 #, c-format
 msgid ""
 "Example:\n"
@@ -5210,63 +5219,63 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1732
+#: ../src/symbols.c:1745
 #, fuzzy
 msgid "Load Tags File"
 msgstr "Nạp thẻ"
 
-#: ../src/symbols.c:1740
+#: ../src/symbols.c:1753
 #, fuzzy
 msgid "Geany tags file (*.*.tags)"
 msgstr "Tập tin thẻ Geany (*.tags)"
 
 #. For translators: the first wildcard is the filetype,
 #. * the second the filename
-#: ../src/symbols.c:1761
+#: ../src/symbols.c:1774
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "Mới nạp tập tin thẻ %s « %s »."
 
-#: ../src/symbols.c:1765
+#: ../src/symbols.c:1778
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "Không thể nạp tập tin thẻ « %s »."
 
-#: ../src/symbols.c:2025
+#: ../src/symbols.c:2038
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>Hiển thị</b>"
 
-#: ../src/symbols.c:2028
+#: ../src/symbols.c:2041
 #, fuzzy, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>Hiển thị</b>"
 
-#: ../src/symbols.c:2034
+#: ../src/symbols.c:2047
 #, c-format
 msgid "%s: %lu  (%s)"
 msgstr ""
 
-#: ../src/symbols.c:2037
+#: ../src/symbols.c:2050
 #, c-format
 msgid "%s: %lu"
 msgstr ""
 
-#: ../src/symbols.c:2429
+#: ../src/symbols.c:2452
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "Không tìm thấy lời tuyên bố tới « %s »."
 
-#: ../src/symbols.c:2432
+#: ../src/symbols.c:2455
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "Không tìm thấy lời xác định « %s »."
 
-#: ../src/symbols.c:2868
+#: ../src/symbols.c:2891
 msgid "Sort by _Name"
 msgstr "Sắp xếp theo Tê_n"
 
-#: ../src/symbols.c:2876
+#: ../src/symbols.c:2899
 msgid "Sort by _Appearance"
 msgstr "Sắp xếp theo sự _Xuất hiện"
 
@@ -5519,37 +5528,37 @@ msgstr "Từ :"
 msgid "Characters:"
 msgstr "Ký tự :"
 
-#: ../src/sidebar.c:181
+#: ../src/sidebar.c:186
 #, fuzzy
 msgid "No symbols found"
 msgstr "Không tìm thấy thẻ"
 
-#: ../src/sidebar.c:610
+#: ../src/sidebar.c:638
 msgid "Show S_ymbol List"
 msgstr "Hiện danh sách _Ký hiệu"
 
-#: ../src/sidebar.c:622
+#: ../src/sidebar.c:651
 msgid "Show _Document List"
 msgstr "Hiện _danh sách Tài liệu"
 
-#: ../src/sidebar.c:634 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:664 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "Ẩ_n khung lề"
 
-#: ../src/sidebar.c:740
+#: ../src/sidebar.c:777
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:747
+#: ../src/sidebar.c:785
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:759 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:798 ../plugins/filebrowser.c:678
 #, fuzzy
 msgid "_Find in Files..."
 msgstr "_Tìm trong tập tin"
 
-#: ../src/sidebar.c:769
+#: ../src/sidebar.c:808
 msgid "Show _Paths"
 msgstr "Hiện Đường _dẫn"
 
@@ -5597,71 +5606,71 @@ msgstr "T/S"
 msgid "MOD"
 msgstr "SỬA"
 
-#: ../src/ui_utils.c:407
+#: ../src/ui_utils.c:423
 #, fuzzy
 msgid "(new instance) "
 msgstr "Kế thừa"
 
-#: ../src/ui_utils.c:474
+#: ../src/ui_utils.c:509
 #, c-format
 msgid "Font updated (%s)."
 msgstr "Phông chữ đã được cập nhật (%s)."
 
-#: ../src/ui_utils.c:732
+#: ../src/ui_utils.c:767
 msgid "C Standard Library"
 msgstr "Thư Viện Chuẩn C"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../src/ui_utils.c:734
+#: ../src/ui_utils.c:769
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:736
+#: ../src/ui_utils.c:771
 msgid "C++ (C Standard Library)"
 msgstr "C++ (Thư Viện Chuẩn C)"
 
-#: ../src/ui_utils.c:738
+#: ../src/ui_utils.c:773
 msgid "C++ Standard Library"
 msgstr "Thư Viện Chuẩn C++"
 
 # Name: don't translate/Tên: đừng dịch
-#: ../src/ui_utils.c:740
+#: ../src/ui_utils.c:775
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:762 ../src/ui_utils.c:849
+#: ../src/ui_utils.c:797 ../src/ui_utils.c:884
 msgid "dd.mm.yyyy"
 msgstr "nn.tt.NNNN"
 
-#: ../src/ui_utils.c:764 ../src/ui_utils.c:850
+#: ../src/ui_utils.c:799 ../src/ui_utils.c:885
 msgid "mm.dd.yyyy"
 msgstr "tt.nn.NNNN"
 
-#: ../src/ui_utils.c:766 ../src/ui_utils.c:851
+#: ../src/ui_utils.c:801 ../src/ui_utils.c:886
 msgid "yyyy/mm/dd"
 msgstr "NNNN/tt/nn"
 
-#: ../src/ui_utils.c:768 ../src/ui_utils.c:860
+#: ../src/ui_utils.c:803 ../src/ui_utils.c:895
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "nn.tt.NNNN GG:pp:gg"
 
-#: ../src/ui_utils.c:770 ../src/ui_utils.c:861
+#: ../src/ui_utils.c:805 ../src/ui_utils.c:896
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "tt.nn.NNNN GG:pp:gg"
 
-#: ../src/ui_utils.c:772 ../src/ui_utils.c:862
+#: ../src/ui_utils.c:807 ../src/ui_utils.c:897
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "NNNN/tt/nn GG:pp:gg"
 
-#: ../src/ui_utils.c:774 ../src/ui_utils.c:871
+#: ../src/ui_utils.c:809 ../src/ui_utils.c:906
 msgid "_Use Custom Date Format"
 msgstr "_Dùng định dạng ngày riêng"
 
-#: ../src/ui_utils.c:778
+#: ../src/ui_utils.c:813
 msgid "Custom Date Format"
 msgstr "Định dạng ngày riêng"
 
-#: ../src/ui_utils.c:780
+#: ../src/ui_utils.c:815
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5670,76 +5679,76 @@ msgstr ""
 "ký tự chuyển đổi nào dùng được với hàm strftime kiểu C ANSI. Xem « man "
 "strftime » để tìm thêm thông tin."
 
-#: ../src/ui_utils.c:802
+#: ../src/ui_utils.c:837
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "Không thể chuyển đổi chuỗi định dạng ngày tháng (có thể quá dài)."
 
-#: ../src/ui_utils.c:886
+#: ../src/ui_utils.c:921
 msgid "_Set Custom Date Format"
 msgstr "Đặt định dạng ngày _riêng"
 
-#: ../src/ui_utils.c:2118
+#: ../src/ui_utils.c:2153
 msgid "Select Folder"
 msgstr "Chọn thư mục"
 
-#: ../src/ui_utils.c:2118
+#: ../src/ui_utils.c:2153
 msgid "Select File"
 msgstr "Chọn tập tin"
 
-#: ../src/ui_utils.c:2291
+#: ../src/ui_utils.c:2326
 #, fuzzy
 msgid "_Filetype Configuration"
 msgstr "Nạp _lại cấu hình"
 
-#: ../src/ui_utils.c:2329
+#: ../src/ui_utils.c:2364
 msgid "Save All"
 msgstr "Lưu tất cả"
 
-#: ../src/ui_utils.c:2330
+#: ../src/ui_utils.c:2365
 msgid "Close All"
 msgstr "Đóng tất cả"
 
-#: ../src/ui_utils.c:2569
+#: ../src/ui_utils.c:2604
 msgid "Geany cannot start!"
 msgstr ""
 
-#: ../src/utils.c:87
+#: ../src/utils.c:86
 #, fuzzy
 msgid "Select Browser"
 msgstr "Bộ duyệt tập tin"
 
-#: ../src/utils.c:89
+#: ../src/utils.c:88
 msgid ""
 "Failed to spawn the configured browser command. Please correct it or enter "
 "another one."
 msgstr ""
 
 # Literal: don't translate/Nghĩa chữ : đừng dịch
-#: ../src/utils.c:376
+#: ../src/utils.c:375
 #, fuzzy
 msgid "Windows (CRLF)"
 msgstr "Win (CRLF)"
 
 # Literal: don't translate/Nghĩa chữ : đừng dịch
-#: ../src/utils.c:377
+#: ../src/utils.c:376
 #, fuzzy
 msgid "Classic Mac (CR)"
 msgstr "Mac (CR)"
 
 # Literal: don't translate/Nghĩa chữ : đừng dịch
-#: ../src/utils.c:378
+#: ../src/utils.c:377
 msgid "Unix (LF)"
 msgstr "UNIX (LF)"
 
-#: ../src/utils.c:387
+#: ../src/utils.c:386
 msgid "CRLF"
 msgstr ""
 
-#: ../src/utils.c:388
+#: ../src/utils.c:387
 msgid "CR"
 msgstr ""
 
-#: ../src/utils.c:389
+#: ../src/utils.c:388
 msgid "LF"
 msgstr ""
 
