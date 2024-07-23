@@ -1694,7 +1694,7 @@ static void append_extra_options(GString *gstr, gchar *extra_options)
 {
 	g_strstrip(extra_options);
 	
-	if (*extra_options != 0)
+	if (*extra_options)
 	{
 		g_string_append_c(gstr, ' ');
 		g_string_append(gstr, extra_options);
@@ -1727,6 +1727,7 @@ static GString *get_grep_options(void)
 		append_extra_options(gstr, settings.fif_extra_options3);
 	
 	g_strstrip(settings.fif_files);
+	
 	if (settings.fif_files_mode != FILES_MODE_ALL && *settings.fif_files)
 	{
 		/* put --include= before each pattern */
@@ -1825,15 +1826,9 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	if (EMPTY(utf8_search_text) || !utf8_dir)
 		return TRUE;
 	
-	gchar **argv_prefix, **argv;
-	gchar *command_grep;
-	gchar *command_line, *dir;
-	gchar *search_text = NULL;
-	GError *error = NULL;
-	gboolean ret = FALSE;
-	gssize utf8_text_len;
+	gchar *command_line;
+	gchar *command_grep = g_find_program_in_path(tool_prefs.grep_cmd);
 	
-	command_grep = g_find_program_in_path(tool_prefs.grep_cmd);
 	if (command_grep == NULL)
 		command_line = g_strdup_printf("%s %s --", tool_prefs.grep_cmd, opts);
 	else
@@ -1845,7 +1840,8 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	/* convert the search text in the preferred encoding
 	 * (if the text is not valid UTF-8. assume
 	 *  it is already in the preferred encoding) */
-	utf8_text_len = strlen(utf8_search_text);
+	gssize utf8_text_len = strlen(utf8_search_text);
+	gchar *search_text = NULL;
 	
 	if (enc != NULL && g_utf8_validate(utf8_search_text, utf8_text_len, NULL))
 		search_text = g_convert(utf8_search_text, utf8_text_len, enc,
@@ -1854,9 +1850,9 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	if (search_text == NULL)
 		search_text = g_strdup(utf8_search_text);
 	
-	argv_prefix = g_new(gchar*, 3);
+	gchar **argv, **argv_prefix = g_new(gchar*, 3);
 	argv_prefix[0] = search_text;
-	dir = utils_get_locale_from_utf8(utf8_dir);
+	gchar *dir = utils_get_locale_from_utf8(utf8_dir);
 	
 	/* finally add the arguments(files to be searched) */
 	if (settings.fif_recursive)	/* recursive option set */
@@ -1889,6 +1885,9 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	static gpointer data[2];
 	data[0] = (gpointer)enc;
 	data[1] = (gpointer)utf8_search_text;
+	
+	GError *error = NULL;
+	gboolean ret = FALSE;
 	
 	if (spawn_with_callbacks(dir, command_line, argv, NULL, 0, NULL, NULL,
 							 search_read_io, data, 0,
@@ -2119,9 +2118,8 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 		if (enc != NULL)
 		{
 			if (!g_utf8_validate(msg, -1, NULL))
-			{
 				utf8_msg = g_convert(msg, -1, "UTF-8", enc, NULL, NULL, NULL);
-			}
+			
 			if (utf8_msg == NULL)
 				utf8_msg = msg;
 		}

@@ -480,12 +480,6 @@ GEANY_API_SYMBOL
 void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 						   const gchar *string, const gchar *markup)
 {
-	GtkTreeIter iter;
-	const GdkColor *color = get_color(msg_color);
-	gchar *tmp;
-	gsize len;
-	gchar *utf8_msg, *utf8_markup;
-	
 	if (!ui_prefs.msgwindow_visible)
 		msgwin_show_hide(TRUE);
 	
@@ -494,8 +488,10 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	 * of 1024 bytes and discard the rest */
 	/* TODO: find the real cause for the display problem /
 	 *       if it is GtkTreeView file a bug report */
-	len = strlen(string);
-	tmp = (len > 1024) ? g_strndup(string, 1024) : g_strdup(string);
+	gsize len = strlen(string);
+	gchar *tmp = (len > 1024) ? g_strndup(string, 1024) : g_strdup(string);
+	
+	gchar *utf8_msg, *utf8_markup;
 	
 	if (!g_utf8_validate(tmp, -1, NULL))
 		utf8_msg = utils_get_utf8_from_locale(tmp);
@@ -512,14 +508,14 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 			utf8_markup = (gchar *)markup;
 	}
 	
+	GtkTreeIter iter;
 	gtk_list_store_append(msgwindow.store_msg, &iter);
 	gtk_list_store_set(msgwindow.store_msg, &iter,
 					   MSG_COL_LINE, line,
 					   MSG_COL_DOC_ID, doc ? doc->id : 0,
-					   MSG_COL_COLOR, color,
+					   MSG_COL_COLOR, get_color(msg_color),
 					   MSG_COL_STRING, utf8_msg,
 					   MSG_COL_MARKUP, utf8_markup, -1);
-	
 	g_free(tmp);
 	if (utf8_msg != tmp)
 		g_free(utf8_msg);

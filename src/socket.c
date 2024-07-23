@@ -663,23 +663,22 @@ static gchar *build_document_list(void)
 
 gboolean socket_lock_input_cb(GIOChannel *source, GIOCondition condition, gpointer data)
 {
-	gint fd, sock;
 	gchar buf[BUFFER_LENGTH];
-	gchar *command = NULL;
 	struct sockaddr_in caddr;
 	socklen_t caddr_len = sizeof(caddr);
 	GtkWidget *window = data;
 	gboolean popup = FALSE;
-
-	fd = g_io_channel_unix_get_fd(source);
-	sock = accept(fd, (struct sockaddr *)&caddr, &caddr_len);
-
+	
+	gint fd = g_io_channel_unix_get_fd(source);
+	gint sock = accept(fd, (struct sockaddr *)&caddr, &caddr_len);
+	
 	/* first get the command */
 	while (socket_fd_gets(sock, buf, sizeof(buf)) != -1)
 	{
-		command = g_strdup(buf);
-		geany_debug("Received IPC command from remote instance: %s", g_strstrip(command));
+		gchar *command = g_strstrip(g_strdup(buf));
+		geany_debug("Received IPC command from remote instance: %s", command);
 		g_free(command);
+		
 		if (strncmp(buf, "open", 4) == 0)
 		{
 			cl_options.readonly = strncmp(buf+4, "ro", 2) == 0; /* open in readonly? */

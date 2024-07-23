@@ -819,8 +819,6 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		GeanyBuildCommand *oldvalue;
 		GeanyFiletype *ft = doc ? doc->file_type : NULL;
 		GtkWidget *widget;
-		gchar *tmp;
-		GString *str;
 		GSList *node;
 		
 		/* get and set the project description */
@@ -864,12 +862,13 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		apply_editor_prefs();
 		
 		/* get and set the project file patterns */
-		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(e->patterns)));
-		g_strfreev(p->file_patterns);
-		g_strstrip(tmp);
-		str = g_string_new(tmp);
+		gchar *tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(e->patterns)));
+		GString *str = g_string_new(g_strstrip(tmp));
 		do {} while (utils_string_replace_all(str, "  ", " "));
+		
+		g_strfreev(p->file_patterns);
 		p->file_patterns = g_strsplit(str->str, " ", -1);
+		
 		g_string_free(str, TRUE);
 		g_free(tmp);
 	}
