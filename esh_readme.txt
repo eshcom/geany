@@ -206,3 +206,6 @@ foreach_strv(part, parts)
 g_strfreev(parts);
 
 ----------------------------------------------------------------------------------------
+GDK_MOD1_MASK			- Alt
+GDK_SHIFT_MASK			- Shift
+GEANY_PRIMARY_MOD_MASK	- Ctrl
