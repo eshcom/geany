@@ -51,11 +51,15 @@ typedef enum
 	MSG_VTE			/**< Index of the VTE tab */
 } MessageWindowTabNum;
 
-
-#define COLOR_SELECTED "#e62e65"
-#define COLOR_FILEPATH "#c07bb7"
-#define COLOR_OPERATOR "#838eb3"
-#define COLOR_NUMBER "#ff8000"
+/** MessageWindow preferences */
+typedef struct GeanyMsgwinPrefs
+{
+	gchar	*selected_color;
+	gchar	*filepath_color;
+	gchar	*operator_color;
+	gchar	*number_color;
+}
+GeanyMsgwinPrefs;
 
 
 void msgwin_status_add(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
@@ -97,6 +101,8 @@ typedef struct
 } MessageWindow;
 
 extern MessageWindow msgwindow;
+
+extern GeanyMsgwinPrefs msgwin_prefs;
 
 
 void msgwin_init(void);
