@@ -2007,7 +2007,9 @@ static inline void msgwin_msg_add_markup(
 	
 	if (!items[1])
 	{	// the first and only element is the search text
-		g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
+		g_string_append(escape_buffer, "<span color=\"");
+		g_string_append(escape_buffer, msgwin_prefs.selected_color);
+		g_string_append(escape_buffer, "\">");
 		g_string_append(escape_buffer, items[0]);
 		g_string_append(escape_buffer, "</span>");
 	}
@@ -2025,7 +2027,9 @@ static inline void msgwin_msg_add_markup(
 			}
 			if (*(++item))
 			{
-				g_string_append(escape_buffer, "<span color=\""COLOR_SELECTED"\">");
+				g_string_append(escape_buffer, "<span color=\"");
+				g_string_append(escape_buffer, msgwin_prefs.selected_color);
+				g_string_append(escape_buffer, "\">");
 				g_string_append(escape_buffer, escape_search_text);
 				g_string_append(escape_buffer, "</span>");
 			}
@@ -2035,12 +2039,16 @@ static inline void msgwin_msg_add_markup(
 	}
 	g_strfreev(items);
 	
-	gchar *markup = g_strdup_printf("<span color=\""COLOR_FILEPATH"\">%s</span>"
-									"<span color=\""COLOR_OPERATOR"\">:</span>"
-									"<span color=\""COLOR_NUMBER"\">%d</span>"
-									"<span color=\""COLOR_OPERATOR"\">:</span>"
+	gchar *markup = g_strdup_printf("<span color=\"%s\">%s</span>"
+									"<span color=\"%s\">:</span>"
+									"<span color=\"%s\">%d</span>"
+									"<span color=\"%s\">:</span>"
 									" %s",
-									escape_filename, line, escape_buffer->str);
+									msgwin_prefs.filepath_color, escape_filename,
+									msgwin_prefs.operator_color,
+									msgwin_prefs.number_color, line,
+									msgwin_prefs.operator_color,
+									escape_buffer->str);
 	g_string_free(escape_buffer, TRUE);
 	
 	msgwin_msg_add_string(msg_color, line, doc, string, markup);

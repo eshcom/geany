@@ -64,6 +64,7 @@ typedef struct
 ParseData;
 
 MessageWindow msgwindow;
+GeanyMsgwinPrefs msgwin_prefs;
 
 enum
 {
@@ -550,9 +551,12 @@ void msgwin_status_add_string(const gchar *string)
 	/* add a timestamp to status messages */
 	time_str = utils_get_current_time_string();
 	statusmsg = g_strconcat(time_str, ": ", string, NULL);
-	markupmsg = g_strdup_printf("<span color=\""COLOR_NUMBER"\">%s</span>"
-								"<span color=\""COLOR_OPERATOR"\">:</span>"
-								" %s", time_str, escape_string);
+	markupmsg = g_strdup_printf("<span color=\"%s\">%s</span>"
+								"<span color=\"%s\">:</span>"
+								" %s",
+								msgwin_prefs.number_color, time_str,
+								msgwin_prefs.operator_color,
+								escape_string);
 	g_free(time_str);
 	g_free(escape_string);
 	

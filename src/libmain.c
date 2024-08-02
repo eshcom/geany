@@ -1086,6 +1086,7 @@ gint main_lib(gint argc, gchar **argv)
 	memset(&search_prefs, 0, sizeof(GeanySearchPrefs));
 	memset(&tool_prefs, 0, sizeof(GeanyToolPrefs));
 	memset(&template_prefs, 0, sizeof(GeanyTemplatePrefs));
+	memset(&msgwin_prefs, 0, sizeof(GeanyMsgwinPrefs));
 	memset(&ui_prefs, 0, sizeof(UIPrefs));
 	memset(&ui_widgets, 0, sizeof(UIWidgets));
 	
@@ -1357,24 +1358,29 @@ static gboolean do_main_quit(void)
 	g_free(app->docdir);
 	g_free(prefs.default_open_path);
 	g_free(prefs.custom_plugin_path);
-	g_free(ui_prefs.custom_date_format);
 	g_free(interface_prefs.editor_font);
 	g_free(interface_prefs.tagbar_font);
 	g_free(interface_prefs.msgwin_font);
 	g_free(editor_prefs.long_line_color);
 	g_free(editor_prefs.comment_toggle_mark);
 	g_free(editor_prefs.color_scheme);
-	g_free(tool_prefs.context_action_cmd);
 	g_free(template_prefs.developer);
 	g_free(template_prefs.company);
 	g_free(template_prefs.mail);
 	g_free(template_prefs.initials);
 	g_free(template_prefs.version);
+	g_free(tool_prefs.context_action_cmd);
 	g_free(tool_prefs.term_cmd);
 	g_free(tool_prefs.browser_cmd);
 	g_free(tool_prefs.grep_cmd);
 	g_free(printing_prefs.external_print_cmd);
 	g_free(printing_prefs.page_header_datefmt);
+	g_free(msgwin_prefs.selected_color);
+	g_free(msgwin_prefs.filepath_color);
+	g_free(msgwin_prefs.operator_color);
+	g_free(msgwin_prefs.number_color);
+	g_free(ui_prefs.custom_date_format);
+	
 	g_strfreev(ui_prefs.custom_commands);
 	g_strfreev(ui_prefs.custom_commands_labels);
 	

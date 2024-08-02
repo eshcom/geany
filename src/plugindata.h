@@ -206,6 +206,7 @@ typedef struct GeanyData
 	struct GeanySearchPrefs		*search_prefs;		/**< Search-related settings */
 	struct GeanyToolPrefs		*tool_prefs;		/**< Tool settings */
 	struct GeanyTemplatePrefs	*template_prefs;	/**< Template settings */
+	struct GeanyMsgwinPrefs		*msgwin_prefs;		/**< MessageWindow settings */
 	gpointer					*_compat;			/* Remove field on next ABI break (abi-todo) */
 	/** List of filetype pointers sorted by name, but with @c filetypes_index(GEANY_FILETYPES_NONE)
 	 * first, as this is usually treated specially.
