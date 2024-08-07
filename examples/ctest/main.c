@@ -493,6 +493,17 @@ void run_test_case11()
 	printf("41 & 31: %i\n", 41 & 31);	// 9
 }
 
+void run_test_case12()
+{
+	gchar *str = "ZzЯя";
+	gunichar ch;
+	while ((ch = g_utf8_get_char(str)) != '\0')
+	{
+		printf("%x - %x\n", ch, g_unichar_tolower(ch));
+		str = g_utf8_next_char(str);
+	}
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -505,7 +516,8 @@ int main(void)
 	//~ run_test_case08();
 	//~ run_test_case09();
 	//~ run_test_case10();
-	run_test_case11();
+	//~ run_test_case11();
+	run_test_case12();
 	
 	return 0;
 }
