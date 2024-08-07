@@ -1994,50 +1994,96 @@ static gchar **search_get_argv(const gchar **argv_prefix, const gchar *dir)
 }
 
 
+static inline gboolean compare_chars(const gchar *str1, const gchar *str2,
+									 gboolean case_sensitive)
+{
+	if (case_sensitive)
+		return g_utf8_get_char(str1) == g_utf8_get_char(str2);
+	else
+		return g_unichar_tolower(g_utf8_get_char(str1)) ==
+				g_unichar_tolower(g_utf8_get_char(str2));
+}
+
+static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer,
+										 gboolean case_sensitive)
+{
+	GString *markup_buffer = g_string_new(NULL);
+	
+	const gchar *sch = search_text;
+	gchar *bch = buffer, *part = buffer, *equal = NULL;
+	
+	gchar *escape;
+	gchar save;
+	
+	while (TRUE)
+	{
+		if (equal)
+		{
+			if (*sch == '\0')
+			{
+				if (equal > part)
+				{
+					save = *equal;
+					*equal = '\0';
+					escape = g_markup_escape_text(part, -1);
+					*equal = save;
+					g_string_append(markup_buffer, escape);
+					g_free(escape);
+				}
+				
+				save = *bch;
+				*bch = '\0';
+				escape = g_markup_escape_text(equal, -1);
+				*bch = save;
+				
+				g_string_append(markup_buffer, "<span color=\"");
+				g_string_append(markup_buffer, msgwin_prefs.selected_color);
+				g_string_append(markup_buffer, "\">");
+				g_string_append(markup_buffer, escape);
+				g_string_append(markup_buffer, "</span>");
+				g_free(escape);
+				
+				if (*bch == '\0')
+					break;
+				else
+					part = bch;
+			}
+			else if (compare_chars(bch, sch, case_sensitive))
+			{
+				bch = g_utf8_next_char(bch);
+				sch = g_utf8_next_char(sch);
+				continue;
+			}
+			sch = search_text;
+			equal = NULL;
+		}
+		if (*bch == '\0')
+		{
+			escape = g_markup_escape_text(part, -1);
+			g_string_append(markup_buffer, escape);
+			g_free(escape);
+			break;
+		}
+		else if (compare_chars(bch, sch, case_sensitive))
+		{
+			sch = g_utf8_next_char(sch);
+			equal = bch;
+		}
+		bch = g_utf8_next_char(bch);
+	}
+	return markup_buffer;
+}
+
 static inline void msgwin_msg_add_markup(
 							gint msg_color, gint line, GeanyDocument *doc,
-							const gchar *search_text, const gchar *escape_search_text,
-							const gchar *filename, const gchar *escape_filename,
-							const gchar *buffer)
+							const gchar *search_text, const gchar *filename,
+							const gchar *escape_filename, gchar *buffer,
+							gboolean case_sensitive)
 {
 	gchar *string = g_strdup_printf("%s:%d: %s", filename, line, buffer);
 	
-	GString *escape_buffer = g_string_new(NULL);
-	gchar **items = g_strsplit(buffer, search_text, 0);
-	
-	if (!items[1])
-	{	// the first and only element is the search text
-		g_string_append(escape_buffer, "<span color=\"");
-		g_string_append(escape_buffer, msgwin_prefs.selected_color);
-		g_string_append(escape_buffer, "\">");
-		g_string_append(escape_buffer, items[0]);
-		g_string_append(escape_buffer, "</span>");
-	}
-	else
-	{
-		gchar **item = items;
-		
-		while (TRUE)
-		{
-			if (*item && **item)
-			{
-				gchar *escape_item = g_markup_escape_text(*item, -1);
-				g_string_append(escape_buffer, escape_item);
-				g_free(escape_item);
-			}
-			if (*(++item))
-			{
-				g_string_append(escape_buffer, "<span color=\"");
-				g_string_append(escape_buffer, msgwin_prefs.selected_color);
-				g_string_append(escape_buffer, "\">");
-				g_string_append(escape_buffer, escape_search_text);
-				g_string_append(escape_buffer, "</span>");
-			}
-			else
-				break;
-		}
-	}
-	g_strfreev(items);
+	GString *markup_buffer = get_markup_buffer(search_text, buffer,
+											   case_sensitive);
 	
 	gchar *markup = g_strdup_printf("<span color=\"%s\">%s</span>"
 									"<span color=\"%s\">:</span>"
@@ -2048,8 +2094,8 @@ static inline void msgwin_msg_add_markup(
 									msgwin_prefs.operator_color,
 									msgwin_prefs.number_color, line,
 									msgwin_prefs.operator_color,
-									escape_buffer->str);
-	g_string_free(escape_buffer, TRUE);
+									markup_buffer->str);
+	g_string_free(markup_buffer, TRUE);
 	
 	msgwin_msg_add_string(msg_color, line, doc, string, markup);
 	
@@ -2089,14 +2135,15 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 			if (fields[1])
 			{
 				gchar *utf8_search_text = (gchar *)data[1];
-				gchar *escape_search_text = g_markup_escape_text(utf8_search_text, -1);
 				gchar *escape_filename = g_markup_escape_text(fields[0], -1);
 				
 				gint line = strtol(fields[1], NULL, 10);
 				
 				msgwin_msg_add_markup(msg_color, line, NULL,
-									  utf8_search_text, escape_search_text,
-									  fields[0], escape_filename, fields[2]);
+									  utf8_search_text, fields[0],
+									  escape_filename, fields[2],
+									  settings.fif_case_sensitive);
+				g_free(escape_filename);
 			}
 			g_strfreev(fields);
 		}
@@ -2445,7 +2492,6 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 	gchar *escape_filename = g_markup_escape_text(short_filename, -1);
 	
 	gchar *trim_search_text = g_strstrip(g_strdup(search_text));
-	gchar *escape_search_text = g_markup_escape_text(trim_search_text, -1);
 	
 	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = 0;
@@ -2463,9 +2509,8 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 			gchar *buffer = sci_get_line(doc->editor->sci, line);
 			
 			msgwin_msg_add_markup(COLOR_BLACK, line + 1, doc,
-								  trim_search_text, escape_search_text,
-								  short_filename, escape_filename,
-								  g_strstrip(buffer));
+								  trim_search_text, short_filename,
+								  escape_filename, g_strstrip(buffer), TRUE);
 			g_free(buffer);
 			prev_line = line;
 		}
@@ -2476,7 +2521,6 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 	g_free(short_filename);
 	g_free(escape_filename);
 	g_free(trim_search_text);
-	g_free(escape_search_text);
 	return count;
 }
 
