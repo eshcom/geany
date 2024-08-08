@@ -18,9 +18,9 @@ widget "GeanyDialogSearch.*.geany-search-entry-no-match" style "geany-monospace"
 
 # set red background for GtkEntries showing unmatched searches
 style "geany-search-entry-no-match-style" {
-	base[NORMAL] = "#ffff66666666"
-	text[NORMAL] = "#ffffffffffff"
-	base[SELECTED] = "#777711111111"
+	base[NORMAL] = "#ff6666"
+	text[NORMAL] = "#ffffff"
+	base[SELECTED] = "#771111"
 	# try and remove the entry background image on pixmap engine so that our
 	# background color is visible, and we don't end up with white text on white
 	# background (workaround for Adwaita 3.20).
@@ -35,16 +35,16 @@ widget "*.geany-search-entry-no-match" style "geany-search-entry-no-match-style"
 
 # document status colors
 style "geany-document-status-changed-style" {
-	fg[NORMAL] = "#ffff00000000"
-	fg[ACTIVE] = "#ffff00000000"
+	fg[NORMAL] = "#ff0000"
+	fg[ACTIVE] = "#ff0000"
 }
 style "geany-document-status-disk-changed-style" {
-	fg[NORMAL] = "#ffff7fff0000"
-	fg[ACTIVE] = "#ffff7fff0000"
+	fg[NORMAL] = "#ff7f00"
+	fg[ACTIVE] = "#ff7f00"
 }
 style "geany-document-status-readonly-style" {
-	fg[NORMAL] = "#00007fff0000"
-	fg[ACTIVE] = "#00007fff0000"
+	fg[NORMAL] = "#007f00"
+	fg[ACTIVE] = "#007f00"
 }
 widget "*.geany-document-status-changed" style "geany-document-status-changed-style"
 widget "*.geany-document-status-disk-changed" style "geany-document-status-disk-changed-style"
@@ -52,27 +52,33 @@ widget "*.geany-document-status-readonly" style "geany-document-status-readonly-
 
 # compiler message colors
 style "geany-compiler-error-style" {
-    fg[NORMAL] = "#ffff00000000"
-    fg[ACTIVE] = "#ffff00000000"
+	fg[NORMAL] = "#ff0000"
+	fg[ACTIVE] = "#ff0000"
 }
 style "geany-compiler-context-style" {
-    fg[NORMAL] = "#7f7f00000000"
-    fg[ACTIVE] = "#7f7f00000000"
+	fg[NORMAL] = "#7f0000"
+	fg[ACTIVE] = "#7f0000"
 }
 style "geany-compiler-message-style" {
-    fg[NORMAL] = "#00000000D000"
-    fg[ACTIVE] = "#00000000D000"
+	fg[NORMAL] = "#0000D0"
+	fg[ACTIVE] = "#0000D0"
 }
 widget "*.geany-compiler-error" style "geany-compiler-error-style"
 widget "*.geany-compiler-context" style "geany-compiler-context-style"
 widget "*.geany-compiler-message" style "geany-compiler-message-style"
 
-# dark khaki (102,95,56) #665F38
+# red "Terminal" label when terminal dirty
+widget "*.geany-terminal-dirty" style "geany-document-status-changed-style"
+
+# esh: begin new styles
 style "geany-sidebar-parent-style" {
-    fg[NORMAL] = "#66665f5f3838"
-    fg[ACTIVE] = "#66665f5f3838"
+	fg[NORMAL] = "#665f38"
+	fg[ACTIVE] = "#665f38"
 }
 widget "*.geany-sidebar-parent" style "geany-sidebar-parent-style"
 
-# red "Terminal" label when terminal dirty
-widget "*.geany-terminal-dirty" style "geany-document-status-changed-style"
+style "geany-notebook-tabs" {
+	fg[NORMAL] = "#7a7a4f"
+}
+widget "GeanyMainWindow.GtkVBox.GtkVPaned.GtkHPaned.GtkNotebook.*.GtkLabel" style "geany-notebook-tabs"
+# esh: end new styles
