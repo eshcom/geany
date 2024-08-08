@@ -2010,9 +2010,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 	
 	const gchar *sch = search_text;
 	gchar *bch = buffer, *part = buffer, *equal = NULL;
-	
-	gchar *escape;
-	gchar save;
+	gchar *escape, save;
 	
 	while (TRUE)
 	{
@@ -2020,7 +2018,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 		{
 			if (*sch == '\0')
 			{
-				if (equal > part)
+				if (part < equal)
 				{
 					save = *equal;
 					*equal = '\0';
@@ -2042,10 +2040,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 				g_string_append(markup_buffer, "</span>");
 				g_free(escape);
 				
-				if (*bch == '\0')
-					break;
-				else
-					part = bch;
+				part = bch;
 			}
 			else if (compare_chars(bch, sch, case_sensitive))
 			{
@@ -2058,9 +2053,12 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 		}
 		if (*bch == '\0')
 		{
-			escape = g_markup_escape_text(part, -1);
-			g_string_append(markup_buffer, escape);
-			g_free(escape);
+			if (part < bch)
+			{
+				escape = g_markup_escape_text(part, -1);
+				g_string_append(markup_buffer, escape);
+				g_free(escape);
+			}
 			break;
 		}
 		else if (compare_chars(bch, sch, case_sensitive))
