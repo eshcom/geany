@@ -121,3 +121,4 @@ Makefile.in
 /**/*.beam
 /**/*.pyc
 a.out
+*.gch
