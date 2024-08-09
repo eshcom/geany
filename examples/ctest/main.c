@@ -504,6 +504,12 @@ void run_test_case12()
 	}
 }
 
+void run_test_case13()
+{
+	gint pos, ret = -1;
+	printf("'%d' - '%d'\n", pos, ret);
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -517,7 +523,8 @@ int main(void)
 	//~ run_test_case09();
 	//~ run_test_case10();
 	//~ run_test_case11();
-	run_test_case12();
+	//~ run_test_case12();
+	run_test_case13();
 	
 	return 0;
 }

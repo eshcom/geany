@@ -917,11 +917,9 @@ GEANY_API_SYMBOL
 gchar *utils_get_setting_string(GKeyFile *config, const gchar *section,
 								const gchar *key, const gchar *default_value)
 {
-	gchar *tmp;
-	
 	g_return_val_if_fail(config, g_strdup(default_value));
 	
-	tmp = g_key_file_get_string(config, section, key, NULL);
+	gchar *tmp = g_key_file_get_string(config, section, key, NULL);
 	if (!tmp)
 		return g_strdup(default_value);
 	
