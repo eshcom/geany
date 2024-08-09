@@ -41,8 +41,7 @@ namespace {
 	// Use an unnamed namespace to protect the functions and classes from name conflicts
 
 constexpr bool IsSpaceEquiv(int state) noexcept {
-	return (state <= SCE_C_COMMENTDOC) ||
-		// including SCE_C_DEFAULT, SCE_C_COMMENT, SCE_C_COMMENTLINE
+	return (state <= SCE_C_COMMENTDOC) || // including SCE_C_DEFAULT, SCE_C_COMMENT, SCE_C_COMMENTLINE
 		   (state == SCE_C_COMMENTLINEDOC) ||
 		   (state == SCE_C_COMMENTDOCKEYWORD) ||
 		   (state == SCE_C_COMMENTDOCKEYWORDERROR);
@@ -172,8 +171,7 @@ std::string GetRestOfLine(LexAccessor &styler, Sci_Position start, bool allowSpa
 	Sci_Position endLine = styler.LineEnd(line);
 	char ch = styler.SafeGetCharAt(start, '\n');
 	while (pos < endLine) {
-		if (ch == '\\' && ((pos + 1) == endLine)) {
-			// Continuation line
+		if (ch == '\\' && ((pos + 1) == endLine)) { // Continuation line
 			line++;
 			pos = styler.LineStart(line);
 			endLine = styler.LineEnd(line);
@@ -1063,10 +1061,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// We accept almost anything because of hex. and number suffixes
 				if (sc.ch == '_') {
 					sc.ChangeState(SCE_C_USERLITERAL|activitySet);
-				} else if (!(setWord.Contains(sc.ch)
-				   || (sc.ch == '\'')
-				   || ((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E' ||
-														  sc.chPrev == 'p' || sc.chPrev == 'P')))) {
+				} else if (!(setWord.Contains(sc.ch) || (sc.ch == '\'') ||
+							 ((sc.ch == '+' || sc.ch == '-') &&
+							  (sc.chPrev == 'e' || sc.chPrev == 'E' ||
+							   sc.chPrev == 'p' || sc.chPrev == 'P')))) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
 				break;
@@ -1678,8 +1676,8 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
 				levelNext--;
 			}
 		}
-		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) ||
-																   options.foldExplicitAnywhere)) {
+		if (options.foldComment && options.foldCommentExplicit &&
+			((style == SCE_C_COMMENTLINE) || options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
 					levelNext++;
@@ -1835,7 +1833,8 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens,
 								std::map<std::string, std::string>::const_iterator itFind =
 															arguments.find(macroTokens[iMacro]);
 								if (itFind != arguments.end()) {
-									// TODO: Possible that value will be expression so should insert tokenized form
+									// TODO: Possible that value will be expression
+									//		 so should insert tokenized form
 									macroTokens[iMacro] = itFind->second;
 								}
 							}
@@ -1870,7 +1869,8 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens,
 										   bracketPair.itEndBracket);
 		EvaluateTokens(inBracket, preprocessorDefinitions);
 		
-		// The insertion is done before the removal because there were failures with the opposite approach
+		// The insertion is done before the removal because
+		// there were failures with the opposite approach
 		tokens.insert(bracketPair.itBracket, inBracket.begin(), inBracket.end());
 		
 		bracketPair = FindBracketPair(tokens);

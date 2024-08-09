@@ -248,7 +248,7 @@ static void apply_settings(void)
 	
 	if (interface_prefs.sidebar_pos != GTK_POS_LEFT)
 		ui_swap_sidebar_pos();
-
+	
 	gtk_orientable_set_orientation(
 					GTK_ORIENTABLE(ui_lookup_widget(main_widgets.window, "vpaned1")),
 					interface_prefs.msgwin_orientation);
@@ -496,7 +496,7 @@ void main_locale_init(const gchar *locale_dir, const gchar *package)
 #ifdef HAVE_LOCALE_H
 	setlocale(LC_ALL, "");
 #endif
-
+	
 #ifdef G_OS_WIN32
 	locale_dir = utils_resource_dir(RESOURCE_DIR_LOCALE);
 #endif
@@ -509,7 +509,7 @@ void main_locale_init(const gchar *locale_dir, const gchar *package)
 static void print_filetypes(void)
 {
 	const GSList *list, *node;
-
+	
 	filetypes_init_types();
 	printf("Geany's filetype names:\n");
 	
@@ -537,9 +537,6 @@ static void wait_for_input_on_windows(void)
 
 static void parse_command_line_options(gint *argc, gchar ***argv)
 {
-	GError *error = NULL;
-	GOptionContext *context;
-	gint i;
 	CommandLineOptions def_clo = {FALSE, NULL, TRUE, -1, -1, FALSE, FALSE, FALSE};
 	
 	/* first initialise cl_options fields with default values */
@@ -547,7 +544,7 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	
 	/* the GLib option parser can't handle the +NNN (line number) option,
 	 * so we grab that here and replace it with a no-op */
-	for (i = 1; i < (*argc); i++)
+	for (gint i = 1; i < (*argc); i++)
 	{
 		if ((*argv)[i][0] != '+')
 			continue;
@@ -556,7 +553,7 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 		(*argv)[i] = (gchar *) "--dummy";
 	}
 	
-	context = g_option_context_new(_("[FILES...]"));
+	GOptionContext *context = g_option_context_new(_("[FILES...]"));
 	
 	g_option_context_set_summary(context, _("A fast and lightweight IDE."));
 	g_option_context_set_description(context,
@@ -565,6 +562,8 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	g_option_group_set_translation_domain(g_option_context_get_main_group(context),
 										  GETTEXT_PACKAGE);
 	g_option_context_add_group(context, gtk_get_option_group(FALSE));
+	
+	GError *error = NULL;
 	g_option_context_parse(context, argc, argv, &error);
 	g_option_context_free(context);
 	
@@ -623,10 +622,9 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	
 	if (generate_tags)
 	{
-		gboolean ret;
-
 		filetypes_init_types();
-		ret = symbols_generate_global_tags(*argc, *argv, !no_preprocessing);
+		gboolean ret = symbols_generate_global_tags(*argc, *argv,
+													!no_preprocessing);
 		filetypes_free_types();
 		wait_for_input_on_windows();
 		exit(ret);
@@ -666,9 +664,6 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 static gint create_config_dir(void)
 {
 	gint saved_errno = 0;
-	gchar *conf_file = NULL;
-	gchar *filedefs_dir = NULL;
-	gchar *templates_dir = NULL;
 	
 	if (!g_file_test(app->configdir, G_FILE_TEST_EXISTS))
 	{
@@ -718,10 +713,7 @@ static gint create_config_dir(void)
 		saved_errno = utils_mkdir(app->configdir, TRUE);
 	}
 	
-	conf_file = g_build_filename(app->configdir, "geany.conf", NULL);
-	filedefs_dir = g_build_filename(app->configdir, GEANY_FILEDEFS_SUBDIR, NULL);
-	templates_dir = g_build_filename(app->configdir, GEANY_TEMPLATES_SUBDIR, NULL);
-	
+	gchar *conf_file = g_build_filename(app->configdir, "geany.conf", NULL);
 	if (saved_errno == 0 && !g_file_test(conf_file, G_FILE_TEST_EXISTS))
 	{	/* check whether geany.conf can be written */
 		saved_errno = utils_is_file_writable(app->configdir);
@@ -730,10 +722,12 @@ static gint create_config_dir(void)
 	/* make subdir for filetype definitions */
 	if (saved_errno == 0)
 	{
+		gchar *filedefs_dir = g_build_filename(app->configdir,
+											   GEANY_FILEDEFS_SUBDIR,
+											   NULL);
 		gchar *filedefs_readme = g_build_filename(app->configdir,
 												  GEANY_FILEDEFS_SUBDIR,
 												  "filetypes.README", NULL);
-		
 		if (!g_file_test(filedefs_dir, G_FILE_TEST_EXISTS))
 			saved_errno = utils_mkdir(filedefs_dir, FALSE);
 		
@@ -750,12 +744,16 @@ static gint create_config_dir(void)
 			utils_write_file(filedefs_readme, text);
 			g_free(text);
 		}
+		g_free(filedefs_dir);
 		g_free(filedefs_readme);
 	}
 	
 	/* make subdir for template files */
 	if (saved_errno == 0)
 	{
+		gchar *templates_dir = g_build_filename(app->configdir,
+												GEANY_TEMPLATES_SUBDIR,
+												NULL);
 		gchar *templates_readme = g_build_filename(app->configdir,
 												   GEANY_TEMPLATES_SUBDIR,
 												   "templates.README", NULL);
@@ -775,13 +773,11 @@ static gint create_config_dir(void)
 			utils_write_file(templates_readme, text);
 			g_free(text);
 		}
+		g_free(templates_dir);
 		g_free(templates_readme);
 	}
 	
-	g_free(filedefs_dir);
-	g_free(templates_dir);
 	g_free(conf_file);
-	
 	return saved_errno;
 }
 
@@ -828,20 +824,20 @@ gboolean main_handle_filename(const gchar *locale_filename)
 {
 	g_return_val_if_fail(locale_filename, FALSE);
 	
-	GeanyDocument *doc;
-	gint line = -1, column = -1;
-	gchar *filename;
-	
 	/* check whether the passed filename is an URI */
-	filename = utils_get_path_from_uri(locale_filename);
+	gchar *filename = utils_get_path_from_uri(locale_filename);
 	if (filename == NULL)
 		return FALSE;
 	
+	gint line = -1, column = -1;
 	get_line_and_column_from_filename(filename, &line, &column);
+	
 	if (line >= 0)
 		cl_options.goto_line = line;
 	if (column >= 0)
 		cl_options.goto_column = column;
+	
+	GeanyDocument *doc;
 	
 	if (g_file_test(filename, G_FILE_TEST_IS_REGULAR))
 	{
@@ -906,12 +902,10 @@ static void open_cl_files(gint argc, gchar **argv)
 
 static void load_session_project_file(void)
 {
-	gchar *locale_filename;
-
 	g_return_if_fail(project_prefs.session_file != NULL);
-
-	locale_filename = utils_get_locale_from_utf8(project_prefs.session_file);
-
+	
+	gchar *locale_filename = utils_get_locale_from_utf8(project_prefs.session_file);
+	
 	if (G_LIKELY(!EMPTY(locale_filename)))
 		project_load_file(locale_filename, TRUE);
 	
@@ -1066,11 +1060,6 @@ static void setup_gtk2_styles(void)
 GEANY_EXPORT_SYMBOL
 gint main_lib(gint argc, gchar **argv)
 {
-	GeanyDocument *doc;
-	gint config_dir_result;
-	const gchar *locale;
-	gchar *utf8_configdir;
-
 #if !GLIB_CHECK_VERSION(2, 36, 0)
 	g_type_init();
 #endif
@@ -1116,7 +1105,7 @@ gint main_lib(gint argc, gchar **argv)
 	signal(SIGPIPE, SIG_IGN);
 #endif
 	
-	config_dir_result = setup_config_dir();
+	gint config_dir_result = setup_config_dir();
 #ifdef HAVE_SOCKET
 	/* check and create (unix domain) socket for remote operation */
 	if (!socket_info.ignore_socket)
@@ -1154,14 +1143,14 @@ gint main_lib(gint argc, gchar **argv)
 	change_working_directory_on_windows();
 #endif
 	
-	locale = get_locale();
+	const gchar *locale = get_locale();
 	geany_debug("Geany %s, %s", main_get_version_string(), locale);
 	geany_debug(geany_lib_versions,
 				gtk_major_version, gtk_minor_version, gtk_micro_version,
 				glib_major_version, glib_minor_version, glib_micro_version);
 	geany_debug("System data dir: %s", app->datadir);
 	
-	utf8_configdir = utils_get_utf8_from_locale(app->configdir);
+	gchar *utf8_configdir = utils_get_utf8_from_locale(app->configdir);
 	geany_debug("User config dir: %s", utf8_configdir);
 	g_free(utf8_configdir);
 	
@@ -1252,7 +1241,7 @@ gint main_lib(gint argc, gchar **argv)
 	ui_document_buttons_update();
 	ui_save_buttons_toggle(FALSE);
 	
-	doc = document_get_current();
+	GeanyDocument *doc = document_get_current();
 	sidebar_select_openfiles_item(doc);
 	build_menu_update(doc);
 	sidebar_update_tag_list(doc, FALSE);

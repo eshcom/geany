@@ -173,14 +173,16 @@ int PopFromStateStack(std::vector<SingleFStringExpState> &stack,
 	return state;
 }
 
-/* Return the state to use for the string starting at i; *nextIndex will be set to the first index following the quote(s) */
+/* Return the state to use for the string starting at i;
+ * *nextIndex will be set to the first index following the quote(s) */
 int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 					 literalsAllowed allowed) {
 	char ch = styler.SafeGetCharAt(i);
 	char chNext = styler.SafeGetCharAt(i + 1);
 	const int firstIsF = (ch == 'f' || ch == 'F');
 	
-	// Advance beyond r, u, or ur prefix (or r, b, or br in Python 2.7+ and r, f, or fr in Python 3.6+), but bail if there are any unexpected chars
+	// Advance beyond r, u, or ur prefix (or r, b, or br in Python 2.7+ and r, f, or fr in Python 3.6+),
+	// but bail if there are any unexpected chars
 	if (ch == 'r' || ch == 'R') {
 		i++;
 		ch = styler.SafeGetCharAt(i);
@@ -545,8 +547,8 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	
 	int saveState = GetSaveStringState(sc.state, stringState);
 	if ((sc.state == SCE_P_DEFAULT) || IsPyTripleQuoteStringState(saveState)) {
-		// Perform colourisation of white space and triple quoted strings at end of each line to allow
-		// tab marking to work inside white space and triple quoted strings
+		// Perform colourisation of white space and triple quoted strings at end of each line
+		// to allow tab marking to work inside white space and triple quoted strings
 		sc.SetState(sc.state);
 		
 	} else if (IsPySingleQuoteStringState(saveState)) {
@@ -869,8 +871,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						style = SCE_P_WORD2_BIF;
 					}
-					if (style == SCE_P_WORD2_BIF)
-					{
+					if (style == SCE_P_WORD2_BIF) {
 						Sci_Position pos = sc.currentPos;
 						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
 						while (ch != '\0') {
@@ -1055,7 +1056,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				break;
 		}
 		
-		// If in f-string expression, check for }, :, ! to resume f-string state or update nesting count
+		// If in f-string expression, check for }, :, !
+		// to resume f-string state or update nesting count
 		int saveState = GetSaveStringState(sc.state, stringState);
 		if (currentFStringExp != NULL && !IsPySingleQuoteStringState(saveState)
 									  && !IsPyTripleQuoteStringState(saveState)) {
@@ -1159,9 +1161,10 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 	Accessor styler(pAccess, NULL);
 	
 	const Sci_Position maxPos = startPos + length;
-	const Sci_Position maxLines = (maxPos == styler.Length()) ? styler.GetLine(maxPos) :
-																styler.GetLine(maxPos - 1);	// Requested last line
-	const Sci_Position docLines = styler.GetLine(styler.Length());	// Available last line
+	const Sci_Position maxLines = (maxPos == styler.Length()) ?
+												styler.GetLine(maxPos) :
+												styler.GetLine(maxPos - 1);	// Requested last line
+	const Sci_Position docLines = styler.GetLine(styler.Length());			// Available last line
 	
 	// Backtrack to previous non-blank line so we can determine indent level
 	// for any white space lines (needed esp. within triple quoted strings)
@@ -1188,7 +1191,7 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 	int prevQuote = options.foldQuotes && IsPyStringStateForFold(prev_state);
 	
 	// Process all characters to end of requested range or end of any triple quote
-	//that hangs over the end of the range.  Cap processing in all cases
+	// that hangs over the end of the range.  Cap processing in all cases
 	// to end of document (in case of unclosed quote at end).
 	while ((lineCurrent <= docLines) && ((lineCurrent <= maxLines) || prevQuote)) {
 		// Gather info
