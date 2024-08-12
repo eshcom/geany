@@ -1086,7 +1086,7 @@ gint main_lib(gint argc, gchar **argv)
 	memset(&search_prefs, 0, sizeof(GeanySearchPrefs));
 	memset(&tool_prefs, 0, sizeof(GeanyToolPrefs));
 	memset(&template_prefs, 0, sizeof(GeanyTemplatePrefs));
-	memset(&msgwin_prefs, 0, sizeof(GeanyMsgwinPrefs));
+	memset(&gui_prefs, 0, sizeof(GeanyGUIPrefs));
 	memset(&ui_prefs, 0, sizeof(UIPrefs));
 	memset(&ui_widgets, 0, sizeof(UIWidgets));
 	
@@ -1184,6 +1184,7 @@ gint main_lib(gint argc, gchar **argv)
 #endif
 	sidebar_init();
 	load_settings();	/* load global keyfile (geany.conf) */
+	sidebar_final_init();
 	
 	msgwin_init();
 	build_init();
@@ -1375,15 +1376,18 @@ static gboolean do_main_quit(void)
 	g_free(tool_prefs.grep_cmd);
 	g_free(printing_prefs.external_print_cmd);
 	g_free(printing_prefs.page_header_datefmt);
-	g_free(msgwin_prefs.selected_color);
-	g_free(msgwin_prefs.filepath_color);
-	g_free(msgwin_prefs.operator_color);
-	g_free(msgwin_prefs.number_color);
-	g_free(ui_prefs.custom_date_format);
+	g_free(gui_prefs.compiler_error_color);
+	g_free(gui_prefs.compiler_context_color);
+	g_free(gui_prefs.compiler_message_color);
+	g_free(gui_prefs.msgwin_selected_color);
+	g_free(gui_prefs.msgwin_filepath_color);
+	g_free(gui_prefs.msgwin_operator_color);
+	g_free(gui_prefs.msgwin_number_color);
+	g_free(gui_prefs.sidebar_parent_color);
 	
+	g_free(ui_prefs.custom_date_format);
 	g_strfreev(ui_prefs.custom_commands);
 	g_strfreev(ui_prefs.custom_commands_labels);
-	
 	queue_free(ui_prefs.recent_queue);
 	queue_free(ui_prefs.recent_projects_queue);
 	

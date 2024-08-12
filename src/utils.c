@@ -972,6 +972,7 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 
 /* converts a color representation using gdk_color_parse(), with additional
  * support of the "0x" prefix as a synonym for "#" */
+GEANY_API_SYMBOL
 gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 {
 	g_return_val_if_fail(spec != NULL, -1);

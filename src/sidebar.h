@@ -49,6 +49,7 @@ enum
 };
 
 void sidebar_init(void);
+void sidebar_final_init(void);
 
 void sidebar_finalize(void);
 

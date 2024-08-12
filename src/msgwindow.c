@@ -64,7 +64,7 @@ typedef struct
 ParseData;
 
 MessageWindow msgwindow;
-GeanyMsgwinPrefs msgwin_prefs;
+GeanyGUIPrefs gui_prefs;
 
 enum
 {
@@ -155,9 +155,9 @@ void msgwin_init(void)
 	g_signal_connect(msgwindow.scribble, "populate-popup",
 					 G_CALLBACK(on_scribble_populate), NULL);
 	
-	ui_load_color("geany-compiler-error", &color_error);
-	ui_load_color("geany-compiler-context", &color_context);
-	ui_load_color("geany-compiler-message", &color_message);
+	utils_parse_color(gui_prefs.compiler_error_color, &color_error);
+	utils_parse_color(gui_prefs.compiler_context_color, &color_context);
+	utils_parse_color(gui_prefs.compiler_message_color, &color_message);
 }
 
 
@@ -550,8 +550,8 @@ void msgwin_status_add_string(const gchar *string)
 	markupmsg = g_strdup_printf("<span color=\"%s\">%s</span>"
 								"<span color=\"%s\">:</span>"
 								" %s",
-								msgwin_prefs.number_color, time_str,
-								msgwin_prefs.operator_color,
+								gui_prefs.msgwin_number_color, time_str,
+								gui_prefs.msgwin_operator_color,
 								escape_string);
 	g_free(time_str);
 	g_free(escape_string);
