@@ -127,7 +127,7 @@ geany_data_init(void)
 		&search_prefs,
 		&tool_prefs,
 		&template_prefs,
-		&msgwin_prefs,
+		&gui_prefs,
 		NULL, /* Remove field on next ABI break (abi-todo) */
 		filetypes_by_title,
 		geany_object,

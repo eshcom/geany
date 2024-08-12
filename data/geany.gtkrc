@@ -50,35 +50,11 @@ widget "*.geany-document-status-changed" style "geany-document-status-changed-st
 widget "*.geany-document-status-disk-changed" style "geany-document-status-disk-changed-style"
 widget "*.geany-document-status-readonly" style "geany-document-status-readonly-style"
 
-# compiler message colors
-style "geany-compiler-error-style" {
-	fg[NORMAL] = "#ff002b"
-	fg[ACTIVE] = "#ff002b"
-}
-style "geany-compiler-context-style" {
-	fg[NORMAL] = "#ff4400"
-	fg[ACTIVE] = "#ff4400"
-}
-style "geany-compiler-message-style" {
-	fg[NORMAL] = "#00abff"
-	fg[ACTIVE] = "#00abff"
-}
-widget "*.geany-compiler-error" style "geany-compiler-error-style"
-widget "*.geany-compiler-context" style "geany-compiler-context-style"
-widget "*.geany-compiler-message" style "geany-compiler-message-style"
-
 # red "Terminal" label when terminal dirty
 widget "*.geany-terminal-dirty" style "geany-document-status-changed-style"
 
-# esh: begin new styles
-style "geany-sidebar-parent-style" {
-	fg[NORMAL] = "#c7b96d"
-	fg[ACTIVE] = "#c7b96d"
-}
-widget "*.geany-sidebar-parent" style "geany-sidebar-parent-style"
-
+# esh: active notebook tab color (#ffffa6 - dark theme, #7a7a4f - light theme)
 style "geany-notebook-tabs" {
 	fg[NORMAL] = "#ffffa6"
 }
 widget "GeanyMainWindow.GtkVBox.GtkVPaned.GtkHPaned.GtkNotebook.*.GtkLabel" style "geany-notebook-tabs"
-# esh: end new styles

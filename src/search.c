@@ -2034,7 +2034,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 				*bch = save;
 				
 				g_string_append(markup_buffer, "<span color=\"");
-				g_string_append(markup_buffer, msgwin_prefs.selected_color);
+				g_string_append(markup_buffer, gui_prefs.msgwin_selected_color);
 				g_string_append(markup_buffer, "\">");
 				g_string_append(markup_buffer, escape);
 				g_string_append(markup_buffer, "</span>");
@@ -2087,10 +2087,10 @@ static inline void msgwin_msg_add_markup(
 									"<span color=\"%s\">%d</span>"
 									"<span color=\"%s\">:</span>"
 									" %s",
-									msgwin_prefs.filepath_color, escape_filename,
-									msgwin_prefs.operator_color,
-									msgwin_prefs.number_color, line,
-									msgwin_prefs.operator_color,
+									gui_prefs.msgwin_filepath_color, escape_filename,
+									gui_prefs.msgwin_operator_color,
+									gui_prefs.msgwin_number_color, line,
+									gui_prefs.msgwin_operator_color,
 									markup_buffer->str);
 	g_string_free(markup_buffer, TRUE);
 	

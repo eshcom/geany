@@ -552,11 +552,15 @@ static void save_dialog_prefs(GKeyFile *config)
 	g_key_file_set_boolean(config, "printing", "page_header_basename", printing_prefs.page_header_basename);
 	g_key_file_set_string(config, "printing", "page_header_datefmt", printing_prefs.page_header_datefmt);
 	
-	/* msgwin */
-	g_key_file_set_string(config, "msgwin", "selected_color", msgwin_prefs.selected_color);
-	g_key_file_set_string(config, "msgwin", "filepath_color", msgwin_prefs.filepath_color);
-	g_key_file_set_string(config, "msgwin", "operator_color", msgwin_prefs.operator_color);
-	g_key_file_set_string(config, "msgwin", "number_color", msgwin_prefs.number_color);
+	/* gui */
+	g_key_file_set_string(config, "gui", "compiler_error_color", gui_prefs.compiler_error_color);
+	g_key_file_set_string(config, "gui", "compiler_context_color", gui_prefs.compiler_context_color);
+	g_key_file_set_string(config, "gui", "compiler_message_color", gui_prefs.compiler_message_color);
+	g_key_file_set_string(config, "gui", "msgwin_selected_color", gui_prefs.msgwin_selected_color);
+	g_key_file_set_string(config, "gui", "msgwin_filepath_color", gui_prefs.msgwin_filepath_color);
+	g_key_file_set_string(config, "gui", "msgwin_operator_color", gui_prefs.msgwin_operator_color);
+	g_key_file_set_string(config, "gui", "msgwin_number_color", gui_prefs.msgwin_number_color);
+	g_key_file_set_string(config, "gui", "sidebar_parent_color", gui_prefs.sidebar_parent_color);
 	
 	/* VTE */
 #ifdef HAVE_VTE
@@ -1020,11 +1024,15 @@ static void load_dialog_prefs(GKeyFile *config)
 	printing_prefs.page_header_basename = utils_get_setting_boolean(config, "printing", "page_header_basename", FALSE);
 	printing_prefs.page_header_datefmt = utils_get_setting_string(config, "printing", "page_header_datefmt", "%c");
 	
-	/* msgwin */
-	msgwin_prefs.selected_color = utils_get_setting_string(config, "msgwin", "selected_color", "#23e9b4");
-	msgwin_prefs.filepath_color = utils_get_setting_string(config, "msgwin", "filepath_color", "#a088d1");
-	msgwin_prefs.operator_color = utils_get_setting_string(config, "msgwin", "operator_color", "#838eb3");
-	msgwin_prefs.number_color = utils_get_setting_string(config, "msgwin", "number_color", "#ff8000");
+	/* gui */
+	gui_prefs.compiler_error_color = utils_get_setting_string(config, "gui", "compiler_error_color", "#ff0000");
+	gui_prefs.compiler_context_color = utils_get_setting_string(config, "gui", "compiler_context_color", "#7f0000");
+	gui_prefs.compiler_message_color = utils_get_setting_string(config, "gui", "compiler_message_color", "#0000D0");
+	gui_prefs.msgwin_selected_color = utils_get_setting_string(config, "gui", "msgwin_selected_color", "#19A680");
+	gui_prefs.msgwin_filepath_color = utils_get_setting_string(config, "gui", "msgwin_filepath_color", "#716094");
+	gui_prefs.msgwin_operator_color = utils_get_setting_string(config, "gui", "msgwin_operator_color", "#5F6782");
+	gui_prefs.msgwin_number_color = utils_get_setting_string(config, "gui", "msgwin_number_color", "#A65300");
+	gui_prefs.sidebar_parent_color = utils_get_setting_string(config, "gui", "sidebar_parent_color", "#665f38");
 	
 	/* read stash prefs */
 	settings_action(config, SETTING_READ);

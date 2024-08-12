@@ -96,7 +96,7 @@ static GtkWidget *openfiles_popup_menu;
 static gboolean documents_show_paths;
 static GtkWidget *tag_window;	/* scrolled window that holds the symbol list GtkTreeView */
 
-static GdkColor color_parent = {0, 0xFFFF, 0, 0};
+static GdkColor parent_color = {0, 0xFFFF, 0, 0};
 
 /* callback prototypes */
 static void on_openfiles_document_action(GtkMenuItem *menuitem,
@@ -476,7 +476,7 @@ static GtkTreeIter *get_doc_parent(GeanyDocument *doc)
 	gtk_tree_store_append(store_openfiles, &parent, NULL);
 	gtk_tree_store_set(store_openfiles, &parent,
 		DOCUMENTS_ICON, dir_icon,
-		DOCUMENTS_COLOR, &color_parent,
+		DOCUMENTS_COLOR, &parent_color,
 		DOCUMENTS_SHORTNAME, shortname,
 		DOCUMENTS_FILENAME, path,
 		DOCUMENTS_SORTKEY, sortkey, -1);
@@ -1239,7 +1239,13 @@ void sidebar_init(void)
 	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook),
 						   NULL, 0, NULL);
 	
-	ui_load_color("geany-sidebar-parent", &color_parent);
+	// esh: parent_color will be set by sidebar_final_init()
+	//		after calling libmain.c/load_settings()
+}
+
+void sidebar_final_init(void)
+{
+	utils_parse_color(gui_prefs.sidebar_parent_color, &parent_color);
 }
 
 #define WIDGET(w) w && GTK_IS_WIDGET(w)
