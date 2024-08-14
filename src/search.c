@@ -2017,7 +2017,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 		if (equal)
 		{
 			if (*sch == '\0')
-			{
+			{	// finish comparison
 				if (part < equal)
 				{
 					save = *equal;
@@ -2048,6 +2048,10 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 				sch = g_utf8_next_char(sch);
 				continue;
 			}
+			else
+			{	// reset comparison (equal + 1 utf8 char)
+				bch = g_utf8_next_char(equal);
+			}
 			sch = search_text;
 			equal = NULL;
 		}
@@ -2062,7 +2066,7 @@ static inline GString *get_markup_buffer(const gchar *search_text, gchar *buffer
 			break;
 		}
 		else if (compare_chars(bch, sch, case_sensitive))
-		{
+		{	// init comparison
 			sch = g_utf8_next_char(sch);
 			equal = bch;
 		}
