@@ -438,6 +438,21 @@ gboolean utils_is_absolute_path(const gchar *path)
 }
 
 
+gboolean utils_filename_has_prefix(const gchar *path, const gchar *prefix)
+{
+/* esh: optimization for linux: don't use g_strndup and utils_filenamecmp (strcmp),
+ * 		use strncmp without creating new string */
+#ifdef G_OS_WIN32
+	gchar *head = g_strndup(path, strlen(prefix));
+	gboolean ret = utils_str_casecmp(head, prefix) == 0;
+	g_free(head);
+	return ret;
+#else
+	return strncmp(path, prefix, strlen(prefix)) == 0;
+#endif
+}
+
+
 /* Skips root if path is absolute, do nothing otherwise.
  * This is a relative-safe version of g_path_skip_root().
  */
@@ -446,6 +461,40 @@ const gchar *utils_path_skip_root(const gchar *path)
 	const gchar *path_relative = g_path_skip_root(path);
 	
 	return (path_relative != NULL) ? path_relative : path;
+}
+
+
+/* esh: If matches home dir, replace with tilde, example:
+ * 		/home/user/projects/geany/README -> ~/projects/geany/README
+ */
+gchar *utils_truncate_home_dir(const gchar *path)
+{
+	if (G_UNLIKELY(EMPTY(path)))
+		return NULL;
+	
+	gchar *trunc_path;
+	const gchar *home_dir = g_get_home_dir();
+	
+	if (G_LIKELY(!EMPTY(home_dir)) && utils_filename_has_prefix(path, home_dir))
+	{
+		const gchar *rest = path + strlen(home_dir);
+		if (*rest == G_DIR_SEPARATOR || *rest == '\0')
+			trunc_path = g_strdup_printf("~%s", rest);
+		else
+			trunc_path = g_strdup(path);
+	}
+	else
+		trunc_path = g_strdup(path);
+	
+	return trunc_path;
+}
+
+
+gchar *utils_get_display_filename(const gchar *path)
+{
+	gchar *filename = utils_truncate_home_dir(path);
+	SETPTR(filename, utils_str_middle_truncate(filename, 100));
+	return filename;
 }
 
 

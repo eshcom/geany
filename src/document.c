@@ -763,7 +763,9 @@ static gboolean remove_page(guint page_num)
 		notebook_remove_page(page_num);
 		sidebar_remove_document(doc);
 		navqueue_remove_file(doc->file_name);
-		msgwin_status_add(_("File %s closed."), DOC_FILENAME(doc));
+		gchar *display_filename = utils_get_display_filename(doc->file_name);
+		msgwin_status_add(_("File %s closed."), display_filename);
+		g_free(display_filename);
 	}
 	g_free(doc->encoding);
 	g_free(doc->priv->saved_encoding.encoding);
@@ -996,11 +998,12 @@ static gboolean get_mtime(const gchar *locale_filename, time_t *time)
 	
 	if (err_msg)
 	{
-		gchar *utf8_filename = utils_get_utf8_from_locale(locale_filename);
+		gchar *display_filename = utils_get_utf8_from_locale(locale_filename);
+		SETPTR(display_filename, utils_get_display_filename(display_filename));
 		
 		ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open file %s (%s)"),
-							   utf8_filename, err_msg);
-		g_free(utf8_filename);
+							   display_filename, err_msg);
+		g_free(display_filename);
 	}
 	
 	if (error)
@@ -1277,6 +1280,8 @@ void document_apply_indent_settings(GeanyDocument *doc)
 	GeanyIndentType type = iprefs->type;
 	gint width = iprefs->width;
 	
+	gchar *display_filename = utils_get_display_filename(doc->file_name);
+	
 	if (iprefs->detect_type && document_detect_indent_type(doc, &type))
 	{
 		if (type != iprefs->type)
@@ -1298,7 +1303,7 @@ void document_apply_indent_settings(GeanyDocument *doc)
 			/* For translators: first wildcard is the indentation mode
 			 * (Spaces, Tabs, Tabs and Spaces), the second one is the filename */
 			ui_set_statusbar(TRUE, _("Setting %s indentation mode for %s."),
-							 name, DOC_FILENAME(doc));
+							 name, display_filename);
 		}
 	}
 	else if (doc->file_type->indent_type > -1)
@@ -1308,12 +1313,14 @@ void document_apply_indent_settings(GeanyDocument *doc)
 	{
 		if (width != iprefs->width)
 			ui_set_statusbar(TRUE, _("Setting indentation width to %d for %s."),
-							 width, DOC_FILENAME(doc));
+							 width, display_filename);
 	}
 	else if (doc->file_type->indent_width > -1)
 		width = doc->file_type->indent_width;
 	
 	editor_set_indent(doc->editor, type, width);
+	
+	g_free(display_filename);
 }
 
 
@@ -1335,15 +1342,9 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 {
 	g_return_val_if_fail(doc == NULL || doc->is_valid, NULL);
 	
-	gint editor_mode;
 	gboolean reload = (doc == NULL) ? FALSE : TRUE;
 	gchar *utf8_filename = NULL;
 	gchar *locale_filename = NULL;
-	gchar *display_filename = NULL;
-	GeanyFiletype *use_ft;
-	FileData filedata;
-	UndoReloadData *undo_reload_data;
-	gboolean add_undo_reload_action;
 	
 	if (reload)
 	{
@@ -1381,7 +1382,12 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 	
 	if (reload || doc == NULL)
 	{	/* doc possibly changed */
-		display_filename = utils_str_middle_truncate(utf8_filename, 100);
+		GeanyFiletype *use_ft;
+		FileData filedata;
+		UndoReloadData *undo_reload_data;
+		gboolean add_undo_reload_action;
+		
+		gchar *display_filename = utils_get_display_filename(utf8_filename);
 		
 		if (!load_text_file(locale_filename, display_filename,
 							&filedata, forced_enc))
@@ -1437,7 +1443,7 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		queue_colourise(doc);	/* Ensure the document gets colourised. */
 		
 		/* detect & set line endings */
-		editor_mode = utils_get_line_endings(filedata.data, filedata.len);
+		gint editor_mode = utils_get_line_endings(filedata.data, filedata.len);
 		if (undo_reload_data)
 		{
 			undo_reload_data->eol_mode = editor_get_eol_char_mode(doc->editor);
@@ -1555,8 +1561,9 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 		
 		/* now the document is fully ready, display it (see notebook_new_tab()) */
 		gtk_widget_show(document_get_notebook_child(doc));
+		
+		g_free(display_filename);
 	}
-	g_free(display_filename);
 	g_free(utf8_filename);
 	g_free(locale_filename);
 	
@@ -2197,8 +2204,10 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		return FALSE;
 	if (doc->readonly)
 	{
+		gchar *display_filename = utils_get_display_filename(doc->file_name);
 		ui_set_statusbar_color(TRUE, COLOR_RED,
-			_("Cannot save read-only document '%s'!"), DOC_FILENAME(doc));
+			_("Cannot save read-only document '%s'!"), display_filename);
+		g_free(display_filename);
 		return FALSE;
 	}
 	document_check_disk_status(doc, TRUE);
@@ -2297,8 +2306,12 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		
 		document_update_tab_label(doc);
 		
-		msgwin_status_add(_("File %s saved."), doc->file_name);
+		gchar *display_filename = utils_get_display_filename(doc->file_name);
+		msgwin_status_add(_("File %s saved."), display_filename);
+		g_free(display_filename);
+		
 		ui_update_statusbar(doc, -1);
+		
 #ifdef HAVE_VTE
 		vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
 #endif

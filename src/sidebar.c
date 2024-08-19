@@ -361,26 +361,9 @@ static gboolean find_tree_iter_dir(GtkTreeIter *iter, const gchar *dir)
 }
 
 
-static gboolean utils_filename_has_prefix(const gchar *str, const gchar *prefix)
-{
-/* esh: optimization for linux: don't use g_strndup and utils_filenamecmp (strcmp),
- * 		use strncmp without creating new string */
-#ifdef G_OS_WIN32
-	gchar *head = g_strndup(str, strlen(prefix));
-	gboolean ret = utils_str_casecmp(head, prefix) == 0;
-	g_free(head);
-	return ret;
-#else
-	return strncmp(str, prefix, strlen(prefix)) == 0;
-#endif
-}
-
-
 static gchar *get_doc_folder(const gchar *path)
 {
-	gchar *tmp_dirname = g_strdup(path);
 	gchar *dirname = NULL;
-	const gchar *rest;
 	
 	/* replace the project base path with the project name */
 	gchar *project_base_path = project_get_base_path();
@@ -395,34 +378,18 @@ static gchar *get_doc_folder(const gchar *path)
 		
 		/* check whether the dir name matches or uses the project base path,
 		 * esh: if matches, replace with @ */
-		if (utils_filename_has_prefix(tmp_dirname, project_base_path))
+		if (utils_filename_has_prefix(path, project_base_path))
 		{
-			rest = tmp_dirname + len;
+			const gchar *rest = path + len;
 			if (*rest == G_DIR_SEPARATOR || *rest == '\0')
 				dirname = g_strdup_printf("@%s", rest);
 		}
 		g_free(project_base_path);
 	}
 	if (dirname == NULL)
-	{
-		dirname = tmp_dirname;
-		
-		const gchar *home_dir = g_get_home_dir();
-		
-		/* If matches home dir, replace with tilde */
-		if (!EMPTY(home_dir) && utils_filename_has_prefix(dirname, home_dir))
-		{
-			rest = dirname + strlen(home_dir);
-			if (*rest == G_DIR_SEPARATOR || *rest == '\0')
-			{
-				dirname = g_strdup_printf("~%s", rest);
-				g_free(tmp_dirname);
-			}
-		}
+	{	// if matches home dir, replace with tilde
+		dirname = utils_truncate_home_dir(path);
 	}
-	else
-		g_free(tmp_dirname);
-	
 	return dirname;
 }
 
