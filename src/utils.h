@@ -290,7 +290,13 @@ void utils_tidy_path(gchar *filename);
 
 gboolean utils_is_absolute_path(const gchar *path);
 
+gboolean utils_filename_has_prefix(const gchar *path, const gchar *prefix);
+
 const gchar *utils_path_skip_root(const gchar *path);
+
+gchar *utils_truncate_home_dir(const gchar *path);
+
+gchar *utils_get_display_filename(const gchar *path);
 
 gdouble utils_scale_round(gdouble val, gdouble factor);
 
