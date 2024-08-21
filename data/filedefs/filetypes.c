@@ -34,6 +34,7 @@ formatsequence=string_1
 commonword=keyword_1
 otherclass=class
 string_continued=string_1
+line_continued=preprocessor
 
 [keywords]
 # all items must be in one line
