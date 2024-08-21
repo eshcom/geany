@@ -496,6 +496,7 @@ LexicalClass lexicalClasses[] = {
 	31, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
 	40, "SCE_C_BIFS", "bifs", "Built-in functions for Golang",
 	41, "SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
+	42, "SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
 };
 
 }
@@ -971,8 +972,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	Sci_PositionU lineEndNext = styler.LineEnd(lineCurrent);
 	
-	for (; sc.More();) {
-		
+	while (sc.More()) {
 		if (sc.atLineStart) {
 			// Using MaskActive() is not needed in the following statement.
 			// Inside inactive preprocessor declaration, state will be reset anyway at the end of this block.
@@ -1031,18 +1031,24 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						   maskActiveState == SCE_C_COMMENTLINEDOC ||
 						   maskActiveState == SCE_C_COMMENTDOCKEYWORD ||
 						   maskActiveState == SCE_C_COMMENTDOCKEYWORDERROR ||
-						   maskActiveState == SCE_C_PREPROCESSOR) {
+						   maskActiveState == SCE_C_PREPROCESSOR ||
+						   maskActiveState == SCE_C_STRINGEOL) {
 					sc.Forward();
-				} else {
-					// esh: fixed highlighting backslash (line continuation symbol)
-					sc.SetState(SCE_C_DEFAULT|activitySet);
-					sc.Forward();
+					
+				} else { // esh: backslash - line continuation symbol
+					sc.SetState(SCE_C_LINE_CONTINUED|activitySet);
+					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
 				}
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					// Even in UTF-8, \r and \n are separate
 					sc.Forward();
 				}
 				continuationLine = true;
+				sc.Forward();
+				continue;
+				
+			} else if (MaskActive(sc.state) == SCE_C_DEFAULT) { // esh: undefined backslash
+				sc.SetState(SCE_C_STRINGEOL|activitySet);
 				sc.Forward();
 				continue;
 			}
@@ -1385,7 +1391,11 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (MaskActive(sc.state) == SCE_C_DEFAULT) {
-			if (sc.Match('@', '\"')) {
+			if (sc.ch == '\\') {
+				// will be processed in the section "Handle line continuation generically"
+				continue;
+				
+			} else if (sc.Match('@', '\"')) {
 				sc.SetState(SCE_C_VERBATIM|activitySet);
 				sc.Forward();
 				
@@ -1483,6 +1493,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				do {
 					sc.Forward();
 				} while (IsASpaceOrTab(sc.ch) && sc.More());
+				
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.Match("include")) {
