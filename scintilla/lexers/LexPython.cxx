@@ -387,6 +387,7 @@ LexicalClass lexicalClasses[] = {
 	28, "SCE_P_FSTRING_SUBOPER", "literal string", "F-String sub-oper",
 	29, "SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
 	30, "SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
+	31, "SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
 };
 
 }
@@ -758,8 +759,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position startIndicator = sc.currentPos;
 	bool inContinuedString = false;
 	
-	for (; sc.More(); sc.Forward()) {
-		
+	Sci_PositionU lineEndNext = styler.LineEnd(lineCurrent);
+	
+	while (sc.More()) {
 		if (sc.state == SCE_P_FSTRING_SUBOPER) {
 			int state = (sc.chPrev == '}') ?
 							PopFromStateStack(fstringStateStack, currentFStringExp) :
@@ -785,7 +787,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 									 indicatorWhitespace, 0);
 				startIndicator = sc.currentPos;
 			}
-			// esh: taken from (LexCPP.css)
+			// esh: taken from LexCPP.cxx
 			if (IsPySingleQuoteStringState(
 							GetSaveStringState(sc.state, stringState))) {
 				// Prevent SCE_P_STRINGEOL from leaking back to previous line which
@@ -797,9 +799,27 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (sc.atLineEnd) {
 			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
 						   inContinuedString, stringState);
+			if (!sc.More()) break;
 			lineCurrent++;
-			if (!sc.More())
-				break;
+			lineEndNext = styler.LineEnd(lineCurrent);
+		}
+		
+		// esh: Handle line continuation generically (taken from LexCPP.cxx)
+		if (sc.ch == '\\') {
+			if ((sc.currentPos + 1) >= lineEndNext) { // esh: end of line
+				if (!IsPyStringStateForFold(sc.state)
+					&& sc.state != SCE_P_COMMENTLINE
+					&& sc.state != SCE_P_COMMENTBLOCK) {
+					// backslash - line continuation symbol
+					sc.SetState(SCE_P_LINE_CONTINUED);
+					sc.ForwardSetState(SCE_P_DEFAULT);
+					continue;
+				}
+			} else if (sc.state == SCE_P_DEFAULT) { // esh: undefined backslash
+				sc.SetState(SCE_P_STRINGEOL);
+				sc.Forward();
+				continue;
+			}
 		}
 		
 		bool needEOLCheck = false;
@@ -1050,10 +1070,10 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (needEOLCheck && sc.atLineEnd) {
 			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
 						   inContinuedString, stringState);
+			if (!sc.More()) break;
 			lineCurrent++;
+			lineEndNext = styler.LineEnd(lineCurrent);
 			styler.IndentAmount(lineCurrent, &spaceFlags, IsPyComment);
-			if (!sc.More())
-				break;
 		}
 		
 		// If in f-string expression, check for }, :, !
@@ -1086,7 +1106,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Check for a new state starting character
 		if (sc.state == SCE_P_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (sc.ch == '\\') {
+				// will be processed in the section "Handle line continuation generically"
+				continue;
+				
+			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 				if (sc.ch == '0' && (sc.chNext == 'x' || sc.chNext == 'X')) {
 					base_n_number = true;
 					sc.SetState(SCE_P_NUMBER);
@@ -1128,6 +1152,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_P_IDENTIFIER);
 			}
 		}
+		sc.Forward();
 	}
 	styler.IndicatorFill(startIndicator, sc.currentPos,
 						 indicatorWhitespace, 0);
