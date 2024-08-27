@@ -132,15 +132,13 @@ gboolean tm_parser_langs_compatible(TMParserType lang, TMParserType other);
 
 gboolean tm_parser_has_quoted_identifiers(TMParserType lang);
 
-gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
-								   gchar *prefix, gboolean brackets);
-
-gboolean tm_parser_complex_scope(guint scope_parts_cnt, TMParserType lang);
+void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
+							TMParserType lang, const gchar *prefix, gboolean brackets);
 
 gboolean tm_parser_strict_scope(TMParserType lang);
 
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
-						   gchar *prefix, gchar *suffix);
+						   const gchar *prefix, const gchar *suffix);
 
 #define ONE_CHAR_PREFIX_CHARS	"?#."
 #define MULTI_CHAR_PREFIX_CHARS	"->"

@@ -844,8 +844,8 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
 	}
 }
 
-gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
-								   gchar *prefix, gboolean brackets)
+void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
+							TMParserType lang, const gchar *prefix, gboolean brackets)
 {
 	switch (lang)
 	{
@@ -854,35 +854,18 @@ gboolean tm_parser_undefined_scope(const gchar *scope, TMParserType lang,
 			//		case (module()):test1() of	- "case" is scope
 			//		?module:test1()				- "module" is scope
 			//		Module:test1()				- "Module" is scope
-			if (brackets || g_strcmp0(prefix, "?") == 0 ||
-				!(scope[0] == '\'' || islower(scope[0])))
-				return TRUE;
+			if (*scope != '\0' && (brackets || g_strcmp0(prefix, "?") == 0 ||
+								   !(*scope == '\'' || islower(*scope))))
+				*scope = '\0';
 			break;
 		
 		case TM_PARSER_PYTHON:
-			if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
-				return TRUE;
-			break;
-		
-		default:
-			break;
-	}
-	return FALSE;
-}
-
-gboolean tm_parser_complex_scope(guint scope_parts_cnt, TMParserType lang)
-{
-	switch (lang)
-	{
-		case TM_PARSER_PYTHON:
-			if (scope_parts_cnt > 1)
-				return TRUE;
-			break;
-		
-		default:
+			if (*scope == '\0')
+				g_strlcpy(scope, "*", scopelen);
+			else if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
+				g_strlcpy(scope, scope_parts_cnt > 1 ? "*" : "", scopelen);
 			break;
 	}
-	return FALSE;
 }
 
 gboolean tm_parser_strict_scope(TMParserType lang)
@@ -917,7 +900,7 @@ TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type)
 }
 
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
-						   gchar *prefix, gchar *suffix)
+						   const gchar *prefix, const gchar *suffix)
 {
 	// this func will be expanded in conjunction with the definitions of
 	// ONE_CHAR_PREFIX_CHARS/MULTI_CHAR_PREFIX_CHARS,
@@ -970,7 +953,16 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 			if (g_strcmp0(suffix, "=") == 0 || g_strcmp0(suffix, ".") == 0)
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_function_t);
 			else if (g_strcmp0(suffix, "(") == 0)
-				*type = tm_tag_max_t & ~(tm_tag_externvar_t);
+			{
+				if (prefix == NULL || *prefix == '\0')
+					*type = tm_tag_function_t | tm_tag_class_t;
+				else if (g_strcmp0(prefix, ".") == 0)
+					*type = tm_tag_method_t;
+				else
+					*type = tm_tag_max_t & ~(tm_tag_externvar_t);
+			}
+			else if (prefix == NULL || *prefix == '\0')
+				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_member_t);
 			break;
 		
 		case TM_PARSER_GO:

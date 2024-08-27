@@ -1870,17 +1870,14 @@ static gchar *find_prefix(ScintillaObject *sci, gchar *chunk, gint pos)
 		break;
 	}
 	if (prefix_start < pos)
-	{
-		if (sci)
-			prefix = sci_get_contents_range(sci, prefix_start, pos);
-		else
-			prefix = g_strndup(&chunk[prefix_start], pos - prefix_start);
-	}
+		prefix = sci ? sci_get_contents_range(sci, prefix_start, pos)
+					 : g_strndup(&chunk[prefix_start], pos - prefix_start);
+	
 	return prefix;
 }
 
 static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
-						  gint pos, gint limit)
+						  gint pos, gint limit, TMParserType lang)
 {
 	gchar *suffix = NULL;
 	
@@ -1890,8 +1887,16 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 	}
 	
 	/* skip whitespaces */
-	while (pos < limit && isspace(get_char_at(pos)))
-		pos++;
+	if (lang == TM_PARSER_PYTHON)
+	{	// only space or tab
+		while (pos < limit && strchr(" \t", get_char_at(pos)))
+			pos++;
+	}
+	else
+	{
+		while (pos < limit && isspace(get_char_at(pos)))
+			pos++;
+	}
 	
 	gint suffix_end = pos;
 	while (suffix_end < limit)
@@ -1907,12 +1912,9 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 		break;
 	}
 	if (pos < suffix_end)
-	{
-		if (sci)
-			suffix = sci_get_contents_range(sci, pos, suffix_end);
-		else
-			suffix = g_strndup(&chunk[pos], suffix_end - pos);
-	}
+		suffix = sci ? sci_get_contents_range(sci, pos, suffix_end)
+					 : g_strndup(&chunk[pos], suffix_end - pos);
+	
 	return suffix;
 }
 
@@ -2038,7 +2040,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	
 	// esh: define the type ----------------------------------
 	gchar *prefix = find_prefix(sci, chunk, pos);
-	gchar *suffix = find_suffix(sci, chunk, wordbound.end, limit);
+	gchar *suffix = find_suffix(sci, chunk, wordbound.end, limit, lang);
 	
 	tm_parser_define_type(type, lang, prefix, suffix);
 	
@@ -2083,19 +2085,14 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 					pos--;
 				
 				prefix = find_prefix(sci, chunk, pos);
-				
-				if (tm_parser_undefined_scope(scope, lang, prefix,
-											  scopebound.brackets))
-				{
-					if (tm_parser_complex_scope(scope_parts_cnt, lang))
-						g_strlcpy(scope, "*", scopelen);
-					else
-						*scope = '\0';
-				}
+				tm_parser_define_scope(scope, scopelen, scope_parts_cnt,
+									   lang, prefix, scopebound.brackets);
 				g_free(prefix);
+				return;
 			}
 		}
 	}
+	tm_parser_define_scope(scope, scopelen, 0, lang, NULL, FALSE);
 	//--------------------------------------------------------
 }
 
