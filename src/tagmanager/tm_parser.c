@@ -583,9 +583,8 @@ G_STATIC_ASSERT(G_N_ELEMENTS(parser_map) == TM_PARSER_COUNT);
 TMTagType tm_parser_get_tag_type(gchar kind, TMParserType lang)
 {
 	TMParserMap *map = &parser_map[lang];
-	guint i;
 	
-	for (i = 0; i < map->size; i++)
+	for (guint i = 0; i < map->size; i++)
 	{
 		TMParserMapEntry *entry = &map->entries[i];
 		
@@ -599,9 +598,8 @@ TMTagType tm_parser_get_tag_type(gchar kind, TMParserType lang)
 gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang)
 {
 	TMParserMap *map = &parser_map[lang];
-	guint i;
 	
-	for (i = 0; i < map->size; i++)
+	for (guint i = 0; i < map->size; i++)
 	{
 		TMParserMapEntry *entry = &map->entries[i];
 		
@@ -615,8 +613,6 @@ gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang)
 static void add_subparser(TMParserType lang, TMParserType sublang,
 						  TMSubparserMapEntry *map, guint map_size)
 {
-	guint i;
-	GPtrArray *mapping;
 	GHashTable *lang_map = g_hash_table_lookup(subparser_map,
 											   GINT_TO_POINTER(lang));
 	if (!lang_map)
@@ -625,8 +621,8 @@ static void add_subparser(TMParserType lang, TMParserType sublang,
 		g_hash_table_insert(subparser_map, GINT_TO_POINTER(lang), lang_map);
 	}
 	
-	mapping = g_ptr_array_new();
-	for (i = 0; i < map_size; i++)
+	GPtrArray *mapping = g_ptr_array_new();
+	for (guint i = 0; i < map_size; i++)
 		g_ptr_array_add(mapping, &map[i]);
 	
 	g_hash_table_insert(lang_map, GINT_TO_POINTER(sublang), mapping);
@@ -646,25 +642,22 @@ static void init_subparser_map(void)
 TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang,
 									   TMTagType type)
 {
-	guint i;
-	GHashTable *lang_map;
-	GPtrArray *mapping;
-	
 	if (!subparser_map)
 	{
 		subparser_map = g_hash_table_new(g_direct_hash, g_direct_equal);
 		init_subparser_map();
 	}
 	
-	lang_map = g_hash_table_lookup(subparser_map, GINT_TO_POINTER(lang));
+	GHashTable *lang_map = g_hash_table_lookup(subparser_map,
+											   GINT_TO_POINTER(lang));
 	if (!lang_map)
 		return tm_tag_undef_t;
 	
-	mapping = g_hash_table_lookup(lang_map, GINT_TO_POINTER(sublang));
+	GPtrArray *mapping = g_hash_table_lookup(lang_map, GINT_TO_POINTER(sublang));
 	if (!mapping)
 		return tm_tag_undef_t;
 	
-	for (i = 0; i < mapping->len; i++)
+	for (guint i = 0; i < mapping->len; i++)
 	{
 		TMSubparserMapEntry *entry = mapping->pdata[i];
 		if (entry->orig_type == type)
@@ -676,17 +669,13 @@ TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang,
 
 void tm_parser_verify_type_mappings(void)
 {
-	TMParserType lang;
-	
 	if (TM_PARSER_COUNT > ctagsGetLangCount())
 		g_error("More parsers defined in Geany than in ctags");
 	
-	for (lang = 0; lang < TM_PARSER_COUNT; lang++)
+	for (TMParserType lang = 0; lang < TM_PARSER_COUNT; lang++)
 	{
 		const gchar *kinds = ctagsGetLangKinds(lang);
 		TMParserMap *map = &parser_map[lang];
-		gchar presence_map[256];
-		guint i;
 		
 		if (!map->entries || map->size < 1)
 			g_error("No tag types in TM for %s, is the language listed in parser_map?",
@@ -701,14 +690,15 @@ void tm_parser_verify_type_mappings(void)
 			g_error("Different number of tag types in TM (%d) and ctags (%d) for %s",
 					map->size, (int)strlen(kinds), ctagsGetLangName(lang));
 		
+		gchar presence_map[256];
 		memset(presence_map, 0, sizeof(presence_map));
-		for (i = 0; i < map->size; i++)
+		
+		for (guint i = 0; i < map->size; i++)
 		{
 			gboolean ctags_found = FALSE;
 			gboolean tm_found = FALSE;
-			guint j;
 			
-			for (j = 0; j < map->size; j++)
+			for (guint j = 0; j < map->size; j++)
 			{
 				/* check that for every type in TM there's a type in ctags */
 				if (map->entries[i].kind == kinds[j])
@@ -729,7 +719,7 @@ void tm_parser_verify_type_mappings(void)
 			presence_map[(unsigned char) map->entries[i].kind]++;
 		}
 		
-		for (i = 0; i < sizeof(presence_map); i++)
+		for (guint i = 0; i < sizeof(presence_map); i++)
 		{
 			if (presence_map[i] > 1)
 				g_error("Duplicate tag type '%c' found for %s",
