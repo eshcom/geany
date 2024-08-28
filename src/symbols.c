@@ -2396,30 +2396,25 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	
 	if (tags->len == 1)
 	{
-		GeanyDocument *new_doc;
-		
 		TMTag *tmtag = tags->pdata[0];
-		new_doc = document_find_by_real_path(tmtag->file->file_name);
-		
-		if (!new_doc)
-			/* not found in opened document, should open */
+		GeanyDocument *new_doc = document_find_by_real_path(
+										tmtag->file->file_name);
+		if (!new_doc) // not found in opened document, should open
 			new_doc = document_open_file(tmtag->file->file_name,
 										 FALSE, NULL, NULL);
-		
 		navqueue_goto_line(curr_doc, new_doc, tmtag->line);
 	}
 	else if (tags->len > 1)
 	{
-		GPtrArray *tag_list;
-		TMTag *tag, *best_tag;
-		guint i;
-		
 		g_ptr_array_sort(tags, compare_tags_by_name_line);
-		best_tag = find_best_goto_tag(curr_doc, tags);
 		
-		tag_list = g_ptr_array_new();
+		GPtrArray *tag_list = g_ptr_array_new();
+		TMTag *best_tag = find_best_goto_tag(curr_doc, tags);
 		if (best_tag)
 			g_ptr_array_add(tag_list, best_tag);
+		
+		TMTag *tag;
+		guint i;
 		
 		foreach_ptr_array(tag, i, tags)
 		{

@@ -928,7 +928,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const Sci_PositionU endPos = startPos + length;
 	
-	//~ esh: logs are written to a file ~/.cache/upstart/unity7.log (ubuntu 16)
+	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
 	//~ printf("!!!LexCPP: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
 		   //~ styler[startPos + length - 2], initStyle);
