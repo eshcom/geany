@@ -2387,9 +2387,11 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 			all_tags = tm_workspace_find_prj(name, tm_tag_max_t,
 											 curr_doc->file_type->lang);
 			
-			tags = wrap_filter_tags(curr_doc->tm_file, current_line, all_tags,
-									scope, type, curr_doc->file_type->lang,
-									definition, TRUE);
+			GPtrArray *ptags = wrap_filter_tags(curr_doc->tm_file, current_line,
+												all_tags, scope, type,
+												curr_doc->file_type->lang,
+												definition, TRUE);
+			filter_tags_check(&tags, &ptags, FALSE);
 			g_ptr_array_free(all_tags, TRUE);
 		}
 	}
