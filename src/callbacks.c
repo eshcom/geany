@@ -1468,9 +1468,19 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 					else if (match == MATCH_DIRS_FULL)
 						currpath_match_proj = TRUE;
 					else
-					{	/* try the project's base path */
+					{	// try the project's base path
 						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
 													  base_path, sel, NULL));
+					}
+					
+					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+					{	// try base_path/base_name/sel, example:
+						// open path "ui/log.py", real path "rabbitvcs/rabbitvcs/ui/log.py"
+						gchar *base_name = g_path_get_basename(base_path);
+						
+						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+													  base_name, sel, NULL));
+						g_free(base_name);
 					}
 					g_free(base_path);
 				}
