@@ -674,9 +674,10 @@ gboolean project_ask_close(void)
 {
 	if (app->project != NULL)
 	{
-		if (dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
-			_("Do you want to close it before proceeding?"),
-			_("The '%s' project is open."), app->project->name))
+		if (!project_prefs.confirm_project_closure ||
+			dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
+							_("Do you want to close it before proceeding?"),
+							_("The '%s' project is open."), app->project->name))
 			return project_close(FALSE);
 		else
 			return FALSE;
