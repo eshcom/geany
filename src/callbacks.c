@@ -1375,7 +1375,11 @@ void on_project_open1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 void on_project_close1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	project_close(TRUE);
+	if (!project_prefs.confirm_project_closure ||
+		dialogs_show_question_full(NULL, GTK_STOCK_CLOSE, GTK_STOCK_CANCEL,
+						_("Do you want to close it before proceeding?"),
+						_("The '%s' project is open."), app->project->name))
+		project_close(TRUE);
 }
 
 

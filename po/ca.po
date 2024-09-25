@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.30\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-23 15:38+0300\n"
+"POT-Creation-Date: 2024-09-25 12:20+0300\n"
 "PO-Revision-Date: 2017-11-06 10:07+0100\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Poedit 2.0.4\n"
 
-#: ../geany.desktop.in.h:1 ../data/geany.glade.h:350
+#: ../geany.desktop.in.h:1 ../data/geany.glade.h:352
 msgid "Geany"
 msgstr "Geany"
 
@@ -107,11 +107,11 @@ msgstr "_Cerca"
 msgid "Open Selected F_ile"
 msgstr "Obre el f_itxer seleccionat"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2910
+#: ../data/geany.glade.h:19 ../src/symbols.c:2907
 msgid "Find _Usage"
 msgstr "Troba l'_ús"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2917
+#: ../data/geany.glade.h:20 ../src/symbols.c:2914
 msgid "Find _Document Usage"
 msgstr "Troba l'ús al _document"
 
@@ -423,10 +423,19 @@ msgstr ""
 "projecte al diàleg de projecte nou."
 
 #: ../data/geany.glade.h:81
+msgid "Confirm project closure"
+msgstr ""
+
+#: ../data/geany.glade.h:82
+#, fuzzy
+msgid "Shows a confirmation dialog when closing a project"
+msgstr "Mostra un diàleg de confirmació amb la sortida"
+
+#: ../data/geany.glade.h:83
 msgid "<b>Projects</b>"
 msgstr "<b>Projectes</b>"
 
-#: ../data/geany.glade.h:82 ../src/dialogs.c:231
+#: ../data/geany.glade.h:84 ../src/dialogs.c:231
 msgid "Miscellaneous"
 msgstr "Altres"
 
@@ -434,117 +443,117 @@ msgstr "Altres"
 #. * corresponding chapter in the documentation, comparing translatable
 #. * strings is easy to break. Maybe attach an identifying string to the
 #. * tab label object.
-#: ../data/geany.glade.h:83 ../src/prefs.c:1641
+#: ../data/geany.glade.h:85 ../src/prefs.c:1647
 msgid "General"
 msgstr "General"
 
-#: ../data/geany.glade.h:84
+#: ../data/geany.glade.h:86
 msgid "Show symbol list"
 msgstr "Mostra la llista dels símbols"
 
-#: ../data/geany.glade.h:85
+#: ../data/geany.glade.h:87
 msgid "Toggle the symbol list on and off"
 msgstr "Activa o desactiva la llista dels símbols"
 
-#: ../data/geany.glade.h:86
+#: ../data/geany.glade.h:88
 msgid "Default symbol sorting mode"
 msgstr "Mode d'ordenació predeterminat dels símbols"
 
-#: ../data/geany.glade.h:87
+#: ../data/geany.glade.h:89
 msgid "Default sorting mode:"
 msgstr "Mode d'ordenació predeterminat:"
 
-#: ../data/geany.glade.h:88 ../src/stash.c:1175
+#: ../data/geany.glade.h:90 ../src/stash.c:1175
 msgid "Name"
 msgstr "Nom"
 
-#: ../data/geany.glade.h:89
+#: ../data/geany.glade.h:91
 msgid "Appearance"
 msgstr "Aparença"
 
-#: ../data/geany.glade.h:90
+#: ../data/geany.glade.h:92
 msgid "Show documents list"
 msgstr "Mostra la llista dels documents"
 
-#: ../data/geany.glade.h:91
+#: ../data/geany.glade.h:93
 msgid "Toggle the documents list on and off"
 msgstr "Activa o desactiva la llista dels documents"
 
-#: ../data/geany.glade.h:92
+#: ../data/geany.glade.h:94
 msgid "Show sidebar"
 msgstr "Mostra la barra lateral"
 
-#: ../data/geany.glade.h:93
+#: ../data/geany.glade.h:95
 msgid "Position:"
 msgstr "Posició:"
 
-#: ../data/geany.glade.h:94
+#: ../data/geany.glade.h:96
 msgid "<b>Sidebar</b>"
 msgstr "<b>Barra lateral</b>"
 
-#: ../data/geany.glade.h:95
+#: ../data/geany.glade.h:97
 msgid "Switch to messages tab when navigating with hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:96
+#: ../data/geany.glade.h:98
 msgid "Switch to messages tab when navigating messages using hotkeys"
 msgstr ""
 
-#: ../data/geany.glade.h:97
+#: ../data/geany.glade.h:99
 msgid "<b>Message window</b>"
 msgstr "<b>Finestra dels missatges</b>"
 
-#: ../data/geany.glade.h:98
+#: ../data/geany.glade.h:100
 msgid "Symbol list:"
 msgstr "Llista dels símbols:"
 
-#: ../data/geany.glade.h:99
+#: ../data/geany.glade.h:101
 msgid "Message window:"
 msgstr "Finestra dels missatges:"
 
-#: ../data/geany.glade.h:100
+#: ../data/geany.glade.h:102
 msgid "Editor:"
 msgstr "Editor:"
 
-#: ../data/geany.glade.h:101
+#: ../data/geany.glade.h:103
 msgid "Sets the font for the message window"
 msgstr "Estableix la lletra per a la finestra dels missatges"
 
-#: ../data/geany.glade.h:102
+#: ../data/geany.glade.h:104
 msgid "Sets the font for the symbol list"
 msgstr "Estableix la lletra per a la llista dels símbols"
 
-#: ../data/geany.glade.h:103
+#: ../data/geany.glade.h:105
 msgid "Sets the editor font"
 msgstr "Estableix la lletra de l'editor"
 
-#: ../data/geany.glade.h:104
+#: ../data/geany.glade.h:106
 msgid "<b>Fonts</b>"
 msgstr "<b>Lletres</b>"
 
-#: ../data/geany.glade.h:105
+#: ../data/geany.glade.h:107
 msgid "Show status bar"
 msgstr "Mostra la barra d'estat"
 
-#: ../data/geany.glade.h:106
+#: ../data/geany.glade.h:108
 msgid "Whether to show the status bar at the bottom of the main window"
 msgstr ""
 "Indica si s'ha de mostrar la barra d'estat a la part inferior de la finestra "
 "principal"
 
-#: ../data/geany.glade.h:107 ../src/prefs.c:1643
+#: ../data/geany.glade.h:109 ../src/prefs.c:1649
 msgid "Interface"
 msgstr "Interfície"
 
-#: ../data/geany.glade.h:108
+#: ../data/geany.glade.h:110
 msgid "Show editor tabs"
 msgstr "Mostra les pestanyes de l'editor"
 
-#: ../data/geany.glade.h:109
+#: ../data/geany.glade.h:111
 msgid "Show close buttons"
 msgstr "Mostra els botons de tancament"
 
-#: ../data/geany.glade.h:110
+#: ../data/geany.glade.h:112
 msgid ""
 "Shows a small cross button in the file tabs to easily close files when "
 "clicking on it (requires restart of Geany)"
@@ -552,26 +561,26 @@ msgstr ""
 "Mostra el botó d'una creu petita a les pestanyes dels fitxers per a tancar "
 "fàcilment els fitxers en fer-hi clic (cal reiniciar Geany)"
 
-#: ../data/geany.glade.h:111
+#: ../data/geany.glade.h:113
 msgid "Placement of new file tabs:"
 msgstr "Posicionament de les pestanyes dels fitxers nous:"
 
-#: ../data/geany.glade.h:112
+#: ../data/geany.glade.h:114
 msgid "File tabs will be placed on the left of the notebook"
 msgstr ""
 "Les pestanyes dels fitxers es posicionaran a la part esquerra del bloc de "
 "notes"
 
-#: ../data/geany.glade.h:113
+#: ../data/geany.glade.h:115
 msgid "File tabs will be placed on the right of the notebook"
 msgstr ""
 "Les pestanyes dels fitxers es posicionaran a la part dreta del bloc de notes"
 
-#: ../data/geany.glade.h:114
+#: ../data/geany.glade.h:116
 msgid "Next to current"
 msgstr "Al costat de l'actual"
 
-#: ../data/geany.glade.h:115
+#: ../data/geany.glade.h:117
 msgid ""
 "Whether to place file tabs next to the current tab rather than at the edges "
 "of the notebook"
@@ -579,104 +588,104 @@ msgstr ""
 "Indica si es posicionaran les pestanyes dels fitxers al costat de la "
 "pestanya actual en lloc de les vores del bloc de notes"
 
-#: ../data/geany.glade.h:116
+#: ../data/geany.glade.h:118
 msgid "Double-clicking hides all additional widgets"
 msgstr "En fer doble clic s'oculten tots els estris addicionals"
 
-#: ../data/geany.glade.h:117
+#: ../data/geany.glade.h:119
 msgid "Calls the View->Toggle All Additional Widgets command"
 msgstr "Crida a l'ordre Visualitza->Commuta tots els estris addicionals"
 
-#: ../data/geany.glade.h:118
+#: ../data/geany.glade.h:120
 msgid "Switch to last used document after closing a tab"
 msgstr "Canvia a l'últim document utilitzat després de tancar una pestanya"
 
-#: ../data/geany.glade.h:119
+#: ../data/geany.glade.h:121
 msgid "<b>Editor tabs</b>"
 msgstr "<b>Pestanyes de l'editor</b>"
 
-#: ../data/geany.glade.h:120
+#: ../data/geany.glade.h:122
 msgid "Sidebar:"
 msgstr "Barra lateral:"
 
-#: ../data/geany.glade.h:121
+#: ../data/geany.glade.h:123
 msgid "<b>Tab positions</b>"
 msgstr "<b>Posicions de les pestanyes</b>"
 
-#: ../data/geany.glade.h:122
+#: ../data/geany.glade.h:124
 msgid "Notebook tabs"
 msgstr "Pestanyes del bloc de notes"
 
-#: ../data/geany.glade.h:123
+#: ../data/geany.glade.h:125
 msgid "Show t_oolbar"
 msgstr "M_ostra la barra d'eines"
 
-#: ../data/geany.glade.h:124
+#: ../data/geany.glade.h:126
 msgid "_Append toolbar to the menu"
 msgstr "_Annexa la barra d'eines al menú"
 
-#: ../data/geany.glade.h:125
+#: ../data/geany.glade.h:127
 msgid "Pack the toolbar to the main menu to save vertical space"
 msgstr ""
 "Empaqueta la barra d'eines al menú principal per estalviar espai vertical"
 
-#: ../data/geany.glade.h:126 ../src/toolbar.c:943
+#: ../data/geany.glade.h:128 ../src/toolbar.c:943
 msgid "Customize Toolbar"
 msgstr "Personalitza la barra d'eines"
 
-#: ../data/geany.glade.h:127
+#: ../data/geany.glade.h:129
 msgid "System _default"
 msgstr "Pre_determinat del sistema"
 
-#: ../data/geany.glade.h:128
+#: ../data/geany.glade.h:130
 msgid "Images _and text"
 msgstr "Im_atges i text"
 
-#: ../data/geany.glade.h:129
+#: ../data/geany.glade.h:131
 msgid "_Images only"
 msgstr "Només _imatges"
 
-#: ../data/geany.glade.h:130
+#: ../data/geany.glade.h:132
 msgid "_Text only"
 msgstr "Només _text"
 
-#: ../data/geany.glade.h:131
+#: ../data/geany.glade.h:133
 msgid "<b>Icon style</b>"
 msgstr "<b>Estil de les icones</b>"
 
-#: ../data/geany.glade.h:132
+#: ../data/geany.glade.h:134
 msgid "S_ystem default"
 msgstr "_Predeterminat del sistema"
 
-#: ../data/geany.glade.h:133
+#: ../data/geany.glade.h:135
 msgid "_Small icons"
 msgstr "Icone_s petites"
 
-#: ../data/geany.glade.h:134
+#: ../data/geany.glade.h:136
 msgid "_Very small icons"
 msgstr "Icones _molt petites"
 
-#: ../data/geany.glade.h:135
+#: ../data/geany.glade.h:137
 msgid "_Large icons"
 msgstr "Icones _grans"
 
-#: ../data/geany.glade.h:136
+#: ../data/geany.glade.h:138
 msgid "<b>Icon size</b>"
 msgstr "<b>Mida de les icones</b>"
 
-#: ../data/geany.glade.h:137
+#: ../data/geany.glade.h:139
 msgid "<b>Toolbar</b>"
 msgstr "<b>Barra d'eines</b>"
 
-#: ../data/geany.glade.h:138 ../src/prefs.c:1645
+#: ../data/geany.glade.h:140 ../src/prefs.c:1651
 msgid "Toolbar"
 msgstr "Barra d'eines"
 
-#: ../data/geany.glade.h:139
+#: ../data/geany.glade.h:141
 msgid "Line wrapping"
 msgstr "Envoltar la línia"
 
-#: ../data/geany.glade.h:140
+#: ../data/geany.glade.h:142
 msgid ""
 "Wrap the line at the window border and continue it on the next line. Note: "
 "line wrapping has a high performance cost for large documents so should be "
@@ -686,11 +695,11 @@ msgstr ""
 "Nota: Envoltar la línia té un cost de rendiment elevat per als documents "
 "grans, per tant convé inhabilitar-ho en màquines amb pocs recursos."
 
-#: ../data/geany.glade.h:141
+#: ../data/geany.glade.h:143
 msgid "\"Smart\" home key"
 msgstr "Tecla d'inici \"intel·ligent\""
 
-#: ../data/geany.glade.h:142
+#: ../data/geany.glade.h:144
 msgid ""
 "When \"smart\" home is enabled, the HOME key will move the caret to the "
 "first non-blank character of the line, unless it is already there, it moves "
@@ -704,11 +713,11 @@ msgstr ""
 "característica està inhabilitada, la tecla INICI sempre desplaça el cursor "
 "al principi de la línia actual, independentment de la seva posició."
 
-#: ../data/geany.glade.h:143
+#: ../data/geany.glade.h:145
 msgid "Disable Drag and Drop"
 msgstr "Inhabilita arrossega i deixa anar"
 
-#: ../data/geany.glade.h:144
+#: ../data/geany.glade.h:146
 msgid ""
 "Disable drag and drop completely in the editor window so you can't drag and "
 "drop any selections within or outside of the editor window"
@@ -717,15 +726,15 @@ msgstr ""
 "així no podeu arrossegar i deixar anar text dins o fora de la finestra de "
 "l'editor"
 
-#: ../data/geany.glade.h:145
+#: ../data/geany.glade.h:147
 msgid "Code folding"
 msgstr "Replegament del codi"
 
-#: ../data/geany.glade.h:146
+#: ../data/geany.glade.h:148
 msgid "Fold/unfold all children of a fold point"
 msgstr "Replega o desplega tots els fills d'un punt de replegament"
 
-#: ../data/geany.glade.h:147
+#: ../data/geany.glade.h:149
 msgid ""
 "Fold or unfold all children of a fold point. By pressing the Shift key while "
 "clicking on a fold symbol the contrary behavior is used."
@@ -734,11 +743,11 @@ msgstr ""
 "la tecla de majúscules mentre es fa clic en un símbol replegat s'utilitza el "
 "comportament oposat."
 
-#: ../data/geany.glade.h:148
+#: ../data/geany.glade.h:150
 msgid "Use indicators to show compile errors"
 msgstr "Utilitza els indicadors per mostrar els errors de compilació"
 
-#: ../data/geany.glade.h:149
+#: ../data/geany.glade.h:151
 msgid ""
 "Whether to use indicators (a squiggly underline) to highlight the lines "
 "where the compiler found a warning or an error"
@@ -746,24 +755,24 @@ msgstr ""
 "Indica si s'utilitzen indicadors (un subratllat ondulat) per ressaltar les "
 "línies on el compilador ha trobat una advertència o un error"
 
-#: ../data/geany.glade.h:150
+#: ../data/geany.glade.h:152
 msgid "Newline strips trailing spaces"
 msgstr "La línia nova elimina els espais al final"
 
-#: ../data/geany.glade.h:151
+#: ../data/geany.glade.h:153
 msgid "Enable newline to strip the trailing spaces on the previous line"
 msgstr ""
 "Habilita que la línia nova elimini els espais finals en la línia anterior"
 
-#: ../data/geany.glade.h:152
+#: ../data/geany.glade.h:154
 msgid "Line breaking column:"
 msgstr "Columna del trencament de la línia:"
 
-#: ../data/geany.glade.h:153
+#: ../data/geany.glade.h:155
 msgid "Comment toggle marker:"
 msgstr "Marca de commutació del comentari:"
 
-#: ../data/geany.glade.h:154
+#: ../data/geany.glade.h:156
 msgid ""
 "A string which is added when toggling a line comment in a source file, it is "
 "used to mark the comment as toggled."
@@ -771,15 +780,15 @@ msgstr ""
 "Una cadena que s'afegeix quan es commuta un comentari de línia al fitxer del "
 "codi font, s'utilitza per marcar el comentari com a commutat."
 
-#: ../data/geany.glade.h:155
+#: ../data/geany.glade.h:157
 msgid "<b>Features</b>"
 msgstr "<b>Característiques</b>"
 
-#: ../data/geany.glade.h:156
+#: ../data/geany.glade.h:158
 msgid "Features"
 msgstr "Característiques"
 
-#: ../data/geany.glade.h:157
+#: ../data/geany.glade.h:159
 msgid ""
 "Note: To apply these settings to all currently open documents, use "
 "<i>Project->Apply Default Indentation</i>."
@@ -787,25 +796,25 @@ msgstr ""
 "Nota: Per aplicar aquests ajusts a tots els documents oberts, utilitzeu "
 "<i>Projecte -> Aplica el sagnat predeterminat</i>."
 
-#: ../data/geany.glade.h:158
+#: ../data/geany.glade.h:160
 #, fuzzy
 msgid "_Width:"
 msgstr "Amplada:"
 
-#: ../data/geany.glade.h:159
+#: ../data/geany.glade.h:161
 msgid "The width in chars of a single indent"
 msgstr "L'amplada en caràcters d'un sol sagnat"
 
-#: ../data/geany.glade.h:160
+#: ../data/geany.glade.h:162
 #, fuzzy
 msgid "Auto-indent _mode:"
 msgstr "Mode de sagnat automàtic:"
 
-#: ../data/geany.glade.h:161
+#: ../data/geany.glade.h:163
 msgid "Detect type from file"
 msgstr "Detecta el tipus a partir del fitxer"
 
-#: ../data/geany.glade.h:162
+#: ../data/geany.glade.h:164
 msgid ""
 "Whether to detect the indentation type from file contents when a file is "
 "opened"
@@ -813,38 +822,38 @@ msgstr ""
 "Indica si s'ha de detectar el tipus de sagnat a partir del contingut del "
 "fitxer quan s'obre"
 
-#: ../data/geany.glade.h:163
+#: ../data/geany.glade.h:165
 msgid "T_abs and spaces"
 msgstr "T_abuladors i espais"
 
-#: ../data/geany.glade.h:164
+#: ../data/geany.glade.h:166
 msgid ""
 "Use spaces if the total indent is less than the tab width, otherwise use both"
 msgstr ""
 "Utilitza espais si el sagnat total és menor que l'amplada de la tabulació, "
 "en cas contrari utilitza ambdós"
 
-#: ../data/geany.glade.h:165
+#: ../data/geany.glade.h:167
 msgid "_Spaces"
 msgstr "E_spais"
 
-#: ../data/geany.glade.h:166
+#: ../data/geany.glade.h:168
 msgid "Use spaces when inserting indentation"
 msgstr "Utilitza espais quan s'insereixi un nivell de sagnat"
 
-#: ../data/geany.glade.h:167
+#: ../data/geany.glade.h:169
 msgid "_Tabs"
 msgstr "_Tabuladors"
 
-#: ../data/geany.glade.h:168
+#: ../data/geany.glade.h:170
 msgid "Use one tab per indent"
 msgstr "Utilitza una tabulació per al sagnat"
 
-#: ../data/geany.glade.h:169
+#: ../data/geany.glade.h:171
 msgid "Detect width from file"
 msgstr "Detecta amplada a partir del fitxer"
 
-#: ../data/geany.glade.h:170
+#: ../data/geany.glade.h:172
 msgid ""
 "Whether to detect the indentation width from file contents when a file is "
 "opened"
@@ -852,35 +861,35 @@ msgstr ""
 "Indica si s'ha de detectar el tipus de sagnat a partir del contingut del "
 "fitxer quan s'obre"
 
-#: ../data/geany.glade.h:171
+#: ../data/geany.glade.h:173
 msgid "Type:"
 msgstr "Tipus:"
 
-#: ../data/geany.glade.h:172
+#: ../data/geany.glade.h:174
 #, fuzzy
 msgid "Tab _key indents"
 msgstr "Sagnat amb la tecla de tabulació"
 
-#: ../data/geany.glade.h:173
+#: ../data/geany.glade.h:175
 msgid ""
 "Pressing tab/shift-tab indents/unindents instead of inserting a tab character"
 msgstr ""
 "En prémer el tabulador / majúscula+tabulador sagna / treu el sagnat en "
 "comptes d'inserir el caràcter de tabulació"
 
-#: ../data/geany.glade.h:174
+#: ../data/geany.glade.h:176
 msgid "<b>Indentation</b>"
 msgstr "<b>Sagnat</b>"
 
-#: ../data/geany.glade.h:175
+#: ../data/geany.glade.h:177
 msgid "Indentation"
 msgstr "Sagnat"
 
-#: ../data/geany.glade.h:176
+#: ../data/geany.glade.h:178
 msgid "Snippet completion"
 msgstr "Compleció dels snippets"
 
-#: ../data/geany.glade.h:177
+#: ../data/geany.glade.h:179
 msgid ""
 "Type a defined short character sequence and complete it to a more complex "
 "string using a single keypress"
@@ -888,19 +897,19 @@ msgstr ""
 "Teclegeu una seqüència breu de caràcters i completeu-la a una cadena de més "
 "complexa mitjançant la pulsació d'una tecla"
 
-#: ../data/geany.glade.h:178
+#: ../data/geany.glade.h:180
 msgid "XML/HTML tag auto-closing"
 msgstr "Tancament automàtic de les etiquetes XML/HTML"
 
-#: ../data/geany.glade.h:179
+#: ../data/geany.glade.h:181
 msgid "Insert matching closing tag for XML/HTML"
 msgstr "Insereix l'etiqueta que tanca per a XML/HTML"
 
-#: ../data/geany.glade.h:180
+#: ../data/geany.glade.h:182
 msgid "Automatic continuation of multi-line comments"
 msgstr "Compleció automàtica dels comentaris de línia múltiple"
 
-#: ../data/geany.glade.h:181
+#: ../data/geany.glade.h:183
 msgid ""
 "Continue automatically multi-line comments in languages like C, C++ and Java "
 "when a new line is entered inside such a comment"
@@ -908,11 +917,11 @@ msgstr ""
 "Continua automàticament els comentaris de línia múltiple en llenguatges com "
 "ara C, C++ i Java quan s'introdueix una línia nova dins d'un comentari"
 
-#: ../data/geany.glade.h:182
+#: ../data/geany.glade.h:184
 msgid "Autocomplete symbols"
 msgstr "Completa automàticament els símbols"
 
-#: ../data/geany.glade.h:183
+#: ../data/geany.glade.h:185
 msgid ""
 "Automatic completion of known symbols in open files (function names, global "
 "variables, ...)"
@@ -920,27 +929,27 @@ msgstr ""
 "Compleció automàtica dels símbols coneguts als fitxers oberts (noms de les "
 "funcions, variables globals, ...)"
 
-#: ../data/geany.glade.h:184
+#: ../data/geany.glade.h:186
 msgid "Autocomplete all words in document"
 msgstr "Completa automàticament totes les paraules del document"
 
-#: ../data/geany.glade.h:185
+#: ../data/geany.glade.h:187
 msgid "Drop rest of word on completion"
 msgstr "Suprimeix la resta de la paraula amb la compleció"
 
-#: ../data/geany.glade.h:186
+#: ../data/geany.glade.h:188
 msgid "Max. symbol name suggestions:"
 msgstr "Nombre màx. de suggeriments de noms de símbols:"
 
-#: ../data/geany.glade.h:187
+#: ../data/geany.glade.h:189
 msgid "Completion list height:"
 msgstr "Llargada de la llista de les complecions:"
 
-#: ../data/geany.glade.h:188
+#: ../data/geany.glade.h:190
 msgid "Characters to type for autocompletion:"
 msgstr "Caràcters a escriure per a la compleció automàtica:"
 
-#: ../data/geany.glade.h:189
+#: ../data/geany.glade.h:191
 msgid ""
 "The amount of characters which are necessary to show the symbol "
 "autocompletion list"
@@ -948,20 +957,20 @@ msgstr ""
 "El nombre de caràcters que són necessaris per a mostrar la llista de "
 "compleció automàtica dels símbols"
 
-#: ../data/geany.glade.h:190
+#: ../data/geany.glade.h:192
 msgid "Display height in rows for the autocompletion list"
 msgstr ""
 "Nombre de files mostrades per a la llista de les complecions automàtiques"
 
-#: ../data/geany.glade.h:191
+#: ../data/geany.glade.h:193
 msgid "Maximum number of entries to display in the autocompletion list"
 msgstr "Nombre màxim d'entrades a mostrar a la llista de compleció automàtica"
 
-#: ../data/geany.glade.h:192
+#: ../data/geany.glade.h:194
 msgid "Symbol list update frequency:"
 msgstr "Freqüència d'actualització de la llista dels símbols:"
 
-#: ../data/geany.glade.h:193
+#: ../data/geany.glade.h:195
 msgid ""
 "Minimal delay (in milliseconds) between two automatic updates of the symbol "
 "list. Note that a too short delay may have performance impact, especially "
@@ -972,104 +981,104 @@ msgstr ""
 "el rendiment, especialment amb els fitxers grans. Un retard 0 inhabilita les "
 "actualitzacions en temps real."
 
-#: ../data/geany.glade.h:194
+#: ../data/geany.glade.h:196
 msgid "<b>Completions</b>"
 msgstr "<b>Complecions</b>"
 
-#: ../data/geany.glade.h:195
+#: ../data/geany.glade.h:197
 msgid "Parenthesis ( )"
 msgstr "Parèntesis ( )"
 
-#: ../data/geany.glade.h:196
+#: ../data/geany.glade.h:198
 msgid "Auto-close parenthesis when typing an opening one"
 msgstr "Tanca automàticament el parèntesi, quan se n'obre un"
 
-#: ../data/geany.glade.h:197
+#: ../data/geany.glade.h:199
 msgid "Curly brackets { }"
 msgstr "Claus { }"
 
-#: ../data/geany.glade.h:198
+#: ../data/geany.glade.h:200
 msgid "Auto-close curly bracket when typing an opening one"
 msgstr "Tanca automàticament les claus, quan se n'obre una"
 
-#: ../data/geany.glade.h:199
+#: ../data/geany.glade.h:201
 msgid "Square brackets [ ]"
 msgstr "Claudàtors [ ]"
 
-#: ../data/geany.glade.h:200
+#: ../data/geany.glade.h:202
 msgid "Auto-close square-bracket when typing an opening one"
 msgstr "Tanca automàticament els claudàtors, quan se n'obre un"
 
-#: ../data/geany.glade.h:201
+#: ../data/geany.glade.h:203
 msgid "Single quotes ' '"
 msgstr "Cometes senzilles ' ' "
 
-#: ../data/geany.glade.h:202
+#: ../data/geany.glade.h:204
 msgid "Auto-close single quote when typing an opening one"
 msgstr "Tanca automàticament les cometes senzilles, quan se n'obre una"
 
-#: ../data/geany.glade.h:203
+#: ../data/geany.glade.h:205
 msgid "Double quotes \" \""
 msgstr "Cometes dobles \" \""
 
-#: ../data/geany.glade.h:204
+#: ../data/geany.glade.h:206
 msgid "Auto-close double quote when typing an opening one"
 msgstr "Tanca automàticament les cometes dobles, quan se n'obre una"
 
-#: ../data/geany.glade.h:205
+#: ../data/geany.glade.h:207
 msgid "<b>Auto-close quotes and brackets</b>"
 msgstr "<b>Tancament automàtic de cometes i parèntesis</b>"
 
-#: ../data/geany.glade.h:206
+#: ../data/geany.glade.h:208
 msgid "Completions"
 msgstr "Complecions"
 
-#: ../data/geany.glade.h:207
+#: ../data/geany.glade.h:209
 msgid "Invert syntax highlighting colors"
 msgstr "Inverteix els colors de la coloració de la sintaxi"
 
-#: ../data/geany.glade.h:208
+#: ../data/geany.glade.h:210
 msgid "Invert all colors, by default using white text on a black background"
 msgstr "Inverteix els colors, per defecte utilitza text blanc sobre fons negre"
 
-#: ../data/geany.glade.h:209
+#: ../data/geany.glade.h:211
 msgid "Show indentation guides"
 msgstr "Mostra les guies de sagnat"
 
-#: ../data/geany.glade.h:210
+#: ../data/geany.glade.h:212
 msgid "Shows small dotted lines to help you to use the right indentation"
 msgstr ""
 "Mostra línies de punts petits per ajudar-vos a utilitzar el sagnat correcte"
 
-#: ../data/geany.glade.h:211
+#: ../data/geany.glade.h:213
 msgid "Show white space"
 msgstr "Mostra els espais en blanc"
 
-#: ../data/geany.glade.h:212
+#: ../data/geany.glade.h:214
 msgid "Marks spaces with dots and tabs with arrows"
 msgstr "Marca els espais amb punts i els tabuladors amb fletxes"
 
-#: ../data/geany.glade.h:213
+#: ../data/geany.glade.h:215
 msgid "Show line endings"
 msgstr "Mostra el final de línia"
 
-#: ../data/geany.glade.h:214
+#: ../data/geany.glade.h:216
 msgid "Shows the line ending character"
 msgstr "Mostra el caràcter de final de línia"
 
-#: ../data/geany.glade.h:215
+#: ../data/geany.glade.h:217
 msgid "Show line numbers"
 msgstr "Mostra els números de línia"
 
-#: ../data/geany.glade.h:216
+#: ../data/geany.glade.h:218
 msgid "Shows or hides the Line Number margin"
 msgstr "Mostra o amaga el marge amb els números de línia"
 
-#: ../data/geany.glade.h:217
+#: ../data/geany.glade.h:219
 msgid "Show markers margin"
 msgstr "Mostra el marge de les marques"
 
-#: ../data/geany.glade.h:218
+#: ../data/geany.glade.h:220
 msgid ""
 "Shows or hides the small margin right of the line numbers, which is used to "
 "mark lines"
@@ -1077,41 +1086,41 @@ msgstr ""
 "Mostra o amaga el petit marge dret dels números de línia, que s'utilitza per "
 "marcar les línies"
 
-#: ../data/geany.glade.h:219
+#: ../data/geany.glade.h:221
 msgid "Stop scrolling at last line"
 msgstr "Atura el desplaçament a l'última línia"
 
-#: ../data/geany.glade.h:220
+#: ../data/geany.glade.h:222
 msgid "Whether to stop scrolling one page past the last line of a document"
 msgstr ""
 "Indica si s'atura el desplaçament d'una pàgina un cop se supera l'última "
 "línia d'un document"
 
-#: ../data/geany.glade.h:221
+#: ../data/geany.glade.h:223
 msgid "Lines visible _around the cursor:"
 msgstr "Línies visibles al volt_ant del cursor:"
 
-#: ../data/geany.glade.h:222
+#: ../data/geany.glade.h:224
 msgid "<b>Display</b>"
 msgstr "<b>Visualització</b>"
 
-#: ../data/geany.glade.h:223
+#: ../data/geany.glade.h:225
 msgid "Column:"
 msgstr "Columna:"
 
-#: ../data/geany.glade.h:224
+#: ../data/geany.glade.h:226
 msgid "Color:"
 msgstr "Color:"
 
-#: ../data/geany.glade.h:225
+#: ../data/geany.glade.h:227
 msgid "Sets the color of the long line marker"
 msgstr "Estableix el color de la barra de marques llarga"
 
-#: ../data/geany.glade.h:226 ../src/toolbar.c:73 ../src/tools.c:851
+#: ../data/geany.glade.h:228 ../src/toolbar.c:73 ../src/tools.c:851
 msgid "Color Chooser"
 msgstr "Selector de Color"
 
-#: ../data/geany.glade.h:227
+#: ../data/geany.glade.h:229
 msgid ""
 "The long line marker is a thin vertical line in the editor, it helps to mark "
 "long lines, or as a hint to break the line. Set this value to a value "
@@ -1121,11 +1130,11 @@ msgstr ""
 "per marcar les línies llargues, o com a suggeriment on tallar-les. Indiqueu "
 "un valor major que 0 per a especificar la columna on ha d'aparèixer."
 
-#: ../data/geany.glade.h:228
+#: ../data/geany.glade.h:230
 msgid "Line"
 msgstr "Línia"
 
-#: ../data/geany.glade.h:229
+#: ../data/geany.glade.h:231
 msgid ""
 "Prints a vertical line in the editor window at the given cursor position "
 "(see below)"
@@ -1133,11 +1142,11 @@ msgstr ""
 "Imprimeix una línia vertical a l'editor en la posició indicada (veieu més "
 "avall)"
 
-#: ../data/geany.glade.h:230
+#: ../data/geany.glade.h:232
 msgid "Background"
 msgstr "Fons"
 
-#: ../data/geany.glade.h:231
+#: ../data/geany.glade.h:233
 msgid ""
 "The background color of characters after the given cursor position (see "
 "below) changed to the color set below, (this is recommended if you use "
@@ -1147,82 +1156,82 @@ msgstr ""
 "(veieu més avall) hagi canviat al color establer més avall. (es recomana "
 "quan s'utilitzen lletres proporcionals)"
 
-#: ../data/geany.glade.h:232
+#: ../data/geany.glade.h:234
 msgid "Enabled"
 msgstr "Habilitat"
 
-#: ../data/geany.glade.h:233
+#: ../data/geany.glade.h:235
 msgid "<b>Long line marker</b>"
 msgstr "<b>Barra de marques</b>"
 
-#: ../data/geany.glade.h:234
+#: ../data/geany.glade.h:236
 msgid "Disabled"
 msgstr "Inhabilitada"
 
-#: ../data/geany.glade.h:235
+#: ../data/geany.glade.h:237
 msgid "Do not show virtual spaces"
 msgstr "No mostreu els espais virtuals"
 
-#: ../data/geany.glade.h:236
+#: ../data/geany.glade.h:238
 msgid "Only for rectangular selections"
 msgstr "Només per a seleccions rectangulars"
 
-#: ../data/geany.glade.h:237
+#: ../data/geany.glade.h:239
 msgid ""
 "Only show virtual spaces beyond the end of lines when drawing a rectangular "
 "selection"
 msgstr ""
 "Mostra només els espais virtuals al final de línia en seleccionar rectangles"
 
-#: ../data/geany.glade.h:238
+#: ../data/geany.glade.h:240
 msgid "Always"
 msgstr "Sempre"
 
-#: ../data/geany.glade.h:239
+#: ../data/geany.glade.h:241
 msgid "Always show virtual spaces beyond the end of lines"
 msgstr "Mostra sempre els espais virtuals a final de línia"
 
-#: ../data/geany.glade.h:240
+#: ../data/geany.glade.h:242
 msgid "<b>Virtual spaces</b>"
 msgstr "<b>Espais virtuals</b>"
 
-#: ../data/geany.glade.h:241
+#: ../data/geany.glade.h:243
 msgid "Display"
 msgstr "Visualització"
 
-#: ../data/geany.glade.h:242 ../src/keybindings.c:321 ../src/prefs.c:1647
+#: ../data/geany.glade.h:244 ../src/keybindings.c:321 ../src/prefs.c:1653
 msgid "Editor"
 msgstr "Editor"
 
-#: ../data/geany.glade.h:243
+#: ../data/geany.glade.h:245
 msgid "Open new documents from the command-line"
 msgstr "Obre els documents nous des de la línia d'ordres"
 
-#: ../data/geany.glade.h:244
+#: ../data/geany.glade.h:246
 msgid "Create a new file for each command-line filename that doesn't exist"
 msgstr "Crea un nou fitxer per a cada fitxer inexistent passat com a argument"
 
-#: ../data/geany.glade.h:245
+#: ../data/geany.glade.h:247
 msgid "Default end of line characters:"
 msgstr "Caràcters predeterminats d'acabament de línia:"
 
-#: ../data/geany.glade.h:246
+#: ../data/geany.glade.h:248
 msgid "<b>New files</b>"
 msgstr "<b>Fitxers nous</b>"
 
-#: ../data/geany.glade.h:247
+#: ../data/geany.glade.h:249
 msgid "Default encoding (new files):"
 msgstr "Codificació predeterminada (fitxers nous):"
 
-#: ../data/geany.glade.h:248
+#: ../data/geany.glade.h:250
 msgid "Sets the default encoding for newly created files"
 msgstr "Estableix la codificació predeterminada per a fitxers de nova creació"
 
-#: ../data/geany.glade.h:249
+#: ../data/geany.glade.h:251
 msgid "Use fixed encoding when opening non-Unicode files"
 msgstr "Utilitza una codificació fixa quan s'obrin fitxers no Unicode"
 
-#: ../data/geany.glade.h:250
+#: ../data/geany.glade.h:252
 msgid ""
 "This option disables the automatic detection of the file encoding when "
 "opening non-Unicode files and opens the file with the specified encoding "
@@ -1232,33 +1241,33 @@ msgstr ""
 "s'obren fitxers no Unicode i obre els fitxers amb la codificació "
 "especificada (normalment no es necessita)"
 
-#: ../data/geany.glade.h:251
+#: ../data/geany.glade.h:253
 msgid "Default encoding (existing non-Unicode files):"
 msgstr "Codificació predeterminada (fitxers existents no Unicode):"
 
-#: ../data/geany.glade.h:252
+#: ../data/geany.glade.h:254
 msgid "Sets the default encoding for opening existing non-Unicode files"
 msgstr ""
 "Estableix la codificació predeterminada per als fitxers ja existents no "
 "Unicode"
 
-#: ../data/geany.glade.h:253
+#: ../data/geany.glade.h:255
 msgid "<b>Encodings</b>"
 msgstr "<b>Codificacions</b>"
 
-#: ../data/geany.glade.h:254
+#: ../data/geany.glade.h:256
 msgid "Ensure new line at file end"
 msgstr "Assegura el salt de línia al final del fitxer"
 
-#: ../data/geany.glade.h:255
+#: ../data/geany.glade.h:257
 msgid "Ensures that at the end of the file is a new line"
 msgstr "Assegura que al final del fitxer hi ha una línia en blanc"
 
-#: ../data/geany.glade.h:256
+#: ../data/geany.glade.h:258
 msgid "Ensure consistent line endings"
 msgstr "Assegura els salts de línia consistents"
 
-#: ../data/geany.glade.h:257
+#: ../data/geany.glade.h:259
 msgid ""
 "Ensures that newline characters always get converted before saving, avoiding "
 "mixed line endings in the same file"
@@ -1266,42 +1275,42 @@ msgstr ""
 "Assegura que els caràcters de nova línia es converteixen abans de desar, "
 "evitant finals de línia barrejats al fitxer"
 
-#: ../data/geany.glade.h:258
+#: ../data/geany.glade.h:260
 msgid "Strip trailing spaces and tabs"
 msgstr "Elimina els espais i els tabuladors finals"
 
-#: ../data/geany.glade.h:259
+#: ../data/geany.glade.h:261
 msgid "Removes trailing spaces and tabs at the end of lines"
 msgstr ""
 "Suprimeix els espais i els tabuladors finals a l'acabament de les línies"
 
-#: ../data/geany.glade.h:260 ../src/keybindings.c:710
+#: ../data/geany.glade.h:262 ../src/keybindings.c:710
 msgid "Replace tabs with space"
 msgstr "Substitueix els tabuladors amb espais"
 
-#: ../data/geany.glade.h:261
+#: ../data/geany.glade.h:263
 msgid "Replaces all tabs in document with spaces"
 msgstr "Substitueix tots els tabuladors al document amb espais"
 
-#: ../data/geany.glade.h:262
+#: ../data/geany.glade.h:264
 msgid "<b>Saving files</b>"
 msgstr "<b>Desament de fitxers</b>"
 
-#: ../data/geany.glade.h:263
+#: ../data/geany.glade.h:265
 msgid "Recent files list length:"
 msgstr "Mostra la llista de fitxers oberts:"
 
-#: ../data/geany.glade.h:264
+#: ../data/geany.glade.h:266
 msgid "Specifies the number of files which are stored in the Recent files list"
 msgstr ""
 "Especifica el nombre de fitxers que s'emmagatzemen a la llista dels fitxers "
 "recents"
 
-#: ../data/geany.glade.h:265
+#: ../data/geany.glade.h:267
 msgid "Disk check timeout:"
 msgstr "Temps d'espera del disc:"
 
-#: ../data/geany.glade.h:266
+#: ../data/geany.glade.h:268
 msgid ""
 "How often to check for changes to document files on disk, in seconds. Zero "
 "disables checking."
@@ -1309,20 +1318,20 @@ msgstr ""
 "Amb quina freqüència (en segons) s'han de buscar canvis als documents del "
 "disc. Zero inhabilita la comprovació."
 
-#: ../data/geany.glade.h:267 ../src/prefs.c:1649 ../src/symbols.c:495
+#: ../data/geany.glade.h:269 ../src/prefs.c:1655 ../src/symbols.c:495
 #: ../plugins/filebrowser.c:1158
 msgid "Files"
 msgstr "Fitxers"
 
-#: ../data/geany.glade.h:268
+#: ../data/geany.glade.h:270
 msgid "Terminal:"
 msgstr "Terminal:"
 
-#: ../data/geany.glade.h:269
+#: ../data/geany.glade.h:271
 msgid "Browser:"
 msgstr "Navegador:"
 
-#: ../data/geany.glade.h:271
+#: ../data/geany.glade.h:273
 #, no-c-format
 msgid ""
 "A terminal emulator command (%c is substituted with the Geany run script "
@@ -1331,24 +1340,24 @@ msgstr ""
 "Una ordre de l'emulador de terminal (%c se substitueix amb el nom de fitxer "
 "del script d'execució de Geany)"
 
-#: ../data/geany.glade.h:272
+#: ../data/geany.glade.h:274
 msgid "Path (and possibly additional arguments) to your favorite browser"
 msgstr ""
 "El camí (i probablement arguments opcionals) per al vostre navegador preferit"
 
-#: ../data/geany.glade.h:273
+#: ../data/geany.glade.h:275
 msgid "Grep:"
 msgstr "Grep:"
 
-#: ../data/geany.glade.h:274
+#: ../data/geany.glade.h:276
 msgid "<b>Tool paths</b>"
 msgstr "<b>Camí a les eines</b>"
 
-#: ../data/geany.glade.h:275
+#: ../data/geany.glade.h:277
 msgid "Context action:"
 msgstr "Acció contextual:"
 
-#: ../data/geany.glade.h:277
+#: ../data/geany.glade.h:279
 #, no-c-format
 msgid ""
 "Context action command. The currently selected word can be used with %s. It "
@@ -1359,67 +1368,67 @@ msgstr ""
 "Pot estar a qualsevol part de l'ordre donada i serà substituïda abans de "
 "l'execució."
 
-#: ../data/geany.glade.h:278
+#: ../data/geany.glade.h:280
 msgid "<b>Commands</b>"
 msgstr "<b>Ordres</b>"
 
-#: ../data/geany.glade.h:279 ../src/keybindings.c:333 ../src/prefs.c:1651
+#: ../data/geany.glade.h:281 ../src/keybindings.c:333 ../src/prefs.c:1657
 msgid "Tools"
 msgstr "Eines"
 
-#: ../data/geany.glade.h:280
+#: ../data/geany.glade.h:282
 msgid "Email address of the developer"
 msgstr "Adreça de correu electrònic del desenvolupador"
 
-#: ../data/geany.glade.h:281
+#: ../data/geany.glade.h:283
 msgid "Initials of the developer name"
 msgstr "Inicials del desenvolupador"
 
-#: ../data/geany.glade.h:282
+#: ../data/geany.glade.h:284
 msgid "Initial version:"
 msgstr "Versió inicial:"
 
-#: ../data/geany.glade.h:283
+#: ../data/geany.glade.h:285
 msgid "Version number, which a new file initially has"
 msgstr "Número de versió, que té inicialment un fitxer nou"
 
-#: ../data/geany.glade.h:284
+#: ../data/geany.glade.h:286
 msgid "Company name"
 msgstr "Nom de l'empresa"
 
-#: ../data/geany.glade.h:285
+#: ../data/geany.glade.h:287
 msgid "Developer:"
 msgstr "Desenvolupador:"
 
-#: ../data/geany.glade.h:286
+#: ../data/geany.glade.h:288
 msgid "Company:"
 msgstr "Empresa:"
 
-#: ../data/geany.glade.h:287
+#: ../data/geany.glade.h:289
 msgid "Mail address:"
 msgstr "Adreça de correu electrònic:"
 
-#: ../data/geany.glade.h:288
+#: ../data/geany.glade.h:290
 msgid "Initials:"
 msgstr "Inicials:"
 
-#: ../data/geany.glade.h:289
+#: ../data/geany.glade.h:291
 msgid "The name of the developer"
 msgstr "El nom del desenvolupador"
 
-#: ../data/geany.glade.h:290
+#: ../data/geany.glade.h:292
 msgid "Year:"
 msgstr "Any:"
 
-#: ../data/geany.glade.h:291
+#: ../data/geany.glade.h:293
 msgid "Date:"
 msgstr "Data:"
 
-#: ../data/geany.glade.h:292
+#: ../data/geany.glade.h:294
 msgid "Date & time:"
 msgstr "Data i hora:"
 
-#: ../data/geany.glade.h:293
+#: ../data/geany.glade.h:295
 msgid ""
 "Specify a format for the {datetime} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1428,7 +1437,7 @@ msgstr ""
 "dels especificadors de conversió que es poden utilitzar amb la funció "
 "strftime d'ANSI C."
 
-#: ../data/geany.glade.h:294
+#: ../data/geany.glade.h:296
 msgid ""
 "Specify a format for the {year} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1437,7 +1446,7 @@ msgstr ""
 "especificadors de conversió que es poden utilitzar amb la funció strftime "
 "d'ANSI C."
 
-#: ../data/geany.glade.h:295
+#: ../data/geany.glade.h:297
 msgid ""
 "Specify a format for the {date} wildcard. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -1446,65 +1455,65 @@ msgstr ""
 "especificadors de conversió que es poden utilitzar amb la funció strftime "
 "d'ANSI C."
 
-#: ../data/geany.glade.h:296
+#: ../data/geany.glade.h:298
 msgid "<b>Template data</b>"
 msgstr "<b>Dades de plantilla</b>"
 
-#: ../data/geany.glade.h:297 ../src/prefs.c:1653
+#: ../data/geany.glade.h:299 ../src/prefs.c:1659
 msgid "Templates"
 msgstr "Plantilles"
 
-#: ../data/geany.glade.h:298
+#: ../data/geany.glade.h:300
 msgid "C_hange"
 msgstr "Can_via"
 
-#: ../data/geany.glade.h:299
+#: ../data/geany.glade.h:301
 msgid "<b>Keyboard shortcuts</b>"
 msgstr "<b>Dreceres de teclat</b>"
 
-#: ../data/geany.glade.h:300 ../src/plugins.c:1950 ../src/plugins.c:1987
-#: ../src/prefs.c:1655
+#: ../data/geany.glade.h:302 ../src/plugins.c:1951 ../src/plugins.c:1988
+#: ../src/prefs.c:1661
 msgid "Keybindings"
 msgstr "Vinculacions de tecles"
 
-#: ../data/geany.glade.h:301
+#: ../data/geany.glade.h:303
 msgid "Command:"
 msgstr "Ordre:"
 
-#: ../data/geany.glade.h:303
+#: ../data/geany.glade.h:305
 #, no-c-format
 msgid "Path to the command for printing files (use %f for the filename)"
 msgstr ""
 "El camí a l'ordre per imprimir fitxers (utilitzeu %f per indicar el nom del "
 "fitxer)"
 
-#: ../data/geany.glade.h:304
+#: ../data/geany.glade.h:306
 msgid "Use an external command for printing"
 msgstr "Utilitza una ordre externa per a la impressió"
 
-#: ../data/geany.glade.h:305 ../src/printing.c:237
+#: ../data/geany.glade.h:307 ../src/printing.c:237
 msgid "Print line numbers"
 msgstr "Imprimeix els números de línia"
 
-#: ../data/geany.glade.h:306 ../src/printing.c:239
+#: ../data/geany.glade.h:308 ../src/printing.c:239
 msgid "Add line numbers to the printed page"
 msgstr "Afegeix números de línia a les pàgines impreses"
 
-#: ../data/geany.glade.h:307 ../src/printing.c:242
+#: ../data/geany.glade.h:309 ../src/printing.c:242
 msgid "Print page numbers"
 msgstr "Imprimeix els números de pàgina"
 
-#: ../data/geany.glade.h:308 ../src/printing.c:244
+#: ../data/geany.glade.h:310 ../src/printing.c:244
 msgid ""
 "Add page numbers at the bottom of each page. It takes 2 lines of the page."
 msgstr ""
 "Afegeix números de pàgina a la part de baix. Ocupa 2 línies de la pàgina."
 
-#: ../data/geany.glade.h:309 ../src/printing.c:247
+#: ../data/geany.glade.h:311 ../src/printing.c:247
 msgid "Print page header"
 msgstr "Imprimeix la capçalera de la pàgina"
 
-#: ../data/geany.glade.h:310 ../src/printing.c:249
+#: ../data/geany.glade.h:312 ../src/printing.c:249
 msgid ""
 "Add a little header to every page containing the page number, the filename "
 "and the current date (see below). It takes 3 lines of the page."
@@ -1512,19 +1521,19 @@ msgstr ""
 "Afegeix a cada pàgina una capçalera amb el número de pàgina, el nom del "
 "fitxer i la data actual (veure més avall). Ocupa 3 línies per pàgina."
 
-#: ../data/geany.glade.h:311 ../src/printing.c:265
+#: ../data/geany.glade.h:313 ../src/printing.c:265
 msgid "Use the basename of the printed file"
 msgstr "Utilitza el nom base del fitxer imprès"
 
-#: ../data/geany.glade.h:312
+#: ../data/geany.glade.h:314
 msgid "Print only the basename (without the path) of the printed file"
 msgstr "Imprimeix només el nom base (sense el camí) del fitxer imprès"
 
-#: ../data/geany.glade.h:313 ../src/printing.c:273
+#: ../data/geany.glade.h:315 ../src/printing.c:273
 msgid "Date format:"
 msgstr "Format de data:"
 
-#: ../data/geany.glade.h:314 ../src/printing.c:279
+#: ../data/geany.glade.h:316 ../src/printing.c:279
 msgid ""
 "Specify a format for the date and time stamp which is added to the page "
 "header on each page. You can use any conversion specifiers which can be used "
@@ -1534,55 +1543,55 @@ msgstr ""
 "capçalera de cada pàgina. Podeu utilitzar qualsevol dels especificadors de "
 "conversió que es poden utilitzar amb la funció strftime d'ANSI C."
 
-#: ../data/geany.glade.h:315
+#: ../data/geany.glade.h:317
 msgid "Use native GTK printing"
 msgstr "Utilitza la impressió nativa de GTK"
 
-#: ../data/geany.glade.h:316
+#: ../data/geany.glade.h:318
 msgid "<b>Printing</b>"
 msgstr "<b>Impressió</b>"
 
-#: ../data/geany.glade.h:317 ../src/prefs.c:1657
+#: ../data/geany.glade.h:319 ../src/prefs.c:1663
 msgid "Printing"
 msgstr "Impressió"
 
-#: ../data/geany.glade.h:318
+#: ../data/geany.glade.h:320
 msgid "Font:"
 msgstr "Lletra:"
 
-#: ../data/geany.glade.h:319
+#: ../data/geany.glade.h:321
 msgid "Sets the font for the terminal widget"
 msgstr "Estableix la lletra per a l'estri del terminal"
 
-#: ../data/geany.glade.h:320
+#: ../data/geany.glade.h:322
 msgid "Choose Terminal Font"
 msgstr "Tria la lletra del terminal"
 
-#: ../data/geany.glade.h:321
+#: ../data/geany.glade.h:323
 msgid "Foreground color:"
 msgstr "Color de la lletra:"
 
-#: ../data/geany.glade.h:322
+#: ../data/geany.glade.h:324
 msgid "Background color:"
 msgstr "Color del fons:"
 
-#: ../data/geany.glade.h:323
+#: ../data/geany.glade.h:325
 msgid "Scrollback lines:"
 msgstr "Desplaçament enrere de les línies:"
 
-#: ../data/geany.glade.h:324
+#: ../data/geany.glade.h:326
 msgid "Shell:"
 msgstr "Shell:"
 
-#: ../data/geany.glade.h:325
+#: ../data/geany.glade.h:327
 msgid "Sets the foreground color of the text in the terminal widget"
 msgstr "Estableix el color del text a l'estri del terminal"
 
-#: ../data/geany.glade.h:326
+#: ../data/geany.glade.h:328
 msgid "Sets the background color of the text in the terminal widget"
 msgstr "Estableix el color del fons del text a l'estri del terminal"
 
-#: ../data/geany.glade.h:327
+#: ../data/geany.glade.h:329
 msgid ""
 "Specifies the history in lines, which you can scroll back in the terminal "
 "widget"
@@ -1590,51 +1599,51 @@ msgstr ""
 "Especifica el nombre de línies de l'historial que podeu anar enrere a la "
 "finestra de l'estri del terminal"
 
-#: ../data/geany.glade.h:328
+#: ../data/geany.glade.h:330
 msgid ""
 "Sets the path to the shell which should be started inside the terminal "
 "emulation"
 msgstr ""
 "Estableix el camí al shell que s'ha d'iniciar dins de l'emulació del terminal"
 
-#: ../data/geany.glade.h:329
+#: ../data/geany.glade.h:331
 msgid "Scroll on keystroke"
 msgstr "Desplaça en teclejar"
 
-#: ../data/geany.glade.h:330
+#: ../data/geany.glade.h:332
 msgid "Whether to scroll to the bottom if a key was pressed"
 msgstr "Indica si es desplaça a la part de baix si es prem alguna tecla"
 
-#: ../data/geany.glade.h:331
+#: ../data/geany.glade.h:333
 msgid "Scroll on output"
 msgstr "Desplaça en aparèixer text"
 
-#: ../data/geany.glade.h:332
+#: ../data/geany.glade.h:334
 msgid "Whether to scroll to the bottom when output is generated"
 msgstr "Indica si es desplaça a la part de baix quan es genera la sortida"
 
-#: ../data/geany.glade.h:333
+#: ../data/geany.glade.h:335
 msgid "Cursor blinks"
 msgstr "Parpelleig del cursor"
 
-#: ../data/geany.glade.h:334
+#: ../data/geany.glade.h:336
 msgid "Whether to blink the cursor"
 msgstr "Indica si es fa parpellejar el cursor"
 
-#: ../data/geany.glade.h:335
+#: ../data/geany.glade.h:337
 msgid "Override Geany keybindings"
 msgstr "Anul·la les vinculacions de tecles de Geany"
 
-#: ../data/geany.glade.h:336
+#: ../data/geany.glade.h:338
 msgid ""
 "Allows the VTE to receive keyboard shortcuts (apart from focus commands)"
 msgstr "Permet que VTE rebi les dreceres de teclat (a més del focus)"
 
-#: ../data/geany.glade.h:337
+#: ../data/geany.glade.h:339
 msgid "Disable menu shortcut key (F10 by default)"
 msgstr "Inhabilita la tecla de la drecera del menú (F10 per defecte)"
 
-#: ../data/geany.glade.h:338
+#: ../data/geany.glade.h:340
 msgid ""
 "This option disables the keybinding to popup the menu bar (default is F10). "
 "Disabling it can be useful if you use, for example, Midnight Commander "
@@ -1644,19 +1653,19 @@ msgstr ""
 "menú (per defecte és F10). Inhabilitar-ho pot ser útil si esteu utilitzant, "
 "per exemple, Midnight Commander al VTE."
 
-#: ../data/geany.glade.h:339
+#: ../data/geany.glade.h:341
 msgid "Follow path of the current file"
 msgstr "Segueix el camí del fitxer actual"
 
-#: ../data/geany.glade.h:340
+#: ../data/geany.glade.h:342
 msgid "Whether to execute \"cd $path\" when you switch between opened files"
 msgstr "indica si s'executa \"cd $path\" quan canvieu entre els fitxers oberts"
 
-#: ../data/geany.glade.h:341
+#: ../data/geany.glade.h:343
 msgid "Execute programs in the VTE"
 msgstr "Executa els programes al VTE"
 
-#: ../data/geany.glade.h:342
+#: ../data/geany.glade.h:344
 msgid ""
 "Run programs in VTE instead of opening a terminal emulation window. Please "
 "note, programs executed in VTE cannot be stopped"
@@ -1664,11 +1673,11 @@ msgstr ""
 "Executa programes al VTE en comptes d'obrir una finestra de terminal. "
 "Tingueu en compte que els programes executats al VTE no poden ser detinguts"
 
-#: ../data/geany.glade.h:343
+#: ../data/geany.glade.h:345
 msgid "Don't use run script"
 msgstr "No utilitzis el script d'execució"
 
-#: ../data/geany.glade.h:344
+#: ../data/geany.glade.h:346
 msgid ""
 "Don't use the simple run script which is usually used to display the exit "
 "status of the executed program"
@@ -1676,534 +1685,534 @@ msgstr ""
 "No utilitzis el script d'execució senzill que s'utilitza normalment per a "
 "mostrar el valor de l'estat de la sortida del programa executat"
 
-#: ../data/geany.glade.h:345
+#: ../data/geany.glade.h:347
 msgid "<b>Terminal</b>"
 msgstr "<b>Terminal</b>"
 
-#: ../data/geany.glade.h:346 ../src/prefs.c:1661 ../src/vte.c:460
+#: ../data/geany.glade.h:348 ../src/prefs.c:1667 ../src/vte.c:460
 msgid "Terminal"
 msgstr "Terminal"
 
-#: ../data/geany.glade.h:347
+#: ../data/geany.glade.h:349
 msgid "<i>Warning: read the manual before changing these preferences.</i>"
 msgstr ""
 "<i>Advertència: llegiu el manual abans de canviar aquestes preferències.</i>"
 
-#: ../data/geany.glade.h:348
+#: ../data/geany.glade.h:350
 msgid "<b>Various preferences</b>"
 msgstr "<b>Altres preferències</b>"
 
-#: ../data/geany.glade.h:349 ../src/prefs.c:1659
+#: ../data/geany.glade.h:351 ../src/prefs.c:1665
 msgid "Various"
 msgstr "Altres"
 
-#: ../data/geany.glade.h:351
+#: ../data/geany.glade.h:353
 msgid "_File"
 msgstr "_Fitxer"
 
-#: ../data/geany.glade.h:352
+#: ../data/geany.glade.h:354
 msgid "New (with _Template)"
 msgstr "Nou (amb la plan_tilla)"
 
-#: ../data/geany.glade.h:353
+#: ../data/geany.glade.h:355
 msgid "_Open..."
 msgstr "_Obre..."
 
-#: ../data/geany.glade.h:354
+#: ../data/geany.glade.h:356
 msgid "Recent _Files"
 msgstr "_Fitxers recents"
 
-#: ../data/geany.glade.h:355
+#: ../data/geany.glade.h:357
 msgid "Save _As..."
 msgstr "_Anomena i desa"
 
-#: ../data/geany.glade.h:356
+#: ../data/geany.glade.h:358
 msgid "Sa_ve All"
 msgstr "Desa-_ho tot"
 
-#: ../data/geany.glade.h:357 ../src/document.c:1716 ../src/document.c:3775
-#: ../src/sidebar.c:761
+#: ../data/geany.glade.h:359 ../src/document.c:1723 ../src/document.c:3788
+#: ../src/sidebar.c:728
 msgid "_Reload"
 msgstr "To_rna a carregar"
 
-#: ../data/geany.glade.h:358
+#: ../data/geany.glade.h:360
 msgid "R_eload As"
 msgstr "Torna a carr_egar com a..."
 
-#: ../data/geany.glade.h:359
+#: ../data/geany.glade.h:361
 msgid "Page Set_up"
 msgstr "Config_uració de la pàgina"
 
-#: ../data/geany.glade.h:360
+#: ../data/geany.glade.h:362
 msgid "_Print..."
 msgstr "Im_primeix..."
 
-#: ../data/geany.glade.h:361 ../src/notebook.c:495
+#: ../data/geany.glade.h:363 ../src/notebook.c:495
 msgid "Close Ot_her Documents"
 msgstr "Tanca els altres _documents"
 
-#: ../data/geany.glade.h:362 ../src/notebook.c:507
+#: ../data/geany.glade.h:364 ../src/notebook.c:507
 msgid "C_lose All"
 msgstr "_Tanca-ho tot"
 
-#: ../data/geany.glade.h:363
+#: ../data/geany.glade.h:365
 msgid "Co_mmands"
 msgstr "_Ordres"
 
-#: ../data/geany.glade.h:364 ../src/keybindings.c:453
+#: ../data/geany.glade.h:366 ../src/keybindings.c:453
 msgid "Cu_t Current Line(s)"
 msgstr "Re_talla les línies actuals"
 
-#: ../data/geany.glade.h:365 ../src/keybindings.c:450
+#: ../data/geany.glade.h:367 ../src/keybindings.c:450
 msgid "_Copy Current Line(s)"
 msgstr "_Copia les línies actuals"
 
-#: ../data/geany.glade.h:366 ../src/keybindings.c:398
+#: ../data/geany.glade.h:368 ../src/keybindings.c:398
 msgid "_Delete Current Line(s)"
 msgstr "_Suprimeix les línies actuals"
 
-#: ../data/geany.glade.h:367 ../src/keybindings.c:395
+#: ../data/geany.glade.h:369 ../src/keybindings.c:395
 msgid "D_uplicate Line or Selection"
 msgstr "Du_plica la línia o la selecció"
 
-#: ../data/geany.glade.h:368 ../src/keybindings.c:465
+#: ../data/geany.glade.h:370 ../src/keybindings.c:465
 msgid "S_elect Current Line(s)"
 msgstr "S_elecciona les línies actuals"
 
-#: ../data/geany.glade.h:369 ../src/keybindings.c:468
+#: ../data/geany.glade.h:371 ../src/keybindings.c:468
 msgid "Se_lect Current Paragraph"
 msgstr "Se_lecciona el paràgraf actual"
 
-#: ../data/geany.glade.h:370
+#: ../data/geany.glade.h:372
 msgid "_Move Line(s) Up"
 msgstr "_Mou les línies amunt"
 
-#: ../data/geany.glade.h:371
+#: ../data/geany.glade.h:373
 msgid "M_ove Line(s) Down"
 msgstr "M_ou les línies avall"
 
-#: ../data/geany.glade.h:372 ../src/keybindings.c:521
+#: ../data/geany.glade.h:374 ../src/keybindings.c:521
 msgid "_Send Selection to Terminal"
 msgstr "Envia la _selecció al terminal"
 
-#: ../data/geany.glade.h:373 ../src/keybindings.c:525
+#: ../data/geany.glade.h:375 ../src/keybindings.c:525
 msgid "_Reflow Lines/Block"
 msgstr "_Reflux de les línies o dels blocs"
 
-#: ../data/geany.glade.h:374 ../src/keybindings.c:478
+#: ../data/geany.glade.h:376 ../src/keybindings.c:478
 msgid "T_oggle Case of Selection"
 msgstr "C_ommuta la caixa de la selecció"
 
-#: ../data/geany.glade.h:375
+#: ../data/geany.glade.h:377
 msgid "_Comment Line(s)"
 msgstr "_Comenta les línies"
 
-#: ../data/geany.glade.h:376
+#: ../data/geany.glade.h:378
 msgid "U_ncomment Line(s)"
 msgstr "_Des-comenta les línies"
 
-#: ../data/geany.glade.h:377
+#: ../data/geany.glade.h:379
 msgid "_Toggle Line Commentation"
 msgstr "Commu_ta els comentaris de línia"
 
-#: ../data/geany.glade.h:378
+#: ../data/geany.glade.h:380
 msgid "_Increase Indent"
 msgstr "_Incrementa el sagnat"
 
-#: ../data/geany.glade.h:379
+#: ../data/geany.glade.h:381
 msgid "_Decrease Indent"
 msgstr "_Redueix el sagnat"
 
-#: ../data/geany.glade.h:380 ../src/keybindings.c:497
+#: ../data/geany.glade.h:382 ../src/keybindings.c:497
 msgid "S_mart Line Indent"
 msgstr "_Sagnat de línia intel·ligent"
 
-#: ../data/geany.glade.h:381
+#: ../data/geany.glade.h:383
 msgid "_Send Selection to"
 msgstr "Envia la _selecció a..."
 
-#: ../data/geany.glade.h:382
+#: ../data/geany.glade.h:384
 msgid "I_nsert Comments"
 msgstr "I_nsereix comentaris"
 
-#: ../data/geany.glade.h:383
+#: ../data/geany.glade.h:385
 msgid "Preference_s"
 msgstr "Preferèncie_s"
 
-#: ../data/geany.glade.h:384 ../src/keybindings.c:548
+#: ../data/geany.glade.h:386 ../src/keybindings.c:548
 msgid "P_lugin Preferences"
 msgstr "_Preferències dels connectors"
 
-#: ../data/geany.glade.h:385
+#: ../data/geany.glade.h:387
 msgid "_Find..."
 msgstr "_Troba..."
 
-#: ../data/geany.glade.h:386
+#: ../data/geany.glade.h:388
 msgid "Find _Next"
 msgstr "Troba el següe_nt"
 
-#: ../data/geany.glade.h:387
+#: ../data/geany.glade.h:389
 msgid "Find _Previous"
 msgstr "Troba l'_anterior"
 
-#: ../data/geany.glade.h:388 ../src/symbols.c:2924
+#: ../data/geany.glade.h:390 ../src/symbols.c:2921
 msgid "Find in F_iles..."
 msgstr "Troba als f_itxers..."
 
-#: ../data/geany.glade.h:389
+#: ../data/geany.glade.h:391
 msgid "_Replace..."
 msgstr "_Substitueix..."
 
-#: ../data/geany.glade.h:390
+#: ../data/geany.glade.h:392
 msgid "Next Me_ssage"
 msgstr "Missatge _següent"
 
-#: ../data/geany.glade.h:391
+#: ../data/geany.glade.h:393
 msgid "Pr_evious Message"
 msgstr "Missatg_e anterior"
 
-#: ../data/geany.glade.h:392 ../src/keybindings.c:598
+#: ../data/geany.glade.h:394 ../src/keybindings.c:598
 msgid "Go to Ne_xt Marker"
 msgstr "Vés a la marca _següent"
 
-#: ../data/geany.glade.h:393 ../src/keybindings.c:601
+#: ../data/geany.glade.h:395 ../src/keybindings.c:601
 msgid "Go to Pre_vious Marker"
 msgstr "_Vés a la marca anterior"
 
-#: ../data/geany.glade.h:394
+#: ../data/geany.glade.h:396
 msgid "_Go to Line..."
 msgstr "Vés a la _línia..."
 
-#: ../data/geany.glade.h:395 ../src/keybindings.c:560
+#: ../data/geany.glade.h:397 ../src/keybindings.c:560
 msgid "Find Next _Selection"
 msgstr "Troba la selecció _següent"
 
-#: ../data/geany.glade.h:396 ../src/keybindings.c:562
+#: ../data/geany.glade.h:398 ../src/keybindings.c:562
 msgid "Find Pre_vious Selection"
 msgstr "Tro_ba la selecció anterior"
 
-#: ../data/geany.glade.h:397 ../src/keybindings.c:580
+#: ../data/geany.glade.h:399 ../src/keybindings.c:580
 msgid "_Mark All"
 msgstr "_Marca-ho tot"
 
-#: ../data/geany.glade.h:398
+#: ../data/geany.glade.h:400
 msgid "Go to Symbol Decl_aration"
 msgstr "Vés a la decl_aració del símbol"
 
-#: ../data/geany.glade.h:399
+#: ../data/geany.glade.h:401
 msgid "_View"
 msgstr "_Visualitza"
 
-#: ../data/geany.glade.h:400
+#: ../data/geany.glade.h:402
 msgid "Change _Font..."
 msgstr "Canvia la lle_tra..."
 
-#: ../data/geany.glade.h:401
+#: ../data/geany.glade.h:403
 msgid "Change _Color Scheme..."
 msgstr "Canvia l'esquema de _color..."
 
-#: ../data/geany.glade.h:402
+#: ../data/geany.glade.h:404
 msgid "Show _Markers Margin"
 msgstr "Mostra el marge de les _marques"
 
-#: ../data/geany.glade.h:403
+#: ../data/geany.glade.h:405
 msgid "Show _Line Numbers"
 msgstr "Mostra els números de _línia"
 
-#: ../data/geany.glade.h:404
+#: ../data/geany.glade.h:406
 msgid "Show White S_pace"
 msgstr "Mostra els e_spais en blanc"
 
-#: ../data/geany.glade.h:405
+#: ../data/geany.glade.h:407
 msgid "Show Line _Endings"
 msgstr "Mostra els _finals de línia"
 
-#: ../data/geany.glade.h:406
+#: ../data/geany.glade.h:408
 msgid "Show Indentation _Guides"
 msgstr "Mostra les _guies de sagnat"
 
-#: ../data/geany.glade.h:407
+#: ../data/geany.glade.h:409
 msgid "Full_screen"
 msgstr "_Pantalla completa"
 
-#: ../data/geany.glade.h:408
+#: ../data/geany.glade.h:410
 msgid "Toggle All _Additional Widgets"
 msgstr "Commuta tots els estris _addicionals"
 
-#: ../data/geany.glade.h:409
+#: ../data/geany.glade.h:411
 msgid "Show Message _Window"
 msgstr "Mostra la _finestra dels missatges"
 
-#: ../data/geany.glade.h:410
+#: ../data/geany.glade.h:412
 msgid "Show _Toolbar"
 msgstr "Mostra la barra d’_eines"
 
-#: ../data/geany.glade.h:411
+#: ../data/geany.glade.h:413
 msgid "Show Side_bar"
 msgstr "Mostra la _barra lateral"
 
-#: ../data/geany.glade.h:412
+#: ../data/geany.glade.h:414
 msgid "_Document"
 msgstr "_Document"
 
-#: ../data/geany.glade.h:413
+#: ../data/geany.glade.h:415
 msgid "_Line Wrapping"
 msgstr "Envoltar de _línia"
 
-#: ../data/geany.glade.h:414
+#: ../data/geany.glade.h:416
 msgid "Line _Breaking"
 msgstr "_Trencament de la línia"
 
-#: ../data/geany.glade.h:415
+#: ../data/geany.glade.h:417
 msgid "_Auto-indentation"
 msgstr "Sagnat _automàtic"
 
-#: ../data/geany.glade.h:416
+#: ../data/geany.glade.h:418
 msgid "In_dent Type"
 msgstr "Tipus _de sagnat"
 
-#: ../data/geany.glade.h:417
+#: ../data/geany.glade.h:419
 msgid "_Detect from Content"
 msgstr "_Detecta a partir del contingut"
 
-#: ../data/geany.glade.h:418
+#: ../data/geany.glade.h:420
 msgid "T_abs and Spaces"
 msgstr "T_abuladors i espais"
 
-#: ../data/geany.glade.h:419
+#: ../data/geany.glade.h:421
 msgid "Indent Widt_h"
 msgstr "Amplada del _sagnat"
 
-#: ../data/geany.glade.h:420
+#: ../data/geany.glade.h:422
 msgid "_1"
 msgstr "_1"
 
-#: ../data/geany.glade.h:421
+#: ../data/geany.glade.h:423
 msgid "_2"
 msgstr "_2"
 
-#: ../data/geany.glade.h:422
+#: ../data/geany.glade.h:424
 msgid "_3"
 msgstr "_3"
 
-#: ../data/geany.glade.h:423
+#: ../data/geany.glade.h:425
 msgid "_4"
 msgstr "_4"
 
-#: ../data/geany.glade.h:424
+#: ../data/geany.glade.h:426
 msgid "_5"
 msgstr "_5"
 
-#: ../data/geany.glade.h:425
+#: ../data/geany.glade.h:427
 msgid "_6"
 msgstr "_6"
 
-#: ../data/geany.glade.h:426
+#: ../data/geany.glade.h:428
 msgid "_7"
 msgstr "_7"
 
-#: ../data/geany.glade.h:427
+#: ../data/geany.glade.h:429
 msgid "_8"
 msgstr "_8"
 
-#: ../data/geany.glade.h:428
+#: ../data/geany.glade.h:430
 msgid "Read _Only"
 msgstr "N_omés lectura"
 
-#: ../data/geany.glade.h:429
+#: ../data/geany.glade.h:431
 msgid "_Write Unicode BOM"
 msgstr "_Escriu BOM Unicode"
 
-#: ../data/geany.glade.h:430
+#: ../data/geany.glade.h:432
 msgid "Set File_type"
 msgstr "Estableix el _tipus del fitxer"
 
-#: ../data/geany.glade.h:431
+#: ../data/geany.glade.h:433
 msgid "Set _Encoding"
 msgstr "Estableix la _codificació"
 
-#: ../data/geany.glade.h:432
+#: ../data/geany.glade.h:434
 msgid "Set Line E_ndings"
 msgstr "Estableix l'acabame_nt de línia"
 
-#: ../data/geany.glade.h:433
+#: ../data/geany.glade.h:435
 msgid "Convert and Set to _CR/LF (Windows)"
 msgstr "Converteix i estableix a _CR/LF (Windows)"
 
-#: ../data/geany.glade.h:434
+#: ../data/geany.glade.h:436
 msgid "Convert and Set to _LF (Unix)"
 msgstr "Converteix i estableix a _LF (Unix)"
 
-#: ../data/geany.glade.h:435
+#: ../data/geany.glade.h:437
 msgid "Convert and Set to CR (Classic _Mac)"
 msgstr "Converteix i estableix a CR (_Mac clàssic)"
 
-#: ../data/geany.glade.h:436 ../src/keybindings.c:705
+#: ../data/geany.glade.h:438 ../src/keybindings.c:705
 msgid "_Clone"
 msgstr "_Clona"
 
-#: ../data/geany.glade.h:437 ../src/keybindings.c:707
+#: ../data/geany.glade.h:439 ../src/keybindings.c:707
 msgid "_Strip Trailing Spaces"
 msgstr "Elimina els espai_s finals"
 
-#: ../data/geany.glade.h:438
+#: ../data/geany.glade.h:440
 msgid "Replace Tabs with S_paces"
 msgstr "Substitueix els tabuladors amb es_pais"
 
-#: ../data/geany.glade.h:439
+#: ../data/geany.glade.h:441
 msgid "_Replace Spaces with Tabs..."
 msgstr "Substitueix els espais amb tabulado_rs..."
 
-#: ../data/geany.glade.h:440
+#: ../data/geany.glade.h:442
 msgid "_Fold All"
 msgstr "_Replega-ho tot"
 
-#: ../data/geany.glade.h:441
+#: ../data/geany.glade.h:443
 msgid "_Unfold All"
 msgstr "_Desplega-ho tot"
 
-#: ../data/geany.glade.h:442
+#: ../data/geany.glade.h:444
 msgid "Remove _Markers"
 msgstr "Suprimeix les _marques"
 
-#: ../data/geany.glade.h:443
+#: ../data/geany.glade.h:445
 msgid "Remove Error _Indicators"
 msgstr "Suprimeix els _indicadors d'error"
 
-#: ../data/geany.glade.h:444
+#: ../data/geany.glade.h:446
 msgid "_Project"
 msgstr "_Projecte"
 
-#: ../data/geany.glade.h:445
+#: ../data/geany.glade.h:447
 msgid "_New..."
 msgstr "_Nou..."
 
-#: ../data/geany.glade.h:446
+#: ../data/geany.glade.h:448
 msgid "_Recent Projects"
 msgstr "Projectes _recents"
 
-#: ../data/geany.glade.h:447
+#: ../data/geany.glade.h:449
 msgid "_Close"
 msgstr "Tan_ca"
 
-#: ../data/geany.glade.h:448
+#: ../data/geany.glade.h:450
 msgid "Apply the default indentation settings to all documents"
 msgstr "Aplica els ajusts del sagnat predeterminat a tots els documents"
 
-#: ../data/geany.glade.h:449
+#: ../data/geany.glade.h:451
 msgid "_Apply Default Indentation"
 msgstr "_Aplica el sagnat predeterminat"
 
 #. build the code
-#: ../data/geany.glade.h:450 ../src/build.c:2455 ../src/build.c:2726
+#: ../data/geany.glade.h:452 ../src/build.c:2455 ../src/build.c:2726
 msgid "_Build"
 msgstr "Constr_ueix"
 
-#: ../data/geany.glade.h:451
+#: ../data/geany.glade.h:453
 msgid "_Tools"
 msgstr "_Eines"
 
-#: ../data/geany.glade.h:452
+#: ../data/geany.glade.h:454
 msgid "_Reload Configuration"
 msgstr "_Recarrega la configuració"
 
-#: ../data/geany.glade.h:453
+#: ../data/geany.glade.h:455
 msgid "C_onfiguration Files"
 msgstr "Fitxers de c_onfiguració"
 
-#: ../data/geany.glade.h:454
+#: ../data/geany.glade.h:456
 msgid "_Color Chooser"
 msgstr "Selector de _color"
 
-#: ../data/geany.glade.h:455
+#: ../data/geany.glade.h:457
 msgid "_Word Count"
 msgstr "Reco_mpte de paraules"
 
-#: ../data/geany.glade.h:456
+#: ../data/geany.glade.h:458
 msgid "Load Ta_gs File..."
 msgstr "Carre_ga el fitxer d'etiquetes..."
 
-#: ../data/geany.glade.h:457
+#: ../data/geany.glade.h:459
 msgid "_Help"
 msgstr "A_juda"
 
-#: ../data/geany.glade.h:458
+#: ../data/geany.glade.h:460
 msgid "Keyboard _Shortcuts"
 msgstr "Drecere_s de teclat"
 
-#: ../data/geany.glade.h:459
+#: ../data/geany.glade.h:461
 msgid "Debug _Messages"
 msgstr "_Missatges de depuració"
 
-#: ../data/geany.glade.h:460
+#: ../data/geany.glade.h:462
 msgid "_Website"
 msgstr "Lloc _web"
 
-#: ../data/geany.glade.h:461
+#: ../data/geany.glade.h:463
 msgid "Wi_ki"
 msgstr "Wi_ki"
 
-#: ../data/geany.glade.h:462
+#: ../data/geany.glade.h:464
 msgid "Report a _Bug..."
 msgstr "Informa d'un _error..."
 
-#: ../data/geany.glade.h:463
+#: ../data/geany.glade.h:465
 msgid "_Donate..."
 msgstr "Fes un _donatiu..."
 
-#: ../data/geany.glade.h:464 ../src/sidebar.c:131
+#: ../data/geany.glade.h:466 ../src/sidebar.c:131
 msgid "Symbols"
 msgstr "Símbols"
 
-#: ../data/geany.glade.h:465
+#: ../data/geany.glade.h:467
 msgid "Documents"
 msgstr "Documents"
 
-#: ../data/geany.glade.h:466
+#: ../data/geany.glade.h:468
 msgid "Status"
 msgstr "Estat"
 
-#: ../data/geany.glade.h:467
+#: ../data/geany.glade.h:469
 msgid "Compiler"
 msgstr "Compilador"
 
-#: ../data/geany.glade.h:468
+#: ../data/geany.glade.h:470
 msgid "Messages"
 msgstr "Missatges"
 
-#: ../data/geany.glade.h:469
+#: ../data/geany.glade.h:471
 msgid "Scribble"
 msgstr "Esborrany"
 
-#: ../data/geany.glade.h:470
+#: ../data/geany.glade.h:472
 msgid "Project Properties"
 msgstr "Propietats del projecte"
 
-#: ../data/geany.glade.h:471 ../src/project.c:183
+#: ../data/geany.glade.h:473 ../src/project.c:183
 msgid "Filename:"
 msgstr "Nom de fitxer:"
 
-#: ../data/geany.glade.h:472
+#: ../data/geany.glade.h:474
 #, fuzzy
 msgid "_Name:"
 msgstr "Nom:"
 
-#: ../data/geany.glade.h:473
+#: ../data/geany.glade.h:475
 #, fuzzy
 msgid "_Description:"
 msgstr "Descripció:"
 
-#: ../data/geany.glade.h:474
+#: ../data/geany.glade.h:476
 #, fuzzy
 msgid "_Base path:"
 msgstr "Camí base:"
 
-#: ../data/geany.glade.h:475
+#: ../data/geany.glade.h:477
 #, fuzzy
 msgid "File _patterns:"
 msgstr "Patrons de fitxers:"
 
-#: ../data/geany.glade.h:476
+#: ../data/geany.glade.h:478
 msgid ""
 "Space separated list of file patterns used for the find in files dialog (e."
 "g. *.c *.h)"
@@ -2211,7 +2220,7 @@ msgstr ""
 "Llista dels patrons dels fitxers separats amb espais que s'utilitza per al "
 "diàleg troba als fitxers (p. ex. *.c *.h) "
 
-#: ../data/geany.glade.h:477 ../src/project.c:212
+#: ../data/geany.glade.h:479 ../src/project.c:212
 msgid ""
 "Base directory of all files that make up the project. This can be a new "
 "path, or an existing directory tree. You can use paths relative to the "
@@ -2221,109 +2230,109 @@ msgstr ""
 "un directori nou, o un ja existent. Podeu usar directoris relatius al fitxer "
 "de projecte."
 
-#: ../data/geany.glade.h:478 ../src/keybindings.c:331
+#: ../data/geany.glade.h:480 ../src/keybindings.c:331
 msgid "Project"
 msgstr "Projecte"
 
-#: ../data/geany.glade.h:479
+#: ../data/geany.glade.h:481
 msgid "Display:"
 msgstr "Visualització:"
 
-#: ../data/geany.glade.h:480
+#: ../data/geany.glade.h:482
 msgid "Custom"
 msgstr "Personalitzat"
 
-#: ../data/geany.glade.h:481
+#: ../data/geany.glade.h:483
 msgid "Use global settings"
 msgstr "Utilitza els ajusts globals"
 
-#: ../data/geany.glade.h:482
+#: ../data/geany.glade.h:484
 #, fuzzy
 msgid "Load tags file when opening a project"
 msgstr "El camí des d'on començar quan s'obren els fitxers del projecte"
 
-#: ../data/geany.glade.h:483
+#: ../data/geany.glade.h:485
 msgid ""
 "If the parameter is not set, then the tags file will be loaded on demand "
 "when navigating through the symbol definition/declaration"
 msgstr ""
 
-#: ../data/geany.glade.h:484
+#: ../data/geany.glade.h:486
 msgid "Load type names from tags file"
 msgstr ""
 
-#: ../data/geany.glade.h:485
+#: ../data/geany.glade.h:487
 msgid ""
 "Allows to highlight the names of custom types without opening source files "
 "where these types are defined"
 msgstr ""
 
-#: ../data/geany.glade.h:486
+#: ../data/geany.glade.h:488
 #, fuzzy
 msgid "<b>Using a tags file</b>"
 msgstr "<b>Desament de fitxers</b>"
 
-#: ../data/geany.glade.h:487
+#: ../data/geany.glade.h:489
 msgid "Tags"
 msgstr ""
 
-#: ../data/geany.glade.h:488
+#: ../data/geany.glade.h:490
 msgid "Size:"
 msgstr "Mida:"
 
-#: ../data/geany.glade.h:489
+#: ../data/geany.glade.h:491
 msgid "Location:"
 msgstr "Ubicació:"
 
-#: ../data/geany.glade.h:490
+#: ../data/geany.glade.h:492
 msgid "Read-only:"
 msgstr "Només lectura:"
 
-#: ../data/geany.glade.h:491
+#: ../data/geany.glade.h:493
 msgid "Encoding:"
 msgstr "Codificació:"
 
-#: ../data/geany.glade.h:492
+#: ../data/geany.glade.h:494
 msgid "Modified:"
 msgstr "Modificació:"
 
-#: ../data/geany.glade.h:493
+#: ../data/geany.glade.h:495
 msgid "Changed:"
 msgstr "Canvi:"
 
-#: ../data/geany.glade.h:494
+#: ../data/geany.glade.h:496
 msgid "Accessed:"
 msgstr "Accés:"
 
-#: ../data/geany.glade.h:495
+#: ../data/geany.glade.h:497
 msgid "(only inside Geany)"
 msgstr "(només dins de Geany)"
 
-#: ../data/geany.glade.h:496
+#: ../data/geany.glade.h:498
 msgid "Permissions:"
 msgstr "Permisos:"
 
-#: ../data/geany.glade.h:497
+#: ../data/geany.glade.h:499
 msgid "Read:"
 msgstr "Lectura:"
 
-#: ../data/geany.glade.h:498
+#: ../data/geany.glade.h:500
 msgid "Write:"
 msgstr "Escriptura:"
 
-#: ../data/geany.glade.h:499
+#: ../data/geany.glade.h:501
 msgid "Execute:"
 msgstr "Execució:"
 
-#: ../data/geany.glade.h:500
+#: ../data/geany.glade.h:502
 msgid "Owner:"
 msgstr "Propietari:"
 
-#: ../data/geany.glade.h:501
+#: ../data/geany.glade.h:503
 msgid "Group:"
 msgstr "Grup:"
 
-#: ../data/geany.glade.h:502
+#: ../data/geany.glade.h:504
 msgid "Other:"
 msgstr "Altres:"
 
@@ -2623,31 +2632,40 @@ msgstr "Heu d'indicar el tipus de fitxer abans d'utilitzar aquesta funció."
 msgid "No more message items."
 msgstr "No hi ha més missatges."
 
-#: ../src/callbacks.c:1525
+#: ../src/callbacks.c:1380 ../src/project.c:679
+msgid "Do you want to close it before proceeding?"
+msgstr "Voleu tancar-lo abans de procedir?"
+
+#: ../src/callbacks.c:1381 ../src/project.c:680
+#, c-format
+msgid "The '%s' project is open."
+msgstr "El projecte «%s» està obert."
+
+#: ../src/callbacks.c:1539
 #, c-format
 msgid "Could not open file %s (File not found)"
 msgstr "No s'ha pogut obrir el fitxer %s (fitxer no trobat)"
 
-#: ../src/callbacks.c:1573
+#: ../src/callbacks.c:1587
 msgid "Check the path setting in Filetype configuration."
 msgstr "Comproveu l'ajust del camí en la configuració dels tipus de fitxers."
 
-#: ../src/callbacks.c:1578
+#: ../src/callbacks.c:1592
 msgid "Check the path setting in Preferences."
 msgstr "Comproveu l'ajust del camí en les preferències."
 
-#: ../src/callbacks.c:1594
+#: ../src/callbacks.c:1608
 #, c-format
 msgid "Cannot execute context action command \"%s\": %s. %s"
 msgstr "No s'ha pogut executar l'ordre contextual «%s»: %s. %s"
 
-#: ../src/callbacks.c:1602
+#: ../src/callbacks.c:1616
 #, fuzzy
 msgid "No context action set."
 msgstr "Acció contextual:"
 
-#: ../src/dialogs.c:160 ../src/document.c:2378 ../src/document.c:2446
-#: ../src/document.c:2455
+#: ../src/dialogs.c:160 ../src/document.c:2391 ../src/document.c:2459
+#: ../src/document.c:2468
 #, c-format
 msgid "\"%s\" was not found."
 msgstr "No s'ha trobat «%s»."
@@ -2728,7 +2746,7 @@ msgstr ""
 "Obre el fitxer en mode només lectura. Si trieu més d'un fitxer, tots seran "
 "oberts en aquest mode."
 
-#: ../src/dialogs.c:535 ../src/document.c:2125
+#: ../src/dialogs.c:535 ../src/document.c:2132
 msgid "Overwrite?"
 msgstr "Voleu _sobreescriure-ho?"
 
@@ -2792,7 +2810,7 @@ msgstr ""
 
 #: ../src/dialogs.c:1203 ../src/dialogs.c:1204 ../src/dialogs.c:1205
 #: ../src/dialogs.c:1211 ../src/dialogs.c:1212 ../src/dialogs.c:1213
-#: ../src/symbols.c:2712 ../src/symbols.c:2729 ../src/ui_utils.c:316
+#: ../src/symbols.c:2709 ../src/symbols.c:2726 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "desconegut"
 
@@ -2809,27 +2827,27 @@ msgstr "(amb BOM)"
 msgid "(without BOM)"
 msgstr "(sense BOM)"
 
-#: ../src/document.c:766
+#: ../src/document.c:767
 #, c-format
 msgid "File %s closed."
 msgstr "S'ha tancat el fitxer %s."
 
-#: ../src/document.c:928
+#: ../src/document.c:930
 #, c-format
 msgid "New file \"%s\" opened."
 msgstr "S'ha obert el fitxer nou «%s»."
 
-#: ../src/document.c:1001
+#: ../src/document.c:1004
 #, c-format
 msgid "Could not open file %s (%s)"
 msgstr "No s'ha pogut obrir el fitxer %s (%s)"
 
-#: ../src/document.c:1054
+#: ../src/document.c:1057
 #, c-format
 msgid "The file \"%s\" is not valid %s."
 msgstr "El fitxer «%s» no és %s vàlid."
 
-#: ../src/document.c:1057
+#: ../src/document.c:1060
 #, c-format
 msgid ""
 "The file \"%s\" does not look like a text file or the file encoding is not "
@@ -2838,7 +2856,7 @@ msgstr ""
 "El fitxer «%s» no sembla un fitxer de text o la codificació no està "
 "suportada."
 
-#: ../src/document.c:1068
+#: ../src/document.c:1071
 #, c-format
 msgid ""
 "The file \"%s\" could not be opened properly and has been truncated. This "
@@ -2851,31 +2869,31 @@ msgstr ""
 "amb el desament, ja que es poden perdre dades.\n"
 "El fitxer s'ha establert a només lectura."
 
-#: ../src/document.c:1289
+#: ../src/document.c:1294
 msgid "Spaces"
 msgstr "Espais"
 
-#: ../src/document.c:1292
+#: ../src/document.c:1297
 msgid "Tabs"
 msgstr "Tabuladors"
 
-#: ../src/document.c:1295
+#: ../src/document.c:1300
 msgid "Tabs and Spaces"
 msgstr "Tabuladors i espais"
 
 #. For translators: first wildcard is the indentation mode
 #. * (Spaces, Tabs, Tabs and Spaces), the second one is the filename
-#: ../src/document.c:1300
+#: ../src/document.c:1305
 #, c-format
 msgid "Setting %s indentation mode for %s."
 msgstr "S'estableix el mode de sagnat %s per a %s."
 
-#: ../src/document.c:1310
+#: ../src/document.c:1315
 #, c-format
 msgid "Setting indentation width to %d for %s."
 msgstr "S'estableix l'amplada de sagnat a %d per a %s."
 
-#: ../src/document.c:1541
+#: ../src/document.c:1547
 #, c-format
 msgid "File %s reloaded."
 msgstr "S'ha actualitzat el fitxer %s."
@@ -2884,20 +2902,20 @@ msgstr "S'ha actualitzat el fitxer %s."
 #. * %d is the number of the newly opened file,
 #. * %s indicates whether the file is opened read-only
 #. * (it is replaced with the string ", read-only").
-#: ../src/document.c:1550
+#: ../src/document.c:1556
 #, fuzzy, c-format
 msgid "File %s opened (%d%s)."
 msgstr "S'ha obert el fitxer %s (%d%s)."
 
-#: ../src/document.c:1553
+#: ../src/document.c:1559
 msgid ", read-only"
 msgstr ", només lectura"
 
-#: ../src/document.c:1682
+#: ../src/document.c:1689
 msgid "Discard history"
 msgstr "Descarta l'historial"
 
-#: ../src/document.c:1683
+#: ../src/document.c:1690
 msgid ""
 "The buffer's previous state is stored in the history and undoing restores "
 "it. You can disable this by discarding the history upon reload. This message "
@@ -2909,28 +2927,28 @@ msgstr ""
 "la recàrrega. Aquest missatge no es mostrarà de nou però l'elecció es pot "
 "canviar en les altres preferències."
 
-#: ../src/document.c:1688
+#: ../src/document.c:1695
 msgid "The file has been reloaded."
 msgstr "El fitxer s'ha recarregat."
 
-#: ../src/document.c:1717
+#: ../src/document.c:1724
 msgid "Any unsaved changes will be lost."
 msgstr "Es perdrà qualsevol canvi que no s'hagi desat."
 
-#: ../src/document.c:1718
+#: ../src/document.c:1725
 msgid "Undo history will be lost."
 msgstr "L'historial de desfer es perdrà."
 
-#: ../src/document.c:1719
+#: ../src/document.c:1726
 #, c-format
 msgid "Are you sure you want to reload '%s'?"
 msgstr "Esteu segur que voleu actualitzar «%s»?"
 
-#: ../src/document.c:1831
+#: ../src/document.c:1838
 msgid "Error renaming file."
 msgstr "Error en reanomenar el fitxer."
 
-#: ../src/document.c:1954
+#: ../src/document.c:1961
 #, c-format
 msgid ""
 "An error occurred while converting the file from UTF-8 in \"%s\". The file "
@@ -2939,7 +2957,7 @@ msgstr ""
 "S'ha produït un error mentre es convertia el fitxer des d'UTF-8 a «%s». El "
 "fitxer continua sense desar."
 
-#: ../src/document.c:1976
+#: ../src/document.c:1983
 #, c-format
 msgid ""
 "Error message: %s\n"
@@ -2948,56 +2966,56 @@ msgstr ""
 "Missatge d'error: %s\n"
 "Error en «%s» (línia: %d, columna: %d)."
 
-#: ../src/document.c:1982
+#: ../src/document.c:1989
 #, c-format
 msgid "Error message: %s."
 msgstr "Missatge d'error: %s."
 
-#: ../src/document.c:2045
+#: ../src/document.c:2052
 #, c-format
 msgid "Failed to open file '%s' for writing: fopen() failed: %s"
 msgstr ""
 "No s'ha pogut obrir el fitxer «%s» per a escriptura: ha fallat fopen(): %s"
 
-#: ../src/document.c:2063
+#: ../src/document.c:2070
 #, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
 msgstr "No s'ha pogut escriure el fitxer «%s»: ha fallat fwrite(): %s"
 
-#: ../src/document.c:2077
+#: ../src/document.c:2084
 #, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
 msgstr "No s'ha pogut tancar el fitxer «%s»: ha fallat fclose(): %s"
 
-#: ../src/document.c:2124 ../src/document.c:3776
+#: ../src/document.c:2131 ../src/document.c:3789
 msgid "_Overwrite"
 msgstr "S_obreescriure"
 
-#: ../src/document.c:2126 ../src/document.c:3779
+#: ../src/document.c:2133 ../src/document.c:3792
 #, c-format
 msgid "The file '%s' on the disk is more recent than the current buffer."
 msgstr "El fitxer «%s» en el disc és més recent que l'actual en memòria."
 
-#: ../src/document.c:2135 ../src/document.c:3828
+#: ../src/document.c:2142 ../src/document.c:3841
 msgid "Try to resave the file?"
 msgstr "Voleu intentar desar el fitxer de nou?"
 
-#: ../src/document.c:2136 ../src/document.c:3829
+#: ../src/document.c:2143 ../src/document.c:3842
 #, c-format
 msgid "File \"%s\" was not found on disk!"
 msgstr "No s'ha trobat el fitxer «%s» al disc!"
 
-#: ../src/document.c:2201
+#: ../src/document.c:2209
 #, c-format
 msgid "Cannot save read-only document '%s'!"
 msgstr "No es pot desar el fitxer de només lectura «%s»!"
 
-#: ../src/document.c:2267
+#: ../src/document.c:2276
 #, c-format
 msgid "Error saving file (%s)."
 msgstr "Error en desar el fitxer (%s)."
 
-#: ../src/document.c:2272
+#: ../src/document.c:2281
 #, c-format
 msgid ""
 "%s\n"
@@ -3008,46 +3026,46 @@ msgstr ""
 "\n"
 "El fitxer al disc pot ser truncat!"
 
-#: ../src/document.c:2276
+#: ../src/document.c:2285
 msgid "Error saving file."
 msgstr "Error en desar el fitxer."
 
-#: ../src/document.c:2300
+#: ../src/document.c:2310
 #, c-format
 msgid "File %s saved."
 msgstr "S'ha desat el fitxer %s."
 
-#: ../src/document.c:2454
+#: ../src/document.c:2467
 msgid "Wrap search and find again?"
 msgstr "Tornar a començar la cerca des del principi?"
 
-#: ../src/document.c:2555 ../src/search.c:1498 ../src/search.c:1552
-#: ../src/search.c:2515 ../src/search.c:2517
+#: ../src/document.c:2568 ../src/search.c:1478 ../src/search.c:1532
+#: ../src/search.c:2527 ../src/search.c:2529
 #, c-format
 msgid "No matches found for \"%s\"."
 msgstr "No s'ha trobat cap coincidència per a «%s»."
 
-#: ../src/document.c:2561
+#: ../src/document.c:2574
 #, c-format
 msgid "%s: replaced %d occurrence of \"%s\" with \"%s\"."
 msgid_plural "%s: replaced %d occurrences of \"%s\" with \"%s\"."
 msgstr[0] "%s: S'ha substituït %d coincidència de «%s» amb «%s»."
 msgstr[1] "%s: S'han substituït %d coincidències de «%s» amb «%s»."
 
-#: ../src/document.c:3778
+#: ../src/document.c:3791
 msgid "Do you want to reload it?"
 msgstr "Voleu actualitzar-la?"
 
-#: ../src/editor.c:5004
+#: ../src/editor.c:4998
 msgid "Enter Tab Width"
 msgstr "Introduïu l'amplada del tabulador"
 
-#: ../src/editor.c:5005
+#: ../src/editor.c:4999
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr ""
 "Introduïu la quantitat d'espais que s'ha de reemplaçar amb una tabulació."
 
-#: ../src/editor.c:5217
+#: ../src/editor.c:5211
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "Advertència: amplada de tabulació no estàndard: %d != 8!"
@@ -3281,8 +3299,8 @@ msgstr "Expressió regular incorrecta per al tipus de fitxer %s: %s"
 msgid "untitled"
 msgstr "sense títol"
 
-#: ../src/highlighting.c:1287 ../src/libmain.c:896 ../src/socket.c:170
-#: ../src/templates.c:234
+#: ../src/highlighting.c:1287 ../src/libmain.c:892 ../src/socket.c:170
+#: ../src/templates.c:228
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "No s'ha pogut trobar el fitxer «%s»."
@@ -3590,7 +3608,7 @@ msgstr "Insereix una línia nova abans de l'actual"
 msgid "Insert New Line After Current"
 msgstr "Insereix una línia nova després de l'actual"
 
-#: ../src/keybindings.c:553 ../src/search.c:486
+#: ../src/keybindings.c:553 ../src/search.c:485
 msgid "Find"
 msgstr "Troba"
 
@@ -3602,11 +3620,11 @@ msgstr "Troba el següent"
 msgid "Find Previous"
 msgstr "Troba l'anterior"
 
-#: ../src/keybindings.c:564 ../src/search.c:650
+#: ../src/keybindings.c:564 ../src/search.c:646
 msgid "Replace"
 msgstr "Substitueix"
 
-#: ../src/keybindings.c:567 ../src/search.c:942
+#: ../src/keybindings.c:567 ../src/search.c:922
 msgid "Find in Files"
 msgstr "Troba als fitxers"
 
@@ -3873,12 +3891,12 @@ msgstr "Dreceres de Teclat"
 msgid "The following keyboard shortcuts are configurable:"
 msgstr "Les dreceres de teclat següents són configurables:"
 
-#: ../src/keyfile.c:1069
+#: ../src/keyfile.c:1091
 msgid "Type here what you want, use it as a notice/scratch board"
 msgstr ""
 "Teclegeu el que vulgueu, utilitzeu-ho com a un tauler d'avisos/esborranys"
 
-#: ../src/keyfile.c:1297
+#: ../src/keyfile.c:1319
 msgid "Failed to load one or more session files."
 msgstr "No s'ha pogut carregar un o més fitxers de sessió."
 
@@ -3988,34 +4006,34 @@ msgstr "Sigues més explicatiu (verbose)"
 msgid "Show version and exit"
 msgstr "Mostra la versió i surt"
 
-#: ../src/libmain.c:559
+#: ../src/libmain.c:556
 msgid "[FILES...]"
 msgstr "[FITXERS...]"
 
-#: ../src/libmain.c:561
+#: ../src/libmain.c:558
 msgid "A fast and lightweight IDE."
 msgstr "Un IDE ràpid i lleuger."
 
-#: ../src/libmain.c:563
+#: ../src/libmain.c:560
 msgid "Report bugs to https://github.com/geany/geany/issues."
 msgstr "Informeu dels errors a https://github.com/geany/geany/issues."
 
 #. note for translators: library versions are printed after this
-#: ../src/libmain.c:596
+#: ../src/libmain.c:595
 #, c-format
 msgid "built on %s with "
 msgstr "construït el %s amb "
 
-#: ../src/libmain.c:686
+#: ../src/libmain.c:681
 msgid "Move it now?"
 msgstr "Desplaçar ara?"
 
-#: ../src/libmain.c:687
+#: ../src/libmain.c:682
 msgid "Geany needs to move your old configuration directory before starting."
 msgstr ""
 "Geany necessita canviar el directori de configuració abans d'iniciar-se."
 
-#: ../src/libmain.c:697
+#: ../src/libmain.c:692
 #, c-format
 msgid ""
 "Your configuration directory has been successfully moved from \"%s\" to \"%s"
@@ -4025,7 +4043,7 @@ msgstr ""
 
 #. for translators: the third %s in brackets is the error
 #. * message which describes why moving the dir didn't work
-#: ../src/libmain.c:708
+#: ../src/libmain.c:703
 #, c-format
 msgid ""
 "Your old configuration directory \"%s\" could not be moved to \"%s\" (%s). "
@@ -4034,7 +4052,7 @@ msgstr ""
 "El directori de configuració «%s» no s'ha pogut moure a «%s» (%s). Si us "
 "plau, moveu el directori manualment a la nova ubicació."
 
-#: ../src/libmain.c:797
+#: ../src/libmain.c:793
 #, c-format
 msgid ""
 "Configuration directory could not be created (%s).\n"
@@ -4046,25 +4064,25 @@ msgstr ""
 "configuració.\n"
 "Voleu iniciar igualment Geany?"
 
-#: ../src/libmain.c:1205
+#: ../src/libmain.c:1196
 #, c-format
 msgid "This is Geany %s."
 msgstr "Geany %s."
 
-#: ../src/libmain.c:1208
+#: ../src/libmain.c:1199
 #, c-format
 msgid "Configuration directory could not be created (%s)."
 msgstr "No s'ha pogut crear el directori de configuració (%s)."
 
-#: ../src/libmain.c:1214
+#: ../src/libmain.c:1205
 msgid "IPC socket could not be created, see Help->Debug Messages for details."
 msgstr ""
 
-#: ../src/libmain.c:1447
+#: ../src/libmain.c:1446
 msgid "Do you really want to quit?"
 msgstr "Esteu segur que realment voler sortir?"
 
-#: ../src/libmain.c:1486
+#: ../src/libmain.c:1485
 msgid "Configuration files reloaded."
 msgstr "S'ha recarregat el fitxer de configuració."
 
@@ -4076,7 +4094,7 @@ msgstr "Missatges de depuració"
 msgid "Cl_ear"
 msgstr "_Neteja"
 
-#: ../src/msgwindow.c:208
+#: ../src/msgwindow.c:209
 msgid "Status messages"
 msgstr "Missatges d'estat"
 
@@ -4114,7 +4132,7 @@ msgstr "Obre en una _finestra nova"
 msgid "Close Documents to the _Right"
 msgstr "Tanca els documents de la d_reta"
 
-#: ../src/plugins.c:232
+#: ../src/plugins.c:233
 #, c-format
 msgid ""
 "The plugin \"%s\" is not binary compatible with this release of Geany - "
@@ -4123,11 +4141,11 @@ msgstr ""
 "El connector «%s» no és un binari compatible amb aquesta versió de Geany - "
 "si us plau, torneu-lo a compilar."
 
-#: ../src/plugins.c:1270
+#: ../src/plugins.c:1271
 msgid "_Plugin Manager"
 msgstr "_Gestor de connectors"
 
-#: ../src/plugins.c:1649
+#: ../src/plugins.c:1650
 msgid ""
 "\n"
 "<i>Other plugins depend on this. Disable them first to allow deactivation.</"
@@ -4138,7 +4156,7 @@ msgstr ""
 "permetre la desactivació.</i>\n"
 
 #. Four allocations is less than ideal but meh
-#: ../src/plugins.c:1651
+#: ../src/plugins.c:1652
 #, c-format
 msgid ""
 "Version:\t%s\n"
@@ -4149,27 +4167,27 @@ msgstr ""
 "Autors:⇥%s\n"
 "Nom de fitxer:⇥%s"
 
-#: ../src/plugins.c:1679
+#: ../src/plugins.c:1680
 msgid "No plugins available."
 msgstr "No hi ha disponible cap connector."
 
-#: ../src/plugins.c:1811
+#: ../src/plugins.c:1812
 msgid "Active"
 msgstr "Actiu"
 
-#: ../src/plugins.c:1818
+#: ../src/plugins.c:1819
 msgid "Plugin"
 msgstr "Connector"
 
-#: ../src/plugins.c:1935
+#: ../src/plugins.c:1936
 msgid "Plugins"
 msgstr "Connectors"
 
-#: ../src/plugins.c:1976
+#: ../src/plugins.c:1977
 msgid "Choose which plugins should be loaded at startup:"
 msgstr "Trieu quins connectors s'han de carregar a l'inici:"
 
-#: ../src/plugins.c:2069
+#: ../src/plugins.c:2070
 #, c-format
 msgid ""
 "Proxy plugin '%s' extension '%s' starts with a dot. Please fix your proxy "
@@ -4191,11 +4209,11 @@ msgstr "Captura la combinació de tecles"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "Premeu la combinació de tecles que s'utilitzarà per a «%s»."
 
-#: ../src/prefs.c:226 ../src/symbols.c:2873 ../src/sidebar.c:820
+#: ../src/prefs.c:226 ../src/symbols.c:2870 ../src/sidebar.c:787
 msgid "_Expand All"
 msgstr "_Expandeix-ho tot"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2880 ../src/sidebar.c:826
+#: ../src/prefs.c:231 ../src/symbols.c:2877 ../src/sidebar.c:793
 msgid "_Collapse All"
 msgstr "_Contreu-ho tot"
 
@@ -4207,33 +4225,33 @@ msgstr "Acció"
 msgid "Shortcut"
 msgstr "Drecera"
 
-#: ../src/prefs.c:1523
+#: ../src/prefs.c:1529
 msgid "_Allow"
 msgstr "_Permet"
 
-#: ../src/prefs.c:1525
+#: ../src/prefs.c:1531
 msgid "_Override"
 msgstr "A_nul·la"
 
-#: ../src/prefs.c:1526
+#: ../src/prefs.c:1532
 msgid "Override that keybinding?"
 msgstr "Voleu anul·lar aquesta vinculació de tecles?"
 
-#: ../src/prefs.c:1527
+#: ../src/prefs.c:1533
 #, c-format
 msgid "The combination '%s' is already used for \"%s\"."
 msgstr "La combinació «%s» ja s'està utilitzant per a «%s»."
 
 #. add manually GeanyWrapLabels because they can't be added with Glade
 #. page Tools
-#: ../src/prefs.c:1736
+#: ../src/prefs.c:1742
 msgid "Enter tool paths below. Tools you do not need can be left blank."
 msgstr ""
 "Introduïu a continuació el camí a les eines. Les eines que no necessiteu les "
 "podeu deixar en blanc."
 
 #. page Templates
-#: ../src/prefs.c:1741
+#: ../src/prefs.c:1747
 msgid ""
 "Set the information to be used in templates. See the documentation for "
 "details."
@@ -4242,7 +4260,7 @@ msgstr ""
 "documentació per a més detalls."
 
 #. page Keybindings
-#: ../src/prefs.c:1746
+#: ../src/prefs.c:1752
 msgid ""
 "Here you can change keyboard shortcuts for various actions. Select one and "
 "press the Change button to enter a new shortcut, or double click on an "
@@ -4253,7 +4271,7 @@ msgstr ""
 "clic en una acció per editar la cadena representació de la drecera."
 
 #. page Editor->Indentation
-#: ../src/prefs.c:1751
+#: ../src/prefs.c:1757
 msgid ""
 "<i>Warning: these settings are overridden by the current project. See "
 "<b>Project->Properties</b>.</i>"
@@ -4324,7 +4342,7 @@ msgstr ""
 "No s'ha pogut executar l'ordre d'impressió «%s»: %s. Comproveu l'ajust del "
 "camí en les preferències."
 
-#: ../src/printing.c:620
+#: ../src/printing.c:619
 #, c-format
 msgid "File %s printed."
 msgstr "S'ha imprès el fitxer «%s»."
@@ -4405,52 +4423,43 @@ msgstr "S'ha tancat el projecte «%s»."
 msgid "Project \"%s\" saved."
 msgstr "S'ha desat el projecte «%s»."
 
-#: ../src/project.c:678
-msgid "Do you want to close it before proceeding?"
-msgstr "Voleu tancar-lo abans de procedir?"
-
-#: ../src/project.c:679
-#, c-format
-msgid "The '%s' project is open."
-msgstr "El projecte «%s» està obert."
-
-#: ../src/project.c:725
+#: ../src/project.c:726
 msgid "The specified project name is too short."
 msgstr "El nom de projecte especificat és massa curt."
 
-#: ../src/project.c:731
+#: ../src/project.c:732
 #, c-format
 msgid "The specified project name is too long (max. %d characters)."
 msgstr "El nom de projecte especificat és massa llarg (màxim %d caràcters)."
 
-#: ../src/project.c:742
+#: ../src/project.c:743
 msgid "You have specified an invalid project filename."
 msgstr "Heu especificat un nom de fitxer per al projecte invàlid."
 
-#: ../src/project.c:765
+#: ../src/project.c:766
 msgid "Create the project's base path directory?"
 msgstr "Voleu crear el directori base per al projecte?"
 
-#: ../src/project.c:766
+#: ../src/project.c:767
 #, c-format
 msgid "The path \"%s\" does not exist."
 msgstr "El directori «%s» no existeix."
 
-#: ../src/project.c:773
+#: ../src/project.c:774
 #, c-format
 msgid "Project base directory could not be created (%s)."
 msgstr "No s'ha pogut crear el directori base del projecte (%s)."
 
-#: ../src/project.c:786
+#: ../src/project.c:787
 #, c-format
 msgid "Project file could not be written (%s)."
 msgstr "No es pot escriure el fitxer de projecte (%s)."
 
-#: ../src/project.c:792 ../src/search.c:662
+#: ../src/project.c:793 ../src/search.c:658
 msgid "_Replace"
 msgstr "S_ubstitueix"
 
-#: ../src/project.c:793 ../plugins/export.c:330
+#: ../src/project.c:794 ../plugins/export.c:330
 #, c-format
 msgid "The file '%s' already exists. Do you want to overwrite it?"
 msgstr "El fitxer «%s» ja existeix. Voleu sobreescriure'l?"
@@ -4470,7 +4479,7 @@ msgstr "S'ha obert el projecte «%s»."
 msgid "Project tags loaded."
 msgstr "S'ha tancat el projecte «%s»."
 
-#: ../src/search.c:329 ../src/search.c:1041
+#: ../src/search.c:329 ../src/search.c:1021
 msgid "_Use regular expressions"
 msgstr "_Utilitza expressions regulars"
 
@@ -4514,11 +4523,11 @@ msgstr ""
 msgid "Search _backwards"
 msgstr "Cerca cap e_nrere"
 
-#: ../src/search.c:371 ../src/search.c:1051
+#: ../src/search.c:371 ../src/search.c:1031
 msgid "C_ase sensitive"
 msgstr "Distinció m_ajúscules/minúscules"
 
-#: ../src/search.c:375 ../src/search.c:1056
+#: ../src/search.c:375 ../src/search.c:1036
 msgid "Match only a _whole word"
 msgstr "Cerca només _paraules completes"
 
@@ -4526,82 +4535,82 @@ msgstr "Cerca només _paraules completes"
 msgid "Match from s_tart of word"
 msgstr "Cerca només el p_rincipi de la paraula"
 
-#: ../src/search.c:495
+#: ../src/search.c:494
 msgid "_Previous"
 msgstr "_Anterior"
 
-#: ../src/search.c:500
+#: ../src/search.c:499
 msgid "_Next"
 msgstr "Següe_nt"
 
-#: ../src/search.c:504 ../src/search.c:675 ../src/search.c:956
+#: ../src/search.c:503 ../src/search.c:671 ../src/search.c:936
 msgid "_Search for:"
 msgstr "_Cerca:"
 
 #. Now add the multiple match options
-#: ../src/search.c:534
+#: ../src/search.c:533
 msgid "_Find All"
 msgstr "_Troba-ho tot"
 
-#: ../src/search.c:542
+#: ../src/search.c:541
 msgid "_Mark"
 msgstr "_Marca"
 
-#: ../src/search.c:544
+#: ../src/search.c:543
 msgid "Mark all matches in the current document"
 msgstr "Marca totes les coincidències en el document"
 
-#: ../src/search.c:550 ../src/search.c:737
+#: ../src/search.c:549 ../src/search.c:733
 msgid "In Sessi_on"
 msgstr "A la _sessió"
 
-#: ../src/search.c:556 ../src/search.c:743
+#: ../src/search.c:555 ../src/search.c:739
 msgid "_In Document"
 msgstr "Al _document"
 
 #. close window checkbox
-#: ../src/search.c:563 ../src/search.c:758
+#: ../src/search.c:562 ../src/search.c:754
 msgid "Close _dialog"
 msgstr "Tanca el _diàleg"
 
-#: ../src/search.c:567 ../src/search.c:762
+#: ../src/search.c:566 ../src/search.c:758
 msgid "Disable this option to keep the dialog open"
 msgstr "Inhabiliteu aquesta opció per a mantenir obert el diàleg"
 
-#: ../src/search.c:668
+#: ../src/search.c:664
 msgid "Replace & Fi_nd"
 msgstr "Substitueix i tro_ba"
 
-#: ../src/search.c:678
+#: ../src/search.c:674
 msgid "Replace wit_h:"
 msgstr "Substitueix a_mb:"
 
 #. Now add the multiple replace options
-#: ../src/search.c:729
+#: ../src/search.c:725
 msgid "Re_place All"
 msgstr "Substitueix-ho _tot"
 
-#: ../src/search.c:749
+#: ../src/search.c:745
 msgid "In Se_lection"
 msgstr "A la se_lecció"
 
-#: ../src/search.c:751
+#: ../src/search.c:747
 msgid "Replace all matches found in the currently selected text"
 msgstr "Substitueix totes les ocurrències al text seleccionat actualment"
 
-#: ../src/search.c:869
+#: ../src/search.c:855
 msgid "all"
 msgstr "tot"
 
-#: ../src/search.c:871
+#: ../src/search.c:857
 msgid "project"
 msgstr "projecte"
 
-#: ../src/search.c:873
+#: ../src/search.c:859
 msgid "custom"
 msgstr "personalitzat"
 
-#: ../src/search.c:878
+#: ../src/search.c:864
 msgid ""
 "All: search all files in the directory\n"
 "Project: use file patterns defined in the project settings\n"
@@ -4611,89 +4620,89 @@ msgstr ""
 "Projecte: utilitza els patrons de fitxer definits per al projecte\n"
 "Personalitzat: especifica manualment els patrons de fitxer"
 
-#: ../src/search.c:919
+#: ../src/search.c:902
 msgid "Other options to pass to Grep"
 msgstr "Altres opcions per passar a Grep"
 
-#: ../src/search.c:976
+#: ../src/search.c:956
 msgid "Fi_les:"
 msgstr "Fi_txers:"
 
-#: ../src/search.c:988
+#: ../src/search.c:968
 msgid "File patterns, e.g. *.c *.h"
 msgstr "Patrons de fitxer, p. ex. *.c *.h"
 
-#: ../src/search.c:1001
+#: ../src/search.c:981
 msgid "_Directory:"
 msgstr "_Directori:"
 
-#: ../src/search.c:1020
+#: ../src/search.c:1000
 msgid "E_ncoding:"
 msgstr "_Codificació:"
 
-#: ../src/search.c:1045
+#: ../src/search.c:1025
 msgid "See grep's manual page for more information"
 msgstr "Veieu el manual de 'grep' per a més informació"
 
-#: ../src/search.c:1047
+#: ../src/search.c:1027
 msgid "_Recurse in subfolders"
 msgstr "_Recursiu a les subcarpetes"
 
-#: ../src/search.c:1060
+#: ../src/search.c:1040
 msgid "_Invert search results"
 msgstr "_Inverteix els resultats de la cerca"
 
-#: ../src/search.c:1064
+#: ../src/search.c:1044
 msgid "Invert the sense of matching, to select non-matching lines"
 msgstr ""
 "Inverteix el sentit de la cerca, per a seleccionar les línies que no "
 "contenen el text"
 
-#: ../src/search.c:1081
+#: ../src/search.c:1061
 #, fuzzy
 msgid "E_xtra options 1:"
 msgstr "Opcions e_xtres:"
 
-#: ../src/search.c:1083
+#: ../src/search.c:1063
 #, fuzzy
 msgid "E_xtra options 2:"
 msgstr "Opcions e_xtres:"
 
-#: ../src/search.c:1085
+#: ../src/search.c:1065
 #, fuzzy
 msgid "E_xtra options 3:"
 msgstr "Opcions e_xtres:"
 
-#: ../src/search.c:1501 ../src/search.c:2522 ../src/search.c:2526
+#: ../src/search.c:1481 ../src/search.c:2534 ../src/search.c:2538
 #, c-format
 msgid "Found %d match for \"%s\"."
 msgid_plural "Found %d matches for \"%s\"."
 msgstr[0] "S'ha trobat %d coincidència de «%s»."
 msgstr[1] "S'han trobat %d coincidències de «%s»."
 
-#: ../src/search.c:1558
+#: ../src/search.c:1538
 #, c-format
 msgid "Replaced %u matches in %u documents."
 msgstr "S'han substituït %u ocurrències en %u documents."
 
-#: ../src/search.c:1792
+#: ../src/search.c:1774
 msgid "Invalid directory for find in files."
 msgstr "El directori per cercar als fitxers no és vàlid."
 
-#: ../src/search.c:1813
+#: ../src/search.c:1795
 msgid "No text to find."
 msgstr "Cap text a trobar."
 
-#: ../src/search.c:1900
+#: ../src/search.c:1878
 msgid "Searching..."
 msgstr "S'està cercant..."
 
-#: ../src/search.c:1902
+#: ../src/search.c:1880
 #, c-format
 msgid "%s %s -- %s (in directory: %s)"
 msgstr "%s %s -- %s (al directori: %s)"
 
-#: ../src/search.c:1911
+#: ../src/search.c:1889
 #, c-format
 msgid ""
 "Cannot execute grep tool \"%s\": %s. Check the path setting in Preferences."
@@ -4701,27 +4710,27 @@ msgstr ""
 "No s'ha pogut executar l'eina grep «%s»: %s. Comproveu l'ajust del camí en "
 "les preferències."
 
-#: ../src/search.c:1951
+#: ../src/search.c:1927
 #, c-format
 msgid "Could not open directory (%s)"
 msgstr "No s'ha pogut obrir el directori (%s)"
 
-#: ../src/search.c:2120
+#: ../src/search.c:2153
 msgid "Search failed."
 msgstr "Ha fallat la cerca."
 
-#: ../src/search.c:2143
+#: ../src/search.c:2172
 #, c-format
 msgid "Search completed with %d match."
 msgid_plural "Search completed with %d matches."
 msgstr[0] "S'ha finalitzat la cerca amb %d coincidència."
 msgstr[1] "S'ha finalitzat la cerca amb %d coincidències."
 
-#: ../src/search.c:2151
+#: ../src/search.c:2180
 msgid "No matches found."
 msgstr "No s'ha trobat cap coincidència."
 
-#: ../src/search.c:2181
+#: ../src/search.c:2207
 #, c-format
 msgid "Bad regex: %s"
 msgstr "Expressió regular incorrecta: %s"
@@ -5151,30 +5160,30 @@ msgstr "%s: %lu"
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2452
+#: ../src/symbols.c:2449
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "No s'ha trobat la declaració avançada de «%s»."
 
-#: ../src/symbols.c:2455
+#: ../src/symbols.c:2452
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "No s'ha trobat la definició de «%s»."
 
-#: ../src/symbols.c:2891
+#: ../src/symbols.c:2888
 msgid "Sort by _Name"
 msgstr "Ordena per _nom"
 
-#: ../src/symbols.c:2899
+#: ../src/symbols.c:2896
 msgid "Sort by _Appearance"
 msgstr "Ordena per _aparença"
 
-#: ../src/templates.c:85
+#: ../src/templates.c:84
 #, c-format
 msgid "Failed to convert template file \"%s\" to UTF-8"
 msgstr "No s'ha pogut convertir el fitxer de la plantilla «%s» a UTF-8"
 
-#: ../src/templates.c:629
+#: ../src/templates.c:603
 #, c-format
 msgid ""
 "Cannot execute template command \"%s\". Hint: incorrect paths in the command "
@@ -5420,31 +5429,31 @@ msgstr "Caràcters:"
 msgid "No symbols found"
 msgstr "Cap símbol trobat"
 
-#: ../src/sidebar.c:638
+#: ../src/sidebar.c:605
 msgid "Show S_ymbol List"
 msgstr "Mostra la ll_ista dels símbols"
 
-#: ../src/sidebar.c:651
+#: ../src/sidebar.c:618
 msgid "Show _Document List"
 msgstr "Mostra la llista dels _documents"
 
-#: ../src/sidebar.c:664 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:631 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "Oculta la barra _lateral"
 
-#: ../src/sidebar.c:777
+#: ../src/sidebar.c:744
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:785
+#: ../src/sidebar.c:752
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:798 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:765 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "_Troba als fitxers..."
 
-#: ../src/sidebar.c:808
+#: ../src/sidebar.c:775
 msgid "Show _Paths"
 msgstr "Mostra els ca_mins"
 
