@@ -2241,7 +2241,6 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 {
 	TMTag *tmtag, *last_tag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	GPtrArray *new_tags;
 	guint i;
 	const gchar *PRINT_TAG = is_project_tags ? "ptag" : "stag";
 	
@@ -2281,6 +2280,8 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 		}
 	}
 	
+	GPtrArray *new_tags;
+	
 	if (filtered_tags->len > 0 && definition &&
 		!EMPTY(scope) && g_strcmp0(scope, "*") != 0)
 	{
@@ -2311,11 +2312,10 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 								   gboolean definition, gboolean is_project_tags)
 {
 	TMTag *tmtag, *current_tag = NULL;
-	GPtrArray *tags, *filtered_tags;
+	GPtrArray *tags = g_ptr_array_new();
 	guint i;
 	
 	/* get rid of global tags and find tag at current line */
-	tags = g_ptr_array_new();
 	foreach_ptr_array(tmtag, i, all_tags)
 	{
 		if (tmtag->file)
@@ -2342,9 +2342,9 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 		/* swap definition/declaration search */
 		definition = current_tag->type & tm_forward_types;
 	
-	filtered_tags = filter_tags(tags, current_tag, current_file,
-								scope, type, lang, definition,
-								is_project_tags);
+	GPtrArray *filtered_tags = filter_tags(tags, current_tag, current_file,
+										   scope, type, lang, definition,
+										   is_project_tags);
 	if (filtered_tags->len == 0)
 	{
 		/* if we didn't find anything, try again with the opposite type */
@@ -2398,14 +2398,12 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	GeanyDocument *curr_doc = document_get_current();
 	guint current_line = sci_get_current_line(curr_doc->editor->sci) + 1;
 	
-	GPtrArray *all_tags, *tags;
+	GPtrArray *all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
+											curr_doc->file_type->lang);
 	
-	all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
-								 curr_doc->file_type->lang);
-	
-	tags = wrap_filter_tags(curr_doc->tm_file, current_line, all_tags,
-							scope, type, curr_doc->file_type->lang,
-							definition, FALSE);
+	GPtrArray *tags = wrap_filter_tags(curr_doc->tm_file, current_line, all_tags,
+									   scope, type, curr_doc->file_type->lang,
+									   definition, FALSE);
 	g_ptr_array_free(all_tags, TRUE);
 	
 	if (app->project)

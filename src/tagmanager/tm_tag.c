@@ -292,8 +292,8 @@ void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
 						   &sort_options) == 0)
 		{
 			if (unref_duplicates)
-				tm_tag_unref(tags_array->pdata[i-1]);
-			tags_array->pdata[i-1] = NULL;
+				tm_tag_unref(tags_array->pdata[i - 1]);
+			tags_array->pdata[i - 1] = NULL;
 		}
 	}
 	tm_tags_prune(tags_array);
@@ -445,20 +445,17 @@ static GPtrArray *merge(GPtrArray *big_array, GPtrArray *small_array,
 				}
 			}
 			else
-			{
-				/* lower the step and try again */
+			{	/* lower the step and try again */
 				step /= 2;
 			}
-		}  /* fast path end */
+		}	/* fast path end */
 		else
 		{
-			gint cmpval;
-			
 #ifdef TM_DEBUG
 			cmpnum++;
 #endif
 			val1 = big_array->pdata[i1];
-			cmpval = tm_tag_compare(&val1, &val2, sort_options);
+			gint cmpval = tm_tag_compare(&val1, &val2, sort_options);
 			if (cmpval < 0)
 			{
 				g_ptr_array_add(res_array, val1);
@@ -472,7 +469,7 @@ static GPtrArray *merge(GPtrArray *big_array, GPtrArray *small_array,
 				step = initial_step;
 				if (cmpval == 0)
 				{
-					i1++;  /* remove the duplicate, keep just the newly merged value */
+					i1++; /* remove the duplicate, keep just the newly merged value */
 					if (unref_duplicates)
 						tm_tag_unref(val1);
 				}
