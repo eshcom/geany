@@ -181,7 +181,7 @@ static void update_source_file(TMSourceFile *source_file, guchar *text_buf,
 		tm_tags_remove_file_tags(source_file, theWorkspace->typename_array);
 	}
 	tm_source_file_parse(source_file, text_buf, buf_size, use_buffer);
-	tm_tags_sort(source_file->tags_array, file_tags_sort_attrs, FALSE, TRUE);
+	tm_tags_sort(source_file->tags_array, file_tags_sort_attrs, FALSE, FALSE);
 	
 	if (update_workspace)
 	{
