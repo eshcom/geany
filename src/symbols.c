@@ -2358,6 +2358,37 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 }
 
 
+static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
+{
+	TMTag *ptag;
+	guint i;
+	guint tags_len = tags->len;
+	
+	foreach_ptr_array(ptag, i, ptags)
+	{
+		gboolean equal = FALSE;
+		
+		for (guint j = 0; j < tags_len; j++)
+		{
+			TMTag *tag = g_ptr_array_index(tags, j);
+			
+			if (ptag->type == tag->type &&
+				g_strcmp0(ptag->name, tag->name) == 0 &&
+				(g_strcmp0(ptag->scope, tag->scope) == 0 ||
+				 (g_str_has_prefix(ptag->scope, "__anon") &&
+				  g_str_has_prefix(tag->scope, "anon_"))) &&
+				g_strcmp0(ptag->file->file_name, tag->file->file_name) == 0)
+			{
+				equal = TRUE;
+				break;
+			}
+		}
+		if (!equal)
+			g_ptr_array_add(tags, ptag);
+	}
+	g_ptr_array_free(ptags, TRUE);
+}
+
 static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
 {
@@ -2377,7 +2408,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 							definition, FALSE);
 	g_ptr_array_free(all_tags, TRUE);
 	
-	if ((tags->len == 0 || g_strcmp0(scope, "*") == 0) && app->project)
+	if (app->project)
 	{
 		if (!app->tm_workspace->project_tags)
 			project_load_tags();
@@ -2391,8 +2422,9 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 												all_tags, scope, type,
 												curr_doc->file_type->lang,
 												definition, TRUE);
-			filter_tags_check(&tags, &ptags, FALSE);
 			g_ptr_array_free(all_tags, TRUE);
+			
+			merge_tags(tags, ptags);
 		}
 	}
 	
