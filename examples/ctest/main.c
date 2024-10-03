@@ -510,6 +510,47 @@ void run_test_case13()
 	printf("'%d' - '%d'\n", pos, ret);
 }
 
+void run_test_case14()
+{
+	gchar *str1 = "asdf1234";
+	gchar *str2 = "asdf1234";
+	printf("g_strcmp0: %d\n", g_strcmp0(str1, str2) == 0);
+	printf("utils_str_equal: %d\n", utils_str_equal(str1, str2));
+	
+	str1 = NULL;
+	str2 = "asdf1234";
+	printf("g_strcmp0: %d\n", g_strcmp0(str1, str2) == 0);
+	printf("utils_str_equal: %d\n", utils_str_equal(str1, str2));
+	
+	str1 = "asdf1234";
+	str2 = NULL;
+	printf("g_strcmp0: %d\n", g_strcmp0(str1, str2) == 0);
+	printf("utils_str_equal: %d\n", utils_str_equal(str1, str2));
+	
+	str1 = NULL;
+	str2 = NULL;
+	printf("g_strcmp0: %d\n", g_strcmp0(str1, str2) == 0);
+	printf("utils_str_equal: %d\n", utils_str_equal(str1, str2));
+}
+
+void run_test_case15()
+{
+	gchar *str1 = "asdf1234ssssssssssssssffffffffffffffffffffffffeeeeeeeeeeeeee";
+	gchar *str2 = "asdf1234ssssssssssssssffffffffffffffffffffffffeeeeeeeeeeeeef";
+	gint64 start;
+	gint cnt = 1000000;
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+		g_strcmp0(str1, str2);
+	printf("g_strcmp0: %ld\n", g_get_real_time() - start);
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+		utils_str_equal(str1, str2);
+	printf("utils_str_equal: %ld\n", g_get_real_time() - start);
+}
+
 int main(void)
 {
 	//~ run_test_case01();
@@ -524,7 +565,9 @@ int main(void)
 	//~ run_test_case10();
 	//~ run_test_case11();
 	//~ run_test_case12();
-	run_test_case13();
+	//~ run_test_case13();
+	//~ run_test_case14();
+	run_test_case15();
 	
 	return 0;
 }
