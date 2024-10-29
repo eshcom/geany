@@ -783,6 +783,11 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 }
 
 
+#define SKIP_SPACES										\
+	Sci_PositionU i = sc.currentPos;					\
+	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+		i++;
+
 #define CHECK_ESCAPE_SEQUENCE										\
 	} else if (sc.ch == '\\') {										\
 		if (options.escapeSequence) {								\
@@ -819,9 +824,7 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	CHECK_FORMAT_SEQUENCE													\
 																			\
 	} else {																\
-		Sci_PositionU i = sc.currentPos;									\
-		while (i < endPos && IsASpaceOrTab(styler[i]))						\
-			i++;															\
+		SKIP_SPACES															\
 		if (i == endPos || IsACRLF(styler[i]))								\
 			sc.ChangeState(SCE_C_STRINGEOL|activitySet);					\
 		else																\
@@ -1101,16 +1104,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else if (otherClasses.InList(s)) {				//Other classes and typedefs
 						sc.ChangeState(SCE_C_OTHERCLASS|activitySet);
 					} else if (bifs.InList(s)) {						//Built-in functions for Golang
-						Sci_Position pos = sc.currentPos;
-						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
-						while (ch != '\0') {
-							if (IsASpaceOrTab(ch)) {
-								ch = styler.SafeGetCharAt(++pos, '\0');
-								continue;
-							} else if (ch == '(') {
-								sc.ChangeState(SCE_C_BIFS|activitySet);
-							}
-							break;
+						SKIP_SPACES
+						if (styler[i] == '(') {
+							sc.ChangeState(SCE_C_BIFS|activitySet);
 						}
 					} else {
 						int subStyle = classifierIdentifiers.ValueFor(s);

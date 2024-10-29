@@ -629,6 +629,11 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		}																	\
 	}
 
+#define SKIP_SPACES										\
+	Sci_PositionU i = sc.currentPos;					\
+	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+		i++;
+
 
 void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 								 int initStyle, IDocument *pAccess) {
@@ -853,21 +858,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (kwLast == kwDef) {
 					style = SCE_P_DEFNAME;
 				} else if (kwLast == kwCDef || kwLast == kwCPDef) {
-					Sci_Position pos = sc.currentPos;
-					unsigned char ch = styler.SafeGetCharAt(pos, '\0');
-					while (ch != '\0') {
-						if (ch == '(') {
-							style = SCE_P_DEFNAME;
-							break;
-						} else if (ch == ':') {
-							style = SCE_P_CLASSNAME;
-							break;
-						} else if (IsASpaceOrTab(ch) || IsACRLF(ch)) {
-							pos++;
-							ch = styler.SafeGetCharAt(pos, '\0');
-						} else {
-							break;
-						}
+					SKIP_SPACES
+					if (styler[i] == '(') {
+						style = SCE_P_DEFNAME;
+					} else if (styler[i] == ':') {
+						style = SCE_P_CLASSNAME;
 					}
 				} else if (keywords2.InList(s)) {
 					if (options.keywords2NoSubIdentifiers) {
@@ -892,18 +887,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						style = SCE_P_WORD2_BIF;
 					}
 					if (style == SCE_P_WORD2_BIF) {
-						Sci_Position pos = sc.currentPos;
-						unsigned char ch = styler.SafeGetCharAt(pos, '\0');
-						while (ch != '\0') {
-							if (ch == '(') {
-								break;
-							} else if (IsASpaceOrTab(ch) || IsACRLF(ch)) {
-								pos++;
-								ch = styler.SafeGetCharAt(pos, '\0');
-							} else {
-								style = SCE_P_WORD2_SAME_BIF;
-								break;
-							}
+						SKIP_SPACES
+						if (styler[i] != '(') {
+							style = SCE_P_WORD2_SAME_BIF;
 						}
 					}
 				} else if (keywords2Bie.InList(s)) {
