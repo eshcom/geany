@@ -1092,19 +1092,19 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					if (keywords.InList(s)) {							//Primary keywords and identifiers
+					SKIP_SPACES
+					if (keywords.InList(s)) {								//Primary keywords and identifiers
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_WORD|activitySet);
-					} else if (commonWords.InList(s)) {					//Common keywords and identifiers
+					} else if (styler[i] != '(' && commonWords.InList(s)) {	//Common keywords and identifiers
 						sc.ChangeState(SCE_C_COMMONWORD|activitySet);
-					} else if (keywords2.InList(s)) {					//Secondary keywords and identifiers
+					} else if (keywords2.InList(s)) {						//Secondary keywords and identifiers
 						sc.ChangeState(SCE_C_WORD2|activitySet);
-					} else if (keywords4.InList(s)) {					//Global classes and typedefs
+					} else if (keywords4.InList(s)) {						//Global classes and typedefs
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
-					} else if (otherClasses.InList(s)) {				//Other classes and typedefs
+					} else if (otherClasses.InList(s)) {					//Other classes and typedefs
 						sc.ChangeState(SCE_C_OTHERCLASS|activitySet);
-					} else if (bifs.InList(s)) {						//Built-in functions for Golang
-						SKIP_SPACES
+					} else if (bifs.InList(s)) {							//Built-in functions for Golang
 						if (styler[i] == '(') {
 							sc.ChangeState(SCE_C_BIFS|activitySet);
 						}
