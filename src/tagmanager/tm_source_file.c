@@ -471,12 +471,13 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 				tag->line = atol(value);
 			else if (strcmp(key, "access") == 0) /* access */
 				tag->access = get_tag_access(value);
-			else if (strcmp(key, "class") == 0 ||
+			else if (strcmp(key, "namespace") == 0 ||
+					 strcmp(key, "class") == 0 ||
 					 strcmp(key, "enum") == 0 ||
 					 strcmp(key, "function") == 0 ||
 					 strcmp(key, "struct") == 0 ||
 					 strcmp(key, "union") == 0 ||
-					 strcmp(key, "module") == 0) /* Name of the class/enum/function/struct/union/module
+					 strcmp(key, "module") == 0) /* Name of the namespace/class/enum/function/struct/union/module
 													in which this tag is a member */
 			{
 				g_free(tag->scope);
