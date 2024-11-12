@@ -1250,19 +1250,18 @@ void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 static void msgwin_parse_generic_line(const gchar *string,
 									  gchar **filename, gint *line)
 {
-	gchar **fields;
-	gboolean incertain = TRUE; /* whether we're reasonably certain of the result */
-	
 	*filename = NULL;
 	*line = -1;
 	
-	fields = g_strsplit(string, ":", 2);
+	gchar **fields = g_strsplit(string, ":", 2);
 	/* extract the filename */
 	if (fields[0] != NULL)
 	{
 		*filename = utils_get_locale_from_utf8(fields[0]);
 		if (msgwindow.messages_dir != NULL)
 			make_absolute(filename, msgwindow.messages_dir);
+		
+		gboolean incertain = TRUE; /* whether we're reasonably certain of the result */
 		
 		/* now the line */
 		if (fields[1] != NULL)
