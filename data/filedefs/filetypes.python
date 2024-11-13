@@ -39,6 +39,8 @@ fstring_suboper=string_1
 fstring_option=string_1
 string_continued=string_1
 line_continued=preprocessor
+function=identifier_1
+constant=identifier_1
 
 [keywords]
 # all items must be in one line

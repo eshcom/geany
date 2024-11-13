@@ -238,6 +238,19 @@ inline bool IsAWordStart(int ch, bool unicodeIdentifiers) {
 	return IsXidStart(ch);
 }
 
+inline bool IsAConstWord(const char *s) {
+	bool upper_exists = false;
+	
+	while (*s) {
+		if (islower(*s))
+			return false;
+		else if (isupper(*s))
+			upper_exists = true;
+		s++;
+	}
+	return upper_exists;
+}
+
 static bool IsFirstNonWhitespace(Sci_Position pos, Accessor &styler) {
 	Sci_Position line = styler.GetLine(pos);
 	Sci_Position start_pos = styler.LineStart(line);
@@ -388,6 +401,8 @@ LexicalClass lexicalClasses[] = {
 	29, "SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
 	30, "SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
 	31, "SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	40, "SCE_P_FUNCTION", "identifier", "Function or method name",
+	41, "SCE_P_CONSTANT", "identifier", "Constant name",
 };
 
 }
@@ -904,9 +919,16 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						style = SCE_P_WORD2_BIE;
 					}
 				} else {
-					int subStyle = classifierIdentifiers.ValueFor(s);
-					if (subStyle >= 0) {
-						style = subStyle;
+					SKIP_SPACES
+					if (styler[i] == '(') {
+						style = SCE_P_FUNCTION;
+					} else if (IsAConstWord(s)) {
+						style = SCE_P_CONSTANT;
+					} else {
+						int subStyle = classifierIdentifiers.ValueFor(s);
+						if (subStyle >= 0) {
+							style = subStyle;
+						}
 					}
 				}
 				sc.ChangeState(style);
