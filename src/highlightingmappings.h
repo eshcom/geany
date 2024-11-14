@@ -267,19 +267,29 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE },
 	{ SCE_C_BIFS,					"bifs",						FALSE },
 	{ SCE_C_STRING_CONTINUED,		"string_continued",			FALSE },
-	{ SCE_C_LINE_CONTINUED,			"line_continued",			FALSE }
+	{ SCE_C_LINE_CONTINUED,			"line_continued",			FALSE },
+	{ SCE_C_FUNCTION,				"function",					FALSE },
+	{ SCE_C_MACRO,					"macro",					FALSE },
+	{ SCE_C_STD_FUNC,				"std_func",					FALSE },
+	{ SCE_C_STD_MACRO,				"std_macro",				FALSE },
+	{ SCE_C_OTH_FUNC,				"oth_func",					FALSE },
+	{ SCE_C_OTH_MACRO,				"oth_macro",				FALSE }
 };
 static const HLKeyword highlighting_keywords_C[] =
 {
-	{ 0, "primary",		FALSE },
+	{ 0,  "primary",	FALSE },
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
-	{ 1, "secondary",	TRUE },
-	{ 2, "docComment",	FALSE },
+	{ 1,  "secondary",	TRUE },
+	{ 2,  "docComment",	FALSE },
 	/* SCI_SETKEYWORDS = 3 is for current session types -
 	 * see document_highlight_tags() */
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE },
-	{ 8, "bifs",		FALSE }
+	{ 6,  "commonword",	FALSE },
+	{ 7,  "otherclass",	FALSE },
+	{ 8,  "bifs",		FALSE },
+	{ 9,  "std_funcs",	FALSE },
+	{ 10, "std_macros",	FALSE },
+	{ 11, "oth_funcs",	FALSE },
+	{ 12, "oth_macros",	FALSE }
 };
 static const HLProperty highlighting_properties_C[] =
 {

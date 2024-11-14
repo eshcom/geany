@@ -2,10 +2,10 @@
 [styling=C]
 
 [keywords=C]
-# all items must be in one line
+# Primary keywords
 primary=alignas alignof and and_eq asm auto bitand bitor bool break case catch char char16_t char32_t class compl const const_cast constexpr continue decltype default delete do double dynamic_cast else enum explicit export extern final float for friend goto if inline int long mutable namespace new noexcept not not_eq operator or or_eq override private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this thread_local throw try typedef typeid typename union unsigned using virtual void volatile wchar_t while xor xor_eq
-# Common keywords
-commonword=nullptr true false NULL TRUE FALSE MAX MIN __LINE__ __DATA__ __FILE__ __func__ __TIME__ __STDC__
+# Common keywords (C-commonword + nullptr)
+commonword=TRUE FALSE NULL NAN EOF WEOF true false noreturn stderr stdin stdout nullptr
 
 [lexer_properties=C]
 
