@@ -1152,7 +1152,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_C_WORD|activitySet);
 					} else if (styler[i] != '(' && commonWords.InList(s)) {	// Common keywords and identifiers
 						sc.ChangeState(SCE_C_COMMONWORD|activitySet);
-					} else if (keywords2.InList(s)) {						// Secondary keywords and identifiers
+					} else if (styler[i] != '(' && keywords2.InList(s)) {	// Secondary keywords and identifiers
 						sc.ChangeState(SCE_C_WORD2|activitySet);
 					} else if (keywords4.InList(s)) {						// Global classes and typedefs
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
