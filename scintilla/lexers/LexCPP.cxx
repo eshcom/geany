@@ -1223,9 +1223,15 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (options.stylingWithinPreprocessor) {
 					if (IsASpace(sc.ch) || (sc.ch == '(')) {
 						sc.SetState(SCE_C_DEFAULT|activitySet);
+					} else if (sc.chPrev == '#') {
+						if (sc.ch == '#') {
+							sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
+						} else {
+							sc.SetState(SCE_C_DEFAULT|activitySet);
+						}
 					}
-				} else if (isStringInPreprocessor && (sc.Match('>') ||
-						   sc.Match('\"') || sc.atLineEnd)) {
+				} else if (isStringInPreprocessor &&
+						   (sc.Match('>') || sc.Match('\"') || sc.atLineEnd)) {
 					isStringInPreprocessor = false;
 				} else if (!isStringInPreprocessor) {
 					if ((isIncludePreprocessor && sc.Match('<')) || sc.Match('\"')) {
@@ -1564,132 +1570,135 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.Match("include")) {
 					isIncludePreprocessor = true;
-				} else {
-					if (options.trackPreprocessor) {
-						// If #if is nested too deeply (>31 levels) the active/inactive appearance
-						// will stop reflecting the code.
-						if (sc.Match("ifdef") || sc.Match("ifndef")) {
-							const bool isIfDef = sc.Match("ifdef");
-							const int startRest = isIfDef ? 5 : 6;
-							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + startRest + 1,
-																   false);
-							bool foundDef = preprocessorDefinitions.find(restOfLine) !=
-													preprocessorDefinitions.end();
-							preproc.StartSection(isIfDef == foundDef);
-						} else if (sc.Match("if")) {
-							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 2,
+				} else if (options.trackPreprocessor) {
+					// If #if is nested too deeply (>31 levels) the active/inactive appearance
+					// will stop reflecting the code.
+					if (sc.Match("ifdef") || sc.Match("ifndef")) {
+						const bool isIfDef = sc.Match("ifdef");
+						const int startRest = isIfDef ? 5 : 6;
+						std::string restOfLine = GetRestOfLine(styler, sc.currentPos + startRest + 1,
+															   false);
+						bool foundDef = preprocessorDefinitions.find(restOfLine) !=
+												preprocessorDefinitions.end();
+						preproc.StartSection(isIfDef == foundDef);
+					} else if (sc.Match("if")) {
+						std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 2,
+															   true);
+						const bool ifGood = EvaluateExpression(restOfLine,
+															   preprocessorDefinitions);
+						preproc.StartSection(ifGood);
+					} else if (sc.Match("else")) {
+						// #else is shown as active if either preceding or following section is active
+						// as that means that it contributed to the result.
+						if (!preproc.CurrentIfTaken()) {
+							// Inactive, may become active if parent scope active
+							assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
+							preproc.InvertCurrentLevel();
+							activitySet = preproc.ActiveState();
+							// If following is active then show "else" as active
+							if (!activitySet)
+								sc.ChangeState(SCE_C_PREPROCESSOR);
+						} else if (preproc.IsActive()) {
+							// Active -> inactive
+							assert(sc.state == SCE_C_PREPROCESSOR);
+							preproc.InvertCurrentLevel();
+							activitySet = preproc.ActiveState();
+							// Continue to show "else" as active as it ends active section.
+						}
+					} else if (sc.Match("elif")) {
+						// Ensure only one chosen out of #if .. #elif .. #elif .. #else .. #endif
+						// #elif is shown as active if either preceding or following section is active
+						// as that means that it contributed to the result.
+						if (!preproc.CurrentIfTaken()) {
+							// Inactive, if expression true then may become active if parent scope active
+							assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
+							// Similar to #if
+							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 4,
 																   true);
 							const bool ifGood = EvaluateExpression(restOfLine,
 																   preprocessorDefinitions);
-							preproc.StartSection(ifGood);
-						} else if (sc.Match("else")) {
-							// #else is shown as active if either preceding or following section is active
-							// as that means that it contributed to the result.
-							if (!preproc.CurrentIfTaken()) {
-								// Inactive, may become active if parent scope active
-								assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
+							if (ifGood) {
 								preproc.InvertCurrentLevel();
 								activitySet = preproc.ActiveState();
-								// If following is active then show "else" as active
 								if (!activitySet)
 									sc.ChangeState(SCE_C_PREPROCESSOR);
-							} else if (preproc.IsActive()) {
-								// Active -> inactive
-								assert(sc.state == SCE_C_PREPROCESSOR);
-								preproc.InvertCurrentLevel();
-								activitySet = preproc.ActiveState();
-								// Continue to show "else" as active as it ends active section.
 							}
-						} else if (sc.Match("elif")) {
-							// Ensure only one chosen out of #if .. #elif .. #elif .. #else .. #endif
-							// #elif is shown as active if either preceding or following section is active
-							// as that means that it contributed to the result.
-							if (!preproc.CurrentIfTaken()) {
-								// Inactive, if expression true then may become active if parent scope active
-								assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
-								// Similar to #if
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 4,
-																	   true);
-								const bool ifGood = EvaluateExpression(restOfLine,
-																	   preprocessorDefinitions);
-								if (ifGood) {
-									preproc.InvertCurrentLevel();
-									activitySet = preproc.ActiveState();
-									if (!activitySet)
-										sc.ChangeState(SCE_C_PREPROCESSOR);
-								}
-							} else if (preproc.IsActive()) {
-								// Active -> inactive
-								assert(sc.state == SCE_C_PREPROCESSOR);
-								preproc.InvertCurrentLevel();
-								activitySet = preproc.ActiveState();
-								// Continue to show "elif" as active as it ends active section.
-							}
-						} else if (sc.Match("endif")) {
-							preproc.EndSection();
+						} else if (preproc.IsActive()) {
+							// Active -> inactive
+							assert(sc.state == SCE_C_PREPROCESSOR);
+							preproc.InvertCurrentLevel();
 							activitySet = preproc.ActiveState();
-							sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
-						} else if (sc.Match("define")) {
-							if (options.updatePreprocessor && preproc.IsActive()) {
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
-								size_t startName = 0;
-								while ((startName < restOfLine.length()) &&
-									   IsASpaceOrTab(restOfLine[startName]))
-									startName++;
-								size_t endName = startName;
-								while ((endName < restOfLine.length()) &&
-									   setWord.Contains(restOfLine[endName]))
-									endName++;
-								std::string key = restOfLine.substr(startName, endName-startName);
-								if ((endName < restOfLine.length()) &&
-									(restOfLine.at(endName) == '(')) {
-									// Macro
-									size_t endArgs = endName;
-									while ((endArgs < restOfLine.length()) &&
-										   (restOfLine[endArgs] != ')'))
-										endArgs++;
-									std::string args = restOfLine.substr(endName + 1,
-																		 endArgs - endName - 1);
-									size_t startValue = endArgs + 1;
-									while ((startValue < restOfLine.length()) &&
-										   IsASpaceOrTab(restOfLine[startValue]))
-										startValue++;
-									std::string value;
-									if (startValue < restOfLine.length())
-										value = restOfLine.substr(startValue);
-									preprocessorDefinitions[key] = SymbolValue(value, args);
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value,
-																		   false, args));
-									definitionsChanged = true;
-								} else {
-									// Value
-									size_t startValue = endName;
-									while ((startValue < restOfLine.length()) &&
-										   IsASpaceOrTab(restOfLine[startValue]))
-										startValue++;
-									std::string value = restOfLine.substr(startValue);
-									if (OnlySpaceOrTab(value))
-										value = "1";	// No value defaults to 1
-									preprocessorDefinitions[key] = value;
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value));
-									definitionsChanged = true;
-								}
+							// Continue to show "elif" as active as it ends active section.
+						}
+					} else if (sc.Match("endif")) {
+						preproc.EndSection();
+						activitySet = preproc.ActiveState();
+						sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
+					} else if (sc.Match("define")) {
+						if (options.updatePreprocessor && preproc.IsActive()) {
+							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
+							size_t startName = 0;
+							while ((startName < restOfLine.length()) &&
+								   IsASpaceOrTab(restOfLine[startName]))
+								startName++;
+							size_t endName = startName;
+							while ((endName < restOfLine.length()) &&
+								   setWord.Contains(restOfLine[endName]))
+								endName++;
+							std::string key = restOfLine.substr(startName, endName-startName);
+							if ((endName < restOfLine.length()) &&
+								(restOfLine.at(endName) == '(')) {
+								// Macro
+								size_t endArgs = endName;
+								while ((endArgs < restOfLine.length()) &&
+									   (restOfLine[endArgs] != ')'))
+									endArgs++;
+								std::string args = restOfLine.substr(endName + 1,
+																	 endArgs - endName - 1);
+								size_t startValue = endArgs + 1;
+								while ((startValue < restOfLine.length()) &&
+									   IsASpaceOrTab(restOfLine[startValue]))
+									startValue++;
+								std::string value;
+								if (startValue < restOfLine.length())
+									value = restOfLine.substr(startValue);
+								preprocessorDefinitions[key] = SymbolValue(value, args);
+								ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value,
+																	   false, args));
+								definitionsChanged = true;
+							} else {
+								// Value
+								size_t startValue = endName;
+								while ((startValue < restOfLine.length()) &&
+									   IsASpaceOrTab(restOfLine[startValue]))
+									startValue++;
+								std::string value = restOfLine.substr(startValue);
+								if (OnlySpaceOrTab(value))
+									value = "1";	// No value defaults to 1
+								preprocessorDefinitions[key] = value;
+								ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value));
+								definitionsChanged = true;
 							}
-						} else if (sc.Match("undef")) {
-							if (options.updatePreprocessor && preproc.IsActive()) {
-								const std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5,
-																			 false);
-								std::vector<std::string> tokens = Tokenize(restOfLine);
-								if (tokens.size() >= 1) {
-									const std::string key = tokens[0];
-									preprocessorDefinitions.erase(key);
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, "", true));
-									definitionsChanged = true;
-								}
+						}
+					} else if (sc.Match("undef")) {
+						if (options.updatePreprocessor && preproc.IsActive()) {
+							const std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5,
+																		 false);
+							std::vector<std::string> tokens = Tokenize(restOfLine);
+							if (tokens.size() >= 1) {
+								const std::string key = tokens[0];
+								preprocessorDefinitions.erase(key);
+								ppDefineHistory.push_back(PPDefinition(lineCurrent, key, "", true));
+								definitionsChanged = true;
 							}
 						}
 					}
 				}
+			} else if (sc.ch == '#' && (visibleChars > 0 || continuationLine)
+						&& options.stylingWithinPreprocessor) {
+				// esh: highlighting # and ## as preprocessor, example:
+				//		keybindings_set_item(key_group, KB_##name, kb_activate, #name);
+				sc.SetState(SCE_C_PREPROCESSOR|activitySet);
 			} else if (isoperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
 				lastOper = sc.ch;
