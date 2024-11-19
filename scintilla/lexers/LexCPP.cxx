@@ -549,6 +549,7 @@ class LexerCPP : public ILexerWithMetaData {
 	WordList stdMacros;
 	WordList othFuncs;
 	WordList othMacros;
+	
 	struct SymbolValue {
 		std::string value;
 		std::string arguments;
@@ -564,6 +565,7 @@ class LexerCPP : public ILexerWithMetaData {
 			return !arguments.empty();
 		}
 	};
+	
 	typedef std::map<std::string, SymbolValue> SymbolTable;
 	SymbolTable preprocessorDefinitionsStart;
 	OptionsCPP options;
@@ -895,6 +897,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	int styleBeforeDCKeyword = SCE_C_DEFAULT;
 	int styleBeforeTaskMarker = SCE_C_DEFAULT;
 	bool continuationLine = false;
+	bool isCondPreprocessor = false;
 	bool isIncludePreprocessor = false;
 	bool isStringInPreprocessor = false;
 	bool inRERange = false;
@@ -1047,6 +1050,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			// if different sets of lines lexed.
 			visibleChars = 0;
 			lastWordWasUUID = false;
+			isCondPreprocessor = false;
 			isIncludePreprocessor = false;
 			inRERange = false;
 			if (preproc.IsInactive()) {
@@ -1174,6 +1178,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.ChangeState(SCE_C_STD_FUNC|activitySet);
 						} else if (othFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_OTH_FUNC|activitySet);
+						} else if (isCondPreprocessor && strcmp(s, "defined") == 0) {
+							sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
 						} else {
 							sc.ChangeState(SCE_C_FUNCTION|activitySet);
 						}
@@ -1561,10 +1567,16 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '#' && visibleChars == 0 && !continuationLine) {
 				// Preprocessor commands are alone on their line
 				sc.SetState(SCE_C_PREPROCESSOR|activitySet);
+				
 				// Skip whitespace between # and preprocessor word
 				do {
 					sc.Forward();
 				} while (IsASpaceOrTab(sc.ch) && sc.More());
+				
+				if (options.stylingWithinPreprocessor &&
+					(sc.Match("if") || sc.Match("elif"))) {
+					isCondPreprocessor = true;
+				}
 				
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
@@ -1699,6 +1711,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// esh: highlighting # and ## as preprocessor, example:
 				//		keybindings_set_item(key_group, KB_##name, kb_activate, #name);
 				sc.SetState(SCE_C_PREPROCESSOR|activitySet);
+				
 			} else if (isoperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
 				lastOper = sc.ch;
