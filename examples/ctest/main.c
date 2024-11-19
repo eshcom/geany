@@ -551,23 +551,69 @@ void run_test_case15()
 	printf("utils_str_equal: %ld\n", g_get_real_time() - start);
 }
 
+gboolean scopes_and_types_equal(const gchar *pscope, gint ptype,
+								const gchar *sscope, gint stype)
+{
+	if (EMPTY(pscope) || EMPTY(sscope))
+		return ptype == stype && g_strcmp0(pscope, sscope) == 0;
+	
+	gchar **pfields = g_strsplit(pscope, "__anon", 2);
+	gchar **sfields = g_strsplit(sscope, "anon_", 2);
+	
+	if (ptype == 64 && stype == 1024
+		&& g_strv_length(pfields) == 2	// exists "__anon"
+		&& g_strv_length(sfields) == 2)	// exists "anon_"
+		stype = 64;
+	
+	gboolean scopes_equal = g_strcmp0(pfields[0], sfields[0]) == 0;
+	
+	g_strfreev(pfields);
+	g_strfreev(sfields);
+	
+	return ptype == stype && scopes_equal;
+}
+
+void run_test_case16()
+{
+	gboolean equal;
+	
+	equal = scopes_and_types_equal("__anon66b155090303", 4, "anon_enum_2", 4);
+	printf("equal11: %d\n", equal);
+	
+	equal = scopes_and_types_equal("__anon5eaccdba0208", 64, "anon_struct_1", 64);
+	printf("equal12: %d\n", equal);
+	
+	equal = scopes_and_types_equal("__anondaae05980308", 64, "anon_struct_2", 1024);
+	printf("equal13: %d\n", equal);
+	
+	equal = scopes_and_types_equal("__anon99646b230111", 16, "anon_namespace_0", 16);
+	printf("equal14: %d\n", equal);
+	
+	equal = scopes_and_types_equal("Scintilla::__anonf5f3056f0211", 16, "Scintilla::anon_namespace_1", 16);
+	printf("equal15: %d\n", equal);
+	
+	equal = scopes_and_types_equal("__anondaae05980308", 64, "", 1024);
+	printf("equal16: %d\n", equal);		// not equal
+	
+	equal = scopes_and_types_equal("", 64, "anon_struct_2", 1024);
+	printf("equal17: %d\n", equal);		// not equal
+	
+	equal = scopes_and_types_equal("", 1, "", 1);
+	printf("equal21: %d\n", equal);
+	
+	equal = scopes_and_types_equal(NULL, 1, NULL, 1);
+	printf("equal22: %d\n", equal);
+	
+	equal = scopes_and_types_equal("", 1, NULL, 1);
+	printf("equal23: %d\n", equal);		// not equal
+	
+	equal = scopes_and_types_equal(NULL, 1, "", 1);
+	printf("equal24: %d\n", equal);		// not equal
+}
+
 int main(void)
 {
-	//~ run_test_case01();
-	//~ run_test_case02();
-	//~ run_test_case03();
-	//~ run_test_case04();
-	//~ run_test_case05();
-	//~ run_test_case06();
-	//~ run_test_case07();
-	//~ run_test_case08();
-	//~ run_test_case09();
-	//~ run_test_case10();
-	//~ run_test_case11();
-	//~ run_test_case12();
-	//~ run_test_case13();
-	//~ run_test_case14();
-	run_test_case15();
+	run_test_case16();
 	
 	return 0;
 }

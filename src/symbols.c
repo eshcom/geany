@@ -2358,6 +2358,48 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 }
 
 
+static gboolean scopes_and_types_equal(const gchar *pscope, TMTagType ptype,
+									   const gchar *sscope, TMTagType stype)
+{
+	// example equal 1:
+	// ptag: scope = __anon66b155090303, name = COMPILER_COL_COLOR, type = 4, file = msgwindow.c, line = 81
+	// stag: scope = anon_enum_2, name = COMPILER_COL_COLOR, type = 4, file = msgwindow.c, line = 81
+	
+	// example equal 2:
+	// ptag: scope = __anon5eaccdba0208, name = compile_action, type = 64, file = build.c, line = 146
+	// stag: scope = anon_struct_1, name = compile_action, type = 64, file = build.c, line = 146
+	
+	// example equal 3 (types differ):
+	// ptag: scope = __anondaae05980308, name = activate_cb, type = 64, file = ui_utils.c, line = 113
+	// stag: scope = anon_struct_2, name = activate_cb, type = 1024, file = ui_utils.c, line = 113
+	
+	// example equal 4:
+	// ptag: scope = __anon99646b230111::PPStates, name = Add, type = 16, file = LexCPP.cxx, line = 328
+	// stag: scope = anon_namespace_0::PPStates, name = Add, type = 16, file = LexCPP.cxx, line = 328
+	
+	// example equal 5:
+	// ptag: scope = Scintilla::__anonf5f3056f0211, name = OmitXidContinue, type = 16, file = CharacterCategory.cxx, line = 3893
+	// stag: scope = Scintilla::anon_namespace_1, name = OmitXidContinue, type = 16, file = CharacterCategory.cxx, line = 3893
+	
+	if (EMPTY(pscope) || EMPTY(sscope))
+		return ptype == stype && g_strcmp0(pscope, sscope) == 0;
+	
+	gchar **pfields = g_strsplit(pscope, "__anon", 2);
+	gchar **sfields = g_strsplit(sscope, "anon_", 2);
+	
+	if (ptype == tm_tag_member_t && stype == tm_tag_prototype_t
+		&& g_strv_length(pfields) == 2	// exists "__anon"
+		&& g_strv_length(sfields) == 2)	// exists "anon_"
+		stype = tm_tag_member_t;
+	
+	gboolean scopes_equal = g_strcmp0(pfields[0], sfields[0]) == 0;
+	
+	g_strfreev(pfields);
+	g_strfreev(sfields);
+	
+	return ptype == stype && scopes_equal;
+}
+
 static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
 {
 	TMTag *ptag;
@@ -2372,12 +2414,9 @@ static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
 		{
 			TMTag *tag = g_ptr_array_index(tags, j);
 			
-			if (ptag->type == tag->type &&
-				g_strcmp0(ptag->name, tag->name) == 0 &&
-				(g_strcmp0(ptag->scope, tag->scope) == 0 ||
-				 (g_str_has_prefix(ptag->scope, "__anon") &&
-				  g_str_has_prefix(tag->scope, "anon_"))) &&
-				g_strcmp0(ptag->file->file_name, tag->file->file_name) == 0)
+			if (scopes_and_types_equal(ptag->scope, ptag->type, tag->scope, tag->type)
+				&& g_strcmp0(ptag->name, tag->name) == 0
+				&& g_strcmp0(ptag->file->file_name, tag->file->file_name) == 0)
 			{
 				equal = TRUE;
 				break;
