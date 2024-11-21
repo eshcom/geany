@@ -175,6 +175,19 @@ static TMParserMapEntry map_DOCBOOK[] = {
 	{'s', tm_tag_struct_t},
 };
 
+static TMParserMapEntry map_ELIXIR[] = {
+	//~ {'d', tm_tag_macro_t},
+	//~ {'f', tm_tag_function_t},
+	//~ {'m', tm_tag_undef_t},
+	//~ {'r', tm_tag_struct_t},
+	//~ {'t', tm_tag_typedef_t},
+	// esh: get from Ruby, temporary solution
+	{'c', tm_tag_class_t},
+	{'f', tm_tag_method_t},
+	{'m', tm_tag_namespace_t},
+	{'F', tm_tag_member_t},
+};
+
 static TMParserMapEntry map_ERLANG[] = {
 	{'d', tm_tag_macro_t},
 	{'f', tm_tag_function_t},
@@ -537,6 +550,7 @@ static TMParserMap parser_map[] = {
 	MAP_ENTRY(CONF),
 	MAP_ENTRY(SQL),
 	MAP_ENTRY(DOCBOOK),
+	MAP_ENTRY(ELIXIR),
 	MAP_ENTRY(ERLANG),
 	MAP_ENTRY(CSS),
 	MAP_ENTRY(RUBY),
@@ -794,6 +808,7 @@ gboolean tm_parser_has_full_context(TMParserType lang)
 		 * (either as a parser limitation or a language semantic) */
 		case TM_PARSER_ASCIIDOC:
 		case TM_PARSER_CONF:
+		case TM_PARSER_ELIXIR:
 		case TM_PARSER_ERLANG:
 		case TM_PARSER_F77:
 		case TM_PARSER_FORTRAN:
@@ -864,6 +879,7 @@ gboolean tm_parser_strict_scope(TMParserType lang)
 	switch (lang)
 	{
 		case TM_PARSER_NONE:
+		case TM_PARSER_ELIXIR:	// TODO: esh: temporary solution
 		case TM_PARSER_PYTHON:
 		case TM_PARSER_GO:		// as long as ctags does not contain scope (package name)
 			return FALSE;

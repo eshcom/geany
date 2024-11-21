@@ -28,6 +28,7 @@
 	ConfParser, \
 	SqlParser, \
 	DocBookParser, \
+	ElixirParser, \
 	ErlangParser, \
 	CssParser, \
 	RubyParser, \

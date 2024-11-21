@@ -20,6 +20,7 @@ parsers = \
 	parsers/css.c \
 	parsers/diff.c \
 	parsers/docbook.c \
+	parsers/elixir.c \
 	parsers/erlang.c \
 	parsers/flex.c \
 	parsers/fortran.c \

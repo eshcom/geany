@@ -85,6 +85,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmCss);
 	LINK_LEXER(lmD);
 	LINK_LEXER(lmDiff);
+	LINK_LEXER(lmElixir);
 	LINK_LEXER(lmErlang);
 	LINK_LEXER(lmF77);
 	LINK_LEXER(lmForth);

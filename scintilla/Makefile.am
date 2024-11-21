@@ -20,6 +20,7 @@ lexers/LexCmake.cxx \
 lexers/LexCoffeeScript.cxx \
 lexers/LexD.cxx \
 lexers/LexDiff.cxx \
+lexers/LexElixir.cxx \
 lexers/LexErlang.cxx \
 lexers/LexForth.cxx \
 lexers/LexFortran.cxx \
