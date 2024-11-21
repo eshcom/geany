@@ -589,6 +589,71 @@ static const HLKeyword highlighting_keywords_DOCBOOK[] =
 #define highlighting_properties_DOCBOOK		EMPTY_PROPERTIES
 
 
+/* Elixir */
+#define highlighting_lexer_ELIXIR		SCLEX_ELIXIR
+static const HLStyle highlighting_styles_ELIXIR[] =
+{
+	{ SCE_ELIXIR_DEFAULT,			"default",			FALSE },
+	{ SCE_ELIXIR_UNKNOWN,			"unknown",			FALSE },
+	{ SCE_ELIXIR_STD_WORD,			"std_word",			FALSE },
+	{ SCE_ELIXIR_ADD_WORD,			"add_word",			FALSE },
+	{ SCE_ELIXIR_STD_ATOM,			"std_atom",			FALSE },
+	{ SCE_ELIXIR_STD_FUNC,			"std_func",			FALSE },
+	{ SCE_ELIXIR_STD_MODULE,		"std_module",		FALSE },
+	{ SCE_ELIXIR_STD_MODULE_ATTR,	"std_module_attr",	FALSE },
+	{ SCE_ELIXIR_STD_ERL_MODULE,	"std_erl_module",	FALSE },
+	{ SCE_ELIXIR_STD_EXCEPT,		"std_except",		FALSE },
+	{ SCE_ELIXIR_STD_MACRO,			"std_macro",		FALSE },
+	{ SCE_ELIXIR_TYPE_FUNC,			"type_func",		FALSE },
+	{ SCE_ELIXIR_LIB_MACRO,			"lib_macro",		FALSE },
+	{ SCE_ELIXIR_LIB_FUNC,			"lib_func",			FALSE },
+	{ SCE_ELIXIR_OPERATOR,			"operator",			FALSE },
+	{ SCE_ELIXIR_MAP_OPER,			"map_oper",			FALSE },
+	{ SCE_ELIXIR_CAPTURE_OPER,		"capture_oper",		FALSE },
+	{ SCE_ELIXIR_FUNCTION,			"function",			FALSE },
+	{ SCE_ELIXIR_DEFNAME,			"defname",			FALSE },
+	{ SCE_ELIXIR_MODULE,			"module",			FALSE },
+	{ SCE_ELIXIR_MODULE_ATTR,		"module_attr",		FALSE },
+	{ SCE_ELIXIR_ERL_MODULE,		"erl_module",		FALSE },
+	{ SCE_ELIXIR_IDENTIFIER,		"identifier",		FALSE },
+	{ SCE_ELIXIR_ATOM,				"atom",				FALSE },
+	{ SCE_ELIXIR_NODE,				"node",				FALSE },
+	{ SCE_ELIXIR_FIELD,				"field",			FALSE },
+	{ SCE_ELIXIR_NUMBER,			"number",			FALSE },
+	{ SCE_ELIXIR_TRIPLE,			"triple",			FALSE },	// """, '''
+	{ SCE_ELIXIR_TRIPLEVAL,			"tripleval",		FALSE },	// "field" => """, '''
+	{ SCE_ELIXIR_STRING,			"string",			FALSE },	// "
+	{ SCE_ELIXIR_STRINGVAL,			"stringval",		FALSE },	// "field" => "
+	{ SCE_ELIXIR_CHARLIST,			"charlist",			FALSE },	// '
+	{ SCE_ELIXIR_CHARLISTVAL,		"charlistval",		FALSE },	// "field" => '
+	{ SCE_ELIXIR_LITERAL,			"literal",			FALSE },	// ~c", ~c', ...
+	{ SCE_ELIXIR_LITERALVAL,		"literalval",		FALSE },	// "field" => ~c", ~c', ...
+	{ SCE_ELIXIR_LITERALTRIPLE,		"literaltriple",	FALSE },	// ~c""", ~c''', ...
+	{ SCE_ELIXIR_LITERALTRIPLEVAL,	"literaltripleval",	FALSE },	// "field" => ~c""", ~c''', ...
+	{ SCE_ELIXIR_CHARACTER,			"character",		FALSE },	// ?
+	{ SCE_ELIXIR_ESCAPESEQ,			"escapeseq",		FALSE },
+	{ SCE_ELIXIR_FORMATSEQ,			"formatseq",		FALSE },
+	{ SCE_ELIXIR_ATOM_QUOTED,		"atom_quoted",		FALSE },
+	{ SCE_ELIXIR_NODE_QUOTED,		"node_quoted",		FALSE },
+	{ SCE_ELIXIR_COMMENT,			"comment",			FALSE }
+};
+static const HLKeyword highlighting_keywords_ELIXIR[] =
+{
+	{ 0,  "std_words",			FALSE },
+	{ 1,  "add_words",			FALSE },
+	{ 2,  "std_atoms",			FALSE },
+	{ 3,  "std_funcs",			FALSE },
+	{ 4,  "std_modules",		FALSE },
+	{ 5,  "std_module_attrs",	FALSE },
+	{ 6,  "std_erl_modules",	FALSE },
+	{ 7,  "std_excepts",		FALSE },
+	{ 8,  "std_macros",			FALSE },
+	{ 9,  "type_funcs",			FALSE },
+	{ 10, "lib_macros",			FALSE }
+};
+#define highlighting_properties_ELIXIR	EMPTY_PROPERTIES
+
+
 /* Erlang */
 #define highlighting_lexer_ERLANG		SCLEX_ERLANG
 static const HLStyle highlighting_styles_ERLANG[] =

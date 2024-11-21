@@ -1064,6 +1064,7 @@ void highlighting_init_styles(guint filetype_idx, GKeyFile *config,
 		init_styleset_case(D);
 		init_styleset_case(DIFF);
 		init_styleset_case(LISP);
+		init_styleset_case(ELIXIR);
 		init_styleset_case(ERLANG);
 		init_styleset_case(DOCBOOK);
 		init_styleset_case(FERITE);
@@ -1152,6 +1153,7 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 		styleset_case(D);
 		styleset_case(DIFF);
 		styleset_case(LISP);
+		styleset_case(ELIXIR);
 		styleset_case(ERLANG);
 		styleset_case(DOCBOOK);
 		styleset_case(FERITE);
@@ -1686,6 +1688,21 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_PROPS_SINGLESTRING ||
 					style == SCE_PROPS_ESCAPESEQUENCE);
 		
+		case SCLEX_ELIXIR:
+			return (style == SCE_ELIXIR_TRIPLE ||
+					style == SCE_ELIXIR_TRIPLEVAL ||
+					style == SCE_ELIXIR_STRING ||
+					style == SCE_ELIXIR_STRINGVAL ||
+					style == SCE_ELIXIR_CHARLIST ||
+					style == SCE_ELIXIR_CHARLISTVAL ||
+					style == SCE_ELIXIR_LITERAL ||
+					style == SCE_ELIXIR_LITERALVAL ||
+					style == SCE_ELIXIR_LITERALTRIPLE ||
+					style == SCE_ELIXIR_LITERALTRIPLEVAL ||
+					style == SCE_ELIXIR_CHARACTER ||
+					style == SCE_ELIXIR_ESCAPESEQ ||
+					style == SCE_ELIXIR_FORMATSEQ);
+		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
 					style == SCE_ERLANG_CHARACTER ||
@@ -1898,6 +1915,9 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 					style == SCE_CAML_COMMENT1 ||
 					style == SCE_CAML_COMMENT2 ||
 					style == SCE_CAML_COMMENT3);
+		
+		case SCLEX_ELIXIR:
+			return (style == SCE_ELIXIR_COMMENT);
 		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_COMMENT ||
