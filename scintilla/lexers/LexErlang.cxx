@@ -257,20 +257,20 @@ constexpr bool IsSpaceEquiv(int state) noexcept {
 			state == SCE_ERLANG_COMMENT ||
 			state == SCE_ERLANG_COMMENT_FUNCTION ||
 			state == SCE_ERLANG_COMMENT_MODULE ||
-			state == SCE_ERLANG_COMMENT_DOC ||
-			state == SCE_ERLANG_COMMENT_DOC_MACRO);
+			state == SCE_ERLANG_COMMENT_TAG ||
+			state == SCE_ERLANG_COMMENT_MACRO_TAG);
 }
 
 constexpr bool IsValidFuncDefinitionStyle(int style) noexcept {
 	return (style == SCE_ERLANG_DEFAULT ||
-			style == SCE_ERLANG_KEYWORD ||
+			style == SCE_ERLANG_STD_WORD ||
 			style == SCE_ERLANG_OPERATOR ||
 			style == SCE_ERLANG_ATOM ||
 			style == SCE_ERLANG_COMMENT ||
 			style == SCE_ERLANG_COMMENT_FUNCTION ||
 			style == SCE_ERLANG_COMMENT_MODULE ||
-			style == SCE_ERLANG_COMMENT_DOC ||
-			style == SCE_ERLANG_COMMENT_DOC_MACRO);
+			style == SCE_ERLANG_COMMENT_TAG ||
+			style == SCE_ERLANG_COMMENT_MACRO_TAG);
 }
 
 static inline bool IsAWordChar(const int ch) {
@@ -281,15 +281,17 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, WordList *keywordlists[],
 							   Accessor &styler) {
 	// esh: escapesequence highlighting
-	const bool escapeSequence = styler.GetPropertyInt("lexer.erlang.escape.sequence", 0) != 0;
+	const bool escapeSequence =
+					styler.GetPropertyInt("lexer.erlang.escape.sequence", 0) != 0;
 	EscapeSequence escapeSeq = EscapeSequence();
 	
 	// esh: formatsequence highlighting
-	const bool formatSequence = styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
+	const bool formatSequence =
+					styler.GetPropertyInt("lexer.erlang.format.sequence", 0) != 0;
 	ErlFormatSequence formatSeq = ErlFormatSequence();
 	
 	// esh: find func definition for correct highlighting
-	//		(SCE_ERLANG_FUNCTION_NAME or SCE_ERLANG_BIFS)
+	//		(SCE_ERLANG_FUNCTION or SCE_ERLANG_STD_FUNC)
 	if (IsValidFuncDefinitionStyle(initStyle) && startPos > 0) {
 		Sci_Position lineCurrent = styler.GetLine(startPos);
 		if (lineCurrent > 0) {
@@ -297,17 +299,17 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			Sci_PositionU newStartPos = startPos;
 			bool end_bracket_found = false;
 			while (--newStartPos > limit &&
-				   IsValidFuncDefinitionStyle(styler.StyleAt(newStartPos)))
+				   IsValidFuncDefinitionStyle(styler.StyleAt(newStartPos))) {
 				if (styler[newStartPos] == ')') {
 					end_bracket_found = true;
 					break;
 				}
+			}
 			if (end_bracket_found) {
 				newStartPos = find_start_bracket(--newStartPos, styler);
 				if (newStartPos > 0) {
 					int style = styler.StyleAt(newStartPos - 1);
-					if (style == SCE_ERLANG_FUNCTION_NAME ||
-						style == SCE_ERLANG_BIFS) {
+					if (style == SCE_ERLANG_FUNCTION || style == SCE_ERLANG_STD_FUNC) {
 						Sci_Position newLine = styler.GetLine(newStartPos);
 						if (newLine < lineCurrent) {
 							newStartPos = styler.LineStart(newLine);
@@ -330,15 +332,16 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
-	WordList &reservedWords = *keywordlists[0];
-	WordList &erlangBIFs = *keywordlists[1];
-	WordList &erlangBIMs = *keywordlists[2];
-	WordList &erlangPreproc = *keywordlists[3];
-	WordList &erlangModuleAtt = *keywordlists[4];
-	WordList &erlangPredefMacro = *keywordlists[5];
-	WordList &erlangDoc = *keywordlists[6];
-	WordList &erlangDocMacro = *keywordlists[7];
-	WordList &erlangAtomSpec = *keywordlists[8];
+	WordList &stdWords = *keywordlists[0];
+	WordList &stdAtoms = *keywordlists[1];
+	WordList &stdFuncs = *keywordlists[2];
+	WordList &stdModules = *keywordlists[3];
+	WordList &stdModuleAttrs = *keywordlists[4];
+	WordList &stdMacros = *keywordlists[5];
+	WordList &typeFuncs = *keywordlists[6];
+	WordList &preprocList = *keywordlists[7];
+	WordList &commentTags = *keywordlists[8];
+	WordList &commentMacroTags = *keywordlists[9];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
@@ -351,18 +354,18 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	int last_state = SCE_ERLANG_DEFAULT;
 	int last_oper = ' ';
 	
-	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node name)
+	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
 	bool is_var_record_name = false;	// esh: #RecordName{}, #?MODULE{}
 	
 	// esh: for escape sequences highlighting for SCE_ERLANG_CHARACTER
 	bool is_char_escape = false;
 	// esh: added detect is_char_escape
-	if (initStyle == SCE_ERLANG_ESCAPESEQUENCE) {
+	if (initStyle == SCE_ERLANG_ESCAPESEQ) {
 		Sci_PositionU back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);
-			if (backStyle != SCE_ERLANG_ESCAPESEQUENCE) {
+			if (backStyle != SCE_ERLANG_ESCAPESEQ) {
 				if (backStyle == SCE_ERLANG_CHARACTER) {
 					is_char_escape = true;
 				} else if (backStyle == SCE_ERLANG_STRING) {
@@ -389,20 +392,20 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	for (; sc.More(); sc.Forward()) {
 		// Determine if the current state should terminate.
 		switch (sc.state) {
-			/* COMMENTS ------------------------------------------------------*/
-			case SCE_ERLANG_COMMENT_DOC :
-			case SCE_ERLANG_COMMENT_DOC_MACRO : {
+			/* COMMENTS ----------------------------------------------------- */
+			case SCE_ERLANG_COMMENT_TAG :
+			case SCE_ERLANG_COMMENT_MACRO_TAG : {
 				if (isalnum(sc.ch))
 					continue;
 				// Try to match documentation comment
 				sc.GetCurrent(cur, sizeof(cur));
-				if (sc.state == SCE_ERLANG_COMMENT_DOC) {
-					if (!erlangDoc.InList(cur))
+				if (sc.state == SCE_ERLANG_COMMENT_TAG) {
+					if (!commentTags.InList(cur))
 						sc.ChangeState(last_comment_state);
 				} else {
-					if (!erlangDocMacro.InList(cur)) {
-						sc.ChangeState(erlangDoc.InList(cur) ?
-										SCE_ERLANG_COMMENT_DOC:
+					if (!commentMacroTags.InList(cur)) {
+						sc.ChangeState(commentTags.InList(cur) ?
+										SCE_ERLANG_COMMENT_TAG:
 										last_comment_state);
 					} else {
 						while (sc.ch != '}' && !sc.atLineEnd)
@@ -428,14 +431,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 					while (!sc.atLineEnd && IsASpaceOrTab(sc.ch))
 						sc.Forward();
+					
 					if (sc.ch == '@' && isalnum(sc.chNext)) {
 						last_comment_state = sc.state;
-						sc.SetState(SCE_ERLANG_COMMENT_DOC_MACRO);
+						sc.SetState(SCE_ERLANG_COMMENT_MACRO_TAG);
 						sc.Forward();
 					}
 				} else if (sc.ch == '@' && isalnum(sc.chNext)) {
 					last_comment_state = sc.state;
-					sc.SetState(SCE_ERLANG_COMMENT_DOC);
+					sc.SetState(SCE_ERLANG_COMMENT_TAG);
 					sc.Forward();
 				}
 			} break;
@@ -446,7 +450,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Numerics ------------------------------------------------------*/
+			/* Numerics ----------------------------------------------------- */
 			case SCE_ERLANG_NUMBER : {
 				switch (number_state) {
 					
@@ -514,27 +518,28 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Preprocessor --------------------------------------------------*/
+			/* Preprocessor ------------------------------------------------- */
 			case SCE_ERLANG_PREPROC : {
 				if (IsAWordChar(sc.ch)) {
 					continue;
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
-				if (erlangModuleAtt.InList(cur)) {
-					sc.ChangeState(SCE_ERLANG_MODULE_ATT);
-				} else if (!erlangPreproc.InList(cur)) {
-					sc.ChangeState(SCE_ERLANG_OTHER_ATT);
+				
+				if (stdModuleAttrs.InList(cur)) {
+					sc.ChangeState(SCE_ERLANG_STD_MODULE_ATTR);
+				} else if (!preprocList.InList(cur)) {
+					sc.ChangeState(SCE_ERLANG_MODULE_ATTR);
 				}
 				sc.SetState(SCE_ERLANG_DEFAULT);
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Atoms ---------------------------------------------------------*/
+			/* Atoms -------------------------------------------------------- */
 			case SCE_ERLANG_ATOM : {
 				if (sc.ch == '@' && !is_at_symb) {
 					is_at_symb = true;
-					sc.ChangeState(SCE_ERLANG_NODE_NAME);
+					sc.ChangeState(SCE_ERLANG_NODE);
 					continue;
 				} else if (IsAWordChar(sc.ch)) {
 					continue;
@@ -554,34 +559,34 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					module_type = (strcmp(cur, "erlang") == 0) ? ERLANG_MODULE:
 																 OTHER_MODULE;
 					sc.Forward();
-					sc.ChangeState(erlangBIMs.InList(cur) ? SCE_ERLANG_BIMS:
-															SCE_ERLANG_MODULES);
+					sc.ChangeState(stdModules.InList(cur) ? SCE_ERLANG_STD_MODULE:
+															SCE_ERLANG_MODULE);
 				} else {
-					if (reservedWords.InList(cur)) {
-						sc.ChangeState(SCE_ERLANG_KEYWORD);
+					if (stdWords.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_STD_WORD);
 						
-					} else if (module_type == ERLANG_MODULE && erlangBIFs.InList(cur)) {
-						sc.ChangeState(SCE_ERLANG_BIFS);
+					} else if (module_type == ERLANG_MODULE && stdFuncs.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_STD_FUNC);
 						
 					} else if (module_type == OTHER_MODULE && sc.ch == '(') {
-						sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+						sc.ChangeState(SCE_ERLANG_FUNCTION);
 						
 					} else if (module_type == NONE_MODULE && sc.ch == '(') {
-						if (erlangBIFs.InList(cur) &&
+						if (stdFuncs.InList(cur) &&
 								!is_func_definition(sc.currentPos + 1, endPos, styler)) {
-							sc.ChangeState(SCE_ERLANG_BIFS);
+							sc.ChangeState(SCE_ERLANG_STD_FUNC);
 						} else {
-							sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+							sc.ChangeState(SCE_ERLANG_FUNCTION);
 						}
 					} else if (sc.ch == '/') {
 						Sci_PositionU i = sc.currentPos + 1;
 						while (i < endPos && IsASpaceOrTab(styler[i]))
 							i++;
 						if (isdigit(styler[i]))
-							sc.ChangeState(SCE_ERLANG_FUNCTION_NAME);
+							sc.ChangeState(SCE_ERLANG_FUNCTION);
 						
-					} else if (erlangAtomSpec.InList(cur)) {
-						sc.ChangeState(SCE_ERLANG_ATOM_SPEC);
+					} else if (stdAtoms.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_STD_ATOM);
 					}
 				}
 				sc.SetState(SCE_ERLANG_DEFAULT);
@@ -590,35 +595,32 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_ATOM_QUOTED : {
 				if (sc.ch == '@' && !is_at_symb) {
 					is_at_symb = true;
-					sc.ChangeState(SCE_ERLANG_NODE_NAME_QUOTED);
-					
+					sc.ChangeState(SCE_ERLANG_NODE_QUOTED);
 				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Node names ----------------------------------------------------*/
-			case SCE_ERLANG_NODE_NAME : {
+			/* Nodes -------------------------------------------------------- */
+			case SCE_ERLANG_NODE : {
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ERLANG_ATOM);
-					
 				} else if (!IsAWordChar(sc.ch)) {
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			
-			case SCE_ERLANG_NODE_NAME_QUOTED : {
+			case SCE_ERLANG_NODE_QUOTED : {
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
-					
 				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Macros/Records-------------------------------------------------*/
+			/* Macros/Records------------------------------------------------ */
 			case SCE_ERLANG_RECORD :
 				if (is_var_record_name) {
 					sc.SetState(SCE_ERLANG_DEFAULT);
@@ -628,41 +630,39 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				if (!IsAWordChar(sc.ch) && sc.ch != '@') {
 					sc.GetCurrent(cur, sizeof(cur));
 					RemoveAllSpaces(cur);
-					if (erlangPredefMacro.InList(cur))
-						sc.ChangeState(SCE_ERLANG_PREDEF_MACRO);
+					
+					if (stdMacros.InList(cur)) {
+						sc.ChangeState(SCE_ERLANG_STD_MACRO);
+					}
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
 			
 			case SCE_ERLANG_RECORD_QUOTED :
-			case SCE_ERLANG_MACRO_QUOTED  : {
-				if (sc.ch == '\'' && sc.chPrev != '\\') {
+			case SCE_ERLANG_MACRO_QUOTED : {
+				if (sc.ch == '\'' && sc.chPrev != '\\')
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
-				}
 			} break;
 			/* -------------------------------------------------------------- */
 			
 			case SCE_ERLANG_VARIABLE : {
-				if (!IsAWordChar(sc.ch) && sc.ch != '@') {
+				if (!IsAWordChar(sc.ch) && sc.ch != '@')
 					sc.SetState(SCE_ERLANG_DEFAULT);
-				}
 			} break;
 			
 			case SCE_ERLANG_STRING : {
 				if (sc.ch == '\\') {
 					if (escapeSequence) {
 						is_char_escape = false;
-						sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+						sc.SetState(SCE_ERLANG_ESCAPESEQ);
 						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 					continue;
-					
 				} else if (sc.ch == '~' && formatSequence) {
-					sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+					sc.SetState(SCE_ERLANG_FORMATSEQ);
 					formatSeq.initFormatState();
 					continue;
-					
 				} else if (sc.ch == '\"') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
@@ -671,13 +671,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_CHARACTER : {
 				if (sc.ch == '\\') {
 					// esh: we will check the escapeSequence parameter later,
-					//		set SCE_ERLANG_ESCAPESEQUENCE for validation
+					//		set SCE_ERLANG_ESCAPESEQ for validation
 					is_char_escape = true;
-					sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+					sc.SetState(SCE_ERLANG_ESCAPESEQ);
 					escapeSeq.initEscapeState(sc.chNext);
 					sc.Forward(); // Skip any character after the backslash
 					continue;
-					
 				} else if (sc.atLineEnd) {
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				} else {
@@ -685,7 +684,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			} break;
 			
-			case SCE_ERLANG_ESCAPESEQUENCE : {
+			case SCE_ERLANG_ESCAPESEQ : {
 				escapeSeq.digitsLeft--;
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
 					continue; // esh: continue of escape chars
@@ -703,12 +702,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 						sc.Forward();
 						continue;
-						
 					} else if (sc.ch == '~' && formatSequence) {
-						sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+						sc.SetState(SCE_ERLANG_FORMATSEQ);
 						formatSeq.initFormatState();
 						continue;
-						
 					} else {
 						sc.SetState(SCE_ERLANG_STRING);
 						if (sc.ch == '\"')
@@ -717,7 +714,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			} break;
 			
-			case SCE_ERLANG_FORMATSEQUENCE : {
+			case SCE_ERLANG_FORMATSEQ : {
 				if (!formatSeq.atFormatEnd(sc.ch)) {
 					continue; // esh: continue of format chars
 				}
@@ -726,17 +723,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				if (sc.ch == '\\') {
 					if (escapeSequence) {
-						sc.SetState(SCE_ERLANG_ESCAPESEQUENCE);
+						sc.SetState(SCE_ERLANG_ESCAPESEQ);
 						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 					continue;
-					
 				} else if (sc.ch == '~') {
-					sc.SetState(SCE_ERLANG_FORMATSEQUENCE);
+					sc.SetState(SCE_ERLANG_FORMATSEQ);
 					formatSeq.initFormatState();
 					continue;
-					
 				} else {
 					sc.SetState(SCE_ERLANG_STRING);
 					if (sc.ch == '\"')
@@ -760,8 +755,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// Determine if a new state should be entered.
-		if (sc.state == SCE_ERLANG_DEFAULT ||
-			sc.state == SCE_ERLANG_UNKNOWN) {
+		if (sc.state == SCE_ERLANG_DEFAULT || sc.state == SCE_ERLANG_UNKNOWN) {
 			if (sc.ch == '%') {
 				sc.SetState(SCE_ERLANG_COMMENT);
 				if (sc.chNext == '%') {
@@ -857,14 +851,12 @@ static int ClassifyErlangFoldPoint(Accessor &styler, int styleNext,
 								   Sci_Position keyword_start) {
 	int lev = 0;
 	if (styler.Match(keyword_start,"case")
-		|| (
-			styler.Match(keyword_start,"fun")
-			&& (SCE_ERLANG_FUNCTION_NAME != styleNext)
-			)
 		|| styler.Match(keyword_start,"if")
+		|| styler.Match(keyword_start,"maybe")
 		|| styler.Match(keyword_start,"query")
 		|| styler.Match(keyword_start,"receive")
-	) {
+		|| (styler.Match(keyword_start,"fun") &&
+			(styleNext != SCE_ERLANG_FUNCTION))) {
 		++lev;
 	} else if (styler.Match(keyword_start,"end")) {
 		--lev;
@@ -897,13 +889,13 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		styleNext = styler.StyleAt(i + 1);
 		atEOL = ((ch == '\r') && (chNext != '\n')) || (ch == '\n');
 		
-		if (stylePrev != SCE_ERLANG_KEYWORD
-			&& style == SCE_ERLANG_KEYWORD) {
+		if (stylePrev != SCE_ERLANG_STD_WORD
+			&& style == SCE_ERLANG_STD_WORD) {
 			keyword_start = i;
 		}
 		// Fold on keywords
-		if (stylePrev == SCE_ERLANG_KEYWORD
-			&& style != SCE_ERLANG_KEYWORD
+		if (stylePrev == SCE_ERLANG_STD_WORD
+			&& style != SCE_ERLANG_STD_WORD
 			&& style != SCE_ERLANG_ATOM
 		) {
 			currentLevel += ClassifyErlangFoldPoint(styler,
@@ -948,15 +940,16 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 }
 
 static const char * const erlangWordListDesc[] = {
-	"Erlang Reserved words",
-	"Erlang BIFs",
-	"Erlang BIMs",
-	"Erlang Preprocessor",
-	"Erlang Module Attributes",
-	"Erlang Predefined Macros",
-	"Erlang Documentation",
-	"Erlang Documentation Macro",
-	"Erlang Atom Special",
+	"Standard keywords",
+	"Standard atoms",
+	"Standard functions (BIFs)",
+	"Standard modules (BIMs)",
+	"Standard module attributes",
+	"Standard macros",
+	"Built-in type functions",
+	"Preprocessor instructions",
+	"Documentation tags",
+	"Documentation macro tags",
 	0
 };
 

@@ -1,58 +1,61 @@
 [styling]
 # Edit these in the colorscheme .conf file instead
 default=default
-comment=comment
-variable=default
-number=number_1
-keyword=keyword_1
-string=string_1
+unknown=default
+std_word=keyword_1
+std_atom=default
+std_func=keyword_2
+std_module=default
+std_module_attr=preprocessor
+std_macro=preprocessor
+type_func=keyword_2
+preproc=preprocessor
 operator=operator
+map_oper=operator
+variable=default
+function=function
+module=default
+module_attr=preprocessor
 atom=default
-function_name=function
-character=character
+node=default
 macro=preprocessor
 record=type
-preproc=preprocessor
-node_name=default
-comment_function=comment
-comment_module=comment
-comment_doc=comment_doc
-comment_doc_macro=comment_doc
+number=number_1
+string=string_1
+character=character
+escapeseq=string_1
+formatseq=string_1
 atom_quoted=default
+node_quoted=default
 macro_quoted=default
 record_quoted=default
-node_name_quoted=default
-bifs=keyword_2
-bims=default
-modules=default
-module_att=preprocessor
-other_att=preprocessor
-predef_macro=preprocessor
-unknown=default
-atom_spec=default
-escapesequence=string_1
-formatsequence=string_1
-map_oper=operator
+comment=comment
+comment_module=comment
+comment_function=comment
+comment_tag=comment_doc
+comment_macro_tag=comment_doc
 
 [keywords]
-# all items must be in one line
-keywords=after and andalso band begin bnot bor bsl bsr bxor case catch cond div end fun if let not of or orelse query receive rem try when xor
-# Erlang built-in functions (BIFs)
-bifs=abs adler32 adler32_combine alias append_element apply atom_to_binary atom_to_list binary_part binary_to_atom binary_to_existing_atom binary_to_float binary_to_integer binary_to_list binary_to_term bit_size bitstring_to_list bump_reductions byte_size cancel_timer ceil check_old_code check_process_code concat_binary convert_time_unit crc32 crc32_combine date decode_packet delete_element delete_module demonitor disconnect_node display dist_ctrl_get_data dist_ctrl_get_data_notification dist_ctrl_get_opt dist_ctrl_input_handler dist_ctrl_put_data dist_ctrl_set_opt element erase error exit external_size float float_to_binary float_to_list floor fun_info fun_to_list function_exported garbage_collect get get_cookie get_keys get_stacktrace group_leader halt hash hd hibernate insert_element integer_to_binary integer_to_list iolist_size iolist_to_binary iolist_to_iovec is_alive is_atom is_binary is_bitstring is_boolean is_builtin is_float is_function is_integer is_list is_map is_map_key is_number is_pid is_port is_process_alive is_record is_reference is_tuple length link list_to_atom list_to_binary list_to_bitstring list_to_existing_atom list_to_float list_to_integer list_to_pid list_to_port list_to_ref list_to_tuple load_module load_nif loaded localtime localtime_to_universaltime make_ref make_tuple map_get map_size match_spec_test max md5 md5_final md5_init md5_update memory min module_loaded monitor monitor_node monotonic_time nif_error node nodes now open_port phash phash2 pid_to_list port_call port_close port_command port_connect port_control port_info port_to_list ports pre_loaded process_display process_flag process_info processes purge_module put raise read_timer record_info ref_to_list register registered resume_process round self send send_after send_nosuspend set_cookie setelement size spawn spawn_link spawn_monitor spawn_opt spawn_request spawn_request_abandon split_binary start_timer statistics suspend_process system_flag system_info system_monitor system_profile system_time term_to_binary term_to_iovec throw time time_offset timestamp tl trace trace_delivered trace_info trace_pattern trunc tuple_size tuple_to_list unalias unique_integer universaltime universaltime_to_localtime unlink unregister whereis yield
-# Erlang built-in modules (BIMs)
-bims=application argparse array auth base64 beam_lib binary c calendar code crypto dets dict digraph digraph_utils disk_log edlin edlin_expand epp erl_anno erl_boot_server erl_ddll erl_epmd erl_error erl_eval erl_expand_records erl_features erl_id_trans erl_internal erl_lint erl_parse erl_pp erl_prim_loader erl_scan erl_tar erlang erpc error error_handler error_logger ets exit file file_sorter filelib filename gb_sets gb_trees gen_event gen_fsm gen_sctp gen_server gen_statem gen_tcp gen_udp global global_group heart inet inet_res init io io_lib jsx lists log_mf_h logger logger_disk_log_h logger_filters logger_formatter logger_std_h maps math ms_transform net net_adm net_kernel orddict ordsets os peer pg pool proc_lib proplists qlc queue rand random re rpc seq_trace sets shell shell_default shell_docs slave socket sofs string supervisor supervisor_bridge sys throw timer unicode uri_string win32reg wrap_log_reader zip zlib
-# Erlang preprocessor instructions
+# Standard keywords
+std_words=after and andalso band begin bnot bor bsl bsr bxor case catch cond div else end fun if let maybe not of or orelse query receive rem try when xor
+# Standard atoms
+std_atoms=true false null none undefined unknown default
+# Standard functions (BIFs)
+std_funcs=abs adler32 adler32_combine alias append_element apply atom_to_binary atom_to_list binary_part binary_to_atom binary_to_existing_atom binary_to_float binary_to_integer binary_to_list binary_to_term bit_size bitstring_to_list bump_reductions byte_size cancel_timer ceil check_old_code check_process_code concat_binary convert_time_unit crc32 crc32_combine date decode_packet delete_element delete_module demonitor disconnect_node display dist_ctrl_get_data dist_ctrl_get_data_notification dist_ctrl_get_opt dist_ctrl_input_handler dist_ctrl_put_data dist_ctrl_set_opt element erase error exit external_size float float_to_binary float_to_list floor fun_info fun_to_list function_exported garbage_collect get get_cookie get_keys get_stacktrace group_leader halt hash hd hibernate insert_element integer_to_binary integer_to_list iolist_size iolist_to_binary iolist_to_iovec is_alive is_atom is_binary is_bitstring is_boolean is_builtin is_float is_function is_integer is_list is_map is_map_key is_number is_pid is_port is_process_alive is_record is_reference is_tuple length link list_to_atom list_to_binary list_to_bitstring list_to_existing_atom list_to_float list_to_integer list_to_pid list_to_port list_to_ref list_to_tuple load_module load_nif loaded localtime localtime_to_universaltime make_ref make_tuple map_get map_size match_spec_test max md5 md5_final md5_init md5_update memory min module_loaded monitor monitor_node monotonic_time nif_error node nodes now open_port phash phash2 pid_to_list port_call port_close port_command port_connect port_control port_info port_to_list ports pre_loaded process_display process_flag process_info processes purge_module put raise read_timer record_info ref_to_list register registered resume_process round self send send_after send_nosuspend set_cookie setelement size spawn spawn_link spawn_monitor spawn_opt spawn_request spawn_request_abandon split_binary start_timer statistics suspend_process system_flag system_info system_monitor system_profile system_time term_to_binary term_to_iovec throw time time_offset timestamp tl trace trace_delivered trace_info trace_pattern trunc tuple_size tuple_to_list unalias unique_integer universaltime universaltime_to_localtime unlink unregister whereis yield
+# Standard modules (BIMs)
+std_modules=^cerl_ ^ct_ ^diameter_ ^digraph_ ^edlin_ ^edoc_ ^erl_ ^error_ ^et_ ^eunit_ ^file_ ^gb_ ^gen_ ^global_ ^httpd_ ^inet_ ^io_ ^logger_ ^megaco_ ^merl_ ^mnesia_ ^mod_ ^net_ ^os_ ^shell_ ^snmp_ ^snmpa_ ^snmpm_ ^ssh_ ^ssl_ ^supervisor_ ^tftp_ ^wxAccelerator ^wxAui ^wxBitmap ^wxBookCtrl ^wxBuffered ^wxCalendar ^wxCheck ^wxChoice ^wxClipboard ^wxColour ^wxControl ^wxDC ^wxDate ^wxDir ^wxDisplay ^wxFile ^wxFindReplace ^wxFont ^wxGL ^wxGraphics ^wxGrid ^wxHtml ^wxIcon ^wxImage ^wxList ^wxMDI ^wxMenu ^wxMouse ^wxPageSetup ^wxPaint ^wxPalette ^wxPopup ^wxPreview ^wxPrint ^wxRadio ^wxSash ^wxScroll ^wxSizer ^wxSpin ^wxSplitter ^wxStatic ^wxStyledText ^wxSystem ^wxTaskBar ^wxText ^wxTool ^wxTree ^wxWebView ^wxWindow ^wx_ ^xmerl_ alarm_handler application argparse array asn1ct atomics auth base64 beam_lib binary c calendar cerl code compile counters cover cprof cpu_sup crashdump_viewer crypto ct dbg debugger dets dialyzer diameter dict digraph disk_log disksup dyntrace edlin edoc eldap epp epp_dodger eprof erlang erpc error escript et etop ets eunit exit file filelib filename fprof ftp gl global glu heart http_uri httpc httpd i inet inets init instrument int io json jsx lcnt leex lists log_mf_h logger make maps math megaco memsup merl mnesia ms_transform msacc net nteventlog observer odbc orddict ordsets os peer persistent_term pg pool prettypr proc_lib proplists public_key qlc queue rand random rb re release_handler reltool rpc scheduler seq_trace sets shell slave snmp snmpa snmpc snmpm socket sofs ssh ssl string supervisor sys system_information systools tags telemetry tftp throw timer tprof trace ttb unicode unix_telnet uri_string win32reg wrap_log_reader wx wxActivateEvent wxArtProvider wxBoxSizer wxBrush wxButton wxCaret wxChildFocusEvent wxClientDC wxCloseEvent wxComboBox wxCommandEvent wxContextMenuEvent wxCursor wxDataObject wxDialog wxDropFilesEvent wxEraseEvent wxEvent wxEvtHandler wxFlexGridSizer wxFocusEvent wxFrame wxGBSizerItem wxGCDC wxGauge wxGenericDirCtrl wxHelpEvent wxIdleEvent wxInitDialogEvent wxJoystickEvent wxKeyEvent wxLayoutAlgorithm wxLocale wxLogNull wxMask wxMaximizeEvent wxMemoryDC wxMessageDialog wxMiniFrame wxMirrorDC wxMoveEvent wxMultiChoiceDialog wxNavigationKeyEvent wxNotebook wxNotificationMessage wxNotifyEvent wxOverlay wxPanel wxPasswordEntryDialog wxPen wxPickerBase wxPostScriptDC wxProgressDialog wxQueryNewPaletteEvent wxRegion wxScreenDC wxSetCursorEvent wxShowEvent wxSingleChoiceDialog wxSizeEvent wxSlider wxSplashScreen wxStatusBar wxStdDialogButtonSizer wxSysColourChangedEvent wxToggleButton wxTopLevelWindow wxUpdateUIEvent wxXmlResource xmerl xref yecc zip zlib
+# Standard module attributes
+std_module_attrs=-behavior -behaviour -callback -compile -dialyzer -doc -export -export_type -feature -file -import -module -moduledoc -nifs -on_load -opaque -record -spec -type -vsn
+# Standard macros
+std_macros=?FEATURE_AVAILABLE ?FEATURE_ENABLED ?FILE ?FUNCTION_ARITY ?FUNCTION_NAME ?LINE ?MACHINE ?MODULE ?MODULE_STRING ?OTP_RELEASE
+# Built-in type functions
+type_funcs=any arity atom binary bitstring bitstring_list boolean byte char cpu_topology deprecated_time_unit dist_handle dynamic ext_binary ext_iovec float fun_info_item function garbage_collection_defaults halt_options identifier info_list integer iodata iolist iovec level_entry level_tag list map match_variable max_heap_size maybe_improper_list memory_type message_queue_data mfa module monitor_option monitor_port_identifier monitor_process_identifier neg_integer nif_resource nil no_return node non_neg_integer none nonempty_binary nonempty_bitstring nonempty_improper_list nonempty_list nonempty_maybe_improper_list nonempty_string number pid port pos_integer prepared_code priority_level process_info_item process_info_result_item raise_stacktrace reference registered_name registered_process_identifier scheduler_bind_type send_destination spawn_opt_option stack_item stacktrace stacktrace_extrainfo string sub_level system_monitor_option system_profile_option term time_unit timeout timestamp trace_flag trace_info_flag trace_info_item_result trace_info_return trace_match_spec trace_pattern_flag trace_pattern_mfa tuple
+# Preprocessor instructions
 preproc=-define -elif -else -endif -error -if -ifdef -ifndef -include -include_lib -undef -warning
-# Erlang module attributes
-module_att=-behavior -behaviour -callback -compile -dialyzer -export -export_type -feature -file -import -module -nifs -on_load -opaque -record -spec -type -vsn
-# Erlang predefined macros
-predef_macro=?FEATURE_AVAILABLE ?FEATURE_ENABLED ?FILE ?FUNCTION_ARITY ?FUNCTION_NAME ?LINE ?MACHINE ?MODULE ?MODULE_STRING ?OTP_RELEASE
-# Erlang documentation helpers
-doc=@author @clear @copyright @deprecated @doc @docfile @end @equiv @headerfile @hidden @private @reference @see @since @spec @throws @title @todo @TODO
-# Erlang documentation macros
-doc_macro=@date @docRoot @link @module @package @section @time @type @version
-# Erlang atom special
-atom_spec=true false null none undefined
+# Documentation tags
+comment_tags=@author @clear @copyright @deprecated @doc @docfile @end @equiv @headerfile @hidden @param @private @reference @returns @see @since @spec @throws @title @todo @TODO
+# Documentation macro tags
+comment_macro_tags=@date @docRoot @link @module @package @section @time @type @version
 
 [lexer_properties]
 lexer.erlang.escape.sequence=0
