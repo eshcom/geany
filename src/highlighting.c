@@ -1689,8 +1689,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||
 					style == SCE_ERLANG_CHARACTER ||
-					style == SCE_ERLANG_ESCAPESEQUENCE ||
-					style == SCE_ERLANG_FORMATSEQUENCE);
+					style == SCE_ERLANG_ESCAPESEQ ||
+					style == SCE_ERLANG_FORMATSEQ);
 		
 		case SCLEX_LISP:
 			return (style == SCE_LISP_STRING ||
@@ -1901,10 +1901,10 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_COMMENT ||
-					style == SCE_ERLANG_COMMENT_FUNCTION ||
 					style == SCE_ERLANG_COMMENT_MODULE ||
-					style == SCE_ERLANG_COMMENT_DOC ||
-					style == SCE_ERLANG_COMMENT_DOC_MACRO);
+					style == SCE_ERLANG_COMMENT_FUNCTION ||
+					style == SCE_ERLANG_COMMENT_TAG ||
+					style == SCE_ERLANG_COMMENT_MACRO_TAG);
 		
 		case SCLEX_FORTH:
 			return (style == SCE_FORTH_COMMENT ||
