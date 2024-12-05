@@ -825,29 +825,27 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 }
 
 
-#define SKIP_SPACES										\
-	Sci_PositionU i = sc.currentPos;					\
-	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+#define MOVE_INDEX_TO_NONSPACE										\
+	Sci_PositionU i = sc.currentPos;								\
+	while (i < endPos && IsASpaceOrTab(styler[i]))					\
 		i++;
 
-#define CHECK_ESCAPE_SEQUENCE										\
+#define CHECK_ESCAPE_FORMAT_SEQ										\
 	} else if (sc.ch == '\\') {										\
 		if (options.escapeSequence) {								\
 			sc.SetState(SCE_C_ESCAPESEQUENCE|activitySet);			\
 			escapeSeq.initEscapeState(sc.chNext);					\
 		}															\
-		sc.Forward(); /* Skip any character after the backslash */
-
-#define CHECK_FORMAT_SEQUENCE										\
+		sc.Forward(); /* Skip any character after the backslash */	\
+																	\
 	} else if (sc.ch == '%') {										\
 		if (options.formatSequence) {								\
 			sc.SetState(SCE_C_FORMATSEQUENCE|activitySet);			\
 			formatSeq.initFormatState();							\
-		}															\
+		}
 
 #define CHECK_STRING(quote)											\
-	CHECK_ESCAPE_SEQUENCE											\
-	CHECK_FORMAT_SEQUENCE											\
+	CHECK_ESCAPE_FORMAT_SEQ											\
 																	\
 	} else if (sc.ch == quote) {									\
 		if (sc.chNext == '_') {										\
@@ -862,11 +860,10 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 		sc.SetState(stringState|activitySet);								\
 		sc.ForwardSetState(SCE_C_DEFAULT|activitySet);						\
 																			\
-	CHECK_ESCAPE_SEQUENCE													\
-	CHECK_FORMAT_SEQUENCE													\
+	CHECK_ESCAPE_FORMAT_SEQ													\
 																			\
 	} else {																\
-		SKIP_SPACES															\
+		MOVE_INDEX_TO_NONSPACE												\
 		if (i == endPos || IsACRLF(styler[i]))								\
 			sc.ChangeState(SCE_C_STRINGEOL|activitySet);					\
 		else																\
@@ -903,7 +900,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
 	
-	// esh: added detect lastOper for SCE_C_STD_FUNC highlighting
+	// esh: define lastOper for SCE_C_STD_FUNC highlighting
 	int lastOper = ' ';
 	if (startPos > 0) {
 		Sci_Position back = startPos;
@@ -917,7 +914,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 	}
 	
-	// esh: added detect jsonLastOper for highlighting JSON-keys
+	// esh: define jsonLastOper for highlighting JSON-keys
 	int jsonLastOper = '.';
 	if (options.jsonKeyStrings && startPos > 0) {
 		Sci_Position back = startPos;
@@ -951,8 +948,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	// (stringState can be SCE_C_CHARACTER, SCE_C_STRING, SCE_C_STRINGJSONKEY)
 	int stringState = -1;
 	
+	// esh: define stringState
 	int maskInitStyle = MaskActive(initStyle);
-	if (IsQuoteStringStyle(maskInitStyle)) { // esh: added detect stringState
+	if (IsQuoteStringStyle(maskInitStyle)) {
 		stringState = maskInitStyle;
 		
 	} else if (IsNestedStringStyle(maskInitStyle)) {
@@ -966,7 +964,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				stringState = backStyle;
 			} else if (styler[++back] == '\'') {
 				stringState = SCE_C_CHARACTER;
-			} else if (options.jsonKeyStrings && // esh: added detect JSON-key
+			} else if (options.jsonKeyStrings && // esh: define JSON-key
 						jsonLastOper != ':' && jsonLastOper != '[') {
 				stringState = SCE_C_STRINGJSONKEY;
 			} else {
@@ -989,9 +987,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	const Sci_PositionU endPos = startPos + length;
 	
 	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
-	//~ printf("!!!LexCPP: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
+	//~ printf("!!!Lex: currLine = %li, currChar = '%c', lastChar = '%c', "
+				//~ "initStyle = %i, startPos = %li, length = %li\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
-		   //~ styler[startPos + length - 2], initStyle);
+		   //~ styler[endPos - 2], initStyle, startPos, length);
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	LinePPState preproc = vlls.ForLine(lineCurrent);
@@ -1150,7 +1149,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					SKIP_SPACES
+					MOVE_INDEX_TO_NONSPACE
 					if (keywords.InList(s)) {								// Primary keywords and identifiers
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_WORD|activitySet);
@@ -1545,7 +1544,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						stringState = SCE_C_STRING;
 					}
 				} else {
-					// esh: added detect JSON-key
+					// esh: define JSON-key
 					if (options.jsonKeyStrings && jsonLastOper != ':' &&
 												  jsonLastOper != '[') {
 						stringState = SCE_C_STRINGJSONKEY;

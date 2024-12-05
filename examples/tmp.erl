@@ -290,7 +290,11 @@ tmp4(Module, RecName, TName) ->
 	_Records = ?MODULE:'$mapper_records'().
 
 capabilities(Cs) ->
-  lists:foldl(fun erlang:'bor'/2, 0, Cs).
+  lists:foldl(fun erlang:'bor'/2, 0, Cs),
+  lists:foldl(fun erlang:length/1, 0, Cs),
+  lists:foldl(fun erlang:length2/1, 0, Cs),
+  lists:foldl(fun erlang2:length/1, 0, Cs),
+  lists:foldl(fun length/1, 0, Cs).
 
 yeccpars1(_Tokens, _Tzr, _State, _States, _Vstack) -> ok.
 yecc_error_type(_Error, _Stacktrace) -> ok.
@@ -303,7 +307,8 @@ yeccpars0(Tokens, Tzr, State, States, Vstack) ->
                 Desc ->
                     erlang:raise(error, {yecc_bug, ?CODE_VERSION, Desc},
                                  Stacktrace)
-            catch _:_ -> erlang:raise(error, Error, Stacktrace)
+            catch _:1 -> erlang:raise(error, Error, Stacktrace)
+            catch _:2 -> erlang:raise2(error, Error, Stacktrace)
             end;
         %% Probably thrown from return_error/2:
         throw: {error, {_Line, ?MODULE, _M}} = Error ->
