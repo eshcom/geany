@@ -171,20 +171,6 @@ static bool is_radix(int radix, int ch) {
 	return (digit < radix);
 }
 
-#define LOOP_COMMON_BLOCK							\
-		const char ch = styler[pos];				\
-		const char chPrev = styler[pos - 1];		\
-		if (!is_str && (ch == '\"' || ch == '\'')	\
-			&& chPrev != '$' && chPrev != '\\') {	\
-			str_quote = ch;							\
-			is_str = true;							\
-		} else if (is_str) {						\
-			if (ch == str_quote && chPrev != '\\')	\
-				is_str = false;						\
-		}
-
-#define CHECK_ESCAPING chPrev != '$' && chPrev != '\\'
-
 static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 							   Accessor &styler) {
 	/* find ") ->" or ") when" */
@@ -196,11 +182,25 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 	int limit = pos + 300;
 	if (limit > endPos) limit = endPos;
 	
+	char ch;
 	while (pos < limit) {
-		LOOP_COMMON_BLOCK
-		  else if (ch == '(' && CHECK_ESCAPING) {
+		ch = styler[pos];
+		if (is_str) {
+			if (ch == '\\')
+				pos++;		// Skip any character after the backslash
+			else if (ch == str_quote)
+				is_str = false;
+		} else if (ch == '$') {
+			if (pos + 1 < limit && styler[pos + 1] == '\\')
+				pos += 2;	// Skip $\", $\', ...
+			else
+				pos++;		// Skip $", $', ...
+		} else if (ch == '\"' || ch == '\'') {
+			str_quote = ch;
+			is_str = true;
+		} else if (ch == '(') {
 			brackets++;
-		} else if (ch == ')' && CHECK_ESCAPING && --brackets < 0) {
+		} else if (ch == ')' && --brackets < 0) {
 			found_end_bracket = true;
 			break;
 		}
@@ -210,9 +210,9 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 		pos++; // skip ')'
 		while (pos < endPos && IsASpace(styler[pos]))
 			pos++;
-		if (pos < endPos - 1 && styler[pos] == '-' && styler[pos + 1] == '>')
+		if (pos + 1 < endPos && styler[pos] == '-' && styler[pos + 1] == '>')
 			return true;
-		else if (pos < endPos - 3 &&
+		else if (pos + 3 < endPos &&
 				 styler[pos] == 'w' && styler[pos + 1] == 'h' &&
 				 styler[pos + 2] == 'e' && styler[pos + 3] == 'n')
 			return true;
@@ -222,17 +222,15 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 
 static Sci_Position find_start_bracket(Sci_Position pos, Accessor &styler)
 {
-	bool is_str = false;
-	char str_quote;
 	int brackets = 0;
 	int limit = pos > 300 ? pos - 300 : 0;
 	
 	while (pos > limit) {
-		LOOP_COMMON_BLOCK
-		  else if (ch == ')' && CHECK_ESCAPING) {
-			brackets++;
-		} else if (ch == '(' && CHECK_ESCAPING && --brackets < 0) {
-			return pos; /* found start bracket */
+		if (styler.StyleAt(pos) == SCE_ERLANG_OPERATOR) {
+			if (styler[pos] == ')')
+				brackets++;
+			else if (styler[pos] == '(' && --brackets < 0)
+				return pos; /* found start bracket */
 		}
 		pos--;
 	}
@@ -252,25 +250,20 @@ typedef enum {
 	ERLANG_MODULE
 } module_type_t;
 
-constexpr bool IsSpaceEquiv(int state) noexcept {
-	return (state == SCE_ERLANG_DEFAULT ||
-			state == SCE_ERLANG_COMMENT ||
-			state == SCE_ERLANG_COMMENT_FUNCTION ||
-			state == SCE_ERLANG_COMMENT_MODULE ||
-			state == SCE_ERLANG_COMMENT_TAG ||
-			state == SCE_ERLANG_COMMENT_MACRO_TAG);
-}
-
-constexpr bool IsValidFuncDefinitionStyle(int style) noexcept {
+static inline bool IsSpaceEquivStyle(int style) {
 	return (style == SCE_ERLANG_DEFAULT ||
-			style == SCE_ERLANG_STD_WORD ||
-			style == SCE_ERLANG_OPERATOR ||
-			style == SCE_ERLANG_ATOM ||
 			style == SCE_ERLANG_COMMENT ||
 			style == SCE_ERLANG_COMMENT_FUNCTION ||
 			style == SCE_ERLANG_COMMENT_MODULE ||
 			style == SCE_ERLANG_COMMENT_TAG ||
 			style == SCE_ERLANG_COMMENT_MACRO_TAG);
+}
+
+static inline bool IsValidFuncDefStyle(int style) {
+	return (IsSpaceEquivStyle(style) ||
+			style == SCE_ERLANG_STD_WORD ||
+			style == SCE_ERLANG_OPERATOR ||
+			style == SCE_ERLANG_ATOM);
 }
 
 static inline bool IsAWordChar(const int ch) {
@@ -292,14 +285,14 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: find func definition for correct highlighting
 	//		(SCE_ERLANG_FUNCTION or SCE_ERLANG_STD_FUNC)
-	if (IsValidFuncDefinitionStyle(initStyle) && startPos > 0) {
+	if (IsValidFuncDefStyle(initStyle) && startPos > 0) {
 		Sci_Position lineCurrent = styler.GetLine(startPos);
 		if (lineCurrent > 0) {
 			Sci_PositionU limit = startPos > 300 ? startPos - 300 : 0;
 			Sci_PositionU newStartPos = startPos;
 			bool end_bracket_found = false;
 			while (--newStartPos > limit &&
-				   IsValidFuncDefinitionStyle(styler.StyleAt(newStartPos))) {
+				   IsValidFuncDefStyle(styler.StyleAt(newStartPos))) {
 				if (styler[newStartPos] == ')') {
 					end_bracket_found = true;
 					break;
@@ -381,7 +374,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	} else if (startPos > 0) {
 		// esh: added detect last_state, last_oper
 		Sci_PositionU back = startPos;
-		while (--back && IsSpaceEquiv(styler.StyleAt(back)))
+		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
 			;
 		last_state = styler.StyleAt(back);
 		if (last_state == SCE_ERLANG_OPERATOR) {
@@ -596,7 +589,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == '@' && !is_at_symb) {
 					is_at_symb = true;
 					sc.ChangeState(SCE_ERLANG_NODE_QUOTED);
-				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+				} else if (sc.ch == '\\') {
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+				} else if (sc.ch == '\'') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
@@ -614,7 +610,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_NODE_QUOTED : {
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ERLANG_ATOM_QUOTED);
-				} else if (sc.ch == '\'' && sc.chPrev != '\\') {
+				} else if (sc.ch == '\\') {
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+				} else if (sc.ch == '\'') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
@@ -640,8 +639,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			case SCE_ERLANG_RECORD_QUOTED :
 			case SCE_ERLANG_MACRO_QUOTED : {
-				if (sc.ch == '\'' && sc.chPrev != '\\')
+				if (sc.ch == '\\') {
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+				} else if (sc.ch == '\'') {
 					sc.ForwardSetState(SCE_ERLANG_DEFAULT);
+				}
 			} break;
 			/* -------------------------------------------------------------- */
 			
@@ -779,7 +782,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '$') {
 				sc.SetState(SCE_ERLANG_CHARACTER);
 				
-			} else if ((IsSpaceEquiv(last_state) ||
+			} else if ((IsSpaceEquivStyle(last_state) ||
 						last_state == SCE_ERLANG_OPERATOR) &&
 					   (last_oper == ' ' || last_oper == '.') &&
 					   sc.ch == '-') {
@@ -840,7 +843,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 												   NONE_MODULE;
 			}
 		}
-		if (last_state != sc.state && !IsSpaceEquiv(sc.state)) {
+		if (last_state != sc.state && !IsSpaceEquivStyle(sc.state)) {
 			last_state = sc.state;
 		}
 	}

@@ -109,6 +109,10 @@ test10() ->
 
 %~ tmp2:test11().
 test11() ->
+  V1 = 'node@test\\', % valid node quoted
+  V2 = 'nodetest\\', % valid atom quoted
+  V3 = ?'nodetest\\', % valid macro quoted
+  V4 = #'nodetest\\', % valid record quoted
   Node1 = node@test,
   Node2 = 'node@test',
   Node3 = '@test',
