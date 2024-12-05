@@ -409,8 +409,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_PROPS_NUMBER:
-				if (IsADigit(sc.ch) || (sc.ch == '.' &&
-										IsADigit(sc.chNext))) {
+				if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 					if (sc.ch == '.') {
 						if (sc.chPrev == '.') {
 							sc.ChangeState(SCE_PROPS_VALUE);
@@ -510,11 +509,10 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				hexColorLen = 0;
 				continue;
 				
-			} else if ((sc.ch == '\"' || sc.ch == '\'') && sc.chPrev != '\\') {
+			} else if (sc.ch == '\"' || sc.ch == '\'') {
 				int levelSqBrcks = 0;
 				int strCode = -1;
-				for (Sci_PositionU i = sc.currentPos + 1;
-									i < styler.Length(); i++) {
+				for (Sci_PositionU i = sc.currentPos + 1; i < styler.Length(); i++) {
 					if (IsACRLF(styler[i])) { // end of line
 						if (strCode == -1) {
 							strCode = 1; // multi-line string
@@ -590,8 +588,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			
 		// Determine if the value-state (word) should terminate.
-		} else if (sc.state == SCE_PROPS_VALUE &&
-				   !IsAWordChar(sc.ch)) {
+		} else if (sc.state == SCE_PROPS_VALUE && !IsAWordChar(sc.ch)) {
 			// sc.chPrev == word-char (alnum, '_', '-')
 			// --END OF WORD--
 			char word[100];
@@ -623,8 +620,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			continue;
 		}
 		
-		if (CheckSubVar(sc, styler, endPos, &isSubVar,
-						&beforeSubVarState))
+		if (CheckSubVar(sc, styler, endPos, &isSubVar, &beforeSubVarState))
 			continue;
 		
 		if (sc.atLineEnd) {
