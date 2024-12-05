@@ -644,7 +644,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		}																	\
 	}
 
-#define SKIP_SPACES										\
+#define MOVE_INDEX_TO_NONSPACE							\
 	Sci_PositionU i = sc.currentPos;					\
 	while (i < endPos && IsASpaceOrTab(styler[i]))		\
 		i++;
@@ -662,13 +662,14 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	
 	const literalsAllowed allowedLiterals = options.AllowedLiterals();
+	const Sci_PositionU endPos = startPos + length;
 	
 	initStyle = initStyle & 31;
 	
-	// esh: added stringState for escape sequences highlighting
+	// esh: added stringState for escape/format sequences highlighting
 	int stringState = -1;
 	
-	// esh: added detect stringState
+	// esh: define stringState
 	if (IsPySingleQuoteStringState(initStyle)
 		|| IsPyTripleQuoteStringState(initStyle)) {
 		stringState = initStyle;
@@ -685,8 +686,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				int nestingCount = 1;
 				char ch;
 				while (--back) {
-					if (styler.StyleAt(back) == SCE_P_FSTRING_SUBOPER)
-					{
+					if (styler.StyleAt(back) == SCE_P_FSTRING_SUBOPER) {
 						ch = styler.SafeGetCharAt(back);
 						if (ch == '}')
 							nestingCount++;
@@ -703,8 +703,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				stringState = backStyle;
 				
 				if (IsPyFStringState(stringState, -1)) {
-					const Sci_Position endPos = startPos + length;
-					
 					while (back < endPos && styler.SafeGetCharAt(back) != '}') {
 						int style = styler.StyleAt(back);
 						if (style == backStyle || IsPyNestedStringState(style))
@@ -771,8 +769,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	const WordClassifier &classifierIdentifiers =
 							subStyles.Classifier(SCE_P_IDENTIFIER);
 	
-	const Sci_Position endPos = startPos + length;
-	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	bool indentGood = true;
@@ -783,9 +779,9 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	while (sc.More()) {
 		if (sc.state == SCE_P_FSTRING_SUBOPER) {
-			int state = (sc.chPrev == '}') ?
-							PopFromStateStack(fstringStateStack, currentFStringExp) :
-							fstringStateStack.back().state; // sc.chPrev == ':'
+			int state = (sc.chPrev == '}')
+							? PopFromStateStack(fstringStateStack, currentFStringExp)
+							: fstringStateStack.back().state; // sc.chPrev == ':'
 			sc.SetState(state);
 			stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
 		}
@@ -873,7 +869,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (kwLast == kwDef) {
 					style = SCE_P_DEFNAME;
 				} else if (kwLast == kwCDef || kwLast == kwCPDef) {
-					SKIP_SPACES
+					MOVE_INDEX_TO_NONSPACE
 					if (styler[i] == '(') {
 						style = SCE_P_DEFNAME;
 					} else if (styler[i] == ':') {
@@ -902,7 +898,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						style = SCE_P_WORD2_BIF;
 					}
 					if (style == SCE_P_WORD2_BIF) {
-						SKIP_SPACES
+						MOVE_INDEX_TO_NONSPACE
 						if (styler[i] != '(') {
 							style = SCE_P_WORD2_SAME_BIF;
 						}
@@ -919,7 +915,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						style = SCE_P_WORD2_BIE;
 					}
 				} else {
-					SKIP_SPACES
+					MOVE_INDEX_TO_NONSPACE
 					if (styler[i] == '(') {
 						style = SCE_P_FUNCTION;
 					} else if (IsAConstWord(s)) {
@@ -1194,9 +1190,9 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 	Accessor styler(pAccess, NULL);
 	
 	const Sci_Position maxPos = startPos + length;
-	const Sci_Position maxLines = (maxPos == styler.Length()) ?
-												styler.GetLine(maxPos) :
-												styler.GetLine(maxPos - 1);	// Requested last line
+	const Sci_Position maxLines = (maxPos == styler.Length())
+											? styler.GetLine(maxPos)
+											: styler.GetLine(maxPos - 1);	// Requested last line
 	const Sci_Position docLines = styler.GetLine(styler.Length());			// Available last line
 	
 	// Backtrack to previous non-blank line so we can determine indent level
@@ -1235,9 +1231,9 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 		if (lineNext <= docLines) {
 			// Information about next line is only available if not at end of document
 			indentNext = styler.IndentAmount(lineNext, &spaceFlags, NULL);
-			Sci_Position lookAtPos = (styler.LineStart(lineNext) == styler.Length()) ?
-														styler.Length() - 1 :
-														styler.LineStart(lineNext);
+			Sci_Position lookAtPos = (styler.LineStart(lineNext) == styler.Length())
+													? styler.Length() - 1
+													: styler.LineStart(lineNext);
 			const int style = styler.StyleAt(lookAtPos) & 31;
 			quote = options.foldQuotes && IsPyStringStateForFold(style);
 		}
@@ -1276,9 +1272,9 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 			indentNext = styler.IndentAmount(lineNext, &spaceFlags, NULL);
 		}
 		
-		const int levelAfterComments = ((lineNext < docLines) ?
-											indentNext & SC_FOLDLEVELNUMBERMASK :
-											minCommentLevel);
+		const int levelAfterComments = ((lineNext < docLines)
+											? indentNext & SC_FOLDLEVELNUMBERMASK
+											: minCommentLevel);
 		const int levelBeforeComments = std::max(indentCurrentLevel,
 												 levelAfterComments);
 		

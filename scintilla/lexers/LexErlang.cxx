@@ -242,7 +242,7 @@ typedef enum {
 	NUMERAL_BASE_VALUE,
 	NUMERAL_FLOAT,
 	NUMERAL_EXPONENT
-} number_parse_state_t;
+} number_state_t;
 
 typedef enum {
 	NONE_MODULE,
@@ -269,6 +269,10 @@ static inline bool IsValidFuncDefStyle(int style) {
 static inline bool IsAWordChar(const int ch) {
 	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
 }
+
+#define SKIP_NEXT_SPACES							\
+	while (sc.More() && IsASpaceOrTab(sc.chNext))	\
+		sc.Forward();
 
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							   int initStyle, WordList *keywordlists[],
@@ -319,9 +323,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	Sci_PositionU endPos = startPos + length;
 	
 	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
-	//~ printf("!!!LexErlang: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
+	//~ printf("!!!Lex: currLine = %li, currChar = '%c', lastChar = '%c', "
+				//~ "initStyle = %i, startPos = %li, length = %li\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
-		   //~ styler[startPos + length - 2], initStyle);
+		   //~ styler[endPos - 2], initStyle, startPos, length);
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -338,7 +343,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
-	number_parse_state_t number_state;
+	number_state_t number_state;
 	
 	module_type_t module_type = NONE_MODULE;
 	
@@ -352,7 +357,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: for escape sequences highlighting for SCE_ERLANG_CHARACTER
 	bool is_char_escape = false;
-	// esh: added detect is_char_escape
+	// esh: define is_char_escape
 	if (initStyle == SCE_ERLANG_ESCAPESEQ) {
 		Sci_PositionU back = startPos;
 		int backStyle;
@@ -372,7 +377,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 	} else if (startPos > 0) {
-		// esh: added detect last_state, last_oper
+		// esh: define last_state, last_oper
 		Sci_PositionU back = startPos;
 		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
 			;
@@ -397,9 +402,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(last_comment_state);
 				} else {
 					if (!commentMacroTags.InList(cur)) {
-						sc.ChangeState(commentTags.InList(cur) ?
-										SCE_ERLANG_COMMENT_TAG:
-										last_comment_state);
+						sc.ChangeState(commentTags.InList(cur) ? SCE_ERLANG_COMMENT_TAG
+															   : last_comment_state);
 					} else {
 						while (sc.ch != '}' && !sc.atLineEnd)
 							sc.Forward();
@@ -536,8 +540,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (IsAWordChar(sc.ch)) {
 					continue;
-				} else if (sc.ch == '-' && last_oper == '/'
-							&& islower(sc.chNext)) {
+				} else if (sc.ch == '-' && last_oper == '/' && islower(sc.chNext)) {
 					sc.Forward();
 					continue;
 				}
@@ -549,35 +552,43 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					// esh: set module type,
 					//		exclude map-key updates, example: #{data:=test}
 					//		exclude record field type, example: handler = none :: atom()
-					module_type = (strcmp(cur, "erlang") == 0) ? ERLANG_MODULE:
-																 OTHER_MODULE;
+					module_type = (strcmp(cur, "erlang") == 0) ? ERLANG_MODULE
+															   : OTHER_MODULE;
 					sc.Forward();
-					sc.ChangeState(stdModules.InList(cur) ? SCE_ERLANG_STD_MODULE:
-															SCE_ERLANG_MODULE);
+					sc.ChangeState(stdModules.InList(cur) ? SCE_ERLANG_STD_MODULE
+														  : SCE_ERLANG_MODULE);
 				} else {
 					if (stdWords.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_STD_WORD);
 						
-					} else if (module_type == ERLANG_MODULE && stdFuncs.InList(cur)) {
-						sc.ChangeState(SCE_ERLANG_STD_FUNC);
-						
+					} else if (module_type == ERLANG_MODULE) {
+						sc.ChangeState(stdFuncs.InList(cur) ? SCE_ERLANG_STD_FUNC
+															: SCE_ERLANG_UNKNOWN);
 					} else if (module_type == OTHER_MODULE && sc.ch == '(') {
 						sc.ChangeState(SCE_ERLANG_FUNCTION);
 						
 					} else if (module_type == NONE_MODULE && sc.ch == '(') {
-						if (stdFuncs.InList(cur) &&
-								!is_func_definition(sc.currentPos + 1, endPos, styler)) {
-							sc.ChangeState(SCE_ERLANG_STD_FUNC);
-						} else {
-							sc.ChangeState(SCE_ERLANG_FUNCTION);
-						}
+						sc.ChangeState(stdFuncs.InList(cur) &&
+										!is_func_definition(sc.currentPos + 1,
+															endPos, styler)
+											? SCE_ERLANG_STD_FUNC
+											: SCE_ERLANG_FUNCTION);
 					} else if (sc.ch == '/') {
 						Sci_PositionU i = sc.currentPos + 1;
 						while (i < endPos && IsASpaceOrTab(styler[i]))
 							i++;
-						if (isdigit(styler[i]))
-							sc.ChangeState(SCE_ERLANG_FUNCTION);
-						
+						if (isdigit(styler[i])) {
+							if (module_type == ERLANG_MODULE) {
+								sc.ChangeState(stdFuncs.InList(cur)
+													? SCE_ERLANG_STD_FUNC
+													: SCE_ERLANG_UNKNOWN);
+							} else if (module_type == NONE_MODULE &&
+										stdFuncs.InList(cur)) {
+								sc.ChangeState(SCE_ERLANG_STD_FUNC);
+							} else {
+								sc.ChangeState(SCE_ERLANG_FUNCTION);
+							}
+						}
 					} else if (stdAtoms.InList(cur)) {
 						sc.ChangeState(SCE_ERLANG_STD_ATOM);
 					}
@@ -782,21 +793,21 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '$') {
 				sc.SetState(SCE_ERLANG_CHARACTER);
 				
-			} else if ((IsSpaceEquivStyle(last_state) ||
+			} else if (sc.ch == '-' &&
+					   (IsSpaceEquivStyle(last_state) ||
 						last_state == SCE_ERLANG_OPERATOR) &&
-					   (last_oper == ' ' || last_oper == '.') &&
-					   sc.ch == '-') {
+					   (last_oper == ' ' || last_oper == '.')) {
 				sc.SetState(SCE_ERLANG_UNKNOWN);
-				while (sc.More() && IsASpaceOrTab(sc.chNext))
-					sc.Forward();
+				SKIP_NEXT_SPACES
+				
 				if (islower(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_PREPROC);
 					sc.Forward();
 				}
 			} else if (sc.ch == '?') {
 				sc.SetState(SCE_ERLANG_UNKNOWN);
-				while (sc.More() && IsASpaceOrTab(sc.chNext))
-					sc.Forward();
+				SKIP_NEXT_SPACES
+				
 				if (sc.chNext == '\'') {
 					sc.ChangeState(SCE_ERLANG_MACRO_QUOTED);
 					sc.Forward();
@@ -806,8 +817,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			} else if (sc.ch == '#') {
 				sc.SetState(SCE_ERLANG_UNKNOWN);
-				while (sc.More() && IsASpaceOrTab(sc.chNext))
-					sc.Forward();
+				SKIP_NEXT_SPACES
+				
 				if (sc.chNext == '\'') {
 					sc.ChangeState(SCE_ERLANG_RECORD_QUOTED);
 					sc.Forward();
@@ -834,13 +845,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				is_at_symb = false;
 				sc.SetState(SCE_ERLANG_ATOM);
 				
-			} else if (isoperator(static_cast<char>(sc.ch))
-						|| sc.ch == '\\') {
+			} else if (isoperator(sc.ch) || sc.ch == '\\') {
 				last_oper = sc.ch;
 				sc.SetState(SCE_ERLANG_OPERATOR);
 				module_type = (sc.ch == ':' && sc.chNext != '=' &&
-							   sc.chNext != ':') ? OTHER_MODULE:
-												   NONE_MODULE;
+							   sc.chNext != ':') ? OTHER_MODULE
+												 : NONE_MODULE;
 			}
 		}
 		if (last_state != sc.state && !IsSpaceEquivStyle(sc.state)) {
