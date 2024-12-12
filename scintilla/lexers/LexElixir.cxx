@@ -327,33 +327,43 @@ static inline char GetClosingChar(char opening_char) {
 		string_state = sc.state;											\
 	}
 
-#define CHECK_ESCAPE_FORMAT_SEQ										\
-	if (sc.ch == '\\') {											\
-		if (escapeSequence) {										\
-			is_char_escape = false;									\
-			sc.SetState(SCE_ELIXIR_ESCAPESEQ);						\
-			escapeSeq.initEscapeState(sc.chNext);					\
-		}															\
-		sc.Forward(); /* Skip any character after the backslash */	\
-		continue;													\
-	} else if (sc.ch == '~' && formatSequence) {					\
-		sc.SetState(SCE_ELIXIR_FORMATSEQ);							\
-		formatSeq.initFormatState();								\
-		continue;
+#define CHECK_INTERPOLATE_STRING											\
+	} else if (sc.ch == '#' && sc.chNext == '{' && canbe_interpolate) {		\
+		sc.SetState(SCE_ELIXIR_STRING_SUBOPER);								\
+		sc.Forward();														\
+		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
+		nesting_count = 1;													\
+		is_at_symb = true; /* otherwise atoms of the form :'tes#{}t@test'
+							  will be incorrectly highlighted */
 
-#define CHECK_CLOSING_STRING										\
-	} else {														\
-		sc.SetState(string_state);									\
-		if ((string_state == SCE_ELIXIR_TRIPLE ||					\
-			 string_state == SCE_ELIXIR_TRIPLEVAL ||				\
-			 string_state == SCE_ELIXIR_LITERALTRIPLE ||			\
-			 string_state == SCE_ELIXIR_LITERALTRIPLEVAL)			\
-			&& sc.Match(GetTripleQuote(closing_char))) {			\
-			sc.Forward(2);											\
-			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);					\
-		} else if (sc.ch == closing_char) {							\
-			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);					\
-		}															\
+#define CHECK_ESCAPE_FORMAT_SEQ												\
+	if (sc.ch == '\\') {													\
+		if (escapeSequence) {												\
+			is_char_escape = false;											\
+			sc.SetState(SCE_ELIXIR_ESCAPESEQ);								\
+			escapeSeq.initEscapeState(sc.chNext);							\
+		}																	\
+		sc.Forward(); /* Skip any character after the backslash */			\
+		continue;															\
+	} else if (sc.ch == '~' && formatSequence) {							\
+		sc.SetState(SCE_ELIXIR_FORMATSEQ);									\
+		formatSeq.initFormatState();										\
+		continue;															\
+	CHECK_INTERPOLATE_STRING
+
+#define CHECK_CLOSING_STRING												\
+	} else {																\
+		sc.SetState(string_state);											\
+		if ((string_state == SCE_ELIXIR_TRIPLE ||							\
+			 string_state == SCE_ELIXIR_TRIPLEVAL ||						\
+			 string_state == SCE_ELIXIR_LITERALTRIPLE ||					\
+			 string_state == SCE_ELIXIR_LITERALTRIPLEVAL)					\
+			&& sc.Match(GetTripleQuote(closing_char))) {					\
+			sc.Forward(2);													\
+			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);							\
+		} else if (sc.ch == closing_char) {									\
+			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);							\
+		}																	\
 	}
 
 #define DEFINE_ASSIGN_TO_STRFIELD											\
@@ -388,9 +398,10 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	Sci_PositionU endPos = startPos + length;
 	
 	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
-	//~ printf("!!!LexElixir: currLine = %li, currChar = '%c', lastChar = '%c', initStyle = %i\n",
+	//~ printf("!!!Lex: currLine = %li, currChar = '%c', lastChar = '%c', "
+				//~ "initStyle = %i, startPos = %li, length = %li\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
-		   //~ styler[endPos - 1], initStyle);
+		   //~ styler[endPos - 2], initStyle, startPos, length);
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
@@ -415,52 +426,59 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	bool maybe_typefunc = false;
 	
 	char cur[100];
-	
 	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
-	int atom_quoted_char = ' ';
 	
 	// esh: added string_state for escape/format sequences highlighting
 	int string_state = -1;
+	int nesting_count = 0;
 	char closing_char = ' ';
-	bool interpolation = false;
+	bool canbe_interpolate = false;
 	bool assign_to_strfield = false;
-	int last_state = SCE_ELIXIR_DEFAULT;
 	
-	if (startPos > 0) {
-		if (IsStringStyle(initStyle) || IsNestedStringStyle(initStyle)) {
-			Sci_PositionU back = startPos;
-			int backStyle;
-			while (--back >= 0) {
-				backStyle = styler.StyleAt(back);
-				if (IsStringStyle(backStyle) || IsNestedStringStyle(backStyle)) {
-					continue;
+	if (IsStringStyle(initStyle) || IsNestedStringStyle(initStyle)) {
+		Sci_Position back = startPos;
+		int backStyle;
+		while (--back >= 0) {
+			backStyle = styler.StyleAt(back);
+			if (back > 0 && (IsStringStyle(backStyle) ||
+							 IsNestedStringStyle(backStyle))) {
+				continue;
+				
+			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER) {
+				while (--back && styler.StyleAt(back) != SCE_ELIXIR_STRING_SUBOPER)
+					;
+				back--; // skip back { in #{}
+				continue;
+				
+			} else {
+				// esh: define string_state, closing_char, canbe_interpolate
+				if (!IsStringStyle(backStyle)) back++;
+				string_state = styler.StyleAt(back);
+				
+				int index = back;
+				if (styler[index] == '~') {
+					canbe_interpolate = strchr("scrwp", styler[++index]);
+					index++;
 				} else {
-					// esh: define string_state, closing_char, interpolation
-					int index = ++back;
-					string_state = styler.StyleAt(index);
-					if (styler[index] == '~') {
-						if (strchr("scrwp", styler[++index])) {
-							interpolation = true;
-						} else {
-							interpolation = false;
-						}
-						index++;
-					}
-					closing_char = GetClosingChar(styler[index]);
-					
-					// esh: define assign_to_strfield
-					DEFINE_ASSIGN_TO_STRFIELD
-					break;
+					canbe_interpolate = true;
 				}
+				closing_char = GetClosingChar(styler[index]);
+				
+				// esh: define assign_to_strfield
+				DEFINE_ASSIGN_TO_STRFIELD
+				break;
 			}
-		} else if (IsSpaceEquivStyle(initStyle)) {
-			// esh: define assign_to_strfield
-			Sci_PositionU back = startPos;
-			DEFINE_ASSIGN_TO_STRFIELD
 		}
-		
-		// esh: define last_state
-		Sci_PositionU back = startPos;
+	} else if (IsSpaceEquivStyle(initStyle)) {
+		// esh: define assign_to_strfield
+		Sci_Position back = startPos;
+		DEFINE_ASSIGN_TO_STRFIELD
+	}
+	
+	int last_state = SCE_ELIXIR_DEFAULT;
+	// esh: define last_state
+	if (startPos > 0) {
+		Sci_Position back = startPos;
 		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
 			;
 		last_state = styler.StyleAt(back);
@@ -470,7 +488,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	bool is_char_escape = false;
 	// esh: define is_char_escape
 	if (initStyle == SCE_ELIXIR_ESCAPESEQ) {
-		Sci_PositionU back = startPos;
+		Sci_Position back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);
@@ -490,6 +508,10 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	}
 	
 	for (; sc.More(); sc.Forward()) {
+		if (sc.state == SCE_ELIXIR_STRING_SUBOPER) {
+			sc.SetState(string_state);
+		}
+		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 			/* COMMENTS ------------------------------------------------------*/
@@ -576,8 +598,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			/* Atoms ---------------------------------------------------------*/
 			case SCE_ELIXIR_ATOM : {
 				if (sc.ch == '@' && !is_at_symb) {
-					is_at_symb = true;
 					sc.ChangeState(SCE_ELIXIR_NODE);
+					is_at_symb = true;
 					continue;
 				} else if (IsAWordChar(sc.ch)) {
 					continue;
@@ -600,12 +622,14 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			case SCE_ELIXIR_ATOM_QUOTED : {
 				if (sc.ch == '@' && !is_at_symb) {
-					is_at_symb = true;
 					sc.ChangeState(SCE_ELIXIR_NODE_QUOTED);
+					string_state = sc.state;
+					is_at_symb = true;
 				} else if (sc.ch == '\\') {
 					sc.Forward(); // Skip any character after the backslash
 					continue;
-				} else if (sc.ch == atom_quoted_char) {
+				CHECK_INTERPOLATE_STRING
+				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
 				}
 			} break;
@@ -625,12 +649,11 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_NODE_QUOTED : {
-				if (sc.ch == '@') {
-					sc.ChangeState(SCE_ELIXIR_ATOM_QUOTED);
-				} else if (sc.ch == '\\') {
+				if (sc.ch == '\\') {
 					sc.Forward(); // Skip any character after the backslash
 					continue;
-				} else if (sc.ch == atom_quoted_char) {
+				CHECK_INTERPOLATE_STRING
+				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
 				}
 			} break;
@@ -703,6 +726,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.SetState(SCE_ELIXIR_FORMATSEQ);
 						formatSeq.initFormatState();
 						continue;
+					CHECK_INTERPOLATE_STRING
 					CHECK_CLOSING_STRING
 				}
 			} break;
@@ -725,6 +749,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_ELIXIR_FORMATSEQ);
 					formatSeq.initFormatState();
 					continue;
+				CHECK_INTERPOLATE_STRING
 				CHECK_CLOSING_STRING
 			} break;
 			
@@ -877,9 +902,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 												   : SCE_ELIXIR_STRING);
 				}
 				closing_char = '\"';
-				interpolation = true;
-				assign_to_strfield = false;
 				string_state = sc.state;
+				canbe_interpolate = true;
+				assign_to_strfield = false;
 				
 			} else if (sc.ch == '\'') {
 				if (sc.Match(R"(''')")) {
@@ -891,17 +916,17 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 												   : SCE_ELIXIR_CHARLIST);
 				}
 				closing_char = '\'';
-				interpolation = true;
-				assign_to_strfield = false;
 				string_state = sc.state;
+				canbe_interpolate = true;
+				assign_to_strfield = false;
 				
 			} else if (sc.ch == '~') {
 				if (strchr("scrwp", sc.chNext)) {
 					SET_LITERAL_STATE
-					interpolation = true;
+					canbe_interpolate = true;
 				} else if (strchr("SCRWNUDT", sc.chNext)) {
 					SET_LITERAL_STATE
-					interpolation = false;
+					canbe_interpolate = false;
 				} else {
 					sc.SetState(SCE_ELIXIR_UNKNOWN);
 				}
@@ -920,15 +945,17 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				}
 			} else if (sc.ch == ':' && IsAWordStart(sc.chNext)) {
-				is_at_symb = false;
 				sc.SetState(SCE_ELIXIR_ATOM);
 				sc.Forward();
+				is_at_symb = false;
 				
 			} else if (sc.ch == ':' && (sc.chNext == '\"' || sc.chNext == '\'')) {
-				is_at_symb = false;
-				atom_quoted_char = sc.chNext;
 				sc.SetState(SCE_ELIXIR_ATOM_QUOTED);
 				sc.Forward();
+				is_at_symb = false;
+				closing_char = sc.ch;
+				string_state = sc.state;
+				canbe_interpolate = true;
 				
 			} else if (isdigit(sc.ch)) {
 				number_state = NUMERAL_START;
@@ -966,6 +993,13 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				} else if (sc.ch == '.') {
 					ident_state = DOTOPER_STATE;
+				} else if (sc.ch == '{' && nesting_count > 0) {
+					nesting_count++;
+				} else if (sc.ch == '}' && nesting_count > 0) {
+					nesting_count--;
+					if (nesting_count == 0) {
+						sc.ChangeState(SCE_ELIXIR_STRING_SUBOPER);
+					}
 				}
 			}
 		}
