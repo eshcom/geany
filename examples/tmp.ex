@@ -146,7 +146,7 @@ defmodule Df.UseCases.UserAction do
       "field7" => "string-field stringval",
       :descr => "Описание какого-то проекта",
       "field7" =>	"string-field stringval" <>
-                     "tes\n\nt ~a~s~123a",
+                    "tes\n\ntt#{1 + 2}~a~s~123a",
       "field7" =>"string-field stringval"
       "field7" =>"string-field stringval"
     )
@@ -417,6 +417,13 @@ defmodule MyRouter do
     s = '''
         \n\nt~e~s~tt\n\n
     '''
+    v = :test@test
+    v = :'test@t#{1 + 2}est'
+    v = :"test@t#{1 + 2}est"
+    v = :'tes#{1 + 2}t@test'
+    v = :"tes#{1 + 2}t@test"
+    v = :'tes#{1 + 2}ttest'
+    v = :"tes#{1 + 2}ttest"
 
     Component.Server.set_config(pid, %{
       "timeout" => "100",
@@ -425,13 +432,32 @@ defmodule MyRouter do
       "url1" => ~s(https://www.google.com/),
       "url1" => ~s("https://www.google.com/"),
       "url2" => ~s'''
-                    https://www.google.com/
+                  \nhttps://www.go#{1 + 2}ogle.com/\n
                   '''),
       "url2" => ~s"""
-                    https://www.google.com/
+                    https://www.go#{1 + 2}ogle.com/
                   """),
       "method" => "GET"
-    })
+    }
+
+    Enum.map_join("\n", fn %ErrorInfo{} = info ->
+      "#{String.pad_trailing(info.regex.source, 8)} | #{String.pad_trailing("#{info.level}", 7)} | #{String.pad_trailing("#{info.file}:#{info.line}", 100)} | #{info.msg}"
+    end)
+
+    System.get_env("DATABASE_URL") ||
+      "bpdf_main_test_#{System.get_env("MIX_TEST_PARTITION", "all")}"
+
+    if config_env() == :prod do
+      config :my_app, :debug, false
+    end
+
+    if config_target() == :host do
+      config :my_app, :debug, false
+    end
+
+    if File.exists?("config/#{config_env()}.local.exs") do
+      import_config "#{config_env()}.local.exs"
+    end
   end
 
   defp releases_query(preload) do
@@ -440,5 +466,32 @@ defmodule MyRouter do
       where: is_nil(t.deleted_at),
       preload: ^preload
     )
+
+    Enum.map_join(@bps || [], ",", fn bp ->
+        ~s("/api/ide/#{bp.project.project_code}/#{bp.project.ref_type}/#{bp.project.ref_name}/bps/call?path=#{bp.path}": {)
+            ~s("post": #{EEx.eval_string(@swagger_call_request_template, assigns: [bp: bp, operation_id: "call"])})
+        "}"
+        bp.aliases |> Enum.map_join("", fn alias ->
+             alias_uri = URI.encode(alias)
+            ~s(,"/api/ide/#{bp.project.project_code}/#{bp.project.ref_type}/#{bp.project.ref_name}/bps/call/#{alias_uri}": {)
+                ~s("post": #{EEx.eval_string(@swagger_call_request_template, assigns: [bp: bp, operation_id: "call_#{alias}"])})
+            "}"
+        end)
+    end)
+
+    if !is_nil(@bp.entrypoint.schema_name),
+      do: ~s("$ref": "#/components/schemas/#{@bp.entrypoint.schema_name}"),
+      else: ~s("type": "object")
+
+    "#{last_name}#{first_letter_if_exists(first_name)}#{first_letter_if_exists(middle_name)}"
+
+    State.broadcast(state, "notification", %{
+      "type" => "error",
+      "message" =>
+        "Ошибка #{inspect(error.type)}.\n\n#{error.message}\n#{trace}"
+    })
+
+    Logger.info("Получено сообщение ide:hint ##{payload["id"]}")
+    Logger.warning("Expression debug: [#{Enum.join(tokens, ",\n")}]} = #{inspect(values)}")
   end
 end
