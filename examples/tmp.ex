@@ -15,9 +15,10 @@ defmodule Df.UseCases.UserAction do
   require Logger
   Feature.__using__(option: :value)
 
-  @doc """
-  В данном колбэке реализуется сама логика действия пользователя.
-  `dto` - структура модуля, в котором определяется колбэк.
+  "field7" => "string-field stringval"
+  @doc """     string-field stringval
+  В данном #{:atom_unquoted} колбэке реализуется логика действия пользователя.
+  `dto` - структура модуля, #{:"atom_quoted"} в котором определяется колбэк.
   """
   @callback call(dto :: struct()) ::
               :ok

@@ -200,6 +200,12 @@ static inline bool IsSpaceEquivStyle(int style) {
 			style == SCE_ELIXIR_COMMENT);
 }
 
+static inline bool IsStdWordOrAttrStyle(int style) {
+	return (style == SCE_ELIXIR_STD_WORD ||
+			style == SCE_ELIXIR_ADD_WORD ||
+			style == SCE_ELIXIR_STD_MODULE_ATTR);
+}
+
 static inline bool IsStringValStyle(int style) {
 	return (style == SCE_ELIXIR_TRIPLEVAL ||
 			style == SCE_ELIXIR_STRINGVAL ||
@@ -263,6 +269,9 @@ static inline char GetClosingChar(char opening_char) {
 	else
 		return ' ';
 }
+
+#define L_LITERAL_PREFIX "scrwp"
+#define U_LITERAL_PREFIX "SCRWNUDT"
 
 #define MOVE_INDEX_TO_NONSPACE								\
 	Sci_PositionU i = sc.currentPos + 1;					\
@@ -423,7 +432,6 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	ident_state_t ident_state = NONE_STATE;
 	module_type_t module_type = NONE_MODULE;
-	bool maybe_typefunc = false;
 	
 	char cur[100];
 	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
@@ -457,7 +465,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				
 				int index = back;
 				if (styler[index] == '~') {
-					canbe_interpolate = strchr("scrwp", styler[++index]);
+					canbe_interpolate = strchr(L_LITERAL_PREFIX, styler[++index]);
 					index++;
 				} else {
 					canbe_interpolate = true;
@@ -482,6 +490,31 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
 			;
 		last_state = styler.StyleAt(back);
+	}
+	
+	bool maybe_typefunc = false;
+	// esh: define maybe_typefunc
+	if (!IsStdWordOrAttrStyle(initStyle)) {
+		Sci_Position back = startPos;
+		int backStyle;
+		while (--back >= 0) {
+			backStyle = styler.StyleAt(back);
+			if (!IsStdWordOrAttrStyle(backStyle)) {
+				continue;
+				
+			} else if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
+				while (back > 0 && styler[back - 1] != '@')
+					back--;
+				
+				// check spec/type/callback/macrocallback
+				maybe_typefunc = (back + 3 < endPos &&
+								  strchr("stcm", styler[back]) &&
+								  strchr("pya", styler[back + 1]) &&
+								  strchr("eplc", styler[back + 2]) &&
+								  strchr("celr", styler[back + 3]));
+			}
+			break;
+		}
 	}
 	
 	// esh: for escape sequences highlighting for SCE_ELIXIR_CHARACTER
@@ -921,10 +954,10 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				assign_to_strfield = false;
 				
 			} else if (sc.ch == '~') {
-				if (strchr("scrwp", sc.chNext)) {
+				if (strchr(L_LITERAL_PREFIX, sc.chNext)) {
 					SET_LITERAL_STATE
 					canbe_interpolate = true;
-				} else if (strchr("SCRWNUDT", sc.chNext)) {
+				} else if (strchr(U_LITERAL_PREFIX, sc.chNext)) {
 					SET_LITERAL_STATE
 					canbe_interpolate = false;
 				} else {
