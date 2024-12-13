@@ -675,7 +675,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		stringState = initStyle;
 		
 	} else if (IsPyNestedStringState(initStyle)) {
-		Sci_PositionU back = startPos;
+		Sci_Position back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);

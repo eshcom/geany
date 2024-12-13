@@ -359,7 +359,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	bool is_char_escape = false;
 	// esh: define is_char_escape
 	if (initStyle == SCE_ERLANG_ESCAPESEQ) {
-		Sci_PositionU back = startPos;
+		Sci_Position back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = styler.StyleAt(back);
@@ -378,7 +378,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 	} else if (startPos > 0) {
 		// esh: define last_state, last_oper
-		Sci_PositionU back = startPos;
+		Sci_Position back = startPos;
 		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
 			;
 		last_state = styler.StyleAt(back);

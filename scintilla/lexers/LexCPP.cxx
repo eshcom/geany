@@ -954,7 +954,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		stringState = maskInitStyle;
 		
 	} else if (IsNestedStringStyle(maskInitStyle)) {
-		Sci_PositionU back = startPos;
+		Sci_Position back = startPos;
 		int backStyle;
 		while (--back) {
 			backStyle = MaskActive(styler.StyleAt(back));
