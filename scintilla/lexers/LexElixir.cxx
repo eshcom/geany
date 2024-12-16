@@ -200,6 +200,12 @@ static inline bool IsSpaceEquivStyle(int style) {
 			style == SCE_ELIXIR_COMMENT);
 }
 
+static inline bool IsOperatorStyle(int style) {
+	return (style == SCE_ELIXIR_OPERATOR ||
+			style == SCE_ELIXIR_MAP_OPER ||
+			style == SCE_ELIXIR_CAPTURE_OPER);
+}
+
 static inline bool IsStdWordOrAttrStyle(int style) {
 	return (style == SCE_ELIXIR_STD_WORD ||
 			style == SCE_ELIXIR_ADD_WORD ||
@@ -332,7 +338,6 @@ static inline char GetClosingChar(char opening_char) {
 											  : SCE_ELIXIR_LITERALTRIPLE);	\
 			sc.Forward(2);													\
 		}																	\
-		assign_to_strfield = false;											\
 		string_state = sc.state;											\
 	}
 
@@ -547,14 +552,14 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
-			/* COMMENTS ------------------------------------------------------*/
+			/* COMMENTS ----------------------------------------------------- */
 			case SCE_ELIXIR_COMMENT : {
 				if (sc.atLineEnd)
 					sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Numerics ------------------------------------------------------*/
+			/* Numerics ----------------------------------------------------- */
 			case SCE_ELIXIR_NUMBER : {
 				switch (number_state) {
 					
@@ -628,7 +633,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			/* -------------------------------------------------------------- */
 			
-			/* Atoms ---------------------------------------------------------*/
+			/* Atoms -------------------------------------------------------- */
 			case SCE_ELIXIR_ATOM : {
 				if (sc.ch == '@' && !is_at_symb) {
 					sc.ChangeState(SCE_ELIXIR_NODE);
@@ -918,6 +923,12 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ELIXIR_CAPTURE_OPER : {
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
+			
+			case SCE_ELIXIR_UNKNOWN : {
+				if (sc.atLineStart) {
+					sc.SetState(SCE_ELIXIR_DEFAULT);
+				}
+			} break;
 		}
 		
 		// Determine if a new state should be entered.
@@ -937,7 +948,6 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				closing_char = '\"';
 				string_state = sc.state;
 				canbe_interpolate = true;
-				assign_to_strfield = false;
 				
 			} else if (sc.ch == '\'') {
 				if (sc.Match(R"(''')")) {
@@ -951,7 +961,6 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				closing_char = '\'';
 				string_state = sc.state;
 				canbe_interpolate = true;
-				assign_to_strfield = false;
 				
 			} else if (sc.ch == '~') {
 				if (strchr(L_LITERAL_PREFIX, sc.chNext)) {
@@ -1034,6 +1043,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ELIXIR_STRING_SUBOPER);
 					}
 				}
+			}
+			if (!IsOperatorStyle(sc.state) && sc.state != SCE_ELIXIR_DEFAULT) {
+				assign_to_strfield = false;
 			}
 		}
 		if (last_state != sc.state && !IsSpaceEquivStyle(sc.state)) {

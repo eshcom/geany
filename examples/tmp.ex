@@ -438,7 +438,44 @@ defmodule MyRouter do
       "url2" => ~s"""
                     https://www.go#{1 + 2}ogle.com/
                   """),
+      "field" => 12345
       "method" => "GET"
+      "field" => :atom
+      "method" => "GET"
+      "field" => :'atom'
+      "method" => "GET"
+      "field" => :"atom"
+      "method" => "GET"
+      "field" => ?\n
+      "method" => "GET"
+      "field" => %
+      "method" => "GET"
+      "field" => %"value"
+      "method" => "GET"
+      "field" => "#{12345}"
+      "method" => "GET"
+      "field" => &
+      "method" => "GET"
+      
+      "method"=>"#{12345}"
+      "field"=>12345
+      "method"=>"GET"
+      "field"=>:atom
+      "method"=>"GET"
+      "field"=>:'atom'
+      "method"=>"GET"
+      "field"=>:"atom"
+      "method"=>"GET"
+      "field"=>?\n
+      "method"=>"GET"
+      "field"=>%
+      "method"=>"GET"
+      "field"=>%"value"
+      "method"=>"GET"
+      "field"=>"#{12345}"
+      "method"=>"GET"
+      "field"=>&
+      "method"=>"GET"
     }
 
     Enum.map_join("\n", fn %ErrorInfo{} = info ->
