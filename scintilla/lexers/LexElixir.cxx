@@ -153,6 +153,35 @@ struct ErlFormatSequence {
 	}
 };
 
+struct AtomPunctSequence {
+	int charsLeft;
+	char validChar;
+	AtomPunctSequence() {
+		charsLeft = 0;
+		validChar = ' ';
+	}
+	void initAtomPunctState(int nextChar) {
+		if (strchr("&-+=.", nextChar)) {
+			charsLeft = 3;
+			validChar = nextChar;
+		} else if (nextChar == '<') {
+			charsLeft = 2;
+			validChar = '>';
+		} else if (nextChar == '{') {
+			charsLeft = 2;
+			validChar = '}';
+		} else if (nextChar == '*') {
+			charsLeft = 2;
+			validChar = '*';
+		} else {
+			charsLeft = 1;
+		}
+	}
+	bool atAtomPunctEnd(int currChar) const {
+		return (charsLeft <= 0) || (currChar != validChar);
+	}
+};
+
 static bool is_radix(int radix, int ch) {
 	int digit;
 	
@@ -400,6 +429,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	// esh: formatsequence highlighting
 	const bool formatSequence = styler.GetPropertyInt("lexer.elixir.format.sequence", 0) != 0;
 	ErlFormatSequence formatSeq = ErlFormatSequence();
+	
+	AtomPunctSequence atomPunctSeq = AtomPunctSequence();
 	
 	Sci_PositionU endPos = startPos + length;
 	
@@ -918,6 +949,14 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
 			
+			case SCE_ELIXIR_ATOM_PUNCT : {
+				atomPunctSeq.charsLeft--;
+				if (!atomPunctSeq.atAtomPunctEnd(sc.ch)) {
+					continue; // esh: continue of atom-punct chars
+				}
+				sc.SetState(SCE_ELIXIR_DEFAULT);
+			} break;
+			
 			case SCE_ELIXIR_UNKNOWN : {
 				if (sc.atLineStart) {
 					sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -992,6 +1031,11 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				closing_char = sc.ch;
 				string_state = sc.state;
 				canbe_interpolate = true;
+				
+			} else if (sc.ch == ':' && strchr("!@%^/<>{}*&-+=.", sc.chNext)) {
+				atomPunctSeq.initAtomPunctState(sc.chNext);
+				sc.SetState(SCE_ELIXIR_ATOM_PUNCT);
+				sc.Forward();
 				
 			} else if (isdigit(sc.ch)) {
 				number_state = NUMERAL_START;

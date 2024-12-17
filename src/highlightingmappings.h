@@ -634,6 +634,7 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_ESCAPESEQ,			"escapeseq",		FALSE },
 	{ SCE_ELIXIR_FORMATSEQ,			"formatseq",		FALSE },
 	{ SCE_ELIXIR_STRING_SUBOPER,	"string_suboper",	FALSE },
+	{ SCE_ELIXIR_ATOM_PUNCT,		"atom_punct",		FALSE },
 	{ SCE_ELIXIR_ATOM_QUOTED,		"atom_quoted",		FALSE },
 	{ SCE_ELIXIR_NODE_QUOTED,		"node_quoted",		FALSE },
 	{ SCE_ELIXIR_COMMENT,			"comment",			FALSE }
