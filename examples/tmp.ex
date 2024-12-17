@@ -532,4 +532,35 @@ defmodule MyRouter do
     Logger.info("Получено сообщение ide:hint ##{payload["id"]}")
     Logger.warning("Expression debug: [#{Enum.join(tokens, ",\n")}]} = #{inspect(values)}")
   end
+  
+  defp temp123() do
+    # допустимые атомы:
+    :_
+    :!
+    :@
+    :%
+    :^
+    :/
+    :<
+    :>
+    :<>
+    :{}
+    :*
+    :**
+    :&
+    :&&
+    :&&&
+    :-
+    :--
+    :---
+    :+
+    :++
+    :+++
+    :=
+    :==
+    :===
+    :.
+    :..
+    :...
+  end
 end

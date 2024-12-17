@@ -43,6 +43,7 @@ character=character
 escapeseq=string_1
 formatseq=string_1
 string_suboper=string_1
+atom_punct=default
 atom_quoted=string_1
 node_quoted=string_1
 comment=comment
@@ -73,7 +74,7 @@ lib_macros=accepts action_fallback action_name add add_error add_if_not_exists a
 # Exclude lib macros (these names are often used as var names)
 exclude_lib_macros=conn dynamic error path preload resp
 # Exclude lib funcs (these names are often used as user-func names)
-exclude_lib_funcs=add_error delete eval exists? get new parse post put update
+exclude_lib_funcs=add_error create delete eval exists? get new parse post put transaction update
 
 [lexer_properties]
 lexer.elixir.escape.sequence=0
