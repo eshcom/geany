@@ -650,7 +650,9 @@ static const HLKeyword highlighting_keywords_ELIXIR[] =
 	{ 7,  "std_excepts",		FALSE },
 	{ 8,  "std_macros",			FALSE },
 	{ 9,  "type_funcs",			FALSE },
-	{ 10, "lib_macros",			FALSE }
+	{ 10, "lib_macros",			FALSE },
+	{ 11, "exclude_lib_macros",	FALSE },
+	{ 12, "exclude_lib_funcs",	FALSE }
 };
 #define highlighting_properties_ELIXIR	EMPTY_PROPERTIES
 
