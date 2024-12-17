@@ -293,35 +293,27 @@ static inline char GetClosingChar(char opening_char) {
 		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)				\
 		: sc.ChangeState(SCE_ELIXIR_FUNCTION);
 
-#define CHANGE_STATE_BY_FUNCLIST							\
-	if (stdFuncs.InList(cur)) {								\
-		sc.ChangeState(SCE_ELIXIR_STD_FUNC);				\
-	} else if (strcmp(cur, "get") != 0 &&					\
-			   strcmp(cur, "put") != 0 &&					\
-			   strcmp(cur, "post") != 0 &&					\
-			   strcmp(cur, "update") != 0 &&				\
-			   strcmp(cur, "delete") != 0 &&				\
-			   libMacros.InList(cur)) {						\
-		sc.ChangeState(SCE_ELIXIR_LIB_FUNC);				\
-	} else {												\
-		sc.ChangeState(SCE_ELIXIR_FUNCTION);				\
+#define CHANGE_STATE_BY_FUNCLIST										\
+	if (stdFuncs.InList(cur)) {											\
+		sc.ChangeState(SCE_ELIXIR_STD_FUNC);							\
+	} else if (!exclLibFuncs.InList(cur) && libMacros.InList(cur)) {	\
+		sc.ChangeState(SCE_ELIXIR_LIB_FUNC);							\
+	} else {															\
+		sc.ChangeState(SCE_ELIXIR_FUNCTION);							\
 	}
 
-#define CHECK_LIB_MACROS											\
-	if ((!IsElixirOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||	\
-		 (sc.ch == ':' && sc.chNext != ':'))						\
-		&& libMacros.InList(cur)) {									\
-		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||		\
-			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||			\
-			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||			\
-			(strcmp(cur, "field") == 0 && sc.ch != ':') ||			\
-			(strcmp(cur, "preload") == 0) ||						\
-			(strcmp(cur, "dynamic") == 0) ||						\
-			(strcmp(cur, "conn") == 0)) {							\
-			/* do not change the state */							\
-		} else {													\
-			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);					\
-		}															\
+#define CHECK_LIB_MACROS												\
+	if ((!IsElixirOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||		\
+		 (sc.ch == ':' && sc.chNext != ':'))							\
+		&& !exclLibMacros.InList(cur) && libMacros.InList(cur)) {		\
+		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||			\
+			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||				\
+			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||				\
+			(strcmp(cur, "field") == 0 && sc.ch != ':')) {				\
+			/* do not change the state */								\
+		} else {														\
+			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);						\
+		}																\
 	}
 
 #define SET_LITERAL_STATE													\
@@ -430,6 +422,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &stdMacros = *keywordlists[8];
 	WordList &typeFuncs = *keywordlists[9];
 	WordList &libMacros = *keywordlists[10];
+	WordList &exclLibMacros = *keywordlists[11];
+	WordList &exclLibFuncs = *keywordlists[12];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
