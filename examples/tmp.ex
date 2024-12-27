@@ -563,4 +563,21 @@ defmodule MyRouter do
     :..
     :...
   end
+  
+  defmodule Test1 do
+    import Test0
+    defp import(param),
+      do: Test0.call(param)
+    
+    def test_import(),
+      do: import(:ok)
+  end
+
+  defmodule Test2 do
+    alias __MODULE__
+    defp test2(p) do
+      alias = "test2"
+      alias
+    end
+  end
 end

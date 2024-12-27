@@ -774,7 +774,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						}
 					} else if (stdWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
-					} else if (addWords.InList(cur)) {
+					} else if ((isupper(sc.ch) || sc.Match("__")) &&
+							   addWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_ADD_WORD);
 					} else if (stdAtoms.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_ATOM);
@@ -784,7 +785,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(strcmp(cur, "t") == 0 ? SCE_ELIXIR_FUNCTION
 															 : SCE_ELIXIR_TYPE_FUNC);
 					} else if (maybe_typefunc && sc.ch != ':' &&
-								typeFuncs.InList(cur)) {
+							   typeFuncs.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_TYPE_FUNC);
 					} else if (sc.ch == '(' || ident_state == PIPEOPER_STATE) {
 						CHANGE_STATE_BY_FUNCLIST
