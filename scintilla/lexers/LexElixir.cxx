@@ -706,12 +706,12 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
 				
-				if (stdModules.InList(cur)) {
+				if (stdExcepts.InList(cur)) {
+					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
+				} else if (stdModules.InList(cur)) {
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE);
 					module_type = (strcmp(cur, "Kernel") == 0) ? KERNEL_MODULE
 															   : OTHER_MODULE;
-				} else if (stdExcepts.InList(cur)) {
-					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
