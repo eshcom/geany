@@ -1070,7 +1070,9 @@ static const char * const elixirWordListDesc[] = {
 	"Standard exceptions",
 	"Standard macros",
 	"Built-in type functions",
-	"Lib macros (Bureaucrat/Ecto/ExUnit/Phoenix/Plug/...)",
+	"Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
+	"Exclude lib macros (these names are often used as var names)",
+	"Exclude lib funcs (these names are often used as user-func names)",
 	0
 };
 
