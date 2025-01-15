@@ -237,7 +237,7 @@ static inline char GetClosingChar(char opening_char) {
 	}
 
 #define CHECK_INTERPOLATE_STRING											\
-	} else if (canbe_interpolate && sc.Match("#{")) {						\
+	} else if (canbe_interpolate && sc.Match('#', '{')) {					\
 		sc.SetState(SCE_ELIXIR_STRING_SUBOPER);								\
 		sc.Forward();														\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
@@ -774,7 +774,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						}
 					} else if (stdWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
-					} else if ((isupper(sc.ch) || sc.Match("__")) &&
+					} else if ((isupper(sc.ch) || sc.Match('_', '_')) &&
 							   addWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_ADD_WORD);
 					} else if (stdAtoms.InList(cur)) {
@@ -932,18 +932,18 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == '&') {
 					sc.chNext == '&' ? sc.Forward()
 									 : sc.ChangeState(SCE_ELIXIR_CAPTURE_OPER);
-				} else if (sc.Match("=>")) {
+				} else if (sc.Match('=', '>')) {
 					assign_to_strfield = (last_state == SCE_ELIXIR_STRING);
 					sc.Forward();
-				} else if (sc.Match("<>")) {
+				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match("=~")) {
+				} else if (sc.Match('=', '~')) {
 					sc.Forward();
-				} else if (sc.Match("|>")) {
+				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
 					sc.Forward();
-				} else if (sc.Match("::")) {
+				} else if (sc.Match(':', ':')) {
 					ident_state = TYPEOPER_STATE;
 					sc.Forward();
 				} else if (sc.ch == '.') {
