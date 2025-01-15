@@ -1693,8 +1693,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_ELIXIR_TRIPLEVAL ||
 					style == SCE_ELIXIR_STRING ||
 					style == SCE_ELIXIR_STRINGVAL ||
-					style == SCE_ELIXIR_CHARLIST ||
-					style == SCE_ELIXIR_CHARLISTVAL ||
+					style == SCE_ELIXIR_CHARSTR ||
+					style == SCE_ELIXIR_CHARSTRVAL ||
 					style == SCE_ELIXIR_LITERAL ||
 					style == SCE_ELIXIR_LITERALVAL ||
 					style == SCE_ELIXIR_LITERALTRIPLE ||

@@ -624,8 +624,8 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_TRIPLEVAL,			"tripleval",		FALSE },	// "field" => """, '''
 	{ SCE_ELIXIR_STRING,			"string",			FALSE },	// "
 	{ SCE_ELIXIR_STRINGVAL,			"stringval",		FALSE },	// "field" => "
-	{ SCE_ELIXIR_CHARLIST,			"charlist",			FALSE },	// '
-	{ SCE_ELIXIR_CHARLISTVAL,		"charlistval",		FALSE },	// "field" => '
+	{ SCE_ELIXIR_CHARSTR,			"charstr",			FALSE },	// '
+	{ SCE_ELIXIR_CHARSTRVAL,		"charstrval",		FALSE },	// "field" => '
 	{ SCE_ELIXIR_LITERAL,			"literal",			FALSE },	// ~c", ~c', ...
 	{ SCE_ELIXIR_LITERALVAL,		"literalval",		FALSE },	// "field" => ~c", ~c', ...
 	{ SCE_ELIXIR_LITERALTRIPLE,		"literaltriple",	FALSE },	// ~c""", ~c''', ...

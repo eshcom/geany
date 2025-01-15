@@ -118,7 +118,7 @@ static inline bool IsStdWordOrAttrStyle(int style) {
 static inline bool IsStringValStyle(int style) {
 	return (style == SCE_ELIXIR_TRIPLEVAL ||
 			style == SCE_ELIXIR_STRINGVAL ||
-			style == SCE_ELIXIR_CHARLISTVAL ||
+			style == SCE_ELIXIR_CHARSTRVAL ||
 			style == SCE_ELIXIR_LITERALVAL ||
 			style == SCE_ELIXIR_LITERALTRIPLEVAL);
 }
@@ -127,7 +127,7 @@ static inline bool IsStringStyle(int style) {
 	return (IsStringValStyle(style) ||
 			style == SCE_ELIXIR_TRIPLE ||
 			style == SCE_ELIXIR_STRING ||
-			style == SCE_ELIXIR_CHARLIST ||
+			style == SCE_ELIXIR_CHARSTR ||
 			style == SCE_ELIXIR_LITERAL ||
 			style == SCE_ELIXIR_LITERALTRIPLE);
 }
@@ -609,8 +609,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			case SCE_ELIXIR_STRING :
 			case SCE_ELIXIR_STRINGVAL :
-			case SCE_ELIXIR_CHARLIST :
-			case SCE_ELIXIR_CHARLISTVAL :
+			case SCE_ELIXIR_CHARSTR :
+			case SCE_ELIXIR_CHARSTRVAL :
 			case SCE_ELIXIR_LITERAL :
 			case SCE_ELIXIR_LITERALVAL : {
 				CHECK_ESCAPE_FORMAT_SEQ
@@ -863,8 +863,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 												   : SCE_ELIXIR_TRIPLE);
 					sc.Forward(2);
 				} else {
-					sc.SetState(assign_to_strfield ? SCE_ELIXIR_CHARLISTVAL
-												   : SCE_ELIXIR_CHARLIST);
+					sc.SetState(assign_to_strfield ? SCE_ELIXIR_CHARSTRVAL
+												   : SCE_ELIXIR_CHARSTR);
 				}
 				closing_char = '\'';
 				string_state = sc.state;
