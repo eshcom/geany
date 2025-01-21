@@ -1504,16 +1504,16 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 		
 		case SCLEX_PYTHON:
 			return (style == SCE_P_STRING ||
-					style == SCE_P_TRIPLE ||
-					style == SCE_P_TRIPLEDOUBLE ||
-					style == SCE_P_CHARACTER ||
-					style == SCE_P_FSTRING ||
-					style == SCE_P_FCHARACTER ||
-					style == SCE_P_FTRIPLE ||
-					style == SCE_P_FTRIPLEDOUBLE ||
+					style == SCE_P_STRINGTRIPLE ||
+					style == SCE_P_CHARSTR ||
+					style == SCE_P_CHARSTRTRIPLE ||
 					style == SCE_P_STRINGEOL ||
-					style == SCE_P_ESCAPESEQUENCE ||
-					style == SCE_P_FORMATSEQUENCE ||
+					style == SCE_P_ESCAPESEQ ||
+					style == SCE_P_FORMATSEQ ||
+					style == SCE_P_FSTRING ||
+					style == SCE_P_FSTRINGTRIPLE ||
+					style == SCE_P_FCHARSTR ||
+					style == SCE_P_FCHARSTRTRIPLE ||
 					style == SCE_P_FSTRING_SUBOPER ||
 					style == SCE_P_FSTRING_OPTION ||
 					style == SCE_P_STRING_CONTINUED);

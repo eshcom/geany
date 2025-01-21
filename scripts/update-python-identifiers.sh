@@ -3,7 +3,7 @@
 # Author:  Colomban Wendling <colomban@geany.org>
 # License: GPL v2 or later
 #
-# Updates the `identifiers` entry in data/filetypes.python.
+# Updates the `std_words` and `std_idents` entries in data/filetypes.python.
 # Requires both Python 2 and 3.
 
 set -e
@@ -29,10 +29,10 @@ print(" ".join(sorted([i for i in items if i not in exclude])))
 keywords=$(py_2_and_3 -c 'from keyword import kwlist; print("\n".join(kwlist))')
 builtins=$(py_2_and_3 -c 'print("\n".join(dir(__builtins__)))')
 
-primary=$(echo "$keywords" | sort_filter)
-# builtins, but excluding keywords that are already listed in primary=
-identifiers=$(echo "$builtins" | sort_filter $primary)
+std_words=$(echo "$keywords" | sort_filter)
+# builtins, but excluding keywords that are already listed in std_words=
+std_idents=$(echo "$builtins" | sort_filter $std_words)
 
-sed -e "s/^primary=.*$/primary=$primary/" \
-    -e "s/^identifiers=.*$/identifiers=$identifiers/" \
+sed -e "s/^std_words=.*$/std_words=$std_words/" \
+    -e "s/^std_idents=.*$/std_idents=$std_idents/" \
     -i "$file"

@@ -93,32 +93,32 @@ bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
 }
 
 bool IsPyNestedStringState(int st) {
-	return (st == SCE_P_ESCAPESEQUENCE ||
-			st == SCE_P_FORMATSEQUENCE ||
+	return (st == SCE_P_ESCAPESEQ ||
+			st == SCE_P_FORMATSEQ ||
 			st == SCE_P_STRINGEOL ||
 			st == SCE_P_STRING_CONTINUED);
 }
 
 int GetSaveStringState(int st, int stringState) {
-	return (st == SCE_P_ESCAPESEQUENCE ||
-			st == SCE_P_FORMATSEQUENCE ||
+	return (st == SCE_P_ESCAPESEQ ||
+			st == SCE_P_FORMATSEQ ||
 			st == SCE_P_STRING_CONTINUED) ? stringState : st;
 }
 
 bool IsPyFStringState(int st, int stringState) {
 	int saveSt = GetSaveStringState(st, stringState);
-	return ((saveSt == SCE_P_FCHARACTER) || (saveSt == SCE_P_FSTRING) ||
-			(saveSt == SCE_P_FTRIPLE) || (saveSt == SCE_P_FTRIPLEDOUBLE));
+	return ((saveSt == SCE_P_FCHARSTR) || (saveSt == SCE_P_FSTRING) ||
+			(saveSt == SCE_P_FCHARSTRTRIPLE) || (saveSt == SCE_P_FSTRINGTRIPLE));
 }
 
 bool IsPySingleQuoteStringState(int st) {
-	return ((st == SCE_P_CHARACTER) || (st == SCE_P_STRING) ||
-			(st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING));
+	return ((st == SCE_P_CHARSTR) || (st == SCE_P_STRING) ||
+			(st == SCE_P_FCHARSTR) || (st == SCE_P_FSTRING));
 }
 
 bool IsPyTripleQuoteStringState(int st) {
-	return ((st == SCE_P_TRIPLE) || (st == SCE_P_TRIPLEDOUBLE) ||
-			(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
+	return ((st == SCE_P_CHARSTRTRIPLE) || (st == SCE_P_STRINGTRIPLE) ||
+			(st == SCE_P_FCHARSTRTRIPLE) || (st == SCE_P_FSTRINGTRIPLE));
 }
 
 bool IsPyStringStateForFold(int st) {
@@ -130,20 +130,20 @@ bool IsPyStringStateForFold(int st) {
 }
 
 char GetPyStringQuoteChar(int st) {
-	if ((st == SCE_P_CHARACTER) || (st == SCE_P_FCHARACTER) ||
-		(st == SCE_P_TRIPLE) || (st == SCE_P_FTRIPLE))
+	if ((st == SCE_P_CHARSTR) || (st == SCE_P_FCHARSTR) ||
+		(st == SCE_P_CHARSTRTRIPLE) || (st == SCE_P_FCHARSTRTRIPLE))
 		return '\'';
 	if ((st == SCE_P_STRING) || (st == SCE_P_FSTRING) ||
-		(st == SCE_P_TRIPLEDOUBLE) || (st == SCE_P_FTRIPLEDOUBLE))
+		(st == SCE_P_STRINGTRIPLE) || (st == SCE_P_FSTRINGTRIPLE))
 		return '"';
 	
 	return '\0';
 }
 
 const char *GetPyTripleQuote(int st) {
-	if ((st == SCE_P_TRIPLE) || (st == SCE_P_FTRIPLE))
+	if ((st == SCE_P_CHARSTRTRIPLE) || (st == SCE_P_FCHARSTRTRIPLE))
 		return R"(''')";
-	if ((st == SCE_P_TRIPLEDOUBLE) || (st == SCE_P_FTRIPLEDOUBLE))
+	if ((st == SCE_P_STRINGTRIPLE) || (st == SCE_P_FSTRINGTRIPLE))
 		return R"(""")";
 	
 	return "\0";
@@ -203,16 +203,16 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 		*nextIndex = i + 3;
 		
 		if (ch == '"')
-			return (firstIsF ? SCE_P_FTRIPLEDOUBLE : SCE_P_TRIPLEDOUBLE);
+			return (firstIsF ? SCE_P_FSTRINGTRIPLE : SCE_P_STRINGTRIPLE);
 		else
-			return (firstIsF ? SCE_P_FTRIPLE : SCE_P_TRIPLE);
+			return (firstIsF ? SCE_P_FCHARSTRTRIPLE : SCE_P_CHARSTRTRIPLE);
 	} else {
 		*nextIndex = i + 1;
 		
 		if (ch == '"')
 			return (firstIsF ? SCE_P_FSTRING : SCE_P_STRING);
 		else
-			return (firstIsF ? SCE_P_FCHARACTER : SCE_P_CHARACTER);
+			return (firstIsF ? SCE_P_FCHARSTR : SCE_P_CHARSTR);
 	}
 }
 
@@ -270,7 +270,7 @@ struct OptionsPython {
 	bool stringsB;
 	bool stringsF;
 	bool stringsOverNewline;
-	bool keywords2NoSubIdentifiers;
+	bool stdIdentsNoSubIdentifiers;
 	bool fold;
 	bool foldQuotes;
 	bool foldCompact;
@@ -285,7 +285,7 @@ struct OptionsPython {
 		stringsB = true;
 		stringsF = true;
 		stringsOverNewline = false;
-		keywords2NoSubIdentifiers = false;
+		stdIdentsNoSubIdentifiers = false;
 		fold = false;
 		foldQuotes = false;
 		foldCompact = false;
@@ -305,13 +305,13 @@ struct OptionsPython {
 };
 
 static const char *const pythonWordListDesc[] = {
-	"Keywords",
-	"Built-in identifiers (everything that didn't fall into built-in exceptions/functions)",
-	"Common keywords (eg. True/False/None)",
-	"Reference name to the current class instance (eg. self)",
+	"Standard keywords",
 	"Additional keywords (eg. import)",
-	"Built-in exceptions",
-	"Built-in functions",
+	"Common keywords (eg. True/False/None)",
+	"References to the current instance of a class (eg. self)",
+	"Standard functions (BIFs)",
+	"Standard exceptions (eg. BaseException)",
+	"Standard identifiers",
 	0
 };
 
@@ -341,9 +341,11 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 		DefineProperty("lexer.python.strings.over.newline", &OptionsPython::stringsOverNewline,
 				   "Set to 1 to allow strings to span newline characters.");
 		
-		DefineProperty("lexer.python.keywords2.no.sub.identifiers", &OptionsPython::keywords2NoSubIdentifiers,
-				   "When enabled, it will not style keywords2 items that are used as a sub-identifier. "
-				   "Example: when set, will not highlight \"foo.open\" when \"open\" is a keywords2 item.");
+		DefineProperty("lexer.python.stdidents.no.sub.identifiers", &OptionsPython::stdIdentsNoSubIdentifiers,
+				   "When enabled, it will not style stdIdents/stdFuncs/stdExcepts items "
+				   "that are used as a sub-identifier. "
+				   "Example: when set, will not highlight \"foo.open\" when \"open\" "
+				   "is a stdIdents/stdFuncs/stdExcepts item.");
 		
 		DefineProperty("fold", &OptionsPython::fold);
 		
@@ -369,52 +371,52 @@ const char styleSubable[] = { SCE_P_IDENTIFIER, 0 };
 
 LexicalClass lexicalClasses[] = {
 	// Lexer Python SCLEX_PYTHON SCE_P_:
-	0, "SCE_P_DEFAULT", "default", "White space",
-	1, "SCE_P_COMMENTLINE", "comment line", "Comment",
-	2, "SCE_P_NUMBER", "literal numeric", "Number",
-	3, "SCE_P_STRING", "literal string", "String",
-	4, "SCE_P_CHARACTER", "literal string", "Single quoted string",
-	5, "SCE_P_WORD", "keyword", "Keyword",
-	6, "SCE_P_TRIPLE", "literal string", "Triple quotes",
-	7, "SCE_P_TRIPLEDOUBLE", "literal string", "Triple double quotes",
-	8, "SCE_P_CLASSNAME", "identifier", "Class name definition",
-	9, "SCE_P_DEFNAME", "identifier", "Function or method name definition",
-	10, "SCE_P_OPERATOR", "operator", "Operators",
-	11, "SCE_P_IDENTIFIER", "identifier", "Identifiers",
-	12, "SCE_P_COMMENTBLOCK", "comment", "Comment-blocks",
-	13, "SCE_P_STRINGEOL", "error literal string", "End of line where string is not closed",
-	14, "SCE_P_WORD2", "identifier", "Highlighted identifiers",
-	15, "SCE_P_DECORATOR", "preprocessor", "Decorators",
-	16, "SCE_P_FSTRING", "literal string interpolated", "F-String",
-	17, "SCE_P_FCHARACTER", "literal string interpolated", "Single quoted f-string",
-	18, "SCE_P_FTRIPLE", "literal string interpolated", "Triple quoted f-string",
-	19, "SCE_P_FTRIPLEDOUBLE", "literal string interpolated", "Triple double quoted f-string",
-	20, "SCE_P_COMMONWORD", "keyword", "Common keywords (None True False)",
-	21, "SCE_P_REFCLASSWORD", "identifier", "Reference name to the current class instance (eg. self)",
-	22, "SCE_P_WORD_ADD", "keyword", "Keyword additional",
-	23, "SCE_P_WORD2_BIE", "identifier", "Highlighted Built-in Exceptions",
-	24, "SCE_P_WORD2_BIF", "identifier", "Highlighted Built-in Functions",
-	25, "SCE_P_WORD2_SAME_BIF", "identifier", "Highlighted BIFs, but w/o opening brace",
-	26, "SCE_P_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
-	27, "SCE_P_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
-	28, "SCE_P_FSTRING_SUBOPER", "literal string", "F-String sub-oper",
-	29, "SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
-	30, "SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
-	31, "SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	40, "SCE_P_FUNCTION", "identifier", "Function or method name",
-	41, "SCE_P_CONSTANT", "identifier", "Constant name",
+	0,	"SCE_P_DEFAULT", "default", "White space",
+	1,	"SCE_P_STD_WORD", "keyword", "Standard keywords",
+	2,	"SCE_P_ADD_WORD", "keyword", "Additional keywords (eg. import)",
+	3,	"SCE_P_COM_WORD", "keyword", "Common keywords (eg. True/False/None)",
+	4,	"SCE_P_REF_WORD", "identifier", "References to the current instance of a class (eg. self)",
+	5,	"SCE_P_STD_FUNC", "identifier", "Standard functions (BIFs)",
+	6,	"SCE_P_STD_EXCEPT", "identifier", "Standard exceptions (eg. BaseException)",
+	7,	"SCE_P_STD_IDENT", "identifier", "Standard identifiers",
+	8,	"SCE_P_IDENTIFIER", "identifier", "Identifiers",
+	9,	"SCE_P_SAME_STD_FUNC", "identifier", "Highlighted BIFs, but w/o opening brace",
+	10,	"SCE_P_DECORATOR", "preprocessor", "Decorators",
+	11,	"SCE_P_DEFCLASS", "identifier", "Class name definition",
+	12,	"SCE_P_DEFFUNC", "identifier", "Function or method name definition",
+	13,	"SCE_P_FUNCTION", "identifier", "Function or method name",
+	14,	"SCE_P_CONSTANT", "identifier", "Constant name",
+	15,	"SCE_P_OPERATOR", "operator", "Operators",
+	16,	"SCE_P_NUMBER", "literal numeric", "Number",
+	17,	"SCE_P_STRING", "literal string", "String",
+	18,	"SCE_P_STRINGTRIPLE", "literal string", "Triple-quote string",
+	19,	"SCE_P_CHARSTR", "literal string", "Charstring",
+	20,	"SCE_P_CHARSTRTRIPLE", "literal string", "Triple-quote charstring",
+	21,	"SCE_P_STRINGEOL", "error literal string", "End of line where string is not closed",
+	22,	"SCE_P_ESCAPESEQ", "literal string escapesequence", "Escape sequence",
+	23,	"SCE_P_FORMATSEQ", "literal string formatsequence", "Format sequence",
+	24,	"SCE_P_FSTRING", "literal string interpolated", "F-String",
+	25,	"SCE_P_FSTRINGTRIPLE", "literal string interpolated", "Triple-quote f-string",
+	26,	"SCE_P_FCHARSTR", "literal string interpolated", "F-Charstring",
+	27,	"SCE_P_FCHARSTRTRIPLE", "literal string interpolated", "Triple-quote f-charstring",
+	28,	"SCE_P_FSTRING_SUBOPER", "literal string", "F-String sub-oper",
+	29,	"SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
+	30,	"SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
+	31,	"SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	40,	"SCE_P_COMMENTLINE", "comment line", "Comment-line",
+	41,	"SCE_P_COMMENTBLOCK", "comment", "Comment-block",
 };
 
 }
 
 class LexerPython : public DefaultLexer {
-	WordList keywords;
-	WordList keywordsAdd;
-	WordList keywords2;
-	WordList keywords2Bie;
-	WordList keywords2Bif;
-	WordList commonWords;
-	WordList refclassWords;
+	WordList stdWords;
+	WordList addWords;
+	WordList comWords;
+	WordList refWords;
+	WordList stdFuncs;
+	WordList stdExcepts;
+	WordList stdIdents;
 	OptionsPython options;
 	OptionSetPython osPython;
 	EscapeSequence escapeSeq;
@@ -509,25 +511,25 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 	WordList *wordListN = 0;
 	switch (n) {
 	case 0:
-		wordListN = &keywords;			// primary
+		wordListN = &stdWords;
 		break;
 	case 1:
-		wordListN = &keywords2;			// identifiers
+		wordListN = &addWords;
 		break;
 	case 2:
-		wordListN = &commonWords;		// commonword
+		wordListN = &comWords;
 		break;
 	case 3:
-		wordListN = &refclassWords;		// refclassword
+		wordListN = &refWords;
 		break;
 	case 4:
-		wordListN = &keywordsAdd;		// primary_add
+		wordListN = &stdFuncs;
 		break;
 	case 5:
-		wordListN = &keywords2Bie;		// identifiers_bie
+		wordListN = &stdExcepts;
 		break;
 	case 6:
-		wordListN = &keywords2Bif;		// identifiers_bif
+		wordListN = &stdIdents;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -582,7 +584,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 #define CHECK_ESCAPE_SEQUENCE												\
 	if (!strchr("{}", sc.chNext)) {											\
 		if (options.escapeSequence) {										\
-			sc.SetState(SCE_P_ESCAPESEQUENCE);								\
+			sc.SetState(SCE_P_ESCAPESEQ);									\
 			escapeSeq.initEscapeState(sc.chNext);							\
 		}																	\
 		sc.Forward(); /* Skip any character after the backslash */			\
@@ -591,7 +593,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 #define CHECK_FORMAT_SEQUENCE												\
 	} else if (sc.ch == '%') {												\
 		if (options.formatSequence) {										\
-			sc.SetState(SCE_P_FORMATSEQUENCE);								\
+			sc.SetState(SCE_P_FORMATSEQ);									\
 			formatSeq.initFormatState();									\
 		}
 
@@ -856,63 +858,63 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				int style = SCE_P_IDENTIFIER;
 				if ((kwLast == kwImport) && (strcmp(s, "as") == 0)) {
 					style = styleLast;
-				} else if (keywords.InList(s)) {
-					style = SCE_P_WORD;
-				} else if (keywordsAdd.InList(s)) {
-					style = SCE_P_WORD_ADD;
-				} else if (commonWords.InList(s)) {
-					style = SCE_P_COMMONWORD;
-				} else if (refclassWords.InList(s)) {
-					style = SCE_P_REFCLASSWORD;
+				} else if (stdWords.InList(s)) {
+					style = SCE_P_STD_WORD;
+				} else if (addWords.InList(s)) {
+					style = SCE_P_ADD_WORD;
+				} else if (comWords.InList(s)) {
+					style = SCE_P_COM_WORD;
+				} else if (refWords.InList(s)) {
+					style = SCE_P_REF_WORD;
 				} else if (kwLast == kwClass) {
-					style = SCE_P_CLASSNAME;
+					style = SCE_P_DEFCLASS;
 				} else if (kwLast == kwDef) {
-					style = SCE_P_DEFNAME;
+					style = SCE_P_DEFFUNC;
 				} else if (kwLast == kwCDef || kwLast == kwCPDef) {
 					MOVE_INDEX_TO_NONSPACE
 					if (styler[i] == '(') {
-						style = SCE_P_DEFNAME;
+						style = SCE_P_DEFFUNC;
 					} else if (styler[i] == ':') {
-						style = SCE_P_CLASSNAME;
+						style = SCE_P_DEFCLASS;
 					}
-				} else if (keywords2.InList(s)) {
-					if (options.keywords2NoSubIdentifiers) {
-						// We don't want to highlight keywords2
+				} else if (stdIdents.InList(s)) {
+					if (options.stdIdentsNoSubIdentifiers) {
+						// We don't want to highlight stdIdents
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
 						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
-							style = SCE_P_WORD2;
+							style = SCE_P_STD_IDENT;
 					} else {
-						style = SCE_P_WORD2;
+						style = SCE_P_STD_IDENT;
 					}
-				} else if (keywords2Bif.InList(s)) {
-					if (options.keywords2NoSubIdentifiers) {
-						// We don't want to highlight keywords2Bif
+				} else if (stdFuncs.InList(s)) {
+					if (options.stdIdentsNoSubIdentifiers) {
+						// We don't want to highlight stdFuncs
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
 						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
-							style = SCE_P_WORD2_BIF;
+							style = SCE_P_STD_FUNC;
 					} else {
-						style = SCE_P_WORD2_BIF;
+						style = SCE_P_STD_FUNC;
 					}
-					if (style == SCE_P_WORD2_BIF) {
+					if (style == SCE_P_STD_FUNC) {
 						MOVE_INDEX_TO_NONSPACE
 						if (styler[i] != '(') {
-							style = SCE_P_WORD2_SAME_BIF;
+							style = SCE_P_SAME_STD_FUNC;
 						}
 					}
-				} else if (keywords2Bie.InList(s)) {
-					if (options.keywords2NoSubIdentifiers) {
-						// We don't want to highlight keywords2Bie
+				} else if (stdExcepts.InList(s)) {
+					if (options.stdIdentsNoSubIdentifiers) {
+						// We don't want to highlight stdExcepts
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
 						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
-							style = SCE_P_WORD2_BIE;
+							style = SCE_P_STD_EXCEPT;
 					} else {
-						style = SCE_P_WORD2_BIE;
+						style = SCE_P_STD_EXCEPT;
 					}
 				} else {
 					MOVE_INDEX_TO_NONSPACE
@@ -929,7 +931,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 				sc.ChangeState(style);
 				sc.SetState(SCE_P_DEFAULT);
-				if (style == SCE_P_WORD || style == SCE_P_WORD_ADD) {
+				if (style == SCE_P_STD_WORD || style == SCE_P_ADD_WORD) {
 					if (0 == strcmp(s, "class"))
 						kwLast = kwClass;
 					else if (0 == strcmp(s, "def"))
@@ -994,12 +996,12 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				needEOLCheck = true;
 			CHECK_END_FSTRING_SUBOPER
 			}
-		} else if (sc.state == SCE_P_ESCAPESEQUENCE) {
+		} else if (sc.state == SCE_P_ESCAPESEQ) {
 			escapeSeq.digitsLeft--;
 			if (escapeSeq.atEscapeEnd(sc.ch)) {
 				PROCESS_END_SEQUENCE
 			}
-		} else if (sc.state == SCE_P_FORMATSEQUENCE) {
+		} else if (sc.state == SCE_P_FORMATSEQ) {
 			if (formatSeq.atFormatEnd(sc.ch)) {
 				if (formatSeq.atFormatNone()) {
 					sc.ChangeState(stringState);
