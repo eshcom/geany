@@ -2582,7 +2582,7 @@ static gchar *parse_function_at_line(ScintillaObject *sci, gint tag_line)
 	switch (sci_get_lexer(sci))
 	{
 		case SCLEX_RUBY:	fn_style = SCE_RB_DEFNAME; break;
-		case SCLEX_PYTHON:	fn_style = SCE_P_DEFNAME; break;
+		case SCLEX_PYTHON:	fn_style = SCE_P_DEFFUNC; break;
 		default: fn_style = SCE_C_IDENTIFIER;	/* several lexers use SCE_C_IDENTIFIER */
 	}
 	start = sci_get_position_from_line(sci, tag_line - 2);
