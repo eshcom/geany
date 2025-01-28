@@ -230,6 +230,8 @@ gchar *utils_get_real_path(const gchar *file_name);
 
 gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len);
 
+gboolean utils_parse_color(const gchar *spec, GdkColor *color);
+
 //~ esh: to free extensions_hash
 void extensions_free(void);
 //~ esh: for tm_source_file_new_prj
@@ -329,8 +331,6 @@ void utils_beep(void);
 
 gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 									 gulong display_unit);
-
-gboolean utils_parse_color(const gchar *spec, GdkColor *color);
 
 gint utils_color_to_bgr(const GdkColor *color);
 
