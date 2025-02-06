@@ -3147,8 +3147,7 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 		
 		base_name = g_path_get_basename(DOC_FILENAME(doc));
 		menu_item = gtk_image_menu_item_new_with_label(base_name);
-		image = gtk_image_new_from_gicon(doc->file_type->icon,
-										 GTK_ICON_SIZE_MENU);
+		image = gtk_image_new_from_pixbuf(doc->file_type->icon);
 		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), image);
 		gtk_widget_set_tooltip_text(menu_item, DOC_FILENAME(doc));
 		
@@ -3229,45 +3228,58 @@ void ui_editable_insert_text_callback(GtkEditable *editable, gchar *new_text,
 
 
 /* gets the icon that applies to a particular MIME type */
-GIcon *ui_get_mime_icon(const gchar *mime_type)
+GdkPixbuf *ui_get_mime_icon(const gchar *mime_type)
 {
-	GIcon *icon = NULL;
-	gchar *ctype;
+	static gint width = 0;
+	if (width == 0)
+		gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, NULL);
 	
-	ctype = g_content_type_from_mime_type(mime_type);
-	if (ctype)
+	GdkPixbuf *pixbuf = NULL;
+	
+	gchar *ctype = g_content_type_from_mime_type(mime_type);
+	GIcon *icon = g_content_type_get_icon(ctype);
+	g_free(ctype);
+	
+	if (icon)
 	{
-		GdkScreen *screen = gdk_screen_get_default();
+		GtkIconInfo *info = gtk_icon_theme_lookup_by_gicon(
+									gtk_icon_theme_get_default(),
+									icon, width,
+									GTK_ICON_LOOKUP_FORCE_SIZE);
+		g_object_unref(icon);
 		
-		icon = g_content_type_get_icon(ctype);
-		if (screen && icon)
+		/* fallback if icon lookup failed, like it might happen on Windows (?) */
+		if (!info)
 		{
-			GtkIconInfo *icon_info;
-			icon_info = gtk_icon_theme_lookup_by_gicon(
-							gtk_icon_theme_get_for_screen(screen),
-							icon, 16, 0);
-			if (!icon_info)
+			const gchar *icon_name = "text-x-generic";
+			
+			if (strstr(mime_type, "directory"))
+				icon_name = "folder";
+			
+			icon = g_themed_icon_new(icon_name);
+			if (icon)
 			{
+				info = gtk_icon_theme_lookup_by_gicon(
+									gtk_icon_theme_get_default(),
+									icon, width,
+									GTK_ICON_LOOKUP_FORCE_SIZE);
 				g_object_unref(icon);
-				icon = NULL;
 			}
-			else
-				gtk_icon_info_free(icon_info);
 		}
-		g_free(ctype);
-	}
-	
-	/* fallback if icon lookup failed, like it might happen on Windows (?) */
-	if (!icon)
-	{
-		const gchar *icon_name = "text-x-generic";
+		if (!info)
+			return NULL;
 		
-		if (strstr(mime_type, "directory"))
-			icon_name = "folder";
+		GError *error = NULL;
+		pixbuf = gtk_icon_info_load_icon(info, &error);
+		gtk_icon_info_free(info);
 		
-		icon = g_themed_icon_new(icon_name);
+		if (!pixbuf)
+		{
+			g_warning("Couldn't load icon: %s", error->message);
+			g_error_free(error);
+		}
 	}
-	return icon;
+	return pixbuf;
 }
 
 
