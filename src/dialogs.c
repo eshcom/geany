@@ -1226,8 +1226,7 @@ void dialogs_show_file_properties(GeanyDocument *doc)
 	gtk_label_set_text(GTK_LABEL(label), base_name);
 
 	image = ui_lookup_widget(dialog, "file_type_image");
-	gtk_image_set_from_gicon(GTK_IMAGE(image), doc->file_type->icon,
-			GTK_ICON_SIZE_BUTTON);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(image), doc->file_type->icon);
 
 	label = ui_lookup_widget(dialog, "file_type_label");
 	gtk_label_set_text(GTK_LABEL(label), doc->file_type->title);

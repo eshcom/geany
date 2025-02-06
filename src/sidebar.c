@@ -110,6 +110,10 @@ static void on_list_symbol_activate(GtkCheckMenuItem *item, gpointer user_data);
 static void documents_menu_update(GtkTreeSelection *selection);
 static void sidebar_tabs_show_hide(GtkNotebook *notebook, GtkWidget *child,
 								   guint page_num, gpointer data);
+static void on_openfiles_row_collapsed(GtkWidget *widget, GtkTreeIter *iter,
+											GtkTreePath *path, gpointer user_data);
+static void on_openfiles_row_expanded(GtkWidget *widget, GtkTreeIter *iter,
+									  GtkTreePath *path, gpointer user_data);
 
 /* the prepare_* functions are document-related,
  * but I think they fit better here than in document.c */
@@ -284,7 +288,7 @@ static void prepare_openfiles(void)
 	
 	/* store the icon and the short filename to show, and the index as reference,
 	 * the colour (black/red/green) and the full name for the tooltip */
-	store_openfiles = gtk_tree_store_new(6, G_TYPE_ICON, G_TYPE_STRING,
+	store_openfiles = gtk_tree_store_new(6, GDK_TYPE_PIXBUF, G_TYPE_STRING,
 										 G_TYPE_POINTER, GDK_TYPE_COLOR,
 										 G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tv.tree_openfiles),
@@ -297,13 +301,12 @@ static void prepare_openfiles(void)
 		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
 	GtkCellRenderer *icon_renderer = gtk_cell_renderer_pixbuf_new();
-	g_object_set(icon_renderer, "stock-size", GTK_ICON_SIZE_MENU, NULL);
 	GtkCellRenderer *text_renderer = gtk_cell_renderer_text_new();
 	g_object_set(text_renderer, "ellipsize", PANGO_ELLIPSIZE_MIDDLE, NULL);
 	GtkTreeViewColumn *column = gtk_tree_view_column_new();
 	gtk_tree_view_column_pack_start(column, icon_renderer, FALSE);
 	gtk_tree_view_column_set_attributes(column, icon_renderer,
-										"gicon", DOCUMENTS_ICON, NULL);
+										"pixbuf", DOCUMENTS_ICON, NULL);
 	gtk_tree_view_column_pack_start(column, text_renderer, TRUE);
 	gtk_tree_view_column_set_attributes(column, text_renderer,
 										"text", DOCUMENTS_SHORTNAME,
@@ -336,6 +339,10 @@ static void prepare_openfiles(void)
 					 G_CALLBACK(sidebar_button_press_cb), NULL);
 	g_signal_connect(GTK_TREE_VIEW(tv.tree_openfiles), "key-press-event",
 					 G_CALLBACK(sidebar_key_press_cb), NULL);
+	g_signal_connect(GTK_TREE_VIEW(tv.tree_openfiles), "row-collapsed",
+					 G_CALLBACK(on_openfiles_row_collapsed), NULL);
+	g_signal_connect(GTK_TREE_VIEW(tv.tree_openfiles), "row-expanded",
+					 G_CALLBACK(on_openfiles_row_expanded), NULL);
 }
 
 
@@ -420,9 +427,9 @@ static GtkTreeIter *get_doc_parent(GeanyDocument *doc)
 	}
 	
 	/* no match, add dir parent */
-	static GIcon *dir_icon = NULL;
+	static GdkPixbuf *dir_icon = NULL;
 	if (!dir_icon)
-		dir_icon = ui_get_mime_icon("inode/directory");
+		dir_icon = ui_get_mime_icon("folder");
 	
 	// esh: define the sorting of dir groups
 	const gchar *shortname = doc->file_name ? dirname : GEANY_STRING_UNTITLED;
@@ -476,9 +483,9 @@ void sidebar_openfiles_add(GeanyDocument *doc)
 		gtk_tree_path_free(path);
 	}
 	
-	static GIcon *file_icon = NULL;
+	static GdkPixbuf *file_icon = NULL;
 	if (!file_icon)
-		file_icon = ui_get_mime_icon("text/plain");
+		file_icon = ui_get_mime_icon("text-x-generic");
 	
 	const GdkColor *color = document_get_status_color(doc);
 	gchar *basename = g_path_get_basename(DOC_FILENAME(doc));
@@ -523,7 +530,7 @@ void sidebar_openfiles_update(GeanyDocument *doc)
 	{
 		/* just update color and the icon */
 		const GdkColor *color = document_get_status_color(doc);
-		GIcon *icon = doc->file_type->icon;
+		GdkPixbuf *icon = doc->file_type->icon;
 		
 		gtk_tree_store_set(store_openfiles, iter, DOCUMENTS_COLOR, color, -1);
 		if (icon)
@@ -1107,6 +1114,28 @@ static gboolean sidebar_button_press_cb(GtkWidget *widget, GdkEventButton *event
 		handled = TRUE;
 	}
 	return handled;
+}
+
+
+static void on_openfiles_row_collapsed(GtkWidget *widget, GtkTreeIter *iter,
+									   GtkTreePath *path, gpointer user_data)
+{
+	static GdkPixbuf *icon = NULL;
+	if (!icon)
+		icon = ui_get_mime_icon("folder");
+	
+	gtk_tree_store_set(store_openfiles, iter, DOCUMENTS_ICON, icon, -1);
+}
+
+
+static void on_openfiles_row_expanded(GtkWidget *widget, GtkTreeIter *iter,
+									  GtkTreePath *path, gpointer user_data)
+{
+	static GdkPixbuf *icon = NULL;
+	if (!icon)
+		icon = ui_get_mime_icon("folder-open");
+	
+	gtk_tree_store_set(store_openfiles, iter, DOCUMENTS_ICON, icon, -1);
 }
 
 

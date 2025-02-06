@@ -363,7 +363,7 @@ void ui_update_view_editor_menu_items(void);
 
 void ui_swap_sidebar_pos(void);
 
-GIcon *ui_get_mime_icon(const gchar *mime_type);
+GdkPixbuf *ui_get_mime_icon(const gchar *mime_type);
 
 void ui_focus_current_document(void);
 
