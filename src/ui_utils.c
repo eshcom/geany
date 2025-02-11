@@ -2487,6 +2487,10 @@ void ui_init_prefs(void)
 	
 	stash_group_add_boolean(group, &interface_prefs.show_symbol_list_expanders,
 		"show_symbol_list_expanders", TRUE);
+	stash_group_add_boolean(group, &interface_prefs.show_symbols_tree_lines,
+		"show_symbols_tree_lines", TRUE);
+	stash_group_add_boolean(group, &interface_prefs.show_openfiles_tree_lines,
+		"show_openfiles_tree_lines", TRUE);
 	stash_group_add_boolean(group, &interface_prefs.compiler_tab_autoscroll,
 		"compiler_tab_autoscroll", TRUE);
 	stash_group_add_string(group, &ui_prefs.statusbar_template,

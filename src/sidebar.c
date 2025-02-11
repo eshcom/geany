@@ -137,6 +137,9 @@ static void prepare_taglist(GtkWidget *tree, GtkTreeStore *store)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);
 	
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(tree),
+										interface_prefs.show_symbols_tree_lines);
+	
 	ui_widget_modify_font_from_string(tree, interface_prefs.tagbar_font);
 	
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(store));
@@ -313,6 +316,9 @@ static void prepare_openfiles(void)
 										"foreground-gdk", DOCUMENTS_COLOR, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tv.tree_openfiles), column);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tv.tree_openfiles), FALSE);
+	
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(tv.tree_openfiles),
+										interface_prefs.show_openfiles_tree_lines);
 	
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(tv.tree_openfiles),
 									DOCUMENTS_SHORTNAME);

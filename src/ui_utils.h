@@ -56,6 +56,8 @@ typedef struct GeanyInterfacePrefs
 	gint			tab_pos_sidebar;			/**< positions of sidebar's tabs */
 	gboolean		statusbar_visible;			/**< whether the status bar is visible */
 	gboolean		show_symbol_list_expanders;	/**< whether to show expanders in the symbol list */
+	gboolean		show_symbols_tree_lines;	/**< whether to show tree lines in the symbol list */
+	gboolean		show_openfiles_tree_lines;	/**< whether to show tree lines in the openfile list */
 	/** whether a double click on notebook tabs hides all other windows */
 	gboolean		notebook_double_click_hides_widgets;
 	gboolean		highlighting_invert_all; 	/**< whether highlighting colors are inverted */
