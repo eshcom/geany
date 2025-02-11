@@ -151,8 +151,8 @@ static void prepare_taglist(GtkWidget *tree, GtkTreeStore *store)
 					 G_CALLBACK(sidebar_key_press_cb), NULL);
 	
 	gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(tree),
-									 interface_prefs.show_symbol_list_expanders);
-	if (!interface_prefs.show_symbol_list_expanders)
+									 interface_prefs.show_symbols_expanders);
+	if (!interface_prefs.show_symbols_expanders)
 		gtk_tree_view_set_level_indentation(GTK_TREE_VIEW(tree), 10);
 	/* Tooltips */
 	ui_tree_view_set_tooltip_text_column(GTK_TREE_VIEW(tree), SYMBOLS_COLUMN_TOOLTIP);
@@ -596,7 +596,7 @@ static void on_hide_sidebar(void)
 static gboolean on_sidebar_display_symbol_list_show(GtkWidget *item)
 {
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),
-								   interface_prefs.sidebar_symbol_visible);
+								   interface_prefs.sidebar_symbols_visible);
 	return FALSE;
 }
 
@@ -670,7 +670,7 @@ static void on_list_document_activate(GtkCheckMenuItem *item, gpointer user_data
 
 static void on_list_symbol_activate(GtkCheckMenuItem *item, gpointer user_data)
 {
-	interface_prefs.sidebar_symbol_visible = gtk_check_menu_item_get_active(item);
+	interface_prefs.sidebar_symbols_visible = gtk_check_menu_item_get_active(item);
 	ui_sidebar_show_hide();
 	sidebar_tabs_show_hide(GTK_NOTEBOOK(main_widgets.sidebar_notebook),
 						   NULL, 0, NULL);
@@ -1280,7 +1280,7 @@ void sidebar_focus_openfiles_tab(void)
 
 void sidebar_focus_symbols_tab(void)
 {
-	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_symbol_visible)
+	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_symbols_visible)
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
 		GtkWidget *symbol_list_scrollwin =
@@ -1297,7 +1297,7 @@ static void sidebar_tabs_show_hide(GtkNotebook *notebook, GtkWidget *child,
 {
 	gint tabs = gtk_notebook_get_n_pages(notebook);
 	
-	if (interface_prefs.sidebar_symbol_visible == FALSE)
+	if (interface_prefs.sidebar_symbols_visible == FALSE)
 		tabs--;
 	if (interface_prefs.sidebar_openfiles_visible == FALSE)
 		tabs--;

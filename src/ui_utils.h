@@ -45,8 +45,8 @@ G_BEGIN_DECLS
 /** Interface preferences */
 typedef struct GeanyInterfacePrefs
 {
-	gboolean		sidebar_symbol_visible;		/**< whether the symbol sidebar is visible */
-	gboolean		sidebar_openfiles_visible;	/**< whether the open file list is visible */
+	gboolean		sidebar_symbols_visible;	/**< whether the symbol sidebar is visible */
+	gboolean		sidebar_openfiles_visible;	/**< whether the openfile sidebar is visible */
 	gchar			*editor_font;				/**< editor font */
 	gchar			*tagbar_font;				/**< symbol sidebar font */
 	gchar			*msgwin_font;				/**< message window font */
@@ -55,7 +55,7 @@ typedef struct GeanyInterfacePrefs
 	gint			tab_pos_msgwin;				/**< positions of message window's tabs */
 	gint			tab_pos_sidebar;			/**< positions of sidebar's tabs */
 	gboolean		statusbar_visible;			/**< whether the status bar is visible */
-	gboolean		show_symbol_list_expanders;	/**< whether to show expanders in the symbol list */
+	gboolean		show_symbols_expanders;		/**< whether to show expanders in the symbol list */
 	gboolean		show_symbols_tree_lines;	/**< whether to show tree lines in the symbol list */
 	gboolean		show_openfiles_tree_lines;	/**< whether to show tree lines in the openfile list */
 	/** whether a double click on notebook tabs hides all other windows */

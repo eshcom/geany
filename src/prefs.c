@@ -462,8 +462,8 @@ static void prefs_init_dialog(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), ui_prefs.sidebar_visible);
 	on_sidebar_visible_toggled(GTK_TOGGLE_BUTTON(widget), NULL);
 	
-	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbol");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), interface_prefs.sidebar_symbol_visible);
+	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbols");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), interface_prefs.sidebar_symbols_visible);
 	
 	widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_openfiles");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), interface_prefs.sidebar_openfiles_visible);
@@ -974,8 +974,8 @@ static void on_prefs_dialog_response(GtkDialog *dialog, gint response,
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_sidebar_visible");
 		ui_prefs.sidebar_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 		
-		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbol");
-		interface_prefs.sidebar_symbol_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_symbols");
+		interface_prefs.sidebar_symbols_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 		
 		widget = ui_lookup_widget(ui_widgets.prefs_dialog, "check_list_openfiles");
 		interface_prefs.sidebar_openfiles_visible = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));

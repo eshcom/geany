@@ -1098,7 +1098,7 @@ void ui_sidebar_show_hide(void)
 	/* check that there are no other notebook pages before hiding the sidebar completely
 	 * other pages could be e.g. the file browser plugin */
 	if (!interface_prefs.sidebar_openfiles_visible &&
-		!interface_prefs.sidebar_symbol_visible &&
+		!interface_prefs.sidebar_symbols_visible &&
 		gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.sidebar_notebook)) <= 2)
 	{
 		ui_prefs.sidebar_visible = FALSE;
@@ -1118,7 +1118,7 @@ void ui_sidebar_show_hide(void)
 	
 	ui_widget_show_hide(gtk_notebook_get_nth_page(
 								GTK_NOTEBOOK(main_widgets.sidebar_notebook), 0),
-						interface_prefs.sidebar_symbol_visible);
+						interface_prefs.sidebar_symbols_visible);
 	ui_widget_show_hide(gtk_notebook_get_nth_page(
 								GTK_NOTEBOOK(main_widgets.sidebar_notebook), 1),
 						interface_prefs.sidebar_openfiles_visible);
@@ -2485,8 +2485,8 @@ void ui_init_prefs(void)
 	/* various prefs */
 	configuration_add_various_pref_group(group, "interface");
 	
-	stash_group_add_boolean(group, &interface_prefs.show_symbol_list_expanders,
-		"show_symbol_list_expanders", TRUE);
+	stash_group_add_boolean(group, &interface_prefs.show_symbols_expanders,
+		"show_symbols_expanders", TRUE);
 	stash_group_add_boolean(group, &interface_prefs.show_symbols_tree_lines,
 		"show_symbols_tree_lines", TRUE);
 	stash_group_add_boolean(group, &interface_prefs.show_openfiles_tree_lines,

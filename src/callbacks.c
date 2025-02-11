@@ -1259,11 +1259,11 @@ void on_menu_show_sidebar1_toggled(GtkCheckMenuItem *checkmenuitem,
 	/* show built-in tabs if no tabs visible */
 	if (ui_prefs.sidebar_visible &&
 		!interface_prefs.sidebar_openfiles_visible &&
-		!interface_prefs.sidebar_symbol_visible &&
+		!interface_prefs.sidebar_symbols_visible &&
 		gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.sidebar_notebook)) <= 2)
 	{
 		interface_prefs.sidebar_openfiles_visible = TRUE;
-		interface_prefs.sidebar_symbol_visible = TRUE;
+		interface_prefs.sidebar_symbols_visible = TRUE;
 	}
 	
 	/* if window has input focus, set it back to the editor before toggling off */
