@@ -451,11 +451,11 @@ msgstr "Общее"
 
 #: ../data/geany.glade.h:86
 msgid "Show symbol list"
-msgstr "Отображать список символов"
+msgstr "Показывать список символов"
 
 #: ../data/geany.glade.h:87
 msgid "Toggle the symbol list on and off"
-msgstr "Переключить отображение списка символов"
+msgstr "Включить/выключить отображение списка символов"
 
 #: ../data/geany.glade.h:88
 msgid "Default symbol sorting mode"
