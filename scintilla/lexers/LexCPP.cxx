@@ -157,9 +157,9 @@ BracketPair FindBracketPair(std::vector<std::string> &tokens) {
 }
 
 void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
-						 int activity, const WordList &markerList,
+						 int activity, const WordList &markers,
 						 bool caseSensitive) {
-	if ((isoperator(sc.chPrev) || IsASpace(sc.chPrev)) && markerList.Length()) {
+	if ((isoperator(sc.chPrev) || IsASpace(sc.chPrev)) && markers.Length()) {
 		const int lengthMarker = 50;
 		char marker[lengthMarker + 1] = "";
 		const Sci_Position currPos = sc.currentPos;
@@ -176,7 +176,7 @@ void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
 			i++;
 		}
 		marker[i] = '\0';
-		if (markerList.InList(marker)) {
+		if (markers.InList(marker)) {
 			sc.SetState(SCE_C_TASKMARKER|activity);
 		}
 	}
@@ -386,15 +386,18 @@ struct OptionsCPP {
 };
 
 const char *const cppWordLists[] = {
-	"Primary keywords and identifiers",
-	"Secondary keywords and identifiers",
-	"Documentation comment keywords",
+	"Standard keywords",
+	"Additional keywords",
+	"Common keywords (eg. TRUE/FALSE/NULL)",
 	"Global classes and typedefs",
 	"Preprocessor definitions",
 	"Task marker and error marker keywords",
-	"Common keywords and identifiers",
-	"Other classes and typedefs",
-	"Built-in functions",
+	"Documentation comment keywords",
+	"Standard library functions",
+	"Additional library functions",
+	"Standard library macros",
+	"Additional library macros",
+	"Additional library classes",
 	nullptr,
 };
 
@@ -509,18 +512,17 @@ LexicalClass lexicalClasses[] = {
 	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
 	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
 	28, "SCE_C_FORMATSEQUENCE", "literal string formatsequence", "Format sequence",
-	29, "SCE_C_COMMONWORD", "keyword", "Common keywords (NULL TRUE FALSE)",
-	30, "SCE_C_OTHERCLASS", "identifier", "Other classes",
+	29, "SCE_C_COMMONWORD", "keyword", "Common keywords (eg. TRUE/FALSE/NULL)",
+	30, "SCE_C_OTHERCLASS", "identifier", "Additional library classes",
 	31, "SCE_C_STRINGJSONKEY", "literal string", "Double quoted string for JSON-key",
-	40, "SCE_C_BIFS", "bifs", "Built-in functions for Golang",
-	41, "SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
-	42, "SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	43, "SCE_C_FUNCTION", "identifier", "Function or method name",
-	44, "SCE_C_MACRO", "identifier", "Macro name",
-	45, "SCE_C_STD_FUNC", "identifier", "Standard library functions",
-	46, "SCE_C_STD_MACRO", "identifier", "Standard library macros",
-	47, "SCE_C_OTH_FUNC", "identifier", "Other library functions",
-	48, "SCE_C_OTH_MACRO", "identifier", "Other library macros",
+	40, "SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
+	41, "SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	42, "SCE_C_FUNCTION", "identifier", "Function or method name",
+	43, "SCE_C_MACRO", "identifier", "Macro name",
+	44, "SCE_C_STD_FUNC", "identifier", "Standard library functions",
+	45, "SCE_C_STD_MACRO", "identifier", "Standard library macros",
+	46, "SCE_C_OTH_FUNC", "identifier", "Additional library functions",
+	47, "SCE_C_OTH_MACRO", "identifier", "Additional library macros",
 };
 
 }
@@ -536,19 +538,18 @@ class LexerCPP : public ILexerWithMetaData {
 	CharacterSet setWordStart;
 	PPStates vlls;
 	std::vector<PPDefinition> ppDefineHistory;
-	WordList keywords;
-	WordList keywords2;
-	WordList keywords3;
-	WordList keywords4;
-	WordList ppDefinitions;
-	WordList markerList;
-	WordList commonWords;
-	WordList otherClasses;
-	WordList bifs;
+	WordList stdWords;
+	WordList addWords;
+	WordList comWords;
+	WordList docWords;
 	WordList stdFuncs;
+	WordList addFuncs;
 	WordList stdMacros;
-	WordList othFuncs;
-	WordList othMacros;
+	WordList addMacros;
+	WordList glbClasses;
+	WordList addClasses;
+	WordList ppDefinitions;
+	WordList markers;
 	
 	struct SymbolValue {
 		std::string value;
@@ -744,43 +745,40 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	WordList *wordListN = nullptr;
 	switch (n) {
 	case 0:
-		wordListN = &keywords;		// Primary keywords and identifiers
+		wordListN = &stdWords;		// Standard keywords
 		break;
 	case 1:
-		wordListN = &keywords2;		// Secondary keywords and identifiers
+		wordListN = &addWords;		// Additional keywords
 		break;
 	case 2:
-		wordListN = &keywords3;		// Documentation comment keywords
+		wordListN = &comWords;		// Common keywords
 		break;
 	case 3:
-		wordListN = &keywords4;		// Global classes and typedefs
+		wordListN = &glbClasses;	// Global classes and typedefs
 		break;
 	case 4:
 		wordListN = &ppDefinitions;	// Preprocessor definitions
 		break;
 	case 5:
-		wordListN = &markerList;	// Task marker and error marker keywords
+		wordListN = &markers;		// Task marker and error marker keywords
 		break;
 	case 6:
-		wordListN = &commonWords;	// Common keywords and identifiers
+		wordListN = &docWords;		// Documentation comment keywords
 		break;
 	case 7:
-		wordListN = &otherClasses;	// Other classes and typedefs
-		break;
-	case 8:
-		wordListN = &bifs;			// Built-in functions for Golang
-		break;
-	case 9:
 		wordListN = &stdFuncs;		// Standard library functions
 		break;
-	case 10:
+	case 8:
+		wordListN = &addFuncs;		// Additional library functions
+		break;
+	case 9:
 		wordListN = &stdMacros;		// Standard library macros
 		break;
-	case 11:
-		wordListN = &othFuncs;		// Other library functions
+	case 10:
+		wordListN = &addMacros;		// Additional library macros
 		break;
-	case 12:
-		wordListN = &othMacros;		// Other library macros
+	case 11:
+		wordListN = &addClasses;	// Additional classes and typedefs
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -1150,24 +1148,20 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
 					MOVE_INDEX_TO_NONSPACE
-					if (keywords.InList(s)) {								// Primary keywords and identifiers
+					if (stdWords.InList(s)) {
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_WORD|activitySet);
-					} else if (styler[i] != '(' && commonWords.InList(s)) {	// Common keywords and identifiers
+					} else if (styler[i] != '(' && comWords.InList(s)) {
 						sc.ChangeState(SCE_C_COMMONWORD|activitySet);
-					} else if (styler[i] != '(' && keywords2.InList(s)) {	// Secondary keywords and identifiers
+					} else if (styler[i] != '(' && addWords.InList(s)) {
 						sc.ChangeState(SCE_C_WORD2|activitySet);
-					} else if (keywords4.InList(s)) {						// Global classes and typedefs
+					} else if (glbClasses.InList(s)) {
 						sc.ChangeState(SCE_C_GLOBALCLASS|activitySet);
-					} else if (otherClasses.InList(s)) {					// Other classes and typedefs
+					} else if (addClasses.InList(s)) {
 						sc.ChangeState(SCE_C_OTHERCLASS|activitySet);
-					} else if (bifs.InList(s)) {							// Built-in functions for Golang
-						if (styler[i] == '(') {
-							sc.ChangeState(SCE_C_BIFS|activitySet);
-						}
 					} else if (stdMacros.InList(s)) {
 						sc.ChangeState(SCE_C_STD_MACRO|activitySet);
-					} else if (othMacros.InList(s)) {
+					} else if (addMacros.InList(s)) {
 						sc.ChangeState(SCE_C_OTH_MACRO|activitySet);
 					} else if (IsAMacroWord(s)) {
 						sc.ChangeState(SCE_C_MACRO|activitySet);
@@ -1175,7 +1169,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else if (styler[i] == '(') {
 						if (lastOper != ':' && lastOper != '.' && stdFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_STD_FUNC|activitySet);
-						} else if (othFuncs.InList(s)) {
+						} else if (addFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_OTH_FUNC|activitySet);
 						} else if (isCondPreprocessor && strcmp(s, "defined") == 0) {
 							sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
@@ -1270,7 +1264,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					styleBeforeTaskMarker = SCE_C_COMMENT;
 					highlightTaskMarker(sc, styler, activitySet,
-										markerList, caseSensitive);
+										markers, caseSensitive);
 				}
 				break;
 				
@@ -1294,7 +1288,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					styleBeforeTaskMarker = SCE_C_COMMENTLINE;
 					highlightTaskMarker(sc, styler, activitySet,
-										markerList, caseSensitive);
+										markers, caseSensitive);
 				}
 				break;
 				
@@ -1329,7 +1323,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					}
 					if (!(IsASpace(sc.ch) || (sc.ch == 0))) {
 						sc.ChangeState(SCE_C_COMMENTDOCKEYWORDERROR|activitySet);
-					} else if (!keywords3.InList(s + 1)) {
+					} else if (!docWords.InList(s + 1)) {
 						int subStyleCDKW = classifierDocKeyWords.ValueFor(s + 1);
 						if (subStyleCDKW >= 0) {
 							sc.ChangeState(subStyleCDKW|activitySet);
