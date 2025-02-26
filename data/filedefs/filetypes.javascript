@@ -2,13 +2,14 @@
 [styling=C]
 
 [keywords]
-# all items must be in one line
-primary=break case catch class const continue debugger default delete do else enum export extends finally for function get if import in Infinity instanceof let new return set static super switch this throw try typeof undefined var void while with yield prototype async await
-secondary=Array Boolean Date Function Math Number Object String RegExp EvalError Error RangeError ReferenceError SyntaxError TypeError URIError constructor prototype decodeURI decodeURIComponent encodeURI encodeURIComponent eval isFinite isNaN parseFloat parseInt
+# Standard keywords
+std_words=break case catch class const continue debugger default delete do else enum export extends finally for function get if import in Infinity instanceof let new return set static super switch this throw try typeof var void while with yield prototype async await
+# Additional keywords
+add_words=Array Boolean Date Function Math Number Object String RegExp EvalError Error RangeError ReferenceError SyntaxError TypeError URIError constructor prototype decodeURI decodeURIComponent encodeURI encodeURIComponent eval isFinite isNaN parseFloat parseInt
 # Common keywords
-commonword=NaN null true false
-# Other classes
-otherclass=
+com_words=NaN null true false undefined
+# Additional classes
+add_classes=
 
 [lexer_properties=C]
 # partially handles ES6 template strings

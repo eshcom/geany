@@ -2,15 +2,18 @@
 [styling=C]
 
 [keywords]
-primary=abstract assert break case catch class const continue default do else enum extends final finally for goto if implements import instanceof interface native new package private protected public return static strictfp super switch synchronized this throw throws transient try volatile while
-secondary=boolean byte char double float int long short void
-# documentation keywords for javadoc
-doccomment=author deprecated exception param return see serial serialData serialField since throws todo version
-typedefs=
+# Standard keywords
+std_words=abstract assert break case catch class const continue default do else enum extends final finally for goto if implements import instanceof interface native new package private protected public return static strictfp super switch synchronized this throw throws transient try volatile while
+# Additional keywords
+add_words=boolean byte char double float int long short void
 # Common keywords
-commonword=null true false
-# Other classes
-otherclass=
+com_words=null true false
+#
+typedefs=
+# Documentation keywords for javadoc
+doc_words=author deprecated exception param return see serial serialData serialField since throws todo version
+# Additional classes
+add_classes=
 
 [lexer_properties=C]
 
