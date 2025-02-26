@@ -122,15 +122,15 @@ static const HLKeyword highlighting_keywords_ADA[] =
 
 
 /* ActionScript */
-#define highlighting_lexer_AS		SCLEX_CPP
+#define highlighting_lexer_AS		highlighting_lexer_C
 #define highlighting_styles_AS		highlighting_styles_C
 static const HLKeyword highlighting_keywords_AS[] =
 {
-	{ 0, "primary",		FALSE },
-	{ 1, "secondary",	FALSE },
-	{ 3, "classes",		FALSE },
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	{ 1,  "add_words",		FALSE },
+	{ 2,  "com_words",		FALSE },
+	{ 3,  "glb_classes",	FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_AS	highlighting_properties_C
 
@@ -159,10 +159,10 @@ static const HLStyle highlighting_styles_ASM[] =
 static const HLKeyword highlighting_keywords_ASM[] =
 {
 	{ 0, "instructions",	FALSE },
-	/*{ 1, "instructions",	FALSE },*/
+	//{ 1, "instructions",	FALSE },
 	{ 2, "registers",		FALSE },
 	{ 3, "directives",		FALSE }
-	/*{ 5, "instructions",	FALSE }*/
+	//{ 5, "instructions",	FALSE }
 };
 #define highlighting_properties_ASM		EMPTY_PROPERTIES
 
@@ -265,7 +265,6 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_COMMONWORD,				"commonword",				FALSE },
 	{ SCE_C_OTHERCLASS,				"otherclass",				FALSE },
 	{ SCE_C_STRINGJSONKEY,			"jsonkeystring",			FALSE },
-	{ SCE_C_BIFS,					"bifs",						FALSE },
 	{ SCE_C_STRING_CONTINUED,		"string_continued",			FALSE },
 	{ SCE_C_LINE_CONTINUED,			"line_continued",			FALSE },
 	{ SCE_C_FUNCTION,				"function",					FALSE },
@@ -277,19 +276,17 @@ static const HLStyle highlighting_styles_C[] =
 };
 static const HLKeyword highlighting_keywords_C[] =
 {
-	{ 0,  "primary",	FALSE },
-	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
-	{ 1,  "secondary",	TRUE },
-	{ 2,  "docComment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types -
-	 * see document_highlight_tags() */
-	{ 6,  "commonword",	FALSE },
-	{ 7,  "otherclass",	FALSE },
-	{ 8,  "bifs",		FALSE },
-	{ 9,  "std_funcs",	FALSE },
-	{ 10, "std_macros",	FALSE },
-	{ 11, "oth_funcs",	FALSE },
-	{ 12, "oth_macros",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	/* SCI_SETKEYWORDS = 1 - add_words + global tags file types, see below */
+	{ 1,  "add_words",		TRUE },
+	{ 2,  "com_words",		FALSE },
+	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	{ 6,  "doc_words",		FALSE },
+	{ 7,  "std_funcs",		FALSE },
+	{ 8,  "add_funcs",		FALSE },
+	{ 9,  "std_macros",		FALSE },
+	{ 10, "add_macros",		FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 static const HLProperty highlighting_properties_C[] =
 {
@@ -511,8 +508,8 @@ static const HLStyle highlighting_styles_D[] =
 	{ SCE_D_COMMENTDOCKEYWORD,		"commentdockeyword",		FALSE },
 	{ SCE_D_COMMENTDOCKEYWORDERROR,	"commentdockeyworderror",	FALSE }
 	/* these are for user-defined keywords we don't set yet */
-	/*{ SCE_D_WORD6,					"word6",					FALSE },
-	{ SCE_D_WORD7,					"word7",					FALSE }*/
+	//{ SCE_D_WORD6,					"word6",					FALSE },
+	//{ SCE_D_WORD7,					"word7",					FALSE }
 };
 static const HLKeyword highlighting_keywords_D[] =
 {
@@ -520,8 +517,7 @@ static const HLKeyword highlighting_keywords_D[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types */
 	{ 1, "secondary",	TRUE },
 	{ 2, "docComment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types -
-	 * see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
 	{ 4, "types",		FALSE },
 };
 #define highlighting_properties_D		EMPTY_PROPERTIES
@@ -743,15 +739,15 @@ static const HLKeyword highlighting_keywords_F77[] =
 
 
 /* Ferite */
-#define highlighting_lexer_FERITE		SCLEX_CPP
+#define highlighting_lexer_FERITE		highlighting_lexer_C
 #define highlighting_styles_FERITE		highlighting_styles_C
 static const HLKeyword highlighting_keywords_FERITE[] =
 {
-	{ 0, "primary",		FALSE },
-	{ 1, "types",		FALSE },
-	{ 2, "docComment",	FALSE },
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	{ 1,  "add_words",		FALSE },
+	{ 2,  "com_words",		FALSE },
+	{ 6,  "doc_words",		FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_FERITE	highlighting_properties_C
 
@@ -794,7 +790,7 @@ static const HLKeyword highlighting_keywords_FORTH[] =
 
 
 /* Go */
-#define highlighting_lexer_GO		SCLEX_CPP
+#define highlighting_lexer_GO		highlighting_lexer_C
 #define highlighting_styles_GO		highlighting_styles_C
 #define highlighting_keywords_GO	highlighting_keywords_C
 #define highlighting_properties_GO	highlighting_properties_C
@@ -838,15 +834,15 @@ static const HLKeyword highlighting_keywords_HASKELL[] =
 
 
 /* HAXE */
-#define highlighting_lexer_HAXE			SCLEX_CPP
+#define highlighting_lexer_HAXE			highlighting_lexer_C
 #define highlighting_styles_HAXE		highlighting_styles_C
 static const HLKeyword highlighting_keywords_HAXE[] =
 {
-	{ 0, "primary",		FALSE },
-	{ 1, "secondary",	FALSE },
-	{ 3, "classes",		FALSE },
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	{ 1,  "add_words",		FALSE },
+	{ 2,  "com_words",		FALSE },
+	{ 3,  "glb_classes",	FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_HAXE	highlighting_properties_C
 
@@ -999,32 +995,31 @@ static const HLProperty highlighting_properties_HTML[] =
 
 
 /* Java */
-#define highlighting_lexer_JAVA			SCLEX_CPP
+#define highlighting_lexer_JAVA			highlighting_lexer_C
 #define highlighting_styles_JAVA		highlighting_styles_C
 static const HLKeyword highlighting_keywords_JAVA[] =
 {
-	{ 0, "primary",		FALSE },
-	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
-	{ 1, "secondary",	TRUE },
-	{ 2, "doccomment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types -
-	 * see document_highlight_tags() */
-	{ 4, "typedefs",	FALSE },
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	/* SCI_SETKEYWORDS = 1 - add_words + global tags file types, see below */
+	{ 1,  "add_words",		TRUE },
+	{ 2,  "com_words",		FALSE },
+	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	{ 6,  "doc_words",		FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_JAVA	highlighting_properties_C
 
 
 /* JavaScript */
-#define highlighting_lexer_JS		SCLEX_CPP
+#define highlighting_lexer_JS		highlighting_lexer_C
 #define highlighting_styles_JS		highlighting_styles_C
 static const HLKeyword highlighting_keywords_JS[] =
 {
-	{ 0, "primary",		FALSE },
-	{ 1, "secondary",	FALSE },
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 0,  "std_words",		FALSE },
+	{ 1,  "add_words",		FALSE },
+	{ 2,  "com_words",		FALSE },
+	{ 3,  "glb_classes",	FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_JS	highlighting_properties_C
 
@@ -1226,14 +1221,13 @@ static const HLKeyword highlighting_keywords_NSIS[] =
 #define highlighting_styles_OBJECTIVEC		highlighting_styles_C
 static const HLKeyword highlighting_keywords_OBJECTIVEC[] =
 {
-	{ 0, "primary",		FALSE },
+	{ 0,  "std_words",		FALSE },
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types, see below */
-	{ 1, "secondary",	TRUE },
-	{ 2, "docComment",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types -
-	 * see document_highlight_tags() */
-	{ 6, "commonword",	FALSE },
-	{ 7, "otherclass",	FALSE }
+	{ 1,  "add_words",		TRUE },
+	{ 2,  "com_words",		FALSE },
+	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
+	{ 6,  "doc_words",		FALSE },
+	{ 11, "add_classes",	FALSE }
 };
 #define highlighting_properties_OBJECTIVEC	highlighting_properties_C
 
@@ -1546,8 +1540,7 @@ static const HLKeyword highlighting_keywords_RUST[] =
 	/* SCI_SETKEYWORDS = 1 - secondary + global tags file types */
 	{ 1, "secondary",	TRUE },
 	{ 2, "tertiary",	FALSE },
-	/* SCI_SETKEYWORDS = 3 is for current session types -
-	 * see document_highlight_tags() */
+	/* SCI_SETKEYWORDS = 3 is for current session types - see document_highlight_tags() */
 };
 #define highlighting_properties_RUST		EMPTY_PROPERTIES
 
@@ -1601,10 +1594,10 @@ static const HLStyle highlighting_styles_SQL[] =
 	{ SCE_SQL_QUOTEDIDENTIFIER,			"quotedidentifier",			FALSE },
 	{ SCE_SQL_QOPERATOR,				"qoperator",				FALSE }
 	/* these are for user-defined keywords we don't set yet */
-	/*{ SCE_SQL_USER1,					"user1",					FALSE },
-	{ SCE_SQL_USER2,					"user2",					FALSE },
-	{ SCE_SQL_USER3,					"user3",					FALSE },
-	{ SCE_SQL_USER4,					"user4",					FALSE }*/
+	//{ SCE_SQL_USER1,					"user1",					FALSE },
+	//{ SCE_SQL_USER2,					"user2",					FALSE },
+	//{ SCE_SQL_USER3,					"user3",					FALSE },
+	//{ SCE_SQL_USER4,					"user4",					FALSE }
 };
 static const HLKeyword highlighting_keywords_SQL[] =
 {
@@ -1637,9 +1630,9 @@ static const HLStyle highlighting_styles_TCL[] =
 	{ SCE_TCL_BLOCK_COMMENT,	"blockcomment",		FALSE },
 	{ SCE_TCL_SUB_BRACE,		"subbrace",			FALSE }
 	/* these are for user-defined keywords we don't set yet */
-	/*{ SCE_TCL_WORD6,			"user2",			FALSE },
-	{ SCE_TCL_WORD7,			"user3",			FALSE },
-	{ SCE_TCL_WORD8,			"user4",			FALSE }*/
+	//{ SCE_TCL_WORD6,			"user2",			FALSE },
+	//{ SCE_TCL_WORD7,			"user3",			FALSE },
+	//{ SCE_TCL_WORD8,			"user4",			FALSE }
 };
 static const HLKeyword highlighting_keywords_TCL[] =
 {

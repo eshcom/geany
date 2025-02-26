@@ -2,10 +2,10 @@
 [styling=C]
 
 [keywords=C]
-# Primary keywords
-primary=alignas alignof and and_eq asm auto bitand bitor bool break case catch char char16_t char32_t class compl const const_cast constexpr continue decltype default delete do double dynamic_cast else enum explicit export extern final float for friend goto if inline int long mutable namespace new noexcept not not_eq operator or or_eq override private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this thread_local throw try typedef typeid typename union unsigned using virtual void volatile wchar_t while xor xor_eq
-# Common keywords (C-commonword + nullptr)
-commonword=TRUE FALSE NULL NAN EOF WEOF true false noreturn stderr stdin stdout nullptr
+# Standard keywords
+std_words=alignas alignof and and_eq asm auto bitand bitor bool break case catch char char16_t char32_t class compl const const_cast constexpr continue decltype default delete do double dynamic_cast else enum explicit export extern final float for friend goto if inline int long mutable namespace new noexcept not not_eq operator or or_eq override private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this thread_local throw try typedef typeid typename union unsigned using virtual void volatile wchar_t while xor xor_eq
+# Common keywords (C-com_words + nullptr)
+com_words=TRUE FALSE NULL NAN EOF WEOF true false noreturn stderr stdin stdout nullptr
 
 [lexer_properties=C]
 
@@ -29,7 +29,7 @@ comment_close=*/
 
 # set to false if a comment character/string should start at column 0 of a line, true uses any
 # indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
-	#command_example();
+#	command_example();
 # setting to false would generate this
 #	command_example();
 # This setting works only for single line comments

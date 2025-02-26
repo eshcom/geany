@@ -2,12 +2,16 @@
 [styling=C]
 
 [keywords]
-# all items must be in one line
-primary=abstract as base bool break byte case catch char checked class const continue decimal default delegate do double else enum event explicit extern false finally fixed float for foreach goto if implicit in int interface internal is lock long namespace new null object operator out override params private protected public readonly ref return sbyte sealed short sizeof stackalloc static string struct switch this throw true try typeof uint ulong unchecked unsafe ushort using virtual void volatile while
-secondary=add alias ascending async await descending dynamic from get global group into join let orderby partial remove select set value var where yield
-# these are some doxygen keywords (incomplete)
-docComment=attention author brief bug class code date def enum example exception file fn namespace note param remarks return see since struct throw todo typedef var version warning union
-# keywords: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/
+# Standard keywords: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/
+std_words=abstract as base bool break byte case catch char checked class const continue decimal default delegate do double else enum event explicit extern finally fixed float for foreach goto if implicit in int interface internal is lock long namespace new object operator out override params private protected public readonly ref return sbyte sealed short sizeof stackalloc static string struct switch this throw try typeof uint ulong unchecked unsafe ushort using virtual void volatile while
+# Additional keywords
+add_words=add alias ascending async await descending dynamic from get global group into join let orderby partial remove select set value var where yield
+# Common keywords
+com_words=null true false
+# Some doxygen keywords (incomplete)
+doc_words=attention author brief bug class code date def enum example exception file fn namespace note param remarks return see since struct throw todo typedef var version warning union
+# Additional classes
+add_classes=
 
 [lexer_properties=C]
 
@@ -31,7 +35,7 @@ comment_close=*/
 
 # set to false if a comment character/string should start at column 0 of a line, true uses any
 # indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
-	#command_example();
+#	command_example();
 # setting to false would generate this
 #	command_example();
 # This setting works only for single line comments

@@ -2,15 +2,16 @@
 [styling=C]
 
 [keywords]
-# all items must be in one line
-primary=asm auto break case char const continue default do double else enum extern float for goto if inline int long register restrict return short signed sizeof static struct switch typedef union unsigned void volatile while
-secondary=@class @defs @dynamic @encode @end @implementation @interface @optional @package @public @private @property @protocol @protected @required @selector @synthesize @synchronized
-# these are some doxygen keywords (incomplete)
-docComment=attention author brief bug class code date def enum example exception file fn namespace note param remarks return see since struct throw todo typedef var version warning union
+# Standard keywords
+std_words=asm auto break case char const continue default do double else enum extern float for goto if inline int long register restrict return short signed sizeof static struct switch typedef union unsigned void volatile while
+# Additional keywords
+add_words=@class @defs @dynamic @encode @end @implementation @interface @optional @package @public @private @property @protocol @protected @required @selector @synthesize @synchronized
 # Common keywords
-commonword=NULL TRUE FALSE
-# Other classes
-otherclass=
+com_words=NULL TRUE FALSE
+# Some doxygen keywords (incomplete)
+doc_words=attention author brief bug class code date def enum example exception file fn namespace note param remarks return see since struct throw todo typedef var version warning union
+# Additional classes
+add_classes=
 
 [lexer_properties=C]
 lexer.cpp.verbatim.strings.allow.escapes=1
@@ -33,7 +34,7 @@ comment_close=*/
 
 # set to false if a comment character/string should start at column 0 of a line, true uses any
 # indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
-	#command_example();
+#	command_example();
 # setting to false would generate this
 #	command_example();
 # This setting works only for single line comments

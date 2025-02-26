@@ -2,14 +2,16 @@
 [styling=C]
 
 [keywords]
-# all items must be in one line
-primary=arguments break case catch class const continue default do dynamic each else extends final finally for function get if implements import in include Infinity interface internal label namespace native new override package private protected public return set static super switch this throw try typeof undefined var while with
-secondary=decodeURI decodeURIcomponent encodeURI encodeURIcomponent escape isFinite isNaN isXMLName parseFloat parseInt trace unescape
-classes=ArgumentError Array Boolean Class Date DefinitionError Error EvalError Function int Math NameSpace Null Number Object QName RangeError ReferenceError RegExp SecurityError String SyntaxError TypeError uint URIError Vector VerifyError void XML XMLList
+# Standard keywords
+std_words=arguments break case catch class const continue default do dynamic each else extends final finally for function get if implements import in include Infinity interface internal label namespace native new override package private protected public return set static super switch this throw try typeof var while with
+# Additional keywords
+add_words=decodeURI decodeURIcomponent encodeURI encodeURIcomponent escape isFinite isNaN isXMLName parseFloat parseInt trace unescape
 # Common keywords
-commonword=NaN null true false
-# Other classes
-otherclass=
+com_words=NaN null true false undefined
+# Global classes
+glb_classes=ArgumentError Array Boolean Class Date DefinitionError Error EvalError Function int Math NameSpace Null Number Object QName RangeError ReferenceError RegExp SecurityError String SyntaxError TypeError uint URIError Vector VerifyError void XML XMLList
+# Additional classes
+add_classes=
 
 [lexer_properties=C]
 
@@ -31,7 +33,7 @@ comment_close=*/
 
 # set to false if a comment character/string should start at column 0 of a line, true uses any
 # indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
-	#command_example();
+#	command_example();
 # setting to false would generate this
 #	command_example();
 # This setting works only for single line comments
@@ -51,5 +53,3 @@ context_action_cmd=
 # (use only one of it at one time)
 compiler=
 run_cmd=
-
-
