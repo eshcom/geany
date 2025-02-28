@@ -1,8 +1,14 @@
 int main()
 {
+	//FIXME: test taskmarket
 	const double RENT = 3852.99;
+	//TODO
 	printf("*%8f*\n", RENT);
+	/*
+	 * FIXME: test taskmarket
+	*/
 	printf("*%e*\n", RENT);
+	/*TODO*/
 	printf("*%4.2f*\n", RENT);
 	printf("*%3.1f*\n", RENT);
 	printf("*%10.3f*\n", RENT);

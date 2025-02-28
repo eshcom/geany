@@ -195,6 +195,7 @@ LexicalClass lexicalClasses[] = {
 
 class LexerBash : public DefaultLexer {
 	WordList keywords;
+	WordList taskMarkers;
 	OptionsBash options;
 	OptionSetBash osBash;
 	enum { ssIdentifier, ssScalar };
@@ -281,6 +282,9 @@ Sci_Position SCI_METHOD LexerBash::WordListSet(int n, const char *wl) {
 	switch (n) {
 	case 0:
 		wordListN = &keywords;
+		break;
+	case 1:
+		wordListN = &taskMarkers;
 		break;
 	}
 	Sci_Position firstModification = -1;

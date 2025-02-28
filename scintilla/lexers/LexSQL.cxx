@@ -391,6 +391,7 @@ private:
 	WordList kw_user2;
 	WordList kw_user3;
 	WordList kw_user4;
+	WordList taskMarkers;
 };
 
 Sci_Position SCI_METHOD LexerSQL::WordListSet(int n, const char *wl) {
@@ -419,6 +420,10 @@ Sci_Position SCI_METHOD LexerSQL::WordListSet(int n, const char *wl) {
 		break;
 	case 7:
 		wordListN = &kw_user4;
+		break;
+	case 8:
+		wordListN = &taskMarkers;
+		break;
 	}
 	Sci_Position firstModification = -1;
 	if (wordListN) {

@@ -29,6 +29,7 @@ atom_quoted=default
 node_quoted=default
 macro_quoted=default
 record_quoted=default
+taskmarker=comment
 comment=comment
 comment_module=comment
 comment_function=comment

@@ -1,8 +1,12 @@
 /*
  * Some applications depend on these named colors.
  */
- 
+
 * {
+	/*
+		FIXME: test taskmarket
+		TODO: test taskmarket
+	*/
 	background: silver;
 }
 

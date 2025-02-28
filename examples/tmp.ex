@@ -7,12 +7,15 @@ defmodule Df.UseCases.UserAction do
   alias Df.Repository.Permissions.Storage, as: PermissionsStorage
   alias Sayings.{Greetings, Farewells}
 
+  #FIXME: test taskmarket
   use Memoize
+  #TODO
   use ExUnit.Case, async: true
-
+  # FIXME: test taskmarket
   import List, only: [duplicate: 2]
-
+  # TODO
   require Logger
+
   Feature.__using__(option: :value)
 
   "field7" => "string-field stringval"

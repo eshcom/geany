@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#FIXME: test taskmarket
+#TODO: test taskmarket
+
 #~ invalid
 v11=$(find -name
 		test.sh)

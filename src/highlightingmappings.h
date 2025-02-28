@@ -633,6 +633,7 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_ATOM_PUNCT,		"atom_punct",		FALSE },
 	{ SCE_ELIXIR_ATOM_QUOTED,		"atom_quoted",		FALSE },
 	{ SCE_ELIXIR_NODE_QUOTED,		"node_quoted",		FALSE },
+	{ SCE_ELIXIR_TASKMARKER,		"taskmarker",		FALSE },
 	{ SCE_ELIXIR_COMMENT,			"comment",			FALSE }
 };
 static const HLKeyword highlighting_keywords_ELIXIR[] =
@@ -687,6 +688,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_NODE_QUOTED,		"node_quoted",			FALSE },
 	{ SCE_ERLANG_MACRO_QUOTED,		"macro_quoted",			FALSE },
 	{ SCE_ERLANG_RECORD_QUOTED,		"record_quoted",		FALSE },
+	{ SCE_ERLANG_TASKMARKER,		"taskmarker",			FALSE },
 	{ SCE_ERLANG_COMMENT,			"comment",				FALSE },
 	{ SCE_ERLANG_COMMENT_MODULE,	"comment_module",		FALSE },
 	{ SCE_ERLANG_COMMENT_FUNCTION,	"comment_function",		FALSE },
@@ -1418,6 +1420,7 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_FSTRING_OPTION,		"fstring_option",	FALSE },
 	{ SCE_P_STRING_CONTINUED,	"string_continued",	FALSE },
 	{ SCE_P_LINE_CONTINUED,		"line_continued",	FALSE },
+	{ SCE_P_TASKMARKER,			"taskmarker",		FALSE },
 	{ SCE_P_COMMENTLINE,		"commentline",		FALSE },
 	{ SCE_P_COMMENTBLOCK,		"commentblock",		FALSE }
 };

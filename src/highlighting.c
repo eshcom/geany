@@ -57,6 +57,8 @@
 
 
 static gchar *whitespace_chars = NULL;
+// esh: added task markers (FIXME, TODO, etc.)
+static gchar *task_markers = NULL;
 
 
 typedef struct
@@ -438,6 +440,13 @@ static gchar *get_keyfile_whitespace_chars(GKeyFile *config, GKeyFile *configh)
 }
 
 
+static gchar *get_keyfile_task_markers(GKeyFile *config, GKeyFile *configh)
+{
+	return utils_get_setting(string, configh, config, "keywords",
+							 "task_markers", "");
+}
+
+
 static void add_named_style(GKeyFile *config, const gchar *key)
 {
 	const gchar group[] = "named_styles";
@@ -602,6 +611,9 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 						  GEANY_WORDCHARS);
 	g_free(whitespace_chars);
 	whitespace_chars = get_keyfile_whitespace_chars(config, config_home);
+	
+	g_free(task_markers);
+	task_markers = get_keyfile_task_markers(config, config_home);
 }
 
 
@@ -933,8 +945,7 @@ static void styleset_from_mapping(ScintillaObject *sci, guint ft_id, guint lexer
 		if (keywords[i].merge)
 			merge_type_keywords(sci, ft_id, i);
 		else
-			sci_set_keywords(sci, keywords[i].id,
-							 style_sets[ft_id].keywords[i]);
+			sci_set_keywords(sci, keywords[i].id, style_sets[ft_id].keywords[i]);
 	}
 	
 	/* properties */
@@ -1209,6 +1220,53 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 			val++;
 		}
 	}
+	
+	// esh: set task_markers
+	gint lexer = sci_get_lexer(sci);
+	gint keyword_idx = -1;
+	
+	switch (lexer)
+	{
+		case SCLEX_CPP:
+			keyword_idx = 5;
+			break;
+		
+		case SCLEX_PYTHON:
+			keyword_idx = 7;
+			break;
+		
+		case SCLEX_ERLANG:
+			keyword_idx = 10;
+			break;
+		
+		case SCLEX_ELIXIR:
+			keyword_idx = 13;
+			break;
+		
+		case SCLEX_BASH:
+			keyword_idx = 1;
+			break;
+		
+		case SCLEX_YAML:
+			keyword_idx = 1;
+			break;
+		
+		case SCLEX_HTML:
+		case SCLEX_XML:
+			keyword_idx = 6;
+			break;
+		
+		case SCLEX_SQL:
+			keyword_idx = 8;
+			break;
+		
+		case SCLEX_PROPERTIES:
+			keyword_idx = 2;
+			break;
+	}
+	
+	if (keyword_idx >= 0)
+		sci_set_keywords(sci, keyword_idx, task_markers);
 }
 
 
@@ -1775,7 +1833,8 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 					style == SCE_D_COMMENTDOCKEYWORDERROR);
 		
 		case SCLEX_PYTHON:
-			return (style == SCE_P_COMMENTLINE ||
+			return (style == SCE_P_TASKMARKER ||
+					style == SCE_P_COMMENTLINE ||
 					style == SCE_P_COMMENTBLOCK);
 		
 		case SCLEX_F77:
@@ -1918,10 +1977,12 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 					style == SCE_CAML_COMMENT3);
 		
 		case SCLEX_ELIXIR:
-			return (style == SCE_ELIXIR_COMMENT);
+			return (style == SCE_ELIXIR_COMMENT ||
+					style == SCE_ELIXIR_TASKMARKER);
 		
 		case SCLEX_ERLANG:
-			return (style == SCE_ERLANG_COMMENT ||
+			return (style == SCE_ERLANG_TASKMARKER ||
+					style == SCE_ERLANG_COMMENT ||
 					style == SCE_ERLANG_COMMENT_MODULE ||
 					style == SCE_ERLANG_COMMENT_FUNCTION ||
 					style == SCE_ERLANG_COMMENT_TAG ||

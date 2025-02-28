@@ -14,6 +14,9 @@
 - step: *id002                   # refers to the second step
 - step: *id002
 
+#FIXME: test taskmarket
+#TODO: test taskmarket
+
 ---
 a: 123                     # an integer
 b: "123"                   # a string, disambiguated by quotes

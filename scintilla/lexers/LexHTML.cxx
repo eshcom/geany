@@ -858,6 +858,7 @@ class LexerHTML : public DefaultLexer {
 	WordList keywords4;
 	WordList keywords5;
 	WordList keywords6; // SGML (DTD) keywords
+	WordList taskMarkers;
 	OptionsHTML options;
 	OptionSetHTML osHTML;
 	std::set<std::string> nonFoldingTags;
@@ -931,6 +932,9 @@ Sci_Position SCI_METHOD LexerHTML::WordListSet(int n, const char *wl) {
 		break;
 	case 5:
 		wordListN = &keywords6;
+		break;
+	case 6:
+		wordListN = &taskMarkers;
 		break;
 	}
 	Sci_Position firstModification = -1;
