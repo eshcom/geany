@@ -310,8 +310,8 @@ static const char *const pythonWordListDesc[] = {
 	"Common keywords (eg. True/False/None)",
 	"References to the current instance of a class (eg. self)",
 	"Standard functions (BIFs)",
-	"Standard exceptions (eg. BaseException)",
 	"Standard identifiers",
+	"Standard exceptions (eg. BaseException)",
 	0
 };
 
@@ -377,8 +377,8 @@ LexicalClass lexicalClasses[] = {
 	3,	"SCE_P_COM_WORD", "keyword", "Common keywords (eg. True/False/None)",
 	4,	"SCE_P_REF_WORD", "identifier", "References to the current instance of a class (eg. self)",
 	5,	"SCE_P_STD_FUNC", "identifier", "Standard functions (BIFs)",
-	6,	"SCE_P_STD_EXCEPT", "identifier", "Standard exceptions (eg. BaseException)",
-	7,	"SCE_P_STD_IDENT", "identifier", "Standard identifiers",
+	6,	"SCE_P_STD_IDENT", "identifier", "Standard identifiers",
+	7,	"SCE_P_STD_EXCEPT", "identifier", "Standard exceptions (eg. BaseException)",
 	8,	"SCE_P_IDENTIFIER", "identifier", "Identifiers",
 	9,	"SCE_P_SAME_STD_FUNC", "identifier", "Highlighted BIFs, but w/o opening brace",
 	10,	"SCE_P_DECORATOR", "preprocessor", "Decorators",
@@ -526,10 +526,10 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		wordListN = &stdFuncs;
 		break;
 	case 5:
-		wordListN = &stdExcepts;
+		wordListN = &stdIdents;
 		break;
 	case 6:
-		wordListN = &stdIdents;
+		wordListN = &stdExcepts;
 		break;
 	}
 	Sci_Position firstModification = -1;

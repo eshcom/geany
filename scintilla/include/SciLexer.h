@@ -149,8 +149,8 @@
 #define SCE_P_COM_WORD 3
 #define SCE_P_REF_WORD 4
 #define SCE_P_STD_FUNC 5
-#define SCE_P_STD_EXCEPT 6
-#define SCE_P_STD_IDENT 7
+#define SCE_P_STD_IDENT 6
+#define SCE_P_STD_EXCEPT 7
 #define SCE_P_IDENTIFIER 8
 #define SCE_P_SAME_STD_FUNC 9
 #define SCE_P_DECORATOR 10

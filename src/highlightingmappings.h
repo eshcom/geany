@@ -1392,8 +1392,8 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_COM_WORD,			"com_word",			FALSE },
 	{ SCE_P_REF_WORD,			"ref_word",			FALSE },
 	{ SCE_P_STD_FUNC,			"std_func",			FALSE },
-	{ SCE_P_STD_EXCEPT,			"std_except",		FALSE },
 	{ SCE_P_STD_IDENT,			"std_ident",		FALSE },
+	{ SCE_P_STD_EXCEPT,			"std_except",		FALSE },
 	{ SCE_P_IDENTIFIER,			"identifier",		FALSE },
 	{ SCE_P_SAME_STD_FUNC,		"same_std_func",	FALSE },
 	{ SCE_P_DECORATOR,			"decorator",		FALSE },
@@ -1428,8 +1428,8 @@ static const HLKeyword highlighting_keywords_PYTHON[] =
 	{ 2, "com_words",	FALSE },
 	{ 3, "ref_words",	FALSE },
 	{ 4, "std_funcs",	FALSE },
-	{ 5, "std_excepts",	FALSE },
-	{ 6, "std_idents",	FALSE }
+	{ 5, "std_idents",	FALSE },
+	{ 6, "std_excepts",	FALSE }
 };
 #define highlighting_properties_PYTHON	EMPTY_PROPERTIES
 
