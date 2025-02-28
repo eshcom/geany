@@ -2,45 +2,45 @@
 [styling]
 # Edit these in the colorscheme .conf file instead
 default=default
-comment=comment
-commentline=comment_line
-commentdoc=comment_doc
-preprocessorcomment=comment
-preprocessorcommentdoc=comment_doc
-number=number_1
-word=keyword_1
-word2=keyword_2
-string=string_1
-stringraw=string_2
-character=character
-userliteral=other
-uuid=other
-preprocessor=preprocessor
-operator=operator
+std_word=keyword_1
+add_word=keyword_2
+com_word=keyword_1
+std_func=identifier_1
+add_func=identifier_1
+std_macro=identifier_1
+add_macro=identifier_1
+glb_class=class
+add_class=class
 identifier=identifier_1
-stringeol=string_eol
-verbatim=string_2
-regex=regex
-commentlinedoc=comment_line_doc
-commentdockeyword=comment_doc_keyword
-commentdockeyworderror=comment_doc_keyword_error
-globalclass=class
-# """verbatim"""
-tripleverbatim=string_2
-hashquotedstring=string_2
-taskmarker=comment
-escapesequence=string_1
-formatsequence=string_1
-commonword=keyword_1
-otherclass=class
-string_continued=string_1
-line_continued=preprocessor
+cpp_type=identifier_1
 function=identifier_1
 macro=identifier_1
-std_func=identifier_1
-std_macro=identifier_1
-oth_func=identifier_1
-oth_macro=identifier_1
+preproc=preprocessor
+operator=operator
+number=number_1
+string=string_1
+stringraw=string_2
+stringeol=string_eol
+character=character
+escapeseq=string_1
+formatseq=string_1
+userliteral=other
+uuid=other
+regex=regex
+verbatim=string_2
+tripleverbatim=string_2
+hashquotedstring=string_2
+string_continued=string_1
+line_continued=preprocessor
+taskmarker=comment
+comment=comment
+commentdoc=comment_doc
+commentdockeyword=comment_doc_keyword
+commentdockeyworderror=comment_doc_keyword_error
+commentline=comment_line
+commentlinedoc=comment_line_doc
+preproccomment=comment
+preproccommentdoc=comment_doc
 
 [keywords]
 # Standard keywords
@@ -86,7 +86,7 @@ comment_close=*/
 
 # set to false if a comment character/string should start at column 0 of a line, true uses any
 # indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
-#	command_example();
+	#command_example();
 # setting to false would generate this
 #	command_example();
 # This setting works only for single line comments

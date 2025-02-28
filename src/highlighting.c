@@ -1476,18 +1476,18 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 	switch (lexer)
 	{
 		case SCLEX_CPP:
-			return (style == SCE_C_CHARACTER ||
-					style == SCE_C_STRING ||
-					style == SCE_C_STRINGEOL ||
+			return (style == SCE_C_STRING ||
 					style == SCE_C_STRINGRAW ||
-					style == SCE_C_STRINGJSONKEY ||
-					style == SCE_C_VERBATIM ||
+					style == SCE_C_STRINGEOL ||
+					style == SCE_C_CHARACTER ||
+					style == SCE_C_ESCAPESEQ ||
+					style == SCE_C_FORMATSEQ ||
 					style == SCE_C_USERLITERAL ||
-					style == SCE_C_TRIPLEVERBATIM ||
 					style == SCE_C_REGEX ||
+					style == SCE_C_VERBATIM ||
+					style == SCE_C_TRIPLEVERBATIM ||
+					style == SCE_C_JSONKEYSTRING ||
 					style == SCE_C_HASHQUOTEDSTRING ||
-					style == SCE_C_ESCAPESEQUENCE ||
-					style == SCE_C_FORMATSEQUENCE ||
 					style == SCE_C_STRING_CONTINUED);
 		
 		case SCLEX_PASCAL:
@@ -1750,15 +1750,15 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 	{
 		case SCLEX_COBOL:
 		case SCLEX_CPP:
-			return (style == SCE_C_COMMENT ||
-					style == SCE_C_COMMENTLINE ||
+			return (style == SCE_C_TASKMARKER ||
+					style == SCE_C_COMMENT ||
 					style == SCE_C_COMMENTDOC ||
-					style == SCE_C_PREPROCESSORCOMMENT ||
-					style == SCE_C_PREPROCESSORCOMMENTDOC ||
-					style == SCE_C_COMMENTLINEDOC ||
 					style == SCE_C_COMMENTDOCKEYWORD ||
 					style == SCE_C_COMMENTDOCKEYWORDERROR ||
-					style == SCE_C_TASKMARKER);
+					style == SCE_C_COMMENTLINE ||
+					style == SCE_C_COMMENTLINEDOC ||
+					style == SCE_C_PREPROCCOMMENT ||
+					style == SCE_C_PREPROCCOMMENTDOC);
 		
 		case SCLEX_PASCAL:
 			return (style == SCE_PAS_COMMENT ||
@@ -1973,7 +1973,7 @@ gboolean highlighting_is_code_style(gint lexer, gint style)
 	{
 		case SCLEX_CPP:
 		{
-			if (style == SCE_C_PREPROCESSOR)
+			if (style == SCE_C_PREPROC)
 				return FALSE;
 			break;
 		}

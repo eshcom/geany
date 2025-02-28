@@ -107,10 +107,10 @@ static int classifyWordCOBOL(Sci_PositionU start, Sci_PositionU end,
 	}
 	else {
 		if (a_keywords.InList(s)) {
-			chAttr = SCE_C_WORD;
+			chAttr = SCE_C_STD_WORD;
 		}
 		else if (b_keywords.InList(s)) {
-			chAttr = SCE_C_WORD2;
+			chAttr = SCE_C_ADD_WORD;
 		}
 		else if (c_keywords.InList(s)) {
 			chAttr = SCE_C_UUID;
@@ -238,7 +238,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 				state = SCE_C_CHARACTER;
 			} else if (ch == '?' && column == 0) {
 				ColourTo(styler, i-1, state);
-				state = SCE_C_PREPROCESSOR;
+				state = SCE_C_PREPROC;
 			} else if (isCOBOLoperator(ch)) {
 				ColourTo(styler, i-1, state);
 				ColourTo(styler, i, SCE_C_OPERATOR);
@@ -265,7 +265,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		} else {
-			if (state == SCE_C_PREPROCESSOR) {
+			if (state == SCE_C_PREPROC) {
 				if (IsACRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
