@@ -26,6 +26,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 #include "OptionSet.h"
 #include "SubStyles.h"
 #include "DefaultLexer.h"
@@ -156,6 +157,7 @@ struct OptionsBash {
 
 const char * const bashWordListDesc[] = {
 	"Keywords",
+	"Task marker and error marker keywords",
 	0
 };
 
@@ -189,12 +191,14 @@ LexicalClass lexicalClasses[] = {
 	11, "SCE_SH_BACKTICKS", "literal string", "Backtick quoted command",
 	12, "SCE_SH_HERE_DELIM", "operator", "Heredoc delimiter",
 	13, "SCE_SH_HERE_Q", "literal string", "Heredoc quoted string",
+	14, "SCE_SH_TASKMARKER", "comment taskmarker", "Task Marker",
 };
 
 }
 
 class LexerBash : public DefaultLexer {
 	WordList keywords;
+	WordList taskMarkers;
 	OptionsBash options;
 	OptionSetBash osBash;
 	enum { ssIdentifier, ssScalar };
@@ -281,6 +285,9 @@ Sci_Position SCI_METHOD LexerBash::WordListSet(int n, const char *wl) {
 	switch (n) {
 	case 0:
 		wordListN = &keywords;
+		break;
+	case 1:
+		wordListN = &taskMarkers;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -610,6 +617,8 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_SH_DEFAULT);
 				break;
 			case SCE_SH_COMMENTLINE:
+				HighlightTaskMarker(sc, styler, taskMarkers, true,
+									SCE_SH_TASKMARKER);
 				if (sc.atLineEnd && sc.chPrev != '\\') {
 					sc.SetState(SCE_SH_DEFAULT);
 				}

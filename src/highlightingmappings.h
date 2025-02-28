@@ -418,7 +418,8 @@ static const HLStyle highlighting_styles_CSS[] =
 	{ SCE_CSS_URL_VALUE,				"url_value",				FALSE },
 	{ SCE_CSS_FUNCTION,					"function",					FALSE },
 	{ SCE_CSS_SUBVAR_OPER,				"subvar_oper",				FALSE },
-	{ SCE_CSS_ESCAPESEQUENCE,			"escapesequence",			FALSE }
+	{ SCE_CSS_ESCAPESEQUENCE,			"escapesequence",			FALSE },
+	{ SCE_CSS_TASKMARKER,				"taskmarker",				FALSE }
 };
 static const HLKeyword highlighting_keywords_CSS[] =
 {
@@ -472,7 +473,8 @@ static const HLStyle highlighting_styles_CONF[] =
 	{ SCE_PROPS_VARIABLE,		"variable",			FALSE },
 	{ SCE_PROPS_SUBVAR_OPER,	"subvar_oper",		FALSE },
 	{ SCE_PROPS_ESCAPESEQUENCE,	"escapesequence",	FALSE },
-	{ SCE_PROPS_ERROR,			"error",			FALSE }
+	{ SCE_PROPS_ERROR,			"error",			FALSE },
+	{ SCE_PROPS_TASKMARKER,		"taskmarker",		FALSE }
 };
 static const HLKeyword highlighting_keywords_CONF[] =
 {
@@ -633,6 +635,7 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_ATOM_PUNCT,		"atom_punct",		FALSE },
 	{ SCE_ELIXIR_ATOM_QUOTED,		"atom_quoted",		FALSE },
 	{ SCE_ELIXIR_NODE_QUOTED,		"node_quoted",		FALSE },
+	{ SCE_ELIXIR_TASKMARKER,		"taskmarker",		FALSE },
 	{ SCE_ELIXIR_COMMENT,			"comment",			FALSE }
 };
 static const HLKeyword highlighting_keywords_ELIXIR[] =
@@ -687,6 +690,7 @@ static const HLStyle highlighting_styles_ERLANG[] =
 	{ SCE_ERLANG_NODE_QUOTED,		"node_quoted",			FALSE },
 	{ SCE_ERLANG_MACRO_QUOTED,		"macro_quoted",			FALSE },
 	{ SCE_ERLANG_RECORD_QUOTED,		"record_quoted",		FALSE },
+	{ SCE_ERLANG_TASKMARKER,		"taskmarker",			FALSE },
 	{ SCE_ERLANG_COMMENT,			"comment",				FALSE },
 	{ SCE_ERLANG_COMMENT_MODULE,	"comment_module",		FALSE },
 	{ SCE_ERLANG_COMMENT_FUNCTION,	"comment_function",		FALSE },
@@ -1418,6 +1422,7 @@ static const HLStyle highlighting_styles_PYTHON[] =
 	{ SCE_P_FSTRING_OPTION,		"fstring_option",	FALSE },
 	{ SCE_P_STRING_CONTINUED,	"string_continued",	FALSE },
 	{ SCE_P_LINE_CONTINUED,		"line_continued",	FALSE },
+	{ SCE_P_TASKMARKER,			"taskmarker",		FALSE },
 	{ SCE_P_COMMENTLINE,		"commentline",		FALSE },
 	{ SCE_P_COMMENTBLOCK,		"commentblock",		FALSE }
 };
@@ -1561,7 +1566,8 @@ static const HLStyle highlighting_styles_SH[] =
 	{ SCE_SH_SCALAR,		"scalar",		FALSE },
 	{ SCE_SH_ERROR,			"error",		FALSE },
 	{ SCE_SH_HERE_DELIM,	"here_delim",	FALSE },
-	{ SCE_SH_HERE_Q,		"here_q",		FALSE }
+	{ SCE_SH_HERE_Q,		"here_q",		FALSE },
+	{ SCE_SH_TASKMARKER,	"taskmarker",	FALSE }
 };
 static const HLKeyword highlighting_keywords_SH[] =
 {
@@ -1592,7 +1598,8 @@ static const HLStyle highlighting_styles_SQL[] =
 	{ SCE_SQL_SQLPLUS_PROMPT,			"sqlplus_prompt",			FALSE },
 	{ SCE_SQL_SQLPLUS_COMMENT,			"sqlplus_comment",			FALSE },
 	{ SCE_SQL_QUOTEDIDENTIFIER,			"quotedidentifier",			FALSE },
-	{ SCE_SQL_QOPERATOR,				"qoperator",				FALSE }
+	{ SCE_SQL_QOPERATOR,				"qoperator",				FALSE },
+	{ SCE_SQL_TASKMARKER,				"taskmarker",				FALSE }
 	/* these are for user-defined keywords we don't set yet */
 	//{ SCE_SQL_USER1,					"user1",					FALSE },
 	//{ SCE_SQL_USER2,					"user2",					FALSE },

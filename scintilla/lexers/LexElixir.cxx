@@ -24,6 +24,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 
 using namespace Scintilla;
 
@@ -98,9 +99,14 @@ static inline bool IsElixirOperator(const int ch) {
 	return (isoperator(ch) || ch == '\\');
 }
 
+static inline bool IsCommentStyle(int style) {
+	return (style == SCE_ELIXIR_COMMENT ||
+			style == SCE_ELIXIR_TASKMARKER);
+}
+
 static inline bool IsSpaceEquivStyle(int style) {
-	return (style == SCE_ELIXIR_DEFAULT ||
-			style == SCE_ELIXIR_COMMENT);
+	return (IsCommentStyle(style) ||
+			style == SCE_ELIXIR_DEFAULT);
 }
 
 static inline bool IsOperatorStyle(int style) {
@@ -329,6 +335,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &libMacros = *keywordlists[10];
 	WordList &exclLibMacros = *keywordlists[11];
 	WordList &exclLibFuncs = *keywordlists[12];
+	WordList &taskMarkers = *keywordlists[13];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
@@ -453,6 +460,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		switch (sc.state) {
 			/* COMMENTS ----------------------------------------------------- */
 			case SCE_ELIXIR_COMMENT : {
+				HighlightTaskMarker(sc, styler, taskMarkers, true,
+									SCE_ELIXIR_TASKMARKER);
 				if (sc.atLineEnd)
 					sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
@@ -1025,8 +1034,7 @@ static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
 													keyword_start);
 		}
 		// Fold on comments
-		if (style == SCE_ELIXIR_COMMENT) {
-			
+		if (IsCommentStyle(style)) {
 			if (ch == '%' && chNext == '{') {
 				currentLevel++;
 			} else if (ch == '%' && chNext == '}') {
@@ -1073,6 +1081,7 @@ static const char * const elixirWordListDesc[] = {
 	"Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
 	"Exclude lib macros (these names are often used as var names)",
 	"Exclude lib funcs (these names are often used as user-func names)",
+	"Task marker and error marker keywords",
 	0
 };
 

@@ -29,6 +29,7 @@
 #include "CharacterSet.h"
 #include "CharacterCategory.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 #include "OptionSet.h"
 #include "SubStyles.h"
 #include "DefaultLexer.h"
@@ -71,6 +72,12 @@ bool IsPyComment(Accessor &styler, Sci_Position pos, Sci_Position len) {
 	return len > 0 && styler[pos] == '#';
 }
 
+bool IsPyCommentState(int st) {
+	return (st == SCE_P_TASKMARKER ||
+			st == SCE_P_COMMENTLINE ||
+			st == SCE_P_COMMENTBLOCK);
+}
+
 bool IsPyStringTypeChar(int ch, literalsAllowed allowed) {
 	return ((allowed & litB) && (ch == 'b' || ch == 'B')) ||
 		   ((allowed & litU) && (ch == 'u' || ch == 'U')) ||
@@ -107,26 +114,26 @@ int GetSaveStringState(int st, int stringState) {
 
 bool IsPyFStringState(int st, int stringState) {
 	int saveSt = GetSaveStringState(st, stringState);
-	return ((saveSt == SCE_P_FCHARSTR) || (saveSt == SCE_P_FSTRING) ||
-			(saveSt == SCE_P_FCHARSTRTRIPLE) || (saveSt == SCE_P_FSTRINGTRIPLE));
+	return (saveSt == SCE_P_FCHARSTR || saveSt == SCE_P_FSTRING ||
+			saveSt == SCE_P_FCHARSTRTRIPLE || saveSt == SCE_P_FSTRINGTRIPLE);
 }
 
 bool IsPySingleQuoteStringState(int st) {
-	return ((st == SCE_P_CHARSTR) || (st == SCE_P_STRING) ||
-			(st == SCE_P_FCHARSTR) || (st == SCE_P_FSTRING));
+	return (st == SCE_P_CHARSTR || st == SCE_P_STRING ||
+			st == SCE_P_FCHARSTR || st == SCE_P_FSTRING);
 }
 
 bool IsPyTripleQuoteStringState(int st) {
-	return ((st == SCE_P_CHARSTRTRIPLE) || (st == SCE_P_STRINGTRIPLE) ||
-			(st == SCE_P_FCHARSTRTRIPLE) || (st == SCE_P_FSTRINGTRIPLE));
+	return (st == SCE_P_CHARSTRTRIPLE || st == SCE_P_STRINGTRIPLE ||
+			st == SCE_P_FCHARSTRTRIPLE || st == SCE_P_FSTRINGTRIPLE);
 }
 
 bool IsPyStringStateForFold(int st) {
-	return IsPySingleQuoteStringState(st) ||
-		   IsPyTripleQuoteStringState(st) ||
-		   IsPyNestedStringState(st) ||
-		   st == SCE_P_FSTRING_SUBOPER ||
-		   st == SCE_P_FSTRING_OPTION;
+	return (IsPySingleQuoteStringState(st) ||
+			IsPyTripleQuoteStringState(st) ||
+			IsPyNestedStringState(st) ||
+			st == SCE_P_FSTRING_SUBOPER ||
+			st == SCE_P_FSTRING_OPTION);
 }
 
 char GetPyStringQuoteChar(int st) {
@@ -312,6 +319,7 @@ static const char *const pythonWordListDesc[] = {
 	"Standard functions (BIFs)",
 	"Standard identifiers",
 	"Standard exceptions (eg. BaseException)",
+	"Task marker and error marker keywords",
 	0
 };
 
@@ -403,8 +411,9 @@ LexicalClass lexicalClasses[] = {
 	29,	"SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
 	30,	"SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
 	31,	"SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	40,	"SCE_P_COMMENTLINE", "comment line", "Comment-line",
-	41,	"SCE_P_COMMENTBLOCK", "comment", "Comment-block",
+	40,	"SCE_P_TASKMARKER", "comment taskmarker", "Task Marker",
+	41,	"SCE_P_COMMENTLINE", "comment line", "Comment-line",
+	42,	"SCE_P_COMMENTBLOCK", "comment", "Comment-block",
 };
 
 }
@@ -415,8 +424,9 @@ class LexerPython : public DefaultLexer {
 	WordList comWords;
 	WordList refWords;
 	WordList stdFuncs;
-	WordList stdExcepts;
 	WordList stdIdents;
+	WordList stdExcepts;
+	WordList taskMarkers;
 	OptionsPython options;
 	OptionSetPython osPython;
 	EscapeSequence escapeSeq;
@@ -530,6 +540,9 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 		break;
 	case 6:
 		wordListN = &stdExcepts;
+		break;
+	case 7:
+		wordListN = &taskMarkers;
 		break;
 	}
 	Sci_Position firstModification = -1;
@@ -825,9 +838,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		// esh: Handle line continuation generically (taken from LexCPP.cxx)
 		if (sc.ch == '\\') {
 			if ((sc.currentPos + 1) >= lineEndNext) { // esh: end of line
-				if (!IsPyStringStateForFold(sc.state)
-					&& sc.state != SCE_P_COMMENTLINE
-					&& sc.state != SCE_P_COMMENTBLOCK) {
+				if (!IsPyStringStateForFold(sc.state) &&
+					!IsPyCommentState(sc.state)) {
 					// backslash - line continuation symbol
 					sc.SetState(SCE_P_LINE_CONTINUED);
 					sc.ForwardSetState(SCE_P_DEFAULT);
@@ -847,8 +859,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			sc.SetState(SCE_P_DEFAULT);
 		} else if (sc.state == SCE_P_NUMBER) {
 			if (!IsAWordChar(sc.ch, false) &&
-					!(!base_n_number && ((sc.ch == '+' || sc.ch == '-') &&
-										 (sc.chPrev == 'e' || sc.chPrev == 'E')))) {
+				!(!base_n_number && ((sc.ch == '+' || sc.ch == '-') &&
+									 (sc.chPrev == 'e' || sc.chPrev == 'E')))) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_IDENTIFIER) {
@@ -959,6 +971,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if ((sc.state == SCE_P_COMMENTLINE) ||
 				   (sc.state == SCE_P_COMMENTBLOCK)) {
+			HighlightTaskMarker(sc, styler, taskMarkers, true,
+								SCE_P_TASKMARKER);
 			if (IsACRLF(sc.ch)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
@@ -1121,8 +1135,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					base_n_number = true;
 					sc.SetState(SCE_P_NUMBER);
 				} else if (sc.ch == '0' &&
-						(sc.chNext == 'o' || sc.chNext == 'O' ||
-						 sc.chNext == 'b' || sc.chNext == 'B')) {
+						   (sc.chNext == 'o' || sc.chNext == 'O' ||
+							sc.chNext == 'b' || sc.chNext == 'B')) {
 					if (options.base2or8Literals) {
 						base_n_number = true;
 						sc.SetState(SCE_P_NUMBER);
@@ -1134,11 +1148,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					base_n_number = false;
 					sc.SetState(SCE_P_NUMBER);
 				}
-			} else if ((IsASCII(sc.ch) && isoperator(static_cast<char>(sc.ch))) ||
-					   sc.ch == '`') {
+			} else if ((IsASCII(sc.ch) && isoperator(sc.ch)) || sc.ch == '`') {
 				sc.SetState(SCE_P_OPERATOR);
 			} else if (sc.ch == '#') {
-				sc.SetState(sc.chNext == '#' ? SCE_P_COMMENTBLOCK : SCE_P_COMMENTLINE);
+				sc.SetState(sc.chNext == '#' ? SCE_P_COMMENTBLOCK
+											 : SCE_P_COMMENTLINE);
 			} else if (sc.ch == '@') {
 				if (IsFirstNonWhitespace(sc.currentPos, styler))
 					sc.SetState(SCE_P_DECORATOR);
@@ -1208,8 +1222,8 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 		lineCurrent--;
 		indentCurrent = styler.IndentAmount(lineCurrent, &spaceFlags, NULL);
 		if (!(indentCurrent & SC_FOLDLEVELWHITEFLAG) &&
-				(!IsCommentLine(lineCurrent, styler)) &&
-				(!IsQuoteLine(lineCurrent, styler)))
+			!IsCommentLine(lineCurrent, styler) &&
+			!IsQuoteLine(lineCurrent, styler))
 			break;
 	}
 	int indentCurrentLevel = indentCurrent & SC_FOLDLEVELNUMBERMASK;
