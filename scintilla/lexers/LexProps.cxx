@@ -22,6 +22,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 
 using namespace Scintilla;
 
@@ -168,6 +169,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 							  Accessor &styler) {
 	WordList &commonWords = *keywordlists[0];
 	WordList &namedColors = *keywordlists[1];
+	WordList &taskMarkers = *keywordlists[2];
 	
 	// property lexer.props.allow.initial.spaces
 	//	For properties files, set to 0 to style all lines that start with whitespace in the default style.
@@ -242,7 +244,6 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 				// start new section/key/value state
 				if (sc.ch == '#' || sc.ch == '!' || sc.ch == ';') {
 					sc.SetState(SCE_PROPS_COMMENT);
-					goToLineEnd = true;
 				} else if (sc.ch == '[') {
 					sc.SetState(SCE_PROPS_SECTION);
 					stateSection = PROPS_SECTION_OPEN;
@@ -309,7 +310,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 						break;
 				}
 				continue;
-			
+				
 			case SCE_PROPS_KEY:
 				if (IsAssignChar(sc.ch)) {
 					sc.SetState(SCE_PROPS_ASSIGNMENT);
@@ -320,6 +321,13 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_PROPS_ERROR);
 					sc.SetState(SCE_PROPS_DEFAULT);
 				}
+				continue;
+				
+			case SCE_PROPS_COMMENT:
+				HighlightTaskMarker(sc, styler, taskMarkers, true,
+									SCE_PROPS_TASKMARKER);
+				if (sc.atLineEnd)
+					sc.SetState(SCE_PROPS_DEFAULT);
 				continue;
 		}
 		
@@ -714,6 +722,7 @@ static void FoldPropsDoc(Sci_PositionU startPos, Sci_Position length,
 static const char *const propsWordListDesc[] = {
 	"Common keywords and identifiers",
 	"Named Colors",
+	"Task marker and error marker keywords",
 	0
 };
 

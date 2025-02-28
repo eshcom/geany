@@ -7,9 +7,15 @@
 -author(esh).
 -version(1.0).
 
+%FIXME: test taskmarket
 -define(CONFIG_MODULE, server_config).
+%TODO
 -define(CODE_VERSION, "1.4").
+% FIXME: test taskmarket
 -define(CALL@_TIMEOUT, 1000).
+% TODO
+-define('call@_timeout', 3000).
+
 %~ -define
 %~ -defin
 

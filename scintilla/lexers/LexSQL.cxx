@@ -29,6 +29,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 #include "OptionSet.h"
 #include "SparseState.h"
 #include "DefaultLexer.h"
@@ -261,6 +262,7 @@ static const char * const sqlWordListDesc[] = {
 	"User Keywords 2",
 	"User Keywords 3",
 	"User Keywords 4",
+	"Task marker and error marker keywords",
 	0
 };
 
@@ -345,27 +347,20 @@ public :
 	}
 private:
 	bool IsStreamCommentStyle(int style) {
-		return style == SCE_SQL_COMMENT ||
-			   style == SCE_SQL_COMMENTDOC ||
-			   style == SCE_SQL_COMMENTDOCKEYWORD ||
-			   style == SCE_SQL_COMMENTDOCKEYWORDERROR;
+		return (style == SCE_SQL_TASKMARKER ||
+				style == SCE_SQL_COMMENT ||
+				style == SCE_SQL_COMMENTDOC ||
+				style == SCE_SQL_COMMENTDOCKEYWORD ||
+				style == SCE_SQL_COMMENTDOCKEYWORDERROR);
 	}
 	
-	bool IsCommentStyle (int style) {
-		switch (style) {
-		case SCE_SQL_COMMENT :
-		case SCE_SQL_COMMENTDOC :
-		case SCE_SQL_COMMENTLINE :
-		case SCE_SQL_COMMENTLINEDOC :
-		case SCE_SQL_COMMENTDOCKEYWORD :
-		case SCE_SQL_COMMENTDOCKEYWORDERROR :
-			return true;
-		default :
-			return false;
-		}
+	bool IsCommentStyle(int style) {
+		return (IsStreamCommentStyle(style) ||
+				style == SCE_SQL_COMMENTLINE ||
+				style == SCE_SQL_COMMENTLINEDOC);
 	}
 	
-	bool IsCommentLine (Sci_Position line, LexAccessor &styler) {
+	bool IsCommentLine(Sci_Position line, LexAccessor &styler) {
 		Sci_Position pos = styler.LineStart(line);
 		Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
 		for (Sci_Position i = pos; i + 1 < eol_pos; i++) {
@@ -391,6 +386,7 @@ private:
 	WordList kw_user2;
 	WordList kw_user3;
 	WordList kw_user4;
+	WordList taskMarkers;
 };
 
 Sci_Position SCI_METHOD LexerSQL::WordListSet(int n, const char *wl) {
@@ -419,6 +415,10 @@ Sci_Position SCI_METHOD LexerSQL::WordListSet(int n, const char *wl) {
 		break;
 	case 7:
 		wordListN = &kw_user4;
+		break;
+	case 8:
+		wordListN = &taskMarkers;
+		break;
 	}
 	Sci_Position firstModification = -1;
 	if (wordListN) {
@@ -444,12 +444,14 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 		case SCE_SQL_OPERATOR:
 			sc.SetState(SCE_SQL_DEFAULT);
 			break;
+			
 		case SCE_SQL_NUMBER:
 			// We stop the number definition on non-numerical non-dot non-eE non-sign char
 			if (!IsANumberChar(sc.ch, sc.chPrev)) {
 				sc.SetState(SCE_SQL_DEFAULT);
 			}
 			break;
+			
 		case SCE_SQL_IDENTIFIER:
 			if (!IsAWordChar(sc.ch, options.sqlAllowDottedWord)) {
 				int nextState = SCE_SQL_DEFAULT;
@@ -478,6 +480,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(nextState);
 			}
 			break;
+			
 		case SCE_SQL_QUOTEDIDENTIFIER:
 			if (sc.ch == 0x60) {
 				if (sc.chNext == 0x60) {
@@ -487,12 +490,16 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 			break;
+			
 		case SCE_SQL_COMMENT:
+			HighlightTaskMarker(sc, styler, taskMarkers, true,
+								SCE_SQL_TASKMARKER);
 			if (sc.Match('*', '/')) {
 				sc.Forward();
 				sc.ForwardSetState(SCE_SQL_DEFAULT);
 			}
 			break;
+			
 		case SCE_SQL_COMMENTDOC:
 			if (sc.Match('*', '/')) {
 				sc.Forward();
@@ -506,7 +513,11 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 			break;
+			
 		case SCE_SQL_COMMENTLINE:
+			HighlightTaskMarker(sc, styler, taskMarkers, true,
+								SCE_SQL_TASKMARKER);
+		// V--- Falling through!
 		case SCE_SQL_COMMENTLINEDOC:
 		case SCE_SQL_SQLPLUS_COMMENT:
 		case SCE_SQL_SQLPLUS_PROMPT:
@@ -514,6 +525,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_SQL_DEFAULT);
 			}
 			break;
+			
 		case SCE_SQL_COMMENTDOCKEYWORD:
 			if ((styleBeforeDCKeyword == SCE_SQL_COMMENTDOC) &&
 					sc.Match('*', '/')) {
@@ -529,6 +541,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(styleBeforeDCKeyword);
 			}
 			break;
+			
 		case SCE_SQL_CHARACTER:
 			if (options.sqlBackslashEscapes && sc.ch == '\\') {
 				sc.Forward();
@@ -540,6 +553,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 			break;
+			
 		case SCE_SQL_STRING:
 			if (options.sqlBackslashEscapes && sc.ch == '\\') {
 				// Escape sequence
@@ -552,6 +566,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 			break;
+			
 		case SCE_SQL_QOPERATOR:
 			// Locate the unique Q operator character
 			sc.Complete();

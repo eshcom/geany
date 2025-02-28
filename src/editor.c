@@ -4016,7 +4016,8 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 	{
 		gint prev_indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
 		
-		// esh: check if a multi line comment is a continuation of the code
+		// esh: check if a multi line comment is a continuation of the code, example:
+		// 		int index = 0; /* for test cases */
 		if (!in_block_comment(lexer, sci_get_style_at(sci, prev_indent_pos)))
 		{
 			while (sci_get_style_at(sci, --prev_line_pos - 1) == style);
@@ -4026,7 +4027,7 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 			gint indent_width = sci_get_col_from_position(sci, prev_line_pos) -
 											sci_get_col_from_position(sci,
 													sci_get_current_position(sci));
-			// +3 is the offset of "/* " (see example comment below at line 4031)
+			// +3 is the offset of "/* " (see example comment below at line 4042)
 			gchar *whitespace = get_whitespace(iprefs, indent_width + 3);
 			
 			sci_add_text(sci, whitespace);

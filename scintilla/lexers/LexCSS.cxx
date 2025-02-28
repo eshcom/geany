@@ -31,6 +31,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 
 using namespace Scintilla;
 
@@ -96,6 +97,17 @@ static inline bool IsCssOperator(const int ch) {
 	return false;
 }
 
+static inline bool IsCommentStyle(int style) {
+	return (style == SCE_CSS_COMMENT ||
+			style == SCE_CSS_TASKMARKER);
+}
+
+static inline bool IsStringStyle(int style) {
+	return (style == SCE_CSS_DOUBLESTRING ||
+			style == SCE_CSS_SINGLESTRING ||
+			style == SCE_CSS_ESCAPESEQUENCE);
+}
+
 //~ esh: CheckSubVar func
 static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
 							   int *beforeSubVarState) {
@@ -124,7 +136,7 @@ static inline int NestingLevelLookBehind(Sci_PositionU startPos,
 	
 	for (Sci_PositionU i = 0; i < startPos; i++) {
 		// esh: added check comment style
-		if (styler.StyleAt(i) == SCE_CSS_COMMENT)
+		if (IsCommentStyle(styler.StyleAt(i)))
 			continue;
 		ch = styler.SafeGetCharAt(i);
 		if (ch == '{')
@@ -147,6 +159,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &exPseudoClasses = *keywordlists[6];
 	WordList &exPseudoElements = *keywordlists[7];
 	WordList &namedColors = *keywordlists[8];
+	WordList &taskMarkers = *keywordlists[9];
 	
 	// esh: escapesequence highlighting
 	const bool escapeSequence = styler.GetPropertyInt("lexer.css.escape.sequence", 0) != 0;
@@ -161,9 +174,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			int eolStyle;
 			while (--lineCurrent > 0) {
 				eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
-				if (eolStyle != SCE_CSS_DOUBLESTRING
-					&& eolStyle != SCE_CSS_SINGLESTRING
-					&& eolStyle != SCE_CSS_ESCAPESEQUENCE)
+				if (!IsStringStyle(eolStyle))
 					break;
 			}
 			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
@@ -204,47 +215,55 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// "the loop"
 	for (; sc.More(); sc.Forward()) {
-		if (sc.state == SCE_CSS_COMMENT && ((comment_mode == eCommentBlock && sc.Match('*', '/')) ||
-											(comment_mode == eCommentLine && sc.atLineEnd))) {
-			// esh: --END OF COMMENT--
-			if (lastStateC == -1) {
-				// backtrack to get last state:
-				// comments are like whitespace, so we must return to the previous state
-				Sci_PositionU i = startPos;
-				for (; i > 0; i--) {
-					if ((lastStateC = styler.StyleAt(i - 1)) != SCE_CSS_COMMENT) {
-						if (lastStateC == SCE_CSS_OPERATOR) {
-							op = styler.SafeGetCharAt(i - 1);
-							opPrev = styler.SafeGetCharAt(i - 2);
-							while (--i) {
-								lastState = styler.StyleAt(i - 1);
-								if (lastState != SCE_CSS_OPERATOR && lastState != SCE_CSS_COMMENT)
-									break;
+		if (sc.state == SCE_CSS_COMMENT) {
+			HighlightTaskMarker(sc, styler, taskMarkers, true,
+								SCE_CSS_TASKMARKER);
+			if ((comment_mode == eCommentBlock && sc.Match('*', '/')) ||
+				(comment_mode == eCommentLine && sc.atLineEnd)) {
+				// esh: --END OF COMMENT--
+				if (lastStateC == -1) {
+					// backtrack to get last state:
+					// comments are like whitespace, so we must return to the previous state
+					Sci_PositionU i = startPos;
+					for (; i > 0; i--) {
+						lastStateC = styler.StyleAt(i - 1);
+						if (!IsCommentStyle(lastStateC)) {
+							if (lastStateC == SCE_CSS_OPERATOR) {
+								op = styler.SafeGetCharAt(i - 1);
+								opPrev = styler.SafeGetCharAt(i - 2);
+								while (--i) {
+									lastState = styler.StyleAt(i - 1);
+									if (lastState != SCE_CSS_OPERATOR &&
+										!IsCommentStyle(lastState))
+										break;
+								}
+								if (i == 0)
+									lastState = SCE_CSS_DEFAULT;
 							}
-							if (i == 0)
-								lastState = SCE_CSS_DEFAULT;
+							break;
 						}
-						break;
 					}
+					if (i == 0)
+						lastStateC = SCE_CSS_DEFAULT;
 				}
-				if (i == 0)
-					lastStateC = SCE_CSS_DEFAULT;
-			}
-			if (comment_mode == eCommentBlock) {
-				sc.Forward();
-				if (lastStateC == SCE_CSS_NUMBER || lastStateC == SCE_CSS_DIMENSION ||
-					lastStateC == SCE_CSS_NAMED_COLOR || lastStateC == SCE_CSS_HEX_COLOR ||
-					lastStateC == SCE_CSS_IMPORTANT || lastStateC == SCE_CSS_ERR_VALUE)
-					sc.ForwardSetState(SCE_CSS_VALUE);
-				else
-					sc.ForwardSetState(lastStateC);
-			} else /* eCommentLine */ {
-				sc.SetState(lastStateC);
+				if (comment_mode == eCommentBlock) {
+					sc.Forward();
+					if (lastStateC == SCE_CSS_NUMBER ||
+						lastStateC == SCE_CSS_DIMENSION ||
+						lastStateC == SCE_CSS_NAMED_COLOR ||
+						lastStateC == SCE_CSS_HEX_COLOR ||
+						lastStateC == SCE_CSS_IMPORTANT ||
+						lastStateC == SCE_CSS_ERR_VALUE)
+						sc.ForwardSetState(SCE_CSS_VALUE);
+					else
+						sc.ForwardSetState(lastStateC);
+				} else /* eCommentLine */ {
+					sc.SetState(lastStateC);
+				}
+			} else {
+				continue;
 			}
 		}
-		
-		if (sc.state == SCE_CSS_COMMENT)
-			continue;
 		
 		// esh: check sub-var
 		if (sc.state != SCE_CSS_VALUE &&
@@ -261,10 +280,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			stringState = sc.state;
 		}
 		
-		if (sc.state == SCE_CSS_DOUBLESTRING ||
-			sc.state == SCE_CSS_SINGLESTRING ||
-			sc.state == SCE_CSS_ESCAPESEQUENCE) {
-			
+		if (IsStringStyle(sc.state)) {
 			if (sc.state == SCE_CSS_ESCAPESEQUENCE) {
 				escapeSeq.digitsLeft--;
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
@@ -298,7 +314,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				opPrev = styler.SafeGetCharAt(i - 2);
 				while (--i) {
 					lastState = styler.StyleAt(i - 1);
-					if (lastState != SCE_CSS_OPERATOR && lastState != SCE_CSS_COMMENT)
+					if (lastState != SCE_CSS_OPERATOR && !IsCommentStyle(lastState))
 						break;
 				}
 			}
@@ -905,7 +921,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 	int levelPrev = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
-	bool inComment = (styler.StyleAt(startPos - 1) == SCE_CSS_COMMENT);
+	bool inComment = IsCommentStyle(styler.StyleAt(startPos - 1));
 	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
@@ -913,11 +929,11 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 		int style = styler.StyleAt(i);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		if (foldComment) {
-			if (!inComment && (style == SCE_CSS_COMMENT))
+			if (!inComment && IsCommentStyle(style))
 				levelCurrent++;
-			else if (inComment && (style != SCE_CSS_COMMENT))
+			else if (inComment && !IsCommentStyle(style))
 				levelCurrent--;
-			inComment = (style == SCE_CSS_COMMENT);
+			inComment = IsCommentStyle(style);
 		}
 		if (style == SCE_CSS_OPERATOR) {
 			if (ch == '{') {
@@ -957,6 +973,7 @@ static const char * const cssWordListDesc[] = {
 	"Browser-Specific Pseudo-classes",
 	"Browser-Specific Pseudo-elements",
 	"Named Colors",
+	"Task marker and error marker keywords",
 	0
 };
 

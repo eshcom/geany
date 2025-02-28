@@ -99,6 +99,9 @@ calltips=call_tips
 # error indicator color
 indicator_error=0xff0000
 
+[keywords]
+task_markers=FIXME TODO
+
 [settings]
 # which characters should be skipped when moving (or included when deleting) to word boundaries
 # should always include space and tab (\s\t)

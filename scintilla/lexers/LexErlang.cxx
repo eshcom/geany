@@ -26,6 +26,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 
 using namespace Scintilla;
 
@@ -124,11 +125,16 @@ typedef enum {
 	ERLANG_MODULE
 } module_type_t;
 
-static inline bool IsSpaceEquivStyle(int style) {
-	return (style == SCE_ERLANG_DEFAULT ||
+static inline bool IsCommentStyle(int style) {
+	return (style == SCE_ERLANG_TASKMARKER ||
 			style == SCE_ERLANG_COMMENT ||
-			style == SCE_ERLANG_COMMENT_FUNCTION ||
 			style == SCE_ERLANG_COMMENT_MODULE ||
+			style == SCE_ERLANG_COMMENT_FUNCTION);
+}
+
+static inline bool IsSpaceEquivStyle(int style) {
+	return (IsCommentStyle(style) ||
+			style == SCE_ERLANG_DEFAULT ||
 			style == SCE_ERLANG_COMMENT_TAG ||
 			style == SCE_ERLANG_COMMENT_MACRO_TAG);
 }
@@ -214,6 +220,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	WordList &preprocList = *keywordlists[7];
 	WordList &commentTags = *keywordlists[8];
 	WordList &commentMacroTags = *keywordlists[9];
+	WordList &taskMarkers = *keywordlists[10];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
@@ -316,6 +323,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ERLANG_COMMENT : {
+				HighlightTaskMarker(sc, styler, taskMarkers, true,
+									SCE_ERLANG_TASKMARKER);
 				if (sc.atLineEnd)
 					sc.SetState(SCE_ERLANG_DEFAULT);
 			} break;
@@ -783,17 +792,13 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		// Fold on keywords
 		if (stylePrev == SCE_ERLANG_STD_WORD
 			&& style != SCE_ERLANG_STD_WORD
-			&& style != SCE_ERLANG_ATOM
-		) {
+			&& style != SCE_ERLANG_ATOM) {
 			currentLevel += ClassifyErlangFoldPoint(styler,
 													styleNext,
 													keyword_start);
 		}
 		// Fold on comments
-		if (style == SCE_ERLANG_COMMENT
-			|| style == SCE_ERLANG_COMMENT_MODULE
-			|| style == SCE_ERLANG_COMMENT_FUNCTION) {
-			
+		if (IsCommentStyle(style)) {
 			if (ch == '%' && chNext == '{') {
 				currentLevel++;
 			} else if (ch == '%' && chNext == '}') {
@@ -837,6 +842,7 @@ static const char * const erlangWordListDesc[] = {
 	"Preprocessor instructions",
 	"Documentation tags",
 	"Documentation macro tags",
+	"Task marker and error marker keywords",
 	0
 };
 

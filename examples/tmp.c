@@ -1,13 +1,27 @@
 int main()
 {
 	const double RENT = 3852.99;
+	//FIXME: test taskmarket
 	printf("*%8f*\n", RENT);
+	//TODO
 	printf("*%e*\n", RENT);
+	// FIXME: test taskmarket
 	printf("*%4.2f*\n", RENT);
+	// TODO
 	printf("*%3.1f*\n", RENT);
+	/*
+	 *FIXME: test taskmarket
+	*/
 	printf("*%10.3f*\n", RENT);
+	/*TODO*/
 	printf("*%10.3E*\n", RENT);
+	/*
+	 * FIXME: test taskmarket
+	 * TODO
+	*/
 	printf("*%+4.2f*\n", RENT);
+	/* TODO*/
+	printf("*%+4.2F*\n", RENT);
 	
 	printf("[%2s]\n", BLURB);
 	printf("[%24s]\n", BLURB);

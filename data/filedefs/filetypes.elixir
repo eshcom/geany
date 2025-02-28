@@ -46,6 +46,7 @@ string_suboper=string_1
 atom_punct=default
 atom_quoted=string_1
 node_quoted=string_1
+taskmarker=comment
 comment=comment
 
 [keywords]

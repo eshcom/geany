@@ -15,6 +15,7 @@ scalar=identifier_1
 error=error
 here_delim=here_doc
 here_q=here_doc
+taskmarker=comment
 
 [keywords]
 primary=break case continue do done elif else esac eval exit export fi for function goto if in integer return set shift then until while

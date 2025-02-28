@@ -34,6 +34,7 @@ fstring_suboper=string_1
 fstring_option=string_1
 string_continued=string_1
 line_continued=preprocessor
+taskmarker=comment
 commentline=comment_line
 commentblock=comment
 
