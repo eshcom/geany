@@ -175,22 +175,18 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-static bool IsWhitespace(int ch) {
-	return IsASpaceOrTab(ch) || IsACRLF(ch);
+/* This isn't quite right for Unicode identifiers */
+static bool isAlphaWordChar(int ch) {
+	return !IsASCII(ch) || IsAlphaWordChar(ch);
 }
 
 /* This isn't quite right for Unicode identifiers */
-static bool IsIdentifierStart(int ch) {
-	return (IsASCII(ch) && (isalpha(ch) || ch == '_')) || !IsASCII(ch);
-}
-
-/* This isn't quite right for Unicode identifiers */
-static bool IsIdentifierContinue(int ch) {
-	return (IsASCII(ch) && (isalnum(ch) || ch == '_')) || !IsASCII(ch);
+static bool isAlnumWordChar(int ch) {
+	return !IsASCII(ch) || IsAlnumWordChar(ch);
 }
 
 static void ScanWhitespace(Accessor& styler, Sci_Position& pos, Sci_Position max) {
-	while (IsWhitespace(styler.SafeGetCharAt(pos, '\0')) && pos < max) {
+	while (IsWhiteSpace(styler.SafeGetCharAt(pos, '\0')) && pos < max) {
 		if (pos == styler.LineEnd(styler.GetLine(pos)))
 			styler.SetLineState(styler.GetLine(pos), 0);
 		pos++;
@@ -208,7 +204,7 @@ static void GrabString(char* s, Accessor& styler, Sci_Position start,
 static void ScanIdentifier(Accessor& styler, Sci_Position& pos,
 						   WordList *keywords) {
 	Sci_Position start = pos;
-	while (IsIdentifierContinue(styler.SafeGetCharAt(pos, '\0')))
+	while (isAlnumWordChar(styler.SafeGetCharAt(pos, '\0')))
 		pos++;
 	
 	if (styler.SafeGetCharAt(pos, '\0') == '!') {
@@ -238,7 +234,7 @@ static bool ScanDigits(Accessor& styler, Sci_Position& pos, int base) {
 	Sci_Position old_pos = pos;
 	for (;;) {
 		int c = styler.SafeGetCharAt(pos, '\0');
-		if (IsADigit(c, base) || c == '_')
+		if (IsDigit(c, base) || c == '_')
 			pos++;
 		else
 			break;
@@ -295,7 +291,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 		 * `1.foo()`) or another period, in which case it's a range (e.g. 1..2)
 		 */
 		n = styler.SafeGetCharAt(pos + 1, '\0');
-		if (c == '.' && !(IsIdentifierStart(n) || n == '.')) {
+		if (c == '.' && !(isAlphaWordChar(n) || n == '.')) {
 			error |= base != 10;
 			pos++;
 			/* It's ok to have no digits after the period. */
@@ -304,11 +300,11 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 		
 		/* Look for the exponentiation. */
 		c = styler.SafeGetCharAt(pos, '\0');
-		if (c == 'e' || c == 'E') {
+		if (IsDecExponent(c)) {
 			error |= base != 10;
 			pos++;
 			c = styler.SafeGetCharAt(pos, '\0');
-			if (c == '-' || c == '+')
+			if (IsSign(c))
 				pos++;
 			/* It is invalid to have no digits in the exponent. */
 			error |= !ScanDigits(styler, pos, 10);
@@ -365,20 +361,19 @@ static bool IsThreeCharOperator(int c, int n, int n2) {
 		|| (c == '>' && n == '>' && n2 == '=');
 }
 
-static bool IsValidCharacterEscape(int c) {
-	return c == 'n'  || c == 'r' || c == 't' || c == '\\'
-		|| c == '\'' || c == '"' || c == '0';
+static bool IsValidCharEscape(int c) {
+	return IsQuoteOrBackslash(c) || IsPartCtrl(c) || c == '0';
 }
 
 static bool IsValidStringEscape(int c) {
-	return IsValidCharacterEscape(c) || IsACRLF(c);
+	return IsValidCharEscape(c) || IsCRLF(c);
 }
 
 static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos,
 							  Sci_Position num_digits, bool stop_asap) {
 	for (;;) {
 		int c = styler.SafeGetCharAt(pos, '\0');
-		if (!IsADigit(c, 16))
+		if (!IsDigit(c, 16))
 			break;
 		num_digits--;
 		pos++;
@@ -400,14 +395,14 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos,
 	int c = styler.SafeGetCharAt(pos, '\0');
 	int n = styler.SafeGetCharAt(pos + 1, '\0');
 	bool done = false;
-	bool valid_lifetime = !ascii_only && IsIdentifierStart(c);
+	bool valid_lifetime = !ascii_only && isAlphaWordChar(c);
 	bool valid_char = true;
 	bool first = true;
 	while (!done) {
 		switch (c) {
 			case '\\':
 				done = true;
-				if (IsValidCharacterEscape(n)) {
+				if (IsValidCharEscape(n)) {
 					pos += 2;
 				} else if (n == 'x') {
 					pos += 2;
@@ -419,7 +414,7 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos,
 						valid_char = ScanNumericEscape(styler, pos, 4, false);
 					} else {
 						int n_digits = 0;
-						while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+						while (IsDigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
 							   n_digits++ < 6);
 						if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 							pos++;
@@ -448,7 +443,7 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos,
 				if (ascii_only && !IsASCII((char)c)) {
 					done = true;
 					valid_char = false;
-				} else if (!IsIdentifierContinue(c) && !first) {
+				} else if (!isAlnumWordChar(c) && !first) {
 					done = true;
 				} else {
 					pos++;
@@ -610,7 +605,7 @@ static void ResumeString(Accessor &styler, Sci_Position& pos,
 					error = !ScanNumericEscape(styler, pos, 4, true);
 				} else {
 					int n_digits = 0;
-					while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+					while (IsDigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
 						   n_digits++ < 6);
 					if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 						pos++;
@@ -726,7 +721,7 @@ void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (pos == 0 && c == '#' && n == '!' && n2 != '[') {
 			pos += 2;
 			ResumeLineComment(styler, pos, max, NotDocComment);
-		} else if (IsWhitespace(c)) {
+		} else if (IsWhiteSpace(c)) {
 			ScanWhitespace(styler, pos, max);
 		} else if (c == '/' && (n == '/' || n == '*')) {
 			ScanComments(styler, pos, max);
@@ -741,9 +736,9 @@ void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length,
 		} else if (c == 'b' && n == '\'') {
 			pos++;
 			ScanCharacterLiteralOrLifetime(styler, pos, true);
-		} else if (IsIdentifierStart(c)) {
+		} else if (isAlphaWordChar(c)) {
 			ScanIdentifier(styler, pos, keywords);
-		} else if (IsADigit(c)) {
+		} else if (IsDigit(c)) {
 			ScanNumber(styler, pos);
 		} else if (IsThreeCharOperator(c, n, n2)) {
 			pos += 3;
@@ -839,7 +834,7 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length,
 				levelNext--;
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		if (atEOL || (i == endPos-1)) {
 			int levelUse = levelCurrent;

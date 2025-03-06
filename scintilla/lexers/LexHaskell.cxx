@@ -49,17 +49,17 @@ using namespace Scintilla;
 // See https://github.com/ghc/ghc/blob/master/compiler/parser/Lexer.x#L1682
 // Note, letter modifiers are prohibited.
 
-static int u_iswupper (int ch) {
+static int u_iswupper(int ch) {
 	CharacterCategory c = CategoriseCharacter(ch);
 	return c == ccLu || c == ccLt;
 }
 
-static int u_iswalpha (int ch) {
+static int u_iswalpha(int ch) {
 	CharacterCategory c = CategoriseCharacter(ch);
 	return c == ccLl || c == ccLu || c == ccLt || c == ccLo;
 }
 
-static int u_iswalnum (int ch) {
+static int u_iswalnum(int ch) {
 	CharacterCategory c = CategoriseCharacter(ch);
 	return c == ccLl || c == ccLu || c == ccLt ||
 		   c == ccLo || c == ccNd || c == ccNo;
@@ -73,8 +73,7 @@ static int u_IsHaskellSymbol(int ch) {
 
 static inline bool IsHaskellLetter(const int ch) {
 	if (IsASCII(ch)) {
-		return (ch >= 'a' && ch <= 'z') ||
-			   (ch >= 'A' && ch <= 'Z');
+		return IsAlpha(ch);
 	} else {
 		return u_iswalpha(ch) != 0;
 	}
@@ -82,7 +81,7 @@ static inline bool IsHaskellLetter(const int ch) {
 
 static inline bool IsHaskellAlphaNumeric(const int ch) {
 	if (IsASCII(ch)) {
-		return IsAlphaNumeric(ch);
+		return IsAlnum(ch);
 	} else {
 		return u_iswalnum(ch) != 0;
 	}
@@ -90,7 +89,7 @@ static inline bool IsHaskellAlphaNumeric(const int ch) {
 
 static inline bool IsHaskellUpperCase(const int ch) {
 	if (IsASCII(ch)) {
-		return ch >= 'A' && ch <= 'Z';
+		return IsUpper(ch);
 	} else {
 		return u_iswupper(ch) != 0;
 	}
@@ -156,11 +155,11 @@ static int HaskellIndentAmount(Accessor &styler, const Sci_Position line) {
 	
 	Sci_Position posPrev = inPrevPrefix ? styler.LineStart(line-1) : 0;
 	
-	while ((IsASpaceOrTab(ch) || IsCommentBlockStyle(style) ||
+	while ((IsSpaceOrTab(ch) || IsCommentBlockStyle(style) ||
 			style == SCE_HA_LITERATE_CODEDELIM) && (pos < eol_pos)) {
 		if (inPrevPrefix) {
 			char chPrev = styler[posPrev++];
-			if (!IsASpaceOrTab(chPrev)) {
+			if (!IsSpaceOrTab(chPrev)) {
 				inPrevPrefix = false;
 			}
 		}
@@ -177,8 +176,8 @@ static int HaskellIndentAmount(Accessor &styler, const Sci_Position line) {
 	indent += SC_FOLDLEVELBASE;
 	// if completely empty line or the start of a comment or preprocessor...
 	if (styler.LineStart(line) == styler.Length() ||
-		IsASpaceOrTab(ch) || IsACRLF(ch) ||
-		IsCommentStyle(style) || style == SCE_HA_PREPROCESSOR)
+		IsWhiteSpace(ch) || IsCommentStyle(style) ||
+		style == SCE_HA_PREPROCESSOR)
 		return indent | SC_FOLDLEVELWHITEFLAG;
 	else
 		return indent;
@@ -349,7 +348,7 @@ class LexerHaskell : public DefaultLexer {
 				int ch = styler[currentPos];
 				style = styler.StyleAt(currentPos);
 				
-				if (IsASpaceOrTab(ch) || IsCommentBlockStyle(style) ||
+				if (IsSpaceOrTab(ch) || IsCommentBlockStyle(style) ||
 						style == SCE_HA_LITERATE_CODEDELIM) {
 					currentPos++;
 				} else {
@@ -513,14 +512,14 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// Handle line continuation generically.
-		if (sc.ch == '\\' && (sc.chNext == '\n' || sc.chNext == '\r') &&
+		if (sc.ch == '\\' && IsCRLF(sc.chNext) &&
 			(sc.state == SCE_HA_STRING || sc.state == SCE_HA_PREPROCESSOR)) {
 			// Remember the line state for future incremental lexing
 			styler.SetLineState(lineCurrent, hs.ToLineState());
 			lineCurrent++;
 			
 			sc.Forward();
-			if (sc.ch == '\r' && sc.chNext == '\n') {
+			if (IsCRLF(sc.ch, sc.chNext)) {
 				sc.Forward();
 			}
 			sc.Forward();
@@ -547,10 +546,10 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 			sc.ForwardSetState(hs.nonexternalStyle);
 			
 		} else if (literate && hs.lmode == LITERATE_BIRD && sc.atLineStart &&
-				   (IsASpaceOrTab(sc.ch) || sc.Match("\\begin{code}"))) {
+				   (IsSpaceOrTab(sc.ch) || sc.Match("\\begin{code}"))) {
 			sc.SetState(sc.state);
 			
-			while (IsASpaceOrTab(sc.ch) && sc.More())
+			while (IsSpaceOrTab(sc.ch) && sc.More())
 				sc.Forward();
 			
 			if (sc.Match("\\begin{code}")) {
@@ -559,7 +558,7 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 				bool correct = true;
 				
 				while (!sc.atLineEnd && sc.More()) {
-					if (!IsASpaceOrTab(sc.ch))
+					if (!IsSpaceOrTab(sc.ch))
 						correct = false;
 					sc.Forward();
 				}
@@ -671,16 +670,16 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_HA_DEFAULT);
 				sc.Forward(); // prevent double counting a line
-			} else if (IsADigit(sc.ch, base)) {
+			} else if (IsDigit(sc.ch, base)) {
 				sc.Forward();
-			} else if (sc.ch=='.' && dot && IsADigit(sc.chNext, base)) {
+			} else if (dot && IsDotDigit(sc.ch, sc.chNext, base)) {
 				sc.Forward(2);
 				dot = false;
-			} else if ((base == 10) && (sc.ch == 'e' || sc.ch == 'E') &&
-					   (IsADigit(sc.chNext) || sc.chNext == '+' || sc.chNext == '-')) {
+			} else if (base == 10 && IsDecExponent(sc.ch) &&
+					   (IsDigit(sc.chNext) || IsSign(sc.chNext))) {
 				sc.Forward();
-				if (sc.ch == '+' || sc.ch == '-')
-					 sc.Forward();
+				if (IsSign(sc.ch))
+					sc.Forward();
 			} else {
 				skipMagicHash(sc, twoHashes);
 				sc.SetState(SCE_HA_DEFAULT);
@@ -834,11 +833,11 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 				// New state?
 		else if (sc.state == SCE_HA_DEFAULT) {
 			// Digit
-			if (IsADigit(sc.ch)) {
+			if (IsDigit(sc.ch)) {
 				hs.mode = HA_MODE_DEFAULT;
 				
 				sc.SetState(SCE_HA_NUMBER);
-				if (sc.ch == '0' && (sc.chNext == 'X' || sc.chNext == 'x')) {
+				if (sc.ch == '0' && IsHex(sc.chNext)) {
 					// Match anything starting with "0x" or "0X", too
 					sc.Forward(2);
 					base = 16;
@@ -886,7 +885,7 @@ void SCI_METHOD LexerHaskell::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				if (options.allowQuotes) {
 					// Quoted type ''T
-					if (sc.ch=='\'' && IsAHaskellWordStart(sc.chNext)) {
+					if (sc.ch == '\'' && IsAHaskellWordStart(sc.chNext)) {
 						sc.Forward();
 						sc.ChangeState(SCE_HA_IDENTIFIER);
 					} else if (sc.chNext != '\'') {

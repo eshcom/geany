@@ -68,6 +68,10 @@ enum literalsAllowed { litNone = 0, litU = 1, litB = 2, litF = 4 };
 
 const int indicatorWhitespace = 1;
 
+inline bool IsRawPrefix(int ch) {
+	return ch == 'r' || ch == 'R';
+}
+
 bool IsPyComment(Accessor &styler, Sci_Position pos, Sci_Position len) {
 	return len > 0 && styler[pos] == '#';
 }
@@ -85,15 +89,15 @@ bool IsPyStringTypeChar(int ch, literalsAllowed allowed) {
 }
 
 bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
-	if (ch == '\'' || ch == '"')
+	if (IsQuote(ch))
 		return true;
 	if (IsPyStringTypeChar(ch, allowed)) {
-		if (chNext == '"' || chNext == '\'')
+		if (IsQuote(chNext))
 			return true;
-		if ((chNext == 'r' || chNext == 'R') && (chNext2 == '"' || chNext2 == '\''))
+		if (IsRawPrefix(chNext) && IsQuote(chNext2))
 			return true;
 	}
-	if ((ch == 'r' || ch == 'R') && (chNext == '"' || chNext == '\''))
+	if (IsRawPrefix(ch) && IsQuote(chNext))
 		return true;
 	
 	return false;
@@ -190,19 +194,19 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 	
 	// Advance beyond r, u, or ur prefix (or r, b, or br in Python 2.7+ and r, f, or fr in Python 3.6+),
 	// but bail if there are any unexpected chars
-	if (ch == 'r' || ch == 'R') {
+	if (IsRawPrefix(ch)) {
 		i++;
 		ch = styler.SafeGetCharAt(i);
 		chNext = styler.SafeGetCharAt(i + 1);
 	} else if (IsPyStringTypeChar(ch, allowed)) {
-		if (chNext == 'r' || chNext == 'R')
+		if (IsRawPrefix(chNext))
 			i += 2;
 		else
 			i += 1;
 		ch = styler.SafeGetCharAt(i);
 		chNext = styler.SafeGetCharAt(i + 1);
 	}
-	if (ch != '"' && ch != '\'') {
+	if (!IsQuote(ch)) {
 		*nextIndex = i + 1;
 		return SCE_P_DEFAULT;
 	}
@@ -224,8 +228,8 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 }
 
 inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
-	if (ch < 0x80)
-		return (isalnum(ch) || ch == '.' || ch == '_');
+	if (IsASCII(ch))
+		return IsWordChar(ch);
 	
 	if (!unicodeIdentifiers)
 		return false;
@@ -235,8 +239,8 @@ inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
 }
 
 inline bool IsAWordStart(int ch, bool unicodeIdentifiers) {
-	if (ch < 0x80)
-		return (isalpha(ch) || ch == '_');
+	if (IsASCII(ch))
+		return IsAlphaWordChar(ch);
 	
 	if (!unicodeIdentifiers)
 		return false;
@@ -263,7 +267,7 @@ static bool IsFirstNonWhitespace(Sci_Position pos, Accessor &styler) {
 	Sci_Position start_pos = styler.LineStart(line);
 	for (Sci_Position i = start_pos; i < pos; i++) {
 		const char ch = styler[i];
-		if (!IsASpaceOrTab(ch))
+		if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return true;
@@ -595,7 +599,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 
 
 #define CHECK_ESCAPE_SEQUENCE												\
-	if (!strchr("{}", sc.chNext)) {											\
+	if (sc.chNext != '{' && sc.chNext != '}') {								\
 		if (options.escapeSequence) {										\
 			sc.SetState(SCE_P_ESCAPESEQ);									\
 			escapeSeq.initEscapeState(sc.chNext);							\
@@ -621,10 +625,10 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 #define PROCESS_END_SEQUENCE												\
 	if (sc.ch == '\\') {													\
 		if (IsPySingleQuoteStringState(stringState) &&						\
-			(IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos)) {		\
+			(IsCRLF(sc.chNext) || (sc.currentPos + 1) == endPos)) {			\
 			sc.SetState(SCE_P_STRING_CONTINUED);							\
 			inContinuedString = true;										\
-			if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))			\
+			if (IsCRLF(sc.chNext, sc.GetRelative(2)))						\
 				sc.Forward();												\
 		} else {															\
 			CHECK_ESCAPE_SEQUENCE											\
@@ -648,9 +652,9 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	} else {																\
 		if (IsPySingleQuoteStringState(stringState)) {						\
 			Sci_PositionU i = sc.currentPos;								\
-			while (i < endPos && IsASpaceOrTab(styler[i]))					\
+			while (i < endPos && IsSpaceOrTab(styler[i]))					\
 				i++;														\
-			if (i == endPos || IsACRLF(styler[i]))							\
+			if (i == endPos || IsCRLF(styler[i]))							\
 				sc.ChangeState(SCE_P_STRINGEOL);							\
 			else															\
 				sc.SetState(stringState);									\
@@ -661,7 +665,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 
 #define MOVE_INDEX_TO_NONSPACE							\
 	Sci_PositionU i = sc.currentPos;					\
-	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+	while (i < endPos && IsSpaceOrTab(styler[i]))		\
 		i++;
 
 
@@ -730,7 +734,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						char ch;
 						while (++back < endPos) {
 							ch = styler.SafeGetCharAt(back);
-							if (IsACRLF(ch)) {
+							if (IsCRLF(ch)) {
 								//~ f"""{a:\
 								//~ }"""
 								PushStateToStack(stringState, fstringStateStack,
@@ -742,7 +746,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 							}
 						}
 					} else {
-						while (back < endPos && IsASpace(styler.SafeGetCharAt(back)))
+						while (back < endPos && IsSpace(styler.SafeGetCharAt(back)))
 							back++;
 						
 						int braceCnt = 0;
@@ -859,8 +863,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			sc.SetState(SCE_P_DEFAULT);
 		} else if (sc.state == SCE_P_NUMBER) {
 			if (!IsAWordChar(sc.ch, false) &&
-				!(!base_n_number && ((sc.ch == '+' || sc.ch == '-') &&
-									 (sc.chPrev == 'e' || sc.chPrev == 'E')))) {
+				!(!base_n_number && IsSignDecExponent(sc.ch, sc.chPrev))) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_IDENTIFIER) {
@@ -973,7 +976,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				   (sc.state == SCE_P_COMMENTBLOCK)) {
 			HighlightTaskMarker(sc, styler, taskMarkers, true,
 								SCE_P_TASKMARKER);
-			if (IsACRLF(sc.ch)) {
+			if (IsCRLF(sc.ch)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_DECORATOR) {
@@ -982,11 +985,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if (IsPySingleQuoteStringState(sc.state)) {
 			if (sc.ch == '\\') {
-				if (IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos) {
+				if (IsCRLF(sc.chNext) || (sc.currentPos + 1) == endPos) {
 					stringState = sc.state;
 					sc.SetState(SCE_P_STRING_CONTINUED);
 					inContinuedString = true;
-					if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))
+					if (IsCRLF(sc.chNext, sc.GetRelative(2)))
 						sc.Forward();
 				} else {
 					CHECK_ESCAPE_SEQUENCE
@@ -1045,7 +1048,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		// If in an f-string expression, check for the ending quote(s)
 		// and end f-string to handle syntactically incorrect cases like
 		// f'{' and f"""{"""
-		if (!fstringStateStack.empty() && (sc.ch == '\'' || sc.ch == '"')) {
+		if (!fstringStateStack.empty() && IsQuote(sc.ch)) {
 			long matching_stack_i = -1;
 			for (unsigned long stack_i = 0; stack_i < fstringStateStack.size() &&
 				 matching_stack_i == -1; stack_i++) {
@@ -1074,7 +1077,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		// End of code to find the end of a state
 		
-		if (!indentGood && !IsASpaceOrTab(sc.ch)) {
+		if (!indentGood && !IsSpaceOrTab(sc.ch)) {
 			styler.IndicatorFill(startIndicator, sc.currentPos,
 								 indicatorWhitespace, 1);
 			startIndicator = sc.currentPos;
@@ -1130,8 +1133,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				// will be processed in the section "Handle line continuation generically"
 				continue;
 				
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
-				if (sc.ch == '0' && (sc.chNext == 'x' || sc.chNext == 'X')) {
+			} else if (IsDigitOrDotDigit(sc.ch, sc.chNext)) {
+				if (sc.ch == '0' && IsHex(sc.chNext)) {
 					base_n_number = true;
 					sc.SetState(SCE_P_NUMBER);
 				} else if (sc.ch == '0' &&
@@ -1148,7 +1151,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					base_n_number = false;
 					sc.SetState(SCE_P_NUMBER);
 				}
-			} else if ((IsASCII(sc.ch) && isoperator(sc.ch)) || sc.ch == '`') {
+			} else if (IsOperator(sc.ch) || sc.ch == '`') {
 				sc.SetState(SCE_P_OPERATOR);
 			} else if (sc.ch == '#') {
 				sc.SetState(sc.chNext == '#' ? SCE_P_COMMENTBLOCK
@@ -1186,7 +1189,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		const char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;

@@ -43,8 +43,7 @@ static const char * const adaWordListDesc[] = {
 	0
 };
 
-LexerModule lmAda(SCLEX_ADA, ColouriseDocument, "ada",
-				  NULL, adaWordListDesc);
+LexerModule lmAda(SCLEX_ADA, ColouriseDocument, "ada", NULL, adaWordListDesc);
 
 /*
  * Implementation
@@ -53,38 +52,36 @@ LexerModule lmAda(SCLEX_ADA, ColouriseDocument, "ada",
 // Functions that have apostropheStartsAttribute as a parameter set it according to whether
 // an apostrophe encountered after processing the current token will start an attribute or
 // a character literal.
-static void ColouriseCharacter(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseComment(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseContext(StyleContext& sc, char chEnd, int stateEOL);
-static void ColouriseDelimiter(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseLabel(StyleContext& sc, WordList& keywords,
-						   bool& apostropheStartsAttribute);
-static void ColouriseNumber(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseString(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseWhiteSpace(StyleContext& sc, bool& apostropheStartsAttribute);
-static void ColouriseWord(StyleContext& sc, WordList& keywords,
-						  bool& apostropheStartsAttribute);
+static void ColouriseCharacter(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseComment(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseContext(StyleContext &sc, char chEnd, int stateEOL);
+static void ColouriseDelimiter(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseLabel(StyleContext &sc, WordList &keywords,
+						   bool &apostropheStartsAttribute);
+static void ColouriseNumber(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseString(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseWhiteSpace(StyleContext &sc, bool &apostropheStartsAttribute);
+static void ColouriseWord(StyleContext &sc, WordList &keywords,
+						  bool &apostropheStartsAttribute);
 
-static inline bool IsDelimiterCharacter(int ch);
-static inline bool IsSeparatorOrDelimiterCharacter(int ch);
-static bool IsValidIdentifier(const std::string& identifier);
-static bool IsValidNumber(const std::string& number);
-static inline bool IsWordStartCharacter(int ch);
-static inline bool IsWordCharacter(int ch);
+static inline bool IsDelimiterChar(int ch);
+static inline bool IsSeparatorOrDelimiterChar(int ch);
+static bool IsValidIdentifier(const std::string &identifier);
+static bool IsValidNumber(const std::string &number);
 
-static void ColouriseCharacter(StyleContext& sc, bool& apostropheStartsAttribute) {
+static void ColouriseCharacter(StyleContext &sc, bool &apostropheStartsAttribute) {
 	apostropheStartsAttribute = true;
 	
 	sc.SetState(SCE_ADA_CHARACTER);
 	
-	// Skip the apostrophe and one more character (so that '' is shown as non-terminated and '''
-	// is handled correctly)
+	// Skip the apostrophe and one more character (so that ''
+	// is shown as non-terminated and ''' is handled correctly)
 	sc.Forward(2);
 	
 	ColouriseContext(sc, '\'', SCE_ADA_CHARACTEREOL);
 }
 
-static void ColouriseContext(StyleContext& sc, char chEnd, int stateEOL) {
+static void ColouriseContext(StyleContext &sc, char chEnd, int stateEOL) {
 	while (!sc.atLineEnd && !sc.Match(chEnd)) {
 		sc.Forward();
 	}
@@ -96,8 +93,8 @@ static void ColouriseContext(StyleContext& sc, char chEnd, int stateEOL) {
 	}
 }
 
-static void ColouriseComment(StyleContext& sc,
-							 bool& /*apostropheStartsAttribute*/) {
+static void ColouriseComment(StyleContext &sc,
+							 bool &/*apostropheStartsAttribute*/) {
 	// Apostrophe meaning is not changed, but the parameter is present for uniformity
 	
 	sc.SetState(SCE_ADA_COMMENTLINE);
@@ -107,15 +104,15 @@ static void ColouriseComment(StyleContext& sc,
 	}
 }
 
-static void ColouriseDelimiter(StyleContext& sc,
-							   bool& apostropheStartsAttribute) {
-	apostropheStartsAttribute = sc.Match (')');
+static void ColouriseDelimiter(StyleContext &sc,
+							   bool &apostropheStartsAttribute) {
+	apostropheStartsAttribute = sc.Match(')');
 	sc.SetState(SCE_ADA_DELIMITER);
 	sc.ForwardSetState(SCE_ADA_DEFAULT);
 }
 
-static void ColouriseLabel(StyleContext& sc, WordList& keywords,
-						   bool& apostropheStartsAttribute) {
+static void ColouriseLabel(StyleContext &sc, WordList &keywords,
+						   bool &apostropheStartsAttribute) {
 	apostropheStartsAttribute = false;
 	
 	sc.SetState(SCE_ADA_LABEL);
@@ -125,7 +122,7 @@ static void ColouriseLabel(StyleContext& sc, WordList& keywords,
 	
 	std::string identifier;
 	
-	while (!sc.atLineEnd && !IsSeparatorOrDelimiterCharacter(sc.ch)) {
+	while (!sc.atLineEnd && !IsSeparatorOrDelimiterChar(sc.ch)) {
 		identifier += static_cast<char>(tolower(sc.ch));
 		sc.Forward();
 	}
@@ -145,8 +142,7 @@ static void ColouriseLabel(StyleContext& sc, WordList& keywords,
 	sc.SetState(SCE_ADA_DEFAULT);
 }
 
-static void ColouriseNumber(StyleContext& sc,
-							bool& apostropheStartsAttribute) {
+static void ColouriseNumber(StyleContext &sc, bool &apostropheStartsAttribute) {
 	apostropheStartsAttribute = true;
 	
 	std::string number;
@@ -154,19 +150,18 @@ static void ColouriseNumber(StyleContext& sc,
 	
 	// Get all characters up to a delimiter or a separator, including points, but excluding
 	// double points (ranges).
-	while (!IsSeparatorOrDelimiterCharacter(sc.ch) ||
+	while (!IsSeparatorOrDelimiterChar(sc.ch) ||
 		   (sc.ch == '.' && sc.chNext != '.')) {
 		number += static_cast<char>(sc.ch);
 		sc.Forward();
 	}
 	
 	// Special case: exponent with sign
-	if ((sc.chPrev == 'e' || sc.chPrev == 'E') &&
-			(sc.ch == '+' || sc.ch == '-')) {
+	if (IsSignDecExponent(sc.ch, sc.chPrev)) {
 		number += static_cast<char>(sc.ch);
 		sc.Forward ();
 		
-		while (!IsSeparatorOrDelimiterCharacter(sc.ch)) {
+		while (!IsSeparatorOrDelimiterChar(sc.ch)) {
 			number += static_cast<char>(sc.ch);
 			sc.Forward();
 		}
@@ -179,8 +174,8 @@ static void ColouriseNumber(StyleContext& sc,
 	sc.SetState(SCE_ADA_DEFAULT);
 }
 
-static void ColouriseString(StyleContext& sc,
-							bool& apostropheStartsAttribute) {
+static void ColouriseString(StyleContext &sc,
+							bool &apostropheStartsAttribute) {
 	apostropheStartsAttribute = true;
 	
 	sc.SetState(SCE_ADA_STRING);
@@ -189,21 +184,21 @@ static void ColouriseString(StyleContext& sc,
 	ColouriseContext(sc, '"', SCE_ADA_STRINGEOL);
 }
 
-static void ColouriseWhiteSpace(StyleContext& sc,
-								bool& /*apostropheStartsAttribute*/) {
+static void ColouriseWhiteSpace(StyleContext &sc,
+								bool &/*apostropheStartsAttribute*/) {
 	// Apostrophe meaning is not changed, but the parameter is present for uniformity
 	sc.SetState(SCE_ADA_DEFAULT);
 	sc.ForwardSetState(SCE_ADA_DEFAULT);
 }
 
-static void ColouriseWord(StyleContext& sc, WordList& keywords,
-						  bool& apostropheStartsAttribute) {
+static void ColouriseWord(StyleContext &sc, WordList &keywords,
+						  bool &apostropheStartsAttribute) {
 	apostropheStartsAttribute = true;
 	sc.SetState(SCE_ADA_IDENTIFIER);
 	
 	std::string word;
 	
-	while (!sc.atLineEnd && !IsSeparatorOrDelimiterCharacter(sc.ch)) {
+	while (!sc.atLineEnd && !IsSeparatorOrDelimiterChar(sc.ch)) {
 		word += static_cast<char>(tolower(sc.ch));
 		sc.Forward();
 	}
@@ -269,15 +264,15 @@ static void ColouriseDocument(
 			ColouriseLabel(sc, keywords, apostropheStartsAttribute);
 		
 		// Whitespace
-		} else if (IsASpace(sc.ch)) {
+		} else if (IsSpace(sc.ch)) {
 			ColouriseWhiteSpace(sc, apostropheStartsAttribute);
 		
 		// Delimiters
-		} else if (IsDelimiterCharacter(sc.ch)) {
+		} else if (IsDelimiterChar(sc.ch)) {
 			ColouriseDelimiter(sc, apostropheStartsAttribute);
 		
 		// Numbers
-		} else if (IsADigit(sc.ch) || sc.ch == '#') {
+		} else if (IsDigit(sc.ch) || sc.ch == '#') {
 			ColouriseNumber(sc, apostropheStartsAttribute);
 		
 		// Keywords or identifiers
@@ -288,7 +283,7 @@ static void ColouriseDocument(
 	sc.Complete();
 }
 
-static inline bool IsDelimiterCharacter(int ch) {
+static inline bool IsDelimiterChar(int ch) {
 	switch (ch) {
 	case '&':
 	case '\'':
@@ -312,11 +307,11 @@ static inline bool IsDelimiterCharacter(int ch) {
 	}
 }
 
-static inline bool IsSeparatorOrDelimiterCharacter(int ch) {
-	return IsASpace(ch) || IsDelimiterCharacter(ch);
+static inline bool IsSeparatorOrDelimiterChar(int ch) {
+	return IsSpace(ch) || IsDelimiterChar(ch);
 }
 
-static bool IsValidIdentifier(const std::string& identifier) {
+static bool IsValidIdentifier(const std::string &identifier) {
 	// First character can't be '_', so initialize the flag to true
 	bool lastWasUnderscore = true;
 	
@@ -328,13 +323,13 @@ static bool IsValidIdentifier(const std::string& identifier) {
 	}
 	
 	// Check for valid character at the start
-	if (!IsWordStartCharacter(identifier[0])) {
+	if (!IsAlphaWordChar(identifier[0])) {
 		return false;
 	}
 	// Check for only valid characters and no double underscores
 	for (size_t i = 0; i < length; i++) {
-		if (!IsWordCharacter(identifier[i]) ||
-				(identifier[i] == '_' && lastWasUnderscore)) {
+		if (!IsAlnumWordChar(identifier[i]) ||
+			(identifier[i] == '_' && lastWasUnderscore)) {
 			return false;
 		}
 		lastWasUnderscore = identifier[i] == '_';
@@ -347,7 +342,7 @@ static bool IsValidIdentifier(const std::string& identifier) {
 	return true;
 }
 
-static bool IsValidNumber(const std::string& number) {
+static bool IsValidNumber(const std::string &number) {
 	size_t hashPos = number.find("#");
 	bool seenDot = false;
 	
@@ -373,7 +368,7 @@ static bool IsValidNumber(const std::string& number) {
 				}
 				canBeSpecial = false;
 				seenDot = true;
-			} else if (IsADigit(number[i])) {
+			} else if (IsDigit(number[i])) {
 				canBeSpecial = true;
 			} else {
 				break;
@@ -394,7 +389,7 @@ static bool IsValidNumber(const std::string& number) {
 				if (!canBeSpecial)
 					return false;
 				canBeSpecial = false;
-			} else if (IsADigit(ch)) {
+			} else if (IsDigit(ch)) {
 				base = base * 10 + (ch - '0');
 				if (base > 16)
 					return false;
@@ -410,7 +405,6 @@ static bool IsValidNumber(const std::string& number) {
 			return false;
 		if (i == length)
 			return false;
-		
 		i++; // Skip over '#'
 		
 		// Parse number
@@ -432,7 +426,7 @@ static bool IsValidNumber(const std::string& number) {
 				canBeSpecial = false;
 				seenDot = true;
 				
-			} else if (IsADigit(ch)) {
+			} else if (IsDigit(ch)) {
 				if (ch - '0' >= base) {
 					return false;
 				}
@@ -451,22 +445,19 @@ static bool IsValidNumber(const std::string& number) {
 				return false;
 			}
 		}
-		if (i == length) {
+		if (i == length)
 			return false;
-		}
 		i++;
 	}
 	
 	// Exponent (optional)
 	if (i < length) {
-		if (number[i] != 'e' && number[i] != 'E')
+		if (!IsDecExponent(number[i]))
 			return false;
-		
 		i++; // Move past 'E'
 		
-		if (i == length) {
+		if (i == length)
 			return false;
-		}
 		
 		if (number[i] == '+')
 			i++;
@@ -478,9 +469,8 @@ static bool IsValidNumber(const std::string& number) {
 			}
 		}
 		
-		if (i == length) {
+		if (i == length)
 			return false;
-		}
 		
 		bool canBeSpecial = false;
 		
@@ -490,7 +480,7 @@ static bool IsValidNumber(const std::string& number) {
 					return false;
 				}
 				canBeSpecial = false;
-			} else if (IsADigit(number[i])) {
+			} else if (IsDigit(number[i])) {
 				canBeSpecial = true;
 			} else {
 				return false;
@@ -501,12 +491,4 @@ static bool IsValidNumber(const std::string& number) {
 	}
 	// if i == length, number was parsed successfully.
 	return i == length;
-}
-
-static inline bool IsWordCharacter(int ch) {
-	return IsWordStartCharacter(ch) || IsADigit(ch);
-}
-
-static inline bool IsWordStartCharacter(int ch) {
-	return (IsASCII(ch) && isalpha(ch)) || ch == '_';
 }

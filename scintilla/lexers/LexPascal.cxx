@@ -133,7 +133,7 @@ using namespace Scintilla;
 static void GetRangeLowered(Sci_PositionU start, Sci_PositionU end,
 							Accessor &styler, char *s, Sci_PositionU len) {
 	Sci_PositionU i = 0;
-	while ((i < end - start + 1) && (i < len-1)) {
+	while (i < (end - start + 1) && i < (len - 1)) {
 		s[i] = static_cast<char>(tolower(styler[start + i]));
 		i++;
 	}
@@ -143,7 +143,7 @@ static void GetRangeLowered(Sci_PositionU start, Sci_PositionU end,
 static void GetForwardRangeLowered(Sci_PositionU start, CharacterSet &charSet,
 								   Accessor &styler, char *s, Sci_PositionU len) {
 	Sci_PositionU i = 0;
-	while ((i < len-1) && charSet.Contains(styler.SafeGetCharAt(start + i))) {
+	while (i < (len - 1) && charSet.Contains(styler.SafeGetCharAt(start + i))) {
 		s[i] = static_cast<char>(tolower(styler.SafeGetCharAt(start + i)));
 		i++;
 	}
@@ -236,8 +236,8 @@ static void ColourisePascalDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_PAS_NUMBER:
 				if (!setNumber.Contains(sc.ch) || (sc.ch == '.' && sc.chNext == '.')) {
 					sc.SetState(SCE_PAS_DEFAULT);
-				} else if (sc.ch == '-' || sc.ch == '+') {
-					if (sc.chPrev != 'E' && sc.chPrev != 'e') {
+				} else if (IsSign(sc.ch)) {
+					if (!IsDecExponent(sc.chPrev)) {
 						sc.SetState(SCE_PAS_DEFAULT);
 					}
 				}
@@ -303,7 +303,7 @@ static void ColourisePascalDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_PAS_DEFAULT) {
-			if (IsADigit(sc.ch) && !(curLineState & stateInAsm)) {
+			if (IsDigit(sc.ch) && !(curLineState & stateInAsm)) {
 				sc.SetState(SCE_PAS_NUMBER);
 			} else if (setWordStart.Contains(sc.ch)) {
 				sc.SetState(SCE_PAS_IDENTIFIER);
@@ -354,7 +354,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		int style = styler.StyleAt(i);
 		if (ch == '/' && chNext == '/' && style == SCE_PAS_COMMENTLINE) {
 			return true;
-		} else if (!IsASpaceOrTab(ch)) {
+		} else if (!IsSpaceOrTab(ch)) {
 			return false;
 		}
 	}
@@ -411,11 +411,10 @@ static Sci_PositionU SkipWhiteSpace(Sci_PositionU currentPos, Sci_PositionU endP
 	CharacterSet setWord(CharacterSet::setAlphaNum, "_");
 	Sci_PositionU j = currentPos + 1;
 	char ch = styler.SafeGetCharAt(j);
-	while ((j < endPos) && (IsASpaceOrTab(ch) || IsACRLF(ch) ||
-							IsStreamCommentStyle(styler.StyleAt(j)) ||
-							(includeChars && setWord.Contains(ch)))) {
-		j++;
-		ch = styler.SafeGetCharAt(j);
+	while (j < endPos && (IsWhiteSpace(ch) ||
+						  IsStreamCommentStyle(styler.StyleAt(j)) ||
+						  (includeChars && setWord.Contains(ch)))) {
+		ch = styler.SafeGetCharAt(++j);
 	}
 	return j;
 }
@@ -481,10 +480,9 @@ static void ClassifyPascalWordFoldPoint(int &levelCurrent, int &lineFoldStateCur
 		bool ignoreKeyword = true;
 		Sci_Position j = lastStart - 1;
 		char ch = styler.SafeGetCharAt(j);
-		while ((j >= startPos) && (IsASpaceOrTab(ch) || IsACRLF(ch) ||
-								   IsStreamCommentStyle(styler.StyleAt(j)))) {
-			j--;
-			ch = styler.SafeGetCharAt(j);
+		while (j >= startPos && (IsWhiteSpace(ch) ||
+								 IsStreamCommentStyle(styler.StyleAt(j)))) {
+			ch = styler.SafeGetCharAt(--j);
 		}
 		if (j >= startPos && styler.SafeGetCharAt(j) == '=') {
 			ignoreKeyword = false;
@@ -546,7 +544,7 @@ static void FoldPascalDoc(Sci_PositionU startPos, Sci_Position length,
 		int stylePrev = style;
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		bool atEOL = IsEOL(ch, chNext);
 		
 		if (foldComment && IsStreamCommentStyle(style)) {
 			if (!IsStreamCommentStyle(stylePrev)) {
@@ -589,7 +587,7 @@ static void FoldPascalDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		
 		if (atEOL) {

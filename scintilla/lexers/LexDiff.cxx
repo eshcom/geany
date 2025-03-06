@@ -26,9 +26,7 @@
 using namespace Scintilla;
 
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
-	return (styler[i] == '\n') ||
-		   ((styler[i] == '\r') &&
-			(styler.SafeGetCharAt(i + 1) != '\n'));
+	return IsEOL(styler[i], styler.SafeGetCharAt(i + 1));
 }
 
 #define DIFF_BUFFER_START_SIZE 16
@@ -49,7 +47,7 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine,
 		// In a context diff, --- appears in both the header and the position markers
 		if (lineBuffer[3] == ' ' && atoi(lineBuffer + 4) && !strchr(lineBuffer, '/'))
 			styler.ColourTo(endLine, SCE_DIFF_POSITION);
-		else if (IsACRLF(lineBuffer[3]))
+		else if (IsCRLF(lineBuffer[3]))
 			styler.ColourTo(endLine, SCE_DIFF_POSITION);
 		else if (lineBuffer[3] == ' ')
 			styler.ColourTo(endLine, SCE_DIFF_HEADER);
@@ -78,7 +76,7 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine,
 		styler.ColourTo(endLine, SCE_DIFF_HEADER);
 	} else if (lineBuffer[0] == '@') {
 		styler.ColourTo(endLine, SCE_DIFF_POSITION);
-	} else if (lineBuffer[0] >= '0' && lineBuffer[0] <= '9') {
+	} else if (IsDigit(lineBuffer[0])) {
 		styler.ColourTo(endLine, SCE_DIFF_POSITION);
 	} else if (0 == strncmp(lineBuffer, "++", 2)) {
 		styler.ColourTo(endLine, SCE_DIFF_PATCH_ADD);
@@ -103,7 +101,6 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine,
 
 static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length,
 							 int, WordList *[], Accessor &styler) {
-	
 	char lineBuffer[DIFF_BUFFER_START_SIZE] = "";
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -131,11 +128,10 @@ static void ColouriseDiffDoc(Sci_PositionU startPos, Sci_Position length,
 
 static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length,
 						int, WordList *[], Accessor &styler) {
-	
 	Sci_Position curLine = styler.GetLine(startPos);
 	Sci_Position curLineStart = styler.LineStart(curLine);
-	int prevLevel = curLine > 0 ? styler.LevelAt(curLine - 1) :
-								  SC_FOLDLEVELBASE;
+	int prevLevel = curLine > 0 ? styler.LevelAt(curLine - 1)
+								: SC_FOLDLEVELBASE;
 	int nextLevel;
 	
 	do {

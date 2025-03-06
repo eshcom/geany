@@ -76,7 +76,8 @@ public:
 		RemoveStyle(style);
 		while (*identifiers) {
 			const char *cpSpace = identifiers;
-			while (*cpSpace && !(*cpSpace == ' ' || *cpSpace == '\t' || *cpSpace == '\r' || *cpSpace == '\n'))
+			while (*cpSpace && !(*cpSpace == ' ' || *cpSpace == '\t' ||
+								 *cpSpace == '\r' || *cpSpace == '\n'))
 				cpSpace++;
 			if (cpSpace > identifiers) {
 				std::string word(identifiers, cpSpace - identifiers);

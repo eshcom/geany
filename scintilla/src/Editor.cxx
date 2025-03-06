@@ -2161,10 +2161,10 @@ void Editor::PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Posit
 	sel.RangeMain().caret = RealizeVirtualSpace(sel.RangeMain().caret);
 	const int xInsert = XFromPosition(sel.RangeMain().caret);
 	bool prevCr = false;
-	while ((len > 0) && IsEOLChar(ptr[len-1]))
+	while ((len > 0) && IsCRLF(ptr[len-1]))
 		len--;
 	for (Sci::Position i = 0; i < len; i++) {
-		if (IsEOLChar(ptr[i])) {
+		if (IsCRLF(ptr[i])) {
 			if ((ptr[i] == '\r') || (!prevCr))
 				line++;
 			if (line >= pdoc->LinesTotal()) {
@@ -4128,10 +4128,10 @@ std::string Editor::CaseMapString(const std::string &s, int caseMapping) {
 	for (char &ch : ret) {
 		switch (caseMapping) {
 			case cmUpper:
-				ch = MakeUpperCase(ch);
+				ch = ToUpper(ch);
 				break;
 			case cmLower:
-				ch = MakeLowerCase(ch);
+				ch = ToLower(ch);
 				break;
 		}
 	}

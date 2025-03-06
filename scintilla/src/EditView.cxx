@@ -383,16 +383,16 @@ void EditView::LayoutLine(const EditModel &model, Sci::Line line, Surface *surfa
 					(ll->chars[numCharsInLine] == chDoc);
 				else if (vstyle.styles[ll->styles[numCharsInLine]].caseForce == Style::caseLower)
 					allSame = allSame &&
-					(ll->chars[numCharsInLine] == MakeLowerCase(chDoc));
+					(ll->chars[numCharsInLine] == ToLower(chDoc));
 				else if (vstyle.styles[ll->styles[numCharsInLine]].caseForce == Style::caseUpper)
 					allSame = allSame &&
-					(ll->chars[numCharsInLine] == MakeUpperCase(chDoc));
+					(ll->chars[numCharsInLine] == ToUpper(chDoc));
 				else	{ // Style::caseCamel
 					if ((model.pdoc->IsASCIIWordByte(ll->chars[numCharsInLine])) &&
 					  ((numCharsInLine == 0) || (!model.pdoc->IsASCIIWordByte(ll->chars[numCharsInLine - 1])))) {
-						allSame = allSame && (ll->chars[numCharsInLine] == MakeUpperCase(chDoc));
+						allSame = allSame && (ll->chars[numCharsInLine] == ToUpper(chDoc));
 					} else {
-						allSame = allSame && (ll->chars[numCharsInLine] == MakeLowerCase(chDoc));
+						allSame = allSame && (ll->chars[numCharsInLine] == ToLower(chDoc));
 					}
 				}
 				numCharsInLine++;
@@ -435,15 +435,15 @@ void EditView::LayoutLine(const EditModel &model, Sci::Line line, Surface *surfa
 			for (int charInLine = 0; charInLine<lineLength; charInLine++) {
 				const char chDoc = ll->chars[charInLine];
 				if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseUpper)
-					ll->chars[charInLine] = MakeUpperCase(chDoc);
+					ll->chars[charInLine] = ToUpper(chDoc);
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseLower)
-					ll->chars[charInLine] = MakeLowerCase(chDoc);
+					ll->chars[charInLine] = ToLower(chDoc);
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseCamel) {
 					if ((model.pdoc->IsASCIIWordByte(ll->chars[charInLine])) &&
 					  ((charInLine == 0) || (!model.pdoc->IsASCIIWordByte(ll->chars[charInLine - 1])))) {
-						ll->chars[charInLine] = MakeUpperCase(chDoc);
+						ll->chars[charInLine] = ToUpper(chDoc);
 					} else {
-						ll->chars[charInLine] = MakeLowerCase(chDoc);
+						ll->chars[charInLine] = ToLower(chDoc);
 					}
 				}
 			}

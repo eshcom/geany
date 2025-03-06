@@ -30,24 +30,24 @@
 
 using namespace Scintilla;
 
-static bool is_radix(int radix, int ch) {
+static bool isRadix(int radix, int ch) {
 	int digit;
 	
 	if (radix < 2 || radix > 36)
 		return false;
 	
-	if (isdigit(ch)) {
+	if (IsDigit(ch)) {
 		digit = ch - '0';
-	} else if (isalnum(ch)) {
-		digit = toupper(ch) - 'A' + 10;
+	} else if (IsAlnum(ch)) {
+		digit = ToUpper(ch) - 'A' + 10;
 	} else {
 		return false;
 	}
 	return (digit < radix);
 }
 
-static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
-							   Accessor &styler) {
+static bool isFuncDefinition(Sci_Position pos, Sci_PositionU endPos,
+							 Accessor &styler) {
 	/* find ") ->" or ") when" */
 	bool found_end_bracket = false;
 	bool is_str = false;
@@ -70,7 +70,7 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 				pos += 2;	// Skip $\", $\', ...
 			else
 				pos++;		// Skip $", $', ...
-		} else if (ch == '\"' || ch == '\'') {
+		} else if (IsQuote(ch)) {
 			str_quote = ch;
 			is_str = true;
 		} else if (ch == '(') {
@@ -83,7 +83,7 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 	}
 	if (found_end_bracket) {
 		pos++; // skip ')'
-		while (pos < endPos && IsASpace(styler[pos]))
+		while (pos < endPos && IsSpace(styler[pos]))
 			pos++;
 		if (pos + 1 < endPos && styler[pos] == '-' && styler[pos + 1] == '>')
 			return true;
@@ -95,7 +95,7 @@ static bool is_func_definition(Sci_Position pos, Sci_PositionU endPos,
 	return false;
 }
 
-static Sci_Position find_start_bracket(Sci_Position pos, Accessor &styler)
+static Sci_Position findStartBracket(Sci_Position pos, Accessor &styler)
 {
 	int brackets = 0;
 	int limit = pos > 300 ? pos - 300 : 0;
@@ -146,12 +146,8 @@ static inline bool IsValidFuncDefStyle(int style) {
 			style == SCE_ERLANG_ATOM);
 }
 
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
-}
-
 #define SKIP_NEXT_SPACES							\
-	while (sc.More() && IsASpaceOrTab(sc.chNext))	\
+	while (sc.More() && IsSpaceOrTab(sc.chNext))	\
 		sc.Forward();
 
 static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
@@ -183,7 +179,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 			if (end_bracket_found) {
-				newStartPos = find_start_bracket(--newStartPos, styler);
+				newStartPos = findStartBracket(--newStartPos, styler);
 				if (newStartPos > 0) {
 					int style = styler.StyleAt(newStartPos - 1);
 					if (style == SCE_ERLANG_FUNCTION || style == SCE_ERLANG_STD_FUNC) {
@@ -274,7 +270,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			/* COMMENTS ----------------------------------------------------- */
 			case SCE_ERLANG_COMMENT_TAG :
 			case SCE_ERLANG_COMMENT_MACRO_TAG : {
-				if (isalnum(sc.ch))
+				if (IsAlnum(sc.ch))
 					continue;
 				// Try to match documentation comment
 				sc.GetCurrent(cur, sizeof(cur));
@@ -307,15 +303,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					
 				} else if (sc.ch == '{') {
 					sc.Forward();
-					while (!sc.atLineEnd && IsASpaceOrTab(sc.ch))
+					while (!sc.atLineEnd && IsSpaceOrTab(sc.ch))
 						sc.Forward();
 					
-					if (sc.ch == '@' && isalnum(sc.chNext)) {
+					if (sc.ch == '@' && IsAlnum(sc.chNext)) {
 						last_comment_state = sc.state;
 						sc.SetState(SCE_ERLANG_COMMENT_MACRO_TAG);
 						sc.Forward();
 					}
-				} else if (sc.ch == '@' && isalnum(sc.chNext)) {
+				} else if (sc.ch == '@' && IsAlnum(sc.chNext)) {
 					last_comment_state = sc.state;
 					sc.SetState(SCE_ERLANG_COMMENT_TAG);
 					sc.Forward();
@@ -336,7 +332,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					
 					/* Simple integer */
 					case NUMERAL_START : {
-						if (isdigit(sc.ch)) {
+						if (IsDigit(sc.ch)) {
 							radix_digits *= 10;
 							radix_digits += sc.ch - '0'; // Assuming ASCII here!
 							continue;
@@ -347,49 +343,48 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 								number_state = NUMERAL_BASE_VALUE;
 								continue;
 							}
-						} else if (sc.ch == '.' && isdigit(sc.chNext)) {
+						} else if (IsDotDigit(sc.ch, sc.chNext)) {
 							number_state = NUMERAL_FLOAT;
 							continue;
-						} else if (sc.ch == 'e' || sc.ch == 'E') {
+						} else if (IsDecExponent(sc.ch)) {
 							exponent_digits = 0;
 							number_state = NUMERAL_EXPONENT;
 							continue;
-						} else if (isalpha(sc.ch)) {
+						} else if (IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Integer in other base than 10 (x#yyy) */
 					case NUMERAL_BASE_VALUE : {
-						if (is_radix(radix_digits, sc.ch)) {
+						if (isRadix(radix_digits, sc.ch)) {
 							continue;
-						} else if (isalnum(sc.ch)) {
+						} else if (IsAlnum(sc.ch)) {
 							sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Float (x.yyy) */
 					case NUMERAL_FLOAT : {
-						if (sc.ch == 'e' || sc.ch == 'E') {
+						if (IsDecExponent(sc.ch)) {
 							exponent_digits = 0;
 							number_state = NUMERAL_EXPONENT;
 							continue;
-						} else if (isdigit(sc.ch)) {
+						} else if (IsDigit(sc.ch)) {
 							continue;
-						} else if (isalpha(sc.ch)) {
+						} else if (IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Exponent, either integer or float (xEyy, x.yyEzzz) */
 					case NUMERAL_EXPONENT : {
-						if ((sc.ch == '-' || sc.ch == '+')
-								&& isdigit(sc.chNext)) {
+						if (IsSignDigit(sc.ch, sc.chNext)) {
 							continue;
-						} else if (isdigit(sc.ch)) {
+						} else if (IsDigit(sc.ch)) {
 							exponent_digits++;
 							continue;
-						} else if (exponent_digits == 0 || isalpha(sc.ch)) {
+						} else if (exponent_digits == 0 || IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 						}
 					} break;
@@ -400,7 +395,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			/* Preprocessor ------------------------------------------------- */
 			case SCE_ERLANG_PREPROC : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -421,14 +416,14 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					is_at_symb = true;
 					sc.ChangeState(SCE_ERLANG_NODE);
 					continue;
-				} else if (IsAWordChar(sc.ch)) {
+				} else if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (sc.ch == '-' && last_oper == '/' && islower(sc.chNext)) {
+				} else if (sc.ch == '-' && last_oper == '/' && IsLower(sc.chNext)) {
 					sc.Forward();
 					continue;
 				}
 				sc.GetCurrent(cur, sizeof(cur));
-				while (sc.More() && IsASpaceOrTab(sc.ch))
+				while (sc.More() && IsSpaceOrTab(sc.ch))
 					sc.Forward();
 				
 				if (sc.ch == ':' && sc.chNext != '=' && sc.chNext != ':') {
@@ -452,15 +447,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 						
 					} else if (module_type == NONE_MODULE && sc.ch == '(') {
 						sc.ChangeState(stdFuncs.InList(cur) &&
-										!is_func_definition(sc.currentPos + 1,
-															endPos, styler)
+										!isFuncDefinition(sc.currentPos + 1,
+														  endPos, styler)
 											? SCE_ERLANG_STD_FUNC
 											: SCE_ERLANG_FUNCTION);
 					} else if (sc.ch == '/') {
 						Sci_PositionU i = sc.currentPos + 1;
-						while (i < endPos && IsASpaceOrTab(styler[i]))
+						while (i < endPos && IsSpaceOrTab(styler[i]))
 							i++;
-						if (isdigit(styler[i])) {
+						if (IsDigit(styler[i])) {
 							if (module_type == ERLANG_MODULE) {
 								sc.ChangeState(stdFuncs.InList(cur)
 													? SCE_ERLANG_STD_FUNC
@@ -496,7 +491,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ERLANG_NODE : {
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ERLANG_ATOM);
-				} else if (!IsAWordChar(sc.ch)) {
+				} else if (!IsAlnumWordChar(sc.ch)) {
 					sc.SetState(SCE_ERLANG_DEFAULT);
 				}
 			} break;
@@ -520,7 +515,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					break;
 				}
 			case SCE_ERLANG_MACRO : {
-				if (!IsAWordChar(sc.ch) && sc.ch != '@') {
+				if (!IsAlnumWordChar(sc.ch) && sc.ch != '@') {
 					sc.GetCurrent(cur, sizeof(cur));
 					RemoveAllSpaces(cur);
 					
@@ -543,7 +538,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			/* -------------------------------------------------------------- */
 			
 			case SCE_ERLANG_VARIABLE : {
-				if (!IsAWordChar(sc.ch) && sc.ch != '@')
+				if (!IsAlnumWordChar(sc.ch) && sc.ch != '@')
 					sc.SetState(SCE_ERLANG_DEFAULT);
 			} break;
 			
@@ -587,7 +582,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					continue; // esh: continue of escape chars
 				}
 				if (is_char_escape) {
-					if (!sc.atLineStart && isdigit(sc.ch)) {
+					if (!sc.atLineStart && IsDigit(sc.ch)) {
 						sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
 					} else if (!escapeSequence) {
 						sc.ChangeState(SCE_ERLANG_CHARACTER);
@@ -683,7 +678,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ERLANG_UNKNOWN);
 				SKIP_NEXT_SPACES
 				
-				if (islower(sc.chNext)) {
+				if (IsLower(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_PREPROC);
 					sc.Forward();
 				}
@@ -694,7 +689,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.chNext == '\'') {
 					sc.ChangeState(SCE_ERLANG_MACRO_QUOTED);
 					sc.Forward();
-				} else if (isalpha(sc.chNext)) {
+				} else if (IsAlpha(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_MACRO);
 					sc.Forward();
 				}
@@ -707,28 +702,28 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				} else if (sc.chNext == '{') {
 					sc.ChangeState(SCE_ERLANG_MAP_OPER);
-				} else if (islower(sc.chNext)) {
+				} else if (IsLower(sc.chNext)) {
 					sc.ChangeState(SCE_ERLANG_RECORD);
 					sc.Forward();
 					is_var_record_name = false;
-				} else if (isupper(sc.chNext) || sc.chNext == '?') {
+				} else if (IsUpper(sc.chNext) || sc.chNext == '?') {
 					//~ examples: #RecordName{}, #?MODULE{}
 					sc.ChangeState(SCE_ERLANG_RECORD);
 					is_var_record_name = true;
 				}
-			} else if (isdigit(sc.ch)) {
+			} else if (IsDigit(sc.ch)) {
 				number_state = NUMERAL_START;
 				radix_digits = sc.ch - '0';
 				sc.SetState(SCE_ERLANG_NUMBER);
 				
-			} else if (isupper(sc.ch) || sc.ch == '_') {
+			} else if (IsUpper(sc.ch) || sc.ch == '_') {
 				sc.SetState(SCE_ERLANG_VARIABLE);
 				
-			} else if (islower(sc.ch)) {
+			} else if (IsLower(sc.ch)) {
 				is_at_symb = false;
 				sc.SetState(SCE_ERLANG_ATOM);
 				
-			} else if (isoperator(sc.ch) || sc.ch == '\\') {
+			} else if (IsOperator(sc.ch) || sc.ch == '\\') {
 				last_oper = sc.ch;
 				sc.SetState(SCE_ERLANG_OPERATOR);
 				module_type = (sc.ch == ':' && sc.chNext != '=' &&
@@ -774,7 +769,6 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position keyword_start = 0;
 	char ch;
 	char chNext = styler.SafeGetCharAt(startPos);
-	bool atEOL;
 	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		ch = chNext;
@@ -783,7 +777,6 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		stylePrev = style;
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
-		atEOL = ((ch == '\r') && (chNext != '\n')) || (ch == '\n');
 		
 		if (stylePrev != SCE_ERLANG_STD_WORD
 			&& style == SCE_ERLANG_STD_WORD) {
@@ -813,7 +806,7 @@ static void FoldErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				currentLevel--;
 			}
 		}
-		if (atEOL) {
+		if (IsEOL(ch, chNext)) {
 			lev = previousLevel;
 			if (currentLevel > previousLevel)
 				lev |= SC_FOLDLEVELHEADERFLAG;

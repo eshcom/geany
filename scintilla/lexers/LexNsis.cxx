@@ -52,22 +52,6 @@ using namespace Scintilla;
 #define SCE_NSIS_COMMENTBOX 18
 */
 
-static bool isNsisNumber(char ch)
-{
-	return (ch >= '0' && ch <= '9');
-}
-
-static bool isNsisChar(char ch)
-{
-	return (ch == '.') || (ch == '_') || isNsisNumber(ch) ||
-		   (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-
-static bool isNsisLetter(char ch)
-{
-	return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-
 static bool NsisNextLineHasElse(Sci_PositionU start, Sci_PositionU end,
 								Accessor &styler)
 {
@@ -88,7 +72,7 @@ static bool NsisNextLineHasElse(Sci_PositionU start, Sci_PositionU end,
 	for (Sci_PositionU firstChar = nNextLine; firstChar < end; firstChar++)
 	{
 		char cNext = styler.SafeGetCharAt(firstChar);
-		if (IsASpaceOrTab(cNext))
+		if (IsSpaceOrTab(cNext))
 			continue;
 		if (cNext == '!')
 		{
@@ -271,7 +255,7 @@ static int classifyWordNsis(Sci_PositionU start, Sci_PositionU end,
 		bool bHasSimpleNsisChars = true;
 		for (Sci_PositionU j = 1; j < end - start + 1 && j < 99; j++)
 		{
-			if (!isNsisChar(s[j]))
+			if (!IsWordChar(s[j]))
 			{
 				bHasSimpleNsisChars = false;
 				break;
@@ -282,12 +266,12 @@ static int classifyWordNsis(Sci_PositionU start, Sci_PositionU end,
 	}
 	
 	// To check for numbers
-	if (isNsisNumber(s[0]))
+	if (IsDigit(s[0]))
 	{
 		bool bHasSimpleNsisNumber = true;
 		for (Sci_PositionU j = 1; j < end - start + 1 && j < 99; j++)
 		{
-			if (!isNsisNumber(s[j]))
+			if (!IsDigit(s[j]))
 			{
 				bHasSimpleNsisNumber = false;
 				break;
@@ -357,15 +341,14 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				
 				// NSIS KeyWord,Function, Variable, UserDefined:
-				if (cCurrChar == '$' || isNsisChar(cCurrChar) || cCurrChar == '!')
+				if (cCurrChar == '$' || cCurrChar == '!' || IsWordChar(cCurrChar))
 				{
 					styler.ColourTo(i - 1, state);
 					state = SCE_NSIS_FUNCTION;
 					
 					// If it is a number, we must check and set style here first...
-					if (isNsisNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) ||
-													IsACRLF(cNextChar)))
-							styler.ColourTo(i, SCE_NSIS_NUMBER);
+					if (IsDigit(cCurrChar) && IsWhiteSpace(cNextChar))
+						styler.ColourTo(i, SCE_NSIS_NUMBER);
 					break;
 				}
 				
@@ -377,7 +360,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				break;
 			case SCE_NSIS_COMMENT:
-				if (IsACRLF(cNextChar))
+				if (IsCRLF(cNextChar))
 				{
 					// Special case:
 					if (cCurrChar == '\\')
@@ -387,7 +370,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 					else
 					{
-						styler.ColourTo(i,state);
+						styler.ColourTo(i, state);
 						state = SCE_NSIS_DEFAULT;
 					}
 				}
@@ -402,26 +385,26 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				
 				if (cCurrChar == '"' && state == SCE_NSIS_STRINGDQ)
 				{
-					styler.ColourTo(i,state);
+					styler.ColourTo(i, state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 				
 				if (cCurrChar == '`' && state == SCE_NSIS_STRINGLQ)
 				{
-					styler.ColourTo(i,state);
+					styler.ColourTo(i, state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 				
 				if (cCurrChar == '\'' && state == SCE_NSIS_STRINGRQ)
 				{
-					styler.ColourTo(i,state);
+					styler.ColourTo(i, state);
 					state = SCE_NSIS_DEFAULT;
 					break;
 				}
 				
-				if (IsACRLF(cNextChar))
+				if (IsCRLF(cNextChar))
 				{
 					Sci_Position nCurLine = styler.GetLine(i + 1);
 					Sci_Position nBack = i;
@@ -440,7 +423,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 							bNextLine = true;
 							break;
 						}
-						if (!IsACRLF(cTemp) && !IsASpaceOrTab(cTemp))
+						if (!IsWhiteSpace(cTemp))
 							break;
 						
 						nBack--;
@@ -448,11 +431,11 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 					
 					if (bNextLine)
 					{
-						styler.ColourTo(i + 1,state);
+						styler.ColourTo(i + 1, state);
 					}
 					if (bNextLine == false)
 					{
-						styler.ColourTo(i,state);
+						styler.ColourTo(i, state);
 						state = SCE_NSIS_DEFAULT;
 					}
 				}
@@ -463,20 +446,21 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				// NSIS KeyWord:
 				if (cCurrChar == '$')
 					state = SCE_NSIS_DEFAULT;
-				else if (cCurrChar == '\\' && (cNextChar == 'n' || cNextChar == 'r' ||
-											   cNextChar == 't'))
+				else if (cCurrChar == '\\' && IsPartCtrl(cNextChar))
 					state = SCE_NSIS_DEFAULT;
-				else if ((isNsisChar(cCurrChar) && !isNsisChar(cNextChar) &&
+				else if ((IsWordChar(cCurrChar) && !IsWordChar(cNextChar) &&
 						  cNextChar != '}') || cCurrChar == '}')
 				{
-					state = classifyWordNsis(styler.GetStartSegment(), i, keywordLists, styler);
+					state = classifyWordNsis(styler.GetStartSegment(), i,
+											 keywordLists, styler);
 					styler.ColourTo(i, state);
 					state = SCE_NSIS_DEFAULT;
 				}
-				else if (!isNsisChar(cCurrChar) && cCurrChar != '{' && cCurrChar != '}')
+				else if (!IsWordChar(cCurrChar) && cCurrChar != '{'
+												&& cCurrChar != '}')
 				{
-					if (classifyWordNsis(styler.GetStartSegment(), i - 1, keywordLists,
-										 styler) == SCE_NSIS_NUMBER)
+					if (classifyWordNsis(styler.GetStartSegment(), i - 1,
+										 keywordLists, styler) == SCE_NSIS_NUMBER)
 						 styler.ColourTo(i - 1, SCE_NSIS_NUMBER);
 					
 					state = SCE_NSIS_DEFAULT;
@@ -509,7 +493,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				
 				if (styler.SafeGetCharAt(i - 1) == '*' && cCurrChar == '/')
 				{
-					styler.ColourTo(i,state);
+					styler.ColourTo(i, state);
 					state = SCE_NSIS_DEFAULT;
 				}
 				break;
@@ -517,7 +501,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		if (state == SCE_NSIS_COMMENT || state == SCE_NSIS_COMMENTBOX)
 		{
-			styler.ColourTo(i,state);
+			styler.ColourTo(i, state);
 		}
 		else if (state == SCE_NSIS_STRINGDQ || state == SCE_NSIS_STRINGLQ ||
 				 state == SCE_NSIS_STRINGRQ)
@@ -532,9 +516,9 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				bVarInString = false;
 				bIngoreNextDollarSign = true;
 			}
-			else if (bVarInString && cCurrChar == '\\' && (cNextChar == 'n' || cNextChar == 'r' ||
-														   cNextChar == 't' || cNextChar == '"' ||
-														   cNextChar == '`' || cNextChar == '\''))
+			else if (bVarInString && cCurrChar == '\\' &&
+					 (IsQuote(cNextChar) || cNextChar == '`' ||
+					  IsPartCtrl(cNextChar)))
 			{
 				styler.ColourTo(i + 1, SCE_NSIS_STRINGVAR);
 				bVarInString = false;
@@ -542,7 +526,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			
 			// Covers "$INSTDIR and user vars like $MYVAR"
-			else if (bVarInString && !isNsisChar(cNextChar))
+			else if (bVarInString && !IsWordChar(cNextChar))
 			{
 				int nWordState = classifyWordNsis(styler.GetStartSegment(), i,
 												  keywordLists, styler);
@@ -626,11 +610,11 @@ static void FoldNsisDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		if (bArg1 && !blockComment)
 		{
-			if (nWordStart == -1 && (isNsisLetter(chCurr) || chCurr == '!'))
+			if (nWordStart == -1 && (IsAlpha(chCurr) || chCurr == '!'))
 			{
 				nWordStart = i;
 			}
-			else if (isNsisLetter(chCurr) == false && nWordStart > -1)
+			else if (!IsAlpha(chCurr) && nWordStart > -1)
 			{
 				int newLevel = calculateFoldNsis(nWordStart, i - 1, levelNext, styler,
 												 foldAtElse, foldUtilityCmd);

@@ -80,7 +80,7 @@ static bool FollowsPostfixOperator(StyleContext &sc, Accessor &styler) {
 	Sci_Position pos = (Sci_Position) sc.currentPos;
 	while (--pos > 0) {
 		char ch = styler[pos];
-		if (ch == '+' || ch == '-') {
+		if (IsSign(ch)) {
 			return styler[pos - 1] == ch;
 		}
 	}
@@ -93,7 +93,7 @@ static bool followsKeyword(StyleContext &sc, Accessor &styler) {
 	Sci_Position lineStartPos = styler.LineStart(currentLine);
 	while (--pos > lineStartPos) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (!IsASpaceOrTab(ch)) {
+		if (!IsSpaceOrTab(ch)) {
 			break;
 		}
 	}
@@ -209,7 +209,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				break;
 			case SCE_COFFEESCRIPT_STRING:
 				if (sc.ch == '\\') {
-					if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+					if (IsQuoteOrBackslash(sc.chNext)) {
 						sc.Forward();
 					}
 				} else if (sc.ch == '\"') {
@@ -228,7 +228,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				break;
 			case SCE_COFFEESCRIPT_CHARACTER:
 				if (sc.ch == '\\') {
-					if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+					if (IsQuoteOrBackslash(sc.chNext)) {
 						sc.Forward();
 					}
 				} else if (sc.ch == '\'') {
@@ -240,7 +240,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 					sc.SetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.ch == '/') {
 					sc.Forward();
-					while ((sc.ch < 0x80) && islower(sc.ch))
+					while (IsLower(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.ch == '\\') {
@@ -282,7 +282,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_COFFEESCRIPT_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigitOrDotDigit(sc.ch, sc.chNext)) {
 				sc.SetState(SCE_COFFEESCRIPT_NUMBER);
 			} else if (setWordStart.Contains(sc.ch)) {
 				sc.SetState(SCE_COFFEESCRIPT_IDENTIFIER);
@@ -306,7 +306,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				} else {
 					sc.SetState(SCE_COFFEESCRIPT_COMMENTLINE);
 				}
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_COFFEESCRIPT_OPERATOR);
 				// Handle '..' and '...' operators correctly.
 				if (sc.ch == '.') {
@@ -324,7 +324,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 			}
 		}
 		
-		if (!IsASpace(sc.ch) && !IsSpaceEquiv(sc.state)) {
+		if (!IsSpace(sc.ch) && !IsSpaceEquiv(sc.state)) {
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
 		}
@@ -340,7 +340,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;
