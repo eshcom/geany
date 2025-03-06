@@ -99,11 +99,11 @@ static bool latexIsSpecial(int ch) {
 }
 
 static bool latexIsBlank(int ch) {
-	return IsASpaceOrTab(ch);
+	return IsSpaceOrTab(ch);
 }
 
 static bool latexIsBlankAndNL(int ch) {
-	return IsASpaceOrTab(ch) || IsACRLF(ch);
+	return IsSpaceOrTab(ch) || IsCRLF(ch);
 }
 
 static bool latexIsLetter(int ch) {
@@ -219,7 +219,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 			continue;
 		}
 		
-		if (IsACRLF(ch))
+		if (IsCRLF(ch))
 			setMode(styler.GetLine(i), mode);
 		
 		switch (state) {
@@ -233,7 +233,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (IsACRLF(chNext)) {
+				} else if (IsCRLF(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					styler.ColourTo(i + 1, SCE_L_SHORTCMD);
@@ -316,7 +316,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 				styler.ColourTo(i, SCE_L_ERROR);
 				latexStateReset(mode, state);
 				ch = styler.SafeGetCharAt(i);
-				if (IsACRLF(ch))
+				if (IsCRLF(ch))
 					setMode(styler.GetLine(i), mode);
 			}
 			chNext = styler.SafeGetCharAt(i+1);
@@ -329,7 +329,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 				styler.ColourTo(i, SCE_L_ERROR);
 				latexStateReset(mode, state);
 				ch = styler.SafeGetCharAt(i);
-				if (IsACRLF(ch))
+				if (IsCRLF(ch))
 					setMode(styler.GetLine(i), mode);
 			}
 			chNext = styler.SafeGetCharAt(i+1);
@@ -352,7 +352,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (IsACRLF(chNext)) {
+				} else if (IsCRLF(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					if (chNext == ')') {
@@ -394,7 +394,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 					styler.ColourTo(i + 1, SCE_L_SPECIAL);
 					i++;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (IsACRLF(chNext)) {
+				} else if (IsCRLF(chNext)) {
 					styler.ColourTo(i, SCE_L_ERROR);
 				} else if (IsASCII(chNext)) {
 					if (chNext == ']') {
@@ -425,7 +425,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 			break;
 		case SCE_L_COMMENT :
-			if (IsACRLF(ch)) {
+			if (IsCRLF(ch)) {
 				styler.ColourTo(i - 1, state);
 				latexStateReset(mode, state);
 			}
@@ -462,7 +462,7 @@ void SCI_METHOD LexerLaTeX::Lex(Sci_PositionU startPos, Sci_Position length,
 				chVerbatimDelim = '\0';
 				i++;
 				chNext = styler.SafeGetCharAt(i + 1);
-			} else if (chVerbatimDelim != '\0' && IsACRLF(ch)) {
+			} else if (chVerbatimDelim != '\0' && IsCRLF(ch)) {
 				styler.ColourTo(i, SCE_L_ERROR);
 				latexStateReset(mode, state);
 				chVerbatimDelim = '\0';
@@ -501,7 +501,7 @@ void SCI_METHOD LexerLaTeX::Fold(Sci_PositionU startPos, Sci_Position length,
 		for (i = static_cast<Sci_Position>(startPos);
 			 i < static_cast<Sci_Position>(endPos); ++i) {
 			ch = styler.SafeGetCharAt(i);
-			if (IsACRLF(ch)) break;
+			if (IsCRLF(ch)) break;
 			if (ch != '\\' || styler.StyleAt(i) != SCE_L_COMMAND) continue;
 			for (j = 0; j < 15 && i + 1 < static_cast<Sci_Position>(endPos); ++j, ++i) {
 				buf[j] = styler.SafeGetCharAt(i + 1);

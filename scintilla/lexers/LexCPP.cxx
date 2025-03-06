@@ -66,7 +66,7 @@ bool followsReturnKeyword(const StyleContext &sc, LexAccessor &styler) {
 	const Sci_Position lineStartPos = styler.LineStart(currentLine);
 	while (--pos > lineStartPos) {
 		const char ch = styler.SafeGetCharAt(pos);
-		if (!IsASpaceOrTab(ch)) {
+		if (!IsSpaceOrTab(ch)) {
 			break;
 		}
 	}
@@ -83,7 +83,7 @@ bool followsReturnKeyword(const StyleContext &sc, LexAccessor &styler) {
 
 bool OnlySpaceOrTab(const std::string &s) noexcept {
 	for (const char ch : s) {
-		if (!IsASpaceOrTab(ch))
+		if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return true;
@@ -810,7 +810,7 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 
 #define MOVE_INDEX_TO_NONSPACE										\
 	Sci_PositionU i = sc.currentPos;								\
-	while (i < endPos && IsASpaceOrTab(styler[i]))					\
+	while (i < endPos && IsSpaceOrTab(styler[i]))					\
 		i++;
 
 #define CHECK_ESCAPE_FORMAT_SEQ										\
@@ -847,7 +847,7 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 																			\
 	} else {																\
 		MOVE_INDEX_TO_NONSPACE												\
-		if (i == endPos || IsACRLF(styler[i]))								\
+		if (i == endPos || IsCRLF(styler[i]))								\
 			sc.ChangeState(SCE_C_STRINGEOL|activitySet);					\
 		else																\
 			sc.SetState(stringState|activitySet);							\
@@ -887,7 +887,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	if (startPos > 0) {
 		Sci_Position back = startPos;
 		while (--back) {
-			if (IsASpace(styler[back])) {
+			if (IsSpace(styler[back])) {
 				continue;
 			} else if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
 				lastOper = styler[back];
@@ -1198,7 +1198,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 			case SCE_C_PREPROC:
 				if (options.stylingWithinPreprocessor) {
-					if (IsASpace(sc.ch) || (sc.ch == '(')) {
+					if (IsSpace(sc.ch) || (sc.ch == '(')) {
 						sc.SetState(SCE_C_DEFAULT|activitySet);
 					} else if (sc.chPrev == '#') {
 						if (sc.ch == '#') {
@@ -1250,8 +1250,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '@' || sc.ch == '\\') { // JavaDoc and Doxygen support
 					// Verify that we have the conditions to mark a comment-doc-keyword
-					if ((IsASpace(sc.chPrev) || sc.chPrev == '*') &&
-						(!IsASpace(sc.chNext))) {
+					if ((IsSpace(sc.chPrev) || sc.chPrev == '*') &&
+						(!IsSpace(sc.chNext))) {
 						styleBeforeDCKeyword = SCE_C_COMMENTDOC;
 						sc.SetState(SCE_C_COMMENTDOCKEYWORD|activitySet);
 					}
@@ -1271,8 +1271,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '@' || sc.ch == '\\') { // JavaDoc and Doxygen support
 					// Verify that we have the conditions to mark a comment-doc-keyword
-					if ((IsASpace(sc.chPrev) || sc.chPrev == '/' || sc.chPrev == '!') &&
-						!IsASpace(sc.chNext)) {
+					if ((IsSpace(sc.chPrev) || sc.chPrev == '/' || sc.chPrev == '!') &&
+						!IsSpace(sc.chNext)) {
 						styleBeforeDCKeyword = SCE_C_COMMENTLINEDOC;
 						sc.SetState(SCE_C_COMMENTDOCKEYWORD|activitySet);
 					}
@@ -1295,7 +1295,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					if (!(IsASpace(sc.ch) || (sc.ch == 0))) {
+					if (!(IsSpace(sc.ch) || (sc.ch == 0))) {
 						sc.ChangeState(SCE_C_COMMENTDOCKEYWORDERROR|activitySet);
 					} else if (!docWords.InList(s + 1)) {
 						int subStyleCDKW = classifierDocKeyWords.ValueFor(s + 1);
@@ -1450,7 +1450,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_C_STRINGRAW|activitySet);
 				rawStringTerminator = "`";
 				
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				if (lastWordWasUUID) {
 					sc.SetState(SCE_C_UUID|activitySet);
 					lastWordWasUUID = false;
@@ -1527,7 +1527,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Skip whitespace between # and preprocessor word
 				do {
 					sc.Forward();
-				} while (IsASpaceOrTab(sc.ch) && sc.More());
+				} while (IsSpaceOrTab(sc.ch) && sc.More());
 				
 				if (options.stylingWithinPreprocessor &&
 					(sc.Match("if") || sc.Match("elif"))) {
@@ -1607,7 +1607,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
 							size_t startName = 0;
 							while ((startName < restOfLine.length()) &&
-								   IsASpaceOrTab(restOfLine[startName]))
+								   IsSpaceOrTab(restOfLine[startName]))
 								startName++;
 							size_t endName = startName;
 							while ((endName < restOfLine.length()) &&
@@ -1625,7 +1625,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 																	 endArgs - endName - 1);
 								size_t startValue = endArgs + 1;
 								while ((startValue < restOfLine.length()) &&
-									   IsASpaceOrTab(restOfLine[startValue]))
+									   IsSpaceOrTab(restOfLine[startValue]))
 									startValue++;
 								std::string value;
 								if (startValue < restOfLine.length())
@@ -1638,7 +1638,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 								// Value
 								size_t startValue = endName;
 								while ((startValue < restOfLine.length()) &&
-									   IsASpaceOrTab(restOfLine[startValue]))
+									   IsSpaceOrTab(restOfLine[startValue]))
 									startValue++;
 								std::string value = restOfLine.substr(startValue);
 								if (OnlySpaceOrTab(value))
@@ -1668,7 +1668,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				//		keybindings_set_item(key_group, KB_##name, kb_activate, #name);
 				sc.SetState(SCE_C_PREPROC|activitySet);
 				
-			} else if (isoperator(sc.ch)) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
 				lastOper = sc.ch;
 				if (options.jsonKeyStrings && !(jsonLastOper == '[' && sc.ch == ','))
@@ -1676,7 +1676,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (!IsASpace(sc.ch) && !IsSpaceEquiv(MaskActive(sc.state))) {
+		if (!IsSpace(sc.ch) && !IsSpaceEquiv(MaskActive(sc.state))) {
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
 		}
@@ -1754,7 +1754,7 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
 		if (options.foldPreprocessor && (style == SCE_C_PREPROC)) {
 			if (ch == '#') {
 				Sci_PositionU j = i + 1;
-				while ((j < endPos) && IsASpaceOrTab(styler.SafeGetCharAt(j))) {
+				while ((j < endPos) && IsSpaceOrTab(styler.SafeGetCharAt(j))) {
 					j++;
 				}
 				if (styler.Match(j, "region") || styler.Match(j, "if")) {
@@ -1780,7 +1780,7 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
 				levelNext--;
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		if (atEOL || (i == endPos - 1)) {
 			int levelUse = levelCurrent;
@@ -2013,8 +2013,8 @@ std::vector<std::string> LexerCPP::Tokenize(const std::string &expr) const {
 				word += *cp;
 				cp++;
 			}
-		} else if (IsASpaceOrTab(*cp)) {
-			while (IsASpaceOrTab(*cp)) {
+		} else if (IsSpaceOrTab(*cp)) {
+			while (IsSpaceOrTab(*cp)) {
 				word += *cp;
 				cp++;
 			}

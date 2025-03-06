@@ -54,12 +54,6 @@ static bool IsOctaveCommentChar(int c) {
 	return (c == '%' || c == '#');
 }
 
-static inline int LowerCase(int c) {
-	if (c >= 'A' && c <= 'Z')
-		return 'a' + c - 'A';
-	return c;
-}
-
 static int CheckKeywordFoldPoint(char *str) {
 	if (strcmp ("if", str) == 0 ||
 		strcmp ("for", str) == 0 ||
@@ -81,7 +75,7 @@ static bool IsSpaceToEOL(Sci_Position startPos, Accessor &styler) {
 	Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
 	for (Sci_Position i = startPos; i < eol_pos; i++) {
 		char ch = styler[i];
-		if (!IsASpace(ch)) return false;
+		if (!IsSpace(ch)) return false;
 	}
 	return true;
 }
@@ -126,7 +120,7 @@ static void ColouriseMatlabOctaveDoc(
 		}
 		
 		// save the column position of first non space character in a line
-		if ((nonSpaceColumn == -1) && (! IsASpace(sc.ch)))
+		if ((nonSpaceColumn == -1) && (! IsSpace(sc.ch)))
 			nonSpaceColumn = column;
 		
 		// check for end of states
@@ -221,7 +215,7 @@ static void ColouriseMatlabOctaveDoc(
 				
 			} else if (commentDepth == 0) {
 				// single line comment
-				if (sc.atLineEnd || IsACRLF(sc.ch)) {
+				if (sc.atLineEnd || IsCRLF(sc.ch)) {
 					sc.SetState(SCE_MATLAB_DEFAULT);
 					transpose = false;
 				}
@@ -258,8 +252,7 @@ static void ColouriseMatlabOctaveDoc(
 				sc.SetState(SCE_MATLAB_NUMBER);
 			} else if (isalpha(sc.ch)) {
 				sc.SetState(SCE_MATLAB_KEYWORD);
-			} else if (isoperator(static_cast<char>(sc.ch)) ||
-					   sc.ch == '@' || sc.ch == '\\') {
+			} else if (IsOperator(sc.ch) || sc.ch == '@' || sc.ch == '\\') {
 				if (sc.ch == '(' || sc.ch == '[' || sc.ch == '{') {
 					allow_end_op ++;
 				} else if ((sc.ch == ')' || sc.ch == ']' || sc.ch == '}') &&
@@ -335,7 +328,7 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		// keyword
 		if (style == SCE_MATLAB_KEYWORD) {
-			word[wordlen++] = static_cast<char>(LowerCase(ch));
+			word[wordlen++] = MakeLowerCase(ch);
 			if (wordlen == 100) {  // prevent overflow
 				word[0] = '\0';
 				wordlen = 1;
@@ -347,7 +340,7 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length,
 				levelNext += CheckKeywordFoldPoint(word);
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		if (atEOL || (i == endPos-1)) {
 			int levelUse = levelCurrent;

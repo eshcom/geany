@@ -25,17 +25,8 @@
 
 using namespace Scintilla;
 
-static inline bool IsAWordStart(int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.');
-}
-
-static inline bool IsANumChar(int ch) {
-	return (ch < 0x80) && (isxdigit(ch) || ch == '.' ||
-						   ch == 'e' || ch == 'E');
-}
-
-static inline bool IsASpaceChar(int ch) {
-	return (ch < 0x80) && isspace(ch);
+static inline bool isNumChar(int ch) {
+	return IsDigit(ch, 16) || ch == '.';
 }
 
 static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
@@ -64,7 +55,7 @@ static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
 		} else if (sc.state == SCE_FORTH_IDENTIFIER || sc.state == SCE_FORTH_NUMBER) {
 			// handle numbers here too, because what we thought was a number might
 			// turn out to be a keyword e.g. 2DUP
-			if (IsASpaceChar(sc.ch)) {
+			if (IsSpace(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				int newState = sc.state == SCE_FORTH_NUMBER ? SCE_FORTH_NUMBER :
@@ -86,9 +77,9 @@ static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(newState);
 			}
 			if (sc.state == SCE_FORTH_NUMBER) {
-				if (IsASpaceChar(sc.ch)) {
+				if (IsSpace(sc.ch)) {
 					sc.SetState(SCE_FORTH_DEFAULT);
-				} else if (!IsANumChar(sc.ch)) {
+				} else if (!isNumChar(sc.ch)) {
 					sc.ChangeState(SCE_FORTH_IDENTIFIER);
 				}
 			}
@@ -101,7 +92,7 @@ static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.ForwardSetState(SCE_FORTH_DEFAULT);
 			}
 		} else if (sc.state == SCE_FORTH_DEFWORD) {
-			if (IsASpaceChar(sc.ch)) {
+			if (IsSpace(sc.ch)) {
 				sc.SetState(SCE_FORTH_DEFAULT);
 			}
 		}
@@ -111,13 +102,13 @@ static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
 			if (sc.ch == '\\') {
 				sc.SetState(SCE_FORTH_COMMENT);
 			} else if (sc.ch == '(' &&
-					(sc.atLineStart || IsASpaceChar(sc.chPrev)) &&
-					(sc.atLineEnd   || IsASpaceChar(sc.chNext))) {
+					   (sc.atLineStart || IsSpace(sc.chPrev)) &&
+					   (sc.atLineEnd   || IsSpace(sc.chNext))) {
 				sc.SetState(SCE_FORTH_COMMENT_ML);
-			} else if (sc.ch == '$' && (IsASCII(sc.chNext) && isxdigit(sc.chNext))) {
+			} else if (sc.ch == '$' && IsDigit(sc.chNext, 16)) {
 				// number starting with $ is a hex number
 				sc.SetState(SCE_FORTH_NUMBER);
-				while (sc.More() && IsASCII(sc.chNext) && isxdigit(sc.chNext))
+				while (sc.More() && IsDigit(sc.chNext, 16))
 					sc.Forward();
 			} else if (sc.ch == '%' && (IsASCII(sc.chNext) &&
 										(sc.chNext == '0' || sc.chNext == '1'))) {
@@ -126,24 +117,22 @@ static void ColouriseForthDoc(Sci_PositionU startPos, Sci_Position length,
 				while (sc.More() && IsASCII(sc.chNext) &&
 					   (sc.chNext == '0' || sc.chNext == '1'))
 					sc.Forward();
-			} else if (IsASCII(sc.ch) &&
-					   (isxdigit(sc.ch) || ((sc.ch == '.' || sc.ch == '-') &&
-											IsASCII(sc.chNext) &&
-											isxdigit(sc.chNext)))) {
+			} else if (IsDigit(sc.ch, 16) || ((sc.ch == '.' || sc.ch == '-') &&
+											  IsDigit(sc.chNext, 16))) {
 				sc.SetState(SCE_FORTH_NUMBER);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (IsWordChar(sc.ch)) {
 				sc.SetState(SCE_FORTH_IDENTIFIER);
 			} else if (sc.ch == '{') {
 				sc.SetState(SCE_FORTH_LOCALE);
-			} else if (sc.ch == ':' && IsASCII(sc.chNext) && isspace(sc.chNext)) {
+			} else if (sc.ch == ':' && IsSpace(sc.chNext)) {
 				// highlight word definitions e.g.  : GCD ( n n -- n ) ..... ;
 				//                                  ^ ^^^
 				sc.SetState(SCE_FORTH_DEFWORD);
-				while (sc.More() && IsASCII(sc.chNext) && isspace(sc.chNext))
+				while (sc.More() && IsSpace(sc.chNext))
 					sc.Forward();
 			} else if (sc.ch == ';' &&
-					   (sc.atLineStart || IsASpaceChar(sc.chPrev)) &&
-					   (sc.atLineEnd   || IsASpaceChar(sc.chNext))) {
+					   (sc.atLineStart || IsSpace(sc.chPrev)) &&
+					   (sc.atLineEnd   || IsSpace(sc.chNext))) {
 				// mark the ';' that ends a word
 				sc.SetState(SCE_FORTH_DEFWORD);
 				sc.ForwardSetState(SCE_FORTH_DEFAULT);

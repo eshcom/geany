@@ -119,7 +119,7 @@ static void ColouriseYAMLLine(
 	while (i < lengthLine) {
 		if (lineBuffer[i] == '\'' || lineBuffer[i] == '\"') {
 			bInQuotes = !bInQuotes;
-		} else if (lineBuffer[i] == '#' && IsASpace(lineBuffer[i - 1]) && !bInQuotes) {
+		} else if (lineBuffer[i] == '#' && IsSpace(lineBuffer[i - 1]) && !bInQuotes) {
 			styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
 			styler.ColourTo(endPos, SCE_YAML_COMMENT);
 			return;
@@ -128,17 +128,17 @@ static void ColouriseYAMLLine(
 			styler.ColourTo(startLine + i, SCE_YAML_OPERATOR);
 			// Non-folding scalar
 			i++;
-			while ((i < lengthLine) && IsASpace(lineBuffer[i]))
+			while ((i < lengthLine) && IsSpace(lineBuffer[i]))
 				i++;
 			Sci_PositionU endValue = lengthLine - 1;
-			while ((endValue >= i) && IsASpace(lineBuffer[endValue]))
+			while ((endValue >= i) && IsSpace(lineBuffer[endValue]))
 				endValue--;
 			lineBuffer[endValue + 1] = '\0';
 			if (lineBuffer[i] == '|' || lineBuffer[i] == '>') {
 				i++;
 				if (lineBuffer[i] == '+' || lineBuffer[i] == '-')
 					i++;
-				while ((i < lengthLine) && IsASpace(lineBuffer[i]))
+				while ((i < lengthLine) && IsSpace(lineBuffer[i]))
 					i++;
 				if (lineBuffer[i] == '\0') {
 					styler.SetLineState(currentLine, YAML_STATE_TEXT_PARENT | indentAmount);
@@ -164,7 +164,7 @@ static void ColouriseYAMLLine(
 				if (lineBuffer[startComment] == '\'' || lineBuffer[startComment] == '\"')
 					bInQuotes = !bInQuotes;
 				if (lineBuffer[startComment] == '#' &&
-						IsASpace(lineBuffer[startComment - 1]) && !bInQuotes)
+						IsSpace(lineBuffer[startComment - 1]) && !bInQuotes)
 					break;
 				startComment++;
 			}

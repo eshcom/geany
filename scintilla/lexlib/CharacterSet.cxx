@@ -52,7 +52,7 @@ int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 void RemoveAllSpaces(char *s) {
 	int ind = 0;
 	for (int i = 0; s[i]; i++)
-		if (!IsASpaceOrTab(s[i]))
+		if (!IsSpaceOrTab(s[i]))
 			s[ind++] = s[i];
 	s[ind] = '\0';
 }

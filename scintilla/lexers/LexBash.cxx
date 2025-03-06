@@ -111,7 +111,7 @@ int GlobScan(StyleContext &sc) {
 	int pCount = 0;
 	int hash = 0;
 	while ((c = sc.GetRelativeCharacter(++sLen)) != 0) {
-		if (IsASpace(c)) {
+		if (IsSpace(c)) {
 			return 0;
 		} else if (c == '\'' || c == '\"') {
 			if (hash != 2) return 0;
@@ -137,7 +137,7 @@ bool IsCommentLine(Sci_Position line, LexAccessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;
@@ -502,7 +502,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 					// allow keywords ending in a whitespace or command delimiter
 					s2[0] = static_cast<char>(sc.ch);
 					s2[1] = '\0';
-					bool keywordEnds = IsASpace(sc.ch) || cmdDelimiter.InList(s2);
+					bool keywordEnds = IsSpace(sc.ch) || cmdDelimiter.InList(s2);
 					// 'in' or 'do' may be construct keywords
 					if (cmdState == BASH_CMD_WORD) {
 						if (strcmp(s, "in") == 0 && keywordEnds)
@@ -574,10 +574,10 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 						numBase = getBashNumberBase(s);
 						if (numBase != BASH_BASE_ERROR)
 							break;
-					} else if (IsADigit(sc.ch))
+					} else if (IsDigit(sc.ch))
 						break;
 				} else if (numBase == BASH_BASE_HEX) {
-					if (IsADigit(sc.ch, 16))
+					if (IsDigit(sc.ch, 16))
 						break;
 #ifdef PEDANTIC_OCTAL
 				} else if (numBase == BASH_BASE_OCTAL ||
@@ -646,7 +646,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else if (sc.chNext == '<') {	// HERE string <<<
 						sc.Forward();
 						sc.ForwardSetState(SCE_SH_DEFAULT);
-					} else if (IsASpace(sc.chNext)) {
+					} else if (IsSpace(sc.chNext)) {
 						// eat whitespace
 					} else if (setLeftShift.Contains(sc.chNext) ||
 							   (sc.chNext == '=' && cmdState == BASH_CMD_ARITH)) {
@@ -838,16 +838,16 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.ch == '\\') {
 				// Bash can escape any non-newline as a literal
 				sc.SetState(SCE_SH_IDENTIFIER);
-				if (IsACRLF(sc.chNext))
+				if (IsCRLF(sc.chNext))
 					sc.SetState(SCE_SH_OPERATOR);
-			} else if (IsADigit(sc.ch)) {
+			} else if (IsDigit(sc.ch)) {
 				sc.SetState(SCE_SH_NUMBER);
 				numBase = BASH_BASE_DECIMAL;
 				if (sc.ch == '0') {	// hex,octal
 					if (sc.chNext == 'x' || sc.chNext == 'X') {
 						numBase = BASH_BASE_HEX;
 						sc.Forward();
-					} else if (IsADigit(sc.chNext)) {
+					} else if (IsDigit(sc.chNext)) {
 #ifdef PEDANTIC_OCTAL
 						numBase = BASH_BASE_OCTAL;
 #else
@@ -874,7 +874,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else if (sc.Match("##^") && IsUpperCase(sc.GetRelative(3))) {	// ##^A
 						sc.SetState(SCE_SH_IDENTIFIER);
 						sc.Forward(3);
-					} else if (sc.chNext == '#' && !IsASpace(sc.GetRelative(2))) {	// ##a
+					} else if (sc.chNext == '#' && !IsSpace(sc.GetRelative(2))) {	// ##a
 						sc.SetState(SCE_SH_IDENTIFIER);
 						sc.Forward(2);
 					} else if (setWordStart.Contains(sc.chNext)) {	// #name
@@ -927,7 +927,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '-'	&&	// one-char file test operators
 					   setSingleCharOp.Contains(sc.chNext) &&
 					   !setWord.Contains(sc.GetRelative(2)) &&
-					   IsASpace(sc.chPrev)) {
+					   IsSpace(sc.chPrev)) {
 				sc.SetState(SCE_SH_WORD);
 				sc.Forward();
 			} else if (setBashOperator.Contains(sc.ch)) {
@@ -949,11 +949,11 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 					if (sc.Match('(', '(')) {
 						cmdState = BASH_CMD_ARITH;
 						sc.Forward();
-					} else if (sc.Match('[', '[') && IsASpace(sc.GetRelative(2))) {
+					} else if (sc.Match('[', '[') && IsSpace(sc.GetRelative(2))) {
 						cmdState = BASH_CMD_TEST;
 						testExprType = 1;
 						sc.Forward();
-					} else if (sc.ch == '[' && IsASpace(sc.chNext)) {
+					} else if (sc.ch == '[' && IsSpace(sc.chNext)) {
 						cmdState = BASH_CMD_TEST;
 						testExprType = 2;
 					}
@@ -990,7 +990,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (cmdState == BASH_CMD_ARITH && sc.Match(')', ')')) {
 					cmdState = BASH_CMD_BODY;
 					sc.Forward();
-				} else if (cmdState == BASH_CMD_TEST && IsASpace(sc.chPrev)) {
+				} else if (cmdState == BASH_CMD_TEST && IsSpace(sc.chPrev)) {
 					if (sc.Match(']', ']') && testExprType == 1) {
 						sc.Forward();
 						cmdState = BASH_CMD_BODY;
@@ -1094,7 +1094,7 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later

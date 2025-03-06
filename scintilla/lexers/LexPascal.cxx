@@ -303,7 +303,7 @@ static void ColourisePascalDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_PAS_DEFAULT) {
-			if (IsADigit(sc.ch) && !(curLineState & stateInAsm)) {
+			if (IsDigit(sc.ch) && !(curLineState & stateInAsm)) {
 				sc.SetState(SCE_PAS_NUMBER);
 			} else if (setWordStart.Contains(sc.ch)) {
 				sc.SetState(SCE_PAS_IDENTIFIER);
@@ -354,7 +354,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		int style = styler.StyleAt(i);
 		if (ch == '/' && chNext == '/' && style == SCE_PAS_COMMENTLINE) {
 			return true;
-		} else if (!IsASpaceOrTab(ch)) {
+		} else if (!IsSpaceOrTab(ch)) {
 			return false;
 		}
 	}
@@ -411,7 +411,7 @@ static Sci_PositionU SkipWhiteSpace(Sci_PositionU currentPos, Sci_PositionU endP
 	CharacterSet setWord(CharacterSet::setAlphaNum, "_");
 	Sci_PositionU j = currentPos + 1;
 	char ch = styler.SafeGetCharAt(j);
-	while ((j < endPos) && (IsASpaceOrTab(ch) || IsACRLF(ch) ||
+	while ((j < endPos) && (IsSpaceOrTab(ch) || IsCRLF(ch) ||
 							IsStreamCommentStyle(styler.StyleAt(j)) ||
 							(includeChars && setWord.Contains(ch)))) {
 		j++;
@@ -481,7 +481,7 @@ static void ClassifyPascalWordFoldPoint(int &levelCurrent, int &lineFoldStateCur
 		bool ignoreKeyword = true;
 		Sci_Position j = lastStart - 1;
 		char ch = styler.SafeGetCharAt(j);
-		while ((j >= startPos) && (IsASpaceOrTab(ch) || IsACRLF(ch) ||
+		while ((j >= startPos) && (IsSpaceOrTab(ch) || IsCRLF(ch) ||
 								   IsStreamCommentStyle(styler.StyleAt(j)))) {
 			j--;
 			ch = styler.SafeGetCharAt(j);
@@ -589,7 +589,7 @@ static void FoldPascalDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		
 		if (atEOL) {

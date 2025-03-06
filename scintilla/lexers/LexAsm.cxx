@@ -34,17 +34,15 @@
 
 using namespace Scintilla;
 
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' ||
-		ch == '_' || ch == '?');
+static inline bool isWordChar(const int ch) {
+	return IsWordChar(ch) || ch == '?';
 }
 
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.' ||
-		ch == '%' || ch == '@' || ch == '$' || ch == '?');
+static inline bool isWordStart(const int ch) {
+	return isWordChar(ch) || ch == '%' || ch == '@' || ch == '$';
 }
 
-static inline bool IsAsmOperator(const int ch) {
+static inline bool isOperator(const int ch) {
 	if ((ch < 0x80) && (isalnum(ch)))
 		return false;
 	// '.' left out as it is used to make up numbers
@@ -57,15 +55,9 @@ static inline bool IsAsmOperator(const int ch) {
 	return false;
 }
 
-static bool IsStreamCommentStyle(int style) {
+static bool isStreamCommentStyle(int style) {
 	return style == SCE_ASM_COMMENTDIRECTIVE ||
 		   style == SCE_ASM_COMMENTBLOCK;
-}
-
-static inline int LowerCase(int c) {
-	if (c >= 'A' && c <= 'Z')
-		return 'a' + c - 'A';
-	return c;
 }
 
 // An individual named option for use in an OptionSet
@@ -264,7 +256,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
-			if (IsACRLF(sc.chNext)) {
+			if (IsCRLF(sc.chNext)) {
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					sc.Forward();
@@ -275,15 +267,15 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if the current state should terminate.
 		if (sc.state == SCE_ASM_OPERATOR) {
-			if (!IsAsmOperator(sc.ch)) {
+			if (!isOperator(sc.ch)) {
 				sc.SetState(SCE_ASM_DEFAULT);
 			}
 		} else if (sc.state == SCE_ASM_NUMBER) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!isWordChar(sc.ch)) {
 				sc.SetState(SCE_ASM_DEFAULT);
 			}
 		} else if (sc.state == SCE_ASM_IDENTIFIER) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!isWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				bool IsDirective = false;
@@ -306,7 +298,7 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (IsDirective && !strcmp(s, "comment")) {
 					char delimiter = options.delimiter.empty() ? '~' :
 												options.delimiter.c_str()[0];
-					while (IsASpaceOrTab(sc.ch) && !sc.atLineEnd) {
+					while (IsSpaceOrTab(sc.ch) && !sc.atLineEnd) {
 						sc.ForwardSetState(SCE_ASM_DEFAULT);
 					}
 					if (sc.ch == delimiter) {
@@ -361,13 +353,13 @@ void SCI_METHOD LexerAsm::Lex(Sci_PositionU startPos, Sci_Position length,
 															 IsASCII(sc.chNext) &&
 															 isdigit(sc.chNext)))) {
 				sc.SetState(SCE_ASM_NUMBER);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (isWordStart(sc.ch)) {
 				sc.SetState(SCE_ASM_IDENTIFIER);
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_ASM_STRING);
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_ASM_CHARACTER);
-			} else if (IsAsmOperator(sc.ch)) {
+			} else if (isOperator(sc.ch)) {
 				sc.SetState(SCE_ASM_OPERATOR);
 			}
 		}
@@ -407,10 +399,10 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-		if (options.foldCommentMultiline && IsStreamCommentStyle(style)) {
-			if (!IsStreamCommentStyle(stylePrev)) {
+		if (options.foldCommentMultiline && isStreamCommentStyle(style)) {
+			if (!isStreamCommentStyle(stylePrev)) {
 				levelNext++;
-			} else if (!IsStreamCommentStyle(styleNext) && !atEOL) {
+			} else if (!isStreamCommentStyle(styleNext) && !atEOL) {
 				// Comments don't end at end of line and the next character may be unstyled.
 				levelNext--;
 			}
@@ -434,7 +426,7 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		if (options.foldSyntaxBased && (style == SCE_ASM_DIRECTIVE)) {
-			word[wordlen++] = static_cast<char>(LowerCase(ch));
+			word[wordlen++] = MakeLowerCase(ch);
 			if (wordlen == 100) {                   // prevent overflow
 				word[0] = '\0';
 				wordlen = 1;
@@ -449,7 +441,7 @@ void SCI_METHOD LexerAsm::Fold(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		if (atEOL || (i == endPos-1)) {
 			int levelUse = levelCurrent;

@@ -128,7 +128,7 @@ static void ColouriseLuaDoc(
 		// Handle string line continuation
 		if ((sc.state == SCE_LUA_STRING || sc.state == SCE_LUA_CHARACTER) &&
 				sc.ch == '\\') {
-			if (IsACRLF(sc.chNext)) {
+			if (IsCRLF(sc.chNext)) {
 				sc.Forward();
 				if (sc.ch == '\r' && sc.chNext == '\n') {
 					sc.Forward();
@@ -142,7 +142,7 @@ static void ColouriseLuaDoc(
 			if (sc.ch == ':' && sc.chPrev == ':') {	// :: <label> :: forward scan
 				sc.Forward();
 				Sci_Position ln = 0;
-				while (IsASpaceOrTab(sc.GetRelative(ln)))	// skip over spaces/tabs
+				while (IsSpaceOrTab(sc.GetRelative(ln)))	// skip over spaces/tabs
 					ln++;
 				Sci_Position ws1 = ln;
 				if (setWordStart.Contains(sc.GetRelative(ln))) {
@@ -155,7 +155,7 @@ static void ColouriseLuaDoc(
 					}
 					s[i] = '\0'; Sci_Position lbl = ln;
 					if (!keywords.InList(s)) {
-						while (IsASpaceOrTab(sc.GetRelative(ln)))	// skip over spaces/tabs
+						while (IsSpaceOrTab(sc.GetRelative(ln)))	// skip over spaces/tabs
 							ln++;
 						Sci_Position ws2 = ln - lbl;
 						if (sc.GetRelative(ln) == ':' && sc.GetRelative(ln + 1) == ':') {
@@ -202,7 +202,7 @@ static void ColouriseLuaDoc(
 			}
 			sc.SetState(SCE_LUA_DEFAULT);
 			if (foundGoto) {					// goto <label> forward scan
-				while (IsASpaceOrTab(sc.ch) && !sc.atLineEnd)
+				while (IsSpaceOrTab(sc.ch) && !sc.atLineEnd)
 					sc.Forward();
 				if (setWordStart.Contains(sc.ch)) {
 					sc.SetState(SCE_LUA_LABEL);
@@ -223,7 +223,7 @@ static void ColouriseLuaDoc(
 			}
 		} else if (sc.state == SCE_LUA_STRING) {
 			if (stringWs) {
-				if (!IsASpace(sc.ch))
+				if (!IsSpace(sc.ch))
 					stringWs = 0;
 			}
 			if (sc.ch == '\\') {
@@ -241,7 +241,7 @@ static void ColouriseLuaDoc(
 			}
 		} else if (sc.state == SCE_LUA_CHARACTER) {
 			if (stringWs) {
-				if (!IsASpace(sc.ch))
+				if (!IsSpace(sc.ch))
 					stringWs = 0;
 			}
 			if (sc.ch == '\\') {
@@ -281,7 +281,7 @@ static void ColouriseLuaDoc(
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_LUA_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_LUA_NUMBER);
 				if (sc.ch == '0' && toupper(sc.chNext) == 'X') {
 					sc.Forward();
@@ -410,7 +410,7 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length,
 				ch == 'e' || ch == 'r' || ch == 'u') {
 				char s[10] = "";
 				for (Sci_PositionU j = 0; j < 8; j++) {
-					if (!iswordchar(styler[i + j])) {
+					if (!IsWordChar(styler[i + j])) {
 						break;
 					}
 					s[j] = styler[i + j];
@@ -455,7 +455,7 @@ static void FoldLuaDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch)) {
+		if (!IsSpace(ch)) {
 			visibleChars++;
 		}
 	}

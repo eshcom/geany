@@ -6,7 +6,7 @@ namespace Scintilla {
 template <typename SC, typename LA, typename WL>
 void HighlightTaskMarker(SC &sc, LA &styler, const WL &markers,
 						 bool caseSensitive, int markerState) {
-	if ((IsASpace(sc.chPrev) || isoperator(sc.chPrev) || sc.chPrev == '#')
+	if ((IsSpace(sc.chPrev) || IsOperator(sc.chPrev) || sc.chPrev == '#')
 		&& markers.Length()) {
 		const int lengthMarker = 50;
 		char marker[lengthMarker + 1] = "";
@@ -14,7 +14,7 @@ void HighlightTaskMarker(SC &sc, LA &styler, const WL &markers,
 		int i = 0;
 		while (i < lengthMarker) {
 			const char ch = styler.SafeGetCharAt(currPos + i);
-			if (IsASpace(ch) || isoperator(ch) || ch == '#') {
+			if (IsSpace(ch) || IsOperator(ch) || ch == '#') {
 				break;
 			}
 			marker[i++] = caseSensitive ? ch : MakeLowerCase(ch);

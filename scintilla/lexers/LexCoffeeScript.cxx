@@ -93,7 +93,7 @@ static bool followsKeyword(StyleContext &sc, Accessor &styler) {
 	Sci_Position lineStartPos = styler.LineStart(currentLine);
 	while (--pos > lineStartPos) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (!IsASpaceOrTab(ch)) {
+		if (!IsSpaceOrTab(ch)) {
 			break;
 		}
 	}
@@ -282,7 +282,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_COFFEESCRIPT_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_COFFEESCRIPT_NUMBER);
 			} else if (setWordStart.Contains(sc.ch)) {
 				sc.SetState(SCE_COFFEESCRIPT_IDENTIFIER);
@@ -306,7 +306,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				} else {
 					sc.SetState(SCE_COFFEESCRIPT_COMMENTLINE);
 				}
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_COFFEESCRIPT_OPERATOR);
 				// Handle '..' and '...' operators correctly.
 				if (sc.ch == '.') {
@@ -324,7 +324,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 			}
 		}
 		
-		if (!IsASpace(sc.ch) && !IsSpaceEquiv(sc.state)) {
+		if (!IsSpace(sc.ch) && !IsSpaceEquiv(sc.state)) {
 			chPrevNonWhite = sc.ch;
 			visibleChars++;
 		}
@@ -340,7 +340,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;

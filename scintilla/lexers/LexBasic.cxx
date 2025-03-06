@@ -62,39 +62,32 @@ static int character_classification[128] =
 	 68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 68,  2,  2,  2,  2,  0
 };
 
-static bool IsSpace(int c) {
+static bool isSpace(int c) {
 	return c < 128 && (character_classification[c] & 1);
 }
 
-static bool IsOperator(int c) {
+static bool isOperator(int c) {
 	return c < 128 && (character_classification[c] & 2);
 }
 
-static bool IsIdentifier(int c) {
+static bool isIdentifier(int c) {
 	return c < 128 && (character_classification[c] & 4);
 }
 
-static bool IsDigit(int c) {
+static bool isDigit(int c) {
 	return c < 128 && (character_classification[c] & 8);
 }
 
-static bool IsHexDigit(int c) {
+static bool isHexDigit(int c) {
 	return c < 128 && (character_classification[c] & 16);
 }
 
-static bool IsBinDigit(int c) {
+static bool isBinDigit(int c) {
 	return c < 128 && (character_classification[c] & 32);
 }
 
-static bool IsLetter(int c) {
+static bool isLetter(int c) {
 	return c < 128 && (character_classification[c] & 64);
-}
-
-static int LowerCase(int c)
-{
-	if (c >= 'A' && c <= 'Z')
-		return 'a' + c - 'A';
-	return c;
 }
 
 static int CheckBlitzFoldPoint(char const *token, int &level) {
@@ -326,7 +319,7 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 	// Can't use sc.More() here else we miss the last character
 	for (; ; sc.Forward()) {
 		if (sc.state == SCE_B_IDENTIFIER) {
-			if (!IsIdentifier(sc.ch)) {
+			if (!isIdentifier(sc.ch)) {
 				// Labels
 				if (wasfirst && sc.Match(':')) {
 					sc.ChangeState(SCE_B_LABEL);
@@ -356,22 +349,22 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		} else if (sc.state == SCE_B_OPERATOR) {
-			if (!IsOperator(sc.ch) || sc.Match('#'))
+			if (!isOperator(sc.ch) || sc.Match('#'))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_LABEL) {
-			if (!IsIdentifier(sc.ch))
+			if (!isIdentifier(sc.ch))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_CONSTANT) {
-			if (!IsIdentifier(sc.ch))
+			if (!isIdentifier(sc.ch))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_NUMBER) {
-			if (!IsDigit(sc.ch))
+			if (!isDigit(sc.ch))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_HEXNUMBER) {
-			if (!IsHexDigit(sc.ch))
+			if (!isHexDigit(sc.ch))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_BINNUMBER) {
-			if (!IsBinDigit(sc.ch))
+			if (!isBinDigit(sc.ch))
 				sc.SetState(SCE_B_DEFAULT);
 		} else if (sc.state == SCE_B_STRING) {
 			if (sc.ch == '"') {
@@ -389,13 +382,13 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_B_DEFAULT);
 			} else if (sc.ch == '\\' || sc.ch == '@') {
-				if (IsLetter(sc.chNext) && sc.chPrev != '\\') {
+				if (isLetter(sc.chNext) && sc.chPrev != '\\') {
 					styleBeforeKeyword = sc.state;
 					sc.SetState(SCE_B_DOCKEYWORD);
 				};
 			}
 		} else if (sc.state == SCE_B_DOCKEYWORD) {
-			if (IsSpace(sc.ch)) {
+			if (isSpace(sc.ch)) {
 				sc.SetState(styleBeforeKeyword);
 			}	else if (sc.atLineEnd && styleBeforeKeyword == SCE_B_DOCLINE) {
 				sc.SetState(SCE_B_DEFAULT);
@@ -410,7 +403,7 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.Forward();
 				sc.ForwardSetState(SCE_B_DEFAULT);
 			} else if (sc.ch == '\\' || sc.ch == '@') {
-				if (IsLetter(sc.chNext) && sc.chPrev != '\\') {
+				if (isLetter(sc.chNext) && sc.chPrev != '\\') {
 					styleBeforeKeyword = sc.state;
 					sc.SetState(SCE_B_DOCKEYWORD);
 				};
@@ -445,7 +438,7 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.Forward();	// Eat the ' so it isn't used for the end of the comment
 			} else if (sc.Match('"')) {
 				sc.SetState(SCE_B_STRING);
-			} else if (IsDigit(sc.ch)) {
+			} else if (isDigit(sc.ch)) {
 				sc.SetState(SCE_B_NUMBER);
 			} else if (sc.Match('$') || sc.Match("&h") || sc.Match("&H") ||
 					   sc.Match("&o") || sc.Match("&O")) {
@@ -454,17 +447,17 @@ void SCI_METHOD LexerBasic::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_B_BINNUMBER);
 			} else if (sc.Match('#')) {
 				sc.SetState(SCE_B_CONSTANT);
-			} else if (IsOperator(sc.ch)) {
+			} else if (isOperator(sc.ch)) {
 				sc.SetState(SCE_B_OPERATOR);
-			} else if (IsIdentifier(sc.ch)) {
+			} else if (isIdentifier(sc.ch)) {
 				wasfirst = isfirst;
 				sc.SetState(SCE_B_IDENTIFIER);
-			} else if (!IsSpace(sc.ch)) {
+			} else if (!isSpace(sc.ch)) {
 				sc.SetState(SCE_B_ERROR);
 			}
 		}
 		
-		if (!IsSpace(sc.ch))
+		if (!isSpace(sc.ch))
 			isfirst = false;
 		
 		if (!sc.More())
@@ -498,14 +491,14 @@ void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length,
 		bool atEOL = (c == '\r' && cNext != '\n') || (c == '\n');
 		if (options.foldSyntaxBased && !done && !go) {
 			if (wordlen) { // are we scanning a token already?
-				word[wordlen] = static_cast<char>(LowerCase(c));
-				if (!IsIdentifier(c)) { // done with token
+				word[wordlen] = MakeLowerCase(c);
+				if (!isIdentifier(c)) { // done with token
 					word[wordlen] = '\0';
 					go = CheckFoldPoint(word, level);
 					if (!go) {
 						// Treat any whitespace as single blank, for
 						// things like "End   Function".
-						if (IsSpace(c) && IsIdentifier(word[wordlen - 1])) {
+						if (isSpace(c) && isIdentifier(word[wordlen - 1])) {
 							word[wordlen] = ' ';
 							if (wordlen < 255)
 								wordlen++;
@@ -517,9 +510,9 @@ void SCI_METHOD LexerBasic::Fold(Sci_PositionU startPos, Sci_Position length,
 					wordlen++;
 				}
 			} else { // start scanning at first non-whitespace character
-				if (!IsSpace(c)) {
-					if (IsIdentifier(c)) {
-						word[0] = static_cast<char>(LowerCase(c));
+				if (!isSpace(c)) {
+					if (isIdentifier(c)) {
+						word[0] = MakeLowerCase(c);
 						wordlen = 1;
 					} else // done with this line
 						done = 1;

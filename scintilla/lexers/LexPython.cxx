@@ -225,7 +225,7 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 
 inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
 	if (ch < 0x80)
-		return (isalnum(ch) || ch == '.' || ch == '_');
+		return IsWordChar(ch);
 	
 	if (!unicodeIdentifiers)
 		return false;
@@ -236,7 +236,7 @@ inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
 
 inline bool IsAWordStart(int ch, bool unicodeIdentifiers) {
 	if (ch < 0x80)
-		return (isalpha(ch) || ch == '_');
+		return IsAlphaWordChar(ch);
 	
 	if (!unicodeIdentifiers)
 		return false;
@@ -263,7 +263,7 @@ static bool IsFirstNonWhitespace(Sci_Position pos, Accessor &styler) {
 	Sci_Position start_pos = styler.LineStart(line);
 	for (Sci_Position i = start_pos; i < pos; i++) {
 		const char ch = styler[i];
-		if (!IsASpaceOrTab(ch))
+		if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return true;
@@ -621,7 +621,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 #define PROCESS_END_SEQUENCE												\
 	if (sc.ch == '\\') {													\
 		if (IsPySingleQuoteStringState(stringState) &&						\
-			(IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos)) {		\
+			(IsCRLF(sc.chNext) || (sc.currentPos + 1) == endPos)) {		\
 			sc.SetState(SCE_P_STRING_CONTINUED);							\
 			inContinuedString = true;										\
 			if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n'))			\
@@ -648,9 +648,9 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 	} else {																\
 		if (IsPySingleQuoteStringState(stringState)) {						\
 			Sci_PositionU i = sc.currentPos;								\
-			while (i < endPos && IsASpaceOrTab(styler[i]))					\
+			while (i < endPos && IsSpaceOrTab(styler[i]))					\
 				i++;														\
-			if (i == endPos || IsACRLF(styler[i]))							\
+			if (i == endPos || IsCRLF(styler[i]))							\
 				sc.ChangeState(SCE_P_STRINGEOL);							\
 			else															\
 				sc.SetState(stringState);									\
@@ -661,7 +661,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 
 #define MOVE_INDEX_TO_NONSPACE							\
 	Sci_PositionU i = sc.currentPos;					\
-	while (i < endPos && IsASpaceOrTab(styler[i]))		\
+	while (i < endPos && IsSpaceOrTab(styler[i]))		\
 		i++;
 
 
@@ -730,7 +730,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						char ch;
 						while (++back < endPos) {
 							ch = styler.SafeGetCharAt(back);
-							if (IsACRLF(ch)) {
+							if (IsCRLF(ch)) {
 								//~ f"""{a:\
 								//~ }"""
 								PushStateToStack(stringState, fstringStateStack,
@@ -742,7 +742,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 							}
 						}
 					} else {
-						while (back < endPos && IsASpace(styler.SafeGetCharAt(back)))
+						while (back < endPos && IsSpace(styler.SafeGetCharAt(back)))
 							back++;
 						
 						int braceCnt = 0;
@@ -973,7 +973,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				   (sc.state == SCE_P_COMMENTBLOCK)) {
 			HighlightTaskMarker(sc, styler, taskMarkers, true,
 								SCE_P_TASKMARKER);
-			if (IsACRLF(sc.ch)) {
+			if (IsCRLF(sc.ch)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_DECORATOR) {
@@ -982,7 +982,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if (IsPySingleQuoteStringState(sc.state)) {
 			if (sc.ch == '\\') {
-				if (IsACRLF(sc.chNext) || (sc.currentPos + 1) == endPos) {
+				if (IsCRLF(sc.chNext) || (sc.currentPos + 1) == endPos) {
 					stringState = sc.state;
 					sc.SetState(SCE_P_STRING_CONTINUED);
 					inContinuedString = true;
@@ -1074,7 +1074,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		// End of code to find the end of a state
 		
-		if (!indentGood && !IsASpaceOrTab(sc.ch)) {
+		if (!indentGood && !IsSpaceOrTab(sc.ch)) {
 			styler.IndicatorFill(startIndicator, sc.currentPos,
 								 indicatorWhitespace, 1);
 			startIndicator = sc.currentPos;
@@ -1130,7 +1130,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				// will be processed in the section "Handle line continuation generically"
 				continue;
 				
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				if (sc.ch == '0' && (sc.chNext == 'x' || sc.chNext == 'X')) {
 					base_n_number = true;
 					sc.SetState(SCE_P_NUMBER);
@@ -1148,7 +1148,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					base_n_number = false;
 					sc.SetState(SCE_P_NUMBER);
 				}
-			} else if ((IsASCII(sc.ch) && isoperator(sc.ch)) || sc.ch == '`') {
+			} else if ((IsASCII(sc.ch) && IsOperator(sc.ch)) || sc.ch == '`') {
 				sc.SetState(SCE_P_OPERATOR);
 			} else if (sc.ch == '#') {
 				sc.SetState(sc.chNext == '#' ? SCE_P_COMMENTBLOCK
@@ -1186,7 +1186,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		const char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;

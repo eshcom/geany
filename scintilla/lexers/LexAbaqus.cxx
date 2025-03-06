@@ -28,14 +28,12 @@
 
 using namespace Scintilla;
 
-static inline bool IsAKeywordChar(const int ch) {
-	return (ch < 0x80 && (isalnum(ch) || (ch == '_') ||
-						  (ch == ' ')));
+static inline bool isKeywordChar(const int ch) {
+	return IsAlnumWordChar(ch) || ch == ' ';
 }
 
-static inline bool IsASetChar(const int ch) {
-	return (ch < 0x80 && (isalnum(ch) || (ch == '_') ||
-						  (ch == '.') || (ch == '-')));
+static inline bool isSetChar(const int ch) {
+	return IsWordChar(ch) || ch == '-';
 }
 
 static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
@@ -67,7 +65,7 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 				// finished the line in keyword state, switch to LINE_END
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = LINE_END;
-			} else if (IsAKeywordChar(sc.ch)) {
+			} else if (isKeywordChar(sc.ch)) {
 				// nothing changes
 				state = KW_LINE_KW;
 			} else if (sc.ch == ',') {
@@ -83,7 +81,7 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 			break;
 		case KW_LINE_COMMA :
 			// acomma on a keywordline was seen
-			if (IsAKeywordChar(sc.ch)) {
+			if (isKeywordChar(sc.ch)) {
 				sc.SetState(SCE_ABAQUS_ARGUMENT);
 				state = KW_LINE_PAR;
 			} else if (sc.atLineEnd || (sc.ch == ',')) {
@@ -102,7 +100,7 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = LINE_END;
-			} else if (IsAKeywordChar(sc.ch) || (sc.ch == '-')) {
+			} else if (isKeywordChar(sc.ch) || (sc.ch == '-')) {
 				// remain in this state
 				state = KW_LINE_PAR;
 			} else if (sc.ch == ',') {
@@ -122,11 +120,11 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				// remain in this state
 				state = KW_LINE_EQ;
-			} else if (IsADigit(sc.ch) || (sc.ch == '-') ||
-					   (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '-') ||
+					   (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_ABAQUS_NUMBER);
 				state = KW_LINE_VAL;
-			} else if (IsAKeywordChar(sc.ch)) {
+			} else if (isKeywordChar(sc.ch)) {
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = KW_LINE_VAL;
 			} else if ((sc.ch == '\'') || (sc.ch == '\"')) {
@@ -141,10 +139,10 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = LINE_END;
-			} else if (IsASetChar(sc.ch) && (sc.state == SCE_ABAQUS_DEFAULT)) {
+			} else if (isSetChar(sc.ch) && (sc.state == SCE_ABAQUS_DEFAULT)) {
 				// nothing changes
 				state = KW_LINE_VAL;
-			} else if (((IsADigit(sc.ch) || sc.ch == '.' ||
+			} else if (((IsDigit(sc.ch) || sc.ch == '.' ||
 						 (sc.ch == 'e' || sc.ch == 'E') ||
 						 ((sc.ch == '+' || sc.ch == '-') &&
 						  (sc.chPrev == 'e' || sc.chPrev == 'E')))) &&
@@ -170,10 +168,10 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 			if (sc.atLineEnd) {
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = LINE_END;
-			} else if (IsASetChar(sc.ch) && (sc.state == SCE_ABAQUS_DEFAULT)) {
+			} else if (isSetChar(sc.ch) && (sc.state == SCE_ABAQUS_DEFAULT)) {
 				// nothing changes
 				state = DAT_LINE_VAL;
-			} else if (((IsADigit(sc.ch) || sc.ch == '.' ||
+			} else if (((IsDigit(sc.ch) || sc.ch == '.' ||
 						 (sc.ch == 'e' || sc.ch == 'E') ||
 						 ((sc.ch == '+' || sc.ch == '-') && 
 						  (sc.chPrev == 'e' || sc.chPrev == 'E')))) &&
@@ -206,11 +204,11 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == ',')  {
 				sc.SetState(SCE_ABAQUS_OPERATOR);
 				state = DAT_LINE_COMMA;
-			} else if (IsADigit(sc.ch) || (sc.ch == '-') ||
-					   (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '-') ||
+					   (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_ABAQUS_NUMBER);
 				state = DAT_LINE_VAL;
-			} else if (IsAKeywordChar(sc.ch)) {
+			} else if (isKeywordChar(sc.ch)) {
 				sc.SetState(SCE_ABAQUS_DEFAULT);
 				state = DAT_LINE_VAL;
 			} else if ((sc.ch == '\'') || (sc.ch == '\"')) {
@@ -250,11 +248,11 @@ static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == ',') {
 					sc.SetState(SCE_ABAQUS_OPERATOR);
 					state = DAT_LINE_COMMA;
-				} else if (IsADigit(sc.ch) || (sc.ch == '-') ||
-						   (sc.ch == '.' && IsADigit(sc.chNext))) {
+				} else if (IsDigit(sc.ch) || (sc.ch == '-') ||
+						   (sc.ch == '.' && IsDigit(sc.chNext))) {
 					sc.SetState(SCE_ABAQUS_NUMBER);
 					state = DAT_LINE_VAL;
-				} else if (IsAKeywordChar(sc.ch)) {
+				} else if (isKeywordChar(sc.ch)) {
 					sc.SetState(SCE_ABAQUS_DEFAULT);
 					state = DAT_LINE_VAL;
 				} else if ((sc.ch == '\'') || (sc.ch == '\"')) {
@@ -295,19 +293,12 @@ static int character_classification[128] =
 	4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  2,  2,  2,  2,  0
 };
 
-static bool IsSpace(int c) {
+static bool isSpace(int c) {
 	return c < 128 && (character_classification[c] & 1);
 }
 
-static bool IsIdentifier(int c) {
+static bool isIdentifier(int c) {
 	return c < 128 && (character_classification[c] & 4);
-}
-
-static int LowerCase(int c)
-{
-	if (c >= 'A' && c <= 'Z')
-		return 'a' + c - 'A';
-	return c;
 }
 
 static Sci_Position LineEnd(Sci_Position line, Accessor &styler)
@@ -349,10 +340,10 @@ static int LineType(Sci_Position line, Accessor &styler) {
 	Sci_Position i = pos;
 	while (i < eol_pos) {
 		c = styler.SafeGetCharAt(i);
-		ch = static_cast<char>(LowerCase(c));
+		ch = MakeLowerCase(c);
 		// We can say something as soon as no whitespace
 		// was encountered
-		if (!IsSpace(c))
+		if (!isSpace(c))
 			break;
 		i++;
 	}
@@ -377,7 +368,7 @@ static int LineType(Sci_Position line, Accessor &styler) {
 	// if that is also a * this means a comment
 	// otherwise it is a keyword.
 	c = styler.SafeGetCharAt(i+1);
-	ch = static_cast<char>(LowerCase(c));
+	ch = MakeLowerCase(c);
 	if (ch == '*') {
 		return 8;
 	}
@@ -394,12 +385,12 @@ static int LineType(Sci_Position line, Accessor &styler) {
 	i++;
 	while ((i < eol_pos) && (wlen < 255)) {
 		c = styler.SafeGetCharAt(i);
-		ch = static_cast<char>(LowerCase(c));
+		ch = MakeLowerCase(c);
 		
-		if ((!IsSpace(c)) && (!IsIdentifier(c)))
+		if ((!isSpace(c)) && (!isIdentifier(c)))
 			break;
 		
-		if (IsIdentifier(c)) {
+		if (isIdentifier(c)) {
 			word[wlen] = ch;
 			wlen++;
 		}

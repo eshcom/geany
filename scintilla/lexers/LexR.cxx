@@ -26,24 +26,16 @@
 
 using namespace Scintilla;
 
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_');
-}
-
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_');
-}
-
-static inline bool IsAnOperator(const int ch) {
-	if (IsASCII(ch) && isalnum(ch))
+static inline bool isOperator(const int ch) {
+	if (IsAlnum(ch))
 		return false;
 	// '.' left out as it is used to make up numbers
-	if (ch == '-' || ch == '+' || ch == '!' || ch == '~' ||
-			ch == '?' || ch == ':' || ch == '*' || ch == '/' ||
-			ch == '^' || ch == '<' || ch == '>' || ch == '=' ||
-			ch == '&' || ch == '|' || ch == '$' || ch == '(' ||
-			ch == ')' || ch == '}' || ch == '{' || ch == '[' ||
-		ch == ']')
+	if (ch == '(' || ch == ')' || ch == '{' || ch == '}' ||
+		ch == '[' || ch == ']' || ch == '<' || ch == '>' ||
+		ch == '?' || ch == '!' || ch == '+' || ch == '=' ||
+		ch == '*' || ch == '^' || ch == '&' || ch == '$' ||
+		ch == '/' || ch == '|' || ch == '~' || ch == '-' ||
+		ch == ':')
 		return true;
 	return false;
 }
@@ -72,12 +64,12 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_R_OPERATOR) {
 			sc.SetState(SCE_R_DEFAULT);
 		} else if (sc.state == SCE_R_NUMBER) {
-			if (!IsADigit(sc.ch) && !(sc.ch == '.' &&
-					IsADigit(sc.chNext))) {
+			if (!IsDigit(sc.ch) && !(sc.ch == '.' &&
+					IsDigit(sc.chNext))) {
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_IDENTIFIER) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!IsWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrent(s, sizeof(s));
 				if (keywords.InList(s)) {
@@ -90,7 +82,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_COMMENT) {
-			if (IsACRLF(sc.ch)) {
+			if (IsCRLF(sc.ch)) {
 				sc.SetState(SCE_R_DEFAULT);
 			}
 		} else if (sc.state == SCE_R_STRING) {
@@ -121,9 +113,9 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_R_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_R_NUMBER);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (IsAlnumWordChar(sc.ch)) {
 				sc.SetState(SCE_R_IDENTIFIER);
 			} else if (sc.Match('#')) {
 					sc.SetState(SCE_R_COMMENT);
@@ -133,7 +125,7 @@ static void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_R_INFIX);
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_R_STRING2);
-			} else if (IsAnOperator(sc.ch)) {
+			} else if (isOperator(sc.ch)) {
 				sc.SetState(SCE_R_OPERATOR);
 			}
 		}
@@ -195,18 +187,18 @@ static void FoldRDoc(Sci_PositionU startPos, Sci_Position length,
 			levelMinCurrent = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 }
 
 static const char * const RWordLists[] = {
-			"Language Keywords",
-			"Base / Default package function",
-			"Other Package Functions",
-			"Unused",
-			"Unused",
-			0,
-		};
+	"Language Keywords",
+	"Base / Default package function",
+	"Other Package Functions",
+	"Unused",
+	"Unused",
+	0,
+};
 
 LexerModule lmR(SCLEX_R, ColouriseRDoc, "r", FoldRDoc, RWordLists);

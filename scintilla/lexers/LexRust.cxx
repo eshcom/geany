@@ -176,7 +176,7 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 }
 
 static bool IsWhitespace(int ch) {
-	return IsASpaceOrTab(ch) || IsACRLF(ch);
+	return IsSpaceOrTab(ch) || IsCRLF(ch);
 }
 
 /* This isn't quite right for Unicode identifiers */
@@ -238,7 +238,7 @@ static bool ScanDigits(Accessor& styler, Sci_Position& pos, int base) {
 	Sci_Position old_pos = pos;
 	for (;;) {
 		int c = styler.SafeGetCharAt(pos, '\0');
-		if (IsADigit(c, base) || c == '_')
+		if (IsDigit(c, base) || c == '_')
 			pos++;
 		else
 			break;
@@ -371,14 +371,14 @@ static bool IsValidCharacterEscape(int c) {
 }
 
 static bool IsValidStringEscape(int c) {
-	return IsValidCharacterEscape(c) || IsACRLF(c);
+	return IsValidCharacterEscape(c) || IsCRLF(c);
 }
 
 static bool ScanNumericEscape(Accessor &styler, Sci_Position& pos,
 							  Sci_Position num_digits, bool stop_asap) {
 	for (;;) {
 		int c = styler.SafeGetCharAt(pos, '\0');
-		if (!IsADigit(c, 16))
+		if (!IsDigit(c, 16))
 			break;
 		num_digits--;
 		pos++;
@@ -419,7 +419,7 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos,
 						valid_char = ScanNumericEscape(styler, pos, 4, false);
 					} else {
 						int n_digits = 0;
-						while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+						while (IsDigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
 							   n_digits++ < 6);
 						if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 							pos++;
@@ -610,7 +610,7 @@ static void ResumeString(Accessor &styler, Sci_Position& pos,
 					error = !ScanNumericEscape(styler, pos, 4, true);
 				} else {
 					int n_digits = 0;
-					while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
+					while (IsDigit(styler.SafeGetCharAt(++pos, '\0'), 16) &&
 						   n_digits++ < 6);
 					if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
 						pos++;
@@ -743,7 +743,7 @@ void SCI_METHOD LexerRust::Lex(Sci_PositionU startPos, Sci_Position length,
 			ScanCharacterLiteralOrLifetime(styler, pos, true);
 		} else if (IsIdentifierStart(c)) {
 			ScanIdentifier(styler, pos, keywords);
-		} else if (IsADigit(c)) {
+		} else if (IsDigit(c)) {
 			ScanNumber(styler, pos);
 		} else if (IsThreeCharOperator(c, n, n2)) {
 			pos += 3;
@@ -839,7 +839,7 @@ void SCI_METHOD LexerRust::Fold(Sci_PositionU startPos, Sci_Position length,
 				levelNext--;
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 		if (atEOL || (i == endPos-1)) {
 			int levelUse = levelCurrent;

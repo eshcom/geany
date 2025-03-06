@@ -39,15 +39,15 @@ using namespace Scintilla;
 
 // Underscore, letter, digit and universal alphas from C99 Appendix D.
 
-static bool IsWordStart(int ch) {
-	return (IsASCII(ch) && (isalpha(ch) || ch == '_')) || !IsASCII(ch);
+static bool isWordStart(int ch) {
+	return IsAlphaWordChar(ch) || !IsASCII(ch);
 }
 
-static bool IsWord(int ch) {
-	return (IsASCII(ch) && (isalnum(ch) || ch == '_')) || !IsASCII(ch);
+static bool isWord(int ch) {
+	return IsAlnumWordChar(ch) || !IsASCII(ch);
 }
 
-static bool IsDoxygen(int ch) {
+static bool isDoxygen(int ch) {
 	if (IsASCII(ch) && islower(ch))
 		return true;
 	if (ch == '$' || ch == '@' || ch == '\\' ||
@@ -57,15 +57,15 @@ static bool IsDoxygen(int ch) {
 	return false;
 }
 
-static bool IsStringSuffix(int ch) {
+static bool isStringSuffix(int ch) {
 	return ch == 'c' || ch == 'w' || ch == 'd';
 }
 
-static bool IsStreamCommentStyle(int style) {
-	return style == SCE_D_COMMENT ||
-		style == SCE_D_COMMENTDOC ||
-		style == SCE_D_COMMENTDOCKEYWORD ||
-		style == SCE_D_COMMENTDOCKEYWORDERROR;
+static bool isStreamCommentStyle(int style) {
+	return (style == SCE_D_COMMENT ||
+			style == SCE_D_COMMENTDOC ||
+			style == SCE_D_COMMENTDOCKEYWORD ||
+			style == SCE_D_COMMENTDOCKEYWORDERROR);
 }
 
 // An individual named option for use in an OptionSet
@@ -285,7 +285,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 				break;
 			case SCE_D_IDENTIFIER:
-				if (!IsWord(sc.ch)) {
+				if (!isWord(sc.ch)) {
 					char s[1000];
 					if (caseSensitive) {
 						sc.GetCurrent(s, sizeof(s));
@@ -320,8 +320,8 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.ForwardSetState(SCE_D_DEFAULT);
 				} else if (sc.ch == '@' || sc.ch == '\\') { // JavaDoc and Doxygen support
 					// Verify that we have the conditions to mark a comment-doc-keyword
-					if ((IsASpace(sc.chPrev) || sc.chPrev == '*') &&
-						(!IsASpace(sc.chNext))) {
+					if ((IsSpace(sc.chPrev) || sc.chPrev == '*') &&
+						(!IsSpace(sc.chNext))) {
 						styleBeforeDCKeyword = SCE_D_COMMENTDOC;
 						sc.SetState(SCE_D_COMMENTDOCKEYWORD);
 					}
@@ -337,8 +337,8 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_D_DEFAULT);
 				} else if (sc.ch == '@' || sc.ch == '\\') { // JavaDoc and Doxygen support
 					// Verify that we have the conditions to mark a comment-doc-keyword
-					if ((IsASpace(sc.chPrev) || sc.chPrev == '/' || sc.chPrev == '!') &&
-						(!IsASpace(sc.chNext))) {
+					if ((IsSpace(sc.chPrev) || sc.chPrev == '/' || sc.chPrev == '!') &&
+						(!IsSpace(sc.chNext))) {
 						styleBeforeDCKeyword = SCE_D_COMMENTLINEDOC;
 						sc.SetState(SCE_D_COMMENTDOCKEYWORD);
 					}
@@ -350,14 +350,14 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_D_COMMENTDOCKEYWORDERROR);
 					sc.Forward();
 					sc.ForwardSetState(SCE_D_DEFAULT);
-				} else if (!IsDoxygen(sc.ch)) {
+				} else if (!isDoxygen(sc.ch)) {
 					char s[100];
 					if (caseSensitive) {
 						sc.GetCurrent(s, sizeof(s));
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					if (!IsASpace(sc.ch) || !keywords3.InList(s + 1)) {
+					if (!IsSpace(sc.ch) || !keywords3.InList(s + 1)) {
 						sc.ChangeState(SCE_D_COMMENTDOCKEYWORDERROR);
 					}
 					sc.SetState(styleBeforeDCKeyword);
@@ -386,7 +386,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.Forward();
 					}
 				} else if (sc.ch == '"') {
-					if (IsStringSuffix(sc.chNext))
+					if (isStringSuffix(sc.chNext))
 						sc.Forward();
 					sc.ForwardSetState(SCE_D_DEFAULT);
 				}
@@ -410,14 +410,14 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 				break;
 			case SCE_D_STRINGB:
 				if (sc.ch == '`') {
-					if (IsStringSuffix(sc.chNext))
+					if (isStringSuffix(sc.chNext))
 						sc.Forward();
 					sc.ForwardSetState(SCE_D_DEFAULT);
 				}
 				break;
 			case SCE_D_STRINGR:
 				if (sc.ch == '"') {
-					if (IsStringSuffix(sc.chNext))
+					if (isStringSuffix(sc.chNext))
 						sc.Forward();
 					sc.ForwardSetState(SCE_D_DEFAULT);
 				}
@@ -426,7 +426,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_D_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_D_NUMBER);
 				numFloat = sc.ch == '.';
 				// Remember hex literal
@@ -436,7 +436,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Limited support for hex and delimited strings: parse as r""
 				sc.SetState(SCE_D_STRINGR);
 				sc.Forward();
-			} else if (IsWordStart(sc.ch) || sc.ch == '$') {
+			} else if (isWordStart(sc.ch) || sc.ch == '$') {
 				sc.SetState(SCE_D_IDENTIFIER);
 			} else if (sc.Match('/','+')) {
 				curNcLevel += 1;
@@ -463,7 +463,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_D_CHARACTER);
 			} else if (sc.ch == '`') {
 				sc.SetState(SCE_D_STRINGB);
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_D_OPERATOR);
 				if (sc.ch == '.' && sc.chNext == '.') sc.Forward(); // Range operator
 			}
@@ -506,10 +506,10 @@ void SCI_METHOD LexerD::Fold(Sci_PositionU startPos, Sci_Position length,
 		styleNext = styler.StyleAt(i + 1);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		if (options.foldComment && options.foldCommentMultiline &&
-			IsStreamCommentStyle(style)) {
-			if (!IsStreamCommentStyle(stylePrev)) {
+			isStreamCommentStyle(style)) {
+			if (!isStreamCommentStyle(stylePrev)) {
 				levelNext++;
-			} else if (!IsStreamCommentStyle(styleNext) && !atEOL) {
+			} else if (!isStreamCommentStyle(styleNext) && !atEOL) {
 				// Comments don't end at end of line and the next character may be unstyled.
 				levelNext--;
 			}
@@ -569,7 +569,7 @@ void SCI_METHOD LexerD::Fold(Sci_PositionU startPos, Sci_Position length,
 			levelMinCurrent = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 }

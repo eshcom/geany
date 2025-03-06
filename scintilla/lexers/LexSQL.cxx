@@ -36,31 +36,24 @@
 
 using namespace Scintilla;
 
-static inline bool IsAWordChar(int ch, bool sqlAllowDottedWord) {
-	if (!sqlAllowDottedWord)
-		return (ch < 0x80) && (isalnum(ch) || ch == '_');
-	else
-		return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.');
+static inline bool isWordChar(int ch, bool sqlAllowDottedWord) {
+	return sqlAllowDottedWord ? IsWordChar(ch) : IsAlnumWordChar(ch);
 }
 
-static inline bool IsAWordStart(int ch) {
-	return (ch < 0x80) && (isalpha(ch) || ch == '_');
-}
-
-static inline bool IsADoxygenChar(int ch) {
+static inline bool isDoxygenChar(int ch) {
 	return (islower(ch) || ch == '$' || ch == '@' ||
 			ch == '\\' || ch == '&' || ch == '<' ||
 			ch == '>' || ch == '#' || ch == '{' ||
 			ch == '}' || ch == '[' || ch == ']');
 }
 
-static inline bool IsANumberChar(int ch, int chPrev) {
+static inline bool isNumberChar(int ch, int chPrev) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
 		   (isdigit(ch) || toupper(ch) == 'E' ||
 			ch == '.' || ((ch == '-' || ch == '+') &&
-			chPrev < 0x80 && toupper(chPrev) == 'E'));
+						  chPrev < 0x80 && toupper(chPrev) == 'E'));
 }
 
 typedef unsigned int sql_state_t;
@@ -368,7 +361,7 @@ private:
 			// MySQL needs -- comments to be followed by space or control char
 			if (style == SCE_SQL_COMMENTLINE && styler.Match(i, "--"))
 				return true;
-			else if (!IsASpaceOrTab(styler[i]))
+			else if (!IsSpaceOrTab(styler[i]))
 				return false;
 		}
 		return false;
@@ -447,13 +440,13 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 			
 		case SCE_SQL_NUMBER:
 			// We stop the number definition on non-numerical non-dot non-eE non-sign char
-			if (!IsANumberChar(sc.ch, sc.chPrev)) {
+			if (!isNumberChar(sc.ch, sc.chPrev)) {
 				sc.SetState(SCE_SQL_DEFAULT);
 			}
 			break;
 			
 		case SCE_SQL_IDENTIFIER:
-			if (!IsAWordChar(sc.ch, options.sqlAllowDottedWord)) {
+			if (!isWordChar(sc.ch, options.sqlAllowDottedWord)) {
 				int nextState = SCE_SQL_DEFAULT;
 				char s[1000];
 				sc.GetCurrentLowered(s, sizeof(s));
@@ -506,8 +499,8 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.ForwardSetState(SCE_SQL_DEFAULT);
 			} else if (sc.ch == '@' || sc.ch == '\\') { // Doxygen support
 				// Verify that we have the conditions to mark a comment-doc-keyword
-				if ((IsASpace(sc.chPrev) || sc.chPrev == '*') &&
-					(!IsASpace(sc.chNext))) {
+				if ((IsSpace(sc.chPrev) || sc.chPrev == '*') &&
+					(!IsSpace(sc.chNext))) {
 					styleBeforeDCKeyword = SCE_SQL_COMMENTDOC;
 					sc.SetState(SCE_SQL_COMMENTDOCKEYWORD);
 				}
@@ -532,7 +525,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.ChangeState(SCE_SQL_COMMENTDOCKEYWORDERROR);
 				sc.Forward();
 				sc.ForwardSetState(SCE_SQL_DEFAULT);
-			} else if (!IsADoxygenChar(sc.ch)) {
+			} else if (!isDoxygenChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				if (!isspace(sc.ch) || !kw_pldoc.InList(s + 1)) {
@@ -605,11 +598,11 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 			if (sc.Match('q', '\'') || sc.Match('Q', '\'')) {
 				sc.SetState(SCE_SQL_QOPERATOR);
 				sc.Forward();
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-					   ((sc.ch == '-' || sc.ch == '+') && IsADigit(sc.chNext) &&
-						!IsADigit(sc.chPrev))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext)) ||
+					   ((sc.ch == '-' || sc.ch == '+') && IsDigit(sc.chNext) &&
+						!IsDigit(sc.chPrev))) {
 				sc.SetState(SCE_SQL_NUMBER);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (IsAlphaWordChar(sc.ch)) {
 				sc.SetState(SCE_SQL_IDENTIFIER);
 			} else if (sc.ch == 0x60 && options.sqlBackticksIdentifier) {
 				sc.SetState(SCE_SQL_QUOTEDIDENTIFIER);
@@ -632,7 +625,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_SQL_CHARACTER);
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_SQL_STRING);
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_SQL_OPERATOR);
 			}
 		}
@@ -791,7 +784,7 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length,
 			char s[MAX_KW_LEN + 2];
 			unsigned int j = 0;
 			for (; j < MAX_KW_LEN + 1; j++) {
-				if (!iswordchar(styler[i + j])) {
+				if (!IsWordChar(styler[i + j])) {
 					break;
 				}
 				s[j] = static_cast<char>(tolower(styler[i + j]));
@@ -978,7 +971,7 @@ void SCI_METHOD LexerSQL::Fold(Sci_PositionU startPos, Sci_Position length,
 			if (!options.foldOnlyBegin)
 				sqlStates.Set(lineCurrent, sqlStatesCurrentLine);
 		}
-		if (!IsASpace(ch)) {
+		if (!IsSpace(ch)) {
 			visibleChars++;
 		}
 	}

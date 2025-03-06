@@ -69,8 +69,6 @@ static inline bool IsDelimiterCharacter(int ch);
 static inline bool IsSeparatorOrDelimiterCharacter(int ch);
 static bool IsValidIdentifier(const std::string& identifier);
 static bool IsValidNumber(const std::string& number);
-static inline bool IsWordStartCharacter(int ch);
-static inline bool IsWordCharacter(int ch);
 
 static void ColouriseCharacter(StyleContext& sc, bool& apostropheStartsAttribute) {
 	apostropheStartsAttribute = true;
@@ -269,7 +267,7 @@ static void ColouriseDocument(
 			ColouriseLabel(sc, keywords, apostropheStartsAttribute);
 		
 		// Whitespace
-		} else if (IsASpace(sc.ch)) {
+		} else if (IsSpace(sc.ch)) {
 			ColouriseWhiteSpace(sc, apostropheStartsAttribute);
 		
 		// Delimiters
@@ -277,7 +275,7 @@ static void ColouriseDocument(
 			ColouriseDelimiter(sc, apostropheStartsAttribute);
 		
 		// Numbers
-		} else if (IsADigit(sc.ch) || sc.ch == '#') {
+		} else if (IsDigit(sc.ch) || sc.ch == '#') {
 			ColouriseNumber(sc, apostropheStartsAttribute);
 		
 		// Keywords or identifiers
@@ -313,7 +311,7 @@ static inline bool IsDelimiterCharacter(int ch) {
 }
 
 static inline bool IsSeparatorOrDelimiterCharacter(int ch) {
-	return IsASpace(ch) || IsDelimiterCharacter(ch);
+	return IsSpace(ch) || IsDelimiterCharacter(ch);
 }
 
 static bool IsValidIdentifier(const std::string& identifier) {
@@ -328,13 +326,13 @@ static bool IsValidIdentifier(const std::string& identifier) {
 	}
 	
 	// Check for valid character at the start
-	if (!IsWordStartCharacter(identifier[0])) {
+	if (!IsAlphaWordChar(identifier[0])) {
 		return false;
 	}
 	// Check for only valid characters and no double underscores
 	for (size_t i = 0; i < length; i++) {
-		if (!IsWordCharacter(identifier[i]) ||
-				(identifier[i] == '_' && lastWasUnderscore)) {
+		if (!IsAlnumWordChar(identifier[i]) ||
+			(identifier[i] == '_' && lastWasUnderscore)) {
 			return false;
 		}
 		lastWasUnderscore = identifier[i] == '_';
@@ -373,7 +371,7 @@ static bool IsValidNumber(const std::string& number) {
 				}
 				canBeSpecial = false;
 				seenDot = true;
-			} else if (IsADigit(number[i])) {
+			} else if (IsDigit(number[i])) {
 				canBeSpecial = true;
 			} else {
 				break;
@@ -394,7 +392,7 @@ static bool IsValidNumber(const std::string& number) {
 				if (!canBeSpecial)
 					return false;
 				canBeSpecial = false;
-			} else if (IsADigit(ch)) {
+			} else if (IsDigit(ch)) {
 				base = base * 10 + (ch - '0');
 				if (base > 16)
 					return false;
@@ -432,7 +430,7 @@ static bool IsValidNumber(const std::string& number) {
 				canBeSpecial = false;
 				seenDot = true;
 				
-			} else if (IsADigit(ch)) {
+			} else if (IsDigit(ch)) {
 				if (ch - '0' >= base) {
 					return false;
 				}
@@ -490,7 +488,7 @@ static bool IsValidNumber(const std::string& number) {
 					return false;
 				}
 				canBeSpecial = false;
-			} else if (IsADigit(number[i])) {
+			} else if (IsDigit(number[i])) {
 				canBeSpecial = true;
 			} else {
 				return false;
@@ -501,12 +499,4 @@ static bool IsValidNumber(const std::string& number) {
 	}
 	// if i == length, number was parsed successfully.
 	return i == length;
-}
-
-static inline bool IsWordCharacter(int ch) {
-	return IsWordStartCharacter(ch) || IsADigit(ch);
-}
-
-static inline bool IsWordStartCharacter(int ch) {
-	return (IsASCII(ch) && isalpha(ch)) || ch == '_';
 }

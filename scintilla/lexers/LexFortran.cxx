@@ -27,26 +27,18 @@
 
 using namespace Scintilla;
 
-/***********************************************/
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '%');
-}
-/**********************************************/
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch));
-}
 /***************************************/
-static inline bool IsABlank(unsigned int ch) {
-	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b);
+static inline bool isWordChar(const int ch) {
+	return IsAlnumWordChar(ch) || ch == '%';
 }
 /***************************************/
 static Sci_PositionU GetContinuedPos(Sci_PositionU pos, Accessor &styler) {
-	while (!IsACRLF(styler.SafeGetCharAt(pos++))) continue;
+	while (!IsCRLF(styler.SafeGetCharAt(pos++))) continue;
 	if (styler.SafeGetCharAt(pos) == '\n') pos++;
-	while (IsABlank(styler.SafeGetCharAt(pos++))) continue;
+	while (IsBlank(styler.SafeGetCharAt(pos++))) continue;
 	char chCur = styler.SafeGetCharAt(pos);
 	if (chCur == '&') {
-		while (IsABlank(styler.SafeGetCharAt(++pos))) continue;
+		while (IsBlank(styler.SafeGetCharAt(++pos))) continue;
 		return pos;
 	} else {
 		return pos;
@@ -79,7 +71,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 			numNonBlank = 0;
 			sc.SetState(SCE_F_DEFAULT);
 		}
-		if (!IsASpaceOrTab(sc.ch)) numNonBlank ++;
+		if (!IsSpaceOrTab(sc.ch)) numNonBlank ++;
 		/***********************************************/
 		// Handle the fix format generically
 		Sci_Position toLineStart = sc.currentPos - posLineStart;
@@ -99,15 +91,15 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_F_COMMENT);
 				while (!sc.atLineEnd && sc.More()) sc.Forward(); // Until line end
 			} else if (toLineStart < 5) {
-				if (IsADigit(sc.ch))
+				if (IsDigit(sc.ch))
 					sc.SetState(SCE_F_LABEL);
 				else
 					sc.SetState(SCE_F_DEFAULT);
 			} else if (toLineStart == 5) {
-				//if (!IsASpace(sc.ch) && sc.ch != '0') {
-				if (!IsACRLF(sc.ch)) {
+				//if (!IsSpace(sc.ch) && sc.ch != '0') {
+				if (!IsCRLF(sc.ch)) {
 					sc.SetState(SCE_F_CONTINUATION);
-					if (!IsASpace(sc.ch) && sc.ch != '0')
+					if (!IsSpace(sc.ch) && sc.ch != '0')
 						sc.ForwardSetState(prevState);
 				} else
 					sc.SetState(SCE_F_DEFAULT);
@@ -119,21 +111,21 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 		if (!isFixFormat && sc.ch == '&' && sc.state != SCE_F_COMMENT) {
 			char chTemp = ' ';
 			Sci_Position j = 1;
-			while (IsABlank(chTemp) && j < 132) {
+			while (IsBlank(chTemp) && j < 132) {
 				chTemp = static_cast<char>(sc.GetRelative(j));
 				j++;
 			}
 			if (chTemp == '!') {
 				sc.SetState(SCE_F_CONTINUATION);
 				if (sc.chNext == '!') sc.ForwardSetState(SCE_F_COMMENT);
-			} else if (IsACRLF(chTemp)) {
+			} else if (IsCRLF(chTemp)) {
 				int currentState = sc.state;
 				sc.SetState(SCE_F_CONTINUATION);
 				sc.ForwardSetState(SCE_F_DEFAULT);
-				while (IsASpace(sc.ch) && sc.More()) {
+				while (IsSpace(sc.ch) && sc.More()) {
 					sc.Forward();
 					if (sc.atLineStart) numNonBlank = 0;
-					if (!IsASpaceOrTab(sc.ch)) numNonBlank ++;
+					if (!IsSpaceOrTab(sc.ch)) numNonBlank ++;
 				}
 				if (sc.ch == '&') {
 					sc.SetState(SCE_F_CONTINUATION);
@@ -155,11 +147,11 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 		if (sc.state == SCE_F_OPERATOR) {
 			sc.SetState(SCE_F_DEFAULT);
 		} else if (sc.state == SCE_F_NUMBER) {
-			if (!(IsAWordChar(sc.ch) || sc.ch=='\'' || sc.ch=='\"' || sc.ch=='.')) {
+			if (!(isWordChar(sc.ch) || sc.ch=='\'' || sc.ch=='\"' || sc.ch=='.')) {
 				sc.SetState(SCE_F_DEFAULT);
 			}
 		} else if (sc.state == SCE_F_IDENTIFIER) {
-			if (!IsAWordChar(sc.ch) || (sc.ch == '%')) {
+			if (!isWordChar(sc.ch) || sc.ch == '%') {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				if (keywords.InList(s)) {
@@ -172,7 +164,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_F_DEFAULT);
 			}
 		} else if (sc.state == SCE_F_COMMENT || sc.state == SCE_F_PREPROCESSOR) {
-			if (IsACRLF(sc.ch)) {
+			if (IsCRLF(sc.ch)) {
 				sc.SetState(SCE_F_DEFAULT);
 			}
 		} else if (sc.state == SCE_F_STRING1) {
@@ -208,7 +200,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 		} else if (sc.state == SCE_F_CONTINUATION) {
 			sc.SetState(SCE_F_DEFAULT);
 		} else if (sc.state == SCE_F_LABEL) {
-			if (!IsADigit(sc.ch)) {
+			if (!IsDigit(sc.ch)) {
 				sc.SetState(SCE_F_DEFAULT);
 			} else {
 				if (isFixFormat && sc.currentPos-posLineStart > 4)
@@ -227,9 +219,9 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					sc.SetState(SCE_F_COMMENT);
 				}
-			} else if ((!isFixFormat) && IsADigit(sc.ch) && numNonBlank == 1) {
+			} else if ((!isFixFormat) && IsDigit(sc.ch) && numNonBlank == 1) {
 				sc.SetState(SCE_F_LABEL);
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			} else if (IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext))) {
 				sc.SetState(SCE_F_NUMBER);
 			} else if ((tolower(sc.ch) == 'b' || tolower(sc.ch) == 'o' ||
 				tolower(sc.ch) == 'z') && (sc.chNext == '\"' || sc.chNext == '\'')) {
@@ -237,13 +229,13 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.Forward();
 			} else if (sc.ch == '.' && isalpha(sc.chNext)) {
 				sc.SetState(SCE_F_OPERATOR2);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (IsAlnum(sc.ch)) {
 				sc.SetState(SCE_F_IDENTIFIER);
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_F_STRING2);
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_F_STRING1);
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_F_OPERATOR);
 			}
 		}
@@ -299,7 +291,7 @@ static void GetIfLineComment(Accessor &styler, bool isFixFormat,
 			comCol = col;
 			break;
 		}
-		else if (!IsABlank(ch) || IsACRLF(ch)) {
+		else if (!IsBlank(ch) || IsCRLF(ch)) {
 			break;
 		}
 		pos++;
@@ -532,14 +524,14 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 		chNext = styler.SafeGetCharAt(i + 1);
 		char chNextNonBlank = chNext;
 		bool nextEOL = false;
-		if (IsACRLF(chNextNonBlank)) {
+		if (IsCRLF(chNextNonBlank)) {
 			nextEOL = true;
 		}
 		Sci_PositionU j = i + 1;
-		while (IsABlank(chNextNonBlank) && j < endPos) {
+		while (IsBlank(chNextNonBlank) && j < endPos) {
 			j++;
 			chNextNonBlank = styler.SafeGetCharAt(j);
-			if (IsACRLF(chNextNonBlank)) {
+			if (IsCRLF(chNextNonBlank)) {
 				nextEOL = true;
 			}
 		}
@@ -558,7 +550,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		/***************************************/
 		if (style == SCE_F_WORD) {
-			if (iswordchar(ch) && !iswordchar(chNext)) {
+			if (IsWordChar(ch) && !IsWordChar(chNext)) {
 				char s[32];
 				Sci_PositionU k;
 				for (k = 0; (k < 31) && (k < i - lastStart + 1); k++) {
@@ -595,17 +587,17 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 							j++;
 							chAtPos = styler.SafeGetCharAt(j);
 							styAtPos = styler.StyleAt(j);
-							if (!IsACRLF(chAtPos) && (styAtPos == SCE_F_COMMENT ||
-													  IsABlank(chAtPos))) continue;
+							if (!IsCRLF(chAtPos) && (styAtPos == SCE_F_COMMENT ||
+													 IsBlank(chAtPos))) continue;
 							if (isFixFormat) {
-								if (!IsACRLF(chAtPos)) {
+								if (!IsCRLF(chAtPos)) {
 									break;
 								} else {
 									if (tmpLineCurrent < styler.GetLine(styler.Length() - 1)) {
 										tmpLineCurrent++;
 										j = styler.LineStart(tmpLineCurrent);
 										if (styler.StyleAt(j + 5) == SCE_F_CONTINUATION
-											&& !IsABlank(styler.SafeGetCharAt(j + 5))
+											&& !IsBlank(styler.SafeGetCharAt(j + 5))
 											&& styler.SafeGetCharAt(j + 5) != '0') {
 											j += 5;
 											continue;
@@ -619,7 +611,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 								if (chAtPos == '&' && styler.StyleAt(j) == SCE_F_CONTINUATION) {
 									j = GetContinuedPos(j + 1, styler);
 									continue;
-								} else if (IsACRLF(chAtPos)) {
+								} else if (IsCRLF(chAtPos)) {
 									levelDeltaNext++;
 									break;
 								} else {
@@ -665,7 +657,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 					// There are multiple forms of "do" loop. The older form with a label "do 100 i=1,10" would require matching
 					// labels to ensure the folding level does not decrease too far when labels are used for other purposes.
 					// Since this is difficult, do-label constructs are not folded.
-					if (strcmp(s, "do") == 0 && IsADigit(chNextNonBlank)) {
+					if (strcmp(s, "do") == 0 && IsDigit(chNextNonBlank)) {
 						// Remove delta for do-label
 						levelDeltaNext -= wordLevelDelta;
 					}
@@ -701,7 +693,7 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		/***************************************/
-		if (!IsASpace(ch)) visibleChars++;
+		if (!IsSpace(ch)) visibleChars++;
 	}
 	/***************************************/
 }

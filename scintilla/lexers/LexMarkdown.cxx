@@ -61,9 +61,9 @@ static bool FollowToLineEnd(const int ch, const int state,
 	while (sc.GetRelative(++i) == ch)
 		;
 	// Skip over whitespace
-	while (IsASpaceOrTab(sc.GetRelative(i)) && sc.currentPos + i < endPos)
+	while (IsSpaceOrTab(sc.GetRelative(i)) && sc.currentPos + i < endPos)
 		++i;
-	if (IsACRLF(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
+	if (IsCRLF(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
 		sc.Forward(i);
 		sc.ChangeState(state);
 		sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
@@ -81,7 +81,7 @@ static void SetStateAndZoom(const int state, const Sci_Position length,
 	sc.SetState(SCE_MARKDOWN_DEFAULT);
 	sc.Forward();
 	bool started = false;
-	while (sc.More() && !IsACRLF(sc.ch)) {
+	while (sc.More() && !IsCRLF(sc.ch)) {
 		if (sc.ch == token && !started) {
 			sc.SetState(state);
 			started = true;
@@ -100,18 +100,18 @@ static bool HasPrevLineContent(StyleContext &sc) {
 	Sci_Position i = 0;
 	// Go back to the previous newline
 	while ((--i + (Sci_Position)sc.currentPos) >= 0 &&
-		   !IsACRLF(sc.GetRelative(i)));
+		   !IsCRLF(sc.GetRelative(i)));
 	while ((--i + (Sci_Position)sc.currentPos) >= 0) {
-		if (IsACRLF(sc.GetRelative(i)))
+		if (IsCRLF(sc.GetRelative(i)))
 			break;
-		if (!IsASpaceOrTab(sc.GetRelative(i)))
+		if (!IsSpaceOrTab(sc.GetRelative(i)))
 			return true;
 	}
 	return false;
 }
 
 static bool AtTermStart(StyleContext &sc) {
-	return sc.currentPos == 0 || sc.chPrev == 0 || IsASpace(sc.chPrev);
+	return sc.currentPos == 0 || sc.chPrev == 0 || IsSpace(sc.chPrev);
 }
 
 static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
@@ -123,9 +123,9 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 		if (c == sc.ch)
 			++count;
 		// hit a terminating character
-		else if (!IsASpaceOrTab(c) || sc.currentPos + i == endPos) {
+		else if (!IsSpaceOrTab(c) || sc.currentPos + i == endPos) {
 			// Are we a valid HRULE
-			if ((IsACRLF(c) || sc.currentPos + i == endPos) &&
+			if ((IsCRLF(c) || sc.currentPos + i == endPos) &&
 					count >= 3 && !HasPrevLineContent(sc)) {
 				sc.SetState(SCE_MARKDOWN_HRULE);
 				sc.Forward(i);
@@ -180,7 +180,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 		// Code block
 		else if (sc.state == SCE_MARKDOWN_CODEBK) {
 			bool d = true;
-			if (IsACRLF(sc.ch)) {
+			if (IsCRLF(sc.ch)) {
 				if (sc.chNext != '\t') {
 					for (int c = 1; c < 5; ++c) {
 						if (sc.GetRelative(c) != ' ')
@@ -225,7 +225,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 		else if (sc.state == SCE_MARKDOWN_CODEBK) {
 			if (sc.atLineStart && sc.Match("~~~")) {
 				Sci_Position i = 1;
-				while (!IsACRLF(sc.GetRelative(i)) && sc.currentPos + i < endPos)
+				while (!IsCRLF(sc.GetRelative(i)) && sc.currentPos + i < endPos)
 					i++;
 				sc.Forward(i);
 				sc.SetState(SCE_MARKDOWN_DEFAULT);
@@ -251,7 +251,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				SetStateAndZoom(SCE_MARKDOWN_HEADER2, 2, '#', sc);
 			else if (sc.Match("#")) {
 				// Catch the special case of an unordered list
-				if (sc.chNext == '.' && IsASpaceOrTab(sc.GetRelative(2))) {
+				if (sc.chNext == '.' && IsSpaceOrTab(sc.GetRelative(2))) {
 					precharCount = 0;
 					sc.SetState(SCE_MARKDOWN_PRECHAR);
 				}
@@ -281,7 +281,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_MARKDOWN_PRECHAR);
 				}
 			}
-			else if (IsACRLF(sc.ch))
+			else if (IsCRLF(sc.ch))
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 			else {
 				precharCount = 0;
@@ -293,7 +293,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 		else if (sc.state == SCE_MARKDOWN_HEADER1 || sc.state == SCE_MARKDOWN_HEADER2 ||
 				 sc.state == SCE_MARKDOWN_HEADER3 || sc.state == SCE_MARKDOWN_HEADER4 ||
 				 sc.state == SCE_MARKDOWN_HEADER5 || sc.state == SCE_MARKDOWN_HEADER6) {
-			if (IsACRLF(sc.ch))
+			if (IsCRLF(sc.ch))
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 		}
 		
@@ -314,17 +314,17 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				;
 			// Unordered list
 			else if ((sc.ch == '-' || sc.ch == '*' || sc.ch == '+') &&
-					 IsASpaceOrTab(sc.chNext)) {
+					 IsSpaceOrTab(sc.chNext)) {
 				sc.SetState(SCE_MARKDOWN_ULIST_ITEM);
 				sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 			}
 			// Ordered list
-			else if (IsADigit(sc.ch)) {
+			else if (IsDigit(sc.ch)) {
 				int digitCount = 0;
-				while (IsADigit(sc.GetRelative(++digitCount)))
+				while (IsDigit(sc.GetRelative(++digitCount)))
 					;
 				if (sc.GetRelative(digitCount) == '.' &&
-						IsASpaceOrTab(sc.GetRelative(digitCount + 1))) {
+						IsSpaceOrTab(sc.GetRelative(digitCount + 1))) {
 					sc.SetState(SCE_MARKDOWN_OLIST_ITEM);
 					sc.Forward(digitCount + 1);
 					sc.SetState(SCE_MARKDOWN_DEFAULT);
@@ -332,7 +332,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			// Alternate Ordered list
 			else if (sc.ch == '#' && sc.chNext == '.' &&
-					 IsASpaceOrTab(sc.GetRelative(2))) {
+					 IsSpaceOrTab(sc.GetRelative(2))) {
 				sc.SetState(SCE_MARKDOWN_OLIST_ITEM);
 				sc.Forward(2);
 				sc.SetState(SCE_MARKDOWN_DEFAULT);
@@ -416,7 +416,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.Forward();
 			}
 			// Beginning of line
-			else if (IsACRLF(sc.ch)) {
+			else if (IsCRLF(sc.ch)) {
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 			}
 		}

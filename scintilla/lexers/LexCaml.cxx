@@ -326,23 +326,23 @@ void ColouriseCamlDoc(
 		
 		case SCE_CAML_NUMBER:
 			// [try to] interpret as [additional] numeric literal char
-			if ((!isSML && sc.Match('_')) || IsADigit(sc.ch, chBase))
+			if ((!isSML && sc.Match('_')) || IsDigit(sc.ch, chBase))
 				break;
 			// how about an integer suffix?
 			if (!isSML && (sc.Match('l') || sc.Match('L') || sc.Match('n'))
-				&& (sc.chPrev == '_' || IsADigit(sc.chPrev, chBase)))
+				&& (sc.chPrev == '_' || IsDigit(sc.chPrev, chBase)))
 				break;
 			// or a floating-point literal?
 			if (chBase == 10) {
 				// with a decimal point?
 				if (sc.Match('.')
 					&& ((!isSML && sc.chPrev == '_')
-						|| IsADigit(sc.chPrev, chBase)))
+						|| IsDigit(sc.chPrev, chBase)))
 					break;
 				// with an exponent? (I)
 				if ((sc.Match('e') || sc.Match('E'))
 					&& ((!isSML && (sc.chPrev == '.' || sc.chPrev == '_'))
-						|| IsADigit(sc.chPrev, chBase)))
+						|| IsDigit(sc.chPrev, chBase)))
 					break;
 				// with an exponent? (II)
 				if (((!isSML && (sc.Match('+') || sc.Match('-')))

@@ -49,7 +49,7 @@ static void ColouriseMakeLine(
 		bCommand = true;
 	
 	// Skip initial spaces
-	while ((i < lengthLine) && IsASpace(lineBuffer[i])) {
+	while ((i < lengthLine) && IsSpace(lineBuffer[i])) {
 		i++;
 	}
 	if (i < lengthLine) {
@@ -103,7 +103,7 @@ static void ColouriseMakeLine(
 				state = SCE_MAKE_DEFAULT;
 			}
 		}
-		if (!IsASpace(lineBuffer[i])) {
+		if (!IsSpace(lineBuffer[i])) {
 			lastNonSpace = i;
 		}
 		i++;

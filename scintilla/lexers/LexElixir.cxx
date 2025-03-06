@@ -57,7 +57,15 @@ struct AtomPunctSequence {
 	}
 };
 
-static bool is_radix(int radix, int ch) {
+static inline bool isOperator(const int ch) {
+	return (IsOperator(ch) || ch == '\\');
+}
+
+static inline bool isWordEnd(const int ch) {
+	return (ch == '!' || ch == '?');
+}
+
+static bool isRadix(int radix, int ch) {
 	int digit;
 	
 	if (radix < 2 || radix > 36)
@@ -94,10 +102,6 @@ typedef enum {
 	OTHER_MODULE,
 	KERNEL_MODULE
 } module_type_t;
-
-static inline bool IsElixirOperator(const int ch) {
-	return (isoperator(ch) || ch == '\\');
-}
 
 static inline bool IsCommentStyle(int style) {
 	return (style == SCE_ELIXIR_COMMENT ||
@@ -143,18 +147,6 @@ static inline bool IsNestedStringStyle(int style) {
 			style == SCE_ELIXIR_FORMATSEQ);
 }
 
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (ch != ' ') && (isalpha(ch) || ch == '_');
-}
-
-static inline bool IsAWordEnd(const int ch) {
-	return (ch == '!' || ch == '?');
-}
-
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
-}
-
 static inline const char *GetTripleQuote(char closing_char) {
 	if (closing_char == '\"')
 		return R"(""")";
@@ -190,11 +182,11 @@ static inline char GetClosingChar(char opening_char) {
 
 #define MOVE_INDEX_TO_NONSPACE								\
 	Sci_PositionU i = sc.currentPos + 1;					\
-	while (i < endPos && IsASpaceOrTab(styler[i]))			\
+	while (i < endPos && IsSpaceOrTab(styler[i]))			\
 		i++;
 
 #define SKIP_SPACES											\
-	while (sc.More() && IsASpaceOrTab(sc.ch))				\
+	while (sc.More() && IsSpaceOrTab(sc.ch))				\
 		sc.Forward();
 
 #define CHANGE_STATE_BY_MODULE								\
@@ -212,7 +204,7 @@ static inline char GetClosingChar(char opening_char) {
 	}
 
 #define CHECK_LIB_MACROS												\
-	if ((!IsElixirOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||		\
+	if ((!isOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||		\
 		 (sc.ch == ':' && sc.chNext != ':'))							\
 		&& !exclLibMacros.InList(cur) && libMacros.InList(cur)) {		\
 		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||			\
@@ -504,7 +496,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					
 					/* Integer in other base than 10 (x#yyy) */
 					case NUMERAL_BASE_VALUE : {
-						if (is_radix(radix_digits, sc.ch)) {
+						if (isRadix(radix_digits, sc.ch)) {
 							continue;
 						} else if (isalnum(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
@@ -547,9 +539,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ELIXIR_NODE);
 					is_at_symb = true;
 					continue;
-				} else if (IsAWordChar(sc.ch)) {
+				} else if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -586,9 +578,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ELIXIR_ATOM);
 					continue;
-				} else if (IsAWordChar(sc.ch)) {
+				} else if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -700,7 +692,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_MODULE : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
 				}
 				SKIP_SPACES
@@ -726,9 +718,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_MODULE_ATTR : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -751,9 +743,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_IDENTIFIER : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -762,7 +754,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					if (sc.chNext != ':') {
 						sc.ChangeState(ident_state == NONE_STATE ? SCE_ELIXIR_FIELD
 																 : SCE_ELIXIR_UNKNOWN);
-						if (!IsASpace(sc.chNext)) {
+						if (!IsSpace(sc.chNext)) {
 							sc.SetState(SCE_ELIXIR_OPERATOR);
 							sc.ForwardSetState(SCE_ELIXIR_UNKNOWN);
 							sc.Forward();
@@ -903,7 +895,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ELIXIR_MODULE_ATTR);
 					sc.Forward();
 				}
-			} else if (sc.ch == ':' && IsAWordStart(sc.chNext)) {
+			} else if (sc.ch == ':' && IsAlphaWordChar(sc.chNext)) {
 				sc.SetState(SCE_ELIXIR_ATOM);
 				sc.Forward();
 				is_at_symb = false;
@@ -932,7 +924,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (islower(sc.ch) || sc.ch == '_') {
 				sc.SetState(SCE_ELIXIR_IDENTIFIER);
 				
-			} else if (IsElixirOperator(sc.ch)) {
+			} else if (isOperator(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				
 				ident_state = NONE_STATE;

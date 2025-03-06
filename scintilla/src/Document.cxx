@@ -1092,10 +1092,6 @@ int Document::DBCSDrawBytes(const char *text, int len) const noexcept {
 	}
 }
 
-static constexpr bool IsSpaceOrTab(int ch) noexcept {
-	return ch == ' ' || ch == '\t';
-}
-
 // Need to break text into segments near lengthSegment but taking into
 // account the encoding to not break inside a UTF-8 or DBCS character
 // and also trying to avoid breaking inside a pair of combining characters.
@@ -2494,20 +2490,20 @@ Sci::Position Document::WordPartLeft(Sci::Position pos) const {
 					pos -= CharacterBefore(pos).widthBytes;
 				if (!IsUpperCase(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (IsADigit(ceStart.character)) {
-				while (pos > 0 && IsADigit(CharacterAfter(pos).character))
+			} else if (IsDigit(ceStart.character)) {
+				while (pos > 0 && IsDigit(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsADigit(CharacterAfter(pos).character))
+				if (!IsDigit(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
 			} else if (IsASCIIPunctuationCharacter(ceStart.character)) {
 				while (pos > 0 && IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
 				if (!IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (IsASpace(ceStart.character)) {
-				while (pos > 0 && IsASpace(CharacterAfter(pos).character))
+			} else if (IsSpace(ceStart.character)) {
+				while (pos > 0 && IsSpace(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsASpace(CharacterAfter(pos).character))
+				if (!IsSpace(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
 			} else if (!IsASCII(ceStart.character)) {
 				while (pos > 0 && !IsASCII(CharacterAfter(pos).character))
@@ -2547,14 +2543,14 @@ Sci::Position Document::WordPartRight(Sci::Position pos) const {
 		}
 		if (IsLowerCase(CharacterAfter(pos).character) && IsUpperCase(CharacterBefore(pos).character))
 			pos -= CharacterBefore(pos).widthBytes;
-	} else if (IsADigit(ceStart.character)) {
-		while (pos < length && IsADigit(CharacterAfter(pos).character))
+	} else if (IsDigit(ceStart.character)) {
+		while (pos < length && IsDigit(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
 	} else if (IsASCIIPunctuationCharacter(ceStart.character)) {
 		while (pos < length && IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
-	} else if (IsASpace(ceStart.character)) {
-		while (pos < length && IsASpace(CharacterAfter(pos).character))
+	} else if (IsSpace(ceStart.character)) {
+		while (pos < length && IsSpace(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
 	} else {
 		pos += CharacterAfter(pos).widthBytes;

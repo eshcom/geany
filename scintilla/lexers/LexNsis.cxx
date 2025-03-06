@@ -88,7 +88,7 @@ static bool NsisNextLineHasElse(Sci_PositionU start, Sci_PositionU end,
 	for (Sci_PositionU firstChar = nNextLine; firstChar < end; firstChar++)
 	{
 		char cNext = styler.SafeGetCharAt(firstChar);
-		if (IsASpaceOrTab(cNext))
+		if (IsSpaceOrTab(cNext))
 			continue;
 		if (cNext == '!')
 		{
@@ -363,8 +363,8 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 					state = SCE_NSIS_FUNCTION;
 					
 					// If it is a number, we must check and set style here first...
-					if (isNsisNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) ||
-													IsACRLF(cNextChar)))
+					if (isNsisNumber(cCurrChar) && (IsSpaceOrTab(cNextChar) ||
+													IsCRLF(cNextChar)))
 							styler.ColourTo(i, SCE_NSIS_NUMBER);
 					break;
 				}
@@ -377,7 +377,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 				break;
 			case SCE_NSIS_COMMENT:
-				if (IsACRLF(cNextChar))
+				if (IsCRLF(cNextChar))
 				{
 					// Special case:
 					if (cCurrChar == '\\')
@@ -421,7 +421,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 					break;
 				}
 				
-				if (IsACRLF(cNextChar))
+				if (IsCRLF(cNextChar))
 				{
 					Sci_Position nCurLine = styler.GetLine(i + 1);
 					Sci_Position nBack = i;
@@ -440,7 +440,7 @@ static void ColouriseNsisDoc(Sci_PositionU startPos, Sci_Position length,
 							bNextLine = true;
 							break;
 						}
-						if (!IsACRLF(cTemp) && !IsASpaceOrTab(cTemp))
+						if (!IsCRLF(cTemp) && !IsSpaceOrTab(cTemp))
 							break;
 						
 						nBack--;

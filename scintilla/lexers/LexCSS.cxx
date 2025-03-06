@@ -64,7 +64,7 @@ static inline bool IsAWordChar(const unsigned int ch) {
 	 * Unfortunately, we are only getting string bytes here, and not full unicode characters. We cannot guarantee
 	 * that our byte is between U+0080 - U+00A0 (to return false), so we have to allow all characters U+0080 and higher
 	 */
-	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
+	return ch >= 0x80 || isalnum(ch) || ch == '_' || ch == '-';
 }
 
 static inline bool IsAWordOrPercent(const int ch) {
@@ -72,7 +72,7 @@ static inline bool IsAWordOrPercent(const int ch) {
 }
 
 static inline bool IsAWordOrSpace(const int ch) {
-	return IsAWordChar(ch) || IsASpace(ch);
+	return IsAWordChar(ch) || IsSpace(ch);
 }
 
 static inline bool IsCssOperValue(const int ch) {
@@ -575,8 +575,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		// esh: Determine if the current value-state should terminate.
 		switch (sc.state) {
 			case SCE_CSS_NUMBER:
-				if (IsADigit(sc.ch) || (sc.ch == '.' &&
-										IsADigit(sc.chNext)))
+				if (IsDigit(sc.ch) || (sc.ch == '.' &&
+										IsDigit(sc.chNext)))
 					continue;
 				if (IsAWordOrPercent(sc.ch)) {
 					sc.SetState(SCE_CSS_DIMENSION);
@@ -596,7 +596,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}	break;
 			
 			case SCE_CSS_HEX_COLOR:
-				if (IsADigit(sc.ch, 16)) {
+				if (IsDigit(sc.ch, 16)) {
 					hexColorLen++;
 					continue;
 				}
@@ -633,13 +633,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			// start new typed-value states
 			// (number, hexadec-color, named-color, dimension, ...)
-			if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
+			if ((IsDigit(sc.ch) || (sc.ch == '.' && IsDigit(sc.chNext)) ||
 				((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
-													IsADigit(sc.chNext))))) {
+													IsDigit(sc.chNext))))) {
 				sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
 				continue;
 				
-			} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+			} else if (sc.ch == '#' && IsDigit(sc.chNext, 16)) {
 				sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
 				hexColorLen = 0;
 				continue;
@@ -676,7 +676,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isComment) {
 					continue;
-				} else if (!IsASpace(ch)) {
+				} else if (!IsSpace(ch)) {
 					break;
 				}
 			}
@@ -745,7 +745,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			if (sc.ch == '!') {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state (before sc.currentPos) by important
-				while (sc.currentPos < endPos && IsASpace(sc.chNext))
+				while (sc.currentPos < endPos && IsSpace(sc.chNext))
 					sc.Forward();
 				continue;
 				
@@ -955,7 +955,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later

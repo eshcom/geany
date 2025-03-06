@@ -65,7 +65,7 @@ static bool followsDot(Sci_PositionU pos, Accessor &styler) {
 		switch (style) {
 		case SCE_RB_DEFAULT:
 			ch = styler[pos];
-			if (IsASpaceOrTab(ch)) {
+			if (IsSpaceOrTab(ch)) {
 				//continue
 			} else {
 				return false;
@@ -166,9 +166,9 @@ static bool lookingAtHereDocDelim(Accessor		&styler,
 	}
 	while (--pos > 0) {
 		char ch = styler[pos];
-		if (IsACRLF(ch)) {
+		if (IsCRLF(ch)) {
 			return true;
-		} else if (!IsASpaceOrTab(ch)) {
+		} else if (!IsSpaceOrTab(ch)) {
 			return false;
 		}
 	}
@@ -215,7 +215,7 @@ static bool currLineContainsHereDelims(Sci_Position &startPos,
 	Sci_Position pos;
 	for (pos = startPos - 1; pos > 0; pos--) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (IsACRLF(ch)) {
+		if (IsCRLF(ch)) {
 			// Leave the pointers where they are -- there are no
 			// here doc delims on the current line, even if
 			// the EOL isn't default style
@@ -339,7 +339,7 @@ static Sci_Position skipWhitespace(Sci_Position startPos,
 						  Sci_Position endPos,
 						  Accessor &styler) {
 	for (Sci_Position i = startPos; i < endPos; i++) {
-		if (!IsASpaceOrTab(styler[i])) {
+		if (!IsSpaceOrTab(styler[i])) {
 			return i;
 		}
 	}
@@ -600,7 +600,7 @@ static bool sureThisIsNotHeredoc(Sci_Position lt2StartPos,
 				return definitely_not_a_here_doc;
 			} else {
 				char ch = styler[j];
-				if (ch == '#' || IsACRLF(ch)) {
+				if (ch == '#' || IsCRLF(ch)) {
 					// This is OK, so break and continue;
 					break;
 				} else {
@@ -802,7 +802,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 #endif
 		
-		if (HereDoc.State == 1 && IsACRLF(ch)) {
+		if (HereDoc.State == 1 && IsCRLF(ch)) {
 			// Begin of here-doc (the line after the here-doc delimiter):
 			HereDoc.State = 2;
 			styler.ColourTo(i-1, state);
@@ -818,7 +818,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				state = SCE_RB_NUMBER;
 				is_real_number = true;
 				numDots = 0;
-			} else if (isHighBitChar(ch) || iswordstart(ch)) {
+			} else if (isHighBitChar(ch) || IsAlnumWordChar(ch)) {
 				styler.ColourTo(i - 1, state);
 				state = SCE_RB_WORD;
 			} else if (ch == '#') {
@@ -826,7 +826,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				state = SCE_RB_COMMENTLINE;
 			} else if (ch == '=') {
 				// =begin indicates the start of a comment (doc) block
-				if ((i == 0 || IsACRLF(chPrev))
+				if ((i == 0 || IsCRLF(chPrev))
 						&& chNext == 'b'
 						&& styler.SafeGetCharAt(i + 2) == 'e'
 						&& styler.SafeGetCharAt(i + 3) == 'g'
@@ -1044,8 +1044,8 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					Quote.Open(chNext);
 					advance_char(i, ch, chNext, chNext2); // pass by ref
 					have_string = true;
-				} else if (!isSafeWordcharOrHigh(chNext) && !IsASpaceOrTab(chNext) &&
-						   !IsACRLF(chNext)) {
+				} else if (!isSafeWordcharOrHigh(chNext) && !IsSpaceOrTab(chNext) &&
+						   !IsCRLF(chNext)) {
 					// Ruby doesn't allow high bit chars here,
 					// but the editor host might
 					Quote.New();
@@ -1061,7 +1061,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			} else if (ch == '?') {
 				styler.ColourTo(i - 1, state);
-				if (IsASpaceOrTab(chNext) || IsACRLF(chNext)) {
+				if (IsSpaceOrTab(chNext) || IsCRLF(chNext)) {
 					styler.ColourTo(i, SCE_RB_OPERATOR);
 				} else {
 					// It's the start of a character code escape sequence
@@ -1069,7 +1069,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					state = SCE_RB_NUMBER;
 					is_real_number = false;
 				}
-			} else if (isoperator(ch) || ch == '.') {
+			} else if (IsOperator(ch) || ch == '.') {
 				styler.ColourTo(i - 1, state);
 				styler.ColourTo(i, SCE_RB_OPERATOR);
 				// If we're ending an expression or block,
@@ -1095,7 +1095,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					preferRE = (strchr(")}].", ch) == NULL);
 				}
 				// Stay in default state
-			} else if (IsACRLF(ch)) {
+			} else if (IsCRLF(ch)) {
 				// Make sure it's a true line-end, with no backslash
 				if ((ch == '\r' || (ch == '\n' && chPrev != '\r'))
 						&& chPrev != '\\') {
@@ -1133,7 +1133,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					// <name>, (op, ?), <name>
 					// Same with <name>! to indicate a method that
 					// modifies its target
-				} else if (IsACRLF(ch)
+				} else if (IsCRLF(ch)
 						   && isMatch(styler, lengthDoc, i - 7, "__END__")) {
 					styler.ColourTo(i, SCE_RB_DATASECTION);
 					state = SCE_RB_DATASECTION;
@@ -1155,7 +1155,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					case SCE_RB_IDENTIFIER:
 						if (isMatch(styler, lengthDoc, wordStartPos, "print")) {
 							preferRE = true;
-						} else if (IsACRLF(ch)) {
+						} else if (IsCRLF(ch)) {
 							preferRE = true;
 						} else {
 							preferRE = false;
@@ -1217,7 +1217,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				preferRE = false;
 			}
 		} else if (state == SCE_RB_COMMENTLINE) {
-			if (IsACRLF(ch)) {
+			if (IsCRLF(ch)) {
 				styler.ColourTo(i - 1, state);
 				state = SCE_RB_DEFAULT;
 				// Use whatever setting we had going into the comment
@@ -1236,7 +1236,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					HereDoc.CanBeIndented = false;
 				}
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					// Bail out of doing a here doc if there's no target
 					state = SCE_RB_DEFAULT;
 					preferRE = false;
@@ -1254,7 +1254,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 				}
 			} else if (HereDoc.State == 1) { // collect the delimiter
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					// End the quote now, and go back for more
 					styler.ColourTo(i - 1, state);
 					state = SCE_RB_DEFAULT;
@@ -1267,7 +1267,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 						state = SCE_RB_DEFAULT;
 						preferRE = false;
 					} else {
-						if (ch == '\\' && !IsACRLF(chNext)) {
+						if (ch == '\\' && !IsCRLF(chNext)) {
 							advance_char(i, ch, chNext, chNext2);
 						}
 						HereDoc.Delimiter[HereDoc.DelimiterLength++] = ch;
@@ -1298,12 +1298,12 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 			// Why: so we can quickly resolve things like <<-" abc"
 			
 			if (!HereDoc.CanBeIndented) {
-				if (IsACRLF(chPrev)
+				if (IsCRLF(chPrev)
 						&& isMatch(styler, lengthDoc, i, HereDoc.Delimiter)) {
 					styler.ColourTo(i - 1, state);
 					i += HereDoc.DelimiterLength - 1;
 					chNext = styler.SafeGetCharAt(i + 1);
-					if (IsACRLF(chNext)) {
+					if (IsCRLF(chNext)) {
 						styler.ColourTo(i, SCE_RB_HERE_DELIM);
 						state = SCE_RB_DEFAULT;
 						HereDoc.State = 0;
@@ -1311,7 +1311,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 					// Otherwise we skipped through the here doc faster.
 				}
-			} else if (IsACRLF(chNext)
+			} else if (IsCRLF(chNext)
 					   && lookingAtHereDocDelim(styler,
 												i - HereDoc.DelimiterLength + 1,
 												lengthDoc,
@@ -1359,7 +1359,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 			// PODs end with ^=end\s, -- any whitespace can follow =end
 			if (strchr(" \t\n\r", ch) != NULL
 					&& i > 5
-					&& IsACRLF(styler[i - 5])
+					&& IsCRLF(styler[i - 5])
 					&& isMatch(styler, lengthDoc, i - 4, "=end")) {
 				styler.ColourTo(i - 1, state);
 				state = SCE_RB_DEFAULT;
@@ -1411,7 +1411,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 						ch = styler.SafeGetCharAt(i);
 						if (ch == '\\') {
 							inEscape = true;
-						} else if (IsACRLF(ch)) {
+						} else if (IsCRLF(ch)) {
 							// Comment inside a regex
 							styler.ColourTo(i - 1, SCE_RB_COMMENTLINE);
 							break;
@@ -1433,7 +1433,7 @@ static void ColouriseRbDoc(Sci_PositionU startPos, Sci_Position length,
 				   state == SCE_RB_STRING_QX || state == SCE_RB_STRING_QW ||
 				   state == SCE_RB_STRING || state == SCE_RB_CHARACTER ||
 				   state == SCE_RB_BACKTICKS) {
-			if (!Quote.Down && !IsASpace(ch)) {
+			if (!Quote.Down && !IsSpace(ch)) {
 				Quote.Open(ch);
 			} else if (ch == '\\' && Quote.Up != '\\') {
 				//Riddle me this: Is it safe to skip *every* escaped char?
@@ -1540,7 +1540,7 @@ static bool keywordIsModifier(const char *word,
 	// continuations immediately above word.
 	while (lineStartPosn > 0) {
 		ch = styler[lineStartPosn-1];
-		if (IsACRLF(ch)) {
+		if (IsCRLF(ch)) {
 			chPrev  = styler.SafeGetCharAt(lineStartPosn-2);
 			chPrev2 = styler.SafeGetCharAt(lineStartPosn-3);
 			lineStart = styler.GetLine(lineStartPosn-1);
@@ -1561,9 +1561,9 @@ static bool keywordIsModifier(const char *word,
 	while (--pos >= lineStartPosn) {
 		style = actual_style(styler.StyleAt(pos));
 		if (style == SCE_RB_DEFAULT) {
-			if (IsASpaceOrTab(ch = styler[pos])) {
+			if (IsSpaceOrTab(ch = styler[pos])) {
 				//continue
-			} else if (IsACRLF(ch)) {
+			} else if (IsCRLF(ch)) {
 				// Scintilla's LineStart() and GetLine() routines aren't
 				// platform-independent, so if we have text prepared with
 				// a different system we can't rely on it.
@@ -1644,7 +1644,7 @@ static bool keywordDoStartsLoop(Sci_Position pos, Accessor &styler) {
 	while (--pos >= lineStartPosn) {
 		style = actual_style(styler.StyleAt(pos));
 		if (style == SCE_RB_DEFAULT) {
-			if (IsACRLF(styler[pos])) {
+			if (IsCRLF(styler[pos])) {
 				// Scintilla's LineStart() and GetLine() routines aren't
 				// platform-independent, so if we have text prepared with
 				// a different system we can't rely on it.
@@ -1693,7 +1693,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char ch = styler[i];
 		if (ch == '#')
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;
@@ -1847,7 +1847,7 @@ static void FoldRbDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 			buffer_ends_with_eol = true;
-		} else if (!IsASpace(ch)) {
+		} else if (!IsSpace(ch)) {
 			visibleChars++;
 			buffer_ends_with_eol = false;
 		}

@@ -40,7 +40,7 @@ static inline bool isLispoperator(char ch) {
 }
 
 static inline bool isLispwordstart(char ch) {
-	return IsASCII(ch) && !IsASpace(ch) && !IsACRLF(ch) &&
+	return IsASCII(ch) && !IsSpace(ch) && !IsCRLF(ch) &&
 		   !isLispoperator(ch) && ch != ';' && ch != '\"';
 }
 
@@ -178,7 +178,7 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		} else if (state == SCE_LISP_MACRO) {
-			if (isLispwordstart(ch) && (radix == -1 || IsADigit(ch, radix))) {
+			if (isLispwordstart(ch) && (radix == -1 || IsDigit(ch, radix))) {
 				state = SCE_LISP_SPECIAL;
 			} else {
 				state = SCE_LISP_DEFAULT;
@@ -194,7 +194,7 @@ static void ColouriseLispDoc(Sci_PositionU startPos, Sci_Position length,
 				state = SCE_LISP_DEFAULT;
 			}
 		} else if (state == SCE_LISP_SPECIAL) {
-			if (!isLispwordstart(ch) || (radix != -1 && !IsADigit(ch, radix))) {
+			if (!isLispwordstart(ch) || (radix != -1 && !IsDigit(ch, radix))) {
 				styler.ColourTo(i - 1, state);
 				state = SCE_LISP_DEFAULT;
 			}
@@ -270,7 +270,7 @@ static void FoldLispDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later

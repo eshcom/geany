@@ -26,20 +26,19 @@
 using namespace Scintilla;
 
 // Extended to accept accented characters
-static inline bool IsAWordChar(int ch) {
-	return ch >= 0x80 ||
-		   (isalnum(ch) || ch == '_' || ch == ':' || ch == '.'); // : name space separator
+static inline bool isWordChar(int ch) {
+	return ch >= 0x80 || IsWordChar(ch) || ch == ':'; // : name space separator
 }
 
-static inline bool IsAWordStart(int ch) {
-	return ch >= 0x80 || (ch ==':' || isalpha(ch) || ch == '_');
+static inline bool isWordStart(int ch) {
+	return ch >= 0x80 || IsAlphaWordChar(ch) || ch == ':';
 }
 
-static inline bool IsANumberChar(int ch) {
+static inline bool isNumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-		   (IsADigit(ch, 0x10) || toupper(ch) == 'E' ||
+		   (IsDigit(ch, 0x10) || toupper(ch) == 'E' ||
 			ch == '.' || ch == '-' || ch == '+');
 }
 
@@ -115,8 +114,8 @@ next:
 			if (!sc.atLineEnd)
 				continue;
 		} else if (sc.state == SCE_TCL_DEFAULT || sc.state ==SCE_TCL_OPERATOR) {
-			expected &= IsASpace(static_cast<unsigned char>(sc.ch)) ||
-							IsAWordStart(sc.ch) || sc.ch =='#';
+			expected &= IsSpace(static_cast<unsigned char>(sc.ch)) ||
+							isWordStart(sc.ch) || sc.ch =='#';
 		} else if (sc.state == SCE_TCL_SUBSTITUTION) {
 			switch (sc.ch) {
 			case '(':
@@ -139,14 +138,14 @@ next:
 				continue;
 			default :
 				// maybe spaces should be allowed ???
-				if (!IsAWordChar(sc.ch)) { // probably the code is wrong
+				if (!isWordChar(sc.ch)) { // probably the code is wrong
 					sc.SetState(SCE_TCL_DEFAULT);
 					subParen = 0;
 				}
 				break;
 			}
 		} else if (isComment(sc.state)) {
-		} else if (!IsAWordChar(sc.ch)) {
+		} else if (!isWordChar(sc.ch)) {
 			if ((sc.state == SCE_TCL_IDENTIFIER && expected) ||  sc.state == SCE_TCL_MODIFIER) {
 				char w[100];
 				char *s=w;
@@ -235,7 +234,7 @@ next:
 		
 		if (prevSlash) {
 			prevSlash = false;
-			if (sc.ch == '#' && IsANumberChar(sc.chNext))
+			if (sc.ch == '#' && isNumberChar(sc.chNext))
 				sc.ForwardSetState(SCE_TCL_NUMBER);
 			continue;
 		}
@@ -247,14 +246,14 @@ next:
 			if (sc.state!=SCE_TCL_IN_QUOTE && !isComment(sc.state))
 			{
 				sc.SetState(SCE_TCL_DEFAULT);
-				expected = IsAWordStart(sc.ch) ||
-								IsASpace(static_cast<unsigned char>(sc.ch));
+				expected = isWordStart(sc.ch) ||
+								IsSpace(static_cast<unsigned char>(sc.ch));
 			}
 		}
 		
 		switch (sc.state) {
 		case SCE_TCL_NUMBER:
-			if (!IsANumberChar(sc.ch))
+			if (!isNumberChar(sc.ch))
 				sc.SetState(SCE_TCL_DEFAULT);
 			break;
 		case SCE_TCL_IN_QUOTE:
@@ -287,7 +286,7 @@ next:
 			}
 		}
 		
-		if (!IsASpace(static_cast<unsigned char>(sc.ch))) {
+		if (!IsSpace(static_cast<unsigned char>(sc.ch))) {
 			visibleChars = true;
 		}
 		
@@ -298,9 +297,9 @@ next:
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_TCL_DEFAULT) {
-			if (IsAWordStart(sc.ch)) {
+			if (isWordStart(sc.ch)) {
 				sc.SetState(SCE_TCL_IDENTIFIER);
-			} else if (IsADigit(sc.ch) && !IsAWordChar(sc.chPrev)) {
+			} else if (IsDigit(sc.ch) && !isWordChar(sc.chPrev)) {
 				sc.SetState(SCE_TCL_NUMBER);
 			} else {
 				switch (sc.ch) {
@@ -340,15 +339,15 @@ next:
 					}
 					break;
 				case '#':
-					if ((IsASpace(static_cast<unsigned char>(sc.chPrev)) ||
-						 isoperator(static_cast<char>(sc.chPrev))) && IsADigit(sc.chNext,0x10))
+					if ((IsSpace(sc.chPrev) || IsOperator(sc.chPrev))
+						&& IsDigit(sc.chNext, 0x10))
 						sc.SetState(SCE_TCL_NUMBER);
 					break;
 				case '-':
-					sc.SetState(IsADigit(sc.chNext)? SCE_TCL_NUMBER: SCE_TCL_MODIFIER);
+					sc.SetState(IsDigit(sc.chNext)? SCE_TCL_NUMBER: SCE_TCL_MODIFIER);
 					break;
 				default:
-					if (isoperator(static_cast<char>(sc.ch))) {
+					if (IsOperator(sc.ch)) {
 						sc.SetState(SCE_TCL_OPERATOR);
 					}
 				}

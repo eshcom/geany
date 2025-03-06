@@ -37,7 +37,7 @@ using namespace Scintilla;
 
 inline bool isCOBOLoperator(char ch)
 {
-	return isoperator(ch);
+	return IsOperator(ch);
 }
 
 inline bool isCOBOLwordchar(char ch)
@@ -168,7 +168,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	styler.StartSegment(startPos);
 	bool bNewLine = true;
-	bool bAarea = !IsASpace(chNext);
+	bool bAarea = !IsSpace(chNext);
 	int column = 0;
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
@@ -181,7 +181,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			column = 0;
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !IsASpace(ch);
+			bAarea = !IsSpace(ch);
 			}
 		bool bSetNewLine = false;
 		if ((ch == '\r' && chNext != '\n') || (ch == '\n')) {
@@ -266,17 +266,17 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else {
 			if (state == SCE_C_PREPROC) {
-				if (IsACRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
+				if (IsCRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENT) {
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					ColourTo(styler, i, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENTDOC) {
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					if (((i > styler.GetStartSegment() + 2) || (
 						(initStyle == SCE_C_COMMENTDOC) &&
 						(styler.GetStartSegment() == static_cast<Sci_PositionU>(startPos))))) {
@@ -285,7 +285,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 				}
 			} else if (state == SCE_C_COMMENTLINE) {
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}
@@ -321,7 +321,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 	char chNext = styler[startPos];
 	
 	bool bNewLine = true;
-	bool bAarea = !IsASpace(chNext);
+	bool bAarea = !IsSpace(chNext);
 	int column = 0;
 	bool bComment = false;
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
@@ -334,7 +334,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			bComment = (ch == '*' || ch == '/' || ch == '?');
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !IsASpace(ch);
+			bAarea = !IsSpace(ch);
 			}
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 		if (atEOL) {
@@ -365,7 +365,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			bNewLine = false;
 		}
 		
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	
