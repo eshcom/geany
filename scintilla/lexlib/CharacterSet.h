@@ -5,6 +5,8 @@
 // Copyright 2007 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+#include <string.h>
+
 #ifndef CHARACTERSET_H
 #define CHARACTERSET_H
 
@@ -102,82 +104,170 @@ public:
 
 // Functions for classifying characters
 
-inline bool IsACRLF(int ch) {
+inline bool IsQuote(int ch) {
+	return (ch == '\"') || (ch == '\'');
+}
+
+inline bool IsQuoteOrBackslash(int ch) {
+	return IsQuote(ch) || (ch == '\\');
+}
+
+inline bool IsPartCtrl(int ch) {
+	return (ch == 'n') || (ch == 'r') || (ch == 't');
+}
+
+inline bool IsCRLF(int ch) {
 	return (ch == '\r') || (ch == '\n');
 }
 
-inline bool IsASpace(int ch) {
-	// esh: equal (IsASpaceOrTab(..) || IsACRLF(..))
-	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
+inline bool IsCRLF(int ch, int chNext) {
+	return (ch == '\r') && (chNext == '\n');
 }
 
-inline bool IsASpaceOrTab(int ch) {
+inline bool IsCRnLF(int ch, int chNext) {
+	return (ch == '\r') && (chNext != '\n');
+}
+
+inline bool IsEOL(int ch, int chNext) {
+	return IsCRnLF(ch, chNext) || (ch == '\n');
+}
+
+inline bool IsSpaceOrTab(int ch) {
 	return (ch == ' ') || (ch == '\t');
 }
 
-inline bool IsADigit(int ch) {
+inline bool IsSpace(int ch) {
+	// 0x09 - TAB (\t)
+	// 0x0a - LF  (\n, line feed)
+	// 0x0b - VT  (vertical tab)
+	// 0x0c - FF  (form feed)
+	// 0x0d - CR  (\r, carriage return)
+	return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
+}
+
+inline bool IsBlank(int ch) {
+	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b);
+}
+
+inline bool IsWhiteSpace(int ch) {
+	return IsSpaceOrTab(ch) || IsCRLF(ch);
+}
+
+inline bool IsHex(int ch) {
+	return (ch == 'x') || (ch == 'X');
+}
+
+inline bool IsHexExponent(int ch) {
+	return (ch == 'p') || (ch == 'P');
+}
+
+inline bool IsDecExponent(int ch) {
+	return (ch == 'e') || (ch == 'E');
+}
+
+inline bool IsExponent(int ch) {
+	return IsHexExponent(ch) || IsDecExponent(ch);
+}
+
+inline bool IsSign(int ch) {
+	return (ch == '+') || (ch == '-');
+}
+
+inline bool IsSignDecExponent(int ch, int chPrev) {
+	return IsSign(ch) && IsDecExponent(chPrev);
+}
+
+inline bool IsSignExponent(int ch, int chPrev) {
+	return IsSign(ch) && IsExponent(chPrev);
+}
+
+inline bool IsDigit(int ch) {
 	return (ch >= '0') && (ch <= '9');
 }
 
-inline bool IsADigit(int ch, int base) {
+inline bool IsDigit(int ch, int base) {
 	if (base <= 10) {
 		return (ch >= '0') && (ch < '0' + base);
 	} else {
-		return ((ch >= '0') && (ch <= '9')) ||
+		return IsDigit(ch) ||
 			   ((ch >= 'A') && (ch < 'A' + base - 10)) ||
 			   ((ch >= 'a') && (ch < 'a' + base - 10));
 	}
+}
+
+inline bool IsSignDigit(int ch, int chNext) {
+	return IsSign(ch) && IsDigit(chNext);
+}
+
+inline bool IsDotDigit(int ch, int chNext) {
+	return ch == '.' && IsDigit(chNext);
+}
+
+inline bool IsDotDigit(int ch, int chNext, int base) {
+	return ch == '.' && IsDigit(chNext, base);
+}
+
+inline bool IsDigitOrDotDigit(int ch, int chNext) {
+	return IsDigit(ch) || IsDotDigit(ch, chNext);
+}
+
+inline bool IsDigitOrDotDigit(int ch, int chNext, int base) {
+	return IsDigit(ch, base) || IsDotDigit(ch, chNext, base);
 }
 
 inline bool IsASCII(int ch) {
 	return (ch >= 0) && (ch < 0x80);
 }
 
-inline bool IsLowerCase(int ch) {
+inline bool IsLower(int ch) {
 	return (ch >= 'a') && (ch <= 'z');
 }
 
-inline bool IsUpperCase(int ch) {
+inline bool IsUpper(int ch) {
 	return (ch >= 'A') && (ch <= 'Z');
 }
 
-inline bool IsUpperOrLowerCase(int ch) {
-	return IsUpperCase(ch) || IsLowerCase(ch);
+inline bool IsAlpha(int ch) {
+	return IsLower(ch) || IsUpper(ch);
 }
 
-inline bool IsAlphaNumeric(int ch) {
-	return
-		((ch >= '0') && (ch <= '9')) ||
-		((ch >= 'a') && (ch <= 'z')) ||
-		((ch >= 'A') && (ch <= 'Z'));
+inline bool IsAlnum(int ch) {
+	return IsAlpha(ch) || IsDigit(ch);
 }
 
-
-inline bool iswordchar(int ch) {
-	return IsAlphaNumeric(ch) || ch == '.' || ch == '_';
+inline bool IsAlphaWordChar(int ch) {
+	return IsAlpha(ch) || ch == '_';
 }
 
-inline bool iswordstart(int ch) {
-	return IsAlphaNumeric(ch) || ch == '_';
+inline bool IsAlnumWordChar(int ch) {
+	return IsAlnum(ch) || ch == '_';
 }
 
-inline bool isoperator(int ch) {
-	if (IsAlphaNumeric(ch))
+inline bool IsWordChar(int ch) {
+	return IsAlnumWordChar(ch) || ch == '.';
+}
+
+inline bool IsOperator(int ch) {
+	if (IsAlnum(ch))
 		return false;
-	if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
-			ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
-			ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
-			ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
-			ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
-			ch == '?' || ch == '!' || ch == '.' || ch == '~')
+	if (ch == '(' || ch == ')' || ch == '{' || ch == '}' ||
+		ch == '[' || ch == ']' || ch == '<' || ch == '>' ||
+		ch == '?' || ch == '!' || ch == '+' || ch == '=' ||
+		ch == '*' || ch == '^' || ch == '&' || ch == '%' ||
+		ch == '/' || ch == '|' || ch == '~' || ch == '-' ||
+		ch == ':' || ch == ';' || ch == ',' || ch == '.')
 		return true;
 	return false;
+}
+
+inline bool IsStrChr(const char *s, int ch) {
+	return IsASCII(ch) && strchr(s, ch);
 }
 
 // Simple case functions for ASCII supersets.
 
 template <typename T>
-inline T MakeUpperCase(T ch) {
+inline T ToUpper(T ch) {
 	if (ch < 'a' || ch > 'z')
 		return ch;
 	else
@@ -185,7 +275,7 @@ inline T MakeUpperCase(T ch) {
 }
 
 template <typename T>
-inline T MakeLowerCase(T ch) {
+inline T ToLower(T ch) {
 	if (ch < 'A' || ch > 'Z')
 		return ch;
 	else

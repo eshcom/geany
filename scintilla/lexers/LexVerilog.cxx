@@ -102,7 +102,8 @@ public:
 };
 
 // Hold the preprocessor state for each line seen.
-// Currently one entry per line but could become sparse with just one entry per preprocessor line.
+// Currently one entry per line but could become sparse
+// with just one entry per preprocessor line.
 class PPStates {
 	std::vector<LinePPState> vlls;
 public:
@@ -143,7 +144,8 @@ struct OptionsVerilog {
 		updatePreprocessor = false;
 		// for backwards compatibility, treat input/output/inout as regular keywords
 		portStyling = false;
-		// for backwards compatibility, don't treat all uppercase identifiers as documentation keywords
+		// for backwards compatibility, don't treat all uppercase
+		// identifiers as documentation keywords
 		allUppercaseDocKeyword = false;
 	}
 };
@@ -212,7 +214,8 @@ class LexerVerilog : public DefaultLexer {
 	//		foldExternFlag: EOL while parsing an extern function/task declaration terminated by ';'
 	//		foldWaitDisableFlag: EOL while parsing wait or disable statement, terminated by "fork" or '('
 	//		typdefFlag: EOL while parsing typedef statement, terminated by ';'
-	enum {foldExternFlag = 0x01, foldWaitDisableFlag = 0x02, typedefFlag = 0x04, protectedFlag = 0x08};
+	enum {foldExternFlag = 0x01, foldWaitDisableFlag = 0x02,
+		  typedefFlag = 0x04, protectedFlag = 0x08};
 	// map using line number as key to store fold state information
 	std::map<Sci_Position, int> foldState;
 
@@ -324,7 +327,8 @@ Sci_Position SCI_METHOD LexerVerilog::WordListSet(int n, const char *wl) {
 			if (n == 5) {
 				// Rebuild preprocessorDefinitions
 				preprocessorDefinitionsStart.clear();
-				for (int nDefinition = 0; nDefinition < ppDefinitions.Length(); nDefinition++) {
+				for (int nDefinition = 0; nDefinition < ppDefinitions.Length();
+					 nDefinition++) {
 					const char *cpDefinition = ppDefinitions.WordAt(nDefinition);
 					const char *cpEquals = strchr(cpDefinition, '=');
 					if (cpEquals) {
@@ -332,9 +336,11 @@ Sci_Position SCI_METHOD LexerVerilog::WordListSet(int n, const char *wl) {
 						std::string val(cpEquals+1);
 						size_t bracket = name.find('(');
 						size_t bracketEnd = name.find(')');
-						if ((bracket != std::string::npos) && (bracketEnd != std::string::npos)) {
+						if ((bracket != std::string::npos) &&
+							(bracketEnd != std::string::npos)) {
 							// Macro
-							std::string args = name.substr(bracket + 1, bracketEnd - bracket - 1);
+							std::string args = name.substr(bracket + 1,
+														   bracketEnd - bracket - 1);
 							name = name.substr(0, bracket);
 							preprocessorDefinitionsStart[name] = SymbolValue(val, args);
 						} else {
@@ -352,12 +358,12 @@ Sci_Position SCI_METHOD LexerVerilog::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '\''|| ch == '$');
+static inline bool isWordStart(const int ch) {
+	return IsAlnumWordChar(ch) || ch == '$';
 }
 
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '$');
+static inline bool isWordChar(const int ch) {
+	return isWordStart(ch) || ch == '\'';
 }
 
 static inline bool AllUpperCase(const char *a) {
@@ -383,11 +389,11 @@ static std::string GetRestOfLine(LexAccessor &styler, Sci_Position start,
 	Sci_Position i =0;
 	char ch = styler.SafeGetCharAt(start, '\n');
 	Sci_Position endLine = styler.LineEnd(styler.GetLine(start));
-	while (((start+i) < endLine) && (ch != '\r')) {
+	while ((start + i) < endLine && ch != '\r') {
 		char chNext = styler.SafeGetCharAt(start + i + 1, '\n');
 		if (ch == '/' && (chNext == '/' || chNext == '*'))
 			break;
-		if (allowSpace || (ch != ' '))
+		if (allowSpace || ch != ' ')
 			restOfLine += ch;
 		i++;
 		ch = chNext;
@@ -454,7 +460,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 	int activitySet = preproc.IsInactive() ? activeFlag : 0;
 	Sci_Position lineEndNext = styler.LineEnd(curLine);
 	bool isEscapedId = false;    // true when parsing an escaped Identifier
-	bool isProtected = (lineState&kwProtected) != 0;	// true when parsing a protected region
+	bool isProtected = (lineState & kwProtected) != 0;	// true when parsing a protected region
 	
 	for (; sc.More(); sc.Forward()) {
 		if (sc.atLineStart) {
@@ -462,7 +468,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Prevent SCE_V_STRINGEOL from leaking back to previous line
 				sc.SetState(SCE_V_STRING);
 			}
-			if ((MaskActive(sc.state) == SCE_V_PREPROCESSOR) && (!continuationLine)) {
+			if (MaskActive(sc.state) == SCE_V_PREPROCESSOR && !continuationLine) {
 				sc.SetState(SCE_V_DEFAULT|activitySet);
 			}
 			if (preproc.IsInactive()) {
@@ -489,7 +495,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Update the line state, so it can be seen by next line
 				styler.SetLineState(curLine, lineState);
 				sc.Forward();
-				if (sc.ch == '\r' && sc.chNext == '\n') {
+				if (IsCRLF(sc.ch, sc.chNext)) {
 					// Even in UTF-8, \r and \n are separate
 					sc.Forward();
 				}
@@ -500,7 +506,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// for comment keyword
-		if (MaskActive(sc.state) == SCE_V_COMMENT_WORD && !IsAWordChar(sc.ch)) {
+		if (MaskActive(sc.state) == SCE_V_COMMENT_WORD && !isWordChar(sc.ch)) {
 			char s[100];
 			int state = lineState & 0xff;
 			sc.GetCurrent(s, sizeof(s));
@@ -520,12 +526,12 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_V_DEFAULT|activitySet);
 				break;
 			case SCE_V_NUMBER:
-				if (!(IsAWordChar(sc.ch) || (sc.ch == '?'))) {
+				if (!(isWordChar(sc.ch) || sc.ch == '?')) {
 					sc.SetState(SCE_V_DEFAULT|activitySet);
 				}
 				break;
 			case SCE_V_IDENTIFIER:
-				if (!isEscapedId &&(!IsAWordChar(sc.ch) || (sc.ch == '.'))) {
+				if (!isEscapedId && (!isWordChar(sc.ch) || sc.ch == '.')) {
 					char s[100];
 					lineState &= 0xff00;
 					sc.GetCurrent(s, sizeof(s));
@@ -563,7 +569,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 				break;
 			case SCE_V_PREPROCESSOR:
-				if (!IsAWordChar(sc.ch) || sc.atLineEnd) {
+				if (!isWordChar(sc.ch) || sc.atLineEnd) {
 					sc.SetState(SCE_V_DEFAULT|activitySet);
 				}
 				break;
@@ -571,7 +577,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (sc.Match('*', '/')) {
 					sc.Forward();
 					sc.ForwardSetState(SCE_V_DEFAULT|activitySet);
-				} else if (IsAWordStart(sc.ch)) {
+				} else if (isWordStart(sc.ch)) {
 					lineState = sc.state | (lineState & 0xff00);
 					sc.SetState(SCE_V_COMMENT_WORD|activitySet);
 				}
@@ -580,14 +586,14 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 			case SCE_V_COMMENTLINEBANG:
 				if (sc.atLineStart) {
 					sc.SetState(SCE_V_DEFAULT|activitySet);
-				} else if (IsAWordStart(sc.ch)) {
+				} else if (isWordStart(sc.ch)) {
 					lineState = sc.state | (lineState & 0xff00);
 					sc.SetState(SCE_V_COMMENT_WORD|activitySet);
 				}
 				break;
 			case SCE_V_STRING:
 				if (sc.ch == '\\') {
-					if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+					if (IsQuoteOrBackslash(sc.chNext)) {
 						sc.Forward();
 					}
 				} else if (sc.ch == '\"') {
@@ -616,7 +622,7 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 				// Skip whitespace between ` and preprocessor word
 				do {
 					sc.Forward();
-				} while (IsASpaceOrTab(sc.ch) && sc.More());
+				} while (IsSpaceOrTab(sc.ch) && sc.More());
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_V_DEFAULT|activitySet);
 					styler.SetLineState(curLine, lineState);
@@ -633,7 +639,9 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 						if (sc.Match("ifdef") || sc.Match("ifndef")) {
 							bool isIfDef = sc.Match("ifdef");
 							int i = isIfDef ? 5 : 6;
-							std::string restOfLine = GetRestOfLine(styler, sc.currentPos + i + 1, false);
+							std::string restOfLine = GetRestOfLine(styler,
+																   sc.currentPos + i + 1,
+																   false);
 							bool foundDef = preprocessorDefinitions.find(restOfLine) !=
 													preprocessorDefinitions.end();
 							preproc.StartSection(isIfDef == foundDef);
@@ -655,7 +663,9 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 							// Ensure only one chosen out of `if .. `elsif .. `elsif .. `else .. `endif
 							if (!preproc.CurrentIfTaken()) {
 								// Similar to `ifdef
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
+								std::string restOfLine = GetRestOfLine(styler,
+																	   sc.currentPos + 6,
+																	   true);
 								bool ifGood = preprocessorDefinitions.find(restOfLine) !=
 													preprocessorDefinitions.end();
 								if (ifGood) {
@@ -676,41 +686,50 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.ChangeState(SCE_V_PREPROCESSOR|activitySet);
 						} else if (sc.Match("define")) {
 							if (options.updatePreprocessor && !preproc.IsInactive()) {
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
+								std::string restOfLine = GetRestOfLine(styler,
+																	   sc.currentPos + 6,
+																	   true);
 								size_t startName = 0;
 								while ((startName < restOfLine.length()) &&
-									   IsASpaceOrTab(restOfLine[startName]))
+									   IsSpaceOrTab(restOfLine[startName]))
 									startName++;
 								size_t endName = startName;
 								while ((endName < restOfLine.length()) &&
-									   setWord.Contains(static_cast<unsigned char>(restOfLine[endName])))
+									   setWord.Contains(restOfLine[endName]))
 									endName++;
-								std::string key = restOfLine.substr(startName, endName-startName);
-								if ((endName < restOfLine.length()) && (restOfLine.at(endName) == '(')) {
+								std::string key = restOfLine.substr(startName,
+																	endName - startName);
+								if ((endName < restOfLine.length()) &&
+									(restOfLine.at(endName) == '(')) {
 									// Macro
 									size_t endArgs = endName;
-									while ((endArgs < restOfLine.length()) && (restOfLine[endArgs] != ')'))
+									while ((endArgs < restOfLine.length()) &&
+										   (restOfLine[endArgs] != ')'))
 										endArgs++;
-									std::string args = restOfLine.substr(endName + 1, endArgs - endName - 1);
+									std::string args = restOfLine.substr(endName + 1,
+																		 endArgs - endName - 1);
 									size_t startValue = endArgs+1;
 									while ((startValue < restOfLine.length()) &&
-										   IsASpaceOrTab(restOfLine[startValue]))
+										   IsSpaceOrTab(restOfLine[startValue]))
 										startValue++;
 									std::string value;
 									if (startValue < restOfLine.length())
 										value = restOfLine.substr(startValue);
 									preprocessorDefinitions[key] = SymbolValue(value, args);
-									ppDefineHistory.push_back(PPDefinition(curLine, key, value, false, args));
+									ppDefineHistory.push_back(PPDefinition(curLine, key,
+																		   value, false,
+																		   args));
 									definitionsChanged = true;
 								} else {
 									// Value
 									size_t startValue = endName;
 									while ((startValue < restOfLine.length()) &&
-										   IsASpaceOrTab(restOfLine[startValue]))
+										   IsSpaceOrTab(restOfLine[startValue]))
 										startValue++;
 									std::string value = restOfLine.substr(startValue);
 									preprocessorDefinitions[key] = value;
-									ppDefineHistory.push_back(PPDefinition(curLine, key, value));
+									ppDefineHistory.push_back(PPDefinition(curLine, key,
+																		   value));
 									definitionsChanged = true;
 								}
 							}
@@ -720,20 +739,26 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 								std::map<std::string, SymbolValue>::iterator itDef;
 								for (itDef = preprocessorDefinitions.begin();
 										itDef != preprocessorDefinitions.end(); ++itDef) {
-									ppDefineHistory.push_back(PPDefinition(curLine, itDef->first, "", true));
+									ppDefineHistory.push_back(PPDefinition(curLine,
+																		   itDef->first,
+																		   "", true));
 								}
 								preprocessorDefinitions.clear();
 								definitionsChanged = true;
 							}
 						} else if (sc.Match("undef")) {
 							if (options.updatePreprocessor && !preproc.IsInactive()) {
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5, true);
+								std::string restOfLine = GetRestOfLine(styler,
+																	   sc.currentPos + 5,
+																	   true);
 								std::vector<std::string> tokens = Tokenize(restOfLine);
 								std::string key;
 								if (tokens.size() >= 1) {
 									key = tokens[0];
 									preprocessorDefinitions.erase(key);
-									ppDefineHistory.push_back(PPDefinition(curLine, key, "", true));
+									ppDefineHistory.push_back(PPDefinition(curLine,
+																		   key, "",
+																		   true));
 									definitionsChanged = true;
 								}
 							}
@@ -741,10 +766,9 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 					}
 				}
 			} else if (!isProtected) {
-				if (IsADigit(sc.ch) || (sc.ch == '\'') ||
-						(sc.ch == '.' && IsADigit(sc.chNext))) {
+				if (IsDigitOrDotDigit(sc.ch, sc.chNext) || sc.ch == '\'') {
 					sc.SetState(SCE_V_NUMBER|activitySet);
-				} else if (IsAWordStart(sc.ch)) {
+				} else if (isWordStart(sc.ch)) {
 					sc.SetState(SCE_V_IDENTIFIER|activitySet);
 				} else if (sc.Match('/', '*')) {
 					sc.SetState(SCE_V_COMMENT|activitySet);
@@ -760,14 +784,14 @@ void SCI_METHOD LexerVerilog::Lex(Sci_PositionU startPos, Sci_Position length,
 					// escaped identifier, everything is ok up to whitespace
 					isEscapedId = true;
 					sc.SetState(SCE_V_IDENTIFIER|activitySet);
-				} else if (isoperator(static_cast<char>(sc.ch)) || sc.ch == '@' || sc.ch == '#') {
+				} else if (IsOperator(sc.ch) || sc.ch == '@' || sc.ch == '#') {
 					sc.SetState(SCE_V_OPERATOR|activitySet);
 					if (sc.ch == '.') lineState = kwDot;
 					if (sc.ch == ';') lineState = kwOther;
 				}
 			}
 		}
-		if (isEscapedId && IsASpace(sc.ch)) {
+		if (isEscapedId && IsSpace(sc.ch)) {
 			isEscapedId = false;
 		}
 	}
@@ -789,9 +813,9 @@ static bool IsCommentLine(Sci_Position line, LexAccessor &styler) {
 		char chNext = styler.SafeGetCharAt(i + 1);
 		int style = styler.StyleAt(i);
 		if (ch == '/' && chNext == '/' &&
-		   (style == SCE_V_COMMENTLINE || style == SCE_V_COMMENTLINEBANG)) {
+			(style == SCE_V_COMMENTLINE || style == SCE_V_COMMENTLINEBANG)) {
 			return true;
-		} else if (!IsASpaceOrTab(ch)) {
+		} else if (!IsSpaceOrTab(ch)) {
 			return false;
 		}
 	}
@@ -809,7 +833,8 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 	bool foldAtParenthese  = 1;
 	
 	Sci_Position lineCurrent = styler.GetLine(startPos);
-	// Move back one line to be compatible with LexerModule::Fold behavior, fixes problem with foldComment behavior
+	// Move back one line to be compatible with LexerModule::Fold behavior,
+	// fixes problem with foldComment behavior
 	if (lineCurrent > 0) {
 		lineCurrent--;
 		Sci_Position newStartPos = styler.LineStart(lineCurrent);
@@ -850,13 +875,14 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 		int stylePrev = style;
 		style = styleNext;
 		styleNext = MaskActive(styler.StyleAt(i + 1));
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		bool atEOL = IsEOL(ch, chNext);
 		if (!(stateCurrent & protectedFlag)) {
 			if (options.foldComment && IsStreamCommentStyle(style)) {
 				if (!IsStreamCommentStyle(stylePrev)) {
 					levelNext++;
 				} else if (!IsStreamCommentStyle(styleNext) && !atEOL) {
-					// Comments don't end at end of line and the next character may be unstyled.
+					// Comments don't end at end of line and
+					// the next character may be unstyled.
 					levelNext--;
 				}
 			}
@@ -882,7 +908,7 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 		}
 		if (ch == '`') {
 			Sci_PositionU j = i + 1;
-			while ((j < endPos) && IsASpaceOrTab(styler.SafeGetCharAt(j))) {
+			while ((j < endPos) && IsSpaceOrTab(styler.SafeGetCharAt(j))) {
 				j++;
 			}
 			if (styler.Match(j, "protected")) {
@@ -891,7 +917,8 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 			} else if (styler.Match(j, "endprotected")) {
 				stateCurrent &= ~protectedFlag;
 				levelNext--;
-			} else if (!(stateCurrent & protectedFlag) && options.foldPreprocessor && (style == SCE_V_PREPROCESSOR)) {
+			} else if (!(stateCurrent & protectedFlag) && options.foldPreprocessor
+					   && (style == SCE_V_PREPROCESSOR)) {
 				if (styler.Match(j, "if")) {
 					if (options.foldPreprocessorElse) {
 						// Measure the minimum before a begin to allow
@@ -944,7 +971,8 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 					stateCurrent &= ~typedefFlag;
 				}
 			}
-			// wait and disable statements containing '(' will not contain "fork" keyword, special processing is not needed
+			// wait and disable statements containing '(' will not contain
+			// "fork" keyword, special processing is not needed
 			if (ch == '(') {
 				if (stateCurrent & foldWaitDisableFlag) {
 					stateCurrent &= ~foldWaitDisableFlag;
@@ -1012,11 +1040,12 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 				styler.Match(j, "join_any") ||
 				styler.Match(j, "join_none") ||
 				(styler.Match(j, "endmodule") && options.foldAtModule) ||
-				(styler.Match(j, "end") && !IsAWordChar(styler.SafeGetCharAt(j + 3)))) {
+				(styler.Match(j, "end") && !isWordChar(styler.SafeGetCharAt(j + 3)))) {
 				levelNext--;
 			} else if (styler.Match(j, "extern") ||
 				styler.Match(j, "pure")) {
-				// extern and pure virtual functions/tasks are terminated by ';' not endfunction/endtask
+				// extern and pure virtual functions/tasks are terminated
+				// by ';' not endfunction/endtask
 				stateCurrent |= foldExternFlag;
 			} else if (styler.Match(j, "disable") ||
 				styler.Match(j, "wait")) {
@@ -1047,7 +1076,7 @@ void SCI_METHOD LexerVerilog::Fold(Sci_PositionU startPos, Sci_Position length,
 			levelMinCurrent = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 }
@@ -1058,16 +1087,14 @@ std::vector<std::string> LexerVerilog::Tokenize(const std::string &expr) const {
 	const char *cp = expr.c_str();
 	while (*cp) {
 		std::string word;
-		if (setWord.Contains(static_cast<unsigned char>(*cp))) {
+		if (setWord.Contains(*cp)) {
 			// Identifiers and numbers
-			while (setWord.Contains(static_cast<unsigned char>(*cp))) {
+			while (setWord.Contains(*cp)) {
 				word += *cp;
 				cp++;
 			}
-		} else if (IsASpaceOrTab(*cp)) {
-			while (IsASpaceOrTab(*cp)) {
-				cp++;
-			}
+		} else if (IsSpaceOrTab(*cp)) {
+			while (IsSpaceOrTab(*cp)) cp++;
 			continue;
 		} else {
 			// Should handle strings, characters, and comments here

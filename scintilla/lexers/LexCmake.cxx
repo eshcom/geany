@@ -26,22 +26,6 @@
 
 using namespace Scintilla;
 
-static bool isCmakeNumber(char ch)
-{
-	return (ch >= '0' && ch <= '9');
-}
-
-static bool isCmakeChar(char ch)
-{
-	return (ch == '.') || (ch == '_') || isCmakeNumber(ch) ||
-		   (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-
-static bool isCmakeLetter(char ch)
-{
-	return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-
 static bool CmakeNextLineHasElse(Sci_PositionU start, Sci_PositionU end,
 								 Accessor &styler)
 {
@@ -59,7 +43,7 @@ static bool CmakeNextLineHasElse(Sci_PositionU start, Sci_PositionU end,
 	
 	for (Sci_PositionU firstChar = nNextLine; firstChar < end; firstChar++) {
 		char cNext = styler.SafeGetCharAt(firstChar);
-		if (IsASpaceOrTab(cNext))
+		if (IsSpaceOrTab(cNext))
 			continue;
 		if (styler.Match(firstChar, "ELSE") ||
 			styler.Match(firstChar, "else"))
@@ -156,10 +140,10 @@ static int classifyWordCmake(Sci_PositionU start, Sci_PositionU end,
 	}
 	
 	// To check for numbers
-	if (isCmakeNumber(word[0])) {
+	if (IsDigit(word[0])) {
 		bool bHasSimpleCmakeNumber = true;
 		for (unsigned int j = 1; j < end - start + 1 && j < 99; j++) {
-			if (!isCmakeNumber(word[j])) {
+			if (!IsDigit(word[j])) {
 				bHasSimpleCmakeNumber = false;
 				break;
 			}
@@ -222,25 +206,24 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 			
 			// CMake Variable
-			if (cCurrChar == '$' || isCmakeChar(cCurrChar)) {
-				styler.ColourTo(i - 1,state);
+			if (cCurrChar == '$' || IsWordChar(cCurrChar)) {
+				styler.ColourTo(i - 1, state);
 				state = SCE_CMAKE_VARIABLE;
 				
 				// If it is a number, we must check and set style here first...
-				if (isCmakeNumber(cCurrChar) && (IsASpaceOrTab(cNextChar) ||
-												 IsACRLF(cNextChar)))
+				if (IsDigit(cCurrChar) && IsWhiteSpace(cNextChar))
 					styler.ColourTo(i, SCE_CMAKE_NUMBER);
 				break;
 			}
 			break;
 		case SCE_CMAKE_COMMENT:
-			if (IsACRLF(cCurrChar)) {
+			if (IsCRLF(cCurrChar)) {
 				if (styler.SafeGetCharAt(i - 1) == '\\') {
-					styler.ColourTo(i - 2,state);
-					styler.ColourTo(i - 1,SCE_CMAKE_DEFAULT);
+					styler.ColourTo(i - 2, state);
+					styler.ColourTo(i - 1, SCE_CMAKE_DEFAULT);
 				}
 				else {
-					styler.ColourTo(i - 1,state);
+					styler.ColourTo(i - 1, state);
 					state = SCE_CMAKE_DEFAULT;
 				}
 			}
@@ -254,21 +237,21 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 				break; // Ignore the next character, even if it is a quote of some sort
 			
 			if (cCurrChar == '"' && state == SCE_CMAKE_STRINGDQ) {
-				styler.ColourTo(i,state);
+				styler.ColourTo(i, state);
 				state = SCE_CMAKE_DEFAULT;
 				break;
 			}
 			if (cCurrChar == '`' && state == SCE_CMAKE_STRINGLQ) {
-				styler.ColourTo(i,state);
+				styler.ColourTo(i, state);
 				state = SCE_CMAKE_DEFAULT;
 				break;
 			}
 			if (cCurrChar == '\'' && state == SCE_CMAKE_STRINGRQ) {
-				styler.ColourTo(i,state);
+				styler.ColourTo(i, state);
 				state = SCE_CMAKE_DEFAULT;
 				break;
 			}
-			if (IsACRLF(cNextChar)) {
+			if (IsCRLF(cNextChar)) {
 				Sci_Position nCurLine = styler.GetLine(i + 1);
 				Sci_Position nBack = i;
 				// We need to check if the previous line has a \ in it...
@@ -284,16 +267,16 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 						bNextLine = true;
 						break;
 					}
-					if (!IsACRLF(cTemp) && !IsASpaceOrTab(cTemp))
+					if (!IsWhiteSpace(cTemp))
 						break;
 					
 					nBack--;
 				}
 				if (bNextLine) {
-					styler.ColourTo(i + 1,state);
+					styler.ColourTo(i + 1, state);
 				}
 				if (bNextLine == false) {
-					styler.ColourTo(i,state);
+					styler.ColourTo(i, state);
 					state = SCE_CMAKE_DEFAULT;
 				}
 			}
@@ -304,18 +287,17 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 			// CMake Variable:
 			if (cCurrChar == '$')
 				state = SCE_CMAKE_DEFAULT;
-			else if (cCurrChar == '\\' && (cNextChar == 'n' || cNextChar == 'r' ||
-										   cNextChar == 't'))
+			else if (cCurrChar == '\\' && IsPartCtrl(cNextChar))
 				state = SCE_CMAKE_DEFAULT;
-			else if ((isCmakeChar(cCurrChar) &&
-					  !isCmakeChar(cNextChar) && cNextChar != '}')
+			else if ((IsWordChar(cCurrChar) &&
+					  !IsWordChar(cNextChar) && cNextChar != '}')
 					 || cCurrChar == '}') {
 				state = classifyWordCmake(styler.GetStartSegment(), i,
 										  keywordLists, styler);
 				styler.ColourTo(i, state);
 				state = SCE_CMAKE_DEFAULT;
 			}
-			else if (!isCmakeChar(cCurrChar) && cCurrChar != '{' && cCurrChar != '}') {
+			else if (!IsWordChar(cCurrChar) && cCurrChar != '{' && cCurrChar != '}') {
 				if (classifyWordCmake(styler.GetStartSegment(), i - 1,
 									  keywordLists, styler) == SCE_CMAKE_NUMBER)
 					styler.ColourTo(i - 1, SCE_CMAKE_NUMBER);
@@ -353,15 +335,15 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 				bVarInString = false;
 				bIngoreNextDollarSign = true;
 			}
-			else if (bVarInString && cCurrChar == '\\' && (cNextChar == 'n' || cNextChar == 'r' ||
-														   cNextChar == 't' || cNextChar == '"' ||
-														   cNextChar == '`' || cNextChar == '\'')) {
+			else if (bVarInString && cCurrChar == '\\' &&
+					 (IsQuote(cNextChar) || cNextChar == '`' ||
+					  IsPartCtrl(cNextChar))) {
 				styler.ColourTo(i + 1, SCE_CMAKE_STRINGVAR);
 				bVarInString = false;
 				bIngoreNextDollarSign = false;
 			}
 			
-			else if (bVarInString && !isCmakeChar(cNextChar)) {
+			else if (bVarInString && !IsWordChar(cNextChar)) {
 				int nWordState = classifyWordCmake(styler.GetStartSegment(), i,
 												   keywordLists, styler);
 				if (nWordState == SCE_CMAKE_VARIABLE)
@@ -389,7 +371,7 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 	}
 	
 	// Colourise remaining document
-	styler.ColourTo(nLengthDoc - 1,state);
+	styler.ColourTo(nLengthDoc - 1, state);
 }
 
 static void FoldCmakeDoc(Sci_PositionU startPos, Sci_Position length,
@@ -416,10 +398,10 @@ static void FoldCmakeDoc(Sci_PositionU startPos, Sci_Position length,
 		char chCurr = styler.SafeGetCharAt(i);
 		
 		if (bArg1) {
-			if (nWordStart == -1 && (isCmakeLetter(chCurr))) {
+			if (nWordStart == -1 && IsAlpha(chCurr)) {
 				nWordStart = i;
 			}
-			else if (isCmakeLetter(chCurr) == false && nWordStart > -1) {
+			else if (nWordStart > -1 && !IsAlpha(chCurr)) {
 				int newLevel = calculateFoldCmake(nWordStart, i - 1, levelNext,
 												  styler, foldAtElse);
 				if (newLevel == levelNext) {

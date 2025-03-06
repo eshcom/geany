@@ -35,7 +35,42 @@
 
 using namespace Scintilla;
 
-static inline bool IsDimension(const char* s) {
+static inline bool isWordChar(const unsigned int ch) {
+	/* FIXME:
+	 * The CSS spec allows "ISO 10646 characters U+00A1 and higher" to be treated as word chars.
+	 * Unfortunately, we are only getting string bytes here, and not full unicode characters. We cannot guarantee
+	 * that our byte is between U+0080 - U+00A0 (to return false), so we have to allow all characters U+0080 and higher
+	 */
+	return !IsASCII(ch) || IsAlnumWordChar(ch) || ch == '-';
+}
+
+static inline bool isWordOrPercent(const int ch) {
+	return isWordChar(ch) || ch == '%';
+}
+
+static inline bool isCssOperValue(const int ch) {
+	return ch == '(' || ch == ')' || ch == ',' || ch == '/' ||
+		   ch == '*' || ch == '+';
+}
+
+static inline bool isCssSelectorOper(const int ch) {
+	return ch == '.' || ch == ':' || ch == '&' ||
+		   ch == '>' || ch == '+' || ch == '[' || ch == ']';
+}
+
+static inline bool isCssOperator(const int ch) {
+	if (!IsAlnum(ch) &&
+		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
+		 ch == '.' || ch == '#' || ch == '!' || ch == '@' ||
+		 /* CSS2 */
+		 ch == '*' || ch == '>' || ch == '+' || ch == '=' || ch == '~' ||
+		 ch == '|' || ch == '[' || ch == ']' || ch == '(' || ch == ')')) {
+		return true;
+	}
+	return false;
+}
+
+static inline bool IsDimension(const char *s) {
 	//~ % em ex px pt pc in ft mm cm Hz kHz deg rad grad s ms turn
 	return (strcmp(s, "%") == 0 || strcmp(s, "em") == 0 ||
 			strcmp(s, "ex") == 0 || strcmp(s, "px") == 0 ||
@@ -56,45 +91,6 @@ static inline bool IsUrl(const char *pref, Accessor &styler,
 			strcmp(pref, "ftp") == 0 || strcmp(pref, "sftp") == 0) &&
 			styler[pos] == ':' && styler[pos + 1] == '/'
 							   && styler[pos + 2] == '/';
-}
-
-static inline bool IsAWordChar(const unsigned int ch) {
-	/* FIXME:
-	 * The CSS spec allows "ISO 10646 characters U+00A1 and higher" to be treated as word chars.
-	 * Unfortunately, we are only getting string bytes here, and not full unicode characters. We cannot guarantee
-	 * that our byte is between U+0080 - U+00A0 (to return false), so we have to allow all characters U+0080 and higher
-	 */
-	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
-}
-
-static inline bool IsAWordOrPercent(const int ch) {
-	return IsAWordChar(ch) || ch == '%';
-}
-
-static inline bool IsAWordOrSpace(const int ch) {
-	return IsAWordChar(ch) || IsASpace(ch);
-}
-
-static inline bool IsCssOperValue(const int ch) {
-	return ch == '(' || ch == ')' || ch == ',' || ch == '/' ||
-		   ch == '*' || ch == '+';
-}
-
-static inline bool IsCssSelectorOper(const int ch) {
-	return ch == '.' || ch == ':' || ch == '&' ||
-		   ch == '>' || ch == '+' || ch == '[' || ch == ']';
-}
-
-static inline bool IsCssOperator(const int ch) {
-	if (!((ch < 0x80) && isalnum(ch)) &&
-		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
-		 ch == '.' || ch == '#' || ch == '!' || ch == '@' ||
-		 /* CSS2 */
-		 ch == '*' || ch == '>' || ch == '+' || ch == '=' || ch == '~' ||
-		 ch == '|' || ch == '[' || ch == ']' || ch == '(' || ch == ')')) {
-		return true;
-	}
-	return false;
 }
 
 static inline bool IsCommentStyle(int style) {
@@ -490,8 +486,8 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// variable name
 		// esh: @ - for LESS, $ - for SCSS/HSS
-		if ((sc.ch == '@' || sc.ch == '$') && IsAWordChar(sc.chNext) &&
-			!(sc.state == SCE_CSS_VALUE && IsAWordChar(sc.chPrev))) {
+		if ((sc.ch == '@' || sc.ch == '$') && isWordChar(sc.chNext) &&
+			!(sc.state == SCE_CSS_VALUE && isWordChar(sc.chPrev))) {
 			switch (sc.state) {
 				case SCE_CSS_DEFAULT:
 				case SCE_CSS_IDENTIFIER:
@@ -509,7 +505,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		if (sc.state == SCE_CSS_VARIABLE) {
-			if (IsAWordChar(sc.ch)) {
+			if (isWordChar(sc.ch)) {
 				// still looking at the variable name
 				continue;
 			}
@@ -531,11 +527,11 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// esh: directive, media
 		if (sc.state == SCE_CSS_DIRECTIVE &&
-			!IsAWordChar(sc.ch) && IsAWordChar(sc.chPrev)) {
+			!isWordChar(sc.ch) && isWordChar(sc.chPrev)) {
 			char word[100];
 			sc.GetCurrentLowered(word, sizeof(word));
 			char *word2 = word;
-			while (*word2 && !IsAWordChar(*word2))
+			while (*word2 && !isWordChar(*word2))
 				word2++;
 			if (op == '@' && strcmp(word2, "media") == 0) {
 				sc.ChangeState(SCE_CSS_MEDIA);
@@ -559,13 +555,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (isComment) {
 					continue;
 				}
-				if ((IsCssOperator(ch) && ch != ',') || ch == '&')
+				if ((isCssOperator(ch) && ch != ',') || ch == '&')
 					break;
-				else if (IsAWordChar(ch))
+				else if (isWordChar(ch))
 					wordExists = true;
 			}
 			// set next state for directive/media
-			if ((IsCssSelectorOper(ch) && !(ch == '.' && isdigit(chNext)))
+			if ((isCssSelectorOper(ch) && !(ch == '.' && isdigit(chNext)))
 				|| (ch == '{' && wordExists))
 				sc.SetState(SCE_CSS_DEFAULT);	// fixate directive by default
 			else
@@ -575,10 +571,9 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		// esh: Determine if the current value-state should terminate.
 		switch (sc.state) {
 			case SCE_CSS_NUMBER:
-				if (IsADigit(sc.ch) || (sc.ch == '.' &&
-										IsADigit(sc.chNext)))
+				if (IsDigitOrDotDigit(sc.ch, sc.chNext))
 					continue;
-				if (IsAWordOrPercent(sc.ch)) {
+				if (isWordOrPercent(sc.ch)) {
 					sc.SetState(SCE_CSS_DIMENSION);
 					continue;
 				}
@@ -586,7 +581,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_CSS_DIMENSION: {
-				if (IsAWordOrPercent(sc.ch))
+				if (isWordOrPercent(sc.ch))
 					continue;
 				
 				char dim[10];
@@ -596,24 +591,24 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}	break;
 			
 			case SCE_CSS_HEX_COLOR:
-				if (IsADigit(sc.ch, 16)) {
+				if (IsDigit(sc.ch, 16)) {
 					hexColorLen++;
 					continue;
 				}
 				// end of hex-color
 				if ((hexColorLen != 3 && hexColorLen != 6)
-					|| IsAWordChar(sc.ch))				// bad hex-color
+					|| isWordChar(sc.ch))				// bad hex-color
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
 				break;
 				
 			case SCE_CSS_IMPORTANT: {
-				if (IsAWordChar(sc.ch))
+				if (isWordChar(sc.ch))
 					continue;
 				
 				char imp[100];
 				sc.GetCurrentLowered(imp, sizeof(imp));
 				char *imp2 = imp;
-				while (*imp2 && !IsAWordChar(*imp2))
+				while (*imp2 && !isWordChar(*imp2))
 					imp2++;
 				if (strcmp(imp2, "important") != 0)
 					sc.ChangeState(SCE_CSS_ERR_VALUE);
@@ -626,25 +621,24 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// esh: Determine if a new value-state should be entered.
-		if (sc.state == SCE_CSS_OPER_VALUE ||	// oper-val: (),/ (see IsCssOperValue func)
+		if (sc.state == SCE_CSS_OPER_VALUE ||	// oper-val: (),/ (see isCssOperValue func)
 			sc.state == SCE_CSS_SUBVAR_OPER ||	// sc.ch inside sub-var
 			(sc.state == SCE_CSS_VALUE &&		// sub-val: solid, linear, transparent, ...
-			 !IsAWordChar(sc.chPrev))) {
+			 !isWordChar(sc.chPrev))) {
 			
 			// start new typed-value states
 			// (number, hexadec-color, named-color, dimension, ...)
-			if ((IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
-				((sc.ch == '+' || sc.ch == '-') && (sc.chNext == '.' ||
-													IsADigit(sc.chNext))))) {
+			if (IsDigitOrDotDigit(sc.ch, sc.chNext) ||
+				(IsSign(sc.ch) && (sc.chNext == '.' || IsDigit(sc.chNext)))) {
 				sc.SetState(SCE_CSS_NUMBER); // fixate sub-val/oper-val by number
 				continue;
 				
-			} else if (sc.ch == '#' && IsADigit(sc.chNext, 16)) {
+			} else if (sc.ch == '#' && IsDigit(sc.chNext, 16)) {
 				sc.SetState(SCE_CSS_HEX_COLOR); // fixate sub-val/oper-val by hexadec-color
 				hexColorLen = 0;
 				continue;
 				
-			} else if (IsAWordChar(sc.ch)) {
+			} else if (isWordChar(sc.ch)) {
 				// sc.chPrev != word-char (alnum, '_', '-')
 				// --START OF WORD--
 				if (sc.state != SCE_CSS_VALUE)
@@ -653,8 +647,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		
 		// Determine if the value-state (word) should terminate.
-		} else if (sc.state == SCE_CSS_VALUE &&
-				   !IsAWordChar(sc.ch)) {
+		} else if (sc.state == SCE_CSS_VALUE && !isWordChar(sc.ch)) {
 			// sc.chPrev == word-char (alnum, '_', '-')
 			// --END OF WORD--
 			
@@ -676,14 +669,14 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isComment) {
 					continue;
-				} else if (!IsASpace(ch)) {
+				} else if (!IsSpace(ch)) {
 					break;
 				}
 			}
 			char word[100];
 			sc.GetCurrentLowered(word, sizeof(word));
 			char *word2 = word;
-			while (*word2 && !IsAWordChar(*word2))
+			while (*word2 && !isWordChar(*word2))
 				word2++;
 			
 			if (ch == '(') {
@@ -745,11 +738,11 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			
 			if (sc.ch == '!') {
 				sc.SetState(SCE_CSS_IMPORTANT); // fixate current state (before sc.currentPos) by important
-				while (sc.currentPos < endPos && IsASpace(sc.chNext))
+				while (sc.currentPos < endPos && IsSpace(sc.chNext))
 					sc.Forward();
 				continue;
 				
-			} else if (IsCssOperValue(sc.ch) || ((sc.ch == ':' || sc.ch == ';') &&
+			} else if (isCssOperValue(sc.ch) || ((sc.ch == ':' || sc.ch == ';') &&
 												 insideParentheses)) {
 				if (!sc.Match('/', '*') && !(sc.Match('/', '/') &&
 											 !insideParentheses)) {
@@ -764,7 +757,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// check for nested rule selector (SCSS/LESS)
 		if (sc.state == SCE_CSS_IDENTIFIER && !insideParentheses &&
-			(IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
+			(isWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' ||
 			 (sc.ch == '#' && sc.chNext != '{'))) {				// skip sub-var
 			// look ahead to see whether { comes before next ; and }
 			int ch, chNext;
@@ -802,13 +795,13 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (IsAWordChar(sc.ch)) {
+		if (isWordChar(sc.ch)) {
 			if (sc.state == SCE_CSS_DEFAULT)
 				sc.SetState(SCE_CSS_TAG);
 			continue;
 		}
 		
-		if (IsAWordChar(sc.chPrev) &&
+		if (isWordChar(sc.chPrev) &&
 			(sc.state == SCE_CSS_IDENTIFIER ||
 			 sc.state == SCE_CSS_IDENTIFIER2 ||
 			 sc.state == SCE_CSS_IDENTIFIER3 ||
@@ -822,7 +815,7 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			char s[100];
 			sc.GetCurrentLowered(s, sizeof(s));
 			char *s2 = s;
-			while (*s2 && !IsAWordChar(*s2))
+			while (*s2 && !isWordChar(*s2))
 				s2++;
 			switch (sc.state) {
 				case SCE_CSS_IDENTIFIER:
@@ -888,12 +881,12 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 			sc.Forward();
 			
 		} else if ((sc.state == SCE_CSS_VALUE || sc.state == SCE_CSS_ATTRIBUTE)
-				   && (sc.ch == '\"' || sc.ch == '\'')) {
+				   && IsQuote(sc.ch)) {
 			lastStateS = sc.state;
 			sc.SetState((sc.ch == '\"' ? SCE_CSS_DOUBLESTRING : SCE_CSS_SINGLESTRING));
 			stringState = sc.state;
 			
-		} else if (IsCssOperator(sc.ch)
+		} else if (isCssOperator(sc.ch)
 				   && (sc.state != SCE_CSS_ATTRIBUTE || sc.ch == ']')
 				   && (sc.state != SCE_CSS_VALUE || sc.ch == ';' || sc.ch == '{' || sc.ch == '}')
 				   && ((sc.state != SCE_CSS_DIRECTIVE && sc.state != SCE_CSS_MEDIA) ||
@@ -927,7 +920,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
 		int style = styler.StyleAt(i);
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		
 		if (foldComment) {
 			if (!inComment && IsCommentStyle(style))
 				levelCurrent++;
@@ -942,7 +935,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 				levelCurrent--;
 			}
 		}
-		if (atEOL) {
+		if (IsEOL(ch, chNext)) {
 			int lev = levelPrev;
 			if (visibleChars == 0 && foldCompact)
 				lev |= SC_FOLDLEVELWHITEFLAG;
@@ -955,7 +948,7 @@ static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length,
 			levelPrev = levelCurrent;
 			visibleChars = 0;
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	// Fill in the real level of the next line, keeping the current flags as they will be filled in later

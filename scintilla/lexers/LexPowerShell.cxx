@@ -26,8 +26,8 @@
 using namespace Scintilla;
 
 // Extended to accept accented characters
-static inline bool IsAWordChar(int ch) {
-	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
+static inline bool isWordChar(int ch) {
+	return !IsASCII(ch) || IsAlnumWordChar(ch) || ch == '-';
 }
 
 static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
@@ -52,10 +52,10 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if (sc.state == SCE_POWERSHELL_COMMENTSTREAM) {
 			if (sc.atLineStart) {
-				while (IsASpaceOrTab(sc.ch)) {
+				while (IsSpaceOrTab(sc.ch)) {
 					sc.Forward();
 				}
-				if (sc.ch == '.' && IsAWordChar(sc.chNext)) {
+				if (sc.ch == '.' && isWordChar(sc.chNext)) {
 					sc.SetState(SCE_POWERSHELL_COMMENTDOCKEYWORD);
 				}
 			}
@@ -63,7 +63,7 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.ForwardSetState(SCE_POWERSHELL_DEFAULT);
 			}
 		} else if (sc.state == SCE_POWERSHELL_COMMENTDOCKEYWORD) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!isWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				if (!keywords6.InList(s + 1)) {
@@ -98,19 +98,19 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
 			}
 		} else if (sc.state == SCE_POWERSHELL_NUMBER) {
-			if (!IsADigit(sc.ch)) {
+			if (!IsDigit(sc.ch)) {
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
 			}
 		} else if (sc.state == SCE_POWERSHELL_VARIABLE) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!isWordChar(sc.ch)) {
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
 			}
 		} else if (sc.state == SCE_POWERSHELL_OPERATOR) {
-			if (!isoperator(static_cast<char>(sc.ch))) {
+			if (!IsOperator(sc.ch)) {
 				sc.SetState(SCE_POWERSHELL_DEFAULT);
 			}
 		} else if (sc.state == SCE_POWERSHELL_IDENTIFIER) {
-			if (!IsAWordChar(sc.ch)) {
+			if (!isWordChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				
@@ -145,12 +145,11 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_POWERSHELL_HERE_CHARACTER);
 			} else if (sc.ch == '$') {
 				sc.SetState(SCE_POWERSHELL_VARIABLE);
-			} else if (IsADigit(sc.ch) || (sc.ch == '.' &&
-										   IsADigit(sc.chNext))) {
+			} else if (IsDigitOrDotDigit(sc.ch, sc.chNext)) {
 				sc.SetState(SCE_POWERSHELL_NUMBER);
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_POWERSHELL_OPERATOR);
-			} else if (IsAWordChar(sc.ch)) {
+			} else if (isWordChar(sc.ch)) {
 				sc.SetState(SCE_POWERSHELL_IDENTIFIER);
 			} else if (sc.ch == '`') {
 				sc.Forward(); // skip next escaped character
@@ -185,7 +184,7 @@ static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 		int stylePrev = style;
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		
 		if (style == SCE_POWERSHELL_OPERATOR) {
 			if (ch == '{') {
 				// Measure the minimum before a '{' to allow
@@ -208,7 +207,7 @@ static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 		} else if (foldComment && style == SCE_POWERSHELL_COMMENT) {
 			if (ch == '#') {
 				Sci_PositionU j = i + 1;
-				while ((j < endPos) && IsASpaceOrTab(styler.SafeGetCharAt(j))) {
+				while ((j < endPos) && IsSpaceOrTab(styler.SafeGetCharAt(j))) {
 					j++;
 				}
 				if (styler.Match(j, "region")) {
@@ -218,9 +217,10 @@ static void FoldPowerShellDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			}
 		}
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
-		if (atEOL || (i == endPos-1)) {
+		
+		if (IsEOL(ch, chNext) || i == (endPos - 1)) {
 			int levelUse = levelCurrent;
 			if (foldAtElse) {
 				levelUse = levelMinCurrent;

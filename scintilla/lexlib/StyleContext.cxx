@@ -18,15 +18,15 @@
 using namespace Scintilla;
 
 bool StyleContext::MatchIgnoreCase(const char *s) {
-	if (MakeLowerCase(ch) != static_cast<unsigned char>(*s))
+	if (ToLower(ch) != static_cast<unsigned char>(*s))
 		return false;
 	s++;
-	if (MakeLowerCase(chNext) != static_cast<unsigned char>(*s))
+	if (ToLower(chNext) != static_cast<unsigned char>(*s))
 		return false;
 	s++;
 	for (int n = 2; *s; n++) {
 		if (*s !=
-			MakeLowerCase(styler.SafeGetCharAt(currentPos + n, 0)))
+			ToLower(styler.SafeGetCharAt(currentPos + n, 0)))
 			return false;
 		s++;
 	}
@@ -57,7 +57,7 @@ static void getRangeLowered(Sci_PositionU start,
 		Sci_PositionU len) {
 	Sci_PositionU i = 0;
 	while ((i < end - start + 1) && (i < len-1)) {
-		s[i] = MakeLowerCase(styler[start + i]);
+		s[i] = ToLower(styler[start + i]);
 		i++;
 	}
 	s[i] = '\0';

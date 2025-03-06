@@ -30,29 +30,6 @@
 
 using namespace Scintilla;
 
-static void ColouriseVHDLDoc(
-	Sci_PositionU startPos,
-	Sci_Position length,
-	int initStyle,
-	WordList *keywordlists[],
-	Accessor &styler);
-
-
-/***************************************/
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_');
-}
-
-/***************************************/
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_');
-}
-
-/***************************************/
-static inline bool IsABlank(unsigned int ch) {
-	return (ch == ' ') || (ch == 0x09) || (ch == 0x0b);
-}
-
 /***************************************/
 static void ColouriseVHDLDoc(
 	Sci_PositionU startPos,
@@ -80,11 +57,11 @@ static void ColouriseVHDLDoc(
 		if (sc.state == SCE_VHDL_OPERATOR) {
 			sc.SetState(SCE_VHDL_DEFAULT);
 		} else if (sc.state == SCE_VHDL_NUMBER) {
-			if (!IsAWordChar(sc.ch) && (sc.ch != '#')) {
+			if (!IsWordChar(sc.ch) && (sc.ch != '#')) {
 				sc.SetState(SCE_VHDL_DEFAULT);
 			}
 		} else if (sc.state == SCE_VHDL_IDENTIFIER) {
-			if (!isExtendedId && (!IsAWordChar(sc.ch) || (sc.ch == '.'))) {
+			if (!isExtendedId && (!IsWordChar(sc.ch) || (sc.ch == '.'))) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
 				if (Keywords.InList(s)) {
@@ -137,9 +114,9 @@ static void ColouriseVHDLDoc(
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_VHDL_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsDigitOrDotDigit(sc.ch, sc.chNext)) {
 				sc.SetState(SCE_VHDL_NUMBER);
-			} else if (IsAWordStart(sc.ch)) {
+			} else if (IsAlnumWordChar(sc.ch)) {
 				sc.SetState(SCE_VHDL_IDENTIFIER);
 			} else if (sc.Match('-', '-')) {
 				if (sc.Match("--!"))  // Nice to have a different comment style
@@ -163,7 +140,7 @@ static void ColouriseVHDLDoc(
 			} else if (sc.ch == '\\') {
 				isExtendedId = true;
 				sc.SetState(SCE_VHDL_IDENTIFIER);
-			} else if (isoperator(static_cast<char>(sc.ch))) {
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_VHDL_OPERATOR);
 			}
 		}
@@ -182,7 +159,7 @@ static bool IsCommentLine(Sci_Position line, Accessor &styler) {
 		char chNext = styler[i + 1];
 		if ((ch == '-') && (chNext == '-'))
 			return true;
-		else if (!IsASpaceOrTab(ch))
+		else if (!IsSpaceOrTab(ch))
 			return false;
 	}
 	return false;
@@ -276,16 +253,16 @@ static void FoldNoBoxVHDLDoc(
 		char chPrev   = styler.SafeGetCharAt(j - 1);
 		int style     = styler.StyleAt(j);
 		int stylePrev = styler.StyleAt(j - 1);
-		if ((!IsCommentStyle(style)) && (stylePrev != SCE_VHDL_STRING))
+		if (!IsCommentStyle(style) && (stylePrev != SCE_VHDL_STRING))
 		{
-			if (IsAWordChar(chPrev) && !IsAWordChar(ch))
+			if (IsWordChar(chPrev) && !IsWordChar(ch))
 			{
 				end = j - 1;
 			}
 		}
-		if ((!IsCommentStyle(style)) && (style != SCE_VHDL_STRING))
+		if (!IsCommentStyle(style) && (style != SCE_VHDL_STRING))
 		{
-			if (!IsAWordChar(chPrev) && IsAWordStart(ch) && (end != 0))
+			if (!IsWordChar(chPrev) && IsAlnumWordChar(ch) && (end != 0))
 			{
 				char s[32];
 				Sci_PositionU k;
@@ -306,7 +283,7 @@ static void FoldNoBoxVHDLDoc(
 	{
 		char ch       = styler.SafeGetCharAt(j);
 		int style     = styler.StyleAt(j);
-		if ((!IsCommentStyle(style)) && (style != SCE_VHDL_STRING))
+		if (!IsCommentStyle(style) && (style != SCE_VHDL_STRING))
 		{
 			if ((ch == ';') && (strcmp(prevWord, "end") == 0))
 			{
@@ -329,14 +306,13 @@ static void FoldNoBoxVHDLDoc(
 		chPrev          = styler.SafeGetCharAt(i - 1);
 		chNextNonBlank  = chNext;
 		Sci_PositionU j  = i + 1;
-		while (IsABlank(chNextNonBlank) && j < endPos)
+		while (IsBlank(chNextNonBlank) && j < endPos)
 		{
-			j++;
-			chNextNonBlank = styler.SafeGetCharAt(j);
+			chNextNonBlank = styler.SafeGetCharAt(++j);
 		}
 		int style  = styleNext;
 		styleNext  = styler.StyleAt(i + 1);
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		bool atEOL = IsEOL(ch, chNext);
 		
 		if (foldComment && atEOL)
 		{
@@ -377,19 +353,19 @@ static void FoldNoBoxVHDLDoc(
 			}
 		}
 		
-		if ((!IsCommentStyle(style)) && (style != SCE_VHDL_STRING))
+		if (!IsCommentStyle(style) && (style != SCE_VHDL_STRING))
 		{
 			if ((ch == ';') && (strcmp(prevWord, "end") == 0))
 			{
 				strcpy(prevWord, ";");
 			}
 			
-			if (!IsAWordChar(chPrev) && IsAWordStart(ch))
+			if (!IsWordChar(chPrev) && IsAlnumWordChar(ch))
 			{
 				lastStart = i;
 			}
 			
-			if (IsAWordChar(ch) && !IsAWordChar(chNext)) {
+			if (IsWordChar(ch) && !IsWordChar(chNext)) {
 				char s[32];
 				Sci_PositionU k;
 				for (k = 0; (k < 31) && (k < i - lastStart + 1); k++) {
@@ -433,7 +409,7 @@ static void FoldNoBoxVHDLDoc(
 								styleAtPos = styler.StyleAt(pos);
 								chAtPos = styler.SafeGetCharAt(pos);
 							}
-							while (pos && (IsASpaceOrTab(chAtPos) || IsACRLF(chAtPos) ||
+							while (pos && (IsWhiteSpace(chAtPos) ||
 										   IsCommentStyle(styleAtPos)));
 							
 							// check for a colon (':') before the instantiated units "entity", "component" or "configuration". Don't fold thereafter.
@@ -461,10 +437,10 @@ static void FoldNoBoxVHDLDoc(
 								if ((BracketLevel == 0) &&
 									(!IsCommentStyle(styleAtPos)) &&
 									(styleAtPos != SCE_VHDL_STRING) &&
-									!iswordchar(styler.SafeGetCharAt(pos - 1)) &&
+									!IsWordChar(styler.SafeGetCharAt(pos - 1)) &&
 									(chAtPos | ' ') == 'i' &&
 									(styler.SafeGetCharAt(pos + 1) | ' ') == 's' &&
-									!iswordchar(styler.SafeGetCharAt(pos + 2)))
+									!IsWordChar(styler.SafeGetCharAt(pos + 2)))
 								{
 									if (levelMinCurrentElse > levelNext) {
 										levelMinCurrentElse = levelNext;
@@ -526,7 +502,7 @@ static void FoldNoBoxVHDLDoc(
 			visibleChars = 0;
 		}
 		/***************************************/
-		if (!IsASpace(ch)) visibleChars++;
+		if (!IsSpace(ch)) visibleChars++;
 	}
 	
 	/***************************************/

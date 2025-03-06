@@ -57,16 +57,24 @@ struct AtomPunctSequence {
 	}
 };
 
-static bool is_radix(int radix, int ch) {
+static inline bool isOperator(const int ch) {
+	return (IsOperator(ch) || ch == '\\');
+}
+
+static inline bool isWordEnd(const int ch) {
+	return (ch == '!' || ch == '?');
+}
+
+static bool isRadix(int radix, int ch) {
 	int digit;
 	
 	if (radix < 2 || radix > 36)
 		return false;
 	
-	if (isdigit(ch)) {
+	if (IsDigit(ch)) {
 		digit = ch - '0';
-	} else if (isalnum(ch)) {
-		digit = toupper(ch) - 'A' + 10;
+	} else if (IsAlnum(ch)) {
+		digit = ToUpper(ch) - 'A' + 10;
 	} else {
 		return false;
 	}
@@ -94,10 +102,6 @@ typedef enum {
 	OTHER_MODULE,
 	KERNEL_MODULE
 } module_type_t;
-
-static inline bool IsElixirOperator(const int ch) {
-	return (isoperator(ch) || ch == '\\');
-}
 
 static inline bool IsCommentStyle(int style) {
 	return (style == SCE_ELIXIR_COMMENT ||
@@ -143,18 +147,6 @@ static inline bool IsNestedStringStyle(int style) {
 			style == SCE_ELIXIR_FORMATSEQ);
 }
 
-static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (ch != ' ') && (isalpha(ch) || ch == '_');
-}
-
-static inline bool IsAWordEnd(const int ch) {
-	return (ch == '!' || ch == '?');
-}
-
-static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (ch != ' ') && (isalnum(ch) || ch == '_');
-}
-
 static inline const char *GetTripleQuote(char closing_char) {
 	if (closing_char == '\"')
 		return R"(""")";
@@ -190,11 +182,11 @@ static inline char GetClosingChar(char opening_char) {
 
 #define MOVE_INDEX_TO_NONSPACE								\
 	Sci_PositionU i = sc.currentPos + 1;					\
-	while (i < endPos && IsASpaceOrTab(styler[i]))			\
+	while (i < endPos && IsSpaceOrTab(styler[i]))			\
 		i++;
 
 #define SKIP_SPACES											\
-	while (sc.More() && IsASpaceOrTab(sc.ch))				\
+	while (sc.More() && IsSpaceOrTab(sc.ch))				\
 		sc.Forward();
 
 #define CHANGE_STATE_BY_MODULE								\
@@ -212,7 +204,7 @@ static inline char GetClosingChar(char opening_char) {
 	}
 
 #define CHECK_LIB_MACROS												\
-	if ((!IsElixirOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||		\
+	if ((!isOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||				\
 		 (sc.ch == ':' && sc.chNext != ':'))							\
 		&& !exclLibMacros.InList(cur) && libMacros.InList(cur)) {		\
 		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||			\
@@ -473,7 +465,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					
 					/* Simple integer */
 					case NUMERAL_START : {
-						if (isdigit(sc.ch)) {
+						if (IsDigit(sc.ch)) {
 							radix_digits *= 10;
 							radix_digits += sc.ch - '0'; // Assuming ASCII here!
 							continue;
@@ -484,55 +476,54 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 								number_state = NUMERAL_BASE_VALUE;
 								continue;
 							}
-						} else if (sc.ch == '.' && isdigit(sc.chNext)) {
+						} else if (IsDotDigit(sc.ch, sc.chNext)) {
 							number_state = NUMERAL_FLOAT;
 							continue;
-						} else if (sc.ch == 'e' || sc.ch == 'E') {
+						} else if (IsDecExponent(sc.ch)) {
 							exponent_digits = 0;
 							number_state = NUMERAL_EXPONENT;
 							continue;
 						} else if (sc.ch == '_') {
-							if (isdigit(sc.chNext)) {
+							if (IsDigit(sc.chNext)) {
 								continue;
 							} else {
 								sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 							}
-						} else if (isalpha(sc.ch)) {
+						} else if (IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Integer in other base than 10 (x#yyy) */
 					case NUMERAL_BASE_VALUE : {
-						if (is_radix(radix_digits, sc.ch)) {
+						if (isRadix(radix_digits, sc.ch)) {
 							continue;
-						} else if (isalnum(sc.ch)) {
+						} else if (IsAlnum(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Float (x.yyy) */
 					case NUMERAL_FLOAT : {
-						if (sc.ch == 'e' || sc.ch == 'E') {
+						if (IsDecExponent(sc.ch)) {
 							exponent_digits = 0;
 							number_state = NUMERAL_EXPONENT;
 							continue;
-						} else if (isdigit(sc.ch)) {
+						} else if (IsDigit(sc.ch)) {
 							continue;
-						} else if (isalpha(sc.ch)) {
+						} else if (IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 						}
 					} break;
 					
 					/* Exponent, either integer or float (xEyy, x.yyEzzz) */
 					case NUMERAL_EXPONENT : {
-						if ((sc.ch == '-' || sc.ch == '+')
-								&& isdigit(sc.chNext)) {
+						if (IsSignDigit(sc.ch, sc.chNext)) {
 							continue;
-						} else if (isdigit(sc.ch)) {
+						} else if (IsDigit(sc.ch)) {
 							exponent_digits++;
 							continue;
-						} else if (exponent_digits == 0 || isalpha(sc.ch)) {
+						} else if (exponent_digits == 0 || IsAlpha(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 						}
 					} break;
@@ -547,9 +538,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ELIXIR_NODE);
 					is_at_symb = true;
 					continue;
-				} else if (IsAWordChar(sc.ch)) {
+				} else if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -586,9 +577,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == '@') {
 					sc.ChangeState(SCE_ELIXIR_ATOM);
 					continue;
-				} else if (IsAWordChar(sc.ch)) {
+				} else if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -656,7 +647,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					continue; // esh: continue of escape chars
 				}
 				if (is_char_escape) {
-					if (!sc.atLineStart && isdigit(sc.ch)) {
+					if (!sc.atLineStart && IsDigit(sc.ch)) {
 						sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 					} else if (!escapeSequence) {
 						sc.ChangeState(SCE_ELIXIR_CHARACTER);
@@ -700,13 +691,13 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_MODULE : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
 				}
 				SKIP_SPACES
 				if (sc.ch == '.') {
 					MOVE_INDEX_TO_NONSPACE
-					if (isupper(styler[i])) {
+					if (IsUpper(styler[i])) {
 						sc.Forward(); // skip '.'
 						SKIP_SPACES
 						continue;
@@ -726,9 +717,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_MODULE_ATTR : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -751,9 +742,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			} break;
 			
 			case SCE_ELIXIR_IDENTIFIER : {
-				if (IsAWordChar(sc.ch)) {
+				if (IsAlnumWordChar(sc.ch)) {
 					continue;
-				} else if (IsAWordEnd(sc.ch)) {
+				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
@@ -762,7 +753,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					if (sc.chNext != ':') {
 						sc.ChangeState(ident_state == NONE_STATE ? SCE_ELIXIR_FIELD
 																 : SCE_ELIXIR_UNKNOWN);
-						if (!IsASpace(sc.chNext)) {
+						if (!IsSpace(sc.chNext)) {
 							sc.SetState(SCE_ELIXIR_OPERATOR);
 							sc.ForwardSetState(SCE_ELIXIR_UNKNOWN);
 							sc.Forward();
@@ -778,12 +769,12 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 							CHANGE_STATE_BY_MODULE
 						} else if (sc.ch == '/') {
 							MOVE_INDEX_TO_NONSPACE
-							if (isdigit(styler[i]))
+							if (IsDigit(styler[i]))
 								CHANGE_STATE_BY_MODULE
 						}
 					} else if (stdWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
-					} else if ((isupper(sc.ch) || sc.Match('_', '_')) &&
+					} else if ((IsUpper(sc.ch) || sc.Match('_', '_')) &&
 							   addWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_ADD_WORD);
 					} else if (stdAtoms.InList(cur)) {
@@ -800,7 +791,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						CHANGE_STATE_BY_FUNCLIST
 					} else if (sc.ch == '/') {
 						MOVE_INDEX_TO_NONSPACE
-						if (isdigit(styler[i])) {
+						if (IsDigit(styler[i])) {
 							CHANGE_STATE_BY_FUNCLIST
 						} else {
 							CHECK_LIB_MACROS
@@ -894,21 +885,21 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (sc.ch == '%') {
 				sc.SetState(SCE_ELIXIR_UNKNOWN);
-				if (isupper(sc.chNext) || strchr("{_", sc.chNext)) {
+				if (IsUpper(sc.chNext) || strchr("{_", sc.chNext)) {
 					sc.ChangeState(SCE_ELIXIR_MAP_OPER);
 				}
 			} else if (sc.ch == '@') {
 				sc.SetState(SCE_ELIXIR_UNKNOWN);
-				if (islower(sc.chNext) || sc.chNext == '_') {
+				if (IsLower(sc.chNext) || sc.chNext == '_') {
 					sc.ChangeState(SCE_ELIXIR_MODULE_ATTR);
 					sc.Forward();
 				}
-			} else if (sc.ch == ':' && IsAWordStart(sc.chNext)) {
+			} else if (sc.ch == ':' && IsAlphaWordChar(sc.chNext)) {
 				sc.SetState(SCE_ELIXIR_ATOM);
 				sc.Forward();
 				is_at_symb = false;
 				
-			} else if (sc.ch == ':' && (sc.chNext == '\"' || sc.chNext == '\'')) {
+			} else if (sc.ch == ':' && IsQuote(sc.chNext)) {
 				sc.SetState(SCE_ELIXIR_ATOM_QUOTED);
 				sc.Forward();
 				is_at_symb = false;
@@ -921,18 +912,18 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_ATOM_PUNCT);
 				sc.Forward();
 				
-			} else if (isdigit(sc.ch)) {
+			} else if (IsDigit(sc.ch)) {
 				number_state = NUMERAL_START;
 				radix_digits = sc.ch - '0';
 				sc.SetState(SCE_ELIXIR_NUMBER);
 				
-			} else if (isupper(sc.ch)) {
+			} else if (IsUpper(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_MODULE);
 				
-			} else if (islower(sc.ch) || sc.ch == '_') {
+			} else if (IsLower(sc.ch) || sc.ch == '_') {
 				sc.SetState(SCE_ELIXIR_IDENTIFIER);
 				
-			} else if (IsElixirOperator(sc.ch)) {
+			} else if (isOperator(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				
 				ident_state = NONE_STATE;
@@ -1009,7 +1000,6 @@ static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position keyword_start = 0;
 	char ch;
 	char chNext = styler.SafeGetCharAt(startPos);
-	bool atEOL;
 	
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		ch = chNext;
@@ -1018,7 +1008,6 @@ static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		stylePrev = style;
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
-		atEOL = ((ch == '\r') && (chNext != '\n')) || (ch == '\n');
 		
 		if (stylePrev != SCE_ELIXIR_STD_WORD
 			&& style == SCE_ELIXIR_STD_WORD) {
@@ -1049,7 +1038,7 @@ static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				currentLevel--;
 			}
 		}
-		if (atEOL) {
+		if (IsEOL(ch, chNext)) {
 			lev = previousLevel;
 			if (currentLevel > previousLevel)
 				lev |= SC_FOLDLEVELHEADERFLAG;

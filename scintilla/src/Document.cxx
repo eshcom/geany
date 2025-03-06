@@ -1092,10 +1092,6 @@ int Document::DBCSDrawBytes(const char *text, int len) const noexcept {
 	}
 }
 
-static constexpr bool IsSpaceOrTab(int ch) noexcept {
-	return ch == ' ' || ch == '\t';
-}
-
 // Need to break text into segments near lengthSegment but taking into
 // account the encoding to not break inside a UTF-8 or DBCS character
 // and also trying to avoid breaking inside a pair of combining characters.
@@ -2484,30 +2480,30 @@ Sci::Position Document::WordPartLeft(Sci::Position pos) const {
 		if (pos > 0) {
 			ceStart = CharacterAfter(pos);
 			pos -= CharacterBefore(pos).widthBytes;
-			if (IsLowerCase(ceStart.character)) {
-				while (pos > 0 && IsLowerCase(CharacterAfter(pos).character))
+			if (IsLower(ceStart.character)) {
+				while (pos > 0 && IsLower(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsUpperCase(CharacterAfter(pos).character) && !IsLowerCase(CharacterAfter(pos).character))
+				if (!IsUpper(CharacterAfter(pos).character) && !IsLower(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (IsUpperCase(ceStart.character)) {
-				while (pos > 0 && IsUpperCase(CharacterAfter(pos).character))
+			} else if (IsUpper(ceStart.character)) {
+				while (pos > 0 && IsUpper(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsUpperCase(CharacterAfter(pos).character))
+				if (!IsUpper(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (IsADigit(ceStart.character)) {
-				while (pos > 0 && IsADigit(CharacterAfter(pos).character))
+			} else if (IsDigit(ceStart.character)) {
+				while (pos > 0 && IsDigit(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsADigit(CharacterAfter(pos).character))
+				if (!IsDigit(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
 			} else if (IsASCIIPunctuationCharacter(ceStart.character)) {
 				while (pos > 0 && IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
 				if (!IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
-			} else if (IsASpace(ceStart.character)) {
-				while (pos > 0 && IsASpace(CharacterAfter(pos).character))
+			} else if (IsSpace(ceStart.character)) {
+				while (pos > 0 && IsSpace(CharacterAfter(pos).character))
 					pos -= CharacterBefore(pos).widthBytes;
-				if (!IsASpace(CharacterAfter(pos).character))
+				if (!IsSpace(CharacterAfter(pos).character))
 					pos += CharacterAfter(pos).widthBytes;
 			} else if (!IsASCII(ceStart.character)) {
 				while (pos > 0 && !IsASCII(CharacterAfter(pos).character))
@@ -2533,28 +2529,28 @@ Sci::Position Document::WordPartRight(Sci::Position pos) const {
 	if (!IsASCII(ceStart.character)) {
 		while (pos < length && !IsASCII(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
-	} else if (IsLowerCase(ceStart.character)) {
-		while (pos < length && IsLowerCase(CharacterAfter(pos).character))
+	} else if (IsLower(ceStart.character)) {
+		while (pos < length && IsLower(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
-	} else if (IsUpperCase(ceStart.character)) {
-		if (IsLowerCase(CharacterAfter(pos + ceStart.widthBytes).character)) {
+	} else if (IsUpper(ceStart.character)) {
+		if (IsLower(CharacterAfter(pos + ceStart.widthBytes).character)) {
 			pos += CharacterAfter(pos).widthBytes;
-			while (pos < length && IsLowerCase(CharacterAfter(pos).character))
+			while (pos < length && IsLower(CharacterAfter(pos).character))
 				pos += CharacterAfter(pos).widthBytes;
 		} else {
-			while (pos < length && IsUpperCase(CharacterAfter(pos).character))
+			while (pos < length && IsUpper(CharacterAfter(pos).character))
 				pos += CharacterAfter(pos).widthBytes;
 		}
-		if (IsLowerCase(CharacterAfter(pos).character) && IsUpperCase(CharacterBefore(pos).character))
+		if (IsLower(CharacterAfter(pos).character) && IsUpper(CharacterBefore(pos).character))
 			pos -= CharacterBefore(pos).widthBytes;
-	} else if (IsADigit(ceStart.character)) {
-		while (pos < length && IsADigit(CharacterAfter(pos).character))
+	} else if (IsDigit(ceStart.character)) {
+		while (pos < length && IsDigit(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
 	} else if (IsASCIIPunctuationCharacter(ceStart.character)) {
 		while (pos < length && IsASCIIPunctuationCharacter(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
-	} else if (IsASpace(ceStart.character)) {
-		while (pos < length && IsASpace(CharacterAfter(pos).character))
+	} else if (IsSpace(ceStart.character)) {
+		while (pos < length && IsSpace(CharacterAfter(pos).character))
 			pos += CharacterAfter(pos).widthBytes;
 	} else {
 		pos += CharacterAfter(pos).widthBytes;
@@ -3196,7 +3192,7 @@ const char *BuiltinRegex::SubstituteByPosition(Document *doc, const char *text, 
 	search.GrabMatches(di);
 	for (Sci::Position j = 0; j < *length; j++) {
 		if (text[j] == '\\') {
-			if (text[j + 1] >= '0' && text[j + 1] <= '9') {
+			if (IsDigit(text[j + 1])) {
 				const unsigned int patNum = text[j + 1] - '0';
 				const Sci::Position len = search.eopat[patNum] - search.bopat[patNum];
 				if (!search.pat[patNum].empty())	// Will be null if try for a match that did not occur

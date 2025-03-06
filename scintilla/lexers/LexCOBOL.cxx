@@ -35,37 +35,21 @@ using namespace Scintilla;
 #define IN_FLAGS 0xF
 #define NOT_HEADER 0x10
 
-inline bool isCOBOLoperator(char ch)
-{
-	return isoperator(ch);
+inline bool isCobolWordChar(char ch) {
+	return IsAlnum(ch) || ch == '-';
 }
 
-inline bool isCOBOLwordchar(char ch)
-{
-	return IsASCII(ch) && (isalnum(ch) || ch == '-');
-}
-
-inline bool isCOBOLwordstart(char ch)
-{
-	return IsASCII(ch) && isalnum(ch);
-}
-
-static int CountBits(int nBits)
-{
+static int CountBits(int nBits) {
 	int count = 0;
-	for (int i = 0; i < 32; ++i)
-		{
+	for (int i = 0; i < 32; i++) {
 		count += nBits & 1;
 		nBits >>= 1;
-		}
+	}
 	return count;
 }
 
-static void getRange(Sci_PositionU start,
-		Sci_PositionU end,
-		Accessor &styler,
-		char *s,
-		Sci_PositionU len) {
+static void getRange(Sci_PositionU start, Sci_PositionU end,
+					 Accessor &styler, char *s, Sci_PositionU len) {
 	Sci_PositionU i = 0;
 	while ((i < end - start + 1) && (i < len-1)) {
 		s[i] = static_cast<char>(tolower(styler[start + i]));
@@ -98,11 +82,11 @@ static int classifyWordCOBOL(Sci_PositionU start, Sci_PositionU end,
 		chAttr = SCE_C_NUMBER;
 		char *p = s + 1;
 		while (*p) {
-			if ((!isdigit(*p) && (*p) != 'v') && isCOBOLwordchar(*p)) {
+			if ((!isdigit(*p) && (*p) != 'v') && isCobolWordChar(*p)) {
 				chAttr = SCE_C_IDENTIFIER;
 				break;
 			}
-			++p;
+			p++;
 		}
 	}
 	else {
@@ -168,23 +152,23 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	styler.StartSegment(startPos);
 	bool bNewLine = true;
-	bool bAarea = !IsASpace(chNext);
+	bool bAarea = !IsSpace(chNext);
 	int column = 0;
 	for (Sci_PositionU i = startPos; i < lengthDoc; i++) {
 		char ch = chNext;
 		
 		chNext = styler.SafeGetCharAt(i + 1);
 		
-		++column;
+		column++;
 		
 		if (bNewLine) {
 			column = 0;
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !IsASpace(ch);
-			}
+			bAarea = !IsSpace(ch);
+		}
 		bool bSetNewLine = false;
-		if ((ch == '\r' && chNext != '\n') || (ch == '\n')) {
+		if (IsEOL(ch, chNext)) {
 			// Trigger on CR only (Mac style) or either on LF from CR+LF (Dos/Win) or on LF alone (Unix)
 			// Avoid triggering two times on Dos/Win
 			// End of line
@@ -207,7 +191,7 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		if (state == SCE_C_DEFAULT) {
-			if (isCOBOLwordstart(ch) || (ch == '$' && IsASCII(chNext) && isalpha(chNext))) {
+			if (IsAlnum(ch) || (ch == '$' && IsAlpha(chNext))) {
 				ColourTo(styler, i-1, state);
 				state = SCE_C_IDENTIFIER;
 			} else if (column == 6 && ch == '*') {
@@ -239,12 +223,12 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			} else if (ch == '?' && column == 0) {
 				ColourTo(styler, i-1, state);
 				state = SCE_C_PREPROC;
-			} else if (isCOBOLoperator(ch)) {
+			} else if (IsOperator(ch)) {
 				ColourTo(styler, i-1, state);
 				ColourTo(styler, i, SCE_C_OPERATOR);
 			}
 		} else if (state == SCE_C_IDENTIFIER) {
-			if (!isCOBOLwordchar(ch)) {
+			if (!isCobolWordChar(ch)) {
 				int lStateChange = classifyWordCOBOL(styler.GetStartSegment(), i - 1,
 													 keywordlists, styler,
 													 nContainment, &bAarea);
@@ -260,32 +244,32 @@ static void ColouriseCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 					state = SCE_C_STRING;
 				} else if (ch == '\'') {
 					state = SCE_C_CHARACTER;
-				} else if (isCOBOLoperator(ch)) {
+				} else if (IsOperator(ch)) {
 					ColourTo(styler, i, SCE_C_OPERATOR);
 				}
 			}
 		} else {
 			if (state == SCE_C_PREPROC) {
-				if (IsACRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
+				if (IsCRLF(ch) && !(chPrev == '\\' || chPrev == '\r')) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENT) {
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					ColourTo(styler, i, state);
 					state = SCE_C_DEFAULT;
 				}
 			} else if (state == SCE_C_COMMENTDOC) {
-				if (IsACRLF(ch)) {
-					if (((i > styler.GetStartSegment() + 2) || (
-						(initStyle == SCE_C_COMMENTDOC) &&
-						(styler.GetStartSegment() == static_cast<Sci_PositionU>(startPos))))) {
-							ColourTo(styler, i, state);
-							state = SCE_C_DEFAULT;
+				if (IsCRLF(ch)) {
+					if (i > (styler.GetStartSegment() + 2) ||
+						(initStyle == SCE_C_COMMENTDOC &&
+						 styler.GetStartSegment() == startPos)) {
+						ColourTo(styler, i, state);
+						state = SCE_C_DEFAULT;
 					}
 				}
 			} else if (state == SCE_C_COMMENTLINE) {
-				if (IsACRLF(ch)) {
+				if (IsCRLF(ch)) {
 					ColourTo(styler, i-1, state);
 					state = SCE_C_DEFAULT;
 				}
@@ -321,30 +305,29 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 	char chNext = styler[startPos];
 	
 	bool bNewLine = true;
-	bool bAarea = !IsASpace(chNext);
+	bool bAarea = !IsSpace(chNext);
 	int column = 0;
 	bool bComment = false;
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
-		++column;
+		column++;
 		
 		if (bNewLine) {
 			column = 0;
 			bComment = (ch == '*' || ch == '/' || ch == '?');
 		}
 		if (column <= 1 && !bAarea) {
-			bAarea = !IsASpace(ch);
-			}
-		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-		if (atEOL) {
+			bAarea = !IsSpace(ch);
+		}
+		if (IsEOL(ch, chNext)) {
 			int nContainment = styler.GetLineState(lineCurrent);
 			int lev = CountBits(nContainment & IN_FLAGS) | SC_FOLDLEVELBASE;
 			if (bAarea && !bComment)
-				--lev;
+				lev--;
 			if (visibleChars == 0 && foldCompact)
 				lev |= SC_FOLDLEVELWHITEFLAG;
-			if ((bAarea) && (visibleChars > 0) &&
+			if (bAarea && (visibleChars > 0) &&
 				!(nContainment & NOT_HEADER) && !bComment)
 				lev |= SC_FOLDLEVELHEADERFLAG;
 			if (lev != styler.LevelAt(lineCurrent)) {
@@ -365,7 +348,7 @@ static void FoldCOBOLDoc(Sci_PositionU startPos, Sci_Position length,
 			bNewLine = false;
 		}
 		
-		if (!IsASpace(ch))
+		if (!IsSpace(ch))
 			visibleChars++;
 	}
 	

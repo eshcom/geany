@@ -251,11 +251,11 @@ void ColouriseCamlDoc(
 				state2 = SCE_CAML_STRING;
 			else if (sc.Match('(', '*'))
 				state2 = SCE_CAML_COMMENT, sc.Forward(), sc.ch = ' '; // (*)...
-			else if (strchr("!?~"			/* Caml "prefix-symbol" */
-					"=<>@^|&+-*/$%"			/* Caml "infix-symbol" */
-					"()[]{};,:.#", sc.ch)	// Caml "bracket" or ;,:.#
+			else if (strchr("!?~"					/* Caml "prefix-symbol" */
+							"=<>@^|&+-*/$%"			/* Caml "infix-symbol" */
+							"()[]{};,:.#", sc.ch)	// Caml "bracket" or ;,:.#
 											// SML "extra" ident chars
-				|| (isSML && (sc.Match('\\') || sc.Match('`'))))
+					 || (isSML && (sc.Match('\\') || sc.Match('`'))))
 				state2 = SCE_CAML_OPERATOR;
 			break;
 		
@@ -305,15 +305,15 @@ void ColouriseCamlDoc(
 			// [try to] interpret as [additional] operator char
 			const char* o = 0;
 			if (iscaml(sc.ch) || isspace(sc.ch)			// ident or whitespace
-				|| (o = strchr(")]};,\'\"#", sc.ch),o)	// "termination" chars
+				|| (o = strchr(")]};,\'\"#", sc.ch), o)	// "termination" chars
 				|| (!isSML && sc.Match('`'))			// Caml extra term char
 				|| (!strchr("!$%&*+-./:<=>?@^|~", sc.ch)// "operator" chars
 														// SML extra ident chars
 					&& !(isSML && (sc.Match('\\') || sc.Match('`'))))) {
 				// check for INCLUSIVE termination
 				if (o && strchr(")]};,", sc.ch)) {
-					if ((sc.Match(')') && sc.chPrev == '(')
-						|| (sc.Match(']') && sc.chPrev == '['))
+					if ((sc.Match(')') && sc.chPrev == '(') ||
+						(sc.Match(']') && sc.chPrev == '['))
 						// special-case "()" and "[]" tokens as KEYWORDS
 						sc.ChangeState(SCE_CAML_KEYWORD);
 					chColor++;
@@ -326,28 +326,27 @@ void ColouriseCamlDoc(
 		
 		case SCE_CAML_NUMBER:
 			// [try to] interpret as [additional] numeric literal char
-			if ((!isSML && sc.Match('_')) || IsADigit(sc.ch, chBase))
+			if ((!isSML && sc.Match('_')) || IsDigit(sc.ch, chBase))
 				break;
 			// how about an integer suffix?
 			if (!isSML && (sc.Match('l') || sc.Match('L') || sc.Match('n'))
-				&& (sc.chPrev == '_' || IsADigit(sc.chPrev, chBase)))
+				&& (sc.chPrev == '_' || IsDigit(sc.chPrev, chBase)))
 				break;
 			// or a floating-point literal?
 			if (chBase == 10) {
 				// with a decimal point?
 				if (sc.Match('.')
 					&& ((!isSML && sc.chPrev == '_')
-						|| IsADigit(sc.chPrev, chBase)))
+						|| IsDigit(sc.chPrev, chBase)))
 					break;
 				// with an exponent? (I)
-				if ((sc.Match('e') || sc.Match('E'))
-					&& ((!isSML && (sc.chPrev == '.' || sc.chPrev == '_'))
-						|| IsADigit(sc.chPrev, chBase)))
+				if (IsDecExponent(sc.ch) &&
+					((!isSML && (sc.chPrev == '.' || sc.chPrev == '_'))
+					 || IsDigit(sc.chPrev, chBase)))
 					break;
 				// with an exponent? (II)
-				if (((!isSML && (sc.Match('+') || sc.Match('-')))
-						|| (isSML && sc.Match('~')))
-					&& (sc.chPrev == 'e' || sc.chPrev == 'E'))
+				if (((!isSML && IsSign(sc.ch)) || (isSML && sc.Match('~')))
+					&& IsDecExponent(sc.chPrev))
 					break;
 			}
 			// it looks like we have run out of number

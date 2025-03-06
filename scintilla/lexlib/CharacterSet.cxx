@@ -18,8 +18,8 @@ namespace Scintilla {
 int CompareCaseInsensitive(const char *a, const char *b) {
 	while (*a && *b) {
 		if (*a != *b) {
-			const char upperA = MakeUpperCase(*a);
-			const char upperB = MakeUpperCase(*b);
+			const char upperA = ToUpper(*a);
+			const char upperB = ToUpper(*b);
 			if (upperA != upperB)
 				return upperA - upperB;
 		}
@@ -33,8 +33,8 @@ int CompareCaseInsensitive(const char *a, const char *b) {
 int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 	while (*a && *b && len) {
 		if (*a != *b) {
-			const char upperA = MakeUpperCase(*a);
-			const char upperB = MakeUpperCase(*b);
+			const char upperA = ToUpper(*a);
+			const char upperB = ToUpper(*b);
 			if (upperA != upperB)
 				return upperA - upperB;
 		}
@@ -52,7 +52,7 @@ int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 void RemoveAllSpaces(char *s) {
 	int ind = 0;
 	for (int i = 0; s[i]; i++)
-		if (!IsASpaceOrTab(s[i]))
+		if (!IsSpaceOrTab(s[i]))
 			s[ind++] = s[i];
 	s[ind] = '\0';
 }
