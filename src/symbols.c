@@ -79,12 +79,14 @@ static const TMTagType tm_forward_types = tm_tag_prototype_t |
 enum
 {
 	ICON_CLASS,
+	ICON_IMPORT,
 	ICON_MACRO,
 	ICON_MEMBER,
 	ICON_METHOD,
 	ICON_NAMESPACE,
 	ICON_OTHER,
 	ICON_STRUCT,
+	ICON_TYPE,
 	ICON_VAR,
 	ICON_NONE,
 	N_ICONS = ICON_NONE
@@ -97,12 +99,14 @@ static struct
 }
 symbols_icons[N_ICONS] = {
 	[ICON_CLASS]		= { "classviewer-class", NULL },
+	[ICON_IMPORT]		= { "classviewer-import", NULL },
 	[ICON_MACRO]		= { "classviewer-macro", NULL },
 	[ICON_MEMBER]		= { "classviewer-member", NULL },
 	[ICON_METHOD]		= { "classviewer-method", NULL },
 	[ICON_NAMESPACE]	= { "classviewer-namespace", NULL },
 	[ICON_OTHER]		= { "classviewer-other", NULL },
 	[ICON_STRUCT]		= { "classviewer-struct", NULL },
+	[ICON_TYPE]			= { "classviewer-type", NULL },
 	[ICON_VAR]			= { "classviewer-var", NULL },
 };
 
@@ -510,9 +514,9 @@ static void add_top_level_items(GeanyDocument *doc)
 		}
 		case GEANY_FILETYPES_HASKELL:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_namespace, _("Module"), ICON_NONE,
-				&tv_iters.tag_type, _("Types"), ICON_NONE,
-				&tv_iters.tag_macro, _("Type constructors"), ICON_NONE,
+				&tv_iters.tag_namespace, _("Module"), ICON_NAMESPACE,
+				&tv_iters.tag_type, _("Types"), ICON_TYPE,
+				&tv_iters.tag_macro, _("Type constructors"), ICON_STRUCT,
 				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
 				NULL);
 			break;
@@ -588,7 +592,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_interface), _("Traits"), ICON_CLASS,
 				&(tv_iters.tag_class), _("Implementations"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_STRUCT,
+				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_TYPE,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
 				&(tv_iters.tag_macro), _("Macros"), ICON_MACRO,
 				&(tv_iters.tag_member), _("Methods"), ICON_MEMBER,
@@ -603,7 +607,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
 				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Types"), ICON_STRUCT,
+				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
 				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
@@ -705,7 +709,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_member), _("Methods"), ICON_MACRO,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_externvar), _("Imports"), ICON_NAMESPACE,
+				&(tv_iters.tag_externvar), _("Imports"), ICON_IMPORT,
 				NULL);
 			break;
 		}
@@ -715,7 +719,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
 				&(tv_iters.tag_class), _("Entities"), ICON_CLASS,
 				&(tv_iters.tag_struct), _("Architectures"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Types"), ICON_OTHER,
+				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_function), _("Functions / Procedures"), ICON_METHOD,
 				&(tv_iters.tag_variable), _("Variables / Signals"), ICON_VAR,
 				&(tv_iters.tag_member), _("Processes / Blocks / Components"), ICON_MEMBER,
@@ -742,7 +746,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
 				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
-				&(tv_iters.tag_type), _("Enums"), ICON_STRUCT,
+				&(tv_iters.tag_type), _("Enums"), ICON_TYPE,
 				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
 				NULL);
 			break;
@@ -750,7 +754,7 @@ static void add_top_level_items(GeanyDocument *doc)
 		case GEANY_FILETYPES_AS:
 		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_externvar), _("Imports"), ICON_NAMESPACE,
+				&(tv_iters.tag_externvar), _("Imports"), ICON_IMPORT,
 				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
 				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
@@ -768,7 +772,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
-				&(tv_iters.tag_type), _("Types"), ICON_MACRO,
+				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
 				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
 				NULL);
@@ -849,7 +853,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
 				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_STRUCT,
+				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_TYPE,
 				NULL);
 			
 			if (ft_id != GEANY_FILETYPES_D)
