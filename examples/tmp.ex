@@ -565,6 +565,15 @@ defmodule MyRouter do
     :.
     :..
     :...
+    :|
+    :||
+    :|||
+    :/
+    :\\
+    :->
+    :<-
+    :<=
+    :%{}
   end
   
   defmodule Test1 do

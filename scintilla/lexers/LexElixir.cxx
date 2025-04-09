@@ -35,25 +35,28 @@ struct AtomPunctSequence {
 		charsLeft = 0;
 		validChar = ' ';
 	}
-	void initAtomPunctState(int nextChar) {
-		if (strchr("&-+=.", nextChar)) {
+	void initAtomPunctState(int ch) {
+		if (strchr("&-+=.|", ch)) {
 			charsLeft = 3;
-			validChar = nextChar;
-		} else if (nextChar == '<') {
+			validChar = ch;
+		} else if (ch == '*' || ch == '\\') {
+			charsLeft = 2;
+			validChar = ch;
+		} else if (ch == '<') {
 			charsLeft = 2;
 			validChar = '>';
-		} else if (nextChar == '{') {
+		} else if (ch == '{') {
 			charsLeft = 2;
 			validChar = '}';
-		} else if (nextChar == '*') {
-			charsLeft = 2;
-			validChar = '*';
 		} else {
 			charsLeft = 1;
 		}
 	}
-	bool atAtomPunctEnd(int currChar) const {
-		return (charsLeft <= 0) || (currChar != validChar);
+	bool atAtomPunctBeg(int ch) const {
+		return strchr("!@%^|/\\<>{}*&-+=.", ch) != NULL;
+	}
+	bool atAtomPunctEnd(int ch) const {
+		return (charsLeft <= 0) || (ch != validChar);
 	}
 };
 
@@ -907,10 +910,15 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				string_state = sc.state;
 				canbe_interpolate = true;
 				
-			} else if (sc.ch == ':' && strchr("!@%^/<>{}*&-+=.", sc.chNext)) {
-				atomPunctSeq.initAtomPunctState(sc.chNext);
+			} else if (sc.ch == ':' && atomPunctSeq.atAtomPunctBeg(sc.chNext)) {
 				sc.SetState(SCE_ELIXIR_ATOM_PUNCT);
 				sc.Forward();
+				if (sc.Match('-', '>') || sc.Match('<', '-') || sc.Match('<', '='))
+					sc.Forward();
+				else if (sc.Match("%{}"))
+					sc.Forward(2);
+				else
+					atomPunctSeq.initAtomPunctState(sc.ch);
 				
 			} else if (IsDigit(sc.ch)) {
 				number_state = NUMERAL_START;
