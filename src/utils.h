@@ -244,6 +244,8 @@ typedef struct
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
 MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2);
 
+void utils_add_short_home_dir(GString *str, const gchar *dirname);
+
 #ifdef GEANY_PRIVATE
 
 typedef enum
@@ -257,8 +259,6 @@ typedef enum
 	
 	RESOURCE_DIR_COUNT
 } GeanyResourceDirType;
-
-gint utils_match_dirs(const gchar *dir1, const gchar *dir2);
 
 gint utils_get_line_endings(const gchar* buffer, gsize size);
 
