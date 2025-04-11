@@ -2623,3 +2623,20 @@ MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2)
 		dir2++;
 	}
 }
+
+GEANY_API_SYMBOL
+void utils_add_short_home_dir(GString *str, const gchar *dirname)
+{
+	const gchar *home_dir = g_get_home_dir();
+	MatchDirs matchdirs = utils_match_dirs_obj(home_dir, dirname);
+	
+	if (matchdirs.match == MATCH_DIRS_PREF_1)
+	{
+		g_string_append(str, "~/");
+		g_string_append(str, matchdirs.suff);
+	}
+	else if (matchdirs.match == MATCH_DIRS_FULL)
+		g_string_append(str, "~");
+	else
+		g_string_append(str, dirname);
+}
