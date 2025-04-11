@@ -56,16 +56,6 @@ G_BEGIN_DECLS
 		g_free(setptr_tmp);			\
 	} while (0)
 
-#ifndef GEANY_DISABLE_DEPRECATED
-/** @deprecated 2011/11/15 - use SETPTR() instead. */
-#define setptr(ptr, result)			\
-	{								\
-		gpointer setptr_tmp = ptr;	\
-		ptr = result;				\
-		g_free(setptr_tmp);			\
-	}
-#endif
-
 /** Duplicates a string on the stack using @c g_alloca().
  * Like glibc's @c strdupa(), but portable.
  * @note You must include @c string.h yourself.
