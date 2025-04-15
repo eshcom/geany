@@ -192,6 +192,10 @@ static inline char GetClosingChar(char opening_char) {
 	while (sc.More() && IsSpaceOrTab(sc.ch))				\
 		sc.Forward();
 
+#define SKIP_NEXT_SPACES									\
+	while (sc.More() && IsSpaceOrTab(sc.chNext))			\
+		sc.Forward();
+
 #define CHANGE_STATE_BY_MODULE								\
 	module_type == KERNEL_MODULE && stdFuncs.InList(cur)	\
 		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)				\
@@ -726,6 +730,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				}
 				sc.GetCurrent(cur, sizeof(cur));
+				RemoveAllSpaces(cur);
 				
 				if (stdModuleAttrs.InList(cur)) {
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE_ATTR);
@@ -888,11 +893,15 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (sc.ch == '%') {
 				sc.SetState(SCE_ELIXIR_UNKNOWN);
+				SKIP_NEXT_SPACES
+				
 				if (IsUpper(sc.chNext) || strchr("{_", sc.chNext)) {
 					sc.ChangeState(SCE_ELIXIR_MAP_OPER);
 				}
 			} else if (sc.ch == '@') {
 				sc.SetState(SCE_ELIXIR_UNKNOWN);
+				SKIP_NEXT_SPACES
+				
 				if (IsLower(sc.chNext) || sc.chNext == '_') {
 					sc.ChangeState(SCE_ELIXIR_MODULE_ATTR);
 					sc.Forward();
