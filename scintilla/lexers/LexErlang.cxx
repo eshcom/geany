@@ -85,11 +85,7 @@ static bool isFuncDefinition(Sci_Position pos, Sci_PositionU endPos,
 		pos++; // skip ')'
 		while (pos < endPos && IsSpace(styler[pos]))
 			pos++;
-		if (pos + 1 < endPos && styler[pos] == '-' && styler[pos + 1] == '>')
-			return true;
-		else if (pos + 3 < endPos &&
-				 styler[pos] == 'w' && styler[pos + 1] == 'h' &&
-				 styler[pos + 2] == 'e' && styler[pos + 3] == 'n')
+		if (styler.Match(pos, "->") || styler.Match(pos, "when"))
 			return true;
 	}
 	return false;
@@ -145,6 +141,10 @@ static inline bool IsValidFuncDefStyle(int style) {
 			style == SCE_ERLANG_OPERATOR ||
 			style == SCE_ERLANG_ATOM);
 }
+
+#define SKIP_SPACES									\
+	while (sc.More() && IsSpaceOrTab(sc.ch))		\
+		sc.Forward();
 
 #define SKIP_NEXT_SPACES							\
 	while (sc.More() && IsSpaceOrTab(sc.chNext))	\
@@ -423,8 +423,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				sc.GetCurrent(cur, sizeof(cur));
-				while (sc.More() && IsSpaceOrTab(sc.ch))
-					sc.Forward();
+				SKIP_SPACES
 				
 				if (sc.ch == ':' && sc.chNext != '=' && sc.chNext != ':') {
 					// esh: set module type,
