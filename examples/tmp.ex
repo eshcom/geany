@@ -534,6 +534,11 @@ defmodule MyRouter do
 
     Logger.info("Получено сообщение ide:hint ##{payload["id"]}")
     Logger.warning("Expression debug: [#{Enum.join(tokens, ",\n")}]} = #{inspect(values)}")
+    
+    updated_table =
+      state.decision_table
+      |> anon_fun . ()
+      |> DecisionTable.validate()    
   end
   
   defp temp123() do

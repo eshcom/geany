@@ -795,7 +795,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					} else if (maybe_typefunc && sc.ch != ':' &&
 							   typeFuncs.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_TYPE_FUNC);
-					} else if (sc.ch == '(' || ident_state == PIPEOPER_STATE) {
+					} else if (sc.ch == '(' || (ident_state == PIPEOPER_STATE &&
+												sc.ch != '.')) {
 						CHANGE_STATE_BY_FUNCLIST
 					} else if (sc.ch == '/') {
 						MOVE_INDEX_TO_NONSPACE
