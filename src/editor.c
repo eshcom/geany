@@ -3946,6 +3946,24 @@ static void editor_highlight_braces(GeanyEditor *editor, gint cur_pos)
 }
 
 
+static gboolean is_substyle_block_comment(gint lexer, gint style)
+{
+	switch (lexer)
+	{
+		case SCLEX_COBOL:
+		case SCLEX_CPP:
+			return (style == SCE_C_COMMENTDOCKEYWORD ||
+					style == SCE_C_COMMENTDOCKEYWORDERROR);
+		
+		case SCLEX_D:
+			return (style == SCE_D_COMMENTDOCKEYWORD ||
+					style == SCE_D_COMMENTDOCKEYWORDERROR);
+		
+		default:
+			return FALSE;
+	}
+}
+
 static gboolean in_block_comment(gint lexer, gint style)
 {
 	switch (lexer)
@@ -3983,10 +4001,9 @@ static gboolean in_block_comment(gint lexer, gint style)
 
 static gboolean is_comment_char(gchar c, gint lexer)
 {
-	if ((c == '*' || c == '+') && lexer == SCLEX_D)
-		return TRUE;
-	else
 	if (c == '*')
+		return TRUE;
+	else if (c == '+' && lexer == SCLEX_D)
 		return TRUE;
 	
 	return FALSE;
@@ -3998,58 +4015,80 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 	ScintillaObject *sci = editor->sci;
 	gint lexer = sci_get_lexer(sci);
 	
-	gint style;
+	gint prev_line_style;
 	gint prev_line_pos = sci_get_line_end_position(sci, cur_line - 1);
 	if (prev_line_pos > 0)
 	{
-		style = sci_get_style_at(sci, prev_line_pos - 1);
-		if (!in_block_comment(lexer, style))
+		prev_line_style = sci_get_style_at(sci, --prev_line_pos);
+		while (prev_line_pos > 0 &&
+			   is_substyle_block_comment(lexer, prev_line_style))
+		{
+			prev_line_style = sci_get_style_at(sci, --prev_line_pos);
+		}
+		if (!in_block_comment(lexer, prev_line_style))
 			return;
 	}
 	else
 		return;
 	
 	/* Check whether the comment block continues on this line */
-	gint indent_pos = sci_get_line_indent_position(sci, cur_line);
-	if (sci_get_style_at(sci, indent_pos) == style ||
-		indent_pos >= sci_get_length(sci))
+	gint cur_indent_pos = sci_get_line_indent_position(sci, cur_line);
+	gint cur_indent_style = sci_get_style_at(sci, cur_indent_pos);
+	if (cur_indent_style == prev_line_style ||
+		is_substyle_block_comment(lexer, cur_indent_style) ||
+		cur_indent_pos >= sci_get_length(sci))
 	{
 		gint prev_indent_pos = sci_get_line_indent_position(sci, cur_line - 1);
 		
 		// esh: check if a multi line comment is a continuation of the code, example:
 		// 		int index = 0; /* for test cases */
-		if (!in_block_comment(lexer, sci_get_style_at(sci, prev_indent_pos)))
+		gint prev_indent_style = sci_get_style_at(sci, prev_indent_pos);
+		if (!in_block_comment(lexer, prev_indent_style) &&
+			!is_substyle_block_comment(lexer, prev_indent_style))
 		{
-			while (sci_get_style_at(sci, --prev_line_pos - 1) == style);
+			gint style = sci_get_style_at(sci, prev_line_pos - 1);
+			while (style == prev_line_style ||
+				   is_substyle_block_comment(lexer, style))
+			{
+				style = sci_get_style_at(sci, --prev_line_pos - 1);
+			}
 			
 			const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
 			
 			gint indent_width = sci_get_col_from_position(sci, prev_line_pos) -
 											sci_get_col_from_position(sci,
 													sci_get_current_position(sci));
-			// +3 is the offset of "/* " (see example comment below at line 4042)
-			gchar *whitespace = get_whitespace(iprefs, indent_width + 3);
-			
+			gchar *whitespace = get_whitespace(iprefs, indent_width + 3); /* +3 is the offset of "/* "
+																			 (for example this comment) */
 			sci_add_text(sci, whitespace);
 			g_free(whitespace);
 		}
 		else
 		{
-			const gchar *whitespace = ""; /* to hold whitespace if needed */
+			/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
+			const gchar *continuation =
+							(prev_line_style == SCE_D_COMMENTNESTED) ? "+" : "*";
+			gchar *result;
+			gchar prev_ident_char1 = sci_get_char_at(sci, prev_indent_pos);
+			gchar prev_ident_char2 = sci_get_char_at(sci, prev_indent_pos + 1);
+			
 			/* check whether we are on the second line of multi line comment */
-			if (sci_get_char_at(sci, prev_indent_pos) == '/' &&
-				is_comment_char(sci_get_char_at(sci, prev_indent_pos + 1), lexer))
+			if (prev_ident_char1 == '/' && is_comment_char(prev_ident_char2, lexer))
 			{ /* we are on the second line of a multi line comment,
 				 so we have to insert white space */
-				whitespace = " ";
+				result = g_strconcat(" ", continuation, " ", NULL);
 			}
-			
-			/* the type of comment, '*' (C/C++/Java), '+' and the others (D) */
-			const gchar *continuation = "*";
-			if (style == SCE_D_COMMENTNESTED)
-				continuation = "+"; /* for nested comments in D */
-			
-			gchar *result = g_strconcat(whitespace, continuation, " ", NULL);
+			else if (is_comment_char(prev_ident_char1, lexer))
+			{
+				if (is_comment_char(prev_ident_char2, lexer))
+					result = g_strconcat(continuation, continuation, " ", NULL);
+				else
+					result = g_strconcat(continuation, " ", NULL);
+			}
+			else
+			{
+				result = g_strdup("");
+			}
 			sci_add_text(sci, result);
 			g_free(result);
 		}
