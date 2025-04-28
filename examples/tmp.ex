@@ -281,7 +281,8 @@ defmodule MyRouter do
     send_resp(conn, 200, "world")
   end
 
-  ~s/ожидается указание компонента и порта в формате $node."компонент"."порт" для получения значения./
+  s = ~s/ожидается указание компонента и порта в формате $node."компонент"."порт" для получения значения./
+  s = ~r/(.+) in nofile on line (\d+):\n\n([\ ]+)(.*)\n([\ ]+)\^ at column (\d+)\n/ms
 
   defp func1() do
     alias Df.Diagram.Port
