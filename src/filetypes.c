@@ -798,8 +798,7 @@ void filetypes_select_radio_item(const GeanyFiletype *ft)
 }
 
 
-static void
-on_filetype_change(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_filetype_change(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
 	
