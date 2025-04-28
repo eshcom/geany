@@ -265,6 +265,12 @@ static inline char GetClosingChar(char opening_char) {
 		continue;															\
 	CHECK_INTERPOLATE_STRING
 
+#define CHECK_CLOSING_TRIPLE												\
+	if (sc.Match(GetTripleQuote(closing_char))) {							\
+		sc.Forward(2);														\
+		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
+	}
+
 #define CHECK_CLOSING_CHAR													\
 	} else if (sc.ch == closing_char) {										\
 		sc.Forward();														\
@@ -279,13 +285,11 @@ static inline char GetClosingChar(char opening_char) {
 #define CHECK_CLOSING_STRING												\
 	} else {																\
 		sc.SetState(string_state);											\
-		if ((string_state == SCE_ELIXIR_TRIPLE ||							\
-			 string_state == SCE_ELIXIR_TRIPLEVAL ||						\
-			 string_state == SCE_ELIXIR_LITERALTRIPLE ||					\
-			 string_state == SCE_ELIXIR_LITERALTRIPLEVAL)					\
-			&& sc.Match(GetTripleQuote(closing_char))) {					\
-			sc.Forward(2);													\
-			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);							\
+		if (sc.state == SCE_ELIXIR_TRIPLE ||								\
+			sc.state == SCE_ELIXIR_TRIPLEVAL ||								\
+			sc.state == SCE_ELIXIR_LITERALTRIPLE ||							\
+			sc.state == SCE_ELIXIR_LITERALTRIPLEVAL) {						\
+			CHECK_CLOSING_TRIPLE											\
 		CHECK_CLOSING_CHAR													\
 	}
 
@@ -617,9 +621,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ELIXIR_LITERALTRIPLE :
 			case SCE_ELIXIR_LITERALTRIPLEVAL : {
 				CHECK_ESCAPE_FORMAT_SEQ
-				} else if (sc.Match(GetTripleQuote(closing_char))) {
-					sc.Forward(2);
-					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
+				} else {
+					CHECK_CLOSING_TRIPLE
 				}
 			} break;
 			

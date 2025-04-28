@@ -283,6 +283,7 @@ defmodule MyRouter do
 
   s = ~s/ожидается указание компонента и порта в формате $node."компонент"."порт" для получения значения./
   s = ~r/(.+) in nofile on line (\d+):\n\n([\ ]+)(.*)\n([\ ]+)\^ at column (\d+)\n/ms
+  s = """\n" triple string """
 
   defp func1() do
     alias Df.Diagram.Port
