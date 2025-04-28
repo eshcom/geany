@@ -265,6 +265,17 @@ static inline char GetClosingChar(char opening_char) {
 		continue;															\
 	CHECK_INTERPOLATE_STRING
 
+#define CHECK_CLOSING_CHAR													\
+	} else if (sc.ch == closing_char) {										\
+		sc.Forward();														\
+		if (sc.state == SCE_ELIXIR_LITERAL									\
+			|| sc.state == SCE_ELIXIR_LITERALVAL) {							\
+			while (strchr("uismxfU", sc.ch)) /* regex modifiers */			\
+				sc.Forward();												\
+		}																	\
+		sc.SetState(SCE_ELIXIR_DEFAULT);									\
+	}
+
 #define CHECK_CLOSING_STRING												\
 	} else {																\
 		sc.SetState(string_state);											\
@@ -275,9 +286,7 @@ static inline char GetClosingChar(char opening_char) {
 			&& sc.Match(GetTripleQuote(closing_char))) {					\
 			sc.Forward(2);													\
 			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);							\
-		} else if (sc.ch == closing_char) {									\
-			sc.ForwardSetState(SCE_ELIXIR_DEFAULT);							\
-		}																	\
+		CHECK_CLOSING_CHAR													\
 	}
 
 #define DEFINE_ASSIGN_TO_STRFIELD											\
@@ -621,15 +630,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ELIXIR_LITERAL :
 			case SCE_ELIXIR_LITERALVAL : {
 				CHECK_ESCAPE_FORMAT_SEQ
-				} else if (sc.ch == closing_char) {
-					sc.Forward();
-					if (sc.state == SCE_ELIXIR_LITERAL
-						|| sc.state == SCE_ELIXIR_LITERALVAL) {
-						while (strchr("uismxfU", sc.ch)) // regex modifiers
-							sc.Forward();
-					}
-					sc.SetState(SCE_ELIXIR_DEFAULT);
-				}
+				CHECK_CLOSING_CHAR
 			} break;
 			
 			case SCE_ELIXIR_CHARACTER : {
