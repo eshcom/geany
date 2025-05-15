@@ -80,6 +80,7 @@ enum
 {
 	ICON_CLASS,
 	ICON_IMPORT,
+	ICON_INTERFACE,
 	ICON_MACRO,
 	ICON_MEMBER,
 	ICON_METHOD,
@@ -88,6 +89,7 @@ enum
 	ICON_STRUCT,
 	ICON_TYPE,
 	ICON_VAR,
+	ICON_VIEW,
 	ICON_NONE,
 	N_ICONS = ICON_NONE
 };
@@ -100,6 +102,7 @@ static struct
 symbols_icons[N_ICONS] = {
 	[ICON_CLASS]		= { "classviewer-class", NULL },
 	[ICON_IMPORT]		= { "classviewer-import", NULL },
+	[ICON_INTERFACE]	= { "classviewer-interface", NULL },
 	[ICON_MACRO]		= { "classviewer-macro", NULL },
 	[ICON_MEMBER]		= { "classviewer-member", NULL },
 	[ICON_METHOD]		= { "classviewer-method", NULL },
@@ -108,6 +111,7 @@ symbols_icons[N_ICONS] = {
 	[ICON_STRUCT]		= { "classviewer-struct", NULL },
 	[ICON_TYPE]			= { "classviewer-type", NULL },
 	[ICON_VAR]			= { "classviewer-var", NULL },
+	[ICON_VIEW]			= { "classviewer-view", NULL },
 };
 
 static struct
@@ -605,7 +609,7 @@ static void add_top_level_items(GeanyDocument *doc)
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
 				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
@@ -631,7 +635,7 @@ static void add_top_level_items(GeanyDocument *doc)
 		{
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_namespace), _("Namespaces"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
@@ -742,7 +746,7 @@ static void add_top_level_items(GeanyDocument *doc)
 		{
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
 				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
@@ -756,7 +760,7 @@ static void add_top_level_items(GeanyDocument *doc)
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_externvar), _("Imports"), ICON_IMPORT,
 				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_member), _("Properties"), ICON_MEMBER,
@@ -769,7 +773,7 @@ static void add_top_level_items(GeanyDocument *doc)
 		case GEANY_FILETYPES_HAXE:
 		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
 				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
 				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
@@ -784,7 +788,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
 				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
-				&(tv_iters.tag_struct), _("Types"), ICON_NAMESPACE,
+				&(tv_iters.tag_struct), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_namespace), _("Labels"), ICON_MEMBER,
 				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
 				NULL);
@@ -796,10 +800,10 @@ static void add_top_level_items(GeanyDocument *doc)
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_namespace), _("Module"), ICON_CLASS,
 				&(tv_iters.tag_struct), _("Programs"), ICON_CLASS,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_function), _("Functions / Subroutines"), ICON_METHOD,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_class), _("Types"), ICON_CLASS,
+				&(tv_iters.tag_class), _("Types"), ICON_TYPE,
 				&(tv_iters.tag_member), _("Components"), ICON_MEMBER,
 				&(tv_iters.tag_macro), _("Blocks"), ICON_MEMBER,
 				&(tv_iters.tag_type), _("Enums"), ICON_STRUCT,
@@ -813,7 +817,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_namespace), _("Labels"), ICON_NAMESPACE,
 				&(tv_iters.tag_function), _("Macros"), ICON_METHOD,
 				&(tv_iters.tag_macro), _("Defines"), ICON_MACRO,
-				&(tv_iters.tag_struct), _("Types"), ICON_STRUCT,
+				&(tv_iters.tag_struct), _("Types"), ICON_TYPE,
 				NULL);
 			break;
 		}
@@ -831,7 +835,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&(tv_iters.tag_struct), _("Indexes"), ICON_STRUCT,
 				&(tv_iters.tag_class), _("Tables"), ICON_CLASS,
 				&(tv_iters.tag_macro), _("Triggers"), ICON_MACRO,
-				&(tv_iters.tag_member), _("Views"), ICON_VAR,
+				&(tv_iters.tag_member), _("Views"), ICON_VIEW,
 				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
 				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
 				NULL);
@@ -849,7 +853,7 @@ static void add_top_level_items(GeanyDocument *doc)
 			
 			tag_list_add_groups(tag_store,
 				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_STRUCT,
+				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
 				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
 				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
 				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
@@ -986,62 +990,52 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 		case tm_tag_prototype_t:
 		case tm_tag_method_t:
 		case tm_tag_function_t:
-		{
 			iter = &tv_iters.tag_function;
 			break;
-		}
+			
 		case tm_tag_externvar_t:
-		{
 			iter = &tv_iters.tag_externvar;
 			break;
-		}
+			
 		case tm_tag_macro_t:
 		case tm_tag_macro_with_arg_t:
-		{
 			iter = &tv_iters.tag_macro;
 			break;
-		}
+			
 		case tm_tag_class_t:
-		{
 			iter = &tv_iters.tag_class;
 			break;
-		}
+			
 		case tm_tag_member_t:
 		case tm_tag_field_t:
-		{
 			iter = &tv_iters.tag_member;
 			break;
-		}
+			
 		case tm_tag_typedef_t:
 		case tm_tag_enum_t:
-		{
 			iter = &tv_iters.tag_type;
 			break;
-		}
+			
 		case tm_tag_union_t:
 		case tm_tag_struct_t:
-		{
 			iter = &tv_iters.tag_struct;
 			break;
-		}
+			
 		case tm_tag_interface_t:
 			iter = &tv_iters.tag_interface;
 			break;
+			
 		case tm_tag_variable_t:
-		{
 			iter = &tv_iters.tag_variable;
 			break;
-		}
+			
 		case tm_tag_namespace_t:
 		case tm_tag_package_t:
-		{
 			iter = &tv_iters.tag_namespace;
 			break;
-		}
+			
 		default:
-		{
 			iter = &tv_iters.tag_other;
-		}
 	}
 	if (G_LIKELY(iter->stamp != -1))
 		return iter;
@@ -1887,6 +1881,7 @@ static guint get_tag_class(const TMTag *tag)
 			return ICON_METHOD;
 		case tm_tag_variable_t:
 		case tm_tag_externvar_t:
+		case tm_tag_enumerator_t:
 			return ICON_VAR;
 		case tm_tag_macro_t:
 		case tm_tag_macro_with_arg_t:
@@ -1896,18 +1891,21 @@ static guint get_tag_class(const TMTag *tag)
 		case tm_tag_member_t:
 		case tm_tag_field_t:
 			return ICON_MEMBER;
-		case tm_tag_typedef_t:
-		case tm_tag_enum_t:
 		case tm_tag_union_t:
 		case tm_tag_struct_t:
 			return ICON_STRUCT;
+		case tm_tag_enum_t:
+		case tm_tag_typedef_t:
+			return ICON_TYPE;
 		case tm_tag_namespace_t:
 		case tm_tag_package_t:
 			return ICON_NAMESPACE;
+		case tm_tag_interface_t:
+			return ICON_INTERFACE;
 		default:
 			break;
 	}
-	return ICON_STRUCT;
+	return ICON_OTHER;
 }
 
 
