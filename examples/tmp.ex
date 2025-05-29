@@ -600,3 +600,6 @@ defmodule MyRouter do
     end
   end
 end
+
+# исправить подсветку синтаксиса:
+alias :queue, as: Queue
