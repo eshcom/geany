@@ -786,8 +786,9 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						}
 					} else if (stdWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
-					} else if ((IsUpper(sc.ch) || sc.Match('_', '_')) &&
-							   addWords.InList(cur)) {
+					} else if ((IsUpper(sc.ch) || sc.Match('_', '_') ||
+								(sc.ch == ':' && IsLower(sc.chNext)))
+							   && addWords.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_ADD_WORD);
 					} else if (stdAtoms.InList(cur)) {
 						sc.ChangeState(SCE_ELIXIR_STD_ATOM);
