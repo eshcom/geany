@@ -603,3 +603,11 @@ end
 
 # исправить подсветку синтаксиса:
 alias :queue, as: Queue
+
+# исправить подсветку синтаксиса:
+@ets_prefixes __MODULE__.Prefixes
+def ets_list(), do: @ets_list
+
+# исправить подсветку синтаксиса:
+@range 1..10
+def ets_list2(), do: @ets_list

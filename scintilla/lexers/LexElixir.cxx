@@ -466,6 +466,8 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	for (; sc.More(); sc.Forward()) {
 		if (sc.state == SCE_ELIXIR_STRING_SUBOPER) {
 			sc.SetState(string_state);
+		} else if (sc.atLineStart && ident_state == DOTOPER_STATE) {
+			ident_state = NONE_STATE;
 		}
 		
 		// Determine if the current state should terminate.
@@ -962,7 +964,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match('=', '~')) {
+				} else if (sc.Match('=', '~') || sc.Match('.', '.')) {
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
