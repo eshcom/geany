@@ -425,17 +425,17 @@ public:
 	int SCI_METHOD Version() const override {
 		return lvOriginal;
 	}
-	const char *SCI_METHOD PropertyNames() override {
+	const char * SCI_METHOD PropertyNames() override {
 		return osPerl.PropertyNames();
 	}
 	int SCI_METHOD PropertyType(const char *name) override {
 		return osPerl.PropertyType(name);
 	}
-	const char *SCI_METHOD DescribeProperty(const char *name) override {
+	const char * SCI_METHOD DescribeProperty(const char *name) override {
 		return osPerl.DescribeProperty(name);
 	}
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
-	const char *SCI_METHOD DescribeWordListSets() override {
+	const char * SCI_METHOD DescribeWordListSets() override {
 		return osPerl.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
@@ -444,7 +444,7 @@ public:
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
 						 int initStyle, IDocument *pAccess) override;
 	
-	void *SCI_METHOD PrivateCall(int, void *) override {
+	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
 	

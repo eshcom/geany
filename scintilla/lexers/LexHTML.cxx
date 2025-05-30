@@ -843,17 +843,17 @@ public:
 	void SCI_METHOD Release() override {
 		delete this;
 	}
-	const char *SCI_METHOD PropertyNames() override {
+	const char * SCI_METHOD PropertyNames() override {
 		return osHTML.PropertyNames();
 	}
 	int SCI_METHOD PropertyType(const char *name) override {
 		return osHTML.PropertyType(name);
 	}
-	const char *SCI_METHOD DescribeProperty(const char *name) override {
+	const char * SCI_METHOD DescribeProperty(const char *name) override {
 		return osHTML.DescribeProperty(name);
 	}
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
-	const char *SCI_METHOD DescribeWordListSets() override {
+	const char * SCI_METHOD DescribeWordListSets() override {
 		return osHTML.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
