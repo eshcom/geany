@@ -264,7 +264,7 @@ public:
 	int SCI_METHOD DistanceToSecondaryStyles() override {
 		return 0;
 	}
-	const char *SCI_METHOD GetSubStyleBases() override {
+	const char * SCI_METHOD GetSubStyleBases() override {
 		return styleSubable;
 	}
 	

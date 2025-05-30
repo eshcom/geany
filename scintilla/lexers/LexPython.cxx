@@ -451,17 +451,17 @@ public:
 	int SCI_METHOD Version() const override {
 		return lvSubStyles;
 	}
-	const char *SCI_METHOD PropertyNames() override {
+	const char * SCI_METHOD PropertyNames() override {
 		return osPython.PropertyNames();
 	}
 	int SCI_METHOD PropertyType(const char *name) override {
 		return osPython.PropertyType(name);
 	}
-	const char *SCI_METHOD DescribeProperty(const char *name) override {
+	const char * SCI_METHOD DescribeProperty(const char *name) override {
 		return osPython.DescribeProperty(name);
 	}
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
-	const char *SCI_METHOD DescribeWordListSets() override {
+	const char * SCI_METHOD DescribeWordListSets() override {
 		return osPython.DescribeWordListSets();
 	}
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
@@ -470,7 +470,7 @@ public:
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
 						 int initStyle, IDocument *pAccess) override;
 	
-	void *SCI_METHOD PrivateCall(int, void *) override {
+	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
 	int SCI_METHOD LineEndTypesSupported() override {
@@ -501,7 +501,7 @@ public:
 	int SCI_METHOD DistanceToSecondaryStyles() override {
 		return 0;
 	}
-	const char *SCI_METHOD GetSubStyleBases() override {
+	const char * SCI_METHOD GetSubStyleBases() override {
 		return styleSubable;
 	}
 	static ILexer *LexerFactoryPython() {
