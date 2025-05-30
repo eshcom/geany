@@ -210,18 +210,26 @@ static inline char GetClosingChar(char opening_char) {
 		sc.ChangeState(SCE_ELIXIR_FUNCTION);							\
 	}
 
-#define CHECK_LIB_MACROS												\
-	if ((!isOperator(sc.ch) || strchr("{[<^!%~", sc.ch) ||				\
-		 (sc.ch == ':' && sc.chNext != ':'))							\
-		&& !exclLibMacros.InList(cur) && libMacros.InList(cur)) {		\
-		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||			\
-			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||				\
-			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||				\
-			(strcmp(cur, "field") == 0 && sc.ch != ':')) {				\
-			/* do not change the state */								\
-		} else {														\
-			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);						\
-		}																\
+#define CHECK_LIB_MACROS													\
+	if (sc.Match('!', '=') || sc.Match(':', ':') ||							\
+		sc.Match("and") || sc.Match("or") ||								\
+		sc.Match("in") || sc.Match("not in")) {								\
+		/* do not change the state */										\
+	} else if ((!isOperator(sc.ch) || sc.Match('<', '<')					\
+				|| strchr("{[%:~^!", sc.ch))								\
+			   && !exclLibMacros.InList(cur) && libMacros.InList(cur)) {	\
+		/* { - tuple, [ - list, % - map/struct, : - atom, ~ - string,
+		 * << - binary string, ^ - pin oper, ! - not oper */				\
+		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||				\
+			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||					\
+			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||					\
+			(strcmp(cur, "execute") == 0 && sc.ch != '"') ||				\
+			(strcmp(cur, "config") == 0 && sc.ch != ':') ||					\
+			(strcmp(cur, "field") == 0 && sc.ch != ':')) {					\
+			/* do not change the state */									\
+		} else {															\
+			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);							\
+		}																	\
 	}
 
 #define SET_LITERAL_STATE													\

@@ -328,6 +328,18 @@ defmodule MyRouter do
     assert ".git" not in files
     assert ~s".git" not in files
     assert @file not in files
+
+    assert is_nil(Storage.get_by_code(code))
+    assert !is_nil(key.deleted_at)
+    assert !Process.alive?(pid)
+    assert project in projects
+    assert {:ok, _project} = Storage.delete(id)
+    assert workers_count(poolboy_pid) == 2
+    
+    execute "select 1"
+    
+    execute = %{}
+    execute
   end
 
   @spec transaction(fun | Ecto.Multi.t()) :: any
@@ -497,6 +509,9 @@ defmodule MyRouter do
     if config_target() == :host do
       config :my_app, :debug, false
     end
+
+    config = "test"
+    config
 
     if File.exists?("config/#{config_env()}.local.exs") do
       import_config "#{config_env()}.local.exs"
