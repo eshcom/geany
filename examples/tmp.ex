@@ -497,6 +497,11 @@ defmodule MyRouter do
 
     Enum.map_join("\n", fn %ErrorInfo{} = info ->
       "#{String.pad_trailing(info.regex.source, 8)} | #{String.pad_trailing("#{info.level}", 7)} | #{String.pad_trailing("#{info.file}:#{info.line}", 100)} | #{info.msg}"
+      
+      "#{String.pad_trailing(info.regex.source, 8)} |
+       #{String.pad_trailing("#{info.level}", 7)} |
+       #{String.pad_trailing("#{info.file}:#{info.line}", 100)} | #{info.msg}
+      "
     end)
 
     System.get_env("DATABASE_URL") ||
