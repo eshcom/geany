@@ -14,10 +14,14 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <vector>
+#include <map>
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
 
+#include "StringCopy.h"
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
@@ -25,8 +29,19 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 #include "LexerCommon.h"
+#include "OptionSet.h"
+#include "SubStyles.h"
+#include "DefaultLexer.h"
 
 using namespace Scintilla;
+
+namespace {
+
+struct SingleStringExpState {
+	int state;
+	char closingChar;
+	int nestingCount;
+};
 
 struct AtomPunctSequence {
 	int charsLeft;
@@ -150,6 +165,10 @@ static inline bool IsNestedStringStyle(int style) {
 			style == SCE_ELIXIR_FORMATSEQ);
 }
 
+static inline int GetSaveStringStyle(int style, int stringStyle) {
+	return IsNestedStringStyle(style) ? stringStyle : style;
+}
+
 static inline const char *GetTripleQuote(char closing_char) {
 	if (closing_char == '\"')
 		return R"(""")";
@@ -180,8 +199,312 @@ static inline char GetClosingChar(char opening_char) {
 		return ' ';
 }
 
+void PushStateToStack(int state, char closingChar,
+					  std::vector<SingleStringExpState> &stack,
+					  SingleStringExpState *&currentStringExp) {
+	SingleStringExpState expState = {state, closingChar, 0};
+	stack.push_back(expState);
+	
+	currentStringExp = &stack.back();
+}
+
+SingleStringExpState PopFromStateStack(std::vector<SingleStringExpState> &stack,
+									   SingleStringExpState *&currentStringExp) {
+	SingleStringExpState expState = {0, ' ', 0};
+	
+	if (!stack.empty()) {
+		expState = stack.back();
+		stack.pop_back();
+	}
+	if (stack.empty()) {
+		currentStringExp = NULL;
+	} else {
+		currentStringExp = &stack.back();
+	}
+	return expState;
+}
+
+// Options used for LexerElixir
+struct OptionsElixir {
+	bool escapeSequence;
+	bool formatSequence;
+	
+	OptionsElixir() {
+		escapeSequence = false;
+		formatSequence = false;
+	}
+};
+
+static const char *const elixirWordListDesc[] = {
+	"Standard keywords",
+	"Additional keywords",
+	"Standard atoms",
+	"Standard functions (BIFs)",
+	"Standard modules (BIMs)",
+	"Standard module attributes",
+	"Standard Erlang modules (Erlang BIMs)",
+	"Standard exceptions",
+	"Standard macros",
+	"Built-in type functions",
+	"Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
+	"Exclude lib macros (these names are often used as var names)",
+	"Exclude lib funcs (these names are often used as user-func names)",
+	"Task marker and error marker keywords",
+	0
+};
+
+struct OptionSetElixir : public OptionSet<OptionsElixir> {
+	OptionSetElixir() {
+		DefineProperty("lexer.elixir.escape.sequence", &OptionsElixir::escapeSequence,
+					"Set to 1 to enable highlighting of escape sequences in strings");
+		
+		DefineProperty("lexer.elixir.format.sequence", &OptionsElixir::formatSequence,
+					"Set to 1 to enable highlighting of format sequences in strings");
+		
+		DefineWordListSets(elixirWordListDesc);
+	}
+};
+
+const char styleSubable[] = { 0 };
+
+LexicalClass lexicalClasses[] = {
+	// Lexer Python SCLEX_ELIXIR SCE_ELIXIR_:
+	0,	"SCE_ELIXIR_DEFAULT", "default", "White space",
+	1,	"SCE_ELIXIR_UNKNOWN", "erroneous expression", "Erroneous expression",
+	2,	"SCE_ELIXIR_STD_WORD", "keyword", "Standard keywords",
+	3,	"SCE_ELIXIR_ADD_WORD", "keyword", "Additional keywords",
+	4,	"SCE_ELIXIR_STD_ATOM", "identifier", "Standard atoms",
+	5,	"SCE_ELIXIR_STD_FUNC", "identifier", "Standard functions (BIFs)",
+	6,	"SCE_ELIXIR_STD_MODULE", "identifier", "Standard modules (BIMs)",
+	7,	"SCE_ELIXIR_STD_MODULE_ATTR", "preprocessor", "Standard module attributes",
+	8,	"SCE_ELIXIR_STD_ERL_MODULE", "identifier", "Standard Erlang modules (Erlang BIMs)",
+	9,	"SCE_ELIXIR_STD_EXCEPT", "identifier", "Standard exceptions",
+	10,	"SCE_ELIXIR_STD_MACRO", "identifier", "Standard macros",
+	11,	"SCE_ELIXIR_TYPE_FUNC", "identifier", "Built-in type functions",
+	12,	"SCE_ELIXIR_LIB_MACRO", "identifier", "Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
+	13,	"SCE_ELIXIR_LIB_FUNC", "identifier", "Lib functions",
+	14,	"SCE_ELIXIR_OPERATOR", "operator", "Operators",
+	15,	"SCE_ELIXIR_MAP_OPER", "operator", "%-operator",
+	16,	"SCE_ELIXIR_CAPTURE_OPER", "operator", "&-operator",
+	17,	"SCE_ELIXIR_FUNCTION", "identifier", "Functions",
+	18,	"SCE_ELIXIR_DEFNAME", "identifier", "Object name definition",
+	19,	"SCE_ELIXIR_MODULE", "identifier", "Modules",
+	20,	"SCE_ELIXIR_MODULE_ATTR", "preprocessor", "Module attributes",
+	21,	"SCE_ELIXIR_ERL_MODULE", "identifier", "Erlang modules",
+	22,	"SCE_ELIXIR_IDENTIFIER", "identifier", "Other identifiers",
+	23,	"SCE_ELIXIR_ATOM", "identifier", "Atoms",
+	24,	"SCE_ELIXIR_NODE", "identifier", "Nodes",
+	25,	"SCE_ELIXIR_FIELD", "identifier", "Field name of map/struct",
+	26,	"SCE_ELIXIR_NUMBER", "numeric", "Number",
+	27,	"SCE_ELIXIR_TRIPLE", "string", "Triple-quote string",
+	28,	"SCE_ELIXIR_TRIPLEVAL", "string", "Triple-quote string used as the value of the map-field",
+	29,	"SCE_ELIXIR_STRING", "string", "String",
+	30,	"SCE_ELIXIR_STRINGVAL", "string", "String used as the value of the map-field",
+	31,	"SCE_ELIXIR_CHARSTR", "string", "Charstring",
+	40,	"SCE_ELIXIR_CHARSTRVAL", "string", "Charstring used as the value of the map-field",
+	41,	"SCE_ELIXIR_LITERAL", "literal string", "Literal string (with prefix ~)",
+	42,	"SCE_ELIXIR_LITERALVAL", "literal string", "Literal string used as the value of the map-field",
+	43,	"SCE_ELIXIR_LITERALTRIPLE", "literal string", "Triple-quote literal string",
+	44,	"SCE_ELIXIR_LITERALTRIPLEVAL", "literal string", "Triple-quote literal string used as the value of the map-field",
+	45,	"SCE_ELIXIR_CHARACTER", "character", "Single character",
+	46,	"SCE_ELIXIR_ESCAPESEQ", "string escapesequence", "Escape sequence",
+	47,	"SCE_ELIXIR_FORMATSEQ", "string formatsequence", "Format sequence",
+	48,	"SCE_ELIXIR_STRING_SUBOPER", "operator", "#{}-operator inside string",
+	49,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
+	50,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
+	51,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
+	52,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
+	53,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
+};
+
+}
+
+class LexerElixir : public DefaultLexer {
+	WordList stdWords;
+	WordList addWords;
+	WordList stdAtoms;
+	WordList stdFuncs;
+	WordList stdModules;
+	WordList stdModuleAttrs;
+	WordList stdErlModules;
+	WordList stdExcepts;
+	WordList stdMacros;
+	WordList typeFuncs;
+	WordList libMacros;
+	WordList exclLibMacros;
+	WordList exclLibFuncs;
+	WordList taskMarkers;
+	OptionsElixir options;
+	OptionSetElixir osElixir;
+	EscapeSequence escapeSeq;
+	ErlFormatSequence formatSeq;
+	AtomPunctSequence atomPunctSeq;
+	enum { ssIdentifier };
+	SubStyles subStyles;
+	std::map<Sci_Position, std::vector<SingleStringExpState>> stringStateAtEol;
+public:
+	explicit LexerElixir() :
+		DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses)),
+		subStyles(styleSubable, 0x80, 0x40, 0) {
+	}
+	~LexerElixir() override {
+	}
+	void SCI_METHOD Release() override {
+		delete this;
+	}
+	int SCI_METHOD Version() const override {
+		return lvSubStyles;
+	}
+	const char * SCI_METHOD PropertyNames() override {
+		return osElixir.PropertyNames();
+	}
+	int SCI_METHOD PropertyType(const char *name) override {
+		return osElixir.PropertyType(name);
+	}
+	const char * SCI_METHOD DescribeProperty(const char *name) override {
+		return osElixir.DescribeProperty(name);
+	}
+	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
+	const char * SCI_METHOD DescribeWordListSets() override {
+		return osElixir.DescribeWordListSets();
+	}
+	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length,
+						int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length,
+						 int initStyle, IDocument *pAccess) override;
+	
+	void * SCI_METHOD PrivateCall(int, void *) override {
+		return 0;
+	}
+	int SCI_METHOD LineEndTypesSupported() override {
+		return SC_LINE_END_TYPE_UNICODE;
+	}
+	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override {
+		return subStyles.Allocate(styleBase, numberStyles);
+	}
+	int SCI_METHOD SubStylesStart(int styleBase) override {
+		return subStyles.Start(styleBase);
+	}
+	int SCI_METHOD SubStylesLength(int styleBase) override {
+		return subStyles.Length(styleBase);
+	}
+	int SCI_METHOD StyleFromSubStyle(int subStyle) override {
+		const int styleBase = subStyles.BaseStyle(subStyle);
+		return styleBase;
+	}
+	int SCI_METHOD PrimaryStyleFromStyle(int style) override {
+		return style;
+	}
+	void SCI_METHOD FreeSubStyles() override {
+		subStyles.Free();
+	}
+	void SCI_METHOD SetIdentifiers(int style, const char *identifiers) override {
+		subStyles.SetIdentifiers(style, identifiers);
+	}
+	int SCI_METHOD DistanceToSecondaryStyles() override {
+		return 0;
+	}
+	const char * SCI_METHOD GetSubStyleBases() override {
+		return styleSubable;
+	}
+	static ILexer *LexerFactoryElixir() {
+		return new LexerElixir();
+	}
+
+private:
+	void ProcessLineEnd(StyleContext &sc,
+						std::vector<SingleStringExpState> &stringStateStack,
+						int &stringState);
+};
+
+Sci_Position SCI_METHOD LexerElixir::PropertySet(const char *key, const char *val) {
+	if (osElixir.PropertySet(&options, key, val)) {
+		return 0;
+	}
+	return -1;
+}
+
+Sci_Position SCI_METHOD LexerElixir::WordListSet(int n, const char *wl) {
+	WordList *wordListN = 0;
+	switch (n) {
+	case 0:
+		wordListN = &stdWords;
+		break;
+	case 1:
+		wordListN = &addWords;
+		break;
+	case 2:
+		wordListN = &stdAtoms;
+		break;
+	case 3:
+		wordListN = &stdFuncs;
+		break;
+	case 4:
+		wordListN = &stdModules;
+		break;
+	case 5:
+		wordListN = &stdModuleAttrs;
+		break;
+	case 6:
+		wordListN = &stdErlModules;
+		break;
+	case 7:
+		wordListN = &stdExcepts;
+		break;
+	case 8:
+		wordListN = &stdMacros;
+		break;
+	case 9:
+		wordListN = &typeFuncs;
+		break;
+	case 10:
+		wordListN = &libMacros;
+		break;
+	case 11:
+		wordListN = &exclLibMacros;
+		break;
+	case 12:
+		wordListN = &exclLibFuncs;
+		break;
+	case 13:
+		wordListN = &taskMarkers;
+		break;
+	}
+	Sci_Position firstModification = -1;
+	if (wordListN) {
+		WordList wlNew;
+		wlNew.Set(wl);
+		if (*wordListN != wlNew) {
+			wordListN->Set(wl);
+			firstModification = 0;
+		}
+	}
+	return firstModification;
+}
+
+void LexerElixir::ProcessLineEnd(StyleContext &sc,
+								 std::vector<SingleStringExpState> &stringStateStack,
+								 int &stringState) {
+	if (!stringStateStack.empty()) {
+		std::pair<Sci_Position, std::vector<SingleStringExpState>> val;
+		val.first = sc.currentLine;
+		val.second = stringStateStack;
+		
+		stringStateAtEol.insert(val);
+	}
+}
+
+
 #define L_LITERAL_PREFIX "scrwp"
 #define U_LITERAL_PREFIX "SCRWNUDT"
+
+#define CHECK_LINE_END														\
+	if (sc.atLineEnd) {														\
+		ProcessLineEnd(sc, stringStateStack, string_state);					\
+		if (!sc.More()) break;												\
+		lineEndCurr = styler.LineEnd(++lineCurrent);						\
+	}
 
 #define MOVE_INDEX_TO_NONSPACE								\
 	Sci_PositionU i = sc.currentPos + 1;					\
@@ -251,23 +574,26 @@ static inline char GetClosingChar(char opening_char) {
 
 #define CHECK_INTERPOLATE_STRING											\
 	} else if (canbe_interpolate && sc.Match('#', '{')) {					\
+		PushStateToStack(GetSaveStringStyle(sc.state, string_state),		\
+						 closing_char, stringStateStack, currentStringExp);	\
 		sc.SetState(SCE_ELIXIR_STRING_SUBOPER);								\
 		sc.Forward();														\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
-		nesting_count = 1;													\
+		CHECK_LINE_END														\
 		is_at_symb = true; /* otherwise atoms of the form :'tes#{}t@test'
 							  will be incorrectly highlighted */
 
 #define CHECK_ESCAPE_FORMAT_SEQ												\
 	if (sc.ch == '\\') {													\
-		if (escapeSequence) {												\
+		if (options.escapeSequence) {										\
 			is_char_escape = false;											\
 			sc.SetState(SCE_ELIXIR_ESCAPESEQ);								\
 			escapeSeq.initEscapeState(sc.chNext);							\
 		}																	\
 		sc.Forward(); /* Skip any character after the backslash */			\
+		CHECK_LINE_END														\
 		continue;															\
-	} else if (sc.ch == '~' && formatSequence) {							\
+	} else if (sc.ch == '~' && options.formatSequence) {					\
 		sc.SetState(SCE_ELIXIR_FORMATSEQ);									\
 		formatSeq.initFormatState();										\
 		continue;															\
@@ -277,6 +603,7 @@ static inline char GetClosingChar(char opening_char) {
 	if (sc.Match(GetTripleQuote(closing_char))) {							\
 		sc.Forward(2);														\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
+		CHECK_LINE_END														\
 	}
 
 #define CHECK_CLOSING_CHAR													\
@@ -288,6 +615,7 @@ static inline char GetClosingChar(char opening_char) {
 				sc.Forward();												\
 		}																	\
 		sc.SetState(SCE_ELIXIR_DEFAULT);									\
+		CHECK_LINE_END														\
 	}
 
 #define CHECK_CLOSING_STRING												\
@@ -319,19 +647,14 @@ static inline char GetClosingChar(char opening_char) {
 	}
 
 
-static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
-							   int initStyle, WordList *keywordlists[],
-							   Accessor &styler) {
-	// esh: escapesequence highlighting
-	const bool escapeSequence = styler.GetPropertyInt("lexer.elixir.escape.sequence", 0) != 0;
-	EscapeSequence escapeSeq = EscapeSequence();
+void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
+								 int initStyle, IDocument *pAccess) {
+	Accessor styler(pAccess, NULL);
 	
-	// esh: formatsequence highlighting
-	const bool formatSequence = styler.GetPropertyInt("lexer.elixir.format.sequence", 0) != 0;
-	ErlFormatSequence formatSeq = ErlFormatSequence();
+	std::vector<SingleStringExpState> stringStateStack;
+	SingleStringExpState *currentStringExp = NULL;
 	
-	AtomPunctSequence atomPunctSeq = AtomPunctSequence();
-	
+	Sci_Position lineCurrent = styler.GetLine(startPos);
 	Sci_PositionU endPos = startPos + length;
 	
 	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
@@ -341,21 +664,6 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		   //~ styler[endPos - 2], initStyle, startPos, length);
 	
 	StyleContext sc(startPos, length, initStyle, styler);
-	
-	WordList &stdWords = *keywordlists[0];
-	WordList &addWords = *keywordlists[1];
-	WordList &stdAtoms = *keywordlists[2];
-	WordList &stdFuncs = *keywordlists[3];
-	WordList &stdModules = *keywordlists[4];
-	WordList &stdModuleAttrs = *keywordlists[5];
-	WordList &stdErlModules = *keywordlists[6];
-	WordList &stdExcepts = *keywordlists[7];
-	WordList &stdMacros = *keywordlists[8];
-	WordList &typeFuncs = *keywordlists[9];
-	WordList &libMacros = *keywordlists[10];
-	WordList &exclLibMacros = *keywordlists[11];
-	WordList &exclLibFuncs = *keywordlists[12];
-	WordList &taskMarkers = *keywordlists[13];
 	
 	int radix_digits = 0;
 	int exponent_digits = 0;
@@ -369,7 +677,6 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: added string_state for escape/format sequences highlighting
 	int string_state = -1;
-	int nesting_count = 0;
 	char closing_char = ' ';
 	bool canbe_interpolate = false;
 	bool assign_to_strfield = false;
@@ -383,10 +690,20 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 							 IsNestedStringStyle(backStyle))) {
 				continue;
 				
-			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER) {
-				while (--back && styler.StyleAt(back) != SCE_ELIXIR_STRING_SUBOPER)
-					;
-				back--; // skip back { in #{}
+			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER && styler[back] == '}') {
+				int nestingCount = 1;
+				while (--back) {
+					if (styler.StyleAt(back) == SCE_ELIXIR_STRING_SUBOPER) {
+						if (styler[back] == '}') {
+							nestingCount++;
+						} else if (styler[back] == '{') {
+							nestingCount--;
+							back--; // skip back { in #{}
+						}
+					}
+					if (nestingCount == 0)
+						break;
+				}
 				continue;
 				
 			} else {
@@ -394,7 +711,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				if (!IsStringStyle(backStyle)) back++;
 				string_state = styler.StyleAt(back);
 				
-				int index = back;
+				Sci_Position index = back;
 				if (styler[index] == '~') {
 					canbe_interpolate = strchr(L_LITERAL_PREFIX, styler[++index]);
 					index++;
@@ -469,12 +786,33 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 	}
 	
+	// Set up state stack from last line and remove any subsequent string at eol states
+	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator it;
+	it = stringStateAtEol.find(lineCurrent - 1);
+	if (it != stringStateAtEol.end() && !it->second.empty()) {
+		stringStateStack = it->second;
+		currentStringExp = &stringStateStack.back();
+	}
+	it = stringStateAtEol.lower_bound(lineCurrent);
+	if (it != stringStateAtEol.end()) {
+		stringStateAtEol.erase(it, stringStateAtEol.end());
+	}
+	
+	Sci_PositionU lineEndCurr = styler.LineEnd(lineCurrent);
+	
 	for (; sc.More(); sc.Forward()) {
 		if (sc.state == SCE_ELIXIR_STRING_SUBOPER) {
-			sc.SetState(string_state);
+			SingleStringExpState expState =
+					PopFromStateStack(stringStateStack, currentStringExp);
+			
+			sc.SetState(expState.state);
+			closing_char = expState.closingChar;
+			canbe_interpolate = true;
 		} else if (sc.atLineStart && ident_state == DOTOPER_STATE) {
 			ident_state = NONE_STATE;
 		}
+		
+		CHECK_LINE_END
 		
 		// Determine if the current state should terminate.
 		switch (sc.state) {
@@ -668,7 +1006,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				if (is_char_escape) {
 					if (!sc.atLineStart && IsDigit(sc.ch)) {
 						sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
-					} else if (!escapeSequence) {
+					} else if (!options.escapeSequence) {
 						sc.ChangeState(SCE_ELIXIR_CHARACTER);
 					}
 					sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -678,7 +1016,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 						sc.Forward();
 						continue;
-					} else if (sc.ch == '~' && formatSequence) {
+					} else if (sc.ch == '~' && options.formatSequence) {
 						sc.SetState(SCE_ELIXIR_FORMATSEQ);
 						formatSeq.initFormatState();
 						continue;
@@ -695,7 +1033,7 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(string_state);
 				}
 				if (sc.ch == '\\') {
-					if (escapeSequence) {
+					if (options.escapeSequence) {
 						sc.SetState(SCE_ELIXIR_ESCAPESEQ);
 						escapeSeq.initEscapeState(sc.chNext);
 					}
@@ -980,13 +1318,13 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 				} else if (sc.ch == '.') {
 					ident_state = DOTOPER_STATE;
-				} else if (sc.ch == '{' && nesting_count > 0) {
-					nesting_count++;
-				} else if (sc.ch == '}' && nesting_count > 0) {
-					nesting_count--;
-					if (nesting_count == 0) {
+				} else if (sc.ch == '{' && currentStringExp != NULL) {
+					currentStringExp->nestingCount++;
+				} else if (sc.ch == '}' && currentStringExp != NULL) {
+					if (currentStringExp->nestingCount == 0)
 						sc.ChangeState(SCE_ELIXIR_STRING_SUBOPER);
-					}
+					else
+						currentStringExp->nestingCount--;
 				}
 			}
 			if (!IsOperatorStyle(sc.state) && sc.state != SCE_ELIXIR_DEFAULT) {
@@ -1018,9 +1356,10 @@ static int ClassifyElixirFoldPoint(Accessor &styler, int styleNext,
 	return lev;
 }
 
-static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
-						  int initStyle, WordList** /*keywordlists*/,
-						  Accessor &styler) {
+void SCI_METHOD LexerElixir::Fold(Sci_PositionU startPos, Sci_Position length,
+								  int initStyle, IDocument *pAccess) {
+	Accessor styler(pAccess, NULL);
+	
 	Sci_PositionU endPos = startPos + length;
 	Sci_Position currentLine = styler.GetLine(startPos);
 	int lev;
@@ -1088,27 +1427,5 @@ static void FoldElixirDoc(Sci_PositionU startPos, Sci_Position length,
 												  ~SC_FOLDLEVELNUMBERMASK));
 }
 
-static const char * const elixirWordListDesc[] = {
-	"Standard keywords",
-	"Additional keywords",
-	"Standard atoms",
-	"Standard functions (BIFs)",
-	"Standard modules (BIMs)",
-	"Standard module attributes",
-	"Erlang modules (Erlang BIMs)",
-	"Standard exceptions",
-	"Standard macros",
-	"Built-in type functions",
-	"Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
-	"Exclude lib macros (these names are often used as var names)",
-	"Exclude lib funcs (these names are often used as user-func names)",
-	"Task marker and error marker keywords",
-	0
-};
-
-LexerModule lmElixir(
-	SCLEX_ELIXIR,
-	ColouriseElixirDoc,
-	"elixir",
-	FoldElixirDoc,
-	elixirWordListDesc);
+LexerModule lmElixir(SCLEX_ELIXIR, LexerElixir::LexerFactoryElixir,
+					 "elixir", elixirWordListDesc);
