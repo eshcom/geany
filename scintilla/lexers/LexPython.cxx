@@ -663,10 +663,18 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		}																	\
 	}
 
-#define MOVE_INDEX_TO_NONSPACE							\
-	Sci_PositionU i = sc.currentPos;					\
-	while (i < endPos && IsSpaceOrTab(styler[i]))		\
+#define MOVE_INDEX_TO_NONSPACE												\
+	Sci_PositionU i = sc.currentPos;										\
+	while (i < endPos && IsSpaceOrTab(styler[i]))							\
 		i++;
+
+#define PROCESS_LINE_END													\
+	{																		\
+		ProcessLineEnd(sc, fstringStateStack, currentFStringExp,			\
+					   inContinuedString, stringState);						\
+		if (!sc.More()) break;												\
+		lineEndCurr = styler.LineEnd(++lineCurrent);						\
+	}
 
 
 void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
@@ -792,7 +800,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position startIndicator = sc.currentPos;
 	bool inContinuedString = false;
 	
-	Sci_PositionU lineEndNext = styler.LineEnd(lineCurrent);
+	Sci_PositionU lineEndCurr = styler.LineEnd(lineCurrent);
 	
 	while (sc.More()) {
 		if (sc.state == SCE_P_FSTRING_SUBOPER) {
@@ -829,17 +837,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		
-		if (sc.atLineEnd) {
-			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
-						   inContinuedString, stringState);
-			if (!sc.More()) break;
-			lineCurrent++;
-			lineEndNext = styler.LineEnd(lineCurrent);
-		}
+		if (sc.atLineEnd) PROCESS_LINE_END
 		
 		// esh: Handle line continuation generically (taken from LexCPP.cxx)
 		if (sc.ch == '\\') {
-			if ((sc.currentPos + 1) >= lineEndNext) { // esh: end of line
+			if ((sc.currentPos + 1) >= lineEndCurr) { // esh: end of line
 				if (!IsPyStringStateForFold(sc.state) &&
 					!IsPyCommentState(sc.state)) {
 					// backslash - line continuation symbol
@@ -1089,11 +1091,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// State exit code may have moved on to end of line
 		if (needEOLCheck && sc.atLineEnd) {
-			ProcessLineEnd(sc, fstringStateStack, currentFStringExp,
-						   inContinuedString, stringState);
-			if (!sc.More()) break;
-			lineCurrent++;
-			lineEndNext = styler.LineEnd(lineCurrent);
+			PROCESS_LINE_END
 			styler.IndentAmount(lineCurrent, &spaceFlags, IsPyComment);
 		}
 		
@@ -1220,8 +1218,7 @@ void SCI_METHOD LexerPython::Fold(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position lineCurrent = styler.GetLine(startPos);
 	int indentCurrent = styler.IndentAmount(lineCurrent, &spaceFlags, NULL);
 	while (lineCurrent > 0) {
-		lineCurrent--;
-		indentCurrent = styler.IndentAmount(lineCurrent, &spaceFlags, NULL);
+		indentCurrent = styler.IndentAmount(--lineCurrent, &spaceFlags, NULL);
 		if (!(indentCurrent & SC_FOLDLEVELWHITEFLAG) &&
 			!IsCommentLine(lineCurrent, styler) &&
 			!IsQuoteLine(lineCurrent, styler))

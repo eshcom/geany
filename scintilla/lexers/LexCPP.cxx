@@ -919,9 +919,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	// Set continuationLine if last character of previous line is '\'
 	if (lineCurrent > 0) {
-		const Sci_Position endLinePrevious = styler.LineEnd(lineCurrent - 1);
-		if (endLinePrevious > 0) {
-			continuationLine = styler.SafeGetCharAt(endLinePrevious - 1) == '\\';
+		const Sci_Position lineEndPrev = styler.LineEnd(lineCurrent - 1);
+		if (lineEndPrev > 0) {
+			continuationLine = styler.SafeGetCharAt(lineEndPrev - 1) == '\\';
 		}
 	}
 	
@@ -1009,7 +1009,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	const WordClassifier &classifierDocKeyWords =
 								subStyles.Classifier(SCE_C_COMMENTDOCKEYWORD);
 	
-	Sci_PositionU lineEndNext = styler.LineEnd(lineCurrent);
+	Sci_PositionU lineEndCurr = styler.LineEnd(lineCurrent);
 	
 	while (sc.More()) {
 		if (sc.atLineStart) {
@@ -1037,8 +1037,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		if (sc.atLineEnd) {
-			lineCurrent++;
-			lineEndNext = styler.LineEnd(lineCurrent);
+			lineEndCurr = styler.LineEnd(++lineCurrent);
 			vlls.Add(lineCurrent, preproc);
 			if (rawStringTerminator != "") {
 				rawSTNew.Set(lineCurrent - 1, rawStringTerminator);
@@ -1048,9 +1047,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		// Handle line continuation generically.
 		if (sc.ch == '\\') {
-			if ((sc.currentPos + 1) >= lineEndNext) { // esh: end of line
-				lineCurrent++;
-				lineEndNext = styler.LineEnd(lineCurrent);
+			if ((sc.currentPos + 1) >= lineEndCurr) { // esh: end of line
+				lineEndCurr = styler.LineEnd(++lineCurrent);
 				vlls.Add(lineCurrent, preproc);
 				if (rawStringTerminator != "") {
 					rawSTNew.Set(lineCurrent - 1, rawStringTerminator);
@@ -1381,7 +1379,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					while (IsLower(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_C_DEFAULT|activitySet);
-				} else if (sc.ch == '\\' && (sc.currentPos + 1) < lineEndNext) {
+				} else if (sc.ch == '\\' && (sc.currentPos + 1) < lineEndCurr) {
 					// Gobble up the escaped character
 					sc.Forward();
 				} else if (sc.ch == '[') {
@@ -1421,8 +1419,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		if (sc.atLineEnd && !atLineEndBeforeSwitch) {
 			// State exit processing consumed characters up to end of line.
-			lineCurrent++;
-			lineEndNext = styler.LineEnd(lineCurrent);
+			lineEndCurr = styler.LineEnd(++lineCurrent);
 			vlls.Add(lineCurrent, preproc);
 		}
 		
@@ -1798,8 +1795,7 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length,
 			if (lev != styler.LevelAt(lineCurrent)) {
 				styler.SetLevel(lineCurrent, lev);
 			}
-			lineCurrent++;
-			lineStartNext = styler.LineStart(lineCurrent + 1);
+			lineStartNext = styler.LineStart(++lineCurrent + 1);
 			levelCurrent = levelNext;
 			levelMinCurrent = levelCurrent;
 			if (atEOL && (i == static_cast<Sci_PositionU>(styler.Length() - 1))) {
