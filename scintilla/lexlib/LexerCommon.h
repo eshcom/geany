@@ -4,7 +4,7 @@
 namespace Scintilla {
 
 template <typename SC, typename LA, typename WL>
-void HighlightTaskMarker(SC &sc, LA &styler, const WL &markers,
+bool HighlightTaskMarker(SC &sc, LA &styler, const WL &markers,
 						 bool caseSensitive, int markerState) {
 	if ((IsSpace(sc.chPrev) || IsOperator(sc.chPrev) || sc.chPrev == '#')
 		&& markers.Length()) {
@@ -26,9 +26,12 @@ void HighlightTaskMarker(SC &sc, LA &styler, const WL &markers,
 				sc.SetState(markerState);
 				sc.Forward(i);
 				sc.SetState(saveState);
+				
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 }
