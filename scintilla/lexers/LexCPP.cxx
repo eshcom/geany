@@ -59,7 +59,7 @@ bool FollowsPostfixOperator(const StyleContext &sc, LexAccessor &styler) {
 	return false;
 }
 
-bool followsReturnKeyword(const StyleContext &sc, LexAccessor &styler) {
+bool FollowsReturnKeyword(const StyleContext &sc, LexAccessor &styler) {
 	// Don't look at styles, so no need to flush.
 	Sci_Position pos = sc.currentPos;
 	const Sci_Position currentLine = styler.GetLine(pos);
@@ -1257,7 +1257,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			case SCE_C_COMMENTLINE:
 				HighlightTaskMarker(sc, styler, taskMarkers, caseSensitive,
 									SCE_C_TASKMARKER|activitySet);
-				if (sc.atLineStart && !continuationLine) {
+				if ((sc.atLineStart && !continuationLine) || sc.atLineEnd) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
 				break;
@@ -1477,7 +1477,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (sc.ch == '/'
 					   && (setOKBeforeRE.Contains(chPrevNonWhite)
-						   || followsReturnKeyword(sc, styler))
+						   || FollowsReturnKeyword(sc, styler))
 					   && (!setCouldBePostOp.Contains(chPrevNonWhite)
 						   || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_C_REGEX|activitySet);	// JavaScript's RegEx
