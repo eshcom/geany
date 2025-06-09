@@ -592,7 +592,6 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 			inContinuedString = false;
 		} else {
 			sc.ChangeState(SCE_P_STRINGEOL);
-			sc.ForwardSetState(SCE_P_DEFAULT);
 		}
 	}
 }
@@ -974,9 +973,10 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 			}
 		} else if ((sc.state == SCE_P_COMMENTLINE) ||
 				   (sc.state == SCE_P_COMMENTBLOCK)) {
-			HighlightTaskMarker(sc, styler, taskMarkers, true,
-								SCE_P_TASKMARKER);
-			if (IsCRLF(sc.ch)) {
+			bool isHighlight = HighlightTaskMarker(sc, styler, taskMarkers,
+												   true, SCE_P_TASKMARKER);
+			if (sc.atLineEnd) {
+				if (isHighlight) PROCESS_LINE_END
 				sc.SetState(SCE_P_DEFAULT);
 			}
 		} else if (sc.state == SCE_P_DECORATOR) {
