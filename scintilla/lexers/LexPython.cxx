@@ -415,9 +415,10 @@ LexicalClass lexicalClasses[] = {
 	29,	"SCE_P_FSTRING_OPTION", "literal string", "F-String option: !s, !r, !a",
 	30,	"SCE_P_STRING_CONTINUED", "literal string", "String continuation symbol",
 	31,	"SCE_P_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	40,	"SCE_P_TASKMARKER", "comment taskmarker", "Task Marker",
-	41,	"SCE_P_COMMENTLINE", "comment line", "Comment-line",
-	42,	"SCE_P_COMMENTBLOCK", "comment", "Comment-block",
+	40,	"SCE_P_BACKSLASH_WRONG", "wrong line continuation", "Wrong line continuation",
+	41,	"SCE_P_TASKMARKER", "comment taskmarker", "Task Marker",
+	42,	"SCE_P_COMMENTLINE", "comment line", "Comment-line",
+	43,	"SCE_P_COMMENTBLOCK", "comment", "Comment-block",
 };
 
 }
@@ -839,7 +840,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (sc.atLineEnd) PROCESS_LINE_END
 		
 		// esh: Handle line continuation generically (taken from LexCPP.cxx)
-		if (sc.ch == '\\') {
+		if (sc.ch == '\\' && sc.state != SCE_P_BACKSLASH_WRONG) {
 			if ((sc.currentPos + 1) >= lineEndCurr) { // esh: end of line
 				if (!IsPyStringStateForFold(sc.state) &&
 					!IsPyCommentState(sc.state)) {
@@ -849,7 +850,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 			} else if (sc.state == SCE_P_DEFAULT) { // esh: undefined backslash
-				sc.SetState(SCE_P_STRINGEOL);
+				sc.SetState(SCE_P_BACKSLASH_WRONG);
 				sc.Forward();
 				continue;
 			}
@@ -1025,7 +1026,8 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 				PROCESS_END_SEQUENCE
 			}
-		} else if (sc.state == SCE_P_STRINGEOL) {
+		} else if (sc.state == SCE_P_STRINGEOL ||
+				   sc.state == SCE_P_BACKSLASH_WRONG) {
 			if (sc.atLineStart) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
