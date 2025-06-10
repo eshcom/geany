@@ -264,6 +264,7 @@ static const HLStyle highlighting_styles_C[] =
 	{ SCE_C_HASHQUOTEDSTRING,		"hashquotedstring",			FALSE },
 	{ SCE_C_STRING_CONTINUED,		"string_continued",			FALSE },
 	{ SCE_C_LINE_CONTINUED,			"line_continued",			FALSE },
+	{ SCE_C_BACKSLASH_WRONG,		"backslash_wrong",			FALSE },
 	{ SCE_C_TASKMARKER,				"taskmarker",				FALSE },
 	{ SCE_C_COMMENT,				"comment",					FALSE },
 	{ SCE_C_COMMENTDOC,				"commentdoc",				FALSE },

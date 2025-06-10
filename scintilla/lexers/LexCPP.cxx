@@ -79,6 +79,22 @@ bool FollowsReturnKeyword(const StyleContext &sc, LexAccessor &styler) {
 	return !*s;
 }
 
+bool FindClosingRegex(const StyleContext &sc, LexAccessor &styler) {
+	Sci_Position pos = sc.currentPos;
+	const Sci_Position currentLine = styler.GetLine(pos);
+	const Sci_Position lineEndPos = styler.LineEnd(currentLine);
+	while (++pos < lineEndPos) {
+		const char ch = styler.SafeGetCharAt(pos);
+		if (ch == '\\') {
+			pos++;
+			continue;
+		} else if (ch == '/') {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool OnlySpaceOrTab(const std::string &s) noexcept {
 	for (const char ch : s) {
 		if (!IsSpaceOrTab(ch))
@@ -183,6 +199,9 @@ constexpr bool IsStreamCommentStyle(int style) noexcept {
 
 constexpr bool IsSpaceEquiv(int style) noexcept {
 	return style == SCE_C_DEFAULT ||
+		   style == SCE_C_LINE_CONTINUED ||
+		   style == SCE_C_BACKSLASH_WRONG ||
+		   style == SCE_C_TASKMARKER ||
 		   style == SCE_C_COMMENTLINE ||
 		   style == SCE_C_COMMENTLINEDOC ||
 		   IsStreamCommentStyle(style);
@@ -498,15 +517,16 @@ LexicalClass lexicalClasses[] = {
 	29,	"SCE_C_HASHQUOTEDSTRING", "literal string", "Hash-quoted strings for Pike",
 	30,	"SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
 	31,	"SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	40,	"SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
-	41,	"SCE_C_COMMENT", "comment", "Comment: /* */.",
-	42,	"SCE_C_COMMENTDOC", "comment documentation", "Doc comment: block comments beginning with /** or /*!",
-	43,	"SCE_C_COMMENTDOCKEYWORD", "comment documentation keyword", "Comment keyword",
-	44,	"SCE_C_COMMENTDOCKEYWORDERROR", "error comment documentation keyword", "Comment keyword error",
-	45,	"SCE_C_COMMENTLINE", "comment line", "Line Comment: //.",
-	46,	"SCE_C_COMMENTLINEDOC", "comment documentation line", "Doc Comment Line: line comments beginning with /// or //!.",
-	47,	"SCE_C_PREPROCCOMMENT", "comment preprocessor", "Preprocessor stream comment",
-	48,	"SCE_C_PREPROCCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
+	40,	"SCE_C_BACKSLASH_WRONG", "wrong line continuation", "Wrong line continuation",
+	41,	"SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
+	42,	"SCE_C_COMMENT", "comment", "Comment: /* */.",
+	43,	"SCE_C_COMMENTDOC", "comment documentation", "Doc comment: block comments beginning with /** or /*!",
+	44,	"SCE_C_COMMENTDOCKEYWORD", "comment documentation keyword", "Comment keyword",
+	45,	"SCE_C_COMMENTDOCKEYWORDERROR", "error comment documentation keyword", "Comment keyword error",
+	46,	"SCE_C_COMMENTLINE", "comment line", "Line Comment: //.",
+	47,	"SCE_C_COMMENTLINEDOC", "comment documentation line", "Doc Comment Line: line comments beginning with /// or //!.",
+	48,	"SCE_C_PREPROCCOMMENT", "comment preprocessor", "Preprocessor stream comment",
+	49,	"SCE_C_PREPROCCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
 };
 
 }
@@ -1046,7 +1066,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		// Handle line continuation generically.
-		if (sc.ch == '\\') {
+		if (sc.ch == '\\' && sc.state != SCE_C_BACKSLASH_WRONG) {
 			if ((sc.currentPos + 1) >= lineEndCurr) { // esh: end of line
 				lineEndCurr = styler.LineEnd(++lineCurrent);
 				vlls.Add(lineCurrent, preproc);
@@ -1081,7 +1101,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				continue;
 				
 			} else if (MaskActive(sc.state) == SCE_C_DEFAULT) { // esh: undefined backslash
-				sc.SetState(SCE_C_STRINGEOL|activitySet);
+				sc.SetState(SCE_C_BACKSLASH_WRONG|activitySet);
 				sc.Forward();
 				continue;
 			}
@@ -1347,6 +1367,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				break;
 				
 			case SCE_C_STRINGEOL:
+			case SCE_C_BACKSLASH_WRONG:
 				if (sc.atLineStart) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
@@ -1475,7 +1496,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				else
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
 				
-			} else if (sc.ch == '/'
+			} else if (sc.ch == '/' && FindClosingRegex(sc, styler)
 					   && (setOKBeforeRE.Contains(chPrevNonWhite)
 						   || FollowsReturnKeyword(sc, styler))
 					   && (!setCouldBePostOp.Contains(chPrevNonWhite)

@@ -32,6 +32,7 @@ tripleverbatim=string_2
 hashquotedstring=string_2
 string_continued=string_1
 line_continued=preprocessor
+backslash_wrong=string_eol
 taskmarker=comment
 comment=comment
 commentdoc=comment_doc
