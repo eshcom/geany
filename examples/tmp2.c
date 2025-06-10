@@ -27,3 +27,29 @@ this expression:
 v = 1 + 2;
 
 \
+
+// this operator:
+/
+
+// this operator: TODO
+/
+
+// this regexp:
+const re = /[\u0400-\u04ff]+/g;
+
+const re = \
+	  /dsf/;
+
+;
+/dsf/
+
+;
+\
+/dsf/
+
+;
+/ /
+
+;
+\
+/ /
