@@ -510,9 +510,9 @@ public:
 	}
 
 private:
-	void ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpState> &fstringStateStack,
-						SingleFStringExpState *&currentFStringExp, bool &inContinuedString,
-						int &stringState);
+	void ProcessLineEnd(StyleContext &sc,
+						std::vector<SingleFStringExpState> &fstringStateStack,
+						bool &inContinuedString, int &stringState);
 };
 
 Sci_Position SCI_METHOD LexerPython::PropertySet(const char *key, const char *val) {
@@ -562,9 +562,9 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpState> &fstringStateStack,
-								 SingleFStringExpState *&currentFStringExp, bool &inContinuedString,
-								 int &stringState) {
+void LexerPython::ProcessLineEnd(StyleContext &sc,
+								 std::vector<SingleFStringExpState> &fstringStateStack,
+								 bool &inContinuedString, int &stringState) {
 	// Find the deepest single quote state because that string will end
 	for (unsigned long i = 0; i < fstringStateStack.size(); i++) {
 		if (IsPySingleQuoteStringState(fstringStateStack[i].state)) {
@@ -670,7 +670,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 
 #define PROCESS_LINE_END													\
 	{																		\
-		ProcessLineEnd(sc, fstringStateStack, currentFStringExp,			\
+		ProcessLineEnd(sc, fstringStateStack,								\
 					   inContinuedString, stringState);						\
 		if (!sc.More()) break;												\
 		lineEndCurr = styler.LineEnd(++lineCurrent);						\
