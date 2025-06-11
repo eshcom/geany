@@ -437,12 +437,10 @@ static void ColouriseElixirDoc(Sci_PositionU startPos, Sci_Position length,
 				while (back > 0 && styler[back - 1] != '@')
 					back--;
 				
-				// check spec/type/callback/macrocallback
-				maybe_typefunc = (back + 3 < endPos &&
-								  strchr("stcm", styler[back]) &&
-								  strchr("pya", styler[back + 1]) &&
-								  strchr("eplc", styler[back + 2]) &&
-								  strchr("celr", styler[back + 3]));
+				maybe_typefunc = (styler.Match(back, "spec") ||
+								  styler.Match(back, "type") ||
+								  styler.Match(back, "callback") ||
+								  styler.Match(back, "macrocallback"));
 			}
 			break;
 		}

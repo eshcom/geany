@@ -804,11 +804,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	while (sc.More()) {
 		if (sc.state == SCE_P_FSTRING_SUBOPER) {
-			int state = (sc.chPrev == '}')
+			// esh: set stringState to fix fstring highlighting with nested {""}/{''}
+			stringState = (sc.chPrev == '}')
 							? PopFromStateStack(fstringStateStack, currentFStringExp)
 							: fstringStateStack.back().state; // sc.chPrev == ':'
-			sc.SetState(state);
-			stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
+			sc.SetState(stringState);
 		}
 		
 		if (sc.atLineStart) {
@@ -1051,29 +1051,23 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		// and end f-string to handle syntactically incorrect cases like
 		// f'{' and f"""{"""
 		if (!fstringStateStack.empty() && IsQuote(sc.ch)) {
-			long matching_stack_i = -1;
-			for (unsigned long stack_i = 0; stack_i < fstringStateStack.size() &&
-				 matching_stack_i == -1; stack_i++) {
+			for (unsigned long stack_i = 0; stack_i < fstringStateStack.size(); stack_i++) {
 				const int stack_state = fstringStateStack[stack_i].state;
 				if (sc.ch == GetPyStringQuoteChar(stack_state) &&
 					(IsPySingleQuoteStringState(stack_state) ||
 					 sc.Match(GetPyTripleQuote(stack_state)))) {
-					matching_stack_i = stack_i;
-				}
-			}
-			if (matching_stack_i != -1) {
-				const int stack_state = fstringStateStack[matching_stack_i].state;
-				sc.SetState(stack_state);
-				stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
-				if (IsPyTripleQuoteStringState(stack_state)) {
-					sc.Forward(2);
-				}
-				sc.ForwardSetState(SCE_P_DEFAULT);
-				needEOLCheck = true;
-				
-				while (fstringStateStack.size() >
-					   static_cast<unsigned long>(matching_stack_i)) {
-					PopFromStateStack(fstringStateStack, currentFStringExp);
+					// esh: close f-string
+					sc.SetState(stack_state);
+					if (IsPyTripleQuoteStringState(stack_state)) {
+						sc.Forward(2);
+					}
+					sc.ForwardSetState(SCE_P_DEFAULT);
+					needEOLCheck = true;
+					
+					while (fstringStateStack.size() > stack_i) {
+						PopFromStateStack(fstringStateStack, currentFStringExp);
+					}
+					break;
 				}
 			}
 		}
