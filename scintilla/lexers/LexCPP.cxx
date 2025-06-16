@@ -872,6 +872,18 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 			sc.SetState(stringState|activitySet);							\
 	}
 
+#define PROCESS_LINE_CURRENT									\
+	{															\
+		lineEndCurr = styler.LineEnd(++lineCurrent);			\
+		vlls.Add(lineCurrent, preproc);							\
+	}
+
+#define PROCESS_LINE_END										\
+	PROCESS_LINE_CURRENT										\
+	if (rawStringTerminator != "") {							\
+		rawSTNew.Set(lineCurrent - 1, rawStringTerminator);		\
+	}
+
 
 void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 							  int initStyle, IDocument *pAccess) {
@@ -1057,22 +1069,14 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		if (sc.atLineEnd) {
-			lineEndCurr = styler.LineEnd(++lineCurrent);
-			vlls.Add(lineCurrent, preproc);
-			if (rawStringTerminator != "") {
-				rawSTNew.Set(lineCurrent - 1, rawStringTerminator);
-			}
+			PROCESS_LINE_END
 			continuationLine = false;
 		}
 		
 		// Handle line continuation generically.
 		if (sc.ch == '\\' && sc.state != SCE_C_BACKSLASH_WRONG) {
 			if ((sc.currentPos + 1) >= lineEndCurr) { // esh: end of line
-				lineEndCurr = styler.LineEnd(++lineCurrent);
-				vlls.Add(lineCurrent, preproc);
-				if (rawStringTerminator != "") {
-					rawSTNew.Set(lineCurrent - 1, rawStringTerminator);
-				}
+				PROCESS_LINE_END
 				
 				int maskActiveState = GetSaveStringStyle(MaskActive(sc.state),
 														 stringState);
@@ -1438,11 +1442,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				break;
 		}
 		
-		if (sc.atLineEnd && !atLineEndBeforeSwitch) {
-			// State exit processing consumed characters up to end of line.
-			lineEndCurr = styler.LineEnd(++lineCurrent);
-			vlls.Add(lineCurrent, preproc);
-		}
+		// State exit processing consumed characters up to end of line.
+		if (sc.atLineEnd && !atLineEndBeforeSwitch) PROCESS_LINE_CURRENT
 		
 		// Determine if a new state should be entered.
 		if (MaskActive(sc.state) == SCE_C_DEFAULT) {
