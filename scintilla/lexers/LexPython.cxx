@@ -565,14 +565,6 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 void LexerPython::ProcessLineEnd(StyleContext &sc,
 								 std::vector<SingleFStringExpState> &fstringStateStack,
 								 bool &inContinuedString, int &stringState) {
-	// Find the deepest single quote state because that string will end
-	for (unsigned long i = 0; i < fstringStateStack.size(); i++) {
-		if (IsPySingleQuoteStringState(fstringStateStack[i].state)) {
-			sc.SetState(fstringStateStack[i].state);
-			stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
-			break;
-		}
-	}
 	if (!fstringStateStack.empty()) {
 		std::pair<Sci_Position, std::vector<SingleFStringExpState>> val;
 		val.first = sc.currentLine;
@@ -581,11 +573,20 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 		ftripleStateAtEol.insert(val);
 	}
 	
+	// Find the deepest single quote state because that string will end
+	for (unsigned long i = 0; i < fstringStateStack.size(); i++) {
+		if (IsPySingleQuoteStringState(fstringStateStack[i].state)) {
+			sc.SetState(fstringStateStack[i].state);
+			stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
+			break;
+		}
+	}
+	
 	int saveState = GetSaveStringState(sc.state, stringState);
-	if ((sc.state == SCE_P_DEFAULT) || IsPyTripleQuoteStringState(saveState)) {
+	if (saveState == SCE_P_DEFAULT || IsPyTripleQuoteStringState(saveState)) {
 		// Perform colourisation of white space and triple quoted strings at end of each line
 		// to allow tab marking to work inside white space and triple quoted strings
-		sc.SetState(sc.state);
+		sc.SetState(saveState);
 		
 	} else if (IsPySingleQuoteStringState(saveState)) {
 		if (inContinuedString || options.stringsOverNewline) {
