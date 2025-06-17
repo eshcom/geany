@@ -438,7 +438,7 @@ class LexerPython : public DefaultLexer {
 	FormatSequence formatSeq;
 	enum { ssIdentifier };
 	SubStyles subStyles;
-	std::map<Sci_Position, std::vector<SingleFStringExpState>> ftripleStateAtEol;
+	std::map<Sci_Position, std::vector<SingleFStringExpState>> fstringStateAtEol;
 public:
 	explicit LexerPython() :
 		DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses)),
@@ -570,7 +570,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 		val.first = sc.currentLine;
 		val.second = fstringStateStack;
 		
-		ftripleStateAtEol.insert(val);
+		fstringStateAtEol.insert(val);
 	}
 	
 	// Find the deepest single quote state because that string will end
@@ -776,14 +776,14 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	// Set up fstate stack from last line and remove any subsequent ftriple at eol states
 	std::map<Sci_Position, std::vector<SingleFStringExpState>>::iterator it;
-	it = ftripleStateAtEol.find(lineCurrent - 1);
-	if (it != ftripleStateAtEol.end() && !it->second.empty()) {
+	it = fstringStateAtEol.find(lineCurrent - 1);
+	if (it != fstringStateAtEol.end() && !it->second.empty()) {
 		fstringStateStack = it->second;
 		currentFStringExp = &fstringStateStack.back();
 	}
-	it = ftripleStateAtEol.lower_bound(lineCurrent);
-	if (it != ftripleStateAtEol.end()) {
-		ftripleStateAtEol.erase(it, ftripleStateAtEol.end());
+	it = fstringStateAtEol.lower_bound(lineCurrent);
+	if (it != fstringStateAtEol.end()) {
+		fstringStateAtEol.erase(it, fstringStateAtEol.end());
 	}
 	
 	kwType kwLast = kwOther;
