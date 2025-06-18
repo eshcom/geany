@@ -606,6 +606,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 			escapeSeq.initEscapeState(sc.chNext);							\
 		}																	\
 		sc.Forward(); /* Skip any character after the backslash */			\
+		needEOLCheck = true;												\
 	}
 
 #define CHECK_FORMAT_SEQUENCE												\
@@ -728,43 +729,6 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 					   || IsPyTripleQuoteStringState(backStyle)) {
 				stringState = backStyle;
 				
-				if (IsPyFStringState(stringState, -1)) {
-					while (back < endPos && styler.SafeGetCharAt(back) != '}') {
-						int style = styler.StyleAt(back);
-						if (style == backStyle || IsPyNestedStringState(style))
-							back++;
-						else
-							break;
-					}
-					
-					if (styler.SafeGetCharAt(back) == '{') {
-						char ch;
-						while (++back < endPos) {
-							ch = styler.SafeGetCharAt(back);
-							if (IsCRLF(ch)) {
-								//~ f"""{a:\
-								//~ }"""
-								PushStateToStack(stringState, fstringStateStack,
-												 currentFStringExp);
-								break;
-							} else if (ch == '}') {
-								//~ f"""asdfsdf{{{1}}}"""
-								break;
-							}
-						}
-					} else {
-						while (back < endPos && IsSpace(styler.SafeGetCharAt(back)))
-							back++;
-						
-						int braceCnt = 0;
-						while (back < endPos && styler.SafeGetCharAt(back++) == '}')
-							braceCnt++;
-						
-						if ((braceCnt % 2) == 1)
-							PushStateToStack(stringState, fstringStateStack,
-											 currentFStringExp);
-					}
-				}
 			} else {
 				Sci_PositionU nextIndex = 0;
 				stringState = GetPyStringState(styler, ++back, &nextIndex,
