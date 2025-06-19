@@ -729,7 +729,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 	}
 	
-	// Set up fstate stack from last line and remove any subsequent ftriple at eol states
+	// Set up fstate stack from last line and remove any subsequent fstring at eol states
 	std::map<Sci_Position, std::vector<SingleFStringExpState>>::iterator it;
 	it = fstringStateAtEol.find(lineCurrent - 1);
 	if (it != fstringStateAtEol.end() && !it->second.empty()) {
@@ -1007,24 +1007,20 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 		// and end f-string to handle syntactically incorrect cases like
 		// f'{' and f"""{"""
 		if (!fstringStateStack.empty() && IsQuote(sc.ch)) {
-			for (unsigned long stack_i = 0; stack_i < fstringStateStack.size(); stack_i++) {
-				const int stack_state = fstringStateStack[stack_i].state;
-				if (sc.ch == GetPyStringQuoteChar(stack_state) &&
-					(IsPySingleQuoteStringState(stack_state) ||
-					 sc.Match(GetPyTripleQuote(stack_state)))) {
-					// esh: close f-string
-					sc.SetState(stack_state);
-					if (IsPyTripleQuoteStringState(stack_state)) {
-						sc.Forward(2);
-					}
-					sc.ForwardSetState(SCE_P_DEFAULT);
-					needEOLCheck = true;
-					
-					while (fstringStateStack.size() > stack_i) {
-						PopFromStateStack(fstringStateStack, currentFStringExp);
-					}
-					break;
+			const int stack_state = fstringStateStack.back().state;
+			
+			if (sc.ch == GetPyStringQuoteChar(stack_state) &&
+				(IsPySingleQuoteStringState(stack_state) ||
+				 sc.Match(GetPyTripleQuote(stack_state)))) {
+				PopFromStateStack(fstringStateStack, currentFStringExp);
+				
+				// esh: close f-string
+				sc.SetState(stack_state);
+				if (IsPyTripleQuoteStringState(stack_state)) {
+					sc.Forward(2);
 				}
+				sc.ForwardSetState(SCE_P_DEFAULT);
+				needEOLCheck = true;
 			}
 		}
 		// End of code to find the end of a state
