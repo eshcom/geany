@@ -573,15 +573,6 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 		fstringStateAtEol.insert(val);
 	}
 	
-	// Find the deepest single quote state because that string will end
-	for (unsigned long i = 0; i < fstringStateStack.size(); i++) {
-		if (IsPySingleQuoteStringState(fstringStateStack[i].state)) {
-			sc.SetState(fstringStateStack[i].state);
-			stringState = sc.state; // esh: fix fstring highlighting with nested {""}/{''}
-			break;
-		}
-	}
-	
 	int saveState = GetSaveStringState(sc.state, stringState);
 	if (saveState == SCE_P_DEFAULT || IsPyTripleQuoteStringState(saveState)) {
 		// Perform colourisation of white space and triple quoted strings at end of each line

@@ -65,6 +65,9 @@ t = f"{a:\
 t = f'{a:b\
 }'
 
+t = f'{a:b\	asdf
+}'
+
 # backslash should be highlighted as SCE_P_STRINGEOL
 t = f'{a:b\	
 }'
