@@ -636,6 +636,7 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_ATOM_PUNCT,		"atom_punct",		FALSE },
 	{ SCE_ELIXIR_ATOM_QUOTED,		"atom_quoted",		FALSE },
 	{ SCE_ELIXIR_NODE_QUOTED,		"node_quoted",		FALSE },
+	{ SCE_ELIXIR_LINE_CONTINUED,	"line_continued",	FALSE },
 	{ SCE_ELIXIR_TASKMARKER,		"taskmarker",		FALSE },
 	{ SCE_ELIXIR_COMMENT,			"comment",			FALSE }
 };

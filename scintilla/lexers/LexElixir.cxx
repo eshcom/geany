@@ -78,10 +78,6 @@ struct AtomPunctSequence {
 	}
 };
 
-static inline bool isOperator(const int ch) {
-	return (IsOperator(ch) || ch == '\\');
-}
-
 static inline bool isWordEnd(const int ch) {
 	return (ch == '!' || ch == '?');
 }
@@ -131,13 +127,15 @@ static inline bool IsCommentStyle(int style) {
 
 static inline bool IsSpaceEquivStyle(int style) {
 	return (IsCommentStyle(style) ||
-			style == SCE_ELIXIR_DEFAULT);
+			style == SCE_ELIXIR_DEFAULT ||
+			style == SCE_ELIXIR_LINE_CONTINUED);
 }
 
 static inline bool IsOperatorStyle(int style) {
 	return (style == SCE_ELIXIR_OPERATOR ||
 			style == SCE_ELIXIR_MAP_OPER ||
-			style == SCE_ELIXIR_CAPTURE_OPER);
+			style == SCE_ELIXIR_CAPTURE_OPER ||
+			style == SCE_ELIXIR_LINE_CONTINUED);
 }
 
 static inline bool IsStdWordOrAttrStyle(int style) {
@@ -316,8 +314,9 @@ LexicalClass lexicalClasses[] = {
 	49,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
 	50,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
 	51,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
-	52,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
-	53,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
+	52,	"SCE_ELIXIR_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	53,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
+	54,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
 };
 
 }
@@ -541,7 +540,7 @@ void LexerElixir::ProcessLineEnd(StyleContext &sc,
 		sc.Match("and") || sc.Match("or") ||								\
 		sc.Match("in") || sc.Match("not in")) {								\
 		/* do not change the state */										\
-	} else if ((!isOperator(sc.ch) || sc.Match('<', '<')					\
+	} else if ((!IsOperator(sc.ch) || sc.Match('<', '<')					\
 				|| strchr("{[%:~^!", sc.ch))								\
 			   && !exclLibMacros.InList(cur) && libMacros.InList(cur)) {	\
 		/* { - tuple, [ - list, % - map/struct, : - atom, ~ - string,
@@ -911,6 +910,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
+					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				SKIP_SPACES
@@ -933,10 +933,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					is_at_symb = true;
 				} else if (sc.ch == '\\') {
 					sc.Forward(); // Skip any character after the backslash
+					CHECK_LINE_END
 					continue;
 				CHECK_INTERPOLATE_STRING
 				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
+					CHECK_LINE_END
 				}
 			} break;
 			/* -------------------------------------------------------------- */
@@ -950,6 +952,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
+					CHECK_LINE_END
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
@@ -957,10 +960,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			case SCE_ELIXIR_NODE_QUOTED : {
 				if (sc.ch == '\\') {
 					sc.Forward(); // Skip any character after the backslash
+					CHECK_LINE_END
 					continue;
 				CHECK_INTERPOLATE_STRING
 				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
+					CHECK_LINE_END
 				}
 			} break;
 			/* -------------------------------------------------------------- */
@@ -993,11 +998,13 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_ELIXIR_ESCAPESEQ);
 					escapeSeq.initEscapeState(sc.chNext);
 					sc.Forward(); // Skip any character after the backslash
+					CHECK_LINE_END
 					continue;
 				} else if (sc.atLineEnd) {
 					sc.SetState(SCE_ELIXIR_DEFAULT);
 				} else {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
+					CHECK_LINE_END
 				}
 			} break;
 			
@@ -1017,7 +1024,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else {
 					if (sc.ch == '\\') {
 						escapeSeq.initEscapeState(sc.chNext);
-						sc.Forward();
+						sc.Forward(); // Skip any character after the backslash
+						CHECK_LINE_END
 						continue;
 					} else if (sc.ch == '~' && options.formatSequence) {
 						sc.SetState(SCE_ELIXIR_FORMATSEQ);
@@ -1041,6 +1049,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						escapeSeq.initEscapeState(sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
+					CHECK_LINE_END
 					continue;
 				} else if (sc.ch == '~') {
 					sc.SetState(SCE_ELIXIR_FORMATSEQ);
@@ -1060,6 +1069,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					if (IsUpper(styler[i])) {
 						sc.Forward(); // skip '.'
 						SKIP_SPACES
+						CHECK_LINE_END
 						continue;
 					}
 				}
@@ -1081,6 +1091,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
+					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
@@ -1107,6 +1118,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
+					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				
@@ -1118,6 +1130,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.SetState(SCE_ELIXIR_OPERATOR);
 							sc.ForwardSetState(SCE_ELIXIR_UNKNOWN);
 							sc.Forward();
+							CHECK_LINE_END
 						}
 					}
 				} else if (ident_state == DEFNAME_STATE ||
@@ -1195,6 +1208,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
 			
+			case SCE_ELIXIR_LINE_CONTINUED :
 			case SCE_ELIXIR_UNKNOWN : {
 				if (sc.atLineStart) {
 					sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -1297,7 +1311,20 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (IsLower(sc.ch) || sc.ch == '_') {
 				sc.SetState(SCE_ELIXIR_IDENTIFIER);
 				
-			} else if (isOperator(sc.ch)) {
+			} else if (sc.ch == '\\') {
+				sc.SetState(SCE_ELIXIR_OPERATOR);
+				
+				if (sc.chNext == '\\') {
+					sc.Forward();
+					ident_state = NONE_STATE;
+					assign_to_strfield = false;
+				} else {
+					SKIP_NEXT_SPACES
+					sc.ChangeState((sc.currentPos + 1) >= lineEndCurr
+											? SCE_ELIXIR_LINE_CONTINUED
+											: SCE_ELIXIR_UNKNOWN);
+				}
+			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				
 				ident_state = NONE_STATE;
