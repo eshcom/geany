@@ -151,6 +151,10 @@ defmodule Df.UseCases.UserAction do
       :descr => "Описание какого-то проекта",
       "field7" =>	"string-field stringval" <>
                     "tes\n\ntt#{1 + 2}~a~s~123a",
+      "field7" =>	"string-field stringval" <>\
+                    "tes\n\ntt#{1 + 2}~a~s~123a",
+      "field7" =>	"string-field stringval"\
+                    <> "tes\n\ntt#{1 + 2}~a~s~123a",
       "field7" =>"string-field stringval"
       "field7" =>"string-field stringval"
     )
@@ -523,7 +527,7 @@ defmodule MyRouter do
     end
   end
 
-  defp releases_query(preload) do
+  defp releases_query(preload \\ @preload) do
     from(
       t in Release,
       where: is_nil(t.deleted_at),
