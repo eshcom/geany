@@ -567,6 +567,8 @@ defmodule MyRouter do
     # допустимые атомы:
     :_
     :!
+    :!=
+    :!==
     :@
     :%
     :^
@@ -600,6 +602,7 @@ defmodule MyRouter do
     :->
     :<-
     :<=
+    :>=
     :%{}
   end
   

@@ -54,6 +54,9 @@ struct AtomPunctSequence {
 		if (strchr("&-+=.|", ch)) {
 			charsLeft = 3;
 			validChar = ch;
+		} else if (ch == '!') {
+			charsLeft = 3;
+			validChar = '=';
 		} else if (ch == '*' || ch == '\\') {
 			charsLeft = 2;
 			validChar = ch;
@@ -1275,7 +1278,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == ':' && atomPunctSeq.atAtomPunctBeg(sc.chNext)) {
 				sc.SetState(SCE_ELIXIR_ATOM_PUNCT);
 				sc.Forward();
-				if (sc.Match('-', '>') || sc.Match('<', '-') || sc.Match('<', '='))
+				if (sc.Match('-', '>') || sc.Match('<', '-') || sc.Match('<', '=')
+					|| sc.Match('>', '='))
 					sc.Forward();
 				else if (sc.Match("%{}"))
 					sc.Forward(2);
