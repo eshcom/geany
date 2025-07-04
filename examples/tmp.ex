@@ -333,12 +333,28 @@ defmodule MyRouter do
     assert ~s".git" not in files
     assert @file not in files
 
+    assert inspect(error) =~ "project_releases_alias_key"
+    assert "test" == test_string
+    assert 'test' == test_charlist
+    assert ~c'test' == test_charlist
+    assert ?b == ch
+    assert [1,2] == [1,2,3]
+    assert @attr == "test"
+    assert %{} == resp
     assert is_nil(Storage.get_by_code(code))
     assert !is_nil(key.deleted_at)
     assert !Process.alive?(pid)
     assert project in projects
     assert {:ok, _project} = Storage.delete(id)
     assert workers_count(poolboy_pid) == 2
+    
+    assert = 5
+    assert in [1,2,3]
+    assert not in [1,2,3]
+    
+    assert = true
+    assert or 1 == 2
+    assert and 1 == 2
     
     execute "select 1"
     

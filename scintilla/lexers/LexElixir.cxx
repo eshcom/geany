@@ -225,6 +225,17 @@ SingleStringExpState PopFromStateStack(std::vector<SingleStringExpState> &stack,
 	return expState;
 }
 
+// esh: taken from LexAccessor.h/Match() with minor modifications
+bool MatchWord(Sci_Position pos, Accessor &styler, const char *s) {
+	int i = 0;
+	for (; *s; i++) {
+		if (*s != styler.SafeGetCharAt(pos+i))
+			return false;
+		s++;
+	}
+	return !IsAlnumWordChar(styler.SafeGetCharAt(pos+i));
+}
+
 // Options used for LexerElixir
 struct OptionsElixir {
 	bool escapeSequence;
@@ -537,14 +548,17 @@ void LexerElixir::ProcessLineEnd(StyleContext &sc,
 
 #define CHECK_LIB_MACROS													\
 	if (sc.Match('!', '=') || sc.Match(':', ':') ||							\
-		sc.Match("and") || sc.Match("or") ||								\
-		sc.Match("in") || sc.Match("not in")) {								\
+		MatchWord(sc.currentPos, styler, "and") ||							\
+		MatchWord(sc.currentPos, styler, "or") ||							\
+		MatchWord(sc.currentPos, styler, "in") ||							\
+		MatchWord(sc.currentPos, styler, "not in")) {						\
 		/* do not change the state */										\
 	} else if ((!IsOperator(sc.ch) || sc.Match('<', '<')					\
-				|| strchr("{[%:~^!", sc.ch))								\
+				|| strchr("{[%:~^!?", sc.ch))								\
 			   && !exclLibMacros.InList(cur) && libMacros.InList(cur)) {	\
 		/* { - tuple, [ - list, % - map/struct, : - atom, ~ - string,
-		 * << - binary string, ^ - pin oper, ! - not oper */				\
+		 * << - binary string, ^ - pin oper, ! - not oper
+		 * ? - char */														\
 		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||				\
 			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||					\
 			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||					\
@@ -1169,12 +1183,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						MOVE_INDEX_TO_NONSPACE
 						if (IsDigit(styler[i])) {
 							CHANGE_STATE_BY_FUNCLIST
-						} else {
-							CHECK_LIB_MACROS
-						}
-					} else {
-						CHECK_LIB_MACROS
-					}
+						} else CHECK_LIB_MACROS
+					} else CHECK_LIB_MACROS
 				}
 				ident_state = (sc.state == SCE_ELIXIR_STD_WORD &&
 							   (strcmp(cur, "def") == 0 ||
