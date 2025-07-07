@@ -702,13 +702,11 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (backStyle == SCE_P_FSTRING_SUBOPER) {
 				int nestingCount = 1;
-				char ch;
 				while (--back) {
 					if (styler.StyleAt(back) == SCE_P_FSTRING_SUBOPER) {
-						ch = styler.SafeGetCharAt(back);
-						if (ch == '}')
+						if (styler[back] == '}')
 							nestingCount++;
-						else if (ch == '{')
+						else if (styler[back] == '{')
 							nestingCount--;
 					}
 					if (nestingCount == 0)
@@ -854,7 +852,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
-						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
+						if (pos < 0 || (styler.SafeGetCharAt(pos) != '.'))
 							style = SCE_P_STD_IDENT;
 					} else {
 						style = SCE_P_STD_IDENT;
@@ -865,7 +863,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
-						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
+						if (pos < 0 || (styler.SafeGetCharAt(pos) != '.'))
 							style = SCE_P_STD_FUNC;
 					} else {
 						style = SCE_P_STD_FUNC;
@@ -882,7 +880,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length,
 						// that are used as a sub-identifier,
 						// i.e. not open in "foo.open".
 						Sci_Position pos = styler.GetStartSegment() - 1;
-						if (pos < 0 || (styler.SafeGetCharAt(pos, '\0') != '.'))
+						if (pos < 0 || (styler.SafeGetCharAt(pos) != '.'))
 							style = SCE_P_STD_EXCEPT;
 					} else {
 						style = SCE_P_STD_EXCEPT;
