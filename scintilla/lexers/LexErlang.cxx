@@ -260,7 +260,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 			;
 		last_state = styler.StyleAt(back);
 		if (last_state == SCE_ERLANG_OPERATOR) {
-			last_oper = styler.SafeGetCharAt(back);
+			last_oper = styler[back];
 		}
 	}
 	
