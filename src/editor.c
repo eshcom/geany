@@ -1850,11 +1850,57 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 }
 
 
-static gchar *find_prefix(ScintillaObject *sci, gchar *chunk, gint pos)
+#define SKIP_WHITESPACES_BACKWARD												\
+	if (sci) {																	\
+		gint lexer = sci_get_lexer(sci);										\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos > 0 && (strchr(" \t", sci_get_char_at(sci, pos - 1)) ||	\
+								highlighting_is_comment_style(lexer,			\
+											sci_get_style_at(sci, pos - 1))))	\
+				pos--;															\
+		else																	\
+			while (pos > 0 && (isspace(sci_get_char_at(sci, pos - 1)) ||		\
+								highlighting_is_comment_style(lexer,			\
+											sci_get_style_at(sci, pos - 1))))	\
+				pos--;															\
+	} else {																	\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos > 0 && strchr(" \t", chunk[pos - 1]))					\
+				pos--;															\
+		else																	\
+			while (pos > 0 && isspace(chunk[pos - 1]))							\
+				pos--;															\
+	}
+
+#define SKIP_WHITESPACES_FORWARD												\
+	if (sci) {																	\
+		gint lexer = sci_get_lexer(sci);										\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos < limit && (strchr(" \t", sci_get_char_at(sci, pos)) ||	\
+									highlighting_is_comment_style(lexer,		\
+												sci_get_style_at(sci, pos))))	\
+				pos++;															\
+		else																	\
+			while (pos < limit && (isspace(sci_get_char_at(sci, pos)) ||		\
+									highlighting_is_comment_style(lexer,		\
+												sci_get_style_at(sci, pos))))	\
+				pos++;															\
+	} else {																	\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos < limit && strchr(" \t", chunk[pos]))					\
+				pos++;															\
+		else																	\
+			while (pos < limit && isspace(chunk[pos]))							\
+				pos++;															\
+	}
+
+static gchar *find_prefix(ScintillaObject *sci, gchar *chunk,
+						  gint *p_pos, TMParserType lang)
 {
-	gchar *prefix = NULL;
-	
+	gint pos = *p_pos;
+	SKIP_WHITESPACES_BACKWARD
 	gint prefix_start = pos;
+	
 	while (prefix_start > 0)
 	{
 		gchar c = sci ? sci_get_char_at(sci, prefix_start - 1)
@@ -1869,39 +1915,25 @@ static gchar *find_prefix(ScintillaObject *sci, gchar *chunk, gint pos)
 			prefix_start--;
 		break;
 	}
+	
+	gchar *prefix = NULL;
 	if (prefix_start < pos)
 		prefix = sci ? sci_get_contents_range(sci, prefix_start, pos)
 					 : g_strndup(&chunk[prefix_start], pos - prefix_start);
-	
+	*p_pos = pos;
 	return prefix;
 }
 
 static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 						  gint pos, gint limit, TMParserType lang)
 {
-	gchar *suffix = NULL;
-	
-	inline gchar get_char_at(gint index)
-	{
-		return sci ? sci_get_char_at(sci, index) : chunk[index];
-	}
-	
-	/* skip whitespaces */
-	if (lang == TM_PARSER_PYTHON)
-	{	// only space or tab
-		while (pos < limit && strchr(" \t", get_char_at(pos)))
-			pos++;
-	}
-	else
-	{
-		while (pos < limit && isspace(get_char_at(pos)))
-			pos++;
-	}
-	
+	SKIP_WHITESPACES_FORWARD
 	gint suffix_end = pos;
+	
 	while (suffix_end < limit)
 	{
-		gchar c = get_char_at(suffix_end);
+		gchar c = sci ? sci_get_char_at(sci, suffix_end) : chunk[suffix_end];
+		
 		if (strchr(MULTI_CHAR_SUFFIX_CHARS, c))
 		{
 			suffix_end++;
@@ -1911,10 +1943,11 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 			suffix_end++;
 		break;
 	}
+	
+	gchar *suffix = NULL;
 	if (pos < suffix_end)
 		suffix = sci ? sci_get_contents_range(sci, pos, suffix_end)
 					 : g_strndup(&chunk[pos], suffix_end - pos);
-	
 	return suffix;
 }
 
@@ -1925,37 +1958,27 @@ static ScopeBound find_next_scope(GeanyEditor *editor,
 								  gchar *scope, gsize scopelen)
 {
 	ScintillaObject *sci = editor ? editor->sci : NULL;
-	
-	inline gchar get_char_at(gint index)
-	{
-		return sci ? sci_get_char_at(sci, index) : chunk[index];
-	}
-	
 	ScopeBound scopebound = {{-1, -1}, FALSE};
 	
 	*scope = '\0';
 	
-	/* skip whitespaces */
-	while (pos > 0 && isspace(get_char_at(pos - 1)))
-		pos--;
+	SKIP_WHITESPACES_BACKWARD
 	
 	if (pos > 0 && match_last_chars(sci, chunk, pos, context_sep))
 	{
 		pos -= strlen(context_sep);
-		/* skip whitespaces */
-		while (pos > 0 && isspace(get_char_at(pos - 1)))
-			pos--;
+		SKIP_WHITESPACES_BACKWARD
 		
 		if (pos > 0)
 		{
 			gboolean brackets = FALSE;
-			if (get_char_at(pos - 1) == ')')
+			gchar c = sci ? sci_get_char_at(sci, pos - 1) : chunk[pos - 1];
+			
+			if (c == ')')
 			{
 				brackets = TRUE;
 				pos = find_start_bracket(sci, chunk, pos - 2);
-				/* skip whitespaces */
-				while (pos > 0 && isspace(get_char_at(pos - 1)))
-					pos--;
+				SKIP_WHITESPACES_BACKWARD
 			}
 			if (pos > 0)
 			{	// scope search:
@@ -2010,9 +2033,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			else if (chunk[pos - 1] == ')')
 				pos = find_start_bracket(NULL, chunk, pos - 2);
 		}
-		/* skip whitespaces */
-		while (pos > 0 && isspace(chunk[pos - 1]))
-			pos--;
+		SKIP_WHITESPACES_BACKWARD
 	}
 	
 	*scope = '\0';
@@ -2028,18 +2049,10 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	if (wordbound.start == wordbound.end)
 		return;
 	
-	inline gchar get_char_at(gint index)
-	{
-		return sci ? sci_get_char_at(sci, index) : chunk[index];
-	}
-	
 	pos = wordbound.start;
-	/* skip whitespaces */
-	while (pos > 0 && isspace(get_char_at(pos - 1)))
-		pos--;
 	
 	// esh: define the type ----------------------------------
-	gchar *prefix = find_prefix(sci, chunk, pos);
+	gchar *prefix = find_prefix(sci, chunk, &pos, lang);
 	gchar *suffix = find_suffix(sci, chunk, wordbound.end, limit, lang);
 	
 	tm_parser_define_type(type, lang, prefix, suffix);
@@ -2080,11 +2093,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			{
 				pos = scopebound.bound.start;
 				
-				/* skip whitespaces */
-				while (pos > 0 && isspace(get_char_at(pos - 1)))
-					pos--;
-				
-				prefix = find_prefix(sci, chunk, pos);
+				prefix = find_prefix(sci, chunk, &pos, lang);
 				tm_parser_define_scope(scope, scopelen, scope_parts_cnt,
 									   lang, prefix, scopebound.brackets);
 				g_free(prefix);
@@ -2121,9 +2130,7 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk,
 		sci = NULL;
 		limit = strlen(chunk);
 		pos = 0;
-		/* skip whitespaces */
-		while (pos < limit && isspace(chunk[pos]))
-			pos++;
+		SKIP_WHITESPACES_FORWARD
 	}
 	
 	// word1 search:
@@ -2136,22 +2143,15 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk,
 	
 	if (wordbound.start != wordbound.end)
 	{
-		inline gchar get_char_at(gint index)
-		{
-			return sci ? sci_get_char_at(sci, index) : chunk[index];
-		}
-		
 		pos = wordbound.end;
-		/* skip whitespaces */
-		while (pos < limit && isspace(get_char_at(pos)))
-			pos++;
+		SKIP_WHITESPACES_FORWARD
 		
-		if (pos < limit && get_char_at(pos) == separator)
+		gchar c = sci ? sci_get_char_at(sci, pos) : chunk[pos];
+		
+		if (pos < limit && c == separator)
 		{
 			pos++;
-			/* skip whitespaces */
-			while (pos < limit && isspace(get_char_at(pos)))
-				pos++;
+			SKIP_WHITESPACES_FORWARD
 			
 			if (pos < limit)
 			{	// word2 search:
