@@ -663,7 +663,7 @@ static void show_tags_list(GeanyEditor *editor, const GPtrArray *tags,
 
 
 /* do not use with long strings */
-// esh: expanded the func: work with sci or chunk
+// esh: expanded the func - work with sci or chunk
 static gboolean match_last_chars(ScintillaObject *sci, gchar *chunk,
 								 gint pos, const gchar *str)
 {
@@ -2052,15 +2052,15 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 	pos = wordbound.start;
 	
 	// esh: define the type ----------------------------------
-	gchar *prefix = find_prefix(sci, chunk, &pos, lang);
-	gchar *suffix = find_suffix(sci, chunk, wordbound.end, limit, lang);
+	gchar *word_prefix = find_prefix(sci, chunk, &pos, lang);
+	gchar *word_suffix = find_suffix(sci, chunk, wordbound.end, limit, lang);
 	
-	tm_parser_define_type(type, lang, prefix, suffix);
+	tm_parser_define_type(type, lang, word_prefix, word_suffix);
 	
 	ui_set_statusbar(TRUE, "word: prefix = '%s', suffix = '%s', type = %d",
-					 prefix, suffix, *type); // esh: log
-	g_free(prefix);
-	g_free(suffix);
+					 word_prefix, word_suffix, *type); // esh: log
+	// word_prefix will be free later
+	g_free(word_suffix);
 	//--------------------------------------------------------
 	
 	// esh: define the scope ---------------------------------
@@ -2093,15 +2093,17 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			{
 				pos = scopebound.bound.start;
 				
-				prefix = find_prefix(sci, chunk, &pos, lang);
-				tm_parser_define_scope(scope, scopelen, scope_parts_cnt,
-									   lang, prefix, scopebound.brackets);
-				g_free(prefix);
+				gchar *scope_prefix = find_prefix(sci, chunk, &pos, lang);
+				tm_parser_define_scope(scope, scopelen, scope_parts_cnt, lang,
+									   scope_prefix, NULL, scopebound.brackets);
+				g_free(scope_prefix);
+				g_free(word_prefix);
 				return;
 			}
 		}
 	}
-	tm_parser_define_scope(scope, scopelen, 0, lang, NULL, FALSE);
+	tm_parser_define_scope(scope, scopelen, 0, lang, NULL, word_prefix, FALSE);
+	g_free(word_prefix);
 	//--------------------------------------------------------
 }
 
