@@ -65,6 +65,8 @@ void highlighting_free_styles(void);
 
 void highlighting_show_color_scheme_dialog(void);
 
+const gchar *get_style_wordchars(gint ft_id);
+
 #endif /* GEANY_PRIVATE */
 
 G_END_DECLS

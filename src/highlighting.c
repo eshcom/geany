@@ -1518,6 +1518,12 @@ void highlighting_show_color_scheme_dialog(void)
 }
 
 
+const gchar *get_style_wordchars(gint ft_id)
+{
+	return style_sets[ft_id].wordchars;
+}
+
+
 /** Checks whether the given style is a string for the given lexer.
  *
  * @param lexer Scintilla lexer type (@c SCLEX_*).

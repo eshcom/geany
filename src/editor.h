@@ -305,16 +305,14 @@ const GeanyEditorPrefs *editor_get_prefs(GeanyEditor *editor);
 
 /* General editing functions */
 
-void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
-								gchar *chunk, TMParserType lang,
+void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 								gchar *word, gsize wordlen,
 								gchar *scope, gsize scopelen,
 								TMTagType *type);
 
-void editor_find_custom_words(GeanyEditor *editor, gchar *chunk,
-							  TMParserType lang, const gchar separator,
-							  gchar *word1, gsize wordlen1, const gchar *wordchars1,
-							  gchar *word2, gsize wordlen2, const gchar *wordchars2);
+void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar separator,
+							  gchar *word1, gsize wordlen1, const gchar *wc1,
+							  gchar *word2, gsize wordlen2, const gchar *wc2);
 
 void editor_find_current_word(GeanyEditor *editor, gint pos,
 							  gchar *word, gsize wordlen, const gchar *wc);
@@ -324,11 +322,11 @@ void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
 
 gchar *editor_get_default_selection(GeanyEditor *editor,
 									gboolean use_current_word,
-									const gchar *wordchars);
+									const gchar *wc);
 
 void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
-							 gchar **word1, const gchar *wordchars1,
-							 gchar **word2, const gchar *wordchars2);
+							 gchar **word1, const gchar *wc1,
+							 gchar **word2, const gchar *wc2);
 
 
 void editor_select_word(GeanyEditor *editor);
