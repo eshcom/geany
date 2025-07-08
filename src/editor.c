@@ -336,7 +336,7 @@ static gboolean on_editor_button_press_event(GtkWidget *widget,
 			
 			static gchar current_scope[GEANY_MAX_WORD_LENGTH];
 			TMTagType type = tm_tag_undef_t;
-			editor_find_word_and_scope(editor, editor_info.click_pos, NULL, -1,
+			editor_find_word_and_scope(editor, editor_info.click_pos, NULL,
 									   current_word, sizeof current_word,
 									   current_scope, sizeof current_scope,
 									   &type);
@@ -673,18 +673,18 @@ static gboolean match_last_chars(ScintillaObject *sci, gchar *chunk,
 	if ((gint)len > pos)
 		return FALSE;
 	
-	if (sci)
-	{
-		gchar *buf = g_alloca(len + 1); // allocate in stack - will be free auto
-		sci_get_text_range(sci, pos - len, pos, buf);
-		return strcmp(str, buf) == 0;
-	}
-	else
+	if (chunk)
 	{
 		gchar *buf = g_strndup(&chunk[pos - len], len);
 		gboolean match = (strcmp(str, buf) == 0);
 		g_free(buf);
 		return match;
+	}
+	else
+	{
+		gchar *buf = g_alloca(len + 1); // allocate in stack - will be free auto
+		sci_get_text_range(sci, pos - len, pos, buf);
+		return strcmp(str, buf) == 0;
 	}
 }
 
@@ -1851,7 +1851,14 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 
 
 #define SKIP_WHITESPACES_BACKWARD												\
-	if (sci) {																	\
+	if (chunk) {																\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos > 0 && strchr(" \t", chunk[pos - 1]))					\
+				pos--;															\
+		else																	\
+			while (pos > 0 && isspace(chunk[pos - 1]))							\
+				pos--;															\
+	} else {																	\
 		gint lexer = sci_get_lexer(sci);										\
 		if (lang == TM_PARSER_PYTHON)											\
 			while (pos > 0 && (strchr(" \t", sci_get_char_at(sci, pos - 1)) ||	\
@@ -1863,17 +1870,17 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 								highlighting_is_comment_style(lexer,			\
 											sci_get_style_at(sci, pos - 1))))	\
 				pos--;															\
-	} else {																	\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos > 0 && strchr(" \t", chunk[pos - 1]))					\
-				pos--;															\
-		else																	\
-			while (pos > 0 && isspace(chunk[pos - 1]))							\
-				pos--;															\
 	}
 
 #define SKIP_WHITESPACES_FORWARD												\
-	if (sci) {																	\
+	if (chunk) {																\
+		if (lang == TM_PARSER_PYTHON)											\
+			while (pos < limit && strchr(" \t", chunk[pos]))					\
+				pos++;															\
+		else																	\
+			while (pos < limit && isspace(chunk[pos]))							\
+				pos++;															\
+	} else {																	\
 		gint lexer = sci_get_lexer(sci);										\
 		if (lang == TM_PARSER_PYTHON)											\
 			while (pos < limit && (strchr(" \t", sci_get_char_at(sci, pos)) ||	\
@@ -1884,13 +1891,6 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 			while (pos < limit && (isspace(sci_get_char_at(sci, pos)) ||		\
 									highlighting_is_comment_style(lexer,		\
 												sci_get_style_at(sci, pos))))	\
-				pos++;															\
-	} else {																	\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos < limit && strchr(" \t", chunk[pos]))					\
-				pos++;															\
-		else																	\
-			while (pos < limit && isspace(chunk[pos]))							\
 				pos++;															\
 	}
 
@@ -1903,8 +1903,8 @@ static gchar *find_prefix(ScintillaObject *sci, gchar *chunk,
 	
 	while (prefix_start > 0)
 	{
-		gchar c = sci ? sci_get_char_at(sci, prefix_start - 1)
-					  : chunk[prefix_start - 1];
+		gchar c = chunk ? chunk[prefix_start - 1]
+						: sci_get_char_at(sci, prefix_start - 1);
 		
 		if (strchr(MULTI_CHAR_PREFIX_CHARS, c))
 		{
@@ -1918,8 +1918,8 @@ static gchar *find_prefix(ScintillaObject *sci, gchar *chunk,
 	
 	gchar *prefix = NULL;
 	if (prefix_start < pos)
-		prefix = sci ? sci_get_contents_range(sci, prefix_start, pos)
-					 : g_strndup(&chunk[prefix_start], pos - prefix_start);
+		prefix = chunk ? g_strndup(&chunk[prefix_start], pos - prefix_start)
+					   : sci_get_contents_range(sci, prefix_start, pos);
 	*p_pos = pos;
 	return prefix;
 }
@@ -1932,7 +1932,7 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 	
 	while (suffix_end < limit)
 	{
-		gchar c = sci ? sci_get_char_at(sci, suffix_end) : chunk[suffix_end];
+		gchar c = chunk ? chunk[suffix_end] : sci_get_char_at(sci, suffix_end);
 		
 		if (strchr(MULTI_CHAR_SUFFIX_CHARS, c))
 		{
@@ -1946,18 +1946,18 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 	
 	gchar *suffix = NULL;
 	if (pos < suffix_end)
-		suffix = sci ? sci_get_contents_range(sci, pos, suffix_end)
-					 : g_strndup(&chunk[pos], suffix_end - pos);
+		suffix = chunk ? g_strndup(&chunk[pos], suffix_end - pos)
+					   : sci_get_contents_range(sci, pos, suffix_end);
 	return suffix;
 }
 
 
-static ScopeBound find_next_scope(GeanyEditor *editor,
-								  gchar *chunk, TMParserType lang,
+static ScopeBound find_next_scope(GeanyEditor *editor, gchar *chunk,
 								  gint pos, const gchar *context_sep,
-								  gchar *scope, gsize scopelen)
+								  gchar *scope, gsize scopelen, const gchar *wc)
 {
-	ScintillaObject *sci = editor ? editor->sci : NULL;
+	ScintillaObject *sci = editor->sci;
+	TMParserType lang = editor->document->file_type->lang;
 	ScopeBound scopebound = {{-1, -1}, FALSE};
 	
 	*scope = '\0';
@@ -1972,7 +1972,7 @@ static ScopeBound find_next_scope(GeanyEditor *editor,
 		if (pos > 0)
 		{
 			gboolean brackets = FALSE;
-			gchar c = sci ? sci_get_char_at(sci, pos - 1) : chunk[pos - 1];
+			gchar c = chunk ? chunk[pos - 1] : sci_get_char_at(sci, pos - 1);
 			
 			if (c == ')')
 			{
@@ -1982,12 +1982,10 @@ static ScopeBound find_next_scope(GeanyEditor *editor,
 			}
 			if (pos > 0)
 			{	// scope search:
-				if (editor)
-					scopebound.bound = read_current_word(editor, pos, scope,
-														 scopelen, NULL, TRUE);
-				else
-					scopebound.bound = read_word(chunk, pos, scope, scopelen,
-												 GEANY_WORDCHARS, TRUE, lang);
+				scopebound.bound = chunk ? read_word(chunk, pos, scope, scopelen,
+													 wc, TRUE, lang)
+										 : read_current_word(editor, pos, scope,
+															 scopelen, wc, TRUE);
 				scopebound.brackets = brackets;
 			}
 		}
@@ -1999,31 +1997,28 @@ static ScopeBound find_next_scope(GeanyEditor *editor,
 /* esh: Reads the word and scope by cursor position.
  * 		(is an extended func of editor_find_current_word
  * 		 with the addition of a scope search) */
-void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
-								gchar *chunk, TMParserType lang,
+void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 								gchar *word, gsize wordlen,
 								gchar *scope, gsize scopelen,
 								TMTagType *type)
 {
-	g_return_if_fail(editor != NULL || chunk != NULL);
+	g_return_if_fail(editor != NULL);
 	
-	ScintillaObject *sci;
+	gint ft_id = editor->document->file_type->id;
+	const gchar *wc = get_style_wordchars(ft_id);
+	
+	ScintillaObject *sci = editor->sci;
+	TMParserType lang = editor->document->file_type->lang;
+	
 	WordBound wordbound;
 	gint limit;
 	
-	if (editor)
+	if (chunk)
 	{
-		sci = editor->sci;
-		limit = sci_get_length(sci);
-		
-		lang = editor->document->file_type->lang;
-	}
-	else
-	{
-		sci = NULL;
 		limit = pos = strlen(chunk);
 		
-		while (pos > 0 && !strchr(GEANY_WORDCHARS"()", chunk[pos - 1]))
+		while (pos > 0 && !strchr(wc, chunk[pos - 1])
+					   && !strchr("()", chunk[pos - 1]))
 			pos--;
 		
 		if (pos > 0)
@@ -2031,20 +2026,20 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			if (chunk[pos - 1] == '(')
 				pos--;
 			else if (chunk[pos - 1] == ')')
-				pos = find_start_bracket(NULL, chunk, pos - 2);
+				pos = find_start_bracket(sci, chunk, pos - 2);
 		}
 		SKIP_WHITESPACES_BACKWARD
+	}
+	else
+	{
+		limit = sci_get_length(sci);
 	}
 	
 	*scope = '\0';
 	
 	// word search:
-	if (editor)
-		wordbound = read_current_word(editor, pos, word, wordlen,
-									  NULL, FALSE);
-	else
-		wordbound = read_word(chunk, pos, word, wordlen,
-							  GEANY_WORDCHARS, FALSE, lang);
+	wordbound = chunk ? read_word(chunk, pos, word, wordlen, wc, FALSE, lang)
+					  : read_current_word(editor, pos, word, wordlen, wc, FALSE);
 	
 	if (wordbound.start == wordbound.end)
 		return;
@@ -2077,8 +2072,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 			
 			while (TRUE)
 			{
-				tmp_bound = find_next_scope(editor, chunk, lang, pos, context_sep,
-											tmp_scope, scopelen);
+				tmp_bound = find_next_scope(editor, chunk, pos, context_sep,
+											tmp_scope, scopelen, wc);
 				if (*tmp_scope == '\0')
 					break;
 				
@@ -2110,45 +2105,40 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos,
 
 /* esh: Reads custom word1 and word2 by cursor position.
  * 		(based on editor_find_word_and_scope) */
-void editor_find_custom_words(GeanyEditor *editor, gchar *chunk,
-							  TMParserType lang, const gchar separator,
-							  gchar *word1, gsize wordlen1, const gchar *wordchars1,
-							  gchar *word2, gsize wordlen2, const gchar *wordchars2)
+void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar separator,
+							  gchar *word1, gsize wordlen1, const gchar *wc1,
+							  gchar *word2, gsize wordlen2, const gchar *wc2)
 {
-	g_return_if_fail(editor != NULL || chunk != NULL);
+	g_return_if_fail(editor != NULL);
 	
-	ScintillaObject *sci;
+	ScintillaObject *sci = editor->sci;
+	TMParserType lang = editor->document->file_type->lang;
+	
 	WordBound wordbound;
 	gint limit, pos;
 	
-	if (editor)
+	if (chunk)
 	{
-		sci = editor->sci;
-		limit = sci_get_length(sci);
-		pos = -1;
-	}
-	else
-	{
-		sci = NULL;
 		limit = strlen(chunk);
 		pos = 0;
 		SKIP_WHITESPACES_FORWARD
 	}
+	else
+	{
+		limit = sci_get_length(sci);
+		pos = -1;
+	}
 	
 	// word1 search:
-	if (editor)
-		wordbound = read_current_word(editor, pos, word1, wordlen1,
-									  wordchars1, FALSE);
-	else
-		wordbound = read_word(chunk, pos, word1, wordlen1,
-							  wordchars1, FALSE, lang);
+	wordbound = chunk ? read_word(chunk, pos, word1, wordlen1, wc1, FALSE, lang)
+					  : read_current_word(editor, pos, word1, wordlen1, wc1, FALSE);
 	
 	if (wordbound.start != wordbound.end)
 	{
 		pos = wordbound.end;
 		SKIP_WHITESPACES_FORWARD
 		
-		gchar c = sci ? sci_get_char_at(sci, pos) : chunk[pos];
+		gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
 		
 		if (pos < limit && c == separator)
 		{
@@ -2157,12 +2147,8 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk,
 			
 			if (pos < limit)
 			{	// word2 search:
-				if (editor)
-					read_current_word(editor, pos, word2, wordlen2,
-									  wordchars2, FALSE);
-				else
-					read_word(chunk, pos, word2, wordlen2,
-							  wordchars2, FALSE, lang);
+				chunk ? read_word(chunk, pos, word2, wordlen2, wc2, FALSE, lang)
+					  : read_current_word(editor, pos, word2, wordlen2, wc2, FALSE);
 				return;
 			}
 		}
@@ -2279,7 +2265,7 @@ static gint find_start_bracket(ScintillaObject *sci, gchar *chunk, gint pos)
 	
 	while (pos > limit)
 	{
-		gchar c = sci ? sci_get_char_at(sci, pos) : chunk[pos];
+		gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
 		
 		if (c == ')')
 			brackets++;
@@ -4574,8 +4560,8 @@ void editor_finalize(void)
 /* esh: Reads custom word1 and word2 by cursor position or selection.
  * 		(based on editor_get_default_selection/get_current_word_and_scope) */
 void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
-							 gchar **word1, const gchar *wordchars1,
-							 gchar **word2, const gchar *wordchars2)
+							 gchar **word1, const gchar *wc1,
+							 gchar **word2, const gchar *wc2)
 {
 	g_return_if_fail(editor != NULL);
 	
@@ -4586,17 +4572,16 @@ void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
 	{
 		gchar *selection = sci_get_selection_contents(editor->sci);
 		
-		editor_find_custom_words(NULL, selection,
-								 editor->document->file_type->lang, separator,
-								 custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
-								 custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
+		editor_find_custom_words(editor, selection, separator,
+								 custom_word1, GEANY_MAX_WORD_LENGTH, wc1,
+								 custom_word2, GEANY_MAX_WORD_LENGTH, wc2);
 		g_free(selection);
 	}
 	else
 	{
-		editor_find_custom_words(editor, NULL, -1, separator,
-								 custom_word1, GEANY_MAX_WORD_LENGTH, wordchars1,
-								 custom_word2, GEANY_MAX_WORD_LENGTH, wordchars2);
+		editor_find_custom_words(editor, NULL, separator,
+								 custom_word1, GEANY_MAX_WORD_LENGTH, wc1,
+								 custom_word2, GEANY_MAX_WORD_LENGTH, wc2);
 	}
 	if (*custom_word1)
 	{
@@ -4614,7 +4599,7 @@ void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
  * NULL means using Scintillas's word boundaries. */
 gchar *editor_get_default_selection(GeanyEditor *editor,
 									gboolean use_current_word,
-									const gchar *wordchars)
+									const gchar *wc)
 {
 	g_return_val_if_fail(editor != NULL, NULL);
 	
@@ -4626,10 +4611,8 @@ gchar *editor_get_default_selection(GeanyEditor *editor,
 	{	/* use the word at current cursor position */
 		gchar word[GEANY_MAX_WORD_LENGTH];
 		
-		if (wordchars != NULL)
-			editor_find_current_word(editor, -1, word, sizeof(word), wordchars);
-		else
-			editor_find_current_word_sciwc(editor, -1, word, sizeof(word));
+		wc ? editor_find_current_word(editor, -1, word, sizeof(word), wc)
+		   : editor_find_current_word_sciwc(editor, -1, word, sizeof(word));
 		
 		if (word[0] != '\0')
 			s = g_strdup(word);

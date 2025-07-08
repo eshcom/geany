@@ -190,7 +190,7 @@ info() ->
   ok.
 
 call(Call) ->
-  try gen_server:call(?MODULE, Call, 60000)
+  try gen_server:call(?MODULE, Call, ?CALL@_TIMEOUT)
   catch
     exit:{timeout,_} ->
       {Dict,ST} = case whereis(?MODULE) of

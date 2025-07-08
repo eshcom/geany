@@ -50,7 +50,7 @@ static bool isIdentifierFirstCharacter(int c)
 
 static bool isIdentifierCharacter(int c)
 {
-	return (bool)(isalnum(c) || c == '_' || c == ':');
+	return (bool)(isalnum(c) || c == '_' || c == ':' || c == '@');
 }
 
 static bool isMultilineString(const unsigned char *cp, bool isString)
