@@ -850,7 +850,8 @@ gboolean tm_parser_has_quoted_identifiers(TMParserType lang)
 }
 
 void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
-							TMParserType lang, const gchar *prefix, gboolean brackets)
+							TMParserType lang, const gchar *prefix,
+							const gchar *suffix, gboolean brackets)
 {
 	switch (lang)
 	{
@@ -869,6 +870,12 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 				g_strlcpy(scope, "*", scopelen);
 			else if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
 				g_strlcpy(scope, scope_parts_cnt > 1 ? "*" : "", scopelen);
+			break;
+		
+		case TM_PARSER_C:
+		case TM_PARSER_CPP:
+			if (*scope == '\0' && g_strcmp0(suffix, ".") == 0)
+				g_strlcpy(scope, "*", scopelen);
 			break;
 	}
 }

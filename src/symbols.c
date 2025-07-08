@@ -2180,6 +2180,20 @@ static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 	return filtered_tags;
 }
 
+static GPtrArray *filter_tags_by_filled_scope(GPtrArray *tags)
+{
+	TMTag *tmtag = NULL;
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	guint i;
+	
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if (!EMPTY(tmtag->scope))
+			g_ptr_array_add(filtered_tags, tmtag);
+	}
+	return filtered_tags;
+}
+
 static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
 {
 	TMTag *tmtag = NULL;
@@ -2284,12 +2298,20 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 	
 	GPtrArray *new_tags;
 	
-	if (filtered_tags->len > 0 && definition &&
-		!EMPTY(scope) && g_strcmp0(scope, "*") != 0)
+	if (filtered_tags->len > 0 && definition && !EMPTY(scope))
 	{
-		gboolean force_replace = tm_parser_strict_scope(lang);
-		new_tags = filter_tags_by_scope(filtered_tags, scope, lang);
-		filter_tags_check(&filtered_tags, &new_tags, force_replace);
+		gboolean strict_scope = tm_parser_strict_scope(lang);
+		
+		if (g_strcmp0(scope, "*") != 0)
+		{
+			new_tags = filter_tags_by_scope(filtered_tags, scope, lang);
+			filter_tags_check(&filtered_tags, &new_tags, strict_scope);
+		}
+		else if (strict_scope)
+		{	// also scope = "*"
+			new_tags = filter_tags_by_filled_scope(filtered_tags);
+			filter_tags_check(&filtered_tags, &new_tags, strict_scope);
+		}
 	}
 	
 	if (filtered_tags->len > 0 && definition && type != tm_tag_undef_t)
