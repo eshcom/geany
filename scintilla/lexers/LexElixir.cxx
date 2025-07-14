@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <string>
 #include <vector>
 #include <map>
 
@@ -519,31 +520,31 @@ void LexerElixir::ProcessLineEnd(StyleContext &sc,
 		lineEndCurr = styler.LineEnd(++lineCurrent);						\
 	}
 
-#define MOVE_INDEX_TO_NONSPACE								\
-	Sci_PositionU i = sc.currentPos + 1;					\
-	while (i < endPos && IsSpaceOrTab(styler[i]))			\
+#define MOVE_INDEX_TO_NONSPACE												\
+	Sci_PositionU i = sc.currentPos + 1;									\
+	while (i < endPos && IsSpaceOrTab(styler[i]))							\
 		i++;
 
-#define SKIP_SPACES											\
-	while (sc.More() && IsSpaceOrTab(sc.ch))				\
+#define SKIP_SPACES															\
+	while (sc.More() && IsSpaceOrTab(sc.ch))								\
 		sc.Forward();
 
-#define SKIP_NEXT_SPACES									\
-	while (sc.More() && IsSpaceOrTab(sc.chNext))			\
+#define SKIP_NEXT_SPACES													\
+	while (sc.More() && IsSpaceOrTab(sc.chNext))							\
 		sc.Forward();
 
-#define CHANGE_STATE_BY_MODULE								\
-	module_type == KERNEL_MODULE && stdFuncs.InList(cur)	\
-		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)				\
+#define CHANGE_STATE_BY_MODULE												\
+	module_type == KERNEL_MODULE && stdFuncs.InList(cur)					\
+		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)								\
 		: sc.ChangeState(SCE_ELIXIR_FUNCTION);
 
-#define CHANGE_STATE_BY_FUNCLIST										\
-	if (stdFuncs.InList(cur)) {											\
-		sc.ChangeState(SCE_ELIXIR_STD_FUNC);							\
-	} else if (!exclLibFuncs.InList(cur) && libMacros.InList(cur)) {	\
-		sc.ChangeState(SCE_ELIXIR_LIB_FUNC);							\
-	} else {															\
-		sc.ChangeState(SCE_ELIXIR_FUNCTION);							\
+#define CHANGE_STATE_BY_FUNCLIST											\
+	if (stdFuncs.InList(cur)) {												\
+		sc.ChangeState(SCE_ELIXIR_STD_FUNC);								\
+	} else if (!exclLibFuncs.InList(cur) && libMacros.InList(cur)) {		\
+		sc.ChangeState(SCE_ELIXIR_LIB_FUNC);								\
+	} else {																\
+		sc.ChangeState(SCE_ELIXIR_FUNCTION);								\
 	}
 
 #define CHECK_LIB_MACROS													\
