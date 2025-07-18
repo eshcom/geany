@@ -176,16 +176,13 @@ static TMParserMapEntry map_DOCBOOK[] = {
 };
 
 static TMParserMapEntry map_ELIXIR[] = {
-	//~ {'d', tm_tag_macro_t},
-	//~ {'f', tm_tag_function_t},
-	//~ {'m', tm_tag_undef_t},
-	//~ {'r', tm_tag_struct_t},
-	//~ {'t', tm_tag_typedef_t},
-	// esh: get from Ruby, temporary solution
-	{'c', tm_tag_class_t},
-	{'f', tm_tag_method_t},
-	{'m', tm_tag_namespace_t},
-	{'F', tm_tag_member_t},
+	{'a', tm_tag_variable_t},	// module attribute
+	{'f', tm_tag_function_t},	// function
+	{'t', tm_tag_typedef_t},	// type definition
+	{'m', tm_tag_namespace_t},	// module
+	{'M', tm_tag_macro_t},		// macro
+	{'p', tm_tag_interface_t},	// protocol
+	{'i', tm_tag_struct_t},		// protocol implementation
 };
 
 static TMParserMapEntry map_ERLANG[] = {
