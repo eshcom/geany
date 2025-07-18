@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Geany 1.36\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 12:20+0300\n"
+"POT-Creation-Date: 2025-07-25 20:09+0300\n"
 "PO-Revision-Date: 2019-09-26 20:42+0800\n"
 "Last-Translator: Dongyuan Liu <liu.dongyuan@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -109,11 +109,11 @@ msgstr "搜索(_S)"
 msgid "Open Selected F_ile"
 msgstr "打开选择的文件(_I)"
 
-#: ../data/geany.glade.h:19 ../src/symbols.c:2907
+#: ../data/geany.glade.h:19 ../src/symbols.c:3013
 msgid "Find _Usage"
 msgstr "查找用法(_U)"
 
-#: ../data/geany.glade.h:20 ../src/symbols.c:2914
+#: ../data/geany.glade.h:20 ../src/symbols.c:3020
 msgid "Find _Document Usage"
 msgstr "查找文档用法(_D)"
 
@@ -1233,7 +1233,7 @@ msgid ""
 "disables checking."
 msgstr "设置磁盘检查的间隔时间。零表示不检查。"
 
-#: ../data/geany.glade.h:269 ../src/prefs.c:1655 ../src/symbols.c:495
+#: ../data/geany.glade.h:269 ../src/prefs.c:1655 ../src/symbols.c:503
 #: ../plugins/filebrowser.c:1158
 msgid "Files"
 msgstr "文件"
@@ -1621,7 +1621,7 @@ msgid "Sa_ve All"
 msgstr "全部保存(_L)"
 
 #: ../data/geany.glade.h:359 ../src/document.c:1723 ../src/document.c:3788
-#: ../src/sidebar.c:728
+#: ../src/sidebar.c:741
 msgid "_Reload"
 msgstr "重新载入(_R)"
 
@@ -1745,7 +1745,7 @@ msgstr "查找下一个(_N)"
 msgid "Find _Previous"
 msgstr "查找上一个(_P)"
 
-#: ../data/geany.glade.h:390 ../src/symbols.c:2921
+#: ../data/geany.glade.h:390 ../src/symbols.c:3027
 msgid "Find in F_iles..."
 msgstr "在多个文件中查找...(_I)"
 
@@ -2050,7 +2050,7 @@ msgstr "报告错误...(_B)"
 msgid "_Donate..."
 msgstr "捐赠...(_D)"
 
-#: ../data/geany.glade.h:466 ../src/sidebar.c:131
+#: ../data/geany.glade.h:466 ../src/sidebar.c:135
 msgid "Symbols"
 msgstr "标记"
 
@@ -2400,12 +2400,12 @@ msgstr "没有生成错误。"
 msgid "Set menu item label"
 msgstr "设置菜单项的标签"
 
-#: ../src/build.c:1837 ../src/symbols.c:552 ../src/tools.c:416
+#: ../src/build.c:1837 ../src/symbols.c:560 ../src/tools.c:416
 msgid "Label"
 msgstr "标签"
 
 #. command column, holding status and command display
-#: ../src/build.c:1838 ../src/symbols.c:547 ../src/tools.c:401
+#: ../src/build.c:1838 ../src/symbols.c:555 ../src/tools.c:401
 msgid "Command"
 msgstr "命令"
 
@@ -2638,7 +2638,7 @@ msgstr "保存并重命名文件"
 msgid "Error"
 msgstr "错误"
 
-#: ../src/dialogs.c:700 ../src/dialogs.c:779 ../src/dialogs.c:1336
+#: ../src/dialogs.c:700 ../src/dialogs.c:779 ../src/dialogs.c:1335
 #: ../src/win32.c:732
 msgid "Question"
 msgstr "问题"
@@ -2676,7 +2676,7 @@ msgstr "发生了一个错误或无法取得文件信息 (比如一个空文件)
 
 #: ../src/dialogs.c:1203 ../src/dialogs.c:1204 ../src/dialogs.c:1205
 #: ../src/dialogs.c:1211 ../src/dialogs.c:1212 ../src/dialogs.c:1213
-#: ../src/symbols.c:2709 ../src/symbols.c:2726 ../src/ui_utils.c:316
+#: ../src/symbols.c:2815 ../src/symbols.c:2832 ../src/ui_utils.c:316
 msgid "unknown"
 msgstr "未知"
 
@@ -2685,11 +2685,11 @@ msgstr "未知"
 msgid "%s Properties"
 msgstr "%s 属性"
 
-#: ../src/dialogs.c:1250 ../src/ui_utils.c:320
+#: ../src/dialogs.c:1249 ../src/ui_utils.c:320
 msgid "(with BOM)"
 msgstr "(含有 BOM)"
 
-#: ../src/dialogs.c:1250
+#: ../src/dialogs.c:1249
 msgid "(without BOM)"
 msgstr "(无 BOM)"
 
@@ -2913,15 +2913,15 @@ msgstr[0] "%s：替换了 %d 处，从“%s”变为“%s”。"
 msgid "Do you want to reload it?"
 msgstr "您要重新载入吗？"
 
-#: ../src/editor.c:4998
+#: ../src/editor.c:5023
 msgid "Enter Tab Width"
 msgstr "输入制表符宽度"
 
-#: ../src/editor.c:4999
+#: ../src/editor.c:5024
 msgid "Enter the amount of spaces which should be replaced by a tab character."
 msgstr "输入要用一个制表符代替多少个空格。"
 
-#: ../src/editor.c:5211
+#: ../src/editor.c:5236
 #, c-format
 msgid "Warning: non-standard hard tab width: %d != 8!"
 msgstr "警告：非标准的硬 tab 宽度：%d != 8！"
@@ -3112,27 +3112,27 @@ msgstr "Makefile"
 msgid "Cascading Stylesheet"
 msgstr "层叠样式表"
 
-#: ../src/filetypes.c:171
+#: ../src/filetypes.c:172
 msgid "Config"
 msgstr "配置文件"
 
-#: ../src/filetypes.c:172
+#: ../src/filetypes.c:173
 msgid "Gettext translation"
 msgstr "Gettext 翻译文件"
 
-#: ../src/filetypes.c:433
+#: ../src/filetypes.c:434
 msgid "_Programming Languages"
 msgstr "编程语言(_P)"
 
-#: ../src/filetypes.c:435
+#: ../src/filetypes.c:436
 msgid "_Scripting Languages"
 msgstr "脚本语言(_S)"
 
-#: ../src/filetypes.c:437
+#: ../src/filetypes.c:438
 msgid "_Markup Languages"
 msgstr "标记语言(_M)"
 
-#: ../src/filetypes.c:439
+#: ../src/filetypes.c:440
 msgid "M_iscellaneous"
 msgstr "其他"
 
@@ -3155,30 +3155,30 @@ msgstr "文件类型 %s 的错误正则表达式：%s"
 msgid "untitled"
 msgstr "未命名"
 
-#: ../src/highlighting.c:1287 ../src/libmain.c:892 ../src/socket.c:170
+#: ../src/highlighting.c:1346 ../src/libmain.c:892 ../src/socket.c:170
 #: ../src/templates.c:228
 #, c-format
 msgid "Could not find file '%s'."
 msgstr "无法找到“%s”文件。"
 
-#: ../src/highlighting.c:1366
+#: ../src/highlighting.c:1425
 msgid "Default"
 msgstr "默认"
 
-#: ../src/highlighting.c:1408
+#: ../src/highlighting.c:1467
 msgid "The current filetype overrides the default style."
 msgstr "当前文件类型覆盖了默认的样式。"
 
-#: ../src/highlighting.c:1409
+#: ../src/highlighting.c:1468
 msgid "This may cause color schemes to display incorrectly."
 msgstr "这可能导致配色方案显示不正常。"
 
-#: ../src/highlighting.c:1436
+#: ../src/highlighting.c:1495
 msgid "Color Schemes"
 msgstr "配色方案"
 
 #. visual group order
-#: ../src/keybindings.c:320 ../src/symbols.c:522
+#: ../src/keybindings.c:320 ../src/symbols.c:530
 msgid "File"
 msgstr "文件"
 
@@ -3214,12 +3214,12 @@ msgstr "跳转到行"
 msgid "View"
 msgstr "查看"
 
-#: ../src/keybindings.c:330 ../src/symbols.c:673
+#: ../src/keybindings.c:330 ../src/symbols.c:681
 msgid "Document"
 msgstr "文档"
 
 #: ../src/keybindings.c:332 ../src/keybindings.c:738 ../src/project.c:528
-#: ../src/ui_utils.c:2366
+#: ../src/ui_utils.c:2350
 msgid "Build"
 msgstr "生成"
 
@@ -3259,7 +3259,7 @@ msgstr "另存为"
 msgid "Save all"
 msgstr "全部保存"
 
-#: ../src/keybindings.c:359 ../src/symbols.c:758
+#: ../src/keybindings.c:359 ../src/symbols.c:766
 msgid "Properties"
 msgstr "属性"
 
@@ -3953,7 +3953,7 @@ msgstr "隐藏信息窗口(_H)"
 msgid "Could not find file '%s' - trying the current document path."
 msgstr "无法找到文件“%s” - 尝试当前文档路径。"
 
-#: ../src/msgwindow.c:1321
+#: ../src/msgwindow.c:1320
 msgid "The document has been closed."
 msgstr "文件已关闭。"
 
@@ -4041,11 +4041,11 @@ msgstr "获取按键"
 msgid "Press the combination of the keys you want to use for \"%s\"."
 msgstr "请按下用于“%s”的按键组合。"
 
-#: ../src/prefs.c:226 ../src/symbols.c:2870 ../src/sidebar.c:787
+#: ../src/prefs.c:226 ../src/symbols.c:2976 ../src/sidebar.c:800
 msgid "_Expand All"
 msgstr "全部展开(_E)"
 
-#: ../src/prefs.c:231 ../src/symbols.c:2877 ../src/sidebar.c:793
+#: ../src/prefs.c:231 ../src/symbols.c:2983 ../src/sidebar.c:806
 msgid "_Collapse All"
 msgstr "全部折叠(_C)"
 
@@ -4582,330 +4582,340 @@ msgstr "执行子进程时发生未知错误"
 msgid "Value"
 msgstr "值"
 
-#: ../src/symbols.c:501 ../src/symbols.c:553 ../src/symbols.c:663
+#: ../src/symbols.c:509 ../src/symbols.c:561 ../src/symbols.c:671
 msgid "Chapter"
 msgstr "章"
 
-#: ../src/symbols.c:502 ../src/symbols.c:549 ../src/symbols.c:664
+#: ../src/symbols.c:510 ../src/symbols.c:557 ../src/symbols.c:672
 msgid "Section"
 msgstr "节"
 
-#: ../src/symbols.c:503
+#: ../src/symbols.c:511
 msgid "Sect1"
 msgstr "第1节"
 
-#: ../src/symbols.c:504
+#: ../src/symbols.c:512
 msgid "Sect2"
 msgstr "第2节"
 
-#: ../src/symbols.c:505
+#: ../src/symbols.c:513
 msgid "Sect3"
 msgstr "第3节"
 
-#: ../src/symbols.c:506
+#: ../src/symbols.c:514
 msgid "Appendix"
 msgstr "索引"
 
-#: ../src/symbols.c:507 ../src/symbols.c:554 ../src/symbols.c:579
-#: ../src/symbols.c:595 ../src/symbols.c:610 ../src/symbols.c:621
-#: ../src/symbols.c:722 ../src/symbols.c:733 ../src/symbols.c:746
-#: ../src/symbols.c:761 ../src/symbols.c:773 ../src/symbols.c:785
-#: ../src/symbols.c:802 ../src/symbols.c:831 ../src/symbols.c:863
+#: ../src/symbols.c:515 ../src/symbols.c:562 ../src/symbols.c:587
+#: ../src/symbols.c:603 ../src/symbols.c:618 ../src/symbols.c:629
+#: ../src/symbols.c:730 ../src/symbols.c:741 ../src/symbols.c:754
+#: ../src/symbols.c:769 ../src/symbols.c:781 ../src/symbols.c:793
+#: ../src/symbols.c:810 ../src/symbols.c:839 ../src/symbols.c:884
 msgid "Other"
 msgstr "其他"
 
-#: ../src/symbols.c:513 ../src/symbols.c:793 ../src/symbols.c:841
+#: ../src/symbols.c:521 ../src/symbols.c:801 ../src/symbols.c:862
 msgid "Module"
 msgstr "模块"
 
-#: ../src/symbols.c:514 ../src/symbols.c:606 ../src/symbols.c:718
-#: ../src/symbols.c:771 ../src/symbols.c:783 ../src/symbols.c:798
-#: ../src/symbols.c:812
+#: ../src/symbols.c:522 ../src/symbols.c:614 ../src/symbols.c:726
+#: ../src/symbols.c:779 ../src/symbols.c:791 ../src/symbols.c:806
+#: ../src/symbols.c:820
 msgid "Types"
 msgstr "类型"
 
-#: ../src/symbols.c:515
+#: ../src/symbols.c:523 ../src/symbols.c:849
 msgid "Type constructors"
 msgstr "类型结构"
 
-#: ../src/symbols.c:516 ../src/symbols.c:540 ../src/symbols.c:561
-#: ../src/symbols.c:578 ../src/symbols.c:590 ../src/symbols.c:603
-#: ../src/symbols.c:618 ../src/symbols.c:632 ../src/symbols.c:642
-#: ../src/symbols.c:706 ../src/symbols.c:757 ../src/symbols.c:780
-#: ../src/symbols.c:825 ../src/symbols.c:849
+#: ../src/symbols.c:524 ../src/symbols.c:548 ../src/symbols.c:569
+#: ../src/symbols.c:586 ../src/symbols.c:598 ../src/symbols.c:611
+#: ../src/symbols.c:626 ../src/symbols.c:640 ../src/symbols.c:650
+#: ../src/symbols.c:714 ../src/symbols.c:765 ../src/symbols.c:788
+#: ../src/symbols.c:833 ../src/symbols.c:848 ../src/symbols.c:870
 msgid "Functions"
 msgstr "函数"
 
-#: ../src/symbols.c:521
+#: ../src/symbols.c:529
 msgid "Program"
 msgstr "程序"
 
-#: ../src/symbols.c:523
+#: ../src/symbols.c:531
 msgid "Divisions"
 msgstr "部"
 
-#: ../src/symbols.c:524 ../src/symbols.c:533 ../src/symbols.c:539
+#: ../src/symbols.c:532 ../src/symbols.c:541 ../src/symbols.c:547
 msgid "Sections"
 msgstr "节"
 
-#: ../src/symbols.c:525
+#: ../src/symbols.c:533
 msgid "Paragraph"
 msgstr "段"
 
-#: ../src/symbols.c:526
+#: ../src/symbols.c:534
 msgid "Group"
 msgstr "组"
 
-#: ../src/symbols.c:527
+#: ../src/symbols.c:535
 msgid "Data"
 msgstr "数据"
 
-#: ../src/symbols.c:528
+#: ../src/symbols.c:536
 msgid "Copies"
 msgstr "拷贝"
 
-#: ../src/symbols.c:534
+#: ../src/symbols.c:542
 msgid "Keys"
 msgstr "键值"
 
-#: ../src/symbols.c:541 ../src/symbols.c:592 ../src/symbols.c:608
-#: ../src/symbols.c:634 ../src/symbols.c:707 ../src/symbols.c:732
-#: ../src/symbols.c:759 ../src/symbols.c:772 ../src/symbols.c:781
-#: ../src/symbols.c:797 ../src/symbols.c:832 ../src/symbols.c:861
+#: ../src/symbols.c:549 ../src/symbols.c:600 ../src/symbols.c:616
+#: ../src/symbols.c:642 ../src/symbols.c:715 ../src/symbols.c:740
+#: ../src/symbols.c:767 ../src/symbols.c:780 ../src/symbols.c:789
+#: ../src/symbols.c:805 ../src/symbols.c:840 ../src/symbols.c:882
 msgid "Variables"
 msgstr "变量"
 
-#: ../src/symbols.c:548
+#: ../src/symbols.c:556
 msgid "Environment"
 msgstr "环境"
 
-#: ../src/symbols.c:550 ../src/symbols.c:665
+#: ../src/symbols.c:558 ../src/symbols.c:673
 msgid "Subsection"
 msgstr "小节"
 
-#: ../src/symbols.c:551 ../src/symbols.c:666
+#: ../src/symbols.c:559 ../src/symbols.c:674
 msgid "Subsubsection"
 msgstr "小小节"
 
-#: ../src/symbols.c:562 ../src/symbols.c:587
+#: ../src/symbols.c:570 ../src/symbols.c:595
 msgid "Structures"
 msgstr "结构"
 
-#: ../src/symbols.c:569
+#: ../src/symbols.c:577
 msgid "Parts"
 msgstr "部分"
 
-#: ../src/symbols.c:570
+#: ../src/symbols.c:578
 msgid "Assembly"
 msgstr "汇编"
 
-#: ../src/symbols.c:571
+#: ../src/symbols.c:579
 msgid "Steps"
 msgstr "步骤"
 
-#: ../src/symbols.c:586 ../src/symbols.c:684 ../src/symbols.c:730
+#: ../src/symbols.c:594 ../src/symbols.c:692 ../src/symbols.c:738
+#: ../src/symbols.c:850
 msgid "Modules"
 msgstr "模块"
 
-#: ../src/symbols.c:588 ../src/symbols.c:635
+#: ../src/symbols.c:596 ../src/symbols.c:643
 msgid "Traits"
 msgstr "接口"
 
-#: ../src/symbols.c:589
+#: ../src/symbols.c:597 ../src/symbols.c:853
 msgid "Implementations"
 msgstr "实现"
 
-#: ../src/symbols.c:591 ../src/symbols.c:852
+#: ../src/symbols.c:599 ../src/symbols.c:873
 msgid "Typedefs / Enums"
 msgstr "定义/枚举"
 
-#: ../src/symbols.c:593 ../src/symbols.c:810 ../src/symbols.c:819
-#: ../src/symbols.c:858
+#: ../src/symbols.c:601 ../src/symbols.c:818 ../src/symbols.c:827
+#: ../src/symbols.c:851 ../src/symbols.c:879
 msgid "Macros"
 msgstr "宏"
 
-#: ../src/symbols.c:594 ../src/symbols.c:687 ../src/symbols.c:696
-#: ../src/symbols.c:705 ../src/symbols.c:743 ../src/symbols.c:770
+#: ../src/symbols.c:602 ../src/symbols.c:695 ../src/symbols.c:704
+#: ../src/symbols.c:713 ../src/symbols.c:751 ../src/symbols.c:778
 msgid "Methods"
 msgstr "方法"
 
-#: ../src/symbols.c:602 ../src/symbols.c:617 ../src/symbols.c:715
-#: ../src/symbols.c:740 ../src/symbols.c:754
+#: ../src/symbols.c:610 ../src/symbols.c:625 ../src/symbols.c:723
+#: ../src/symbols.c:748 ../src/symbols.c:762
 msgid "Package"
 msgstr "包"
 
-#: ../src/symbols.c:604 ../src/symbols.c:630 ../src/symbols.c:741
-#: ../src/symbols.c:755 ../src/symbols.c:768 ../src/symbols.c:795
-#: ../src/symbols.c:848
+#: ../src/symbols.c:612 ../src/symbols.c:638 ../src/symbols.c:749
+#: ../src/symbols.c:763 ../src/symbols.c:776 ../src/symbols.c:803
+#: ../src/symbols.c:869
 msgid "Interfaces"
 msgstr "接口"
 
-#: ../src/symbols.c:605 ../src/symbols.c:851
+#: ../src/symbols.c:613 ../src/symbols.c:872
 msgid "Structs"
 msgstr "结构"
 
-#: ../src/symbols.c:607 ../src/symbols.c:620 ../src/symbols.c:633
-#: ../src/symbols.c:760 ../src/symbols.c:782
+#: ../src/symbols.c:615 ../src/symbols.c:628 ../src/symbols.c:641
+#: ../src/symbols.c:768 ../src/symbols.c:790
 msgid "Constants"
 msgstr "固定值"
 
-#: ../src/symbols.c:609 ../src/symbols.c:744 ../src/symbols.c:850
+#: ../src/symbols.c:617 ../src/symbols.c:752 ../src/symbols.c:871
 msgid "Members"
 msgstr "成员"
 
-#: ../src/symbols.c:619 ../src/symbols.c:784 ../src/symbols.c:809
+#: ../src/symbols.c:627 ../src/symbols.c:792 ../src/symbols.c:817
 msgid "Labels"
 msgstr "标签"
 
-#: ../src/symbols.c:629 ../src/symbols.c:694 ../src/symbols.c:844
+#: ../src/symbols.c:637 ../src/symbols.c:702 ../src/symbols.c:865
 msgid "Namespaces"
 msgstr "命名空间"
 
-#: ../src/symbols.c:631 ../src/symbols.c:653 ../src/symbols.c:685
-#: ../src/symbols.c:695 ../src/symbols.c:704 ../src/symbols.c:742
-#: ../src/symbols.c:756 ../src/symbols.c:769 ../src/symbols.c:847
+#: ../src/symbols.c:639 ../src/symbols.c:661 ../src/symbols.c:693
+#: ../src/symbols.c:703 ../src/symbols.c:712 ../src/symbols.c:750
+#: ../src/symbols.c:764 ../src/symbols.c:777 ../src/symbols.c:868
 msgid "Classes"
 msgstr "类"
 
-#: ../src/symbols.c:643
+#: ../src/symbols.c:651
 msgid "Anchors"
 msgstr "锚点"
 
-#: ../src/symbols.c:644
+#: ../src/symbols.c:652
 msgid "H1 Headings"
 msgstr "标题一"
 
-#: ../src/symbols.c:645
+#: ../src/symbols.c:653
 msgid "H2 Headings"
 msgstr "标题二"
 
-#: ../src/symbols.c:646
+#: ../src/symbols.c:654
 msgid "H3 Headings"
 msgstr "标题三"
 
-#: ../src/symbols.c:654
+#: ../src/symbols.c:662
 msgid "ID Selectors"
 msgstr "ID 选择"
 
-#: ../src/symbols.c:655
+#: ../src/symbols.c:663
 msgid "Type Selectors"
 msgstr "类型选择器"
 
-#: ../src/symbols.c:674
+#: ../src/symbols.c:682
 msgid "Section Level 1"
 msgstr "章节一"
 
-#: ../src/symbols.c:675
+#: ../src/symbols.c:683
 msgid "Section Level 2"
 msgstr "章节二"
 
-#: ../src/symbols.c:676
+#: ../src/symbols.c:684
 msgid "Section Level 3"
 msgstr "章节三"
 
-#: ../src/symbols.c:677
+#: ../src/symbols.c:685
 msgid "Section Level 4"
 msgstr "章节四"
 
-#: ../src/symbols.c:686
+#: ../src/symbols.c:694
 msgid "Singletons"
 msgstr "单态"
 
-#: ../src/symbols.c:697 ../src/symbols.c:826
+#: ../src/symbols.c:705 ../src/symbols.c:834
 msgid "Procedures"
 msgstr "过程"
 
-#: ../src/symbols.c:708 ../src/symbols.c:753
+#: ../src/symbols.c:716 ../src/symbols.c:761
 msgid "Imports"
 msgstr "导出"
 
-#: ../src/symbols.c:716
+#: ../src/symbols.c:724
 msgid "Entities"
 msgstr "实体"
 
-#: ../src/symbols.c:717
+#: ../src/symbols.c:725
 msgid "Architectures"
 msgstr "结构"
 
-#: ../src/symbols.c:719
+#: ../src/symbols.c:727
 msgid "Functions / Procedures"
 msgstr "函数 / 过程"
 
-#: ../src/symbols.c:720
+#: ../src/symbols.c:728
 msgid "Variables / Signals"
 msgstr "变量 / 信号"
 
-#: ../src/symbols.c:721
+#: ../src/symbols.c:729
 msgid "Processes / Blocks / Components"
 msgstr "进程 / 块 / 元件"
 
-#: ../src/symbols.c:729
+#: ../src/symbols.c:737
 msgid "Events"
 msgstr "事件"
 
-#: ../src/symbols.c:731
+#: ../src/symbols.c:739
 msgid "Functions / Tasks"
 msgstr "函数 / 任务"
 
-#: ../src/symbols.c:745 ../src/symbols.c:801
+#: ../src/symbols.c:753 ../src/symbols.c:809
 msgid "Enums"
 msgstr "枚举"
 
-#: ../src/symbols.c:794
+#: ../src/symbols.c:802
 msgid "Programs"
 msgstr "程序"
 
-#: ../src/symbols.c:796
+#: ../src/symbols.c:804
 msgid "Functions / Subroutines"
 msgstr "函数 / 过程"
 
-#: ../src/symbols.c:799
+#: ../src/symbols.c:807
 msgid "Components"
 msgstr "组件"
 
-#: ../src/symbols.c:800
+#: ../src/symbols.c:808
 msgid "Blocks"
 msgstr "块"
 
-#: ../src/symbols.c:811
+#: ../src/symbols.c:819
 msgid "Defines"
 msgstr "预定义"
 
-#: ../src/symbols.c:818
+#: ../src/symbols.c:826
 msgid "Targets"
 msgstr "目标"
 
-#: ../src/symbols.c:827
+#: ../src/symbols.c:835
 msgid "Indexes"
 msgstr "索引"
 
-#: ../src/symbols.c:828
+#: ../src/symbols.c:836
 msgid "Tables"
 msgstr "表"
 
-#: ../src/symbols.c:829
+#: ../src/symbols.c:837
 msgid "Triggers"
 msgstr "触发器"
 
-#: ../src/symbols.c:830
+#: ../src/symbols.c:838
 msgid "Views"
 msgstr "视图"
 
-#: ../src/symbols.c:862
+#: ../src/symbols.c:847
+#, fuzzy
+msgid "Attributes"
+msgstr "贡献者"
+
+#: ../src/symbols.c:852
+msgid "Protocols"
+msgstr ""
+
+#: ../src/symbols.c:883
 msgid "Extern Variables"
 msgstr "外部变量"
 
-#: ../src/symbols.c:1696
+#: ../src/symbols.c:1707
 #, c-format
 msgid "Unknown filetype extension for \"%s\".\n"
 msgstr "“%s”是未知的文件类型。\n"
 
-#: ../src/symbols.c:1723
+#: ../src/symbols.c:1734
 #, c-format
 msgid "Failed to create tags file, perhaps because no symbols were found.\n"
 msgstr "创建标记文件失败，可能因为未找到符号。\n"
 
-#: ../src/symbols.c:1730
+#: ../src/symbols.c:1741
 #, c-format
 msgid ""
 "Usage: %s -g <Tags File> <File list>\n"
@@ -4914,7 +4924,7 @@ msgstr ""
 "用法：%s -g <标记文件> <文件列表>\n"
 "\n"
 
-#: ../src/symbols.c:1731
+#: ../src/symbols.c:1742
 #, c-format
 msgid ""
 "Example:\n"
@@ -4925,61 +4935,61 @@ msgstr ""
 "CFLAGS=`pkg-config gtk+-2.0 --cflags` %s -g gtk2.c.tags /usr/include/gtk-2.0/"
 "gtk/gtk.h\n"
 
-#: ../src/symbols.c:1745
+#: ../src/symbols.c:1756
 msgid "Load Tags File"
 msgstr "载入标记文件"
 
-#: ../src/symbols.c:1753
+#: ../src/symbols.c:1764
 msgid "Geany tags file (*.*.tags)"
 msgstr "Geany 标记文件 (*.*.tags)"
 
 #. For translators: the first wildcard is the filetype,
 #. * the second the filename
-#: ../src/symbols.c:1774
+#: ../src/symbols.c:1785
 #, c-format
 msgid "Loaded %s tags file '%s'."
 msgstr "载入 %s 标记文件“%s”。"
 
-#: ../src/symbols.c:1778
+#: ../src/symbols.c:1789
 #, c-format
 msgid "Could not load tags file '%s'."
 msgstr "无法载入标记文件“%s”。"
 
-#: ../src/symbols.c:2038
+#: ../src/symbols.c:2053
 #, fuzzy, c-format
 msgid "<b>%s: %lu  (%s)</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:2041
+#: ../src/symbols.c:2056
 #, c-format
 msgid "<b>%s: %lu</b>"
 msgstr "<b>%s: %lu</b>"
 
-#: ../src/symbols.c:2047
+#: ../src/symbols.c:2062
 #, fuzzy, c-format
 msgid "%s: %lu  (%s)"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2050
+#: ../src/symbols.c:2065
 #, c-format
 msgid "%s: %lu"
 msgstr "%s: %lu"
 
-#: ../src/symbols.c:2449
+#: ../src/symbols.c:2555
 #, c-format
 msgid "Forward declaration \"%s\" not found."
 msgstr "未找到“%s”的声明。"
 
-#: ../src/symbols.c:2452
+#: ../src/symbols.c:2558
 #, c-format
 msgid "Definition of \"%s\" not found."
 msgstr "未找到“%s”的定义。"
 
-#: ../src/symbols.c:2888
+#: ../src/symbols.c:2994
 msgid "Sort by _Name"
 msgstr "按名称排序(_N)"
 
-#: ../src/symbols.c:2896
+#: ../src/symbols.c:3002
 msgid "Sort by _Appearance"
 msgstr "按外观排序(_A)"
 
@@ -5222,35 +5232,35 @@ msgstr "字数："
 msgid "Characters:"
 msgstr "字符："
 
-#: ../src/sidebar.c:186
+#: ../src/sidebar.c:193
 msgid "No symbols found"
 msgstr "未找到符号"
 
-#: ../src/sidebar.c:605
+#: ../src/sidebar.c:618
 msgid "Show S_ymbol List"
 msgstr "显示符号列表(_Y)"
 
-#: ../src/sidebar.c:618
+#: ../src/sidebar.c:631
 msgid "Show _Document List"
 msgstr "显示打开的文件的列表(_D)"
 
-#: ../src/sidebar.c:631 ../plugins/filebrowser.c:707
+#: ../src/sidebar.c:644 ../plugins/filebrowser.c:707
 msgid "H_ide Sidebar"
 msgstr "隐藏边栏(_I)"
 
-#: ../src/sidebar.c:744
+#: ../src/sidebar.c:757
 msgid "_Copy Name to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:752
+#: ../src/sidebar.c:765
 msgid "_Copy Full Path to Clipboard"
 msgstr ""
 
-#: ../src/sidebar.c:765 ../plugins/filebrowser.c:678
+#: ../src/sidebar.c:778 ../plugins/filebrowser.c:678
 msgid "_Find in Files..."
 msgstr "在多个文件中查找...(_F)"
 
-#: ../src/sidebar.c:775
+#: ../src/sidebar.c:788
 msgid "Show _Paths"
 msgstr "显示路径(_P)"
 
@@ -5300,68 +5310,68 @@ msgstr "制表符或空格"
 msgid "MOD"
 msgstr "已修改"
 
-#: ../src/ui_utils.c:423
+#: ../src/ui_utils.c:407
 msgid "(new instance) "
 msgstr "(新实例) "
 
-#: ../src/ui_utils.c:509
+#: ../src/ui_utils.c:493
 #, c-format
 msgid "Font updated (%s)."
 msgstr "字体已更新 (%s)。"
 
-#: ../src/ui_utils.c:767
+#: ../src/ui_utils.c:751
 msgid "C Standard Library"
 msgstr "C标准库"
 
-#: ../src/ui_utils.c:769
+#: ../src/ui_utils.c:753
 msgid "ISO C99"
 msgstr "ISO C99"
 
-#: ../src/ui_utils.c:771
+#: ../src/ui_utils.c:755
 msgid "C++ (C Standard Library)"
 msgstr "C++ (C标准库)"
 
-#: ../src/ui_utils.c:773
+#: ../src/ui_utils.c:757
 msgid "C++ Standard Library"
 msgstr "C++ 标准库"
 
-#: ../src/ui_utils.c:775
+#: ../src/ui_utils.c:759
 msgid "C++ STL"
 msgstr "C++ STL"
 
-#: ../src/ui_utils.c:797 ../src/ui_utils.c:884
+#: ../src/ui_utils.c:781 ../src/ui_utils.c:868
 msgid "dd.mm.yyyy"
 msgstr "dd.mm.yyyy"
 
-#: ../src/ui_utils.c:799 ../src/ui_utils.c:885
+#: ../src/ui_utils.c:783 ../src/ui_utils.c:869
 msgid "mm.dd.yyyy"
 msgstr "mm.dd.yyyy"
 
-#: ../src/ui_utils.c:801 ../src/ui_utils.c:886
+#: ../src/ui_utils.c:785 ../src/ui_utils.c:870
 msgid "yyyy/mm/dd"
 msgstr "yyyy/mm/dd"
 
-#: ../src/ui_utils.c:803 ../src/ui_utils.c:895
+#: ../src/ui_utils.c:787 ../src/ui_utils.c:879
 msgid "dd.mm.yyyy hh:mm:ss"
 msgstr "dd.mm.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:805 ../src/ui_utils.c:896
+#: ../src/ui_utils.c:789 ../src/ui_utils.c:880
 msgid "mm.dd.yyyy hh:mm:ss"
 msgstr "mm.dd.yyyy hh:mm:ss"
 
-#: ../src/ui_utils.c:807 ../src/ui_utils.c:897
+#: ../src/ui_utils.c:791 ../src/ui_utils.c:881
 msgid "yyyy/mm/dd hh:mm:ss"
 msgstr "yyyy/mm/dd hh:mm:ss"
 
-#: ../src/ui_utils.c:809 ../src/ui_utils.c:906
+#: ../src/ui_utils.c:793 ../src/ui_utils.c:890
 msgid "_Use Custom Date Format"
 msgstr "使用自定义日期格式(_U)"
 
-#: ../src/ui_utils.c:813
+#: ../src/ui_utils.c:797
 msgid "Custom Date Format"
 msgstr "自定义日期格式"
 
-#: ../src/ui_utils.c:815
+#: ../src/ui_utils.c:799
 msgid ""
 "Enter here a custom date and time format. You can use any conversion "
 "specifiers which can be used with the ANSI C strftime function."
@@ -5369,35 +5379,35 @@ msgstr ""
 "请在这里输入自定义日期和时间格式。你可以使用 ANSI C strftime 函数中的任何一个"
 "转义符。"
 
-#: ../src/ui_utils.c:837
+#: ../src/ui_utils.c:821
 msgid "Date format string could not be converted (possibly too long)."
 msgstr "日期格式字符串无法转换 (可能太长了)。"
 
-#: ../src/ui_utils.c:921
+#: ../src/ui_utils.c:905
 msgid "_Set Custom Date Format"
 msgstr "设置自定义日期格式(_S)"
 
-#: ../src/ui_utils.c:2153
+#: ../src/ui_utils.c:2137
 msgid "Select Folder"
 msgstr "选择目录"
 
-#: ../src/ui_utils.c:2153
+#: ../src/ui_utils.c:2137
 msgid "Select File"
 msgstr "选择文件"
 
-#: ../src/ui_utils.c:2326
+#: ../src/ui_utils.c:2310
 msgid "_Filetype Configuration"
 msgstr "文件类型设置(_F)"
 
-#: ../src/ui_utils.c:2364
+#: ../src/ui_utils.c:2348
 msgid "Save All"
 msgstr "全部保存"
 
-#: ../src/ui_utils.c:2365
+#: ../src/ui_utils.c:2349
 msgid "Close All"
 msgstr "全部关闭"
 
-#: ../src/ui_utils.c:2604
+#: ../src/ui_utils.c:2592
 msgid "Geany cannot start!"
 msgstr "Geany 无法启动！"
 

@@ -5,6 +5,7 @@ icons_actionsdir = $(iconsdir)/actions
 dist_icons_apps_DATA =							\
 	classviewer-class.svg						\
 	classviewer-import.svg						\
+	classviewer-interface.svg					\
 	classviewer-macro.svg						\
 	classviewer-member.svg						\
 	classviewer-method.svg						\
@@ -13,6 +14,7 @@ dist_icons_apps_DATA =							\
 	classviewer-struct.svg						\
 	classviewer-type.svg						\
 	classviewer-var.svg							\
+	classviewer-view.svg						\
 	geany.png
 
 dist_icons_actions_DATA =						\

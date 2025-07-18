@@ -1,7 +1,5 @@
 /*
-*   Copyright (c) 2000-2001, Thaddeus Covert <sahuagin@mediaone.net>
-*   Copyright (c) 2002 Matthias Veit <matthias_veit@yahoo.de>
-*   Copyright (c) 2004 Elliott Hughes <enh@acm.org>
+*   Copyright (c) 2025, esh <esh.eburg@gmail.com>
 *
 *   This source code is released for free distribution under the terms of the
 *   GNU General Public License version 2 or (at your option) any later version.
@@ -9,7 +7,6 @@
 *   This module contains functions for generating tags for Elixir language
 *   files.
 */
-
 /*
 *   INCLUDE FILES
 */
@@ -17,548 +14,411 @@
 
 #include <string.h>
 
-#include "debug.h"
 #include "entry.h"
-#include "parse.h"
-#include "nestlevel.h"
+#include "options.h"
 #include "read.h"
 #include "routines.h"
 #include "vstring.h"
 
 /*
-*   DATA DECLARATIONS
-*/
-typedef enum {
-	K_UNDEFINED = -1, K_CLASS, K_METHOD, K_MODULE, K_SINGLETON,
-} elixirKind;
-
-/*
 *   DATA DEFINITIONS
 */
-static kindDefinition ElixirKinds [] = {
-	{ true, 'c', "class",  "classes" },
-	{ true, 'f', "method", "methods" },
-	{ true, 'm', "module", "modules" },
-	{ true, 'F', "singletonMethod", "singleton methods" },
-#if 0
-	/* Following two kinds are reserved. */
-	{ true, 'd', "describe", "describes and contexts for Rspec" },
-	{ true, 'C', "constant", "constants" },
-#endif
+typedef enum {
+	K_ATTRIBUTE, K_FUNCTION, K_TYPE, K_MODULE, K_MACRO, K_PROTO, K_IMPL
+} elixirKind;
+
+static kindDefinition ElixirKinds[] = {
+	{true, 'a', "attribute",      "module attributes"},
+	{true, 'f', "function",       "functions"},
+	{true, 't', "type",           "type definitions"},
+	{true, 'm', "module",         "modules"},
+	{true, 'M', "macro",          "macros"},
+	{true, 'p', "protocol",       "protocols"},
+	{true, 'i', "implementation", "protocol implementations"},
 };
 
-static NestingLevels* nesting = NULL;
+static NestingLevels *nesting = NULL;
+
+struct nlUserData {
+	int indent;
+};
+#define EX_NL_INDENTATION(nl) \
+	((struct nlUserData *)nestingLevelGetUserData(nl))->indent
 
 #define SCOPE_SEPARATOR '.'
+
+#define L_LITERAL_PREFIX "scrwp"
+#define U_LITERAL_PREFIX "SCRWNUDT"
+
+static ptrArray *stringStack = NULL;
+
+typedef struct sStringInfo {
+	char closingChar;
+	bool isTriple;
+	bool canbeInterpolate;
+	int nestingCount;
+} stringInfo;
+
+static stringInfo *stringInfoNew(char closingChar, bool isTriple,
+								 bool canbeInterpolate, int nestingCount)
+{
+	stringInfo *const strInfo = xMalloc(1, stringInfo);
+	strInfo->closingChar = closingChar;
+	strInfo->isTriple = isTriple;
+	strInfo->canbeInterpolate = canbeInterpolate;
+	strInfo->nestingCount = nestingCount;
+	return strInfo;
+}
 
 /*
 *   FUNCTION DEFINITIONS
 */
+/* tagEntryInfo and vString should be preinitialized/preallocated but not
+ * necessary. If successful you will find class name in vString
+ */
 
-static void enterUnnamedScope (void);
-
-/*
-* Returns a string describing the scope in 'nls'.
-* We record the current scope as a list of entered scopes.
-* Scopes corresponding to 'if' statements and the like are
-* represented by empty strings. Scopes corresponding to
-* modules and classes are represented by the name of the
-* module or class.
-*/
-static vString* nestingLevelsToScope (const NestingLevels* nls)
+typedef struct
 {
-	int i;
-	unsigned int chunks_output = 0;
-	vString* result = vStringNew ();
-	for (i = 0; i < nls->n; ++i)
+	vString *const name;
+	int kindIndex;
+} Scope;
+
+static Scope getCurrentScope(void)
+{
+	vString *const scopeName = vStringNew();
+	int scopeKindIndex = -1;
+	
+	// -------------------------------------------------
+	NestingLevel *nl = nestingLevelsGetCurrent(nesting);
+	tagEntryInfo *tag = getEntryOfNestingLevel(nl);
+	if (tag)
 	{
-	    NestingLevel *nl = nestingLevelsGetNth (nls, i);
-	    tagEntryInfo *e = getEntryOfNestingLevel (nl);
-	    if (e && strlen (e->name) > 0 && (!e->placeholder))
-	    {
-	        if (chunks_output++ > 0)
-	            vStringPut (result, SCOPE_SEPARATOR);
-	        vStringCatS (result, e->name);
-	    }
+		scopeKindIndex = tag->kindIndex;
+		vStringCatS(scopeName, tag->name);
 	}
-	return result;
+	// -------------------------------------------------
+	
+	//~ tagEntryInfo *tag = NULL;
+	
+	//~ for (int i = 0; i < nesting->n; i++)
+	//~ {
+		//~ NestingLevel *nl = nestingLevelsGetNth(nesting, i);
+		//~ tag = getEntryOfNestingLevel(nl);
+		
+		//~ if (tag)
+		//~ {
+			//~ if (tag->extensionFields.scopeName && *tag->extensionFields.scopeName)
+			//~ {
+				//~ if (vStringLength(scopeName) > 0)
+					//~ vStringPut(scopeName, SCOPE_SEPARATOR);
+				//~ vStringCatS(scopeName, tag->extensionFields.scopeName);
+			//~ }
+			//~ if (vStringLength(scopeName) > 0)
+				//~ vStringPut(scopeName, SCOPE_SEPARATOR);
+			//~ vStringCatS(scopeName, tag->name);
+		//~ }
+	//~ }
+	//~ if (tag) scopeKindIndex = tag->kindIndex;
+	return (Scope){scopeName, scopeKindIndex};
 }
 
-/*
-* Attempts to advance 's' past 'literal'.
-* Returns true if it did, false (and leaves 's' where
-* it was) otherwise.
-*/
-static bool canMatch (const unsigned char** s, const char* literal,
-                         bool (*end_check) (int))
-{
-	const int literal_length = strlen (literal);
-	const int s_length = strlen ((const char *)*s);
+#define freeScope(scope) vStringDelete(scope.name);
 
-	if (s_length < literal_length)
-		return false;
 
-	const unsigned char next_char = *(*s + literal_length);
-	if (strncmp ((const char*) *s, literal, literal_length) != 0)
-	{
-	    return false;
-	}
-	/* Additionally check that we're at the end of a token. */
-	if (! end_check (next_char))
-	{
-	    return false;
-	}
-	*s += literal_length;
-	return true;
-}
-
-static bool isIdentChar (int c)
-{
-	return (isalnum (c) || c == '_');
-}
-
-static bool notIdentChar (int c)
-{
-	return ! isIdentChar (c);
-}
-
-static bool notOperatorChar (int c)
-{
-	return ! (c == '[' || c == ']' ||
-	          c == '=' || c == '!' || c == '~' ||
-	          c == '+' || c == '-' ||
-	          c == '@' || c == '*' || c == '/' || c == '%' ||
-	          c == '<' || c == '>' ||
-	          c == '&' || c == '^' || c == '|');
-}
-
-static bool isWhitespace (int c)
-{
-	return c == 0 || isspace (c);
-}
-
-static bool canMatchKeyword (const unsigned char** s, const char* literal)
-{
-	return canMatch (s, literal, notIdentChar);
-}
-
-/*
-* Attempts to advance 'cp' past a Elixir operator method name. Returns
-* true if successful (and copies the name into 'name'), false otherwise.
-*/
-static bool parseElixirOperator (vString* name, const unsigned char** cp)
-{
-	static const char* ELIXIR_OPERATORS[] = {
-	    "[]", "[]=",
-	    "**",
-	    "!", "~", "+@", "-@",
-	    "*", "/", "%",
-	    "+", "-",
-	    ">>", "<<",
-	    "&",
-	    "^", "|",
-	    "<=", "<", ">", ">=",
-	    "<=>", "==", "===", "!=", "=~", "!~",
-	    "`",
-	    NULL
-	};
-	int i;
-	for (i = 0; ELIXIR_OPERATORS[i] != NULL; ++i)
-	{
-	    if (canMatch (cp, ELIXIR_OPERATORS[i], notOperatorChar))
-	    {
-	        vStringCatS (name, ELIXIR_OPERATORS[i]);
-	        return true;
-	    }
-	}
+static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar) {
+	if (quoteChar == '\"')
+		return strncmp(cp, R"(""")", 3) == 0;
+	if (quoteChar == '\'')
+		return strncmp(cp, R"(''')", 3) == 0;
+	
 	return false;
 }
 
-/*
-* Emits a tag for the given 'name' of kind 'kind' at the current nesting.
-*/
-static void emitElixirTag (vString* name, elixirKind kind)
-{
-	tagEntryInfo tag;
-	vString* scope;
-	tagEntryInfo *parent;
-	elixirKind parent_kind = K_UNDEFINED;
-	NestingLevel *lvl;
-	const char *unqualified_name;
-	const char *qualified_name;
-	int r;
-
-	if (!ElixirKinds[kind].enabled) {
-		return;
-	}
-
-	scope = nestingLevelsToScope (nesting);
-	lvl = nestingLevelsGetCurrent (nesting);
-	parent = getEntryOfNestingLevel (lvl);
-	if (parent)
-		parent_kind =  parent->kindIndex;
-
-	qualified_name = vStringValue (name);
-	unqualified_name = strrchr (qualified_name, SCOPE_SEPARATOR);
-	if (unqualified_name && unqualified_name[1])
-	{
-		if (unqualified_name > qualified_name)
-		{
-			if (vStringLength (scope) > 0)
-				vStringPut (scope, SCOPE_SEPARATOR);
-			vStringNCatS (scope, qualified_name,
-			              unqualified_name - qualified_name);
-			/* assume module parent type for a lack of a better option */
-			parent_kind = K_MODULE;
-		}
-		unqualified_name++;
-	}
+static inline char getClosingChar(char openingChar) {
+	if (openingChar == '\"')
+		return '\"';
+	else if (openingChar == '\'')
+		return '\'';
+	else if (openingChar == '<')
+		return '>';
+	else if (openingChar == '{')
+		return '}';
+	else if (openingChar == '[')
+		return ']';
+	else if (openingChar == '(')
+		return ')';
+	else if (openingChar == '|')
+		return '|';
+	else if (openingChar == '/')
+		return '/';
 	else
-		unqualified_name = qualified_name;
-
-	initTagEntry (&tag, unqualified_name, kind);
-	if (vStringLength (scope) > 0) {
-		Assert (0 <= parent_kind &&
-		        (size_t) parent_kind < (ARRAY_SIZE (ElixirKinds)));
-
-		tag.extensionFields.scopeKindIndex = parent_kind;
-		tag.extensionFields.scopeName = vStringValue (scope);
-	}
-	r = makeTagEntry (&tag);
-
-	nestingLevelsPush (nesting, r);
-
-	vStringClear (name);
-	vStringDelete (scope);
+		return ' ';
 }
 
-/* Tests whether 'ch' is a character in 'list'. */
-static bool charIsIn (char ch, const char* list)
-{
-	return (strchr (list, ch) != NULL);
-}
-
-/* Advances 'cp' over leading whitespace. */
-static void skipWhitespace (const unsigned char** cp)
-{
-	while (isspace (**cp))
-	{
-	    ++*cp;
-	}
-}
-
-/*
-* Copies the characters forming an identifier from *cp into
-* name, leaving *cp pointing to the character after the identifier.
-*/
-static elixirKind parseIdentifier (
-		const unsigned char** cp, vString* name, elixirKind kind)
-{
-	/* Method names are slightly different to class and variable names.
-	 * A method name may optionally end with a question mark, exclamation
-	 * point or equals sign. These are all part of the name.
-	 * A method name may also contain a period if it's a singleton method.
-	 */
-	bool had_sep = false;
-	const char* also_ok;
-	if (kind == K_METHOD)
-	{
-		also_ok = ".?!=";
-	}
-	else if (kind == K_SINGLETON)
-	{
-		also_ok = "?!=";
-	}
-	else
-	{
-		also_ok = "";
-	}
-
-	skipWhitespace (cp);
-
-	/* Check for an anonymous (singleton) class such as "class << HTTP". */
-	if (kind == K_CLASS && **cp == '<' && *(*cp + 1) == '<')
-	{
-		return K_UNDEFINED;
-	}
-
-	/* Check for operators such as "def []=(key, val)". */
-	if (kind == K_METHOD || kind == K_SINGLETON)
-	{
-		if (parseElixirOperator (name, cp))
-		{
-			return kind;
-		}
-	}
-
-	/* Copy the identifier into 'name'. */
-	while (**cp != 0 && (**cp == ':' || isIdentChar (**cp) || charIsIn (**cp, also_ok)))
-	{
-		char last_char = **cp;
-
-		if (last_char == ':')
-			had_sep = true;
-		else
-		{
-			if (had_sep)
-			{
-				vStringPut (name, SCOPE_SEPARATOR);
-				had_sep = false;
-			}
-			vStringPut (name, last_char);
-		}
-		++*cp;
-
-		if (kind == K_METHOD)
-		{
-			/* Recognize singleton methods. */
-			if (last_char == '.')
-			{
-				vStringClear (name);
-				return parseIdentifier (cp, name, K_SINGLETON);
-			}
-		}
-
-		if (kind == K_METHOD || kind == K_SINGLETON)
-		{
-			/* Recognize characters which mark the end of a method name. */
-			if (charIsIn (last_char, "?!="))
-			{
-				break;
-			}
-		}
-	}
-	return kind;
-}
-
-static void readAndEmitTag (const unsigned char** cp, elixirKind expected_kind)
-{
-	if (isspace (**cp))
-	{
-		vString *name = vStringNew ();
-		elixirKind actual_kind = parseIdentifier (cp, name, expected_kind);
-
-		if (actual_kind == K_UNDEFINED || vStringLength (name) == 0)
-		{
-			/*
-			* What kind of tags should we create for code like this?
-			*
-			*    %w(self.clfloor clfloor).each do |name|
-			*        module_eval <<-"end;"
-			*            def #{name}(x, y=1)
-			*                q, r = x.divmod(y)
-			*                q = q.to_i
-			*                return q, r
-			*            end
-			*        end;
-			*    end
-			*
-			* Or this?
-			*
-			*    class << HTTP
-			*
-			* For now, we don't create any.
-			*/
-			enterUnnamedScope ();
-		}
-		else
-		{
-			emitElixirTag (name, actual_kind);
-		}
-		vStringDelete (name);
-	}
-}
-
-static void enterUnnamedScope (void)
+static int makeTag(const char *name, elixirKind kind, bool private,
+				   const Scope scope)
 {
 	int r = CORK_NIL;
-	NestingLevel *parent = nestingLevelsGetCurrent (nesting);
-	tagEntryInfo *e_parent = getEntryOfNestingLevel (parent);
-
-	if (e_parent)
+	
+	if (ElixirKinds[kind].enabled)
 	{
-		tagEntryInfo e;
-		initTagEntry (&e, "", e_parent->kindIndex);
-		e.placeholder = 1;
-		r = makeTagEntry (&e);
+		tagEntryInfo tag;
+		initTagEntry(&tag, name, kind);
+		
+		if (vStringLength(scope.name) > 0)
+		{
+			tag.extensionFields.scopeKindIndex = scope.kindIndex;
+			tag.extensionFields.scopeName = vStringValue(scope.name);
+		}
+		tag.isFileScope = private;
+		
+		r = makeTagEntry(&tag);
+		//~ printf("!!!tag: scope = %s, name = %s\n",
+			   //~ tag.extensionFields.scopeName, tag.name);
 	}
-	nestingLevelsPush (nesting, r);
+	return r;
 }
 
-static void findElixirTags (void)
+static bool isIdentifierChar(int c)
 {
-	const unsigned char *line;
-	bool inMultiLineComment = false;
+	return (bool)(isalnum(c) || c == '_' || c == '@'
+							 || c == '!' || c == '?'
+							 || c == SCOPE_SEPARATOR);
+}
 
-	nesting = nestingLevelsNew (0);
-
-	/* FIXME: this whole scheme is wrong, because Elixir isn't line-based.
-	* You could perfectly well write:
-	*
-	*  def
-	*  method
-	*   puts("hello")
-	*  end
-	*
-	* if you wished, and this function would fail to recognize anything.
-	*/
-	while ((line = readLineFromInputFile ()) != NULL)
+static void checkMultilineString(const unsigned char *cp)
+{
+	while (*cp)
 	{
-		const unsigned char *cp = line;
-		/* if we expect a separator after a while, for, or until statement
-		 * separators are "do", ";" or newline */
-		bool expect_separator = false;
-
-		if (canMatch (&cp, "=begin", isWhitespace))
+		stringInfo *strInfo = NULL;
+		if (ptrArrayCount(stringStack) > 0)
+			strInfo = ptrArrayLast(stringStack);
+		
+		if (strInfo && strInfo->nestingCount == 0) // inside string
 		{
-			inMultiLineComment = true;
-			continue;
-		}
-		if (canMatch (&cp, "=end", isWhitespace))
-		{
-			inMultiLineComment = false;
-			continue;
-		}
-		if (inMultiLineComment)
-			continue;
-
-		skipWhitespace (&cp);
-
-		/* Avoid mistakenly starting a scope for modifiers such as
-		*
-		*   return if <exp>
-		*
-		* FIXME: this is fooled by code such as
-		*
-		*   result = if <exp>
-		*               <a>
-		*            else
-		*               <b>
-		*            end
-		*
-		* FIXME: we're also fooled if someone does something heinous such as
-		*
-		*   puts("hello") \
-		*       unless <exp>
-		*/
-		if (canMatchKeyword (&cp, "for") ||
-		    canMatchKeyword (&cp, "until") ||
-		    canMatchKeyword (&cp, "while"))
-		{
-			expect_separator = true;
-			enterUnnamedScope ();
-		}
-		else if (canMatchKeyword (&cp, "case") ||
-		         canMatchKeyword (&cp, "if") ||
-		         canMatchKeyword (&cp, "unless"))
-		{
-			enterUnnamedScope ();
-		}
-
-		/*
-		* "module M", "class C" and "def m" should only be at the beginning
-		* of a line.
-		*/
-		if (canMatchKeyword (&cp, "module"))
-		{
-			readAndEmitTag (&cp, K_MODULE);
-		}
-		else if (canMatchKeyword (&cp, "class"))
-		{
-			readAndEmitTag (&cp, K_CLASS);
-		}
-		else if (canMatchKeyword (&cp, "def"))
-		{
-			elixirKind kind = K_METHOD;
-			NestingLevel *nl = nestingLevelsGetCurrent (nesting);
-			tagEntryInfo *e  = getEntryOfNestingLevel (nl);
-
-			/* if the def is inside an unnamed scope at the class level, assume
-			 * it's from a singleton from a construct like this:
-			 *
-			 * class C
-			 *   class << self
-			 *     def singleton
-			 *       ...
-			 *     end
-			 *   end
-			 * end
-			 */
-			if (e && e->kindIndex == K_CLASS && strlen (e->name) == 0)
-				kind = K_SINGLETON;
-			readAndEmitTag (&cp, kind);
-		}
-		while (*cp != '\0')
-		{
-			/* FIXME: we don't cope with here documents,
-			* or regular expression literals, or ... you get the idea.
-			* Hopefully, the restriction above that insists on seeing
-			* definitions at the starts of lines should keep us out of
-			* mischief.
-			*/
-			if (inMultiLineComment || isspace (*cp))
+			if (*cp == '\\')
 			{
-				++cp;
+				cp++; // skip any character after the backslash
+				if (!*cp) break;
 			}
-			else if (*cp == '#')
+			else if (*cp == strInfo->closingChar)
 			{
-				/* FIXME: this is wrong, but there *probably* won't be a
-				* definition after an interpolated string (where # doesn't
-				* mean 'comment').
-				*/
-				break;
-			}
-			else if (canMatchKeyword (&cp, "begin"))
-			{
-				enterUnnamedScope ();
-			}
-			else if (canMatchKeyword (&cp, "do"))
-			{
-				if (! expect_separator)
-					enterUnnamedScope ();
+				if (strInfo->isTriple)
+				{
+					if (matchTripleQuote(cp, *cp))
+					{
+						cp += 2; // skip 2 quote-symbols
+						ptrArrayRemoveLast(stringStack);
+					}
+				}
 				else
-					expect_separator = false;
+					ptrArrayRemoveLast(stringStack);
 			}
-			else if (canMatchKeyword (&cp, "end") && nesting->n > 0)
+			else if (*cp == '#' && cp[1] == '{' && strInfo->canbeInterpolate)
 			{
-				/* Leave the most recent scope. */
-				nestingLevelsPop (nesting);
-			}
-			else if (*cp == '"')
-			{
-				/* Skip string literals.
-				 * FIXME: should cope with escapes and interpolation.
-				 */
-				do {
-					++cp;
-				} while (*cp != 0 && *cp != '"');
-				if (*cp == '"')
-					cp++; /* skip the last found '"' */
-			}
-			else if (*cp == ';')
-			{
-				++cp;
-				expect_separator = false;
-			}
-			else if (*cp != '\0')
-			{
-				do
-					++cp;
-				while (isIdentChar (*cp));
+				strInfo->nestingCount++;
+				cp++; // skip #
 			}
 		}
+		else
+		{
+			if (*cp == '~' && (strchr(L_LITERAL_PREFIX U_LITERAL_PREFIX, cp[1]))
+				&& cp[2])
+			{
+				char closingChar = getClosingChar(cp[2]);
+				if (closingChar != ' ')
+				{
+					bool canbeInterpolate = strchr(L_LITERAL_PREFIX, cp[1]);
+					cp += 2; // skip ~LITERAL_PREFIX
+					
+					bool isTriple = matchTripleQuote(cp, *cp);
+					ptrArrayAdd(stringStack, stringInfoNew(closingChar, isTriple,
+														   canbeInterpolate, 0));
+					if (isTriple) cp += 2; // skip 2 quote-symbols
+				}
+			}
+			else if (*cp == '\"' || *cp == '\'')
+			{
+				bool isTriple = matchTripleQuote(cp, *cp);
+				ptrArrayAdd(stringStack, stringInfoNew(*cp, isTriple, true, 0));
+				if (isTriple) cp += 2; // skip 2 quote-symbols
+			}
+			else if (strInfo)
+			{
+				if (*cp == '{')
+					strInfo->nestingCount++;
+				else if (*cp == '}')
+					strInfo->nestingCount--;
+			}
+		}
+		cp++;
 	}
-	nestingLevelsFree (nesting);
 }
 
-extern parserDefinition* ElixirParser (void)
+static const unsigned char *skipSpace(const unsigned char *cp)
 {
-	static const char *const extensions [] = { "ex", "exs", NULL };
-	parserDefinition* def = parserNewFull ("Elixir", KIND_FILE_ALT);
-	def->kindTable  = ElixirKinds;
-	def->kindCount  = ARRAY_SIZE (ElixirKinds);
+	while (isspace(*cp))
+		cp++;
+	return cp;
+}
+
+static const unsigned char *parseIdentifier(const unsigned char *cp,
+											vString *const identifier)
+{
+	vStringClear(identifier);
+	cp = skipSpace(cp);
+	
+	while (isIdentifierChar(*cp))
+		vStringPut(identifier, *cp++);
+	
+	return cp;
+}
+
+static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind kind,
+										   bool private, int indent)
+{
+	vString *const identifier = vStringNew();
+	cp = parseIdentifier(cp, identifier);
+	
+	if (vStringLength(identifier) > 0)
+	{
+		Scope scope = getCurrentScope();
+		const char *name;
+		
+		if (kind == K_MODULE || kind == K_PROTO)
+		{
+			const char *full_name = vStringValue(identifier);
+			name = strrchr(full_name, SCOPE_SEPARATOR);
+			
+			if (name && name[1])
+			{
+				if (name > full_name)
+				{
+					if (vStringLength(scope.name) > 0)
+						vStringPut(scope.name, SCOPE_SEPARATOR);
+					vStringNCatS(scope.name, full_name, name - full_name);
+				}
+				name++; // skip dot
+			}
+			else
+				name = full_name;
+		}
+		else
+			name = vStringValue(identifier);
+		
+		int r = makeTag(name, kind, private, scope);
+		NestingLevel *nl = nestingLevelsPush(nesting, r);
+		EX_NL_INDENTATION(nl) = indent;
+		freeScope(scope);
+	}
+	vStringDelete(identifier);
+	return cp;
+}
+
+static const unsigned char *parseMemberTag(const unsigned char *cp,
+										   elixirKind kind, bool private)
+{
+	vString *const identifier = vStringNew();
+	cp = parseIdentifier(cp, identifier);
+	
+	if (vStringLength(identifier) > 0)
+	{
+		Scope scope = getCurrentScope();
+		makeTag(vStringValue(identifier), kind, private, scope);
+		freeScope(scope);
+	}
+	vStringDelete(identifier);
+	return cp;
+}
+
+static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
+{
+	vString *const keyword = vStringNew();
+	cp = parseIdentifier(cp, keyword);
+	cp = skipSpace(cp);
+	
+	const char *const kwval = vStringValue(keyword);
+	
+	if (strcmp(kwval, "defmodule") == 0)
+		cp = parseStructTag(cp, K_MODULE, false, indent);
+	else if (strcmp(kwval, "defprotocol") == 0)
+		cp = parseStructTag(cp, K_PROTO, false, indent);
+	else if (strcmp(kwval, "defmacro") == 0)
+		cp = parseStructTag(cp, K_MACRO, true, indent);
+	else if (strcmp(kwval, "defimpl") == 0)
+		cp = parseStructTag(cp, K_IMPL, false, indent);
+	else if (strcmp(kwval, "defp") == 0)
+		cp = parseMemberTag(cp, K_FUNCTION, true);
+	else if (strcmp(kwval, "def") == 0)
+		cp = parseMemberTag(cp, K_FUNCTION, false);
+	else if (strcmp(kwval, "defmemop") == 0)
+		cp = parseMemberTag(cp, K_FUNCTION, true);
+	else if (strcmp(kwval, "defmemo") == 0)
+		cp = parseMemberTag(cp, K_FUNCTION, false);
+	else if (strcmp(kwval, "@type") == 0)
+		cp = parseMemberTag(cp, K_TYPE, false);
+	else if (strcmp(kwval, "@spec") == 0 ||
+			 strcmp(kwval, "@impl") == 0 ||
+			 strcmp(kwval, "@doc") == 0 ||
+			 strcmp(kwval, "@moduledoc") == 0 ||
+			 strcmp(kwval, "@behaviour") == 0 ||
+			 strcmp(kwval, "@deprecated") == 0 ||
+			 strcmp(kwval, "@derive") == 0 ||
+			 strcmp(kwval, "@callback") == 0 ||
+			 strcmp(kwval, "@macrocallback") == 0 ||
+			 strcmp(kwval, "@optional_callbacks") == 0)
+		/* skip */;
+	else if (*kwval == '@' && kwval[1] && *cp &&
+			 (isalnum(*cp) || strchr("\"{[(%:~_", *cp)))
+	{
+		Scope scope = getCurrentScope();
+		makeTag(kwval, K_ATTRIBUTE, true, scope);
+		freeScope(scope);
+	}
+	else if (strcmp(kwval, "end") == 0)
+	{
+		NestingLevel *nl = nestingLevelsGetCurrent(nesting);
+		
+		if (nl && EX_NL_INDENTATION(nl) == indent)
+			nestingLevelsPop(nesting);
+	}
+	vStringDelete(keyword);
+	return cp;
+}
+
+static void findElixirTags(void)
+{
+	stringStack = ptrArrayNew(NULL);
+	nesting = nestingLevelsNew(sizeof(struct nlUserData));
+	
+	const unsigned char *line;
+	
+	while ((line = readLineFromInputFile()) != NULL)
+	{
+		const unsigned char *cp = skipSpace(line);
+		
+		if (ptrArrayCount(stringStack) > 0)
+		{
+			checkMultilineString(cp);
+			continue;
+		}
+		else if (islower(*cp) || *cp == '@')
+			cp = parseKeyword(cp, cp - line);
+		
+		checkMultilineString(cp);
+	}
+	ptrArrayDelete(stringStack);
+	nestingLevelsFree(nesting);
+}
+
+extern parserDefinition *ElixirParser(void)
+{
+	static const char *const extensions[] = { "ex", "exs", NULL };
+	parserDefinition *def = parserNew("Elixir");
+	def->kindTable = ElixirKinds;
+	def->kindCount = ARRAY_SIZE(ElixirKinds);
 	def->extensions = extensions;
-	def->parser     = findElixirTags;
-	def->useCork    = true;
+	def->parser = findElixirTags;
+	def->useCork = true;
 	return def;
 }

@@ -43,41 +43,42 @@ static kindDefinition ErlangKinds[] = {
  * necessary. If successful you will find class name in vString
  */
 
-static bool isIdentifierFirstCharacter(int c)
+static bool isIdentifierFirstChar(int c)
 {
 	return (bool)(isalpha(c) || c == '\'');
 }
 
-static bool isIdentifierCharacter(int c)
+static bool isIdentifierChar(int c)
 {
 	return (bool)(isalnum(c) || c == '_' || c == ':' || c == '@');
 }
 
 static bool isMultilineString(const unsigned char *cp, bool isString)
 {
-	int prev = ' ';
-	while (*cp != '\0')
+	while (*cp)
 	{
 		if (isString)
 		{
-			if (*cp == '"' && prev != '\\')
+			if (*cp == '\\')
+			{
+				cp++; // skip any character after the backslash
+				if (!*cp) break;
+			}
+			else if (*cp == '"')
 				isString = false;
 		}
-		else
-		{
-			if (*cp == '"')
-				isString = true;
-		}
-		prev = *cp;
-		++cp;
+		else if (*cp == '"')
+			isString = true;
+		
+		cp++;
 	}
 	return isString;
 }
 
 static const unsigned char *skipSpace(const unsigned char *cp)
 {
-	while (isspace((int)*cp))
-		++cp;
+	while (isspace(*cp))
+		cp++;
 	return cp;
 }
 
@@ -87,38 +88,32 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 	vStringClear(identifier);
 	// esh: modified logic: skip spaces, define quoted atom
 	cp = skipSpace(cp);
+	
 	if (*cp == '\'')
 	{
-		vStringPut(identifier, (int)*cp);
-		++cp;
+		vStringPut(identifier, *cp++);
 		
-		int prev = ' ';
-		while (*cp != '\0')
+		while (*cp)
 		{
-			if (*cp == '\'' && prev != '\\')
-				break;
-			else
+			if (*cp == '\\')
 			{
-				prev = *cp;
-				vStringPut(identifier, (int)*cp);
-				++cp;
+				vStringPut(identifier, *cp++);
+				if (!*cp) break;
 			}
+			else if (*cp == '\'')
+				break;
+			
+			vStringPut(identifier, *cp++);
 		}
 		if (*cp == '\'')
-		{
-			vStringPut(identifier, (int)*cp);
-			++cp;
-		}
+			vStringPut(identifier, *cp++);
 		else
 			vStringClear(identifier);
 	}
 	else
 	{
-		while (isIdentifierCharacter((int)*cp))
-		{
-			vStringPut(identifier, (int)*cp);
-			++cp;
-		}
+		while (isIdentifierChar(*cp))
+			vStringPut(identifier, *cp++);
 	}
 	return cp;
 }
@@ -126,7 +121,7 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 static void makeMemberTag(vString *const identifier, erlangKind kind,
 						  vString *const module)
 {
-	if (ErlangKinds [kind].enabled && vStringLength(identifier) > 0)
+	if (ErlangKinds[kind].enabled && vStringLength(identifier) > 0)
 	{
 		tagEntryInfo tag;
 		initTagEntry(&tag, vStringValue(identifier), kind);
@@ -144,7 +139,7 @@ static void parseModuleTag(const unsigned char *cp, vString *const module)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (identifier->length > 0)
+	if (vStringLength(identifier) > 0)
 	{
 		makeSimpleTag(identifier, K_MODULE);
 		/* All further entries go in the new module */
@@ -157,7 +152,7 @@ static void parseSimpleTag(const unsigned char *cp, erlangKind kind)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (identifier->length > 0)
+	if (vStringLength(identifier) > 0)
 		makeSimpleTag(identifier, kind);
 	vStringDelete(identifier);
 }
@@ -166,7 +161,7 @@ static void parseFunctionTag(const unsigned char *cp, vString *const module)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (identifier->length > 0)
+	if (vStringLength(identifier) > 0)
 		makeMemberTag(identifier, K_FUNCTION, module);
 	vStringDelete(identifier);
 }
@@ -186,11 +181,13 @@ static void parseDirective(const unsigned char *cp, vString *const module)
 	 * Record definitions are handled separately
 	 */
 	vString *const directive = vStringNew();
-	const char *const drtv = vStringValue(directive);
 	cp = parseIdentifier(cp, directive);
 	cp = skipSpace(cp);
+	
 	if (*cp == '(')
-		++cp;
+		cp++;
+	
+	const char *const drtv = vStringValue(directive);
 	
 	if (strcmp(drtv, "record") == 0)
 		parseSimpleTag(cp, K_RECORD);
@@ -221,7 +218,7 @@ static void findErlangTags(void)
 			isMultiStr = isMultilineString(cp, true);
 		else if (*cp == '-')
 			parseDirective(++cp, module);
-		else if (isIdentifierFirstCharacter((int)*cp))
+		else if (isIdentifierFirstChar(*cp))
 			parseFunctionTag(cp, module);
 		else
 		{

@@ -27,7 +27,7 @@
   )
 ).
 
--record(tmp, {t1, t2}).
+-record(tmp_record, {t1, t2}).
 get(#?MODULE{} = Media, Key) -> 
   case record_info(fields, ?MODULE) of
     undefined ->
@@ -376,10 +376,10 @@ fun1(SessionId) ->
   'L6proto':decode('PresenceMessage', Headers).
 
 
+is_session_closed(#tmp_record{} = S)
+    when S#tmp_record.t1 /= test1 -> true;
 is_session_closed(#tmp{} = S)
-    when S#tmp.t1 /= test1 -> true;
-is_session_closed(#tmp{} = S)
-    when S#tmp.t1 =/= test2 -> true.
+    when S#tmp_record.t1 =/= test2 -> true.
 
 
 runtime_device_ip0(Name) ->

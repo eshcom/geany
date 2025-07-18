@@ -841,6 +841,19 @@ static void add_top_level_items(GeanyDocument *doc)
 				NULL);
 			break;
 		}
+		case GEANY_FILETYPES_ELIXIR:
+		{
+			tag_list_add_groups(tag_store,
+				&(tv_iters.tag_variable), _("Attributes"), ICON_VAR,
+				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
+				&(tv_iters.tag_type), _("Type constructors"), ICON_TYPE,
+				&(tv_iters.tag_namespace), _("Modules"), ICON_NAMESPACE,
+				&(tv_iters.tag_macro), _("Macros"), ICON_MACRO,
+				&(tv_iters.tag_interface), _("Protocols"), ICON_INTERFACE,
+				&(tv_iters.tag_struct), _("Implementations"), ICON_STRUCT,
+				NULL);
+			break;
+		}
 		case GEANY_FILETYPES_D:
 		default:
 		{
