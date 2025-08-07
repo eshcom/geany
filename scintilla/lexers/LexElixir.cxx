@@ -44,6 +44,11 @@ struct SingleStringExpState {
 	int nestingCount;
 };
 
+struct ModuleAliases {
+	std::string module;
+	std::vector<std::string> aliases;
+};
+
 struct AtomPunctSequence {
 	int charsLeft;
 	char validChar;
@@ -112,7 +117,10 @@ typedef enum {
 	TYPEDEF_STATE,		// @type, @spec, @callback, @macrocallback
 	PIPEOPER_STATE,		// |>
 	TYPEOPER_STATE,		// ::
-	DOTOPER_STATE		// . example: Struct.field, Module.func()
+	DOTOPER_STATE,		// . example: Struct.field, Module.func()
+	ALIAS_STATE,
+	ALIAS_AS_STATE,
+	ALIAS_GRP_STATE
 } ident_state_t;
 
 typedef enum {
@@ -356,6 +364,7 @@ class LexerElixir : public DefaultLexer {
 	enum { ssIdentifier };
 	SubStyles subStyles;
 	std::map<Sci_Position, std::vector<SingleStringExpState>> stringStateAtEol;
+	std::map<Sci_Position, ModuleAliases> moduleAliasesAtEol;
 public:
 	explicit LexerElixir() :
 		DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses)),
@@ -430,6 +439,10 @@ private:
 	void ProcessLineEnd(StyleContext &sc,
 						std::vector<SingleStringExpState> &stringStateStack,
 						int &stringState);
+	
+	void InsertModule(StyleContext &sc, const char *module);
+	void InsertAlias(const char *alias);
+	const char *GetModule(const char *ident);
 };
 
 Sci_Position SCI_METHOD LexerElixir::PropertySet(const char *key, const char *val) {
@@ -507,6 +520,42 @@ void LexerElixir::ProcessLineEnd(StyleContext &sc,
 		
 		stringStateAtEol.insert(val);
 	}
+}
+
+void LexerElixir::InsertModule(StyleContext &sc, const char *module) {
+	std::pair<Sci_Position, ModuleAliases> val;
+	val.first = sc.currentLine;
+	val.second = {std::string(module), std::vector<std::string>()};
+	
+	moduleAliasesAtEol.insert(val);
+}
+
+void LexerElixir::InsertAlias(const char *alias) {
+	if (moduleAliasesAtEol.empty()) return;
+	
+	std::map<Sci_Position, ModuleAliases>::iterator iter =
+		std::prev(moduleAliasesAtEol.end());
+	
+	if (alias) {
+		iter->second.aliases.push_back(std::string(alias));
+	} else {
+		const char *module = iter->second.module.c_str();
+		alias = strrchr(module, '.');
+		iter->second.aliases.push_back(std::string(alias ? ++alias : module));
+	}
+}
+
+const char *LexerElixir::GetModule(const char *ident) {
+	std::map<Sci_Position, ModuleAliases>::iterator mIter =
+		moduleAliasesAtEol.begin();
+	for (; mIter != moduleAliasesAtEol.end(); mIter = std::next(mIter)) {
+		std::vector<std::string>::iterator aIter = mIter->second.aliases.begin();
+		for (; aIter != mIter->second.aliases.end(); aIter = std::next(aIter)) {
+			if (strcmp(aIter->c_str(), ident) == 0)
+				return mIter->second.module.c_str();
+		}
+	}
+	return ident;
 }
 
 
@@ -804,15 +853,22 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	}
 	
 	// Set up state stack from last line and remove any subsequent string at eol states
-	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator it;
-	it = stringStateAtEol.find(lineCurrent - 1);
-	if (it != stringStateAtEol.end() && !it->second.empty()) {
-		stringStateStack = it->second;
+	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator ssIter;
+	ssIter = stringStateAtEol.find(lineCurrent - 1);
+	if (ssIter != stringStateAtEol.end() && !ssIter->second.empty()) {
+		stringStateStack = ssIter->second;
 		currentStringExp = &stringStateStack.back();
 	}
-	it = stringStateAtEol.lower_bound(lineCurrent);
-	if (it != stringStateAtEol.end()) {
-		stringStateAtEol.erase(it, stringStateAtEol.end());
+	ssIter = stringStateAtEol.lower_bound(lineCurrent);
+	if (ssIter != stringStateAtEol.end()) {
+		stringStateAtEol.erase(ssIter, stringStateAtEol.end());
+	}
+	
+	// Remove any subsequent module aliases at eol
+	std::map<Sci_Position, ModuleAliases>::iterator maIter;
+	maIter = moduleAliasesAtEol.lower_bound(lineCurrent);
+	if (maIter != moduleAliasesAtEol.end()) {
+		moduleAliasesAtEol.erase(maIter, moduleAliasesAtEol.end());
 	}
 	
 	Sci_PositionU lineEndCurr = styler.LineEnd(lineCurrent);
@@ -1079,8 +1135,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				}
 				SKIP_SPACES
+				MOVE_INDEX_TO_NONSPACE
 				if (sc.ch == '.') {
-					MOVE_INDEX_TO_NONSPACE
 					if (IsUpper(styler[i])) {
 						sc.Forward(); // skip '.'
 						SKIP_SPACES
@@ -1091,14 +1147,36 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
 				
-				if (stdExcepts.InList(cur)) {
-					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
-				} else if (stdModules.InList(cur)) {
-					sc.ChangeState(SCE_ELIXIR_STD_MODULE);
-					module_type = (strcmp(cur, "Kernel") == 0) ? KERNEL_MODULE
-															   : OTHER_MODULE;
+				if (ident_state == ALIAS_STATE) {
+					InsertModule(sc, cur);
+					if (sc.atLineEnd) {
+						InsertAlias(NULL);
+						ident_state = NONE_STATE;
+					} else if (sc.ch == ',') {
+						ident_state = ALIAS_AS_STATE;
+					} else if (sc.ch == '.' && styler[i] == '{') {
+						// example: alias Sayings.{Greetings, Farewells}
+						ident_state = ALIAS_GRP_STATE;
+					}
+				} else if (ident_state == ALIAS_AS_STATE) {
+					InsertAlias(cur);
+					ident_state = NONE_STATE;
+				} else if (ident_state == ALIAS_GRP_STATE) {
+					InsertAlias(cur);
+					if (sc.ch == '}' || sc.atLineEnd)
+						ident_state = NONE_STATE;
 				}
-				sc.SetState(SCE_ELIXIR_DEFAULT);
+				const char *ident = GetModule(cur);
+				
+				if (stdExcepts.InList(ident)) {
+					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
+				} else if (stdModules.InList(ident)) {
+					sc.ChangeState(SCE_ELIXIR_STD_MODULE);
+					module_type = (strcmp(ident, "Kernel") == 0) ? KERNEL_MODULE
+																 : OTHER_MODULE;
+				}
+				sc.SetState(sc.ch == '.' && ident_state == ALIAS_GRP_STATE
+							? SCE_ELIXIR_OPERATOR : SCE_ELIXIR_DEFAULT);
 			} break;
 			
 			case SCE_ELIXIR_MODULE_ATTR : {
@@ -1139,8 +1217,13 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
-						sc.ChangeState(ident_state == NONE_STATE ? SCE_ELIXIR_FIELD
-																 : SCE_ELIXIR_UNKNOWN);
+						if (ident_state == NONE_STATE ||
+							(ident_state == ALIAS_AS_STATE
+							 && strcmp(cur, "as") == 0)) {
+							sc.ChangeState(SCE_ELIXIR_FIELD);
+						} else {
+							sc.ChangeState(SCE_ELIXIR_UNKNOWN);
+						}
 						if (!IsSpace(sc.chNext)) {
 							sc.SetState(SCE_ELIXIR_OPERATOR);
 							sc.ForwardSetState(SCE_ELIXIR_UNKNOWN);
@@ -1187,16 +1270,22 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						} else CHECK_LIB_MACROS
 					} else CHECK_LIB_MACROS
 				}
-				ident_state = (sc.state == SCE_ELIXIR_STD_WORD &&
-							   (strcmp(cur, "def") == 0 ||
-								strcmp(cur, "defp") == 0 ||
-								strcmp(cur, "defguard") == 0 ||
-								strcmp(cur, "defguardp") == 0 ||
-								strcmp(cur, "defmacro") == 0 ||
-								strcmp(cur, "defmacrop") == 0 ||
-								strcmp(cur, "defmemo") == 0 ||
-								strcmp(cur, "defmemop") == 0)) ? DEFNAME_STATE
-															   : NONE_STATE;
+				if (sc.state == SCE_ELIXIR_STD_WORD &&
+					(strcmp(cur, "def") == 0 ||
+					 strcmp(cur, "defp") == 0 ||
+					 strcmp(cur, "defguard") == 0 ||
+					 strcmp(cur, "defguardp") == 0 ||
+					 strcmp(cur, "defmacro") == 0 ||
+					 strcmp(cur, "defmacrop") == 0 ||
+					 strcmp(cur, "defmemo") == 0 ||
+					 strcmp(cur, "defmemop") == 0))
+					ident_state = DEFNAME_STATE;
+				else if (sc.state == SCE_ELIXIR_ADD_WORD &&
+						 strcmp(cur, "alias") == 0)
+					ident_state = ALIAS_STATE;
+				else if (ident_state != ALIAS_AS_STATE)
+					ident_state = NONE_STATE;
+				
 				if (sc.state == SCE_ELIXIR_STD_WORD
 					|| sc.state == SCE_ELIXIR_ADD_WORD)
 					maybe_typefunc = false;
@@ -1338,7 +1427,9 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				
-				ident_state = NONE_STATE;
+				if (ident_state != ALIAS_AS_STATE && ident_state != ALIAS_GRP_STATE)
+					ident_state = NONE_STATE;
+				
 				assign_to_strfield = false;
 				
 				if (sc.ch == '&') {
