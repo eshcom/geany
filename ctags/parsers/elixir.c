@@ -77,55 +77,44 @@ static stringInfo *stringInfoNew(char closingChar, bool isTriple,
  * necessary. If successful you will find class name in vString
  */
 
-typedef struct
-{
-	vString *const name;
+typedef struct {
+	vString *name;
 	int kindIndex;
 } Scope;
 
+static inline bool isStructKind(elixirKind kind)
+{
+	return kind == K_MODULE || kind == K_PROTO || kind == K_IMPL;
+}
+
 static Scope getCurrentScope(void)
 {
-	vString *const scopeName = vStringNew();
+	vString *scopeName = vStringNew();
 	int scopeKindIndex = -1;
 	
-	// -------------------------------------------------
 	NestingLevel *nl = nestingLevelsGetCurrent(nesting);
 	tagEntryInfo *tag = getEntryOfNestingLevel(nl);
 	if (tag)
 	{
-		scopeKindIndex = tag->kindIndex;
-		vStringCatS(scopeName, tag->name);
-	}
-	// -------------------------------------------------
-	
-	//~ tagEntryInfo *tag = NULL;
-	
-	//~ for (int i = 0; i < nesting->n; i++)
-	//~ {
-		//~ NestingLevel *nl = nestingLevelsGetNth(nesting, i);
-		//~ tag = getEntryOfNestingLevel(nl);
+		if (tag->extensionFields.scopeName && *tag->extensionFields.scopeName)
+			vStringCatS(scopeName, tag->extensionFields.scopeName);
 		
-		//~ if (tag)
-		//~ {
-			//~ if (tag->extensionFields.scopeName && *tag->extensionFields.scopeName)
-			//~ {
-				//~ if (vStringLength(scopeName) > 0)
-					//~ vStringPut(scopeName, SCOPE_SEPARATOR);
-				//~ vStringCatS(scopeName, tag->extensionFields.scopeName);
-			//~ }
-			//~ if (vStringLength(scopeName) > 0)
-				//~ vStringPut(scopeName, SCOPE_SEPARATOR);
-			//~ vStringCatS(scopeName, tag->name);
-		//~ }
-	//~ }
-	//~ if (tag) scopeKindIndex = tag->kindIndex;
+		if (isStructKind(tag->kindIndex))
+		{
+			if (vStringLength(scopeName) > 0)
+				vStringPut(scopeName, SCOPE_SEPARATOR);
+			vStringCatS(scopeName, tag->name);
+		}
+		scopeKindIndex = tag->kindIndex;
+	}
 	return (Scope){scopeName, scopeKindIndex};
 }
 
 #define freeScope(scope) vStringDelete(scope.name);
 
 
-static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar) {
+static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar)
+{
 	if (quoteChar == '\"')
 		return strncmp(cp, R"(""")", 3) == 0;
 	if (quoteChar == '\'')
@@ -134,7 +123,8 @@ static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar) {
 	return false;
 }
 
-static inline char getClosingChar(char openingChar) {
+static inline char getClosingChar(char openingChar)
+{
 	if (openingChar == '\"')
 		return '\"';
 	else if (openingChar == '\'')
@@ -282,31 +272,38 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 	
 	if (vStringLength(identifier) > 0)
 	{
-		Scope scope = getCurrentScope();
-		const char *name;
+		const char *tagName, *fullName = vStringValue(identifier);
+		Scope scope = {vStringNew(), -1};
 		
-		if (kind == K_MODULE || kind == K_PROTO)
+		if (isStructKind(kind))
 		{
-			const char *full_name = vStringValue(identifier);
-			name = strrchr(full_name, SCOPE_SEPARATOR);
+			tagName = strrchr(fullName, SCOPE_SEPARATOR);
 			
-			if (name && name[1])
+			if (tagName && tagName[1])
 			{
-				if (name > full_name)
-				{
-					if (vStringLength(scope.name) > 0)
-						vStringPut(scope.name, SCOPE_SEPARATOR);
-					vStringNCatS(scope.name, full_name, name - full_name);
-				}
-				name++; // skip dot
+				if (tagName > fullName)
+					vStringNCatS(scope.name, fullName, tagName - fullName);
+				tagName++; // skip dot
 			}
 			else
-				name = full_name;
+				tagName = fullName;
 		}
-		else
-			name = vStringValue(identifier);
+		else // kind == K_MACRO
+			tagName = fullName;
 		
-		int r = makeTag(name, kind, private, scope);
+		if (kind == K_MODULE || kind == K_MACRO)
+		{
+			Scope currScope = getCurrentScope();
+			
+			if (vStringLength(currScope.name) > 0 && vStringLength(scope.name) > 0)
+				vStringPut(currScope.name, SCOPE_SEPARATOR);
+			vStringCat(currScope.name, scope.name);
+			
+			freeScope(scope);
+			scope = currScope;
+		}
+		
+		int r = makeTag(tagName, kind, private, scope);
 		NestingLevel *nl = nestingLevelsPush(nesting, r);
 		EX_NL_INDENTATION(nl) = indent;
 		freeScope(scope);
