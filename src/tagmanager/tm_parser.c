@@ -785,6 +785,7 @@ gboolean tm_parser_has_full_context(TMParserType lang)
 		case TM_PARSER_CSHARP:
 		case TM_PARSER_COBOL:
 		case TM_PARSER_D:
+		case TM_PARSER_ELIXIR:
 		case TM_PARSER_FERITE:
 		case TM_PARSER_GLSL:
 		case TM_PARSER_JAVA:
@@ -805,7 +806,6 @@ gboolean tm_parser_has_full_context(TMParserType lang)
 		 * (either as a parser limitation or a language semantic) */
 		case TM_PARSER_ASCIIDOC:
 		case TM_PARSER_CONF:
-		case TM_PARSER_ELIXIR:
 		case TM_PARSER_ERLANG:
 		case TM_PARSER_F77:
 		case TM_PARSER_FORTRAN:
