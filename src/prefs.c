@@ -1466,7 +1466,7 @@ static gboolean kb_grab_key_dialog_key_press_cb(GtkWidget *dialog, GdkEventKey *
 	state = keybindings_get_modifiers(event->state);
 
 	if (event->keyval == GDK_Escape)
-		return FALSE;	/* close the dialog, don't allow escape when detecting keybindings. */
+		return FALSE; /* close the dialog, don't allow escape when detecting keybindings. */
 
 	str = gtk_accelerator_name(event->keyval, state);
 

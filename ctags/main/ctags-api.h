@@ -30,12 +30,12 @@ typedef struct {
 	int lang;
 } ctagsTag;
 
-/* Callback invoked for every tag found by the parser. The return value is
- * currently unused. */
+/* Callback invoked for every tag found by the parser.
+ * The return value is currently unused. */
 typedef bool (*tagEntryFunction) (const ctagsTag *const tag, void *userData);
 
-/* Callback invoked at the beginning of every parsing pass. The return value is
- * currently unused */
+/* Callback invoked at the beginning of every parsing pass.
+ * The return value is currently unused */
 typedef bool (*passStartCallback) (void *userData);
 
 
@@ -54,4 +54,4 @@ extern unsigned int ctagsGetLangCount(void);
 
 #endif /* CTAGS_LIB */
 
-#endif  /* CTAGS_API_H */
+#endif /* CTAGS_API_H */
