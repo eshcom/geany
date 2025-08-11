@@ -102,18 +102,14 @@ void on_new1_activate(GtkMenuItem *menuitem, gpointer user_data)
 static void on_clone1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *old_doc = document_get_current();
-	
-	if (old_doc)
-		document_clone(old_doc);
+	if (old_doc) document_clone(old_doc);
 }
 
 
 void on_save1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
-	if (doc != NULL)
-		document_save_file(doc, ui_prefs.allow_always_save);
+	if (doc) document_save_file(doc, ui_prefs.allow_always_save);
 }
 
 
@@ -133,15 +129,11 @@ void on_save_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 	for (guint i = 0; i < max; i++)
 	{
 		GeanyDocument *doc = document_get_from_page(i);
+		if (!doc->changed) continue;
 		
-		if (!doc->changed)
-			continue;
-		
-		if (document_save_file(doc, FALSE))
-			count++;
+		if (document_save_file(doc, FALSE)) count++;
 	}
-	if (!count)
-		return;
+	if (!count) return;
 	
 	ui_set_statusbar(FALSE, ngettext("%d file saved.", "%d files saved.", count),
 					 count);
@@ -162,9 +154,7 @@ void on_close_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_close1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
-	
-	if (doc != NULL)
-		document_close(doc);
+	if (doc) document_close(doc);
 }
 
 
@@ -354,11 +344,10 @@ static void do_toolbar_search(const gchar *text, gboolean incremental,
 							  gboolean backwards)
 {
 	GeanyDocument *doc = document_get_current();
-	gboolean result;
 	
 	setup_find(text, backwards);
-	result = document_search_bar_find(doc, search_data.text,
-									  incremental, backwards);
+	gboolean result = document_search_bar_find(doc, search_data.text,
+											   incremental, backwards);
 	if (search_data.search_bar)
 		ui_set_search_entry_background(toolbar_get_widget_child_by_name("SearchEntry"),
 									   result);
@@ -452,8 +441,7 @@ static void on_notebook1_switch_page_after(GtkNotebook *notebook, gpointer page,
 		return;
 	
 	GeanyDocument *doc = document_get_from_notebook_child(page);
-	
-	if (doc != NULL)
+	if (doc)
 	{
 		sidebar_select_openfiles_item(doc);
 		ui_save_buttons_toggle(doc->changed);
@@ -585,17 +573,13 @@ void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer user_data)
 		
 		if (utils_str_has_upper(text))
 		{
-			if (rectsel)
-				cmd = SCI_LOWERCASE;
-			else
-				result = g_utf8_strdown(text, -1);
+			if (rectsel) cmd = SCI_LOWERCASE;
+			else result = g_utf8_strdown(text, -1);
 		}
 		else
 		{
-			if (rectsel)
-				cmd = SCI_UPPERCASE;
-			else
-				result = g_utf8_strup(text, -1);
+			if (rectsel) cmd = SCI_UPPERCASE;
+			else result = g_utf8_strup(text, -1);
 		}
 		
 		if (result != NULL)
@@ -617,8 +601,7 @@ void on_toggle_case1_activate(GtkMenuItem *menuitem, gpointer user_data)
 static void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem,
 									 gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	toolbar_prefs.visible = (toolbar_prefs.visible) ? FALSE : TRUE;
 	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar),
@@ -629,8 +612,7 @@ static void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_fullscreen1_toggled(GtkCheckMenuItem *checkmenuitem,
 								   gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	ui_prefs.fullscreen = (ui_prefs.fullscreen) ? FALSE : TRUE;
 	ui_set_fullscreen();
@@ -640,8 +622,7 @@ static void on_fullscreen1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_show_messages_window1_toggled(GtkCheckMenuItem *checkmenuitem,
 											 gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	ui_prefs.msgwindow_visible = (ui_prefs.msgwindow_visible) ? FALSE : TRUE;
 	msgwin_show_hide(ui_prefs.msgwindow_visible);
@@ -658,8 +639,7 @@ static void on_menu_color_schemes_activate(GtkImageMenuItem *imagemenuitem,
 static void on_markers_margin1_toggled(GtkCheckMenuItem *checkmenuitem,
 									   gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	editor_prefs.show_markers_margin = !editor_prefs.show_markers_margin;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_MARKERS_MARGIN);
@@ -669,8 +649,7 @@ static void on_markers_margin1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_show_line_numbers1_toggled(GtkCheckMenuItem *checkmenuitem,
 										  gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	editor_prefs.show_linenumber_margin = !editor_prefs.show_linenumber_margin;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_NUMBERS);
@@ -680,8 +659,7 @@ static void on_show_line_numbers1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_menu_show_white_space1_toggled(GtkCheckMenuItem *checkmenuitem,
 											  gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	editor_prefs.show_white_space = !editor_prefs.show_white_space;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_WHITE_SPACE);
@@ -691,8 +669,7 @@ static void on_menu_show_white_space1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_menu_show_line_endings1_toggled(GtkCheckMenuItem *checkmenuitem,
 											   gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	editor_prefs.show_line_endings = !editor_prefs.show_line_endings;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_LINE_ENDINGS);
@@ -702,8 +679,7 @@ static void on_menu_show_line_endings1_toggled(GtkCheckMenuItem *checkmenuitem,
 static void on_menu_show_indentation_guides1_toggled(GtkCheckMenuItem *checkmenuitem,
 													 gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	editor_prefs.show_indent_guide = !editor_prefs.show_indent_guide;
 	ui_toggle_editor_features(GEANY_EDITOR_SHOW_INDENTATION_GUIDES);
@@ -803,12 +779,9 @@ static void goto_tag(gboolean definition)
 	
 	/* use the keybinding callback as it checks
 	 * for selections as well as current word */
-	if (definition)
-		keybindings_send_command(GEANY_KEY_GROUP_GOTO,
-								 GEANY_KEYS_GOTO_TAGDEFINITION);
-	else
-		keybindings_send_command(GEANY_KEY_GROUP_GOTO,
-								 GEANY_KEYS_GOTO_TAGDECLARATION);
+	keybindings_send_command(GEANY_KEY_GROUP_GOTO,
+							 definition ? GEANY_KEYS_GOTO_TAGDEFINITION
+										: GEANY_KEYS_GOTO_TAGDECLARATION);
 }
 
 
@@ -1025,17 +998,13 @@ static void on_comments_function_activate(GtkMenuItem *menuitem,
 		return;
 	}
 	
-	gchar *text;
 	const gchar *cur_tag = NULL;
-	gint line = -1, pos = 0;
-	
 	/* symbols_get_current_function returns -1 on failure,
 	 * so sci_get_position_from_line returns the current position,
 	 * so it should be safe */
-	line = symbols_get_current_function(doc, &cur_tag);
-	pos = sci_get_position_from_line(doc->editor->sci, line);
-	
-	text = templates_get_template_function(doc, cur_tag);
+	gint line = symbols_get_current_function(doc, &cur_tag);
+	gint pos = sci_get_position_from_line(doc->editor->sci, line);
+	gchar *text = templates_get_template_function(doc, cur_tag);
 	
 	sci_start_undo_action(doc->editor->sci);
 	sci_insert_text(doc->editor->sci, pos, text);
@@ -1092,8 +1061,7 @@ static void insert_comment_template(GeanyDocument *doc, gint pos,
 	g_return_if_fail(pos == -1 || pos >= 0);
 	g_return_if_fail(template < GEANY_MAX_TEMPLATES);
 	
-	if (pos == -1)
-		pos = sci_get_current_position(doc->editor->sci);
+	if (pos == -1) pos = sci_get_current_position(doc->editor->sci);
 	
 	gchar *text = templates_get_template_licence(doc, template);
 	
@@ -1251,8 +1219,7 @@ void on_menu_select_all1_activate(GtkMenuItem *menuitem, gpointer user_data)
 void on_menu_show_sidebar1_toggled(GtkCheckMenuItem *checkmenuitem,
 								   gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	ui_prefs.sidebar_visible = !ui_prefs.sidebar_visible;
 	
@@ -1440,8 +1407,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 		{	/* relative filename, add the path of the current file */
 			gchar *path = utils_get_current_file_dir_utf8();
 			SETPTR(path, utils_get_locale_from_utf8(path));
-			if (!path)
-				path = g_get_current_dir();
+			if (!path) path = g_get_current_dir();
 			
 			filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
 			
@@ -1769,8 +1735,7 @@ gboolean on_escape_key_press_event(GtkWidget *widget, GdkEventKey *event,
 
 void on_line_breaking1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
@@ -2018,8 +1983,7 @@ void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 static void on_indent_width_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback)
-		return;
+	if (ignore_callback) return;
 	
 	gchar *label = ui_menu_item_get_text(menuitem);
 	gint width = atoi(label);

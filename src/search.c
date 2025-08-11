@@ -770,8 +770,7 @@ static void create_replace_dialog(void)
 void search_show_replace_dialog(void)
 {
 	GeanyDocument *doc = document_get_current();
-	if (doc == NULL)
-		return;
+	if (doc == NULL) return;
 	
 	gchar *sel = editor_get_default_selection(doc->editor,
 									search_prefs.use_current_word, NULL);
@@ -824,9 +823,7 @@ static void update_file_patterns(GtkWidget *mode_combo, GtkWidget *fcombo)
 		gtk_widget_set_sensitive(fcombo, FALSE);
 	}
 	else if (selection == FILES_MODE_CUSTOM)
-	{
 		gtk_widget_set_sensitive(fcombo, TRUE);
-	}
 	else if (selection == FILES_MODE_PROJECT)
 	{
 		if (app->project && !EMPTY(app->project->file_patterns))
@@ -1108,8 +1105,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	stash_group_display(fif_prefs, fif_dlg.dialog);
 	
 	if (!text)
-	{
-		/* only set selection if the dialog is not already visible,
+	{	/* only set selection if the dialog is not already visible,
 		 * or has just been created */
 		if (doc && !sel && !gtk_widget_get_visible(fif_dlg.dialog))
 			sel = editor_get_default_selection(doc->editor,
@@ -1118,8 +1114,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 		text = sel;
 	}
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.search_combo));
-	if (text)
-		gtk_entry_set_text(GTK_ENTRY(entry), text);
+	if (text) gtk_entry_set_text(GTK_ENTRY(entry), text);
 	g_free(sel);
 	
 	/* add project's base path directory to the dir list, we do this here once
@@ -1127,10 +1122,8 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	 *  is opened after dialog creation) */
 	gchar *project_base_path = project_get_base_path();
 	if (project_base_path)
-	{
 		ui_combo_box_prepend_text_once(GTK_COMBO_BOX_TEXT(fif_dlg.dir_combo),
 									   project_base_path);
-	}
 	
 	entry = gtk_bin_get_child(GTK_BIN(fif_dlg.dir_combo));
 	if (!EMPTY(dir))
@@ -1190,12 +1183,10 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 			last_doc = doc;
 		}
 		if (!cur_dir && EMPTY(entry_text))
-		{
-			/* use default_open_path if no directory could be determined
+		{	/* use default_open_path if no directory could be determined
 			 * (e.g. when no files are open) */
 			cur_dir = g_strdup(utils_get_default_dir_utf8());
-			if (!cur_dir)
-				cur_dir = g_get_current_dir();
+			if (!cur_dir) cur_dir = g_get_current_dir();
 		}
 	}
 	g_free(project_base_path);
@@ -1291,8 +1282,7 @@ static GSList *find_range(ScintillaObject *sci, GeanyFindFlags flags,
 {
 	g_return_val_if_fail(sci != NULL && ttf->lpstrText != NULL, NULL);
 	
-	if (!*ttf->lpstrText)
-		return NULL;
+	if (!*ttf->lpstrText) return NULL;
 	
 	GSList *matches = NULL;
 	GeanyMatchInfo *info;
@@ -1300,8 +1290,7 @@ static GSList *find_range(ScintillaObject *sci, GeanyFindFlags flags,
 	while (search_find_text(sci, flags, ttf, &info) != -1)
 	{
 		if (ttf->chrgText.cpMax > ttf->chrg.cpMax)
-		{
-			/* found text is partially out of range */
+		{	/* found text is partially out of range */
 			geany_match_info_free(info);
 			break;
 		}
@@ -1329,16 +1318,14 @@ gint search_mark_all(GeanyDocument *doc, const gchar *search_text,
 	/* clear previous search indicators */
 	editor_indicator_clear(doc->editor, GEANY_INDICATOR_SEARCH);
 	
-	if (G_UNLIKELY(EMPTY(search_text)))
-		return 0;
+	if (G_UNLIKELY(EMPTY(search_text))) return 0;
 	
-	gint count = 0;
 	struct Sci_TextToFind ttf;
-	
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_length(doc->editor->sci);
 	ttf.lpstrText = (gchar *)search_text;
 	
+	gint count = 0;
 	GSList *match, *matches = find_range(doc->editor->sci, flags, &ttf);
 	foreach_slist(match, matches)
 	{
@@ -1394,14 +1381,12 @@ static void on_find_dialog_response(GtkDialog *dialog, gint response,
 	
 	stash_group_update(find_prefs, find_dlg.dialog);
 	
-	if (response == GTK_RESPONSE_CANCEL ||
-		response == GTK_RESPONSE_DELETE_EVENT)
+	if (response == GTK_RESPONSE_CANCEL || response == GTK_RESPONSE_DELETE_EVENT)
 		gtk_widget_hide(find_dlg.dialog);
 	else
 	{
 		GeanyDocument *doc = document_get_current();
-		if (doc == NULL)
-			return;
+		if (doc == NULL) return;
 		
 		gboolean check_close = settings.find_close_dialog;
 		
@@ -1522,8 +1507,7 @@ static void replace_in_session(GeanyDocument *doc, GeanyFindFlags search_flags_r
 		gint reps = document_replace_all(tmp_doc, find, replace, original_find,
 										 original_replace, search_flags_re);
 		rep_count += reps;
-		if (reps)
-			file_count++;
+		if (reps) file_count++;
 	}
 	if (file_count == 0)
 	{
@@ -1554,8 +1538,7 @@ static void on_replace_dialog_response(GtkDialog *dialog, gint response,
 	
 	stash_group_update(replace_prefs, replace_dlg.dialog);
 	
-	if (response == GTK_RESPONSE_CANCEL ||
-		response == GTK_RESPONSE_DELETE_EVENT)
+	if (response == GTK_RESPONSE_CANCEL || response == GTK_RESPONSE_DELETE_EVENT)
 	{
 		gtk_widget_hide(replace_dlg.dialog);
 		return;
@@ -1710,8 +1693,7 @@ static GString *get_grep_options(void)
 	g_strstrip(settings.fif_files);
 	
 	if (settings.fif_files_mode != FILES_MODE_ALL && *settings.fif_files)
-	{
-		/* put --include= before each pattern */
+	{	/* put --include= before each pattern */
 		GString *tmp = g_string_new(settings.fif_files);
 		do {} while (utils_string_replace_all(tmp, "  ", " "));
 		g_string_prepend_c(tmp, ' ');
@@ -1837,8 +1819,7 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	
 	/* finally add the arguments(files to be searched) */
 	if (settings.fif_recursive)	/* recursive option set */
-	{
-		/* Use '.' so we get relative paths in the output */
+	{	/* Use '.' so we get relative paths in the output */
 		argv_prefix[1] = g_strdup(".");
 		argv_prefix[2] = NULL;
 		argv = argv_prefix;
@@ -2128,8 +2109,7 @@ static void read_fif_io(gchar *msg, GIOCondition condition,
 		else
 			msgwin_msg_add_string(msg_color, -1, NULL, utf8_msg, NULL);
 		
-		if (utf8_msg != msg)
-			g_free(utf8_msg);
+		if (utf8_msg != msg) g_free(utf8_msg);
 	}
 }
 
@@ -2260,9 +2240,8 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex,
 			}
 			else /* not found, try next line */
 			{
-				line++;
-				if (line >= sci_get_line_count(sci))
-					break;
+				if (++line >= sci_get_line_count(sci)) break;
+				
 				pos = sci_get_position_from_line(sci, line);
 				/* don't free last info, it's freed below */
 				g_match_info_free(minfo);
@@ -2272,8 +2251,7 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex,
 	
 	/* Warning: minfo will become invalid when 'text' does! */
 	if (g_match_info_matches(minfo))
-	{
-		/* copy whole match text and offsets before they become invalid */
+	{	/* copy whole match text and offsets before they become invalid */
 		SETPTR(match->match_text, g_match_info_fetch(minfo, 0));
 		
 		guint i;
@@ -2370,14 +2348,13 @@ gint search_replace_match(ScintillaObject *sci, const GeanyMatchInfo *match,
 	{
 		gchar *ptr = &str->str[i];
 		gchar *grp;
-		gchar c;
 		
 		if (ptr[0] != '\\')
 		{
 			i++;
 			continue;
 		}
-		c = ptr[1];
+		gchar c = ptr[1];
 		/* backslash or unnecessary escape */
 		if (c == '\\' || !isdigit(c))
 		{
@@ -2550,8 +2527,7 @@ guint search_replace_range(ScintillaObject *sci, struct Sci_TextToFind *ttf,
 {
 	g_return_val_if_fail(sci != NULL && ttf->lpstrText != NULL &&
 						 replace_text != NULL, 0);
-	if (!*ttf->lpstrText)
-		return 0;
+	if (!*ttf->lpstrText) return 0;
 	
 	gint count = 0;
 	gint offset = 0; /* difference between search pos and replace pos */

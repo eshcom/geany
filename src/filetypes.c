@@ -287,15 +287,12 @@ static void add_custom_filetype(const gchar *filename)
 
 static void init_custom_filetypes(const gchar *path)
 {
-	GDir *dir;
-	const gchar *filename;
-	
 	g_return_if_fail(path);
 	
-	dir = g_dir_open(path, 0, NULL);
-	if (dir == NULL)
-		return;
+	GDir *dir = g_dir_open(path, 0, NULL);
+	if (dir == NULL) return;
 	
+	const gchar *filename;
 	foreach_dir(filename, dir)
 	{
 		const gchar prefix[] = "filetypes.";
@@ -369,13 +366,12 @@ static void on_document_save(G_GNUC_UNUSED GObject *object, GeanyDocument *doc)
 			f = filetypes_get_filename(ft, TRUE);
 			if (utils_str_equal(doc->real_path, f))
 			{
-				guint j;
-				
 				/* Note: we don't reload other filetypes,
 				 * even though the named styles may have changed.
 				 * The user can do this manually with 'Tools->Reload Configuration' */
 				filetypes_load_config(i, TRUE);
 				
+				guint j;
 				foreach_document(j)
 					document_reload_config(documents[j]);
 				
@@ -519,8 +515,7 @@ GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename)
 	guint plen = 0;
 	
 	ft = detect_filetype_conf_file(utf8_filename);
-	if (ft)
-		return ft;
+	if (ft) return ft;
 	
 	/* to match against the basename of the file (because of Makefile*) */
 	base_filename = g_path_get_basename(utf8_filename);
@@ -538,8 +533,8 @@ GeanyFiletype *filetypes_detect_from_extension(const gchar *utf8_filename)
 			plen = mlen;
 			ft = filetypes[i];
 		}
-		else if (mlen == plen && ft && !ft->priv->user_extensions &&
-				 filetypes[i]->priv->user_extensions)
+		else if (mlen == plen && ft && !ft->priv->user_extensions
+				 && filetypes[i]->priv->user_extensions)
 		{	// user config overrides system if pattern len same
 			ft = filetypes[i];
 		}
@@ -621,14 +616,13 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 		};
 		gchar *tmp = g_path_get_basename(line + 2);
 		gchar *basename_interpreter = tmp;
-		guint i;
 		
 		if (g_str_has_prefix(tmp, "env "))
 		{	/* skip "env" and read the following interpreter */
 			basename_interpreter += 4;
 		}
 		
-		for (i = 0; !ft && i < G_N_ELEMENTS(intepreter_map); i++)
+		for (guint i = 0; !ft && i < G_N_ELEMENTS(intepreter_map); i++)
 		{
 			if (g_str_has_prefix(basename_interpreter, intepreter_map[i].name))
 				ft = filetypes[intepreter_map[i].filetype];
@@ -675,26 +669,21 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 static GeanyFiletype *filetypes_detect_from_file_internal(const gchar *utf8_filename,
 														  gchar **lines)
 {
-	GeanyFiletype	*ft;
-	gint			 i;
-	GRegex			*ft_regex;
-	GMatchInfo		*match;
-	GError			*regex_error = NULL;
-	
 	/* try to find a shebang and if found use it prior to the filename extension
 	 * also checks for <?xml */
-	ft = find_shebang(utf8_filename, lines[0]);
-	if (ft != NULL)
-		return ft;
+	GeanyFiletype *ft = find_shebang(utf8_filename, lines[0]);
+	if (ft != NULL) return ft;
 	
 	/* try to extract the filetype using a regex capture */
-	ft_regex = g_regex_new(file_prefs.extract_filetype_regex,
-						   G_REGEX_RAW | G_REGEX_MULTILINE,
-						   0, &regex_error);
+	GError *regex_error = NULL;
+	GRegex *ft_regex = g_regex_new(file_prefs.extract_filetype_regex,
+								   G_REGEX_RAW | G_REGEX_MULTILINE,
+								   0, &regex_error);
 	if (ft_regex != NULL)
 	{
-		for (i = 0; ft == NULL && lines[i] != NULL; i++)
+		for (gint i = 0; ft == NULL && lines[i] != NULL; i++)
 		{
+			GMatchInfo *match;
 			if (g_regex_match(ft_regex, lines[i], 0, &match))
 			{
 				gchar *capture = g_match_info_fetch(match, 1);
@@ -732,15 +721,14 @@ GeanyFiletype *filetypes_detect_from_document(GeanyDocument *doc)
 	if (doc == NULL)
 		return filetypes[GEANY_FILETYPES_NONE];
 	
-	GeanyFiletype	*ft;
-	gchar			*lines[GEANY_FILETYPE_SEARCH_LINES + 1];
-	gint			 i;
+	gint i;
+	gchar *lines[GEANY_FILETYPE_SEARCH_LINES + 1];
 	
 	for (i = 0; i < GEANY_FILETYPE_SEARCH_LINES; ++i)
 		lines[i] = sci_get_line(doc->editor->sci, i);
 	lines[i] = NULL;
 	
-	ft = filetypes_detect_from_file_internal(doc->file_name, lines);
+	GeanyFiletype *ft = filetypes_detect_from_file_internal(doc->file_name, lines);
 	
 	for (i = 0; i < GEANY_FILETYPE_SEARCH_LINES; ++i)
 		g_free(lines[i]);
@@ -1008,12 +996,10 @@ static gchar *filetypes_get_filename(GeanyFiletype *ft, gboolean user)
 	gchar *base_name = g_strconcat("filetypes.", ext, NULL);
 	gchar *file_name;
 	
-	if (user)
-		file_name = g_build_filename(app->configdir, GEANY_FILEDEFS_SUBDIR,
-									 base_name, NULL);
-	else
-		file_name = g_build_filename(app->datadir, GEANY_FILEDEFS_SUBDIR,
-									 base_name, NULL);
+	file_name = user ? g_build_filename(app->configdir, GEANY_FILEDEFS_SUBDIR,
+										base_name, NULL)
+					 : g_build_filename(app->datadir, GEANY_FILEDEFS_SUBDIR,
+										base_name, NULL);
 	g_free(ext);
 	g_free(base_name);
 	
@@ -1057,21 +1043,17 @@ static void copy_ft_groups(GKeyFile *kf)
 	
 	foreach_strv(ptr, groups)
 	{
-		gchar *group = *ptr;
-		gchar *old_group;
 		gchar *name = strchr(*ptr, '=');
-		GeanyFiletype *ft;
+		if (!name || !name[1]) continue; /* no name or no parent name */
 		
-		if (!name || !name[1]) /* no name or no parent name */
-			continue;
-		
-		old_group = g_strdup(group);
+		gchar *group = *ptr;
+		gchar *old_group = g_strdup(group);
 		
 		/* terminate group at '=' */
 		*name = 0;
 		name++;
 		
-		ft = filetypes_lookup_by_name(name);
+		GeanyFiletype *ft = filetypes_lookup_by_name(name);
 		if (ft)
 		{
 			add_group_keys(kf, group, ft);
@@ -1144,8 +1126,7 @@ void filetypes_load_config(guint ft_id, gboolean reload)
 	load_settings(ft_id, config, config_home);
 	highlighting_init_styles(ft_id, config, config_home);
 	
-	if (ft->icon)
-		g_object_unref(ft->icon);
+	if (ft->icon) g_object_unref(ft->icon);
 	ft->icon = ui_get_mime_icon(ft->mime_type);
 	
 	g_key_file_free(config);
@@ -1256,11 +1237,9 @@ gboolean filetype_has_tags(GeanyFiletype *ft)
 GEANY_API_SYMBOL
 GeanyFiletype *filetypes_lookup_by_name(const gchar *name)
 {
-	GeanyFiletype *ft;
-	
 	g_return_val_if_fail(!EMPTY(name), NULL);
 	
-	ft = g_hash_table_lookup(filetypes_hash, name);
+	GeanyFiletype *ft = g_hash_table_lookup(filetypes_hash, name);
 	if (G_UNLIKELY(ft == NULL))
 		geany_debug("Could not find filetype '%s'.", name);
 	
@@ -1289,24 +1268,17 @@ static void compile_regex(GeanyFiletype *ft, gchar *regstr)
 gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 									   gchar **filename, gint *line)
 {
-	gchar *regstr;
-	gchar **tmp;
 	GeanyDocument *doc;
-	GMatchInfo *minfo;
-	gint i, n_match_groups;
-	gchar *first, *second;
 	
 	if (ft == NULL)
 	{
 		doc = document_get_current();
-		if (doc != NULL)
-			ft = doc->file_type;
+		if (doc) ft = doc->file_type;
 	}
-	tmp = build_get_regex(build_info.grp, ft, NULL);
-	if (tmp == NULL)
-		return FALSE;
+	gchar **tmp = build_get_regex(build_info.grp, ft, NULL);
+	if (tmp == NULL) return FALSE;
 	
-	regstr = *tmp;
+	gchar *regstr = *tmp;
 	
 	*filename = NULL;
 	*line = -1;
@@ -1322,16 +1294,17 @@ gboolean filetypes_parse_error_message(GeanyFiletype *ft, const gchar *message,
 	if (!ft->priv->error_regex)
 		return FALSE;
 	
+	GMatchInfo *minfo;
 	if (!g_regex_match(ft->priv->error_regex, message, 0, &minfo))
 	{
 		g_match_info_free(minfo);
 		return FALSE;
 	}
 	
-	n_match_groups = g_match_info_get_match_count(minfo);
-	first = second = NULL;
+	gint n_match_groups = g_match_info_get_match_count(minfo);
+	gchar *first = NULL, *second = NULL;
 	
-	for (i = 1; i < n_match_groups; i++)
+	for (gint i = 1; i < n_match_groups; i++)
 	{
 		gint start_pos;
 		g_match_info_fetch_pos(minfo, i, &start_pos, NULL);
@@ -1407,8 +1380,7 @@ static void read_extensions(GKeyFile *sysconfig, GKeyFile *userconfig)
 		filetypes[i]->priv->user_extensions = userset;
 		g_strfreev(filetypes[i]->pattern);
 		/* Note: we allow 'Foo=' to remove all patterns */
-		if (!list)
-			list = g_new0(gchar*, 1);
+		if (!list) list = g_new0(gchar*, 1);
 		filetypes[i]->pattern = list;
 		
 #ifdef G_OS_WIN32
@@ -1518,14 +1490,12 @@ void filetypes_reload(void)
 	
 	/* reload filetype configs */
 	for (i = 0; i < filetypes_array->len; i++)
-	{
-		/* filetypes_load_config() will skip not loaded filetypes */
+	{	/* filetypes_load_config() will skip not loaded filetypes */
 		filetypes_load_config(i, TRUE);
 	}
 	
 	current_doc = document_get_current();
-	if (!current_doc)
-		return;
+	if (!current_doc) return;
 	
 	/* update document styling */
 	foreach_document(i)

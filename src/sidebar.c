@@ -216,17 +216,17 @@ void sidebar_update_tag_list(GeanyDocument *doc, gboolean update)
 	GtkWidget *child = gtk_bin_get_child(GTK_BIN(tag_window));
 	
 	/* changes the tree view to the given one, trying not to do useless changes */
-	#define CHANGE_TREE(new_child) \
-		G_STMT_START { \
+	#define CHANGE_TREE(new_child)												\
+		G_STMT_START {															\
 			/* only change the tag tree if it's actually not the same (to avoid flickering)
 			 * and if it's the one of the current document (to avoid problems when
-			 * e.g. reloading configuration files */ \
-			if (child != new_child && doc == document_get_current()) \
-			{ \
-				if (child) \
-					gtk_container_remove(GTK_CONTAINER(tag_window), child); \
-				gtk_container_add(GTK_CONTAINER(tag_window), new_child); \
-			} \
+			 * e.g. reloading configuration files */							\
+			if (child != new_child && doc == document_get_current())			\
+			{																	\
+				if (child)														\
+					gtk_container_remove(GTK_CONTAINER(tag_window), child);		\
+				gtk_container_add(GTK_CONTAINER(tag_window), new_child);		\
+			}																	\
 		} G_STMT_END
 	
 	if (tv.default_tag_tree == NULL)
@@ -532,8 +532,7 @@ void sidebar_openfiles_update(GeanyDocument *doc)
 					   DOCUMENTS_FILENAME, &fname, -1);
 	
 	if (utils_str_equal(fname, DOC_FILENAME(doc)))
-	{
-		/* just update color and the icon */
+	{	/* just update color and the icon */
 		const GdkColor *color = document_get_status_color(doc);
 		GdkPixbuf *icon = doc->file_type->icon;
 		
@@ -552,8 +551,7 @@ void sidebar_openfiles_update(GeanyDocument *doc)
 		openfiles_remove(doc);
 		
 		sidebar_openfiles_add(doc);
-		if (sel)
-			gtk_tree_selection_select_iter(treesel, &doc->priv->iter);
+		if (sel) gtk_tree_selection_select_iter(treesel, &doc->priv->iter);
 	}
 	g_free(fname);
 }
@@ -561,13 +559,11 @@ void sidebar_openfiles_update(GeanyDocument *doc)
 
 void sidebar_openfiles_update_all(void)
 {
-	guint i;
-	
 	gtk_tree_store_clear(store_openfiles);
+	
+	guint i;
 	foreach_document(i)
-	{
 		sidebar_openfiles_add(documents[i]);
-	}
 }
 
 
@@ -838,8 +834,7 @@ static gboolean tree_model_find_node(GtkTreeModel *model, GtkTreePath *path,
 	gtk_tree_model_get(GTK_TREE_MODEL(store_openfiles), iter,
 					   DOCUMENTS_DOCUMENT, &doc, -1);
 	if (doc == data)
-	{
-		/* unfolding also prevents a strange bug where the selection gets stuck
+	{	/* unfolding also prevents a strange bug where the selection gets stuck
 		 * on the parent when it is collapsed and then switching documents */
 		unfold_parent(iter);
 		gtk_tree_view_set_cursor(GTK_TREE_VIEW(tv.tree_openfiles), path,
@@ -917,12 +912,9 @@ static void on_openfiles_document_action(GtkMenuItem *menuitem,
 		GeanyDocument *doc;
 		gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc, -1);
 		if (doc)
-		{
 			document_action(doc, action, FALSE);
-		}
 		else
-		{
-			/* parent item selected */
+		{	/* parent item selected */
 			GtkTreeIter child;
 			gint i = gtk_tree_model_iter_n_children(model, &iter) - 1;
 			
@@ -964,8 +956,8 @@ static gboolean openfiles_go_to_selection(GtkTreeSelection *selection,
 	 * because it is already done */
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	if (gtk_tree_selection_get_selected(selection, &model, &iter) &&
-		!ignore_callback)
+	if (gtk_tree_selection_get_selected(selection, &model, &iter)
+		&& !ignore_callback)
 	{
 		GeanyDocument *doc = NULL;
 		gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc, -1);
@@ -998,7 +990,6 @@ static gboolean taglist_go_to_selection(GtkTreeSelection *selection,
 		if (line > 0)
 		{
 			GeanyDocument *doc = document_get_current();
-			
 			if (doc != NULL)
 			{
 				navqueue_goto_line(doc, doc, line);
@@ -1109,10 +1100,8 @@ static gboolean sidebar_button_press_cb(GtkWidget *widget, GdkEventButton *event
 						   event->button, event->time);
 		}
 		else
-		{
 			gtk_menu_popup(GTK_MENU(tv.popup_taglist), NULL, NULL, NULL, NULL,
 						   event->button, event->time);
-		}
 		handled = TRUE;
 	}
 	return handled;
@@ -1123,8 +1112,7 @@ static void on_openfiles_row_collapsed(GtkWidget *widget, GtkTreeIter *iter,
 									   GtkTreePath *path, gpointer user_data)
 {
 	static GdkPixbuf *icon = NULL;
-	if (!icon)
-		icon = ui_get_mime_icon("folder");
+	if (!icon) icon = ui_get_mime_icon("folder");
 	
 	gtk_tree_store_set(store_openfiles, iter, DOCUMENTS_ICON, icon, -1);
 }
@@ -1134,8 +1122,7 @@ static void on_openfiles_row_expanded(GtkWidget *widget, GtkTreeIter *iter,
 									  GtkTreePath *path, gpointer user_data)
 {
 	static GdkPixbuf *icon = NULL;
-	if (!icon)
-		icon = ui_get_mime_icon("folder-open");
+	if (!icon) icon = ui_get_mime_icon("folder-open");
 	
 	gtk_tree_store_set(store_openfiles, iter, DOCUMENTS_ICON, icon, -1);
 }
@@ -1150,11 +1137,9 @@ static void documents_menu_update(GtkTreeSelection *selection)
 	GtkTreeModel *model;
 	/* maybe no selection e.g. if ctrl-click deselected */
 	gboolean sel = gtk_tree_selection_get_selected(selection, &model, &iter);
-	if (sel)
-	{
-		gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc,
-						   DOCUMENTS_SHORTNAME, &shortname, -1);
-	}
+	if (sel) gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc,
+								DOCUMENTS_SHORTNAME, &shortname, -1);
+	
 	gboolean path = !EMPTY(shortname) &&
 						(g_path_is_absolute(shortname) ||
 						 (app->project && g_str_has_prefix(shortname,
@@ -1293,9 +1278,9 @@ static void sidebar_tabs_show_hide(GtkNotebook *notebook, GtkWidget *child,
 {
 	gint tabs = gtk_notebook_get_n_pages(notebook);
 	
-	if (interface_prefs.sidebar_symbols_visible == FALSE)
+	if (!interface_prefs.sidebar_symbols_visible)
 		tabs--;
-	if (interface_prefs.sidebar_openfiles_visible == FALSE)
+	if (!interface_prefs.sidebar_openfiles_visible)
 		tabs--;
 	
 	gtk_notebook_set_show_tabs(notebook, (tabs > 1));

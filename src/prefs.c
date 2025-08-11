@@ -199,11 +199,10 @@ static void kb_tree_view_change_button_clicked_cb(GtkWidget *button, KbData *kbd
 			if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
 			{
 				const gchar *new_text = gtk_label_get_text(GTK_LABEL(accel_label));
-
 				kb_change_iter_shortcut(kbdata, &iter, new_text);
 			}
 			gtk_widget_destroy(dialog);
-
+			
 			g_free(str);
 			g_free(name);
 		}
@@ -370,8 +369,7 @@ static void kb_init(KbData *kbdata)
 	GeanyKeyGroup *group;
 	GeanyKeyBinding *kb;
 	
-	if (kbdata->store == NULL)
-		kb_init_tree(kbdata);
+	if (kbdata->store == NULL) kb_init_tree(kbdata);
 	
 	foreach_ptr_array(group, g, keybinding_groups)
 	{
@@ -1356,9 +1354,7 @@ static void on_prefs_dialog_response(GtkDialog *dialog, gint response,
 	}
 	
 	if (response == GTK_RESPONSE_HELP)
-	{
 		open_preferences_help();
-	}
 	else if (response != GTK_RESPONSE_APPLY)
 	{
 		gtk_tree_store_clear(global_kb_data.store);
@@ -1513,8 +1509,7 @@ static gboolean kb_find_duplicate(GtkTreeStore *store, GtkWidget *parent, GtkTre
 		do	/* foreach children */
 		{
 			gtk_tree_model_get(model, &iter, KB_TREE_SHORTCUT, &kb_str, -1);
-			if (!kb_str)
-				continue;
+			if (!kb_str) continue;
 
 			gtk_accelerator_parse(kb_str, &kb_key, &kb_mods);
 			g_free(kb_str);

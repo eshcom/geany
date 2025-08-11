@@ -321,9 +321,7 @@ void project_open(void)
 		{
 			/* try to load the config */
 			if (!project_load_file_with_session(file, save_default_session))
-			{
 				SHOW_ERR1(_("Project file \"%s\" could not be loaded."), file);
-			}
 			g_free(file);
 		}
 	}
@@ -459,8 +457,7 @@ static void destroy_project(gboolean open_default)
 	apply_editor_prefs(); /* ensure that global settings are restored */
 	
 	if (project_prefs.project_session)
-	{
-		/* after closing all tabs let's open the tabs found in the default config */
+	{	/* after closing all tabs let's open the tabs found in the default config */
 		if (open_default && cl_options.load_session)
 		{
 			configuration_reload_default_session();
@@ -741,9 +738,8 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		
 		if (!g_file_test(locale_path, G_FILE_TEST_IS_DIR))
 		{
-			gboolean create_dir;
-			
-			create_dir = dialogs_show_question_full(NULL, GTK_STOCK_OK, GTK_STOCK_CANCEL,
+			gboolean create_dir =
+						dialogs_show_question_full(NULL, GTK_STOCK_OK, GTK_STOCK_CANCEL,
 								_("Create the project's base path directory?"),
 								_("The path \"%s\" does not exist."), base_path);
 			if (create_dir)
@@ -1072,8 +1068,7 @@ static gboolean load_config(const gchar *filename, gboolean save_default_session
 	if (project_prefs.project_session)
 	{
 		if (save_default_session)
-		{
-			/* save current (non-project) session (it could have been changed since program startup) */
+		{	/* save current (non-project) session (it could have been changed since program startup) */
 			configuration_save_default_session();
 		}
 		/* now close all open files */
@@ -1123,7 +1118,7 @@ static gboolean write_config(void)
 		g_key_file_set_string(config, "project", "description", p->description);
 	if (p->file_patterns)
 		g_key_file_set_string_list(config, "project", "file_patterns",
-			(const gchar**) p->file_patterns, g_strv_length(p->file_patterns));
+			(const gchar **)p->file_patterns, g_strv_length(p->file_patterns));
 	
 	// editor settings
 	g_key_file_set_integer(config, "long line marker", "long_line_behaviour",
@@ -1250,10 +1245,8 @@ void project_load_prefs(GKeyFile *config)
 	local_prefs.project_file_path = utils_get_setting_string(config, "project",
 												"project_file_path", NULL);
 	if (local_prefs.project_file_path == NULL)
-	{
 		local_prefs.project_file_path = g_build_filename(g_get_home_dir(),
 														 PROJECT_DIR, NULL);
-	}
 }
 
 

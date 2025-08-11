@@ -130,7 +130,7 @@ static void snippets_load(GKeyFile *sysconfig, GKeyFile *userconfig)
 	/* keys are strings, values are GHashTables,
 	 * so use g_free and g_hash_table_destroy */
 	snippet_hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-										 (GDestroyNotify) g_hash_table_destroy);
+										 (GDestroyNotify)g_hash_table_destroy);
 	/* first read all globally defined auto completions */
 	GHashTable *tmp;
 	gchar **keys_sys;
@@ -608,7 +608,7 @@ static void show_autocomplete(ScintillaObject *sci, gsize rootlen,
 	}
 	/* store whether a calltip is showing, so we can reshow it after autocompletion */
 	calltip.set = (gboolean) SSM(sci, SCI_CALLTIPACTIVE, 0, 0);
-	SSM(sci, SCI_AUTOCSHOW, rootlen, (sptr_t) words->str);
+	SSM(sci, SCI_AUTOCSHOW, rootlen, (sptr_t)words->str);
 }
 
 
@@ -688,7 +688,7 @@ static gboolean reshow_calltip(gpointer data)
 	{	/* we use the position where the calltip was previously
 		 * started as SCI_GETCURRENTPOS may be completely wrong
 		 * in case the user cancelled the auto completion with the mouse */
-		SSM(calltip.sci, SCI_CALLTIPSHOW, calltip.pos, (sptr_t) calltip.text);
+		SSM(calltip.sci, SCI_CALLTIPSHOW, calltip.pos, (sptr_t)calltip.text);
 	}
 	return FALSE;
 }
@@ -723,8 +723,7 @@ static gboolean autocomplete_scope(GeanyEditor *editor, const gchar *root,
 		while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)))
 			pos--;
 		
-		if (pos > 0)
-			typed = sci_get_char_at(sci, pos - 1);
+		if (pos > 0) typed = sci_get_char_at(sci, pos - 1);
 	}
 	
 	GeanyFiletype *ft = editor->document->file_type;
@@ -1364,10 +1363,8 @@ static gint get_brace_indent(ScintillaObject *sci, gint line)
 		{
 			gchar c = sci_get_char_at(sci, pos);
 			
-			if (c == '{')
-				count++;
-			else if (c == '}')
-				count--;
+			if (c == '{') count++;
+			else if (c == '}') count--;
 		}
 	}
 	return count > 0 ? 1 : 0;
@@ -1386,8 +1383,8 @@ static gint get_sci_line_code_end_position(ScintillaObject *sci, gint line)
 	{
 		gint style = sci_get_style_at(sci, pos);
 		
-		if (highlighting_is_code_style(lexer, style) &&
-			!isspace(sci_get_char_at(sci, pos)))
+		if (highlighting_is_code_style(lexer, style)
+			&& !isspace(sci_get_char_at(sci, pos)))
 			break;
 	}
 	return pos;
@@ -1467,11 +1464,10 @@ static gint get_indent_size_after_line(GeanyEditor *editor, gint line)
 		 * additional indent, we are probably not in PHP/JavaScript
 		 * chunk and should make the XML-related check */
 		if (additional_indent == 0 && (sci_get_lexer(sci) == SCLEX_HTML ||
-									   sci_get_lexer(sci) == SCLEX_XML) &&
-			editor->document->file_type->priv->xml_indent_tags)
-		{
+									   sci_get_lexer(sci) == SCLEX_XML)
+			&& editor->document->file_type->priv->xml_indent_tags)
 			size += iprefs->width * get_xml_indent(sci, line);
-		}
+		
 		size += additional_indent;
 	}
 	return size;
@@ -1602,12 +1598,9 @@ static gint brace_match(ScintillaObject *sci, gint pos)
 		
 		if ((pos > sci_get_end_styled(sci)) || (styAtPos == styBrace))
 		{
-			if (chAtPos == chBrace)
-				depth++;
-			if (chAtPos == chSeek)
-				depth--;
-			if (depth == 0)
-				return pos;
+			if (chAtPos == chBrace) depth++;
+			if (chAtPos == chSeek) depth--;
+			if (depth == 0) return pos;
 		}
 		pos += direction;
 	}
@@ -1639,8 +1632,7 @@ static void close_block(GeanyEditor *editor, gint pos)
 	line_buf[line_len] = '\0';
 	while (x < line_len)
 	{
-		if (isspace(line_buf[x]))
-			cnt++;
+		if (isspace(line_buf[x])) cnt++;
 		x++;
 	}
 	g_free(line_buf);
@@ -2425,7 +2417,7 @@ gboolean editor_show_calltip(GeanyEditor *editor, gint pos)
 		calltip.sci = sci;
 		calltip.set = TRUE;
 		utils_wrap_string(calltip.text, -1);
-		SSM(sci, SCI_CALLTIPSHOW, orig_pos, (sptr_t) calltip.text);
+		SSM(sci, SCI_CALLTIPSHOW, orig_pos, (sptr_t)calltip.text);
 		return TRUE;
 	}
 	return FALSE;
@@ -2564,6 +2556,7 @@ static gboolean autocomplete_doc_word(GeanyEditor *editor,
 	{
 		g_string_append(str, node->data);
 		g_free(node->data);
+		
 		if (node->next)
 			g_string_append_c(str, '\n');
 		n_words++;
@@ -2638,16 +2631,13 @@ gboolean editor_start_auto_complete(GeanyEditor *editor, gint pos, gboolean forc
 			rootlen == 3 && strcmp(root, "php") == 0 && pos >= 5 &&
 			sci_get_char_at(sci, pos - 5) == '<' &&
 			sci_get_char_at(sci, pos - 4) == '?')
-		{
-			/* nothing, don't complete PHP open tags */
+		{	/* nothing, don't complete PHP open tags */
 		}
 		else
-		{
-			/* force is set when called by keyboard shortcut, otherwise start
+		{	/* force is set when called by keyboard shortcut, otherwise start
 			 * at the editor_prefs.symbolcompletion_min_chars'th char */
 			if (force || rootlen >= editor_prefs.symbolcompletion_min_chars)
-			{
-				/* complete tags, except if forcing when
+			{	/* complete tags, except if forcing when
 				 * completion is already visible */
 				if (!(force && SSM(sci, SCI_AUTOCACTIVE, 0, 0)))
 					ret = autocomplete_tags(editor, editor->document->file_type,
@@ -2762,8 +2752,7 @@ static GSList *replace_cursor_markers(GeanyEditor *editor, GString *template,
 	{
 		cursor_steps = utils_string_find(template, cursor_steps, -1,
 										 geany_cursor_marker);
-		if (cursor_steps == -1)
-			break;
+		if (cursor_steps == -1) break;
 		
 		sel = g_new0(SelectionRange, 1);
 		sel->start = cursor_steps;
@@ -3041,13 +3030,12 @@ static void insert_closing_tag(GeanyEditor *editor, gint pos,
 		gt = "";
 		move_pos = TRUE;
 	}
-	if (ch == '/')
-		to_insert = g_strconcat(tag_name, gt, NULL);
-	else // esh: ch == '>'
-		to_insert = g_strconcat("</", tag_name, gt, NULL);
+	to_insert = (ch == '/') ? g_strconcat(tag_name, gt, NULL)
+							: g_strconcat("</", tag_name, gt, NULL); // esh: ch == '>'
 	
 	sci_start_undo_action(sci);
 	sci_replace_sel(sci, to_insert);
+	
 	if (ch == '>')
 		sci_set_selection(sci, pos, pos);
 	else if (move_pos) // esh: added setting of increased pos
@@ -3110,8 +3098,7 @@ static gboolean handle_xml(GeanyEditor *editor, gint pos, gchar ch)
 	gboolean result = FALSE;
 	
 	if (lexer == SCLEX_HTML && utils_is_short_html_tag(str_found))
-	{
-		/* ignore tag */
+	{	/* ignore tag */
 	}
 	else if (!EMPTY(str_found))
 	{
@@ -3189,9 +3176,7 @@ static GeanyFiletype *editor_get_filetype_at_line(GeanyEditor *editor, gint line
 		/* Embedded PHP */
 		else if ((style >= SCE_HPHP_DEFAULT && style <= SCE_HPHP_OPERATOR) ||
 				 style == SCE_HPHP_COMPLEX_VARIABLE)
-		{
 			current_ft = filetypes[GEANY_FILETYPES_PHP];
-		}
 	}
 	
 	/* Ensure the filetype's config is loaded */
@@ -3419,11 +3404,9 @@ gint editor_do_uncomment(GeanyEditor *editor, gint line, gboolean toggle)
 				
 				/* skip lines which are already comments */
 				style_comment = get_multiline_comment_style(editor, line_start);
-				if (sci_get_style_at(editor->sci, line_start + x) == style_comment)
-				{
-					if (real_uncomment_multiline(editor))
-						count = 1;
-				}
+				if (sci_get_style_at(editor->sci, line_start + x) == style_comment
+					&& real_uncomment_multiline(editor))
+					count = 1;
 				/* break because we are already on the last line */
 				break;
 			}
@@ -3507,11 +3490,9 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 			single_line = TRUE;
 			
 			if (strncmp(sel + x, co, co_len) == 0 &&
-				strncmp(sel + x + co_len,
-						editor_prefs.comment_toggle_mark, tm_len) == 0)
-			{
+				strncmp(sel + x + co_len, editor_prefs.comment_toggle_mark,
+						tm_len) == 0)
 				do_continue = TRUE;
-			}
 			
 			if (do_continue && i == first_line)
 				first_line_was_comment = TRUE;
@@ -3565,9 +3546,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 		else if (first_line_was_comment &&
 				 sel_start >= (first_line_start + indent_len) &&
 				 sel_start <= (first_line_start + indent_len + (gint)co_len))
-		{
 			a = (first_line_start + indent_len) - sel_start;
-		}
 		
 		if (sel_start < sel_end)
 		{
@@ -3583,9 +3562,7 @@ void editor_do_comment_toggle(GeanyEditor *editor)
 			else if (last_line_was_comment &&
 					 sel_end >= (last_line_start + indent_len) &&
 					 sel_end <= (last_line_start + indent_len + (gint)co_len))
-			{
 				b += (gint)co_len - (sel_end - (last_line_start + indent_len));
-			}
 			
 			sci_set_selection_start(editor->sci, sel_start + a);
 			sci_set_selection_end(editor->sci, sel_end + b);
@@ -3887,9 +3864,8 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 		prev_line_style = sci_get_style_at(sci, --prev_line_pos);
 		while (prev_line_pos > 0 &&
 			   is_substyle_block_comment(lexer, prev_line_style))
-		{
 			prev_line_style = sci_get_style_at(sci, --prev_line_pos);
-		}
+		
 		if (!in_block_comment(lexer, prev_line_style))
 			return;
 	}
@@ -3914,9 +3890,7 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 			gint style = sci_get_style_at(sci, prev_line_pos - 1);
 			while (style == prev_line_style ||
 				   is_substyle_block_comment(lexer, style))
-			{
 				style = sci_get_style_at(sci, --prev_line_pos - 1);
-			}
 			
 			const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
 			
@@ -3945,15 +3919,13 @@ static void auto_multiline(GeanyEditor *editor, gint cur_line)
 			}
 			else if (is_comment_char(prev_ident_char1, lexer))
 			{
-				if (is_comment_char(prev_ident_char2, lexer))
-					result = g_strconcat(continuation, continuation, " ", NULL);
-				else
-					result = g_strconcat(continuation, " ", NULL);
+				result = is_comment_char(prev_ident_char2, lexer)
+							? g_strconcat(continuation, continuation, " ", NULL)
+							: g_strconcat(continuation, " ", NULL);
 			}
 			else
-			{
 				result = g_strdup("");
-			}
+			
 			sci_add_text(sci, result);
 			g_free(result);
 		}
@@ -4103,8 +4075,7 @@ void editor_select_word(GeanyEditor *editor)
 	gint end = sci_word_end_position(editor->sci, pos, TRUE);
 	
 	if (start == end) /* caret in whitespaces sequence */
-	{
-		/* look forward but reverse the selection direction,
+	{	/* look forward but reverse the selection direction,
 		 * so the caret end up stay as near as the original position. */
 		end = sci_word_end_position(editor->sci, pos, FALSE);
 		start = sci_word_end_position(editor->sci, end, TRUE);
@@ -4164,8 +4135,7 @@ static gint find_paragraph_stop(GeanyEditor *editor, gint line,
 	{
 		line += step;
 		if (line == -1)
-		{
-			/* start of document */
+		{	/* start of document */
 			line = 0;
 			break;
 		}
@@ -4173,8 +4143,7 @@ static gint find_paragraph_stop(GeanyEditor *editor, gint line,
 			break;
 		
 		if (sci_is_blank_line(sci, line))
-		{
-			/* return line paragraph starts on */
+		{	/* return line paragraph starts on */
 			if (direction == GTK_DIR_UP) line++;
 			break;
 		}
@@ -4218,8 +4187,7 @@ static gint find_block_stop(GeanyEditor *editor, gint line, gint direction)
 	{
 		line += step;
 		if (line == -1)
-		{
-			/* start of document */
+		{	/* start of document */
 			line = 0;
 			break;
 		}
@@ -4228,8 +4196,7 @@ static gint find_block_stop(GeanyEditor *editor, gint line, gint direction)
 		
 		if (sci_get_line_indentation(sci, line) != ind ||
 			sci_is_blank_line(sci, line))
-		{
-			/* return line block starts on */
+		{	/* return line block starts on */
 			if (direction == GTK_DIR_UP) line++;
 			break;
 		}
@@ -4357,26 +4324,23 @@ void editor_indentation_by_one_space(GeanyEditor *editor, gint pos,
 		{
 			gint line_start = SSM(editor->sci, SCI_POSITIONFROMLINE, i, 0);
 			/* searching backwards for a space to remove */
-			while (sci_get_char_at(editor->sci, indentation_end) != ' ' &&
-				   indentation_end > line_start)
+			while (sci_get_char_at(editor->sci, indentation_end) != ' '
+				   && indentation_end > line_start)
 				indentation_end--;
 			
 			if (sci_get_char_at(editor->sci, indentation_end) == ' ')
 			{
-				sci_set_selection(editor->sci, indentation_end,
-								  indentation_end + 1);
+				sci_set_selection(editor->sci, indentation_end, indentation_end + 1);
 				sci_replace_sel(editor->sci, "");
 				count--;
-				if (i == first_line)
-					first_line_offset = -1;
+				if (i == first_line) first_line_offset = -1;
 			}
 		}
 		else
 		{
 			sci_insert_text(editor->sci, indentation_end, " ");
 			count++;
-			if (i == first_line)
-				first_line_offset = 1;
+			if (i == first_line) first_line_offset = 1;
 		}
 	}
 	
@@ -4461,8 +4425,7 @@ gchar *editor_get_default_selection(GeanyEditor *editor,
 		wc ? editor_find_current_word(editor, -1, word, sizeof(word), wc)
 		   : editor_find_current_word_sciwc(editor, -1, word, sizeof(word));
 		
-		if (word[0] != '\0')
-			s = g_strdup(word);
+		if (word[0] != '\0') s = g_strdup(word);
 	}
 	return s;
 }
@@ -4755,11 +4718,9 @@ static void fold_all(GeanyEditor *editor, gboolean want_fold)
 	{
 		gint level = sci_get_fold_level(editor->sci, i);
 		
-		if (level & SC_FOLDLEVELHEADERFLAG)
-		{
-			if (sci_get_fold_expanded(editor->sci, i) == want_fold)
-				sci_toggle_fold(editor->sci, i);
-		}
+		if ((level & SC_FOLDLEVELHEADERFLAG)
+			&& sci_get_fold_expanded(editor->sci, i) == want_fold)
+			sci_toggle_fold(editor->sci, i);
 	}
 	editor_scroll_to_line(editor, first, 0.0F);
 }
@@ -5272,8 +5233,7 @@ static gboolean register_named_icon(ScintillaObject *sci, guint id,
 	
 	if (gdk_pixbuf_get_bits_per_sample(pixbuf) != 8 ||
 		!gdk_pixbuf_get_has_alpha(pixbuf) ||
-		n_channels != 4 ||
-		rowstride != width * n_channels)
+		n_channels != 4 || rowstride != width * n_channels)
 	{
 		g_warning("incompatible image data for icon '%s'", name);
 		g_object_unref(pixbuf);
@@ -5437,8 +5397,7 @@ static void on_document_save(GObject *obj, GeanyDocument *doc)
 	gchar *f = g_build_filename(app->configdir, "snippets.conf", NULL);
 	
 	if (utils_str_equal(doc->real_path, f))
-	{
-		/* reload snippets */
+	{	/* reload snippets */
 		editor_snippets_free();
 		editor_snippets_init();
 	}
