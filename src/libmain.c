@@ -382,19 +382,16 @@ static void get_line_and_column_from_filename(gchar *filename, gint *line, gint 
 		gboolean is_colon = filename[i] == ':';
 		gboolean is_digit = g_ascii_isdigit(filename[i]);
 		
-		if (!is_colon && !is_digit)
-			break;
+		if (!is_colon && !is_digit) break;
 		
 		if (is_colon)
 		{
-			if (++colon_count > 1)
-				break;	/* bail on 2+ colons in a row */
+			if (++colon_count > 1) break; /* bail on 2+ colons in a row */
 		}
 		else
 			colon_count = 0;
 		
-		if (is_digit)
-			have_number = TRUE;
+		if (is_digit) have_number = TRUE;
 		
 		if (is_colon && have_number)
 		{
@@ -407,8 +404,7 @@ static void get_line_and_column_from_filename(gchar *filename, gint *line, gint 
 			*line = number;
 		}
 		
-		if (*column >= 0)
-			break;	/* line and column are set, so we're done */
+		if (*column >= 0) break; /* line and column are set, so we're done */
 	}
 }
 
@@ -543,8 +539,7 @@ static void parse_command_line_options(gint *argc, gchar ***argv)
 	 * so we grab that here and replace it with a no-op */
 	for (gint i = 1; i < (*argc); i++)
 	{
-		if ((*argv)[i][0] != '+')
-			continue;
+		if ((*argv)[i][0] != '+') continue;
 		
 		cl_options.goto_line = atoi((*argv)[i] + 1);
 		(*argv)[i] = (gchar *) "--dummy";
@@ -828,10 +823,8 @@ gboolean main_handle_filename(const gchar *locale_filename)
 	gint line = -1, column = -1;
 	get_line_and_column_from_filename(filename, &line, &column);
 	
-	if (line >= 0)
-		cl_options.goto_line = line;
-	if (column >= 0)
-		cl_options.goto_column = column;
+	if (line >= 0) cl_options.goto_line = line;
+	if (column >= 0) cl_options.goto_column = column;
 	
 	GeanyDocument *doc;
 	
@@ -849,13 +842,11 @@ gboolean main_handle_filename(const gchar *locale_filename)
 		gchar *utf8_filename = utils_get_utf8_from_locale(filename);
 		
 		doc = document_find_by_filename(utf8_filename);
-		if (doc)
-			document_show_tab(doc);
-		else
-			doc = document_new_file(utf8_filename, NULL, NULL);
 		
-		if (doc != NULL)
-			ui_add_recent_document(doc);
+		if (doc) document_show_tab(doc);
+		else doc = document_new_file(utf8_filename, NULL, NULL);
+		
+		if (doc) ui_add_recent_document(doc);
 		
 		g_free(utf8_filename);
 		g_free(filename);
@@ -920,8 +911,7 @@ static void load_settings(void)
 #ifdef HAVE_VTE
 	vte_info.have_vte = vte_info.load_vte && vte_info.load_vte_cmdline;
 #endif
-	if (no_msgwin)
-		ui_prefs.msgwindow_visible = FALSE;
+	if (no_msgwin) ui_prefs.msgwindow_visible = FALSE;
 	
 #ifdef HAVE_PLUGINS
 	want_plugins = prefs.load_plugins && !no_plugins;
@@ -968,8 +958,7 @@ static void load_startup_files(gint argc, gchar **argv)
 	 * Has no effect if a CL project is loaded and using project-based session files. */
 	if (prefs.load_session && cl_options.load_session && !cl_options.new_instance)
 	{
-		if (app->project == NULL)
-			load_session_project_file();
+		if (app->project == NULL) load_session_project_file();
 		load_session = TRUE;
 	}
 	
@@ -1090,8 +1079,7 @@ gint main_lib(gint argc, gchar **argv)
 #if !GLIB_CHECK_VERSION(2, 32, 0)
 	/* Initialize GLib's thread system in case any plugins want to use it or their
 	 * dependencies (e.g. WebKit, Soup, ...). Deprecated since GLIB 2.32. */
-	if (!g_thread_supported())
-		g_thread_init(NULL);
+	if (!g_thread_supported()) g_thread_init(NULL);
 #endif
 	
 #ifdef G_OS_UNIX
@@ -1209,8 +1197,7 @@ gint main_lib(gint argc, gchar **argv)
 	
 #ifdef HAVE_PLUGINS
 	/* load any enabled plugins before we open any documents */
-	if (want_plugins)
-		plugins_load_active();
+	if (want_plugins) plugins_load_active();
 #endif
 	
 	ui_sidebar_show_hide();
@@ -1296,11 +1283,8 @@ static gboolean do_main_quit(void)
 	configuration_save(app->project != NULL);
 	history_save();
 	
-	if (app->project != NULL)
-	{
-		if (!project_close(FALSE)) /* save project session files */
-			return FALSE;
-	}
+	if (app->project && !project_close(FALSE)) /* save project session files */
+		return FALSE;
 	
 	if (!document_close_all())
 		return FALSE;

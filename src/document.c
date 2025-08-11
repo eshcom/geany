@@ -307,8 +307,7 @@ static ScintillaObject *locate_sci_in_container(GtkWidget *container)
 		else if (GTK_IS_CONTAINER(iter->data))
 		{
 			sci = locate_sci_in_container(iter->data);
-			if (IS_SCINTILLA(sci))
-				break;
+			if (IS_SCINTILLA(sci)) break;
 			sci = NULL;
 		}
 	}
@@ -712,8 +711,8 @@ static gboolean remove_page(guint page_num)
 	
 	/* if we're closing all, document_account_for_unsaved() has been
 	 * called already, no need to ask again. */
-	if (!main_status.closing_all && doc->changed &&
-		!dialogs_show_unsaved_file(doc))
+	if (!main_status.closing_all && doc->changed
+		&& !dialogs_show_unsaved_file(doc))
 		return FALSE;
 	
 	/* tell any plugins that the document is about to be closed */
@@ -1105,21 +1104,21 @@ static gboolean detect_tabs_and_spaces(GeanyEditor *editor)
 {
 	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
 	ScintillaObject *sci = editor->sci;
-	gsize count = 0;
-	struct Sci_TextToFind ttf;
+	
 	gchar *soft_tab = g_strnfill((gsize)iprefs->width, ' ');
 	gchar *regex = g_strconcat("^\t+", soft_tab, "[^ ]", NULL);
-	
 	g_free(soft_tab);
 	
+	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_length(sci);
 	ttf.lpstrText = regex;
+	
+	gsize count = 0;
 	while (1)
 	{
 		gint pos = sci_find_text(sci, SCFIND_REGEXP, &ttf);
-		if (pos == -1)
-			break;	/* no more matches */
+		if (pos == -1) break;	/* no more matches */
 		count++;
 		ttf.chrg.cpMin = ttf.chrgText.cpMax + 1; /* search after this match */
 	}
@@ -1200,22 +1199,18 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 		 * That's not good, but the assumption below that concerning lines start with an
 		 * asterisk (common continuation character for C/C++/Java/...) should do the trick
 		 * without removing too much legitimate lines. */
-		if (sci_get_char_at(sci, pos) == '*')
-			continue;
+		if (sci_get_char_at(sci, pos) == '*') continue;
 		
 		width = sci_get_line_indentation(sci, line);
 		/* most code will have indent total <= 24, otherwise
 		 * it's more likely to be alignment than indentation */
-		if (width > 24)
-			continue;
+		if (width > 24) continue;
 		/* < 2 is no indentation */
-		if (width < 2)
-			continue;
+		if (width < 2) continue;
 		
 		for (i = G_N_ELEMENTS(widths) - 1; i >= 0; i--)
 		{
-			if ((width % (i + 2)) == 0)
-				widths[i]++;
+			if ((width % (i + 2)) == 0) widths[i]++;
 		}
 	}
 	
@@ -1794,10 +1789,9 @@ void document_rename_file(GeanyDocument *doc, const gchar *new_filename)
 	
 	gint result = g_rename(old_locale_filename, new_locale_filename);
 	if (result != 0)
-	{
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_ERROR,
 				_("Error renaming file."), g_strerror(errno));
-	}
+	
 	g_free(old_locale_filename);
 	g_free(new_locale_filename);
 }
@@ -2224,11 +2218,10 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		ui_set_statusbar(TRUE, _("Error saving file (%s)."), errmsg);
 		
 		if (!file_prefs.use_safe_file_saving)
-		{
 			SETPTR(errmsg,
 				   g_strdup_printf(_("%s\n\nThe file on disk may now be truncated!"),
 								   errmsg));
-		}
+		
 		dialogs_show_msgbox_with_secondary(GTK_MESSAGE_ERROR,
 										   _("Error saving file."), errmsg);
 		doc->priv->file_disk_status = FILE_OK;
@@ -2795,8 +2788,7 @@ static gboolean on_document_update_tag_list_idle(gpointer data)
 {
 	GeanyDocument *doc = data;
 	
-	if (!DOC_VALID(doc))
-		return FALSE;
+	if (!DOC_VALID(doc)) return FALSE;
 	
 	if (!main_status.quitting)
 		document_update_tags(doc);
@@ -2810,8 +2802,8 @@ static gboolean on_document_update_tag_list_idle(gpointer data)
 
 void document_update_tag_list_in_idle(GeanyDocument *doc)
 {
-	if (editor_prefs.autocompletion_update_freq <= 0 ||
-		!filetype_has_tags(doc->file_type))
+	if (editor_prefs.autocompletion_update_freq <= 0
+		|| !filetype_has_tags(doc->file_type))
 		return;
 	
 	/* prevent "stacking up" callback handlers, we only need one to run soon */
@@ -2948,8 +2940,8 @@ void document_reload_config(GeanyDocument *doc)
 GEANY_API_SYMBOL
 void document_set_encoding(GeanyDocument *doc, const gchar *new_encoding)
 {
-	if (doc == NULL || new_encoding == NULL ||
-		utils_str_equal(new_encoding, doc->encoding))
+	if (doc == NULL || new_encoding == NULL
+		|| utils_str_equal(new_encoding, doc->encoding))
 		return;
 	
 	g_free(doc->encoding);
@@ -3035,11 +3027,8 @@ gboolean document_can_undo(GeanyDocument *doc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	if (g_trash_stack_height(&doc->priv->undo_actions) > 0
-		|| sci_can_undo(doc->editor->sci))
-		return TRUE;
-	else
-		return FALSE;
+	return (g_trash_stack_height(&doc->priv->undo_actions) > 0
+			|| sci_can_undo(doc->editor->sci));
 }
 
 
@@ -3153,11 +3142,8 @@ gboolean document_can_redo(GeanyDocument *doc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	if (g_trash_stack_height(&doc->priv->redo_actions) > 0
-		|| sci_can_redo(doc->editor->sci))
-		return TRUE;
-	else
-		return FALSE;
+	return (g_trash_stack_height(&doc->priv->redo_actions) > 0
+			|| sci_can_redo(doc->editor->sci));
 }
 
 
@@ -3439,11 +3425,9 @@ gboolean document_account_for_unsaved(void)
 	{
 		GeanyDocument *doc = document_get_from_page(p);
 		
-		if (DOC_VALID(doc) && doc->changed)
-		{
-			if (!dialogs_show_unsaved_file(doc))
-				return FALSE;
-		}
+		if (DOC_VALID(doc) && doc->changed
+			&& !dialogs_show_unsaved_file(doc))
+			return FALSE;
 	}
 	return TRUE;
 }
@@ -3455,9 +3439,7 @@ static void force_close_all(void)
 	
 	guint i;
 	foreach_document(i)
-	{
 		document_close(documents[i]);
-	}
 	
 	main_status.closing_all = FALSE;
 }
@@ -3711,8 +3693,7 @@ static void on_monitor_resave_missing_file_response(GtkWidget *bar,
 		gtk_widget_destroy(bar);
 	}
 	else
-	{
-		/* protect back the document if save didn't occur */
+	{	/* protect back the document if save didn't occur */
 		protect_document(doc);
 	}
 }
@@ -3786,8 +3767,7 @@ gboolean document_check_disk_status(GeanyDocument *doc, gboolean force)
 		ret = TRUE;
 	}
 	else if (doc->priv->mtime < mtime)
-	{
-		/* make sure the user is not prompted again after
+	{	/* make sure the user is not prompted again after
 		 * he cancelled the "reload file?" message */
 		doc->priv->mtime = mtime;
 		monitor_reload_file(doc);

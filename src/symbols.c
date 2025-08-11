@@ -1549,9 +1549,7 @@ static gint tree_sort_func(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
 		
 		/* if a is toplevel, b must be also */
 		if (gtk_tree_store_iter_depth(GTK_TREE_STORE(model), a) == 0)
-		{
 			cmp = compare_top_level_names(astr, bstr);
-		}
 		else
 		{
 			/* this is what g_strcmp0() does */
@@ -1803,8 +1801,10 @@ static void load_user_tags(GeanyFiletypeID ft_id)
 	
 	if (!tags_loaded)
 		tags_loaded = g_new0(guchar, filetypes_array->len);
+	
 	if (tags_loaded[ft_id])
 		return;
+	
 	tags_loaded[ft_id] = TRUE;	/* prevent reloading */
 	
 	if (!init_tags)
@@ -2048,7 +2048,7 @@ static void show_goto_popup(GeanyDocument *doc, GPtrArray *tags, gboolean have_b
 	GdkEvent *event = gtk_get_current_event();
 	
 	if (event && event->type == GDK_BUTTON_PRESS)
-		button_event = (GdkEventButton *) event;
+		button_event = (GdkEventButton *)event;
 	else
 		gdk_event_free(event);
 	
@@ -2181,8 +2181,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
 	gchar *fname_wo_ext = utils_remove_ext_from_filename(file->file_name, TRUE);
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		if ((tmtag->type & type) &&
-			g_str_has_prefix(tmtag->file->file_name, fname_wo_ext))
+		if ((tmtag->type & type)
+			&& g_str_has_prefix(tmtag->file->file_name, fname_wo_ext))
 			g_ptr_array_add(filtered_tags, tmtag);
 	}
 	g_free(fname_wo_ext);
@@ -2192,8 +2192,8 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
 		gchar *dir = g_path_get_dirname(file->file_name);
 		foreach_ptr_array(tmtag, i, tags)
 		{
-			if ((tmtag->type & type) &&
-				g_str_has_prefix(tmtag->file->file_name, dir))
+			if ((tmtag->type & type)
+				&& g_str_has_prefix(tmtag->file->file_name, dir))
 				g_ptr_array_add(filtered_tags, tmtag);
 		}
 		g_free(dir);
@@ -2467,16 +2467,14 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		
 		GPtrArray *tag_list = g_ptr_array_new();
 		TMTag *best_tag = find_best_goto_tag(curr_doc, tags);
-		if (best_tag)
-			g_ptr_array_add(tag_list, best_tag);
+		if (best_tag) g_ptr_array_add(tag_list, best_tag);
 		
 		TMTag *tag;
 		guint i;
 		
 		foreach_ptr_array(tag, i, tags)
 		{
-			if (tag != best_tag)
-				g_ptr_array_add(tag_list, tag);
+			if (tag != best_tag) g_ptr_array_add(tag_list, tag);
 		}
 		show_goto_popup(curr_doc, tag_list, best_tag != NULL);
 		
@@ -2595,9 +2593,9 @@ static gchar *parse_cpp_function_at_line(ScintillaObject *sci, gint tag_line)
 	if (tmp == 0) end--;
 	
 	/* go back to the end of function identifier */
-	while (end > 0 && end > first_pos - 500 &&
-		   (tmp = sci_get_char_at(sci, end)) != '(' &&
-		   tmp != 0) end--;
+	while (end > 0 && end > (first_pos - 500) &&
+		   (tmp = sci_get_char_at(sci, end)) != '(' && tmp != 0)
+		end--;
 	end--;
 	if (end < 0) end = 0;
 	
@@ -2639,8 +2637,8 @@ static gint get_fold_header_after(ScintillaObject *sci, gint line)
 			for (gint pos = sci_get_position_from_line(sci, line);
 				 pos < line_end; pos++)
 			{
-				if (highlighting_is_code_style(lexer, sci_get_style_at(sci, pos)) &&
-					sci_get_char_at(sci, pos) == '(')
+				if (highlighting_is_code_style(lexer, sci_get_style_at(sci, pos))
+					&& sci_get_char_at(sci, pos) == '(')
 				{
 					const gint matching = sci_find_matching_brace(sci, pos);
 					

@@ -333,14 +333,10 @@ void vte_init(void)
 	}
 	
 	if (!EMPTY(vte_info.lib_vte))
-	{
 		module = g_module_open(vte_info.lib_vte, G_MODULE_BIND_LAZY);
-	}
 #ifdef VTE_MODULE_PATH
 	else
-	{
 		module = g_module_open(VTE_MODULE_PATH, G_MODULE_BIND_LAZY);
-	}
 #endif
 	
 	if (module == NULL)
@@ -522,8 +518,7 @@ static gboolean vte_keyrelease_cb(GtkWidget *widget, GdkEventKey *event,
 		 ((vc->enable_bash_keys && (event->state & GDK_CONTROL_MASK)) ||
 		  (!(vc->enable_bash_keys) && (event->state & (GDK_CONTROL_MASK |
 													   GDK_SHIFT_MASK))))))
-	{
-		/* assume any text on the prompt has been executed when pressing Enter/Return */
+	{	/* assume any text on the prompt has been executed when pressing Enter/Return */
 		set_clean(TRUE);
 	}
 	return FALSE;
@@ -754,8 +749,7 @@ void vte_apply_user_settings(void)
 {
 	PangoFontDescription *font_desc;
 	
-	if (!ui_prefs.msgwindow_visible)
-		return;
+	if (!ui_prefs.msgwindow_visible) return;
 	
 	vf->vte_terminal_set_scrollback_lines(VTE_TERMINAL(vc->vte),
 										  vc->scrollback_lines);
@@ -804,8 +798,7 @@ static void vte_popup_menu_clicked(GtkMenuItem *menuitem, gpointer user_data)
 		case POPUP_CHANGEPATH:
 		{
 			GeanyDocument *doc = document_get_current();
-			if (doc != NULL)
-				vte_cwd(doc->file_name, TRUE);
+			if (doc) vte_cwd(doc->file_name, TRUE);
 			break;
 		}
 		case POPUP_CHANGEPATH2PRJ:
@@ -1008,12 +1001,8 @@ void vte_cwd(const gchar *filename, gboolean force)
 	if (vte_info.have_vte && (vc->follow_path || force) &&
 		filename != NULL && g_path_is_absolute(filename))
 	{
-		gchar *path;
-		
-		if (g_file_test(filename, G_FILE_TEST_IS_DIR))
-			path = g_strdup(filename);
-		else
-			path = g_path_get_dirname(filename);
+		gchar *path = g_file_test(filename, G_FILE_TEST_IS_DIR)
+						? g_strdup(filename) : g_path_get_dirname(filename);
 		
 		vte_get_working_directory(); /* refresh vte_info.dir */
 		if (!utils_str_equal(path, vte_info.dir))
@@ -1157,7 +1146,6 @@ void vte_send_selection_to_vte(void)
 	g_return_if_fail(doc != NULL);
 	
 	gchar *text;
-	gsize len;
 	
 	if (sci_has_selection(doc->editor->sci))
 		text = sci_get_selection_contents(doc->editor->sci);
@@ -1167,7 +1155,7 @@ void vte_send_selection_to_vte(void)
 		text = sci_get_line(doc->editor->sci, line_num);
 	}
 	
-	len = strlen(text);
+	gsize len = strlen(text);
 	
 	if (vc->send_selection_unsafe)
 	{	/* Explicitly append a trailing newline character to get the command executed,

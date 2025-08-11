@@ -178,22 +178,19 @@ GeanyKeyBinding *keybindings_set_item(GeanyKeyGroup *group, gsize key_id,
 									  GdkModifierType mod, const gchar *kf_name,
 									  const gchar *label, GtkWidget *menu_item)
 {
-	GeanyKeyBinding *kb;
-	
 	g_assert(group->name);
-	kb = keybindings_get_item(group, key_id);
+	GeanyKeyBinding *kb = keybindings_get_item(group, key_id);
 	g_assert(!kb->name);
+	
 	g_ptr_array_add(group->key_items, kb);
 	
 	if (group->plugin)
-	{
-		/* some plugins e.g. GeanyLua need these fields duplicated */
+	{	/* some plugins e.g. GeanyLua need these fields duplicated */
 		SETPTR(kb->name, g_strdup(kf_name));
 		SETPTR(kb->label, g_strdup(label));
 	}
 	else
-	{
-		/* we don't touch these strings unless group->plugin is set,
+	{	/* we don't touch these strings unless group->plugin is set,
 		 * const cast is safe */
 		kb->name = (gchar *)kf_name;
 		kb->label = (gchar *)label;
@@ -777,8 +774,8 @@ static void free_key_group(gpointer item)
 		
 		g_free(group->plugin_keys);
 		/* we allocated those in add_kb_group() as it's a plugin group */
-		g_free((gchar *) group->name);
-		g_free((gchar *) group->label);
+		g_free((gchar *)group->name);
+		g_free((gchar *)group->label);
 		g_free(group);
 	}
 }
@@ -860,9 +857,8 @@ static void load_user_kb(void)
 	/* now load user defined keys */
 	if (g_key_file_load_from_file(config, configfile,
 								  G_KEY_FILE_KEEP_COMMENTS, NULL))
-	{
 		keybindings_foreach(load_kb, config);
-	}
+	
 	g_free(configfile);
 	g_key_file_free(config);
 }
@@ -872,10 +868,8 @@ static void apply_kb_accel(GeanyKeyGroup *group, GeanyKeyBinding *kb,
 						   gpointer user_data)
 {
 	if (kb->key != 0 && kb->menu_item)
-	{
 		gtk_widget_add_accelerator(kb->menu_item, "activate", kb_accel_group,
 								   kb->key, kb->mods, GTK_ACCEL_VISIBLE);
-	}
 }
 
 
@@ -1030,10 +1024,8 @@ static void fill_shortcut_labels_treeview(GtkWidget *tree)
 		
 		foreach_ptr_array(kb, i, group->key_items)
 		{
-			gchar *shortcut, *label;
-			
-			label = keybindings_get_label(kb);
-			shortcut = gtk_accelerator_get_label(kb->key, kb->mods);
+			gchar *label = keybindings_get_label(kb);
+			gchar *shortcut = gtk_accelerator_get_label(kb->key, kb->mods);
 			
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 0, label, 1, shortcut, 2,
@@ -1102,11 +1094,9 @@ static GtkWidget *create_dialog(void)
 
 static void key_dialog_show_prefs(void)
 {
-	GtkWidget *wid;
-	
 	prefs_show_dialog();
 	/* select the KB page */
-	wid = ui_lookup_widget(ui_widgets.prefs_dialog, "frame22");
+	GtkWidget *wid = ui_lookup_widget(ui_widgets.prefs_dialog, "frame22");
 	if (wid != NULL)
 	{
 		GtkNotebook *nb = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog,
@@ -1169,8 +1159,7 @@ static gboolean check_fixed_kb(guint keyval, guint state)
 	}
 	/* note: these are now overridden by default with move tab bindings */
 	if (keyval == GDK_Page_Up || keyval == GDK_Page_Down)
-	{
-		/* switch to first or last document */
+	{	/* switch to first or last document */
 		if (state == (GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK))
 		{
 			if (keyval == GDK_Page_Up)
@@ -1206,10 +1195,7 @@ static gboolean check_snippet_completion(GeanyDocument *doc)
 /* Transforms a GdkEventKey event into a GdkEventButton event */
 static void trigger_button_event(GtkWidget *widget, guint32 event_time)
 {
-	GdkEventButton *event;
-	gboolean ret;
-	
-	event = g_new0(GdkEventButton, 1);
+	GdkEventButton *event = g_new0(GdkEventButton, 1);
 	
 	if (GTK_IS_TEXT_VIEW(widget))
 		event->window = gtk_text_view_get_window(GTK_TEXT_VIEW(widget),
@@ -1221,6 +1207,7 @@ static void trigger_button_event(GtkWidget *widget, guint32 event_time)
 	event->type = GDK_BUTTON_PRESS;
 	event->button = 3;
 	
+	gboolean ret;
 	g_signal_emit_by_name(widget, "button-press-event", event, &ret);
 	g_signal_emit_by_name(widget, "button-release-event", event, &ret);
 	
@@ -1445,13 +1432,11 @@ static guint key_cyr_translate(guint key_in, gboolean is_shift)
 /* Check if event keypress matches keybinding combo */
 gboolean keybindings_check_event(GdkEventKey *ev, GeanyKeyBinding *kb)
 {
-	guint state, keyval;
+	if (ev->keyval == 0) return FALSE;
 	
-	if (ev->keyval == 0)
-		return FALSE;
+	guint keyval = ev->keyval;
+	guint state = keybindings_get_modifiers(ev->state);
 	
-	keyval = ev->keyval;
-	state = keybindings_get_modifiers(ev->state);
 	/* hack to get around that CTRL+Shift+r results in GDK_R not GDK_r */
 	if ((ev->state & GDK_SHIFT_MASK) || (ev->state & GDK_LOCK_MASK))
 		if (keyval >= GDK_A && keyval <= GDK_Z)
@@ -1492,26 +1477,18 @@ static gboolean run_kb(GeanyKeyBinding *kb, GeanyKeyGroup *group)
 static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *ev,
 								   gpointer user_data)
 {
-	guint state, keyval;
-	gsize g, i;
-	GeanyDocument *doc;
-	GeanyKeyGroup *group;
-	GeanyKeyBinding *kb;
+	if (ev->keyval == 0) return FALSE;
+	
 	gboolean key_press_ret;
-	
-	if (ev->keyval == 0)
-		return FALSE;
-	
 	g_signal_emit_by_name(geany_object, "key-press", ev, &key_press_ret);
-	if (key_press_ret)
-		return TRUE;
+	if (key_press_ret) return TRUE;
 	
-	doc = document_get_current();
-	if (doc)
-		document_check_disk_status(doc, FALSE);
+	GeanyDocument *doc = document_get_current();
+	if (doc) document_check_disk_status(doc, FALSE);
 	
-	keyval = ev->keyval;
-	state = keybindings_get_modifiers(ev->state);
+	guint keyval = ev->keyval;
+	guint state = keybindings_get_modifiers(ev->state);
+	
 	/* hack to get around that CTRL+Shift+r results in GDK_R not GDK_r */
 	if ((ev->state & GDK_SHIFT_MASK) || (ev->state & GDK_LOCK_MASK))
 		if (keyval >= GDK_A && keyval <= GDK_Z)
@@ -1538,15 +1515,17 @@ static gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *ev,
 	if (check_menu_key(doc, keyval, state, ev->time))
 		return TRUE;
 	
+	gsize g, i;
+	GeanyKeyGroup *group;
+	GeanyKeyBinding *kb;
+	
 	foreach_ptr_array(group, g, keybinding_groups)
 	{
 		foreach_ptr_array(kb, i, group->key_items)
 		{
-			if (keyval == kb->key && state == kb->mods)
-			{
-				if (run_kb(kb, group))
-					return TRUE;
-			}
+			if (keyval == kb->key && state == kb->mods
+				&& run_kb(kb, group))
+				return TRUE;
 		}
 	}
 	/* fixed keybindings can be overridden by user bindings, so check them last */
@@ -1578,13 +1557,10 @@ GeanyKeyBinding *keybindings_lookup_item(guint group_id, guint key_id)
 GEANY_API_SYMBOL
 void keybindings_send_command(guint group_id, guint key_id)
 {
-	GeanyKeyBinding *kb;
-	GeanyKeyGroup *group;
+	GeanyKeyBinding *kb = keybindings_lookup_item(group_id, key_id);
+	GeanyKeyGroup *group = keybindings_get_core_group(group_id);
 	
-	kb = keybindings_lookup_item(group_id, key_id);
-	group = keybindings_get_core_group(group_id);
-	if (kb && group)
-		run_kb(kb, group);
+	if (kb && group) run_kb(kb, group);
 }
 
 
@@ -1699,9 +1675,6 @@ static void cb_func_menu_help(G_GNUC_UNUSED guint key_id)
 
 static gboolean cb_func_search_action(guint key_id)
 {
-	GeanyDocument *doc = document_get_current();
-	ScintillaObject *sci;
-	
 	/* these work without docs */
 	switch (key_id)
 	{
@@ -1719,10 +1692,11 @@ static gboolean cb_func_search_action(guint key_id)
 			on_previous_message1_activate(NULL, NULL);
 			return TRUE;
 	}
-	if (!doc)
-		return TRUE;
 	
-	sci = doc->editor->sci;
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return TRUE;
+	
+	ScintillaObject *sci = doc->editor->sci;
 	
 	switch (key_id)
 	{
@@ -1859,8 +1833,8 @@ static gchar *get_current_word_or_sel(GeanyDocument *doc, gboolean sci_word)
 	if (sci_has_selection(sci))
 		return sci_get_selection_contents(sci);
 	
-	return read_current_word(doc, sci_word) ? g_strdup(editor_info.current_word)
-											: NULL;
+	return read_current_word(doc, sci_word)
+				? g_strdup(editor_info.current_word) : NULL;
 }
 
 
@@ -2046,9 +2020,7 @@ static gboolean cb_func_switch_action(guint key_id)
 
 static void switch_notebook_page(gint direction)
 {
-	gint page_count, cur_page, pass;
 	gboolean parent_is_notebook = FALSE;
-	GtkNotebook *notebook;
 	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
 	
 	/* check whether the current widget is a GtkNotebook or a child of a GtkNotebook */
@@ -2060,18 +2032,17 @@ static void switch_notebook_page(gint direction)
 		   (focusw = gtk_widget_get_parent(focusw)) != NULL);
 	
 	/* if we found a GtkNotebook widget, use it. Otherwise fallback to the documents notebook */
-	notebook = parent_is_notebook ? GTK_NOTEBOOK(focusw)
-								  : GTK_NOTEBOOK(main_widgets.notebook);
+	GtkNotebook *notebook = parent_is_notebook
+								? GTK_NOTEBOOK(focusw)
+								: GTK_NOTEBOOK(main_widgets.notebook);
 	/* now switch pages */
-	page_count = gtk_notebook_get_n_pages(notebook);
-	cur_page = gtk_notebook_get_current_page(notebook);
+	gint page_count = gtk_notebook_get_n_pages(notebook);
+	gint cur_page = gtk_notebook_get_current_page(notebook);
 	
 	/* find the next visible page in the wanted direction, but don't loop
 	 * indefinitely if no pages are visible */
-	for (pass = 0; pass < page_count; pass++)
+	for (gint pass = 0; pass < page_count; pass++)
 	{
-		GtkWidget *child;
-		
 		if (direction == GTK_DIR_LEFT)
 		{
 			if (cur_page > 0)
@@ -2087,7 +2058,7 @@ static void switch_notebook_page(gint direction)
 				cur_page = 0;
 		}
 		
-		child = gtk_notebook_get_nth_page(notebook, cur_page);
+		GtkWidget *child = gtk_notebook_get_nth_page(notebook, cur_page);
 		if (gtk_widget_get_visible(child))
 		{
 			gtk_notebook_set_current_page(notebook, cur_page);
@@ -2118,14 +2089,12 @@ static void cb_func_switch_tablastused(G_GNUC_UNUSED guint key_id)
 /* move document left/right/first/last */
 static void cb_func_move_tab(guint key_id)
 {
-	GtkWidget *child;
 	GtkNotebook *nb = GTK_NOTEBOOK(main_widgets.notebook);
 	gint cur_page = gtk_notebook_get_current_page(nb);
 	
-	if (cur_page < 0)
-		return;
+	if (cur_page < 0) return;
 	
-	child = gtk_notebook_get_nth_page(nb, cur_page);
+	GtkWidget *child = gtk_notebook_get_nth_page(nb, cur_page);
 	
 	switch (key_id)
 	{
@@ -2223,8 +2192,7 @@ static void goto_tag(GeanyDocument *doc, gboolean definition)
 static gboolean cb_func_goto_action(guint key_id)
 {
 	GeanyDocument *doc = document_get_current();
-	if (doc == NULL)
-		return TRUE;
+	if (doc == NULL) return TRUE;
 	
 	gint cur_line = sci_get_current_line(doc->editor->sci);
 	
@@ -2441,18 +2409,16 @@ static gboolean cb_func_editor_action(guint key_id)
 
 static void join_lines(GeanyEditor *editor)
 {
-	gint start, end, i;
-	
-	start = sci_get_line_from_position(editor->sci,
-		sci_get_selection_start(editor->sci));
-	end = sci_get_line_from_position(editor->sci,
-		sci_get_selection_end(editor->sci));
+	gint start = sci_get_line_from_position(editor->sci,
+					sci_get_selection_start(editor->sci));
+	gint end = sci_get_line_from_position(editor->sci,
+					sci_get_selection_end(editor->sci));
 	
 	/* remove spaces surrounding the lines so that these spaces
 	 * won't appear within text after joining */
-	for (i = start; i < end; i++)
+	for (gint i = start; i < end; i++)
 		editor_strip_line_trailing_spaces(editor, i);
-	for (i = start + 1; i <= end; i++)
+	for (gint i = start + 1; i <= end; i++)
 		sci_set_line_indentation(editor->sci, i, 0);
 	
 	sci_set_target_start(editor->sci,
@@ -2489,8 +2455,6 @@ static gint split_line(GeanyEditor *editor, gint column)
 		gint lstart = sci_get_position_from_line(sci, line);
 		gint lend = sci_get_line_end_position(sci, line);
 		gint edge = sci_get_position_from_col(sci, line, column);
-		gboolean found;
-		gint pos;
 		
 		/* don't split on a trailing space of a line */
 		if (sci_get_char_at(sci, lend - 1) == ' ')
@@ -2501,7 +2465,9 @@ static gint split_line(GeanyEditor *editor, gint column)
 			break;
 		
 		/* lookup split position */
-		found = FALSE;
+		gboolean found = FALSE;
+		gint pos;
+		
 		for (pos = edge - 1; pos > lstart; pos--)
 		{
 			if (sci_get_char_at(sci, pos) == ' ')
@@ -2585,10 +2551,9 @@ static void reflow_lines(GeanyEditor *editor, gint column)
 /* deselect last newline of selection, if any */
 static void sci_deselect_last_newline(ScintillaObject *sci)
 {
-	gint start, end;
+	gint start = sci_get_selection_start(sci);
+	gint end = sci_get_selection_end(sci);
 	
-	start = sci_get_selection_start(sci);
-	end = sci_get_selection_end(sci);
 	if (end > start && sci_get_col_from_position(sci, end) == 0)
 	{
 		end = sci_get_line_end_position(sci, sci_get_line_from_position(sci, end - 1));
@@ -2600,10 +2565,8 @@ static void sci_deselect_last_newline(ScintillaObject *sci)
 static void reflow_paragraph(GeanyEditor *editor)
 {
 	ScintillaObject *sci = editor->sci;
-	gboolean sel;
-	gint column;
 	
-	column = get_reflow_column(editor);
+	gint column = get_reflow_column(editor);
 	if (column == -1)
 	{
 		utils_beep();
@@ -2611,14 +2574,14 @@ static void reflow_paragraph(GeanyEditor *editor)
 	}
 	
 	sci_start_undo_action(sci);
-	sel = sci_has_selection(sci);
-	if (!sel)
-		editor_select_indent_block(editor);
+	
+	gboolean sel = sci_has_selection(sci);
+	if (!sel) editor_select_indent_block(editor);
 	
 	sci_deselect_last_newline(sci);
 	reflow_lines(editor, column);
-	if (!sel)
-		sci_set_anchor(sci, -1);
+	
+	if (!sel) sci_set_anchor(sci, -1);
 	
 	sci_goto_pos(sci, sci_get_line_end_position(sci, sci_get_current_line(sci)),
 				 TRUE);
@@ -2630,10 +2593,8 @@ static void reflow_paragraph(GeanyEditor *editor)
 static void join_paragraph(GeanyEditor *editor)
 {
 	ScintillaObject *sci = editor->sci;
-	gboolean sel;
-	gint column;
 	
-	column = get_reflow_column(editor);
+	gint column = get_reflow_column(editor);
 	if (column == -1)
 	{
 		utils_beep();
@@ -2641,14 +2602,14 @@ static void join_paragraph(GeanyEditor *editor)
 	}
 	
 	sci_start_undo_action(sci);
-	sel = sci_has_selection(sci);
-	if (!sel)
-		editor_select_indent_block(editor);
+	
+	gboolean sel = sci_has_selection(sci);
+	if (!sel) editor_select_indent_block(editor);
 	
 	sci_deselect_last_newline(sci);
 	join_lines(editor);
-	if (!sel)
-		sci_set_anchor(sci, -1);
+	
+	if (!sel) sci_set_anchor(sci, -1);
 	
 	sci_end_undo_action(sci);
 }
@@ -2783,8 +2744,7 @@ static gboolean cb_func_select_action(guint key_id)
 static gboolean cb_func_document_action(guint key_id)
 {
 	GeanyDocument *doc = document_get_current();
-	if (doc == NULL)
-		return TRUE;
+	if (doc == NULL) return TRUE;
 	
 	switch (key_id)
 	{

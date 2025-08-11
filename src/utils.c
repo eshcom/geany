@@ -89,8 +89,7 @@ void utils_open_browser(const gchar *uri)
 							  "Please correct it or enter another one."),
 							tool_prefs.browser_cmd);
 		
-		if (new_cmd == NULL) /* user canceled */
-			break;
+		if (new_cmd == NULL) break; /* user canceled */
 		
 		SETPTR(tool_prefs.browser_cmd, new_cmd);
 	}
@@ -242,8 +241,7 @@ gint utils_write_file(const gchar *filename, const gchar *text)
 							" bytes, had to write %"G_GSIZE_FORMAT" bytes to %s",
 							bytes_written, len, filename);
 			}
-			if (fclose(fp) != 0)
-				fail = TRUE;
+			if (fclose(fp) != 0) fail = TRUE;
 		}
 		if (fail)
 		{
@@ -269,8 +267,7 @@ gchar *utils_find_open_xml_tag(const gchar sel[], gint size)
 	gsize len;
 	
 	cur = utils_find_open_xml_tag_pos(sel, size);
-	if (cur == NULL)
-		return NULL;
+	if (cur == NULL) return NULL;
 	
 	cur++; /* skip the bracket */
 	begin = cur;
@@ -304,8 +301,7 @@ const gchar *utils_find_open_xml_tag_pos(const gchar sel[], gint size)
 	/* Skip to the character before the closing brace */
 	while (cur > begin)
 	{
-		if (*cur == '>')
-			break;
+		if (*cur == '>') break;
 		--cur;
 	}
 	--cur;
@@ -317,12 +313,10 @@ const gchar *utils_find_open_xml_tag_pos(const gchar sel[], gint size)
 	
 	while (cur > begin)
 	{
-		if (*cur == '<')
-			break;
+		if (*cur == '<') break;
 		/* exit immediately if such non-valid XML/HTML is detected,
 		 * e.g. "<script>if a >" */
-		else if (*cur == '>')
-			break;
+		else if (*cur == '>') break;
 		--cur;
 	}
 	
@@ -358,12 +352,10 @@ gboolean utils_is_short_html_tag(const gchar *tag_name)
 		"wbr"
 	};
 	
-	if (tag_name)
-	{
-		if (bsearch(tag_name, names, G_N_ELEMENTS(names), 20,
-			(GCompareFunc)g_ascii_strcasecmp))
-			return TRUE;
-	}
+	if (tag_name && bsearch(tag_name, names, G_N_ELEMENTS(names), 20,
+							(GCompareFunc)g_ascii_strcasecmp))
+		return TRUE;
+	
 	return FALSE;
 }
 
@@ -410,8 +402,7 @@ void utils_ensure_same_eol_characters(GString *string, gint target_eol_mode)
 	utils_string_replace_all(string, "\r\n", "\n");
 	utils_string_replace_all(string, "\r", "\n");
 	
-	if (target_eol_mode == SC_EOL_LF)
-		return;
+	if (target_eol_mode == SC_EOL_LF) return;
 	
 	/* now convert to desired line endings */
 	utils_string_replace_all(string, "\n", eol_str);
@@ -431,8 +422,7 @@ gboolean utils_atob(const gchar *str)
 /* NULL-safe version of g_path_is_absolute(). */
 gboolean utils_is_absolute_path(const gchar *path)
 {
-	if (G_UNLIKELY(EMPTY(path)))
-		return FALSE;
+	if (G_UNLIKELY(EMPTY(path))) return FALSE;
 	
 	return g_path_is_absolute(path);
 }
@@ -469,8 +459,7 @@ const gchar *utils_path_skip_root(const gchar *path)
  */
 gchar *utils_truncate_home_dir(const gchar *path)
 {
-	if (G_UNLIKELY(EMPTY(path)))
-		return NULL;
+	if (G_UNLIKELY(EMPTY(path))) return NULL;
 	
 	gchar *trunc_path;
 	const gchar *home_dir = g_get_home_dir();
@@ -478,10 +467,9 @@ gchar *utils_truncate_home_dir(const gchar *path)
 	if (G_LIKELY(!EMPTY(home_dir)) && utils_filename_has_prefix(path, home_dir))
 	{
 		const gchar *rest = path + strlen(home_dir);
-		if (*rest == G_DIR_SEPARATOR || *rest == '\0')
-			trunc_path = g_strdup_printf("~%s", rest);
-		else
-			trunc_path = g_strdup(path);
+		
+		trunc_path = (*rest == G_DIR_SEPARATOR || *rest == '\0')
+						? g_strdup_printf("~%s", rest) : g_strdup(path);
 	}
 	else
 		trunc_path = g_strdup(path);
@@ -525,8 +513,7 @@ static gchar *utf8_strdown(const gchar *str)
 	else
 	{
 		down = g_locale_to_utf8(str, -1, NULL, NULL, NULL);
-		if (down)
-			SETPTR(down, g_utf8_strdown(down, -1));
+		if (down) SETPTR(down, g_utf8_strdown(down, -1));
 	}
 	return down;
 }
@@ -665,20 +652,15 @@ GEANY_API_SYMBOL
 gchar *utils_remove_ext_from_filename(const gchar *filename,
 									  const gboolean leave_dot)
 {
-	gchar *last_dot;
-	gchar *result;
-	gsize len;
-	
 	g_return_val_if_fail(filename != NULL, NULL);
 	
-	last_dot = strrchr(filename, '.');
-	if (!last_dot)
-		return g_strdup(filename);
+	gchar *last_dot = strrchr(filename, '.');
+	if (!last_dot) return g_strdup(filename);
 	
-	len = leave_dot ? (gsize)(last_dot - filename + 1)
-					: (gsize)(last_dot - filename);
+	gsize len = leave_dot ? (gsize)(last_dot - filename + 1)
+						  : (gsize)(last_dot - filename);
 	
-	result = g_malloc(len + 1);
+	gchar *result = g_malloc(len + 1);
 	memcpy(result, filename, len);
 	result[len] = 0;
 	
@@ -709,7 +691,6 @@ gchar utils_brace_opposite(gchar ch)
 gint utils_is_file_writable(const gchar *locale_filename)
 {
 	gchar *file;
-	gint ret;
 	
 	if (!g_file_test(locale_filename, G_FILE_TEST_EXISTS) &&
 		!g_file_test(locale_filename, G_FILE_TEST_IS_DIR))
@@ -719,6 +700,7 @@ gint utils_is_file_writable(const gchar *locale_filename)
 	else
 		file = g_strdup(locale_filename);
 	
+	gint ret;
 #ifdef G_OS_WIN32
 	/* use _waccess on Windows, access() doesn't accept special characters */
 	ret = win32_check_write_permission(file);
@@ -726,10 +708,7 @@ gint utils_is_file_writable(const gchar *locale_filename)
 	
 	/* access set also errno to "FILE NOT FOUND" even if locale_filename is writeable,
 	 * so use errno only when access() explicitly returns an error */
-	if (access(file, R_OK | W_OK) != 0)
-		ret = errno;
-	else
-		ret = 0;
+	ret = (access(file, R_OK | W_OK) != 0) ? errno : 0;
 #endif
 	g_free(file);
 	return ret;
@@ -758,14 +737,10 @@ void utils_str_replace_all(gchar **haystack, const gchar *needle,
 
 gint utils_strpos(const gchar *haystack, const gchar *needle)
 {
-	const gchar *sub;
+	if (!*needle) return -1;
 	
-	if (!*needle)
-		return -1;
-	
-	sub = strstr(haystack, needle);
-	if (!sub)
-		return -1;
+	const gchar *sub = strstr(haystack, needle);
+	if (!sub) return -1;
 	
 	return sub - haystack;
 }
@@ -798,8 +773,7 @@ gchar *utils_get_date_time(const gchar *format, time_t *time_to_use)
 	if (!g_utf8_validate(format, -1, NULL))
 	{
 		locale_format = g_locale_from_utf8(format, -1, NULL, NULL, NULL);
-		if (locale_format == NULL)
-			return NULL;
+		if (locale_format == NULL) return NULL;
 	}
 	else
 		locale_format = g_strdup(format);
@@ -834,7 +808,6 @@ gchar *utils_get_initials(const gchar *name)
 	{
 		if (name[i] == ' ' && name[i + 1] != ' ')
 			initials[j++] = name[i + 1];
-		
 		i++;
 	}
 	return initials;
@@ -920,8 +893,7 @@ gchar *utils_get_setting_string(GKeyFile *config, const gchar *section,
 	g_return_val_if_fail(config, g_strdup(default_value));
 	
 	gchar *tmp = g_key_file_get_string(config, section, key, NULL);
-	if (!tmp)
-		return g_strdup(default_value);
+	if (!tmp) return g_strdup(default_value);
 	
 	return tmp;
 }
@@ -947,8 +919,7 @@ gchar *utils_get_current_file_dir_utf8(void)
 	GeanyDocument *doc = document_get_current();
 	
 	if (doc != NULL)
-	{
-		/* get current filename */
+	{	/* get current filename */
 		const gchar *cur_fname = doc->file_name;
 		
 		if (cur_fname != NULL)
@@ -963,8 +934,7 @@ gchar *utils_get_current_file_dir_utf8(void)
 /* very simple convenience function */
 void utils_beep(void)
 {
-	if (prefs.beep_on_errors)
-		gdk_beep();
+	if (prefs.beep_on_errors) gdk_beep();
 }
 
 
@@ -987,8 +957,7 @@ gchar *utils_make_human_readable_str(guint64 size, gulong block_size,
 	frac = 0;
 	
 	val = size * block_size;
-	if (val == 0)
-		return g_strdup(u);
+	if (val == 0) return g_strdup(u);
 	
 	if (display_unit)
 	{
@@ -1027,8 +996,7 @@ gboolean utils_parse_color(const gchar *spec, GdkColor *color)
 	gchar buf[64] = {0};
 	
 	if (spec[0] == '0' && (spec[1] == 'x' || spec[1] == 'X'))
-	{
-		/* convert to # format for GDK to understand it */
+	{	/* convert to # format for GDK to understand it */
 		buf[0] = '#';
 		strncpy(buf + 1, spec + 2, sizeof(buf) - 2);
 		spec = buf;
@@ -1133,8 +1101,7 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 			switch (string[i])
 			{
 				case '\\':
-					if (keep_backslash)
-						string[j++] = '\\';
+					if (keep_backslash) string[j++] = '\\';
 					string[j] = '\\';
 					break;
 				case 'n':
@@ -1219,9 +1186,7 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 							unicodechar |= tolower(string[i]) - 87;
 					}
 					if (unicodechar < 0x80)
-					{
 						string[j] = unicodechar;
-					}
 					else if (unicodechar < 0x800)
 					{
 						string[j] = (unsigned char) ((unicodechar >> 6) | 0xC0);
@@ -1247,29 +1212,21 @@ gboolean utils_str_replace_escape(gchar *string, gboolean keep_backslash)
 						string[j] = (unsigned char) ((unicodechar & 0x3F) | 0x80);
 					}
 					else
-					{
 						return FALSE;
-					}
+					
 					break;
 				}
 				default:
 					/* unnecessary escapes are allowed */
-					if (keep_backslash)
-						string[j++] = '\\';
+					if (keep_backslash) string[j++] = '\\';
 					string[j] = string[i];
 			}
 		}
 		else
-		{
 			string[j] = string[i];
-		}
 		j++;
 	}
-	while (j < i)
-	{
-		string[j] = 0;
-		j++;
-	}
+	while (j < i) string[j++] = 0;
 	return TRUE;
 }
 
@@ -1281,8 +1238,7 @@ gboolean utils_wrap_string(gchar *string, gint wrapstart)
 	gchar *pos, *linestart;
 	gboolean ret = FALSE;
 	
-	if (wrapstart < 0)
-		wrapstart = 80;
+	if (wrapstart < 0) wrapstart = 80;
 	
 	for (pos = linestart = string; *pos != '\0'; pos++)
 	{
@@ -1316,12 +1272,10 @@ gchar *utils_get_locale_from_utf8(const gchar *utf8_text)
 	 * unwanted conversions which would result in wrongly converted strings */
 	return g_strdup(utf8_text);
 #else
-	gchar *locale_text;
+	if (!utf8_text) return NULL;
 	
-	if (!utf8_text)
-		return NULL;
+	gchar *locale_text = g_locale_from_utf8(utf8_text, -1, NULL, NULL, NULL);
 	
-	locale_text = g_locale_from_utf8(utf8_text, -1, NULL, NULL, NULL);
 	if (locale_text == NULL)
 		locale_text = g_strdup(utf8_text);
 	
@@ -1349,12 +1303,10 @@ gchar *utils_get_utf8_from_locale(const gchar *locale_text)
 	 * unwanted conversions which would result in wrongly converted strings */
 	return g_strdup(locale_text);
 #else
-	gchar *utf8_text;
+	if (!locale_text) return NULL;
 	
-	if (!locale_text)
-		return NULL;
+	gchar *utf8_text = g_locale_to_utf8(locale_text, -1, NULL, NULL, NULL);
 	
-	utf8_text = g_locale_to_utf8(locale_text, -1, NULL, NULL, NULL);
 	if (utf8_text == NULL)
 		utf8_text = g_strdup(locale_text);
 	
@@ -1378,8 +1330,7 @@ void utils_free_pointers(gsize arg_count, ...)
 		g_free(ptr);
 	}
 	ptr = va_arg(a, gpointer);
-	if (ptr)
-		g_warning("Wrong arg_count!");
+	if (ptr) g_warning("Wrong arg_count!");
 	va_end(a);
 }
 
@@ -1436,12 +1387,9 @@ gint utils_mkdir(const gchar *path, gboolean create_parent_dirs)
 		return EFAULT;
 	
 	gint mode = 0700;
-	gint result;
-	
-	result = (create_parent_dirs) ? g_mkdir_with_parents(path, mode)
-								  : g_mkdir(path, mode);
-	if (result != 0)
-		return errno;
+	gint result = create_parent_dirs ? g_mkdir_with_parents(path, mode)
+									 : g_mkdir(path, mode);
+	if (result != 0) return errno;
 	return 0;
 }
 
@@ -1474,16 +1422,13 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 {
 	g_return_val_if_fail(path != NULL, NULL);
 	
+	if (error) *error = NULL;
+	
+	GDir *dir = g_dir_open(path, 0, error);
+	if (dir == NULL) return NULL;
+	
 	GSList *list = NULL;
-	GDir *dir;
 	const gchar *filename;
-	
-	if (error)
-		*error = NULL;
-	
-	dir = g_dir_open(path, 0, error);
-	if (dir == NULL)
-		return NULL;
 	
 	foreach_dir(filename, dir)
 	{
@@ -1492,10 +1437,9 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 											   : g_strdup(filename));
 	}
 	g_dir_close(dir);
-	/* sorting last is quicker than on insertion */
-	if (sort)
-		list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
 	
+	/* sorting last is quicker than on insertion */
+	if (sort) list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
 	return list;
 }
 
@@ -1523,8 +1467,7 @@ GSList *utils_get_file_list(const gchar *path, guint *length, GError **error)
 {
 	GSList *list = utils_get_file_list_full(path, FALSE, TRUE, error);
 	
-	if (length)
-		*length = g_slist_length(list);
+	if (length) *length = g_slist_length(list);
 	return list;
 }
 
@@ -1620,8 +1563,7 @@ guint utils_string_replace_all(GString *haystack, const gchar *needle,
 	{
 		pos = utils_string_find(haystack, pos, -1, needle);
 		
-		if (pos == -1)
-			break;
+		if (pos == -1) break;
 		
 		pos = utils_string_replace(haystack, pos, needle_length, replace);
 		count++;
@@ -1649,8 +1591,7 @@ guint utils_string_replace_first(GString *haystack, const gchar *needle,
 {
 	gint pos = utils_string_find(haystack, 0, -1, needle);
 	
-	if (pos == -1)
-		return 0;
+	if (pos == -1) return 0;
 	
 	utils_string_replace(haystack, pos, strlen(needle), replace);
 	return 1;
@@ -1666,16 +1607,15 @@ guint utils_string_regex_replace_all(GString *haystack, GRegex *regex,
 									 guint match_num, const gchar *replace,
 									 gboolean literal)
 {
-	GMatchInfo *minfo;
-	guint ret = 0;
-	gint start = 0;
-	
 	g_assert(literal); /* escapes not implemented yet */
 	g_return_val_if_fail(replace, 0);
 	
 	/* ensure haystack->str is not null */
-	if (haystack->len == 0)
-		return 0;
+	if (haystack->len == 0) return 0;
+	
+	GMatchInfo *minfo;
+	guint ret = 0;
+	gint start = 0;
 	
 	/* passing a start position makes G_REGEX_MATCH_NOTBOL automatic */
 	while (g_regex_match_full(regex, haystack->str, -1,
@@ -1742,11 +1682,9 @@ gboolean utils_spawn_sync(const gchar *dir, gchar **argv, gchar **env,
 	GString *errors = std_err ? g_string_new(NULL) : NULL;
 	gboolean result = spawn_sync(dir, NULL, argv, env, NULL, output,
 								 errors, exit_status, error);
-	if (std_out)
-		*std_out = g_string_free(output, !result);
 	
-	if (std_err)
-		*std_err = g_string_free(errors, !result);
+	if (std_out) *std_out = g_string_free(output, !result);
+	if (std_err) *std_err = g_string_free(errors, !result);
 	
 	return result;
 }
@@ -1796,15 +1734,12 @@ const gchar *utils_get_uri_file_prefix(void)
  * - a new copy of 'uri' if it is not an URI. */
 gchar *utils_get_path_from_uri(const gchar *uri)
 {
-	gchar *locale_filename;
-	
 	g_return_val_if_fail(uri != NULL, NULL);
 	
-	if (!utils_is_uri(uri))
-		return g_strdup(uri);
+	if (!utils_is_uri(uri)) return g_strdup(uri);
 	
 	/* this will work only for 'file://' URIs */
-	locale_filename = g_filename_from_uri(uri, NULL, NULL);
+	gchar *locale_filename = g_filename_from_uri(uri, NULL, NULL);
 	/* g_filename_from_uri() failed, so we probably have a non-local URI */
 	if (locale_filename == NULL)
 	{
@@ -1812,11 +1747,9 @@ gchar *utils_get_path_from_uri(const gchar *uri)
 		locale_filename = g_file_get_path(file);
 		g_object_unref(file);
 		if (locale_filename == NULL)
-		{
 			geany_debug("The URI '%s' could not be resolved to a local path. "
 						"This means that the URI is invalid or that you "
 						"don't have gvfs-fuse installed.", uri);
-		}
 	}
 	return locale_filename;
 }
@@ -1897,11 +1830,8 @@ void utils_tidy_path(gchar *filename)
 			break;
 		else
 		{
-			gssize pos, sub_len;
-			
-			pos = c - str->str;
-			if (pos <= 3)
-				break;	/* bad path */
+			gssize pos = c - str->str;
+			if (pos <= 3) break; /* bad path */
 			
 			/* replace "/../" */
 			g_string_erase(str, pos, strlen(needle));
@@ -1909,10 +1839,9 @@ void utils_tidy_path(gchar *filename)
 			
 			/* search for last "/" before found "/../" */
 			c = g_strrstr_len(str->str, pos, G_DIR_SEPARATOR_S);
-			sub_len = pos - (c - str->str);
-			if (!c)
-				break;	/* bad path */
+			if (!c) break;		/* bad path */
 			
+			gssize sub_len = pos - (c - str->str);
 			pos = c - str->str;	/* position of previous "/" */
 			g_string_erase(str, pos, sub_len);
 		}
@@ -1943,16 +1872,14 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 {
 	g_return_val_if_fail(string, NULL);
 	
-	if (G_UNLIKELY(EMPTY(chars)))
-		return string;
+	if (G_UNLIKELY(EMPTY(chars))) return string;
 	
 	const gchar *r;
 	gchar *w = string;
 	
 	foreach_str(r, string)
 	{
-		if (!strchr(chars, *r))
-			*w++ = *r;
+		if (!strchr(chars, *r)) *w++ = *r;
 	}
 	*w = 0x0;
 	
@@ -1964,17 +1891,15 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
  * no duplicates from user and system config */
 GSList *utils_get_config_files(const gchar *subdir)
 {
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-							   subdir, NULL);
+	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, subdir, NULL);
 	GSList *list = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	GSList *syslist, *node;
 	
-	if (!list)
-		utils_mkdir(path, FALSE);
+	if (!list) utils_mkdir(path, FALSE);
 	
-	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-							  subdir, NULL));
+	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir, subdir, NULL));
 	syslist = utils_get_file_list_full(path, FALSE, FALSE, NULL);
+	
 	/* merge lists */
 	list = g_slist_concat(list, syslist);
 	
@@ -2104,8 +2029,7 @@ gchar **utils_copy_environment(const gchar **exclude_vars,
 		result[n++] = g_strconcat(key, "=", value, NULL);
 		
 		key = va_arg(args, gchar*);
-		if (key == NULL)
-			break;
+		if (key == NULL) break;
 		value = va_arg(args, gchar*);
 	}
 	va_end(args);
@@ -2119,16 +2043,11 @@ gchar **utils_copy_environment(const gchar **exclude_vars,
  * The original contents are reused. */
 gchar **utils_strv_join(gchar **first, gchar **second)
 {
-	gchar **strv;
-	gchar **rptr, **wptr;
+	if (!first) return second;
+	if (!second) return first;
 	
-	if (!first)
-		return second;
-	if (!second)
-		return first;
-	
-	strv = g_new0(gchar*, g_strv_length(first) + g_strv_length(second) + 1);
-	wptr = strv;
+	gchar **strv = g_new0(gchar *, g_strv_length(first) + g_strv_length(second) + 1);
+	gchar **rptr, **wptr = strv;
 	
 	foreach_strv(rptr, first)
 		*wptr++ = *rptr;
@@ -2155,12 +2074,9 @@ gchar **utils_strv_join(gchar **first, gchar **second)
 GEANY_EXPORT_SYMBOL
 gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
 {
-	gsize num;
+	if (strv_len == 0) return NULL;
 	
-	if (strv_len == 0)
-		return NULL;
-	
-	num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
+	gsize num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
 	
 	for (gsize i = 0; strv[0][i]; i++)
 	{
@@ -2190,25 +2106,18 @@ gchar *utils_strv_find_common_prefix(gchar **strv, gssize strv_len)
 GEANY_EXPORT_SYMBOL
 gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 {
-	if (strv_len == 0)
-		return NULL;
+	if (strv_len == 0) return NULL;
 	
-	gchar *first, *_sub, *sub;
-	gsize num;
-	gsize n_chars;
-	gsize len;
-	gsize max = 0;
-	char *lcs;
-	gsize found;
+	gsize num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
 	
-	num = (strv_len == -1) ? g_strv_length(strv) : (gsize)strv_len;
-	
-	first = strv[0];
-	len = strlen(first);
+	gchar *first = strv[0];
+	gsize len = strlen(first);
 	
 	/* sub is the working area where substrings from first are copied to */
-	sub = g_malloc(len+1);
-	lcs = g_strdup("");
+	gsize max = 0;
+	gchar *_sub;
+	gchar *sub = g_malloc(len + 1);
+	char *lcs = g_strdup("");
 	foreach_str(_sub, first)
 	{
 		gsize chars_left = len - (_sub - first);
@@ -2220,7 +2129,7 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 		if (NZV(delim) && (strchr(delim, _sub[0]) == NULL))
 			continue;
 		
-		for (n_chars = 1; n_chars <= chars_left; n_chars++)
+		for (gsize n_chars = 1; n_chars <= chars_left; n_chars++)
 		{
 			if (NZV(delim))
 			{	/* ... and advance to the next delim char at the end, if any */
@@ -2229,7 +2138,7 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 				n_chars += 1;
 			}
 			g_strlcpy(sub, _sub, n_chars+1);
-			found = 1;
+			gsize found = 1;
 			for (gsize i = 1; i < num; i++)
 			{
 				if (strstr(strv[i], sub) == NULL)
@@ -2270,24 +2179,17 @@ gchar *utils_strv_find_lcs(gchar **strv, gssize strv_len, const gchar *delim)
 GEANY_API_SYMBOL
 gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 {
-	if (file_names_len == 0)
-		return g_new0(gchar *, 1);
+	if (file_names_len == 0) return g_new0(gchar *, 1);
 	
 	g_return_val_if_fail(file_names != NULL, NULL);
 	
-	gsize num;
-	gsize i;
-	gchar *prefix, *lcs, *end;
-	gchar **names;
-	gsize prefix_len = 0, lcs_len = 0;
-	
-	num = (file_names_len == -1) ? g_strv_length(file_names)
-								 : (gsize)file_names_len;
+	gsize num = (file_names_len == -1) ? g_strv_length(file_names)
+									   : (gsize)file_names_len;
 	/* Always include a terminating NULL, enables easy freeing with g_strfreev()
 	 * We just copy the pointers so we can advance them here. But don't
 	 * forget to duplicate the strings before returning.
 	 */
-	names = g_new(gchar *, num + 1);
+	gchar **names = g_new(gchar *, num + 1);
 	memcpy(names, file_names, num * sizeof(gchar *));
 	/* Always include a terminating NULL, enables easy freeing with g_strfreev() */
 	names[num] = NULL;
@@ -2296,12 +2198,13 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 	 * We only want to strip full path components, including the trailing slash.
 	 * Except if the component is just "/".
 	 */
-	prefix = utils_strv_find_common_prefix(names, num);
-	end = strrchr(prefix, G_DIR_SEPARATOR);
+	gsize prefix_len = 0, lcs_len = 0;
+	gchar *prefix = utils_strv_find_common_prefix(names, num);
+	gchar *end = strrchr(prefix, G_DIR_SEPARATOR);
 	if (end && end > prefix)
 	{
 		prefix_len = end - prefix + 1; /* prefix_len includes the trailing slash */
-		for (i = 0; i < num; i++)
+		for (gsize i = 0; i < num; i++)
 			names[i] += prefix_len;
 	}
 	
@@ -2309,7 +2212,7 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 	 * Again, we look only for full path compnents so that we ellipsize between separators.
 	 * This implies that the file name cannot be ellipsized which is desirable anyway.
 	 */
-	lcs = utils_strv_find_lcs(names, num, G_DIR_SEPARATOR_S"/");
+	gchar *lcs = utils_strv_find_lcs(names, num, G_DIR_SEPARATOR_S"/");
 	if (lcs)
 	{
 		lcs_len = strlen(lcs);
@@ -2317,12 +2220,11 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len)
 		 * Beware that lcs includes the enclosing dir separators so the part
 		 * must be at least 5 chars to be eligible for ellipsizing.
 		 */
-		if (lcs_len < 7)
-			lcs_len = 0;
+		if (lcs_len < 7) lcs_len = 0;
 	}
 	
 	/* Last: build the shortened list of unique file names */
-	for (i = 0; i < num; i++)
+	for (gsize i = 0; i < num; i++)
 	{
 		if (lcs_len == 0)
 		{	/* no lcs, copy without prefix */
@@ -2548,7 +2450,6 @@ TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 	if (!extensions_hash)
 		extensions_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
 												g_free, NULL);
-	
 	const gchar *ext = strrchr(file_name, '.');
 	if (ext) ++ext; // skip dot
 	
@@ -2596,10 +2497,8 @@ MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2)
 				return (MatchDirs){MATCH_DIRS_PREF_1, dir2};
 			else if (*dir2 == G_DIR_SEPARATOR)
 			{
-				if (*(++dir2) == '\0')
-					return (MatchDirs){MATCH_DIRS_FULL, NULL};
-				else
-					return (MatchDirs){MATCH_DIRS_PREF_1, dir2};
+				return (*(++dir2) == '\0') ? (MatchDirs){MATCH_DIRS_FULL, NULL}
+										   : (MatchDirs){MATCH_DIRS_PREF_1, dir2};
 			}
 			return (MatchDirs){MATCH_DIRS_NOT, NULL};
 		}
@@ -2609,10 +2508,8 @@ MatchDirs utils_match_dirs_obj(const gchar *dir1, const gchar *dir2)
 				return (MatchDirs){MATCH_DIRS_PREF_2, dir1};
 			else if (*dir1 == G_DIR_SEPARATOR)
 			{
-				if (*(++dir1) == '\0')
-					return (MatchDirs){MATCH_DIRS_FULL, NULL};
-				else
-					return (MatchDirs){MATCH_DIRS_PREF_2, dir1};
+				return (*(++dir1) == '\0') ? (MatchDirs){MATCH_DIRS_FULL, NULL}
+										   : (MatchDirs){MATCH_DIRS_PREF_2, dir1};
 			}
 			return (MatchDirs){MATCH_DIRS_NOT, NULL};
 		}

@@ -374,18 +374,15 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 	const GdkColor *color = get_color(msg_color);
 	gchar *utf8_msg;
 	
-	if (!g_utf8_validate(msg, -1, NULL))
-		utf8_msg = utils_get_utf8_from_locale(msg);
-	else
-		utf8_msg = (gchar *)msg;
+	utf8_msg = g_utf8_validate(msg, -1, NULL)
+					? (gchar *)msg : utils_get_utf8_from_locale(msg);
 	
 	gtk_list_store_append(msgwindow.store_compiler, &iter);
 	gtk_list_store_set(msgwindow.store_compiler, &iter,
 					   COMPILER_COL_COLOR, color,
 					   COMPILER_COL_STRING, utf8_msg, -1);
 	
-	if (ui_prefs.msgwindow_visible &&
-		interface_prefs.compiler_tab_autoscroll)
+	if (ui_prefs.msgwindow_visible && interface_prefs.compiler_tab_autoscroll)
 	{
 		GtkTreePath *path = gtk_tree_model_get_path(
 			gtk_tree_view_get_model(GTK_TREE_VIEW(msgwindow.tree_compiler)),
@@ -403,8 +400,7 @@ void msgwin_compiler_add_string(gint msg_color, const gchar *msg)
 	gtk_widget_set_sensitive(build_get_menu_items(-1)->
 								menu_item[GBG_FIXED][GBF_PREV_ERROR], TRUE);
 	
-	if (utf8_msg != msg)
-		g_free(utf8_msg);
+	if (utf8_msg != msg) g_free(utf8_msg);
 }
 
 
@@ -493,20 +489,14 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	
 	gchar *utf8_msg, *utf8_markup;
 	
-	if (!g_utf8_validate(tmp, -1, NULL))
-		utf8_msg = utils_get_utf8_from_locale(tmp);
-	else
-		utf8_msg = tmp;
+	utf8_msg = g_utf8_validate(tmp, -1, NULL)
+					? tmp : utils_get_utf8_from_locale(tmp);
 	
 	if (!markup)
 		utf8_markup = g_markup_escape_text(utf8_msg, -1);
 	else
-	{
-		if (!g_utf8_validate(markup, -1, NULL))
-			utf8_markup = utils_get_utf8_from_locale(markup);
-		else
-			utf8_markup = (gchar *)markup;
-	}
+		utf8_markup = g_utf8_validate(markup, -1, NULL)
+						? (gchar *)markup : utils_get_utf8_from_locale(markup);
 	
 	GtkTreeIter iter;
 	gtk_list_store_append(msgwindow.store_msg, &iter);
@@ -517,11 +507,9 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 					   MSG_COL_STRING, utf8_msg,
 					   MSG_COL_MARKUP, utf8_markup, -1);
 	g_free(tmp);
-	if (utf8_msg != tmp)
-		g_free(utf8_msg);
 	
-	if (utf8_markup != markup)
-		g_free(utf8_markup);
+	if (utf8_msg != tmp) g_free(utf8_msg);
+	if (utf8_markup != markup) g_free(utf8_markup);
 }
 
 
@@ -821,8 +809,7 @@ static gboolean goto_compiler_file_line(const gchar *fname, gint line,
 	gboolean ret = FALSE;
 	gchar *filename;
 	
-	if (!fname || line <= -1)
-		return FALSE;
+	if (!fname || line <= -1) return FALSE;
 	
 	filename = utils_get_locale_from_utf8(fname);
 	
@@ -832,14 +819,12 @@ static gboolean goto_compiler_file_line(const gchar *fname, gint line,
 	if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 	{
 		gchar *cur_dir = utils_get_current_file_dir_utf8();
-		gchar *name;
-		
 		if (cur_dir)
 		{
 			/* we let the user know we couldn't find the parsed filename
 			 * from the message window */
 			SETPTR(cur_dir, utils_get_locale_from_utf8(cur_dir));
-			name = g_path_get_basename(filename);
+			gchar *name = g_path_get_basename(filename);
 			SETPTR(name, g_build_path(G_DIR_SEPARATOR_S, cur_dir, name, NULL));
 			g_free(cur_dir);
 			
@@ -900,8 +885,7 @@ gboolean msgwin_goto_compiler_file_line(gboolean focus_editor)
 		gtk_tree_model_get(model, &iter, COMPILER_COL_COLOR, &color, -1);
 		if (color == NULL || !gdk_color_equal(color, &color_error))
 		{
-			if (color != NULL)
-				gdk_color_free(color);
+			if (color != NULL) gdk_color_free(color);
 			return FALSE;
 		}
 		gdk_color_free(color);
@@ -934,8 +918,7 @@ static void make_absolute(gchar **filename, const gchar *dir)
 {
 	guint skip_dot_slash = 0; /* number of characters to skip at
 								 the beginning of the filename */
-	if (*filename == NULL)
-		return;
+	if (*filename == NULL) return;
 	
 	/* skip some characters at the beginning of the filename,
 	 * at the moment only "./" can be extended if other "trash" is known */
@@ -956,16 +939,13 @@ static void make_absolute(gchar **filename, const gchar *dir)
  * *filename must be freed unless it is NULL. */
 static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 {
-	gchar *end = NULL;
-	gchar **fields;
-	
 	*filename = NULL;
 	*line = -1;
 	
 	g_return_if_fail(data->string != NULL);
 	
-	fields = g_strsplit_set(data->string, data->pattern,
-							data->min_fields);
+	gchar **fields = g_strsplit_set(data->string, data->pattern,
+									data->min_fields);
 	/* parse the line */
 	if (g_strv_length(fields) < data->min_fields)
 	{
@@ -973,6 +953,7 @@ static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 		return;
 	}
 	
+	gchar *end = NULL;
 	*line = strtol(fields[data->line_idx], &end, 10);
 	
 	/* if the line could not be read, line is 0
@@ -985,12 +966,10 @@ static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 	
 	/* let's stop here if there is no filename in the error message */
 	if (data->file_idx == -1)
-	{
-		/* we have no filename in the error message,
+	{	/* we have no filename in the error message,
 		 * so take the current one and hope it's correct */
 		GeanyDocument *doc = document_get_current();
-		if (doc != NULL)
-			*filename = g_strdup(doc->file_name);
+		if (doc) *filename = g_strdup(doc->file_name);
 		
 		g_strfreev(fields);
 		return;
@@ -1212,25 +1191,20 @@ static void parse_compiler_error_line(const gchar *string,
 void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 									  gchar **filename, gint *line)
 {
-	GeanyFiletype *ft;
-	gchar *trimmed_string, *utf8_dir;
-	
 	*filename = NULL;
 	*line = -1;
 	
-	if (G_UNLIKELY(string == NULL))
-		return;
+	if (G_UNLIKELY(string == NULL)) return;
 	
-	if (dir == NULL)
-		utf8_dir = utils_get_utf8_from_locale(build_info.dir);
-	else
-		utf8_dir = g_strdup(dir);
+	gchar *utf8_dir = (dir == NULL) ? utils_get_utf8_from_locale(build_info.dir)
+									: g_strdup(dir);
+	
 	g_return_if_fail(utf8_dir != NULL);
 	
-	trimmed_string = g_strdup(string);
+	gchar *trimmed_string = g_strdup(string);
 	g_strchug(trimmed_string); /* remove possible leading whitespace */
 	
-	ft = filetypes[build_info.file_type_id];
+	GeanyFiletype *ft = filetypes[build_info.file_type_id];
 	
 	/* try parsing with a custom regex */
 	if (!filetypes_parse_error_message(ft, trimmed_string, filename, line))
@@ -1312,8 +1286,7 @@ gboolean msgwin_goto_messages_file_line(gboolean focus_editor)
 						   MSG_COL_DOC_ID, &id,
 						   MSG_COL_STRING, &string, -1);
 		if (line >= 0 && id > 0)
-		{
-			/* check doc is still open */
+		{	/* check doc is still open */
 			doc = document_find_by_id(id);
 			if (!doc)
 			{
@@ -1335,8 +1308,7 @@ gboolean msgwin_goto_messages_file_line(gboolean focus_editor)
 			/* try with a file:line parsing */
 			msgwin_parse_generic_line(string, &filename, &line);
 			if (filename != NULL)
-			{
-				/* use document_open_file to find an already open file,
+			{	/* use document_open_file to find an already open file,
 				 * or open it in place */
 				doc = document_open_file(filename, FALSE, NULL, NULL);
 				if (doc != NULL)
@@ -1445,11 +1417,10 @@ void msgwin_switch_tab(gint tabnum, gboolean show)
 	
 	/* the msgwin must be visible before we switch to the VTE page so that
 	 * the font settings are applied on realization */
-	if (show)
-		msgwin_show_hide(TRUE);
+	if (show) msgwin_show_hide(TRUE);
+	
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), tabnum);
-	if (show && widget)
-		gtk_widget_grab_focus(widget);
+	if (show && widget) gtk_widget_grab_focus(widget);
 }
 
 
@@ -1481,7 +1452,6 @@ void msgwin_clear_tab(gint tabnum)
 		case MSG_STATUS: store = msgwindow.store_status; break;
 		default: return;
 	}
-	if (store == NULL)
-		return;
+	if (store == NULL) return;
 	gtk_list_store_clear(store);
 }
