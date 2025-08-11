@@ -335,10 +335,7 @@ const gchar *main_get_version_string(void)
 {
 	static gchar full[] = VERSION " (git >= " REVISION ")";
 	
-	if (utils_str_equal(REVISION, "-1"))
-		return VERSION;
-	else
-		return full;
+	return utils_str_equal(REVISION, "-1") ? VERSION : full;
 }
 
 
@@ -826,8 +823,7 @@ gboolean main_handle_filename(const gchar *locale_filename)
 	
 	/* check whether the passed filename is an URI */
 	gchar *filename = utils_get_path_from_uri(locale_filename);
-	if (filename == NULL)
-		return FALSE;
+	if (filename == NULL) return FALSE;
 	
 	gint line = -1, column = -1;
 	get_line_and_column_from_filename(filename, &line, &column);
@@ -1438,15 +1434,13 @@ gboolean main_quit(void)
 	
 	if (!check_no_unsaved())
 	{
-		if (do_main_quit())
-			return TRUE;
+		if (do_main_quit()) return TRUE;
 	}
 	else if (!prefs.confirm_exit ||
 			 dialogs_show_question_full(NULL, GTK_STOCK_QUIT, GTK_STOCK_CANCEL,
 										NULL, _("Do you really want to quit?")))
 	{
-		if (do_main_quit())
-			return TRUE;
+		if (do_main_quit()) return TRUE;
 	}
 	
 	main_status.quitting = FALSE;

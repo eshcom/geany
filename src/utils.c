@@ -99,7 +99,7 @@ void utils_open_browser(const gchar *uri)
 
 
 /* taken from anjuta, to determine the EOL mode of the file */
-gint utils_get_line_endings(const gchar* buffer, gsize size)
+gint utils_get_line_endings(const gchar *buffer, gsize size)
 {
 	gsize i;
 	guint cr, lf, crlf, max_mode;

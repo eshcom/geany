@@ -143,8 +143,7 @@ static GtkWidget *document_show_message(GeanyDocument *doc, GtkMessageType msgty
 GEANY_API_SYMBOL
 GeanyDocument *document_find_by_real_path(const gchar *realname)
 {
-	if (!realname)
-		return NULL;	/* file doesn't exist on disk */
+	if (!realname) return NULL; /* file doesn't exist on disk */
 	
 	for (guint i = 0; i < documents_array->len; i++)
 	{
@@ -185,15 +184,13 @@ static gchar *get_real_path_from_utf8(const gchar *utf8_filename)
 GEANY_API_SYMBOL
 GeanyDocument *document_find_by_filename(const gchar *utf8_filename)
 {
-	guint i;
-	GeanyDocument *doc;
-	gchar *realname;
-	
 	g_return_val_if_fail(utf8_filename != NULL, NULL);
+	
+	GeanyDocument *doc;
 	
 	/* First search GeanyDocument::file_name, so we can find documents with a
 	 * filename set but not saved on disk, like vcdiff produces */
-	for (i = 0; i < documents_array->len; i++)
+	for (guint i = 0; i < documents_array->len; i++)
 	{
 		doc = documents[i];
 		
@@ -204,7 +201,7 @@ GeanyDocument *document_find_by_filename(const gchar *utf8_filename)
 			return doc;
 	}
 	/* Now try matching based on the realpath(), which is unique per file on disk */
-	realname = get_real_path_from_utf8(utf8_filename);
+	gchar *realname = get_real_path_from_utf8(utf8_filename);
 	doc = document_find_by_real_path(realname);
 	g_free(realname);
 	
@@ -246,8 +243,7 @@ GeanyDocument *document_find_by_sci(ScintillaObject *sci)
 GEANY_API_SYMBOL
 GeanyDocument *document_find_by_id(guint id)
 {
-	if (!id)
-		return NULL;
+	if (!id) return NULL;
 	
 	guint i;
 	foreach_document(i)
@@ -299,10 +295,9 @@ static ScintillaObject *locate_sci_in_container(GtkWidget *container)
 	g_return_val_if_fail(GTK_IS_CONTAINER(container), NULL);
 	
 	ScintillaObject *sci = NULL;
-	GList *children, *iter;
 	
-	children = gtk_container_get_children(GTK_CONTAINER(container));
-	for (iter = children; iter != NULL; iter = g_list_next(iter))
+	GList *children = gtk_container_get_children(GTK_CONTAINER(container));
+	for (GList *iter = children; iter != NULL; iter = g_list_next(iter))
 	{
 		if (IS_SCINTILLA(iter->data))
 		{
@@ -346,13 +341,11 @@ GeanyDocument *document_get_from_notebook_child(GtkWidget *page)
 GEANY_API_SYMBOL
 GeanyDocument *document_get_from_page(guint page_num)
 {
-	GtkWidget *parent;
+	if (page_num >= documents_array->len) return NULL;
 	
-	if (page_num >= documents_array->len)
-		return NULL;
-	
-	parent = gtk_notebook_get_nth_page(GTK_NOTEBOOK(main_widgets.notebook),
-									   page_num);
+	GtkWidget *parent = gtk_notebook_get_nth_page(
+							GTK_NOTEBOOK(main_widgets.notebook),
+							page_num);
 	
 	return document_get_from_notebook_child(parent);
 }
@@ -370,10 +363,7 @@ GeanyDocument *document_get_current(void)
 	gint cur_page = gtk_notebook_get_current_page(
 						GTK_NOTEBOOK(main_widgets.notebook));
 	
-	if (cur_page == -1)
-		return NULL;
-	else
-		return document_get_from_page((guint)cur_page);
+	return (cur_page == -1) ? NULL : document_get_from_page((guint)cur_page);
 }
 
 
@@ -409,16 +399,12 @@ void document_finalize(void)
 GEANY_API_SYMBOL
 gchar *document_get_basename_for_display(GeanyDocument *doc, gint length)
 {
-	gchar *base_name, *short_name;
-	
 	g_return_val_if_fail(doc != NULL, NULL);
 	
-	if (length < 0)
-		length = 30;
+	if (length < 0) length = 30;
 	
-	base_name = g_path_get_basename(DOC_FILENAME(doc));
-	short_name = utils_str_middle_truncate(base_name, (guint)length);
-	
+	gchar *base_name = g_path_get_basename(DOC_FILENAME(doc));
+	gchar *short_name = utils_str_middle_truncate(base_name, (guint)length);
 	g_free(base_name);
 	
 	return short_name;
@@ -437,14 +423,12 @@ GEANY_API_SYMBOL
 gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem,
 									 gboolean fullpath)
 {
-	gchar *path, *name;
-	
 	g_return_val_if_fail(doc != NULL, NULL);
 	
-	path = parentitem ? g_path_get_dirname(DOC_FILENAME(doc))
-					  : g_strdup(DOC_FILENAME(doc));
+	gchar *path = parentitem ? g_path_get_dirname(DOC_FILENAME(doc))
+							 : g_strdup(DOC_FILENAME(doc));
 	
-	name = fullpath ? g_strdup(path) : g_path_get_basename(path);
+	gchar *name = fullpath ? g_strdup(path) : g_path_get_basename(path);
 	g_free(path);
 	
 	return name;
@@ -453,16 +437,13 @@ gchar *document_get_name_or_fullpath(GeanyDocument *doc, gboolean parentitem,
 
 void document_update_tab_label(GeanyDocument *doc)
 {
-	gchar *short_name;
-	GtkWidget *parent;
-	
 	g_return_if_fail(doc != NULL);
 	
-	short_name = document_get_basename_for_display(doc, -1);
+	gchar *short_name = document_get_basename_for_display(doc, -1);
 	
 	/* we need to use the event box for the tooltip, 
 	 * labels don't get the necessary events */
-	parent = gtk_widget_get_parent(doc->priv->tab_label);
+	GtkWidget *parent = gtk_widget_get_parent(doc->priv->tab_label);
 	parent = gtk_widget_get_parent(parent);
 	
 	gtk_label_set_text(GTK_LABEL(doc->priv->tab_label), short_name);
@@ -513,8 +494,7 @@ static gint document_get_new_idx(void)
 
 static void queue_colourise(GeanyDocument *doc)
 {
-	if (doc->priv->colourise_needed)
-		return;
+	if (doc->priv->colourise_needed) return;
 	
 	/* Colourise the editor before it is next drawn */
 	doc->priv->colourise_needed = TRUE;
@@ -536,8 +516,7 @@ static void monitor_file_changed_cb(G_GNUC_UNUSED GFileMonitor *monitor,
 {
 	g_return_if_fail(doc != NULL);
 	
-	if (file_prefs.disk_check_timeout == 0)
-		return;
+	if (file_prefs.disk_check_timeout == 0) return;
 	
 	geany_debug("%s: event: %d previous file status: %d",
 				G_STRFUNC, event, doc->priv->file_disk_status);
@@ -622,8 +601,7 @@ void document_try_focus(GeanyDocument *doc, GtkWidget *source_widget,
 						gboolean force)
 {
 	/* doc might not be valid e.g. if user closed a tab whilst Geany is opening files */
-	if (!DOC_VALID(doc))
-		return;
+	if (!DOC_VALID(doc)) return;
 	
 	GtkWidget *sci = GTK_WIDGET(doc->editor->sci);
 	
@@ -654,7 +632,6 @@ static gboolean on_idle_focus(gpointer doc)
 static GeanyDocument *document_create(const gchar *utf8_filename)
 {
 	GeanyDocument *doc;
-	gint new_idx;
 	gint cur_pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
 	
 	if (cur_pages == 1)
@@ -667,7 +644,7 @@ static GeanyDocument *document_create(const gchar *utf8_filename)
 			remove_page(0);
 	}
 	
-	new_idx = document_get_new_idx();
+	gint new_idx = document_get_new_idx();
 	if (new_idx == -1)	/* expand the array, no free places */
 	{
 		doc = g_new0(GeanyDocument, 1);
@@ -696,9 +673,8 @@ static GeanyDocument *document_create(const gchar *utf8_filename)
 	
 	/* select document in sidebar */
 	{
-		GtkTreeSelection *sel;
-		
-		sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tv.tree_openfiles));
+		GtkTreeSelection *sel = gtk_tree_view_get_selection(
+									GTK_TREE_VIEW(tv.tree_openfiles));
 		gtk_tree_selection_select_iter(sel, &doc->priv->iter);
 	}
 	
@@ -1006,8 +982,7 @@ static gboolean get_mtime(const gchar *locale_filename, time_t *time)
 		g_free(display_filename);
 	}
 	
-	if (error)
-		g_error_free(error);
+	if (error) g_error_free(error);
 	
 	return err_msg == NULL;
 }
@@ -1185,8 +1160,7 @@ gboolean document_detect_indent_type(GeanyDocument *doc, GeanyIndentType *type_)
 		else if (c == ' ' && sci_get_char_at(sci, pos + 1) == ' ')
 			spaces++;
 	}
-	if (spaces == 0 && tabs == 0)
-		return FALSE;
+	if (spaces == 0 && tabs == 0) return FALSE;
 	
 	/* the factors may need to be tweaked */
 	if (spaces > tabs * 4)
@@ -1206,20 +1180,18 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 									gint *width_)
 {
 	/* can't easily detect the supposed width of a tab, guess the default is OK */
-	if (type == GEANY_INDENT_TYPE_TABS)
-		return FALSE;
+	if (type == GEANY_INDENT_TYPE_TABS) return FALSE;
 	
 	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(editor);
 	ScintillaObject *sci = editor->sci;
-	gint line, line_count;
 	gint widths[7] = { 0 }; /* width can be from 2 to 8 */
-	gint count, width, i;
+	gint width, i;
 	
 	/* force 8 at detection time for tab & spaces -- anyway we don't use tabs at this point */
 	sci_set_tab_width(sci, 8);
 	
-	line_count = sci_get_line_count(sci);
-	for (line = 0; line < line_count; line++)
+	gint line_count = sci_get_line_count(sci);
+	for (gint line = 0; line < line_count; line++)
 	{
 		gint pos = sci_get_line_indent_position(sci, line);
 		
@@ -1247,7 +1219,7 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 		}
 	}
 	
-	count = 0;
+	gint count = 0;
 	width = iprefs->width;
 	for (i = G_N_ELEMENTS(widths) - 1; i >= 0; i--)
 	{
@@ -1259,8 +1231,7 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 		}
 	}
 	
-	if (count == 0)
-		return FALSE;
+	if (count == 0) return FALSE;
 	
 	*width_ = width;
 	return TRUE;
@@ -1586,15 +1557,14 @@ void document_open_file_list(const gchar *data, gsize length)
 {
 	g_return_if_fail(data != NULL);
 	
-	gchar **items = g_strsplit(data, utils_get_eol_char(
-										utils_get_line_endings(data, length)), 0);
-	
+	gchar **items = g_strsplit(data,
+							   utils_get_eol_char(utils_get_line_endings(data, length)),
+							   0);
 	/* stop at the end or first empty item, because last item is empty but not null */
 	for (gchar **item = items; *item && **item; item++)
 	{
 		gchar *filename = utils_get_path_from_uri(*item);
-		if (filename == NULL)
-			continue;
+		if (filename == NULL) continue;
 		
 		document_open_file(filename, FALSE, NULL, NULL);
 		g_free(filename);
@@ -1661,10 +1631,6 @@ gboolean document_reload_force(GeanyDocument *doc, const gchar *forced_enc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	gint pos = 0;
-	GeanyDocument *new_doc;
-	GtkWidget *bar;
-	
 	/* Cancel resave bar if still open from previous file deletion */
 	if (doc->priv->info_bars[MSG_TYPE_RESAVE] != NULL)
 		gtk_info_bar_response(GTK_INFO_BAR(doc->priv->info_bars[MSG_TYPE_RESAVE]),
@@ -1676,23 +1642,23 @@ gboolean document_reload_force(GeanyDocument *doc, const gchar *forced_enc)
 							  GTK_RESPONSE_CANCEL);
 	
 	/* try to set the cursor to the position before reloading */
-	pos = sci_get_current_position(doc->editor->sci);
-	new_doc = document_open_file_full(doc, NULL, pos, doc->readonly,
-									  doc->file_type, forced_enc);
+	gint pos = sci_get_current_position(doc->editor->sci);
+	GeanyDocument *new_doc = document_open_file_full(doc, NULL, pos, doc->readonly,
+													 doc->file_type, forced_enc);
 	
 	if (file_prefs.keep_edit_history_on_reload &&
 		file_prefs.show_keep_edit_history_on_reload_msg)
 	{
-		bar = document_show_message(doc, GTK_MESSAGE_INFO,
-						on_keep_edit_history_on_reload_response,
-						GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-						_("Discard history"), GTK_RESPONSE_NO, NULL, 0,
-						_("The buffer's previous state is stored in the history and "
-						  "undoing restores it. You can disable this by discarding "
-						  "the history upon reload. This message will not be "
-						  "displayed again but your choice can be changed in the "
-						  "various preferences."),
-						_("The file has been reloaded."));
+		GtkWidget *bar = document_show_message(doc, GTK_MESSAGE_INFO,
+							on_keep_edit_history_on_reload_response,
+							GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+							_("Discard history"), GTK_RESPONSE_NO, NULL, 0,
+							_("The buffer's previous state is stored in the history and "
+							  "undoing restores it. You can disable this by discarding "
+							  "the history upon reload. This message will not be "
+							  "displayed again but your choice can be changed in the "
+							  "various preferences."),
+							_("The file has been reloaded."));
 		doc->priv->info_bars[MSG_TYPE_POST_RELOAD] = bar;
 		file_prefs.show_keep_edit_history_on_reload_msg = FALSE;
 	}
@@ -1751,18 +1717,15 @@ static void document_update_timestamp(GeanyDocument *doc,
 static void get_line_column_from_pos(GeanyDocument *doc, guint byte_pos,
 									 gint *line, gint *column)
 {
-	gint i;
-	gint line_start;
-	
 	/* for some reason we can use byte count instead of character count here */
 	*line = sci_get_line_from_position(doc->editor->sci, byte_pos);
-	line_start = sci_get_position_from_line(doc->editor->sci, *line);
+	gint line_start = sci_get_position_from_line(doc->editor->sci, *line);
 	/* get the column in the line */
 	*column = byte_pos - line_start;
 	
 	/* any non-ASCII characters are encoded with two bytes(UTF-8, always in Scintilla),
 	 * so skip one byte(i++) and decrease the column number which is based on byte count */
-	for (i = line_start; i < (line_start + *column); i++)
+	for (gint i = line_start; i < (line_start + *column); i++)
 	{
 		if (sci_get_char_at(doc->editor->sci, i) < 0)
 		{
@@ -1775,22 +1738,20 @@ static void get_line_column_from_pos(GeanyDocument *doc, guint byte_pos,
 
 static void replace_header_filename(GeanyDocument *doc)
 {
-	gchar *filebase;
-	gchar *filename;
-	struct Sci_TextToFind ttf;
-	
 	g_return_if_fail(doc != NULL);
 	g_return_if_fail(doc->file_type != NULL);
 	
-	filebase = g_regex_escape_string(GEANY_STRING_UNTITLED, -1);
+	gchar *filebase = g_regex_escape_string(GEANY_STRING_UNTITLED, -1);
+	
 	if (doc->file_type->extension)
 		SETPTR(filebase, g_strconcat("\\b", filebase, "\\.\\w+", NULL));
 	else
 		SETPTR(filebase, g_strconcat("\\b", filebase, "\\b", NULL));
 	
-	filename = g_path_get_basename(doc->file_name);
+	gchar *filename = g_path_get_basename(doc->file_name);
 	
 	/* only search the first 3 lines */
+	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = 0;
 	ttf.chrg.cpMax = sci_get_position_from_line(doc->editor->sci, 4);
 	ttf.lpstrText = filebase;
@@ -1890,13 +1851,11 @@ gboolean document_need_save_as(GeanyDocument *doc)
 GEANY_API_SYMBOL
 gboolean document_save_file_as(GeanyDocument *doc, const gchar *utf8_fname)
 {
-	gboolean ret;
-	gboolean new_file;
-	
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	new_file = document_need_save_as(doc) || (utf8_fname != NULL &&
-											  strcmp(doc->file_name, utf8_fname) != 0);
+	gboolean new_file = document_need_save_as(doc) ||
+							(utf8_fname != NULL &&
+							 strcmp(doc->file_name, utf8_fname) != 0);
 	if (utf8_fname != NULL)
 		SETPTR(doc->file_name, g_strdup(utf8_fname));
 	
@@ -1928,15 +1887,14 @@ gboolean document_save_file_as(GeanyDocument *doc, const gchar *utf8_fname)
 	
 	replace_header_filename(doc);
 	
-	ret = document_save_file(doc, TRUE);
+	gboolean ret = document_save_file(doc, TRUE);
 	
 	/* file monitoring support, add file monitoring after the file
 	 * has been saved to ignore any earlier events */
 	monitor_file_setup(doc);
 	doc->priv->file_disk_status = FILE_IGNORE;
 	
-	if (ret)
-		ui_add_recent_document(doc);
+	if (ret) ui_add_recent_document(doc);
 	return ret;
 }
 
@@ -1948,14 +1906,11 @@ static gsize save_convert_to_encoding(GeanyDocument *doc,
 	g_return_val_if_fail(len != NULL, FALSE);
 	
 	GError *conv_error = NULL;
-	gchar *conv_file_contents = NULL;
-	gsize bytes_read;
-	gsize conv_len;
+	gsize bytes_read, conv_len;
 	
 	/* try to convert it from UTF-8 to original encoding */
-	conv_file_contents = g_convert(*data, *len - 1, doc->encoding, "UTF-8",
-								   &bytes_read, &conv_len, &conv_error);
-	
+	gchar *conv_file_contents = g_convert(*data, *len - 1, doc->encoding, "UTF-8",
+										  &bytes_read, &conv_len, &conv_error);
 	if (conv_error != NULL)
 	{
 		gchar *text = g_strdup_printf(_("An error occurred while converting the file "
@@ -2034,14 +1989,13 @@ static gchar *write_data_to_disk(const gchar *locale_filename,
 	}
 	else
 	{
-		FILE *fp;
 		int save_errno;
 		gchar *display_name = g_filename_display_name(locale_filename);
 		
 		/* Use POSIX API for unsafe saving (GVFS-unsafe) */
 		/* The error handling is taken from glib-2.26.0 gfileutils.c */
 		errno = 0;
-		fp = g_fopen(locale_filename, "wb");
+		FILE *fp = g_fopen(locale_filename, "wb");
 		if (fp == NULL)
 		{
 			save_errno = errno;
@@ -2055,10 +2009,8 @@ static gchar *write_data_to_disk(const gchar *locale_filename,
 		}
 		else
 		{
-			gsize bytes_written;
-			
 			errno = 0;
-			bytes_written = fwrite(data, sizeof(gchar), len, fp);
+			gsize bytes_written = fwrite(data, sizeof(gchar), len, fp);
 			
 			if (len != bytes_written)
 			{
@@ -2106,8 +2058,7 @@ static gchar *save_doc(GeanyDocument *doc, const gchar *locale_filename,
 	g_return_val_if_fail(data != NULL, g_strdup(g_strerror(EINVAL)));
 	
 	gchar *err = write_data_to_disk(locale_filename, data, len);
-	if (err)
-		return err;
+	if (err) return err;
 	
 	/* now the file is on disk, set real_path */
 	if (doc->real_path == NULL)
@@ -2185,12 +2136,6 @@ static gboolean save_file_handle_infobars(GeanyDocument *doc, gboolean force)
 GEANY_API_SYMBOL
 gboolean document_save_file(GeanyDocument *doc, gboolean force)
 {
-	gchar *errmsg;
-	gchar *data;
-	gsize len;
-	gchar *locale_filename;
-	const GeanyFilePrefs *fp;
-	
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
 	if (document_need_save_as(doc))
@@ -2202,6 +2147,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	
 	if (!force && !doc->changed)
 		return FALSE;
+	
 	if (doc->readonly)
 	{
 		gchar *display_filename = utils_get_display_filename(doc->file_name);
@@ -2214,7 +2160,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	if (doc->priv->protected)
 		return save_file_handle_infobars(doc, force);
 	
-	fp = project_get_file_prefs();
+	const GeanyFilePrefs *fp = project_get_file_prefs();
 	/* replaces tabs with spaces but only if the current file is not a Makefile */
 	if (fp->replace_tabs && doc->file_type->id != GEANY_FILETYPES_MAKE)
 		editor_replace_tabs(doc->editor, TRUE);
@@ -2231,7 +2177,9 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	/* notify plugins which may wish to modify the document before it's saved */
 	g_signal_emit_by_name(geany_object, "document-before-save", doc);
 	
-	len = sci_get_length(doc->editor->sci) + 1;
+	gchar *data;
+	gsize len = sci_get_length(doc->editor->sci) + 1;
+	
 	if (doc->has_bom && encodings_is_unicode_charset(doc->encoding))
 	{	/* always write a UTF-8 BOM because in this moment the text itself
 		 * is still in UTF-8 encoding, it will be converted to doc->encoding
@@ -2262,13 +2210,13 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 	else
 		len = strlen(data);
 	
-	locale_filename = utils_get_locale_from_utf8(doc->file_name);
+	gchar *locale_filename = utils_get_locale_from_utf8(doc->file_name);
 	
 	/* ignore file changed notification when the file is written */
 	doc->priv->file_disk_status = FILE_IGNORE;
 	
 	/* actually write the content of data to the file on disk */
-	errmsg = save_doc(doc, locale_filename, data, len);
+	gchar *errmsg = save_doc(doc, locale_filename, data, len);
 	g_free(data);
 	
 	if (errmsg != NULL)
@@ -2330,22 +2278,19 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 gboolean document_search_bar_find(GeanyDocument *doc, const gchar *text,
 								  gboolean inc, gboolean backwards)
 {
-	gint start_pos, search_pos;
-	struct Sci_TextToFind ttf;
-	
 	g_return_val_if_fail(text != NULL, FALSE);
 	g_return_val_if_fail(doc != NULL, FALSE);
-	if (!*text)
-		return TRUE;
+	if (!*text) return TRUE;
 	
-	start_pos = (inc || backwards) ? sci_get_selection_start(doc->editor->sci)
-								   : sci_get_selection_end(doc->editor->sci); /* equal if no selection */
+	gint start_pos = (inc || backwards) ? sci_get_selection_start(doc->editor->sci)
+										: sci_get_selection_end(doc->editor->sci); /* equal if no selection */
 	
 	/* search cursor to end or start */
+	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = start_pos;
 	ttf.chrg.cpMax = backwards ? 0 : sci_get_length(doc->editor->sci);
 	ttf.lpstrText = (gchar *)text;
-	search_pos = sci_find_text(doc->editor->sci, 0, &ttf);
+	gint search_pos = sci_find_text(doc->editor->sci, 0, &ttf);
 	
 	/* if no match, search start (or end) to cursor */
 	if (search_pos == -1)
@@ -2408,11 +2353,8 @@ gint document_find_text(GeanyDocument *doc, const gchar *text,
 						gboolean search_backwards, GeanyMatchInfo **match_,
 						gboolean scroll, GtkWidget *parent)
 {
-	gint selection_end, selection_start, search_pos;
-	
 	g_return_val_if_fail(doc != NULL && text != NULL, -1);
-	if (!*text)
-		return -1;
+	if (!*text) return -1;
 	
 	/* Sci doesn't support searching backwards with a regex */
 	if (flags & GEANY_FIND_REGEXP)
@@ -2421,31 +2363,27 @@ gint document_find_text(GeanyDocument *doc, const gchar *text,
 	if (!original_text)
 		original_text = text;
 	
-	selection_start = sci_get_selection_start(doc->editor->sci);
-	selection_end = sci_get_selection_end(doc->editor->sci);
+	gint selection_start = sci_get_selection_start(doc->editor->sci);
+	gint selection_end = sci_get_selection_end(doc->editor->sci);
 	if ((selection_end - selection_start) > 0)
-	{ /* there's a selection so go to the end */
-		if (search_backwards)
-			sci_goto_pos(doc->editor->sci, selection_start, TRUE);
-		else
-			sci_goto_pos(doc->editor->sci, selection_end, TRUE);
+	{	/* there's a selection so go to the end */
+		sci_goto_pos(doc->editor->sci,
+					 search_backwards ? selection_start : selection_end,
+					 TRUE);
 	}
 	
 	sci_set_search_anchor(doc->editor->sci);
 	
-	if (search_backwards)
-		search_pos = search_find_prev(doc->editor->sci, text, flags, match_);
-	else
-		search_pos = search_find_next(doc->editor->sci, text, flags, match_);
-	
+	gint search_pos = search_backwards
+						? search_find_prev(doc->editor->sci, text, flags, match_)
+						: search_find_next(doc->editor->sci, text, flags, match_);
 	if (search_pos != -1)
 	{
 		/* unfold maybe folded results */
 		sci_ensure_line_is_visible(doc->editor->sci,
 								   sci_get_line_from_position(doc->editor->sci,
 															  search_pos));
-		if (scroll)
-			doc->editor->scroll_percent = 0.3F;
+		if (scroll) doc->editor->scroll_percent = 0.3F;
 	}
 	else
 	{
@@ -2468,12 +2406,10 @@ gint document_find_text(GeanyDocument *doc, const gchar *text,
 									   _("\"%s\" was not found."),
 									   original_text))
 		{
-			gint ret;
-			
 			sci_set_current_position(doc->editor->sci,
 									 search_backwards ? sci_len : 0, FALSE);
-			ret = document_find_text(doc, text, original_text, flags,
-									 search_backwards, match_, scroll, parent);
+			gint ret = document_find_text(doc, text, original_text, flags,
+										  search_backwards, match_, scroll, parent);
 			if (ret == -1)
 			{	/* return to original cursor position if not found */
 				sci_set_current_position(doc->editor->sci, selection_start, FALSE);
@@ -2498,13 +2434,9 @@ gint document_replace_text(GeanyDocument *doc, const gchar *find_text,
 						   GeanyFindFlags flags,
 						   gboolean search_backwards)
 {
-	gint selection_end, selection_start, search_pos;
-	GeanyMatchInfo *match = NULL;
-	
 	g_return_val_if_fail(doc != NULL && find_text != NULL &&
 						 replace_text != NULL, -1);
-	if (!*find_text)
-		return -1;
+	if (!*find_text) return -1;
 	
 	/* Sci doesn't support searching backwards with a regex */
 	if (flags & GEANY_FIND_REGEXP)
@@ -2513,8 +2445,8 @@ gint document_replace_text(GeanyDocument *doc, const gchar *find_text,
 	if (!original_find_text)
 		original_find_text = find_text;
 	
-	selection_start = sci_get_selection_start(doc->editor->sci);
-	selection_end = sci_get_selection_end(doc->editor->sci);
+	gint selection_start = sci_get_selection_start(doc->editor->sci);
+	gint selection_end = sci_get_selection_end(doc->editor->sci);
 	if (selection_end == selection_start)
 	{
 		/* no selection so just find the next match */
@@ -2524,19 +2456,18 @@ gint document_replace_text(GeanyDocument *doc, const gchar *find_text,
 	}
 	/* there's a selection so go to the start before finding to search
 	 * through it this ensures there is a match */
-	if (search_backwards)
-		sci_goto_pos(doc->editor->sci, selection_end, TRUE);
-	else
-		sci_goto_pos(doc->editor->sci, selection_start, TRUE);
+	sci_goto_pos(doc->editor->sci,
+				 search_backwards ? selection_end : selection_start,
+				 TRUE);
 	
-	search_pos = document_find_text(doc, find_text, original_find_text, flags,
-									search_backwards, &match, TRUE, NULL);
+	GeanyMatchInfo *match = NULL;
+	gint search_pos = document_find_text(doc, find_text, original_find_text, flags,
+										 search_backwards, &match, TRUE, NULL);
 	/* return if the original selected text did not match
 	 * (at the start of the selection) */
 	if (search_pos != selection_start)
 	{
-		if (search_pos != -1)
-			geany_match_info_free(match);
+		if (search_pos != -1) geany_match_info_free(match);
 		return -1;
 	}
 	
@@ -2550,8 +2481,7 @@ gint document_replace_text(GeanyDocument *doc, const gchar *find_text,
 		geany_match_info_free(match);
 	}
 	else
-	{
-		/* no match in the selection */
+	{	/* no match in the selection */
 		utils_beep();
 	}
 	return search_pos;
@@ -2590,26 +2520,21 @@ static guint document_replace_range(GeanyDocument *doc, const gchar *find_text,
 									gint start, gint end, gboolean scroll_to_match,
 									gint *new_range_end)
 {
-	gint count = 0;
-	struct Sci_TextToFind ttf;
-	ScintillaObject *sci;
-	
-	if (new_range_end != NULL)
-		*new_range_end = -1;
+	if (new_range_end != NULL) *new_range_end = -1;
 	
 	g_return_val_if_fail(doc != NULL && find_text != NULL &&
 						 replace_text != NULL, 0);
-	if (!*find_text || doc->readonly)
-		return 0;
+	if (!*find_text || doc->readonly) return 0;
 	
-	sci = doc->editor->sci;
+	ScintillaObject *sci = doc->editor->sci;
 	
+	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = start;
 	ttf.chrg.cpMax = end;
 	ttf.lpstrText = (gchar *)find_text;
 	
 	sci_start_undo_action(sci);
-	count = search_replace_range(sci, &ttf, flags, replace_text);
+	gint count = search_replace_range(sci, &ttf, flags, replace_text);
 	sci_end_undo_action(sci);
 	
 	if (count > 0)
@@ -2632,8 +2557,7 @@ void document_replace_sel(GeanyDocument *doc, const gchar *find_text,
 {
 	g_return_if_fail(doc != NULL && find_text != NULL &&
 					 replace_text != NULL);
-	if (!*find_text)
-		return;
+	if (!*find_text) return;
 	
 	gint selection_start = sci_get_selection_start(doc->editor->sci);
 	gint selection_end = sci_get_selection_end(doc->editor->sci);
@@ -2689,13 +2613,12 @@ void document_replace_sel(GeanyDocument *doc, const gchar *find_text,
 		}
 		sci_end_undo_action(doc->editor->sci);
 	}
-	else	/* handle normal line selection */
+	else /* handle normal line selection */
 	{
 		count += document_replace_range(doc, find_text, replace_text, flags,
 										selection_start, selection_end,
 										TRUE, &selection_end);
-		if (selection_end != -1)
-			replaced = TRUE;
+		if (selection_end != -1) replaced = TRUE;
 	}
 	
 	if (replaced)
@@ -2742,14 +2665,12 @@ gint document_replace_all(GeanyDocument *doc, const gchar *find_text,
 						  const gchar *original_replace_text,
 						  GeanyFindFlags flags)
 {
-	gint len, count;
 	g_return_val_if_fail(doc != NULL && find_text != NULL &&
 						 replace_text != NULL, FALSE);
-	if (!*find_text)
-		return FALSE;
+	if (!*find_text) return FALSE;
 	
-	len = sci_get_length(doc->editor->sci);
-	count = document_replace_range(doc, find_text, replace_text,
+	gint len = sci_get_length(doc->editor->sci);
+	gint count = document_replace_range(doc, find_text, replace_text,
 								   flags, 0, len, TRUE, NULL);
 	
 	show_replace_summary(doc, count, original_find_text,
@@ -2766,9 +2687,6 @@ gint document_replace_all(GeanyDocument *doc, const gchar *find_text,
  */
 void document_update_tags(GeanyDocument *doc)
 {
-	guchar *buffer_ptr;
-	gsize len;
-	
 	g_return_if_fail(DOC_VALID(doc));
 	g_return_if_fail(app->tm_workspace != NULL);
 	
@@ -2787,10 +2705,9 @@ void document_update_tags(GeanyDocument *doc)
 	if (!doc->tm_file)
 	{
 		gchar *locale_filename = utils_get_locale_from_utf8(doc->file_name);
-		const gchar *name;
 		
 		/* lookup the name rather than using filetype name to support custom filetypes */
-		name = tm_source_file_get_lang_name(doc->file_type->lang);
+		const gchar *name = tm_source_file_get_lang_name(doc->file_type->lang);
 		doc->tm_file = tm_source_file_new(locale_filename, name);
 		g_free(locale_filename);
 		
@@ -2810,8 +2727,9 @@ void document_update_tags(GeanyDocument *doc)
 	
 	/* Parse Scintilla's buffer directly using TagManager
 	 * Note: this buffer *MUST NOT* be modified */
-	len = sci_get_length(doc->editor->sci);
-	buffer_ptr = (guchar *) SSM(doc->editor->sci, SCI_GETCHARACTERPOINTER, 0, 0);
+	gsize len = sci_get_length(doc->editor->sci);
+	guchar *buffer_ptr = (guchar *) SSM(doc->editor->sci,
+										SCI_GETCHARACTERPOINTER, 0, 0);
 	tm_workspace_update_source_file_buffer(doc->tm_file, buffer_ptr, len);
 	
 	sidebar_update_tag_list(doc, TRUE);
@@ -2822,7 +2740,6 @@ void document_update_tags(GeanyDocument *doc)
 /* Re-highlights type keywords without re-parsing the whole document. */
 void document_highlight_tags(GeanyDocument *doc)
 {
-	GString *keywords_str;
 	gint keyword_idx;
 	
 	/* some filetypes support type keywords (such as struct names), but not
@@ -2840,8 +2757,7 @@ void document_highlight_tags(GeanyDocument *doc)
 		case GEANY_FILETYPES_VALA:
 		case GEANY_FILETYPES_RUST:
 		case GEANY_FILETYPES_GO:
-		{
-			/* index of the keyword set in the Scintilla lexer, for
+		{	/* index of the keyword set in the Scintilla lexer, for
 			 * example in LexCPP.cxx, see "cppWordLists" global array.
 			 * TODO: this magic number should be a member of the filetype */
 			keyword_idx = 3;
@@ -2857,7 +2773,8 @@ void document_highlight_tags(GeanyDocument *doc)
 	
 	/* get any type keywords and tell scintilla about them
 	 * this will cause the type keywords to be colourized in scintilla */
-	keywords_str = symbols_find_typenames_as_string(doc->file_type->lang, FALSE);
+	GString *keywords_str = symbols_find_typenames_as_string(doc->file_type->lang,
+															 FALSE);
 	if (keywords_str)
 	{
 		gchar *keywords = g_string_free(keywords_str, FALSE);
@@ -2951,21 +2868,18 @@ static void document_load_config(GeanyDocument *doc, GeanyFiletype *type,
 GEANY_API_SYMBOL
 void document_set_filetype(GeanyDocument *doc, GeanyFiletype *type)
 {
-	gboolean ft_changed;
-	GeanyFiletype *old_ft;
-	
 	g_return_if_fail(doc);
 	
 	if (type == NULL)
 		type = filetypes[GEANY_FILETYPES_NONE];
 	
-	old_ft = doc->file_type;
+	GeanyFiletype *old_ft = doc->file_type;
 	geany_debug("%s : %s (%s)",
 				(doc->file_name != NULL) ? doc->file_name : "unknown",
 				type->name,
 				(doc->encoding != NULL) ? doc->encoding : "unknown");
 	
-	ft_changed = (doc->file_type != type); /* filetype has changed */
+	gboolean ft_changed = (doc->file_type != type); /* filetype has changed */
 	document_load_config(doc, type, ft_changed);
 	
 	if (ft_changed)
@@ -3092,11 +3006,9 @@ void document_undo_clear(GeanyDocument *doc)
 void document_undo_add_internal(GeanyDocument *doc, guint type,
 								gpointer data)
 {
-	undo_action *action;
-	
 	g_return_if_fail(doc != NULL);
 	
-	action = g_new0(undo_action, 1);
+	undo_action *action = g_new0(undo_action, 1);
 	action->type = type;
 	action->data = data;
 	
@@ -3123,8 +3035,8 @@ gboolean document_can_undo(GeanyDocument *doc)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	if (g_trash_stack_height(&doc->priv->undo_actions) > 0 ||
-		sci_can_undo(doc->editor->sci))
+	if (g_trash_stack_height(&doc->priv->undo_actions) > 0
+		|| sci_can_undo(doc->editor->sci))
 		return TRUE;
 	else
 		return FALSE;
@@ -3143,11 +3055,9 @@ static void update_changed_state(GeanyDocument *doc)
 
 void document_undo(GeanyDocument *doc)
 {
-	undo_action *action;
-	
 	g_return_if_fail(doc != NULL);
 	
-	action = g_trash_stack_pop(&doc->priv->undo_actions);
+	undo_action *action = g_trash_stack_pop(&doc->priv->undo_actions);
 	
 	if (G_UNLIKELY(action == NULL))
 	{
@@ -3253,11 +3163,9 @@ gboolean document_can_redo(GeanyDocument *doc)
 
 void document_redo(GeanyDocument *doc)
 {
-	undo_action *action;
-	
 	g_return_if_fail(doc != NULL);
 	
-	action = g_trash_stack_pop(&doc->priv->redo_actions);
+	undo_action *action = g_trash_stack_pop(&doc->priv->redo_actions);
 	
 	if (G_UNLIKELY(action == NULL))
 	{
@@ -3271,16 +3179,14 @@ void document_redo(GeanyDocument *doc)
 		{
 			case UNDO_SCINTILLA:
 			{
-				undo_action *next_action;
-				
 				document_undo_add_internal(doc, UNDO_SCINTILLA, NULL);
-				
 				sci_redo(doc->editor->sci);
 				
 				/* When redoing an EOL change, the UNDO_SCINTILLA which changes
 				 * the line ends in the editor is followed by UNDO_EOL
 				 * which should be performed together with UNDO_SCINTILLA. */
-				next_action = g_trash_stack_peek(&doc->priv->redo_actions);
+				undo_action *next_action =
+								g_trash_stack_peek(&doc->priv->redo_actions);
 				if (next_action != NULL && next_action->type == UNDO_EOL)
 					document_redo(doc);
 				break;
@@ -3352,11 +3258,9 @@ void document_redo(GeanyDocument *doc)
 
 static void document_redo_add(GeanyDocument *doc, guint type, gpointer data)
 {
-	undo_action *action;
-	
 	g_return_if_fail(doc != NULL);
 	
-	action = g_new0(undo_action, 1);
+	undo_action *action = g_new0(undo_action, 1);
 	action->type = type;
 	action->data = data;
 	
@@ -3413,10 +3317,8 @@ const gchar *document_get_status_widget_class(GeanyDocument *doc)
 	g_return_val_if_fail(doc != NULL, NULL);
 	
 	gint status = document_get_status_id(doc);
-	if (status < 0)
-		return NULL;
-	else
-		return document_status_styles[status].name;
+	
+	return (status < 0) ? NULL : document_status_styles[status].name;
 }
 
 
@@ -3440,8 +3342,7 @@ const GdkColor *document_get_status_color(GeanyDocument *doc)
 	g_return_val_if_fail(doc != NULL, NULL);
 	
 	gint status = document_get_status_id(doc);
-	if (status < 0)
-		return NULL;
+	if (status < 0) return NULL;
 	
 	if (!document_status_styles[status].loaded)
 	{
@@ -3499,17 +3400,13 @@ GeanyDocument *document_index(gint idx)
 
 GeanyDocument *document_clone(GeanyDocument *old_doc)
 {
-	gchar *text;
-	GeanyDocument *doc;
-	ScintillaObject *old_sci;
-	
 	g_return_val_if_fail(old_doc, NULL);
-	old_sci = old_doc->editor->sci;
+	ScintillaObject *old_sci = old_doc->editor->sci;
 	
-	text = sci_has_selection(old_sci) ? sci_get_selection_contents(old_sci)
-									  : sci_get_contents(old_sci, -1);
+	gchar *text = sci_has_selection(old_sci) ? sci_get_selection_contents(old_sci)
+											 : sci_get_contents(old_sci, -1);
 	
-	doc = document_new_file(NULL, old_doc->file_type, text);
+	GeanyDocument *doc = document_new_file(NULL, old_doc->file_type, text);
 	g_free(text);
 	document_set_text_changed(doc, TRUE);
 	
@@ -3535,11 +3432,10 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 /* @return TRUE if all files were saved or had their changes discarded. */
 gboolean document_account_for_unsaved(void)
 {
-	guint p, page_count;
+	guint page_count = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
 	
-	page_count = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook));
 	/* iterate over documents in tabs order */
-	for (p = 0; p < page_count; p++)
+	for (guint p = 0; p < page_count; p++)
 	{
 		GeanyDocument *doc = document_get_from_page(p);
 		
@@ -3613,19 +3509,16 @@ static GtkWidget *document_show_message(GeanyDocument *doc, GtkMessageType msgty
 										const gchar *extra_text, const gchar *format, ...)
 {
 	va_list args;
-	gchar *text, *markup;
-	GtkWidget *hbox, *icon, *label, *content_area;
-	GtkWidget *info_widget, *parent;
-	parent = document_get_notebook_child(doc);
+	GtkWidget *parent = document_get_notebook_child(doc);
 	
 	va_start(args, format);
-	text = g_strdup_vprintf(format, args);
+	gchar *text = g_strdup_vprintf(format, args);
 	va_end(args);
 	
-	markup = g_markup_printf_escaped("<span size=\"larger\">%s</span>", text);
+	gchar *markup = g_markup_printf_escaped("<span size=\"larger\">%s</span>", text);
 	g_free(text);
 	
-	info_widget = gtk_info_bar_new();
+	GtkWidget *info_widget = gtk_info_bar_new();
 	/* must be done now else Gtk-WARNING: widget not within a GtkWindow */
 	gtk_box_pack_start(GTK_BOX(parent), info_widget, FALSE, TRUE, 0);
 	
@@ -3638,15 +3531,16 @@ static GtkWidget *document_show_message(GeanyDocument *doc, GtkMessageType msgty
 	if (btn_3)
 		gtk_info_bar_add_button(GTK_INFO_BAR(info_widget), btn_3, response_3);
 	
-	content_area = gtk_info_bar_get_content_area(GTK_INFO_BAR(info_widget));
+	GtkWidget *content_area = gtk_info_bar_get_content_area(GTK_INFO_BAR(info_widget));
 	
-	label = geany_wrap_label_new(NULL);
+	GtkWidget *label = geany_wrap_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 	
 	g_signal_connect(info_widget, "response", G_CALLBACK(response_cb), doc);
 	
-	hbox = gtk_hbox_new(FALSE, 12);
+	GtkWidget *icon;
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 12);
 	gtk_box_pack_start(GTK_BOX(content_area), hbox, TRUE, TRUE, 0);
 	
 	switch (msgtype)
@@ -3858,18 +3752,12 @@ gboolean document_check_disk_status(GeanyDocument *doc, gboolean force)
 {
 	g_return_val_if_fail(doc != NULL, FALSE);
 	
-	gboolean ret = FALSE;
-	gboolean use_gio_filemon;
-	time_t mtime = 0;
-	gchar *locale_filename;
-	FileDiskStatus old_status;
-	
 	/* ignore remote files and documents that have never been saved to disk */
 	if (notebook_switch_in_progress() || file_prefs.disk_check_timeout == 0
 			|| doc->real_path == NULL || doc->priv->is_remote)
 		return FALSE;
 	
-	use_gio_filemon = (doc->priv->monitor != NULL);
+	gboolean use_gio_filemon = (doc->priv->monitor != NULL);
 	
 	if (use_gio_filemon)
 	{
@@ -3887,7 +3775,10 @@ gboolean document_check_disk_status(GeanyDocument *doc, gboolean force)
 		doc->priv->last_check = cur_time;
 	}
 	
-	locale_filename = utils_get_locale_from_utf8(doc->file_name);
+	gboolean ret = FALSE;
+	gchar *locale_filename = utils_get_locale_from_utf8(doc->file_name);
+	
+	time_t mtime = 0;
 	if (!get_mtime(locale_filename, &mtime))
 	{
 		monitor_resave_missing_file(doc);
@@ -3907,7 +3798,7 @@ gboolean document_check_disk_status(GeanyDocument *doc, gboolean force)
 	
 	if (DOC_VALID(doc))
 	{	/* doc can get invalid when a document was closed */
-		old_status = doc->priv->file_disk_status;
+		FileDiskStatus old_status = doc->priv->file_disk_status;
 		doc->priv->file_disk_status = FILE_OK;
 		
 		if (old_status != doc->priv->file_disk_status)
@@ -3934,13 +3825,10 @@ gint document_compare_by_display_name(gconstpointer a, gconstpointer b)
 	GeanyDocument *doc_a = *((GeanyDocument **)a);
 	GeanyDocument *doc_b = *((GeanyDocument **)b);
 	
-	gchar *base_name_a, *base_name_b;
-	gint result;
+	gchar *base_name_a = g_path_get_basename(DOC_FILENAME(doc_a));
+	gchar *base_name_b = g_path_get_basename(DOC_FILENAME(doc_b));
 	
-	base_name_a = g_path_get_basename(DOC_FILENAME(doc_a));
-	base_name_b = g_path_get_basename(DOC_FILENAME(doc_b));
-	
-	result = strcmp(base_name_a, base_name_b);
+	gint result = strcmp(base_name_a, base_name_b);
 	
 	g_free(base_name_a);
 	g_free(base_name_b);
@@ -3965,11 +3853,8 @@ gint document_compare_by_tab_order(gconstpointer a, gconstpointer b)
 	GeanyDocument *doc_a = *((GeanyDocument **)a);
 	GeanyDocument *doc_b = *((GeanyDocument **)b);
 	
-	gint notebook_position_doc_a;
-	gint notebook_position_doc_b;
-	
-	notebook_position_doc_a = document_get_notebook_page(doc_a);
-	notebook_position_doc_b = document_get_notebook_page(doc_b);
+	gint notebook_position_doc_a = document_get_notebook_page(doc_a);
+	gint notebook_position_doc_b = document_get_notebook_page(doc_b);
 	
 	if (notebook_position_doc_a < notebook_position_doc_b)
 		return -1;

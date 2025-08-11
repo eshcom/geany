@@ -29,7 +29,7 @@
 /*
 *   MACROS
 */
-#define WHOLE_FILE  -1L
+#define WHOLE_FILE -1L
 #define includeExtensionFlags() (Option.tagFileFormat > 1)
 
 /*
@@ -182,4 +182,4 @@ extern void attachParserFieldToCorkEntry(int index, fieldType ftype,
 extern void setTagEntryFunction(tagEntryFunction entry_function, void *user_data);
 #endif
 
-#endif  /* CTAGS_MAIN_ENTRY_H */
+#endif /* CTAGS_MAIN_ENTRY_H */

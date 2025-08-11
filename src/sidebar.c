@@ -409,8 +409,7 @@ static gchar *get_doc_folder(const gchar *path)
 
 static GtkTreeIter *get_doc_parent(GeanyDocument *doc)
 {
-	if (!documents_show_paths)
-		return NULL;
+	if (!documents_show_paths) return NULL;
 	
 	GtkTreeModel *model = GTK_TREE_MODEL(store_openfiles);
 	
@@ -871,8 +870,7 @@ static void copy_name_to_clipboard(GeanyDocument *doc, gboolean parentitem,
 
 static void document_action(GeanyDocument *doc, gint action, gboolean parentitem)
 {
-	if (!DOC_VALID(doc))
-		return;
+	if (!DOC_VALID(doc)) return;
 	
 	switch (action)
 	{
@@ -971,8 +969,7 @@ static gboolean openfiles_go_to_selection(GtkTreeSelection *selection,
 	{
 		GeanyDocument *doc = NULL;
 		gtk_tree_model_get(model, &iter, DOCUMENTS_DOCUMENT, &doc, -1);
-		if (!doc)
-			return FALSE;	/* parent */
+		if (!doc) return FALSE; /* parent */
 		
 		/* switch to the doc and grab the focus */
 		document_show_tab(doc);
@@ -995,8 +992,7 @@ static gboolean taglist_go_to_selection(GtkTreeSelection *selection,
 		TMTag *tag;
 		
 		gtk_tree_model_get(model, &iter, SYMBOLS_COLUMN_TAG, &tag, -1);
-		if (!tag)
-			return FALSE;
+		if (!tag) return FALSE;
 		
 		gint line = tag->line;
 		if (line > 0)
