@@ -624,7 +624,7 @@ defmodule MyRouter do
     :%{}
   end
   
-  defmodule Test1 do
+  defmodule Tmp.Test1 do
     import Test0
     defp import(param),
       do: Test0.call(param)

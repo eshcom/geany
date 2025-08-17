@@ -203,10 +203,15 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file,
 	tag->pointerOrder = 0;	/* backward compatibility (use var_type instead) */
 	tag->line = tag_entry->lineNumber;
 	
+	if (tag_entry->displayName != NULL && tag_entry->displayName[0] != 0)
+		tag->displayName = g_strdup(tag_entry->displayName);
+	
 	if (tag_entry->signature != NULL)
 		tag->arglist = g_strdup(tag_entry->signature);
 	if (tag_entry->scopeName != NULL && tag_entry->scopeName[0] != 0)
 		tag->scope = g_strdup(tag_entry->scopeName);
+	if (tag_entry->displayScopeName != NULL && tag_entry->displayScopeName[0] != 0)
+		tag->displayScope = g_strdup(tag_entry->displayScopeName);
 	if (tag_entry->inheritance != NULL)
 		tag->inheritance = g_strdup(tag_entry->inheritance);
 	if (tag_entry->varType != NULL)

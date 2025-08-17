@@ -87,6 +87,7 @@ typedef enum
 typedef struct TMTag
 {
 	char *name; /**< Name of tag */
+	char *displayName; /**< Display name of tag (optional) */
 	TMTagType type; /**< Tag Type */
 	gint refcount; /* the reference count of the tag */
 	
@@ -97,6 +98,7 @@ typedef struct TMTag
 	guint pointerOrder;
 	char *arglist; /**< Argument list (functions/prototypes/macros) */
 	char *scope; /**< Scope of tag */
+	char *displayScope; /**< Display scope of tag (optional) */
 	char *inheritance; /**< Parent classes */
 	char *var_type; /**< Variable type (maps to struct for typedefs) */
 	char access; /**< Access type (public/protected/private/etc.) */
