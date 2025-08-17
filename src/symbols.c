@@ -164,6 +164,24 @@ static gsize get_tag_count(void)
 }
 
 
+static const gchar *get_tag_scope(const TMTag *tag)
+{
+	if (!EMPTY(tag->displayScope))
+		return tag->displayScope;
+	if (!EMPTY(tag->scope))
+		return tag->scope;
+	return NULL;
+}
+
+
+static const gchar *get_tag_name(const TMTag *tag)
+{
+	if (!EMPTY(tag->displayName))
+		return tag->displayName;
+	return tag->name;
+}
+
+
 /* wrapper for tm_workspace_load_global_tags().
  * note that the tag count only counts new global tags added -
  * if a tag has the same name, currently it replaces the existing tag,
@@ -292,13 +310,16 @@ static gint compare_symbol(const TMTag *tag_a, const TMTag *tag_b)
 	if (tag_a == NULL || tag_b == NULL)
 		return 0;
 	
-	if (tag_a->name == NULL)
-		return -(tag_a->name != tag_b->name);
+	const gchar *name_a = get_tag_name(tag_a);
+	const gchar *name_b = get_tag_name(tag_b);
 	
-	if (tag_b->name == NULL)
-		return tag_a->name != tag_b->name;
+	if (name_a == NULL)
+		return -(name_a != name_b);
 	
-	gint ret = strcmp(tag_a->name, tag_b->name);
+	if (name_b == NULL)
+		return name_a != name_b;
+	
+	gint ret = strcmp(name_a, name_b);
 	if (ret == 0)
 		return tag_a->line - tag_b->line;
 	
@@ -317,12 +338,15 @@ static gint compare_symbol_lines(gconstpointer a, gconstpointer b)
 	gint ret = tag_a->line - tag_b->line;
 	if (ret == 0)
 	{
-		if (tag_a->scope == NULL)
-			return -(tag_a->scope != tag_b->scope);
-		if (tag_b->scope == NULL)
-			return tag_a->scope != tag_b->scope;
+		const gchar *scope_a = get_tag_scope(tag_a);
+		const gchar *scope_b = get_tag_scope(tag_b);
+		
+		if (scope_a == NULL)
+			return -(scope_a != scope_b);
+		if (scope_b == NULL)
+			return scope_a != scope_b;
 		else
-			return strcmp(tag_a->scope, tag_b->scope);
+			return strcmp(scope_a, scope_b);
 	}
 	return ret;
 }
@@ -892,6 +916,9 @@ static void hide_empty_rows(GtkTreeStore *store)
 static const gchar *get_symbol_name(GeanyDocument *doc, const TMTag *tag,
 									gboolean found_parent)
 {
+	const gchar *scope = get_tag_scope(tag);
+	const gchar *name = get_tag_name(tag);
+	gchar *utf8_name;
 	static GString *buffer = NULL; /* buffer will be small so we can keep it for reuse */
 	gboolean doc_is_utf8 = FALSE;
 	
@@ -902,16 +929,13 @@ static const gchar *get_symbol_name(GeanyDocument *doc, const TMTag *tag,
 		doc_is_utf8 = TRUE;
 	else /* normally the tags will always be in UTF-8 since we parse from our buffer,
 		  * but a plugin might have called tm_source_file_update(), so check to be sure */
-		doc_is_utf8 = g_utf8_validate(tag->name, -1, NULL);
-	
-	gchar *utf8_name;
-	const gchar *scope = tag->scope;
+		doc_is_utf8 = g_utf8_validate(name, -1, NULL);
 	
 	if (!doc_is_utf8)
-		utf8_name = encodings_convert_to_utf8_from_charset(tag->name, -1,
+		utf8_name = encodings_convert_to_utf8_from_charset(name, -1,
 														   doc->encoding, TRUE);
 	else
-		utf8_name = tag->name;
+		utf8_name = (gchar *)name;
 	
 	if (utf8_name == NULL) return NULL;
 	
@@ -964,12 +988,6 @@ static gchar *get_symbol_tooltip(GeanyDocument *doc, const TMTag *tag)
 			   encodings_convert_to_utf8_from_charset(utf8_name, -1,
 													  doc->encoding, TRUE));
 	return utf8_name;
-}
-
-
-static const gchar *get_parent_name(const TMTag *tag)
-{
-	return !EMPTY(tag->scope) ? tag->scope : NULL;
 }
 
 
@@ -1157,36 +1175,39 @@ static void parents_table_tree_value_free(gpointer data)
 static void update_parents_table(GHashTable *table, const TMTag *tag,
 								 const GtkTreeIter *iter)
 {
-	const gchar *name;
+	const gchar *scope = get_tag_scope(tag);
+	const gchar *name = get_tag_name(tag);
+	const gchar *name_tmp;
 	gchar *name_free = NULL;
 	
-	if (EMPTY(tag->scope))
+	if (EMPTY(scope))
 	{	/* simple case, just use the tag name */
-		name = tag->name;
+		name_tmp = name;
 	}
 	else if (!tm_parser_has_full_context(tag->lang))
 	{	/* if the parser doesn't use fully qualified scope, use the name
 		 * alone but prevent Foo::Foo from making parent = child */
-		name = utils_str_equal(tag->scope, tag->name) ? NULL : tag->name;
+		name_tmp = utils_str_equal(scope, name) ? NULL : name;
 	}
 	else
-	{	/* build the fully qualified scope as get_parent_name()
+	{	/* build the fully qualified scope as get_tag_scope()
 		 * would return it for a child tag */
-		name_free = g_strconcat(tag->scope,
+		name_free = g_strconcat(scope,
 								tm_parser_context_separator(tag->lang),
-								tag->name, NULL);
-		name = name_free;
+								name, NULL);
+		name_tmp = name_free;
 	}
 	
 	GTree *tree;
-	if (name && g_hash_table_lookup_extended(table, name, NULL,
-											 (gpointer *) &tree))
+	if (name_tmp && g_hash_table_lookup_extended(table, name_tmp, NULL,
+												 (gpointer *) &tree))
 	{
 		if (!tree)
 		{
 			tree = g_tree_new_full(tree_cmp, NULL, NULL,
 								   parents_table_tree_value_free);
-			g_hash_table_insert(table, name_free ? name_free : g_strdup(name),
+			g_hash_table_insert(table,
+								name_free ? name_free : g_strdup(name_tmp),
 								tree);
 			name_free = NULL;
 		}
@@ -1279,7 +1300,7 @@ static void tags_table_remove(GHashTable *table, TMTag *tag)
 			 * tags_table_lookup() */
 			foreach_list(node, list)
 			{
-				if (((GList *) node->data)->data == tag) break;
+				if (((GList *)node->data)->data == tag) break;
 			}
 			list = g_list_delete_link(list, node);
 			if (!list)
@@ -1356,7 +1377,7 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 		TMTag *tag = item->data;
 		tags_table_insert(tags_table, tag, item);
 		
-		const gchar *parent_name = get_parent_name(tag);
+		const gchar *parent_name = get_tag_scope(tag);
 		if (parent_name)
 			g_hash_table_insert(parents_table, g_strdup(parent_name), NULL);
 	}
@@ -1381,7 +1402,7 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 			else /* tag still exist, update it */
 			{
 				TMTag *found = found_item->data;
-				const gchar *parent_name = get_parent_name(found);
+				const gchar *parent_name = get_tag_scope(found);
 				
 				/* if parent is unknown, ignore it */
 				if (parent_name && !g_hash_table_lookup(parents_table,
@@ -1428,7 +1449,7 @@ static void update_tree_tags(GeanyDocument *doc, GList **tags)
 		{
 			GdkPixbuf *icon = get_child_icon(store, parent);
 			
-			const gchar *parent_name = get_parent_name(tag);
+			const gchar *parent_name = get_tag_scope(tag);
 			if (parent_name)
 			{
 				GtkTreeIter *parent_search = parents_table_lookup(parents_table,
@@ -1495,8 +1516,9 @@ static gint compare_top_level_names(const gchar *a, const gchar *b)
 static gboolean tag_has_missing_parent(const TMTag *tag, GtkTreeStore *store,
 									   GtkTreeIter *iter)
 {
+	const gchar *scope = get_tag_scope(tag);
 	/* if the tag has a parent tag, it should be at depth >= 2 */
-	return !EMPTY(tag->scope) && gtk_tree_store_iter_depth(store, iter) == 1;
+	return !EMPTY(scope) && gtk_tree_store_iter_depth(store, iter) == 1;
 }
 
 

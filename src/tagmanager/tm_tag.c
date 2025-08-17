@@ -121,8 +121,10 @@ TMTag *tm_tag_new(void)
 static void tm_tag_destroy(TMTag *tag)
 {
 	g_free(tag->name);
+	g_free(tag->displayName);
 	g_free(tag->arglist);
 	g_free(tag->scope);
+	g_free(tag->displayScope);
 	g_free(tag->inheritance);
 	g_free(tag->var_type);
 }

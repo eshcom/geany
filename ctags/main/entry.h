@@ -58,6 +58,7 @@ struct sTagEntryInfo {
 	langType     langType;			/* language of input file */
 	const char *inputFileName;		/* name of input file */
 	const char *name;				/* name of the tag */
+	const char *displayName;		/* display name of the tag (optional) */
 	int kindIndex;					/* kind descriptor */
 	unsigned char extra[((XTAG_COUNT) / 8) + 1];
 	
@@ -76,6 +77,7 @@ struct sTagEntryInfo {
 		int         scopeIndex; /* cork queue entry for upper scope tag.
 								   This field is meaningful if the value
 								   is not CORK_NIL and scope[0] and scope[1] are NULL. */
+		const char *displayScopeName; /* display scope name of the tag (optional) */
 		
 		const char *signature;
 		

@@ -18,8 +18,10 @@
 
 typedef struct {
 	const char *name;
+	const char *displayName;
 	const char *signature;
 	const char *scopeName;
+	const char *displayScopeName;
 	const char *inheritance;
 	const char *varType;
 	const char *access;

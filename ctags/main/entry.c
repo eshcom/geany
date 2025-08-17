@@ -898,6 +898,9 @@ static void recordTagEntryInQueue(const tagEntryInfo *const tag, tagEntryInfo *s
 	slot->inputFileName = eStrdup(slot->inputFileName);
 	slot->name = eStrdup(slot->name);
 	
+	if (slot->displayName)
+		slot->displayName = eStrdup(slot->displayName);
+	
 	if (slot->extensionFields.access)
 		slot->extensionFields.access = eStrdup(slot->extensionFields.access);
 	if (slot->extensionFields.fileScope)
@@ -908,6 +911,8 @@ static void recordTagEntryInQueue(const tagEntryInfo *const tag, tagEntryInfo *s
 		slot->extensionFields.inheritance = eStrdup(slot->extensionFields.inheritance);
 	if (slot->extensionFields.scopeName)
 		slot->extensionFields.scopeName = eStrdup(slot->extensionFields.scopeName);
+	if (slot->extensionFields.displayScopeName)
+		slot->extensionFields.displayScopeName = eStrdup(slot->extensionFields.displayScopeName);
 	if (slot->extensionFields.signature)
 		slot->extensionFields.signature = eStrdup(slot->extensionFields.signature);
 	if (slot->extensionFields.typeRef[0])
@@ -951,6 +956,9 @@ static void clearTagEntryInQueue(tagEntryInfo* slot)
 	eFree((char *)slot->inputFileName);
 	eFree((char *)slot->name);
 	
+	if (slot->displayName)
+		eFree((char *)slot->displayName);
+	
 	if (slot->extensionFields.access)
 		eFree((char *)slot->extensionFields.access);
 	if (slot->extensionFields.fileScope)
@@ -961,6 +969,8 @@ static void clearTagEntryInQueue(tagEntryInfo* slot)
 		eFree((char *)slot->extensionFields.inheritance);
 	if (slot->extensionFields.scopeName)
 		eFree((char *)slot->extensionFields.scopeName);
+	if (slot->extensionFields.displayScopeName)
+		eFree((char *)slot->extensionFields.displayScopeName);
 	if (slot->extensionFields.signature)
 		eFree((char *)slot->extensionFields.signature);
 	if (slot->extensionFields.typeRef[0])
@@ -1044,8 +1054,10 @@ static void buildFqTagCache(const tagEntryInfo *const tag)
 static void initCtagsTag(ctagsTag *tag, const tagEntryInfo *info)
 {
 	tag->name = info->name;
+	tag->displayName = info->displayName;
 	tag->signature = info->extensionFields.signature;
 	tag->scopeName = info->extensionFields.scopeName;
+	tag->displayScopeName = info->extensionFields.displayScopeName;
 	tag->inheritance = info->extensionFields.inheritance;
 	tag->varType = info->extensionFields.varType;
 	tag->access = info->extensionFields.access;
