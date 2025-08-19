@@ -442,7 +442,7 @@ private:
 	
 	void InsertModule(StyleContext &sc, const char *module);
 	void InsertAlias(const char *alias);
-	const char *GetModule(const char *ident);
+	const char *GetModule(const char *ident, Sci_Position currentLine);
 };
 
 Sci_Position SCI_METHOD LexerElixir::PropertySet(const char *key, const char *val) {
@@ -545,14 +545,16 @@ void LexerElixir::InsertAlias(const char *alias) {
 	}
 }
 
-const char *LexerElixir::GetModule(const char *ident) {
+const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) {
 	std::map<Sci_Position, ModuleAliases>::iterator mIter =
 		moduleAliasesAtEol.begin();
 	for (; mIter != moduleAliasesAtEol.end(); mIter = std::next(mIter)) {
-		std::vector<std::string>::iterator aIter = mIter->second.aliases.begin();
-		for (; aIter != mIter->second.aliases.end(); aIter = std::next(aIter)) {
-			if (strcmp(aIter->c_str(), ident) == 0)
-				return mIter->second.module.c_str();
+		if (mIter->first < currentLine) {
+			std::vector<std::string>::iterator aIter = mIter->second.aliases.begin();
+			for (; aIter != mIter->second.aliases.end(); aIter = std::next(aIter)) {
+				if (strcmp(aIter->c_str(), ident) == 0)
+					return mIter->second.module.c_str();
+			}
 		}
 	}
 	return ident;
@@ -1166,7 +1168,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					if (sc.ch == '}' || sc.atLineEnd)
 						ident_state = NONE_STATE;
 				}
-				const char *ident = GetModule(cur);
+				const char *ident = GetModule(cur, lineCurrent);
 				
 				if (stdExcepts.InList(ident)) {
 					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
