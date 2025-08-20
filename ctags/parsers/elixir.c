@@ -24,7 +24,7 @@
 *   DATA DEFINITIONS
 */
 typedef enum {
-	K_ATTRIBUTE, K_FUNCTION, K_TYPE, K_MODULE, K_MACRO, K_PROTO, K_IMPL
+	K_ATTRIBUTE, K_FUNCTION, K_TYPE, K_MODULE, K_MACRO, K_PROTO, K_IMPL, K_ALIAS
 } elixirKind;
 
 static kindDefinition ElixirKinds[] = {
@@ -35,6 +35,7 @@ static kindDefinition ElixirKinds[] = {
 	{true, 'M', "macro",          "macros"},
 	{true, 'p', "protocol",       "protocols"},
 	{true, 'i', "implementation", "protocol implementations"},
+	{true, 'l', "alias",          "alias definitions"},
 };
 
 static NestingLevels *nesting = NULL;
@@ -251,8 +252,7 @@ static void checkMultilineString(const unsigned char *cp)
 
 static const unsigned char *skipSpace(const unsigned char *cp)
 {
-	while (isspace(*cp))
-		cp++;
+	while (isspace(*cp)) cp++;
 	return cp;
 }
 
@@ -287,7 +287,7 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 			{
 				if (tagName > tagFullName)
 					tagScopeName = strndup(tagFullName, tagName - tagFullName);
-				tagName++; // skip dot
+				tagName++; // skip SCOPE_SEPARATOR
 			}
 			else
 				tagName = tagFullName;
@@ -300,7 +300,8 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 		
 		if (kind == K_MODULE && tagScopeName && *tagScopeName)
 		{
-			vStringPut(scope.name, SCOPE_SEPARATOR);
+			if (vStringLength(scope.name) > 0)
+				vStringPut(scope.name, SCOPE_SEPARATOR);
 			vStringCatS(scope.name, tagScopeName);
 		}
 		free(tagScopeName);
@@ -333,6 +334,89 @@ static const unsigned char *parseMemberTag(const unsigned char *cp,
 		Scope scope = getCurrentScope();
 		makeTag(vStringValue(identifier), kind, private, scope, NULL, NULL);
 		freeScope(scope);
+	}
+	vStringDelete(identifier);
+	return cp;
+}
+
+static const unsigned char *parseAliasTag(const unsigned char *cp)
+{
+	vString *const identifier = vStringNew();
+	cp = parseIdentifier(cp, identifier);
+	cp = skipSpace(cp);
+	
+	int len = vStringLength(identifier);
+	if (len > 0)
+	{
+		const char *const ident = vStringValue(identifier);
+		
+		if (ident[len - 1] == SCOPE_SEPARATOR && *cp == '{')
+		{
+			vString *const module = vStringNew();
+			vStringNCatS(module, ident, len - 1);
+			
+			while (*(++cp))
+			{
+				cp = skipSpace(cp);
+				if (isupper(*cp))
+				{
+					vString *const alias = vStringNew();
+					cp = parseIdentifier(cp, alias);
+					
+					makeTag(vStringValue(alias), K_ALIAS, false,
+							(Scope){module, K_MODULE}, NULL, NULL);
+					vStringDelete(alias);
+					
+					if (!*cp) break;
+				}
+				else if (*cp == ',')
+					continue;
+				else if (*cp == '}')
+				{
+					cp++;
+					break;
+				}
+			}
+			vStringDelete(module);
+		}
+		else if (*cp == ',')
+		{
+			vString *const module = vStringNew();
+			vStringCatS(module, ident);
+			
+			cp = skipSpace(++cp);
+			while (islower(*cp)) cp++; // skip "as" keyword
+			
+			if (*cp == ':')
+			{
+				cp = skipSpace(++cp);
+				if (isupper(*cp))
+				{
+					vString *const alias = vStringNew();
+					cp = parseIdentifier(cp, alias);
+					
+					makeTag(vStringValue(alias), K_ALIAS, false,
+							(Scope){module, K_MODULE}, NULL, NULL);
+					vStringDelete(alias);
+				}
+			}
+			vStringDelete(module);
+		}
+		else
+		{
+			const char *alias = strrchr(ident, SCOPE_SEPARATOR);
+			
+			if (alias && alias[1] && alias > ident)
+			{
+				vString *const module = vStringNew();
+				vStringNCatS(module, ident, alias - ident);
+				alias++; // skip SCOPE_SEPARATOR
+				
+				makeTag(alias, K_ALIAS, false,
+						(Scope){module, K_MODULE}, NULL, NULL);
+				vStringDelete(module);
+			}
+		}
 	}
 	vStringDelete(identifier);
 	return cp;
@@ -375,6 +459,8 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 			 strcmp(kwval, "@macrocallback") == 0 ||
 			 strcmp(kwval, "@optional_callbacks") == 0)
 		/* skip */;
+	else if (strcmp(kwval, "alias") == 0)
+		cp = parseAliasTag(cp);
 	else if (*kwval == '@' && kwval[1] && *cp &&
 			 (isalnum(*cp) || strchr("\"{[(%:~_", *cp)))
 	{
