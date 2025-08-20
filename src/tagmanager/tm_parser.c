@@ -183,6 +183,7 @@ static TMParserMapEntry map_ELIXIR[] = {
 	{'M', tm_tag_macro_t},		// macro
 	{'p', tm_tag_interface_t},	// protocol
 	{'i', tm_tag_struct_t},		// protocol implementation
+	{'l', tm_tag_other_t},		// alias definition
 };
 
 static TMParserMapEntry map_ERLANG[] = {
