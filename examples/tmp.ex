@@ -74,7 +74,13 @@ defmodule Df.UseCases.UserAction do
     end
   end
 
+  @attr_1 1
+  @attr_2 1
+
   defmodule UnauthorizedError do
+    @attr_1 2
+    @attr_2 2
+    
     defexception [:message, :action_name]
   end
 
