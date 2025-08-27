@@ -446,18 +446,30 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		cp = parseMemberTag(cp, K_FUNCTION, true);
 	else if (strcmp(kwval, "defmemo") == 0)
 		cp = parseMemberTag(cp, K_FUNCTION, false);
-	else if (strcmp(kwval, "@type") == 0)
+	else if (strcmp(kwval, "@typep") == 0)
+		cp = parseMemberTag(cp, K_TYPE, true);
+	else if (strcmp(kwval, "@type") == 0 || strcmp(kwval, "@opaque") == 0)
 		cp = parseMemberTag(cp, K_TYPE, false);
-	else if (strcmp(kwval, "@spec") == 0 ||
-			 strcmp(kwval, "@impl") == 0 ||
-			 strcmp(kwval, "@doc") == 0 ||
-			 strcmp(kwval, "@moduledoc") == 0 ||
+	else if (strcmp(kwval, "@after_compile") == 0 ||
+			 strcmp(kwval, "@before_compile") == 0 ||
 			 strcmp(kwval, "@behaviour") == 0 ||
+			 strcmp(kwval, "@callback") == 0 ||
+			 strcmp(kwval, "@compile") == 0 ||
 			 strcmp(kwval, "@deprecated") == 0 ||
 			 strcmp(kwval, "@derive") == 0 ||
-			 strcmp(kwval, "@callback") == 0 ||
+			 strcmp(kwval, "@dialyzer") == 0 ||
+			 strcmp(kwval, "@doc") == 0 ||
+			 strcmp(kwval, "@external_resource") == 0 ||
+			 strcmp(kwval, "@file") == 0 ||
+			 strcmp(kwval, "@impl") == 0 ||
 			 strcmp(kwval, "@macrocallback") == 0 ||
-			 strcmp(kwval, "@optional_callbacks") == 0)
+			 strcmp(kwval, "@moduledoc") == 0 ||
+			 strcmp(kwval, "@on_definition") == 0 ||
+			 strcmp(kwval, "@on_load") == 0 ||
+			 strcmp(kwval, "@optional_callbacks") == 0 ||
+			 strcmp(kwval, "@spec") == 0 ||
+			 strcmp(kwval, "@typedoc") == 0 ||
+			 strcmp(kwval, "@vsn") == 0)
 		/* skip */;
 	else if (strcmp(kwval, "alias") == 0)
 		cp = parseAliasTag(cp);
