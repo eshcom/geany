@@ -43,13 +43,14 @@ static void log_refs_at_exit(void)
 
 static TMTag *log_tag_new(void)
 {
-	TMTag *tag;
-	
 	if (!alive_tags)
 	{
 		alive_tags = g_hash_table_new(g_direct_hash, g_direct_equal);
 		atexit(log_refs_at_exit);
 	}
+	
+	TMTag *tag;
+	
 	TAG_NEW(tag);
 	g_hash_table_insert(alive_tags, tag, tag);
 	
@@ -60,11 +61,10 @@ static void log_tag_free(TMTag *tag)
 {
 	g_return_if_fail(alive_tags != NULL);
 	
-	if (!g_hash_table_remove(alive_tags, tag)) {
+	if (!g_hash_table_remove(alive_tags, tag))
 		g_critical("Freeing invalid TMTag pointer %p", (void *)tag);
-	} else {
+	else
 		TAG_FREE(tag);
-	}
 }
 
 #undef TAG_NEW
@@ -91,11 +91,10 @@ GEANY_API_SYMBOL
 GType tm_tag_get_type(void)
 {
 	static GType gtype = 0;
+	
 	if (G_UNLIKELY(gtype == 0))
-	{
 		gtype = g_boxed_type_register_static("TMTag", (GBoxedCopyFunc)tm_tag_ref,
 											 (GBoxedFreeFunc)tm_tag_unref);
-	}
 	return gtype;
 }
 
@@ -280,8 +279,7 @@ void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
 {
 	g_return_if_fail(tags_array);
 	
-	if (tags_array->len < 2)
-		return;
+	if (tags_array->len < 2) return;
 	
 	TMSortOptions sort_options;
 	sort_options.sort_attrs = sort_attributes;
@@ -289,8 +287,8 @@ void tm_tags_dedup(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
 	
 	for (guint i = 1; i < tags_array->len; ++i)
 	{
-		if (tm_tag_compare(&(tags_array->pdata[i - 1]),
-						   &(tags_array->pdata[i]),
+		if (tm_tag_compare(&tags_array->pdata[i - 1],
+						   &tags_array->pdata[i],
 						   &sort_options) == 0)
 		{
 			if (unref_duplicates)
@@ -319,8 +317,7 @@ void tm_tags_sort(GPtrArray *tags_array, TMTagAttrType *sort_attributes,
 	
 	g_ptr_array_sort_with_data(tags_array, tm_tag_compare, &sort_options);
 	
-	if (dedup)
-		tm_tags_dedup(tags_array, sort_attributes, unref_duplicates);
+	if (dedup) tm_tags_dedup(tags_array, sort_attributes, unref_duplicates);
 }
 
 void tm_tags_remove_file_tags(TMSourceFile *source_file, GPtrArray *tags_array)
@@ -553,10 +550,7 @@ void tm_tags_array_free(GPtrArray *tags_array, gboolean free_all)
 	}
 }
 
-/*
- esh: Completely frees an array of project tags.
- *    (based on tm_tags_array_free)
-*/
+/* esh: Completely frees an array of project tags (based on tm_tags_array_free) */
 void tm_tags_array_free_prj(GPtrArray *tags_array)
 {
 	if (tags_array)
@@ -611,7 +605,8 @@ static gint tag_search_cmp(gconstpointer ptr1, gconstpointer ptr2,
 		
 		/* if previous/next (depending on sort options) tag equal, we haven't
 		 * found the first/last tag in a sequence of equal tags yet */
-		if (sort_options->first && ptr2 != &tags_array->pdata[0]) {
+		if (sort_options->first && ptr2 != &tags_array->pdata[0])
+		{
 			if (tm_tag_compare(ptr1, tag - 1, user_data) == 0)
 				return -1;
 		}
@@ -682,7 +677,7 @@ const TMTag *tm_get_current_tag(GPtrArray *file_tags, const gulong line,
 	{
 		gulong matching_line = 0;
 		
-		for (guint i = 0; (i < file_tags->len); ++i)
+		for (guint i = 0; i < file_tags->len; ++i)
 		{
 			TMTag *tag = TM_TAG(file_tags->pdata[i]);
 			if (tag && tag->type & tag_types &&
@@ -768,13 +763,11 @@ static const char *tm_tag_access_name(TMTag *tag)
 */
 void tm_tag_print(TMTag *tag, FILE *fp)
 {
-	const char *laccess, *impl, *type;
-	if (!tag || !fp)
-		return;
+	if (!tag || !fp) return;
 	
-	laccess = tm_tag_access_name(tag);
-	impl = tm_tag_impl_name(tag);
-	type = tm_tag_type_name(tag);
+	const char *laccess = tm_tag_access_name(tag);
+	const char *impl = tm_tag_impl_name(tag);
+	const char *type = tm_tag_type_name(tag);
 	
 	if (laccess)
 		fprintf(fp, "%s ", laccess);
