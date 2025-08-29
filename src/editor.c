@@ -2056,7 +2056,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 }
 
 
-/* esh: Reads custom word1 and word2 by cursor position.
+/* esh: Reads custom word1 and word2 by cursor position
  * 		(based on editor_find_word_and_scope) */
 void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar separator,
 							  gchar *word1, gsize wordlen1, const gchar *wc1,
@@ -4368,7 +4368,7 @@ void editor_finalize(void)
 }
 
 
-/* esh: Reads custom word1 and word2 by cursor position or selection.
+/* esh: Reads custom word1 and word2 by cursor position or selection
  * 		(based on editor_get_default_selection/get_current_word_and_scope) */
 void editor_get_custom_words(GeanyEditor *editor, const gchar separator,
 							 gchar **word1, const gchar *wc1,

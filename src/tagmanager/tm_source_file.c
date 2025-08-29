@@ -635,23 +635,21 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file,
 {
 	g_return_val_if_fail(tags_array && tags_file, FALSE);
 	
-	guint i;
 	FILE *fp;
-	gboolean ret = TRUE;
-	
 	if (!(fp = g_fopen(tags_file, "w")))
 		return FALSE;
 	
+	gboolean ret = TRUE;
+	
 	fprintf(fp, "# format=tagmanager\n");
-	for (i = 0; i < tags_array->len; i++)
+	for (guint i = 0; i < tags_array->len; i++)
 	{
 		TMTag *tag = TM_TAG(tags_array->pdata[i]);
 		
 		ret = write_tag(tag, fp, tm_tag_attr_type_t    | tm_tag_attr_scope_t   |
 								 tm_tag_attr_arglist_t | tm_tag_attr_vartype_t |
 								 tm_tag_attr_pointer_t);
-		if (!ret)
-			break;
+		if (!ret) break;
 	}
 	fclose(fp);
 	
@@ -662,21 +660,18 @@ gboolean tm_source_file_write_tags_file(const gchar *tags_file,
 static void update_python_arglist(const TMTag *tag,
 								  TMSourceFile *current_source_file)
 {
-	guint i;
-	const char *parent_tag_name;
-	
-	if (tag->type != tm_tag_method_t || tag->scope == NULL ||
-		g_strcmp0(tag->name, "__init__") != 0)
+	if (tag->type != tm_tag_method_t || tag->scope == NULL
+		|| g_strcmp0(tag->name, "__init__") != 0)
 		return;
 	
-	parent_tag_name = strrchr(tag->scope, '.');
+	const char *parent_tag_name = strrchr(tag->scope, '.');
 	if (parent_tag_name)
 		parent_tag_name++;
 	else
 		parent_tag_name = tag->scope;
 	
 	/* going in reverse order because the tag was added recently */
-	for (i = current_source_file->tags_array->len; i > 0; i--)
+	for (guint i = current_source_file->tags_array->len; i > 0; i--)
 	{
 		TMTag *prev_tag = (TMTag *)current_source_file->tags_array->pdata[i - 1];
 		if (g_strcmp0(prev_tag->name, parent_tag_name) == 0)
@@ -721,19 +716,18 @@ static gboolean tm_source_file_init(TMSourceFile *source_file,
 									const char *file_name,
 									const char *name)
 {
-	GStatBuf s;
-	int status;
-	
 #ifdef TM_DEBUG
 	g_message("Source File init: %s", file_name);
 #endif
 	
+	GStatBuf s;
+	
 	if (file_name != NULL)
 	{
-		status = g_stat(file_name, &s);
+		int status = g_stat(file_name, &s);
 		if (status != 0)
 		{
-			/* g_warning("Unable to stat %s", file_name);*/
+			//~ g_warning("Unable to stat %s", file_name);
 			return FALSE;
 		}
 		if (!S_ISREG(s.st_mode))
@@ -774,7 +768,7 @@ TMSourceFile *tm_source_file_new(const char *file_name, const char *name)
 	return &priv->public;
 }
 
-/* esh: Initializes a TMSourceFile structure from a file name.
+/* esh: Initializes a TMSourceFile structure from a file name
  * 		(based on tm_source_file_new/tm_source_file_init) */
 TMSourceFile *tm_source_file_new_prj(const char *file_name,
 									 const char *source_path)
@@ -843,8 +837,7 @@ void tm_source_file_free(TMSourceFile *source_file)
 	}
 }
 
-/* esh: Free the TMSourceFile struct.
- * 		(based on tm_source_file_free) */
+/* esh: Free the TMSourceFile struct (based on tm_source_file_free) */
 void tm_source_file_free_prj(TMSourceFile *source_file)
 {
 	if (source_file != NULL)
@@ -886,21 +879,18 @@ gboolean tm_source_file_parse(TMSourceFile *source_file, guchar *text_buf,
 		return FALSE;
 	}
 	
-	const char *file_name = source_file->file_name;
-	
 	if (use_buffer && (text_buf == NULL || buf_size == 0))
-	{
-		/* Empty buffer, "parse" by setting empty tag array */
+	{	/* Empty buffer, "parse" by setting empty tag array */
 		tm_tags_array_free(source_file->tags_array, FALSE);
 		return TRUE;
 	}
 	tm_tags_array_free(source_file->tags_array, FALSE);
 	
-	ctagsParse(use_buffer ? text_buf : NULL, buf_size, file_name,
-			   source_file->lang, ctags_new_tag, ctags_pass_start,
-			   source_file);
+	ctagsParse(use_buffer ? text_buf : NULL, buf_size,
+			   source_file->file_name, source_file->lang,
+			   ctags_new_tag, ctags_pass_start, source_file);
 	
-	return FALSE;
+	return TRUE;
 }
 
 /* Gets the name associated with the language index.
