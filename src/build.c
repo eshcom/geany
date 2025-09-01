@@ -1434,7 +1434,8 @@ static void create_build_menu(BuildMenuItems *build_menu_items)
 	}
 	build_menu_items->menu = menu;
 	gtk_widget_show(menu);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_build1")), menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "build1")),
+							  menu);
 }
 
 
@@ -2788,7 +2789,7 @@ gboolean build_keybinding(guint key_id)
 	if (doc == NULL)
 		return TRUE;
 
-	if (!gtk_widget_is_sensitive(ui_lookup_widget(main_widgets.window, "menu_build1")))
+	if (!gtk_widget_is_sensitive(ui_lookup_widget(main_widgets.window, "build1")))
 		return TRUE;
 
 	menu_items = build_get_menu_items(doc->file_type->id);

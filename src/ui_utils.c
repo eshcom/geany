@@ -937,13 +937,13 @@ static void init_document_widgets(void)
 	add_doc_widget("menu_save_all1");
 	add_doc_widget("menu_save_as1");
 	add_doc_widget("menu_count_words1");
-	add_doc_widget("menu_build1");
+	add_doc_widget("build1");
 	add_doc_widget("add_comments1");
 	add_doc_widget("menu_paste1");
 	add_doc_widget("menu_undo2");
 	add_doc_widget("properties1");
 	add_doc_widget("menu_reload1");
-	add_doc_widget("menu_document1");
+	add_doc_widget("document1");
 	add_doc_widget("menu_choose_color1");
 	add_doc_widget("menu_color_schemes");
 	add_doc_widget("menu_markers_margin1");

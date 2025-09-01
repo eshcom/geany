@@ -6479,10 +6479,10 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_File</property>
                     <property name="use_underline">True</property>
-                    <signal name="activate" handler="on_file1_activate" swapped="no"/>
                     <child type="submenu">
                       <object class="GtkMenu" id="file1_menu">
                         <property name="can_focus">False</property>
+                        <signal name="show" handler="on_file1_menu_show" swapped="no"/>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_new1">
                             <property name="label">gtk-new</property>
@@ -6714,11 +6714,10 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Edit</property>
                     <property name="use_underline">True</property>
-                    <signal name="deselect" handler="on_edit1_deselect" swapped="no"/>
-                    <signal name="select" handler="on_edit1_select" swapped="no"/>
                     <child type="submenu">
                       <object class="GtkMenu" id="edit1_menu">
                         <property name="can_focus">False</property>
+                        <signal name="show" handler="on_edit1_menu_show" swapped="no"/>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_undo2">
                             <property name="label">gtk-undo</property>
@@ -7222,10 +7221,10 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Search</property>
                     <property name="use_underline">True</property>
-                    <signal name="activate" handler="on_search1_activate" swapped="no"/>
                     <child type="submenu">
                       <object class="GtkMenu" id="search1_menu">
                         <property name="can_focus">False</property>
+                        <signal name="show" handler="on_search1_menu_show" swapped="no"/>
                         <child>
                           <object class="GtkImageMenuItem" id="find1">
                             <property name="label" translatable="yes">_Find...</property>
@@ -7451,13 +7450,13 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuItem" id="menu_view1">
+                  <object class="GtkMenuItem" id="view1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_View</property>
                     <property name="use_underline">True</property>
                     <child type="submenu">
-                      <object class="GtkMenu" id="menu_view1_menu">
+                      <object class="GtkMenu" id="view1_menu">
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="menu_change_font1">
@@ -7629,13 +7628,13 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuItem" id="menu_document1">
+                  <object class="GtkMenuItem" id="document1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Document</property>
                     <property name="use_underline">True</property>
                     <child type="submenu">
-                      <object class="GtkMenu" id="menu_document1_menu">
+                      <object class="GtkMenu" id="document1_menu">
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_line_wrapping1">
@@ -8040,15 +8039,15 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuItem" id="menu_project1">
+                  <object class="GtkMenuItem" id="project1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Project</property>
                     <property name="use_underline">True</property>
-                    <signal name="activate" handler="on_menu_project1_activate" swapped="no"/>
                     <child type="submenu">
-                      <object class="GtkMenu" id="menu_project1_menu">
+                      <object class="GtkMenu" id="project1_menu">
                         <property name="can_focus">False</property>
+                        <signal name="show" handler="on_project1_menu_show" swapped="no"/>
                         <child>
                           <object class="GtkImageMenuItem" id="project_new1">
                             <property name="label" translatable="yes">_New...</property>
@@ -8127,7 +8126,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuItem" id="menu_build1">
+                  <object class="GtkMenuItem" id="build1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Build</property>
@@ -8204,16 +8203,16 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuItem" id="menu_help1">
+                  <object class="GtkMenuItem" id="help1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">_Help</property>
                     <property name="use_underline">True</property>
                     <child type="submenu">
-                      <object class="GtkMenu" id="menu_help1_menu">
+                      <object class="GtkMenu" id="help1_menu">
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkImageMenuItem" id="help1">
+                          <object class="GtkImageMenuItem" id="menu_help1">
                             <property name="label" translatable="yes">_Help</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>

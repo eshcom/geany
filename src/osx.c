@@ -102,7 +102,7 @@ void osx_ui_init(void)
 	item = ui_lookup_widget(main_widgets.window, "menu_info1");
 	gtkosx_application_insert_app_menu_item(osx_app, item, 0);
 	
-	item = ui_lookup_widget(main_widgets.window, "menu_help1");
+	item = ui_lookup_widget(main_widgets.window, "help1");
 	gtkosx_application_set_help_menu(osx_app, GTK_MENU_ITEM(item));
 	
 	gtkosx_application_set_use_quartz_accelerators(osx_app, FALSE);
