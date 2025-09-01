@@ -309,7 +309,7 @@ static void main_init(void)
 	main_widgets.message_window_notebook = ui_lookup_widget(main_widgets.window,
 															"notebook_info");
 	main_widgets.project_menu = ui_lookup_widget(main_widgets.window,
-												 "menu_project1_menu");
+												 "project1_menu");
 	
 	ui_widgets.toolbar_menu = create_toolbar_popup_menu1();
 	ui_init();

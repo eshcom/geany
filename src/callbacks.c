@@ -164,7 +164,7 @@ void on_quit1_activate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-static void on_file1_activate(GtkMenuItem *menuitem, gpointer user_data)
+static void on_file1_menu_show(GtkMenu *menu, gpointer user_data)
 {
 	gtk_widget_set_sensitive(ui_widgets.recent_files_menuitem,
 							 g_queue_get_length(ui_prefs.recent_queue) > 0);
@@ -175,7 +175,7 @@ static void on_file1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 
 /* edit actions, c&p & co, from menu bar and from popup menu */
-static void on_edit1_select(GtkMenuItem *menuitem, gpointer user_data)
+static void on_edit1_menu_show(GtkMenu *menu, gpointer user_data)
 {
 	GtkWidget *item;
 	GeanyDocument *doc = document_get_current();
@@ -189,16 +189,6 @@ static void on_edit1_select(GtkMenuItem *menuitem, gpointer user_data)
 #else
 	gtk_widget_set_sensitive(item, plugins_have_preferences());
 #endif
-}
-
-
-static void on_edit1_deselect(GtkMenuShell *menushell, gpointer user_data)
-{
-	/* we re-enable items that were disabled in on_edit1_select() on menu
-	 * popdown to workaround mutli-layout keyboard issues in our keybinding
-	 * handling code, so that GTK's accelerator handling can catch them.
-	 * See https://github.com/geany/geany/issues/1368#issuecomment-273678207 */
-	ui_menu_copy_items_set_sensitive(TRUE);
 }
 
 
@@ -1356,7 +1346,7 @@ void on_project_properties1_activate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-static void on_menu_project1_activate(GtkMenuItem *menuitem, gpointer user_data)
+static void on_project1_menu_show(GtkMenu *menu, gpointer user_data)
 {
 	static GtkWidget *item_close = NULL;
 	static GtkWidget *item_properties = NULL;
@@ -1753,7 +1743,7 @@ void on_replace_spaces_activate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-static void on_search1_activate(GtkMenuItem *menuitem, gpointer user_data)
+static void on_search1_menu_show(GtkMenu *menu, gpointer user_data)
 {
 	GtkWidget *next_message = ui_lookup_widget(main_widgets.window,
 											   "next_message1");

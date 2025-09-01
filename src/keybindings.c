@@ -757,7 +757,7 @@ static void init_default_kb(void)
 	group = keybindings_get_core_group(GEANY_KEY_GROUP_HELP);
 	
 	add_kb(group, GEANY_KEYS_HELP_HELP, cb_func_menu_help,
-		GDK_F1, 0, "menu_help", _("Help"), "help1");
+		GDK_F1, 0, "menu_help", _("Help"), "menu_help1");
 }
 
 
