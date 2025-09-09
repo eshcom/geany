@@ -894,7 +894,6 @@ static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
 	GtkWidget *entry_extra = gtk_entry_new();
 	ui_entry_add_clear_icon(GTK_ENTRY(entry_extra));
 	gtk_entry_set_activates_default(GTK_ENTRY(entry_extra), TRUE);
-	gtk_widget_set_sensitive(entry_extra, FALSE);
 	gtk_widget_set_tooltip_text(entry_extra,
 								_("Other options to pass to Grep"));
 	ui_hookup_widget(fif_dlg.dialog, entry_extra, entry_name);
@@ -908,6 +907,8 @@ static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
 	gtk_box_pack_start(GTK_BOX(hbox), check_extra, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry_extra, TRUE, TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
+	
+	gtk_widget_set_sensitive(entry_extra, FALSE);
 }
 
 static void create_fif_dialog(void)
