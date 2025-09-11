@@ -88,12 +88,14 @@ static struct
 	gboolean fif_match_whole_word;
 	gboolean fif_invert_results;
 	gboolean fif_recursive;
-	gboolean fif_use_extra_options1;
-	gboolean fif_use_extra_options2;
-	gboolean fif_use_extra_options3;
-	gchar *fif_extra_options1;
-	gchar *fif_extra_options2;
-	gchar *fif_extra_options3;
+	gboolean fif_use_excludedirs_1;
+	gboolean fif_use_excludedirs_2;
+	gboolean fif_use_excludedirs_3;
+	gboolean fif_use_extra_options;
+	gchar *fif_excludedirs_1;
+	gchar *fif_excludedirs_2;
+	gchar *fif_excludedirs_3;
+	gchar *fif_extra_options;
 	gint fif_files_mode;
 	gchar *fif_files;
 	gboolean find_regexp;
@@ -234,18 +236,23 @@ static void init_prefs(void)
 	stash_group_add_toggle_button(group, &settings.fif_recursive,
 		"fif_recursive", FALSE, "check_recursive");
 	
-	stash_group_add_entry(group, &settings.fif_extra_options1,
-		"fif_extra_options_1", "", "entry_extra_1");
-	stash_group_add_toggle_button(group, &settings.fif_use_extra_options1,
-		"fif_use_extra_options_1", FALSE, "check_extra_1");
-	stash_group_add_entry(group, &settings.fif_extra_options2,
-		"fif_extra_options_2", "", "entry_extra_2");
-	stash_group_add_toggle_button(group, &settings.fif_use_extra_options2,
-		"fif_use_extra_options_2", FALSE, "check_extra_2");
-	stash_group_add_entry(group, &settings.fif_extra_options3,
-		"fif_extra_options_3", "", "entry_extra_3");
-	stash_group_add_toggle_button(group, &settings.fif_use_extra_options3,
-		"fif_use_extra_options_3", FALSE, "check_extra_3");
+	stash_group_add_entry(group, &settings.fif_excludedirs_1,
+		"fif_excludedirs_1", "", "entry_excludedirs_1");
+	stash_group_add_toggle_button(group, &settings.fif_use_excludedirs_1,
+		"fif_use_excludedirs_1", FALSE, "check_excludedirs_1");
+	stash_group_add_entry(group, &settings.fif_excludedirs_2,
+		"fif_excludedirs_2", "", "entry_excludedirs_2");
+	stash_group_add_toggle_button(group, &settings.fif_use_excludedirs_2,
+		"fif_use_excludedirs_2", FALSE, "check_excludedirs_2");
+	stash_group_add_entry(group, &settings.fif_excludedirs_3,
+		"fif_excludedirs_3", "", "entry_excludedirs_3");
+	stash_group_add_toggle_button(group, &settings.fif_use_excludedirs_3,
+		"fif_use_excludedirs_3", FALSE, "check_excludedirs_3");
+	
+	stash_group_add_entry(group, &settings.fif_extra_options,
+		"fif_extra_options", "", "entry_extra");
+	stash_group_add_toggle_button(group, &settings.fif_use_extra_options,
+		"fif_use_extra_options", FALSE, "check_extra");
 	
 	stash_group_add_entry(group, &settings.fif_files,
 		"fif_files", "", "entry_files");
@@ -805,8 +812,7 @@ void search_show_replace_dialog(void)
 
 static void on_widget_toggled_set_sensitive(GtkToggleButton *togglebutton,
 											gpointer user_data)
-{
-	/* disable extra option entry when checkbutton not checked */
+{	// disable widget when checkbutton not checked
 	gtk_widget_set_sensitive(GTK_WIDGET(user_data),
 							 gtk_toggle_button_get_active(togglebutton));
 }
@@ -884,37 +890,41 @@ static void update_fif_file_mode_combo(void)
 }
 
 
-static void add_extra_widgets(const gchar *check_name, const gchar *check_label,
-							  const gchar *entry_name, GtkWidget *vbox)
+static void add_checkentry_widgets(const gchar *check_name,
+								   const gchar *check_label,
+								   const gchar *entry_name,
+								   const gchar *tooltip_text,
+								   GtkWidget *vbox, gboolean set_offset)
 {
-	GtkWidget *check_extra = gtk_check_button_new_with_mnemonic(check_label);
-	ui_hookup_widget(fif_dlg.dialog, check_extra, check_name);
-	gtk_button_set_focus_on_click(GTK_BUTTON(check_extra), FALSE);
+	GtkWidget *check = gtk_check_button_new_with_mnemonic(check_label);
+	ui_hookup_widget(fif_dlg.dialog, check, check_name);
+	gtk_button_set_focus_on_click(GTK_BUTTON(check), FALSE);
 	
-	GtkWidget *entry_extra = gtk_entry_new();
-	ui_entry_add_clear_icon(GTK_ENTRY(entry_extra));
-	gtk_entry_set_activates_default(GTK_ENTRY(entry_extra), TRUE);
-	gtk_widget_set_tooltip_text(entry_extra,
-								_("Other options to pass to Grep"));
-	ui_hookup_widget(fif_dlg.dialog, entry_extra, entry_name);
+	GtkWidget *entry = gtk_entry_new();
+	ui_entry_add_clear_icon(GTK_ENTRY(entry));
+	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
+	if (tooltip_text)
+		gtk_widget_set_tooltip_text(entry, tooltip_text);
+	ui_hookup_widget(fif_dlg.dialog, entry, entry_name);
 	
-	/* enable entry_extra when check_extra is checked */
-	g_signal_connect(check_extra, "toggled",
-					 G_CALLBACK(on_widget_toggled_set_sensitive),
-					 entry_extra);
+	/* enable entry when checkbox is checked */
+	g_signal_connect(check, "toggled", G_CALLBACK(on_widget_toggled_set_sensitive),
+					 entry);
 	
 	GtkWidget *hbox = gtk_hbox_new(FALSE, 6);
-	gtk_box_pack_start(GTK_BOX(hbox), check_extra, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_extra, TRUE, TRUE, 0);
+	if (set_offset)
+		gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), check, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 	
-	gtk_widget_set_sensitive(entry_extra, FALSE);
+	gtk_widget_set_sensitive(entry, FALSE);
 }
 
 static void create_fif_dialog(void)
 {
 	GtkWidget *combo, *entry;
-	GtkWidget *label, *label1, *label2, *label3, *checkbox1, *checkbox2,
+	GtkWidget *label, *label1, *label2, *label3, *check_case, *check_invert,
 			  *check_wholeword, *check_recursive, *check_regexp;
 	
 	fif_dlg.dialog = gtk_dialog_new_with_buttons(_("Find in Files"),
@@ -1022,46 +1032,59 @@ static void create_fif_dialog(void)
 	gtk_widget_set_tooltip_text(check_regexp,
 		_("See grep's manual page for more information"));
 	
-	check_recursive = gtk_check_button_new_with_mnemonic(_("_Recurse in subfolders"));
-	ui_hookup_widget(fif_dlg.dialog, check_recursive, "check_recursive");
-	gtk_button_set_focus_on_click(GTK_BUTTON(check_recursive), FALSE);
+	check_invert = gtk_check_button_new_with_mnemonic(_("_Invert search results"));
+	ui_hookup_widget(fif_dlg.dialog, check_invert, "check_invert");
+	gtk_button_set_focus_on_click(GTK_BUTTON(check_invert), FALSE);
+	gtk_widget_set_tooltip_text(check_invert,
+		_("Invert the sense of matching, to select non-matching lines"));
 	
-	checkbox1 = gtk_check_button_new_with_mnemonic(_("C_ase sensitive"));
-	ui_hookup_widget(fif_dlg.dialog, checkbox1, "check_case");
-	gtk_button_set_focus_on_click(GTK_BUTTON(checkbox1), FALSE);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox1), TRUE);
+	check_case = gtk_check_button_new_with_mnemonic(_("C_ase sensitive"));
+	ui_hookup_widget(fif_dlg.dialog, check_case, "check_case");
+	gtk_button_set_focus_on_click(GTK_BUTTON(check_case), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_case), TRUE);
 	
 	check_wholeword = gtk_check_button_new_with_mnemonic(_("Match only a _whole word"));
 	ui_hookup_widget(fif_dlg.dialog, check_wholeword, "check_wholeword");
 	gtk_button_set_focus_on_click(GTK_BUTTON(check_wholeword), FALSE);
 	
-	checkbox2 = gtk_check_button_new_with_mnemonic(_("_Invert search results"));
-	ui_hookup_widget(fif_dlg.dialog, checkbox2, "check_invert");
-	gtk_button_set_focus_on_click(GTK_BUTTON(checkbox2), FALSE);
-	gtk_widget_set_tooltip_text(checkbox2,
-		_("Invert the sense of matching, to select non-matching lines"));
+	check_recursive = gtk_check_button_new_with_mnemonic(_("_Recurse in subfolders"));
+	ui_hookup_widget(fif_dlg.dialog, check_recursive, "check_recursive");
+	gtk_button_set_focus_on_click(GTK_BUTTON(check_recursive), FALSE);
+	
+	GtkWidget *frame_recursive = gtk_frame_new(NULL);
+	GtkWidget *vbox_recursive = gtk_vbox_new(FALSE, 0);
+	gtk_frame_set_label_widget(GTK_FRAME(frame_recursive), check_recursive);
+	gtk_container_add(GTK_CONTAINER(frame_recursive), vbox_recursive);
+	g_signal_connect(check_recursive, "toggled",
+					 G_CALLBACK(on_widget_toggled_set_sensitive), vbox_recursive);
 	
 	GtkWidget *lbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(lbox), check_regexp);
-	gtk_container_add(GTK_CONTAINER(lbox), checkbox2);
-	gtk_container_add(GTK_CONTAINER(lbox), check_recursive);
+	gtk_container_add(GTK_CONTAINER(lbox), check_invert);
 	
 	GtkWidget *rbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(rbox), checkbox1);
+	gtk_container_add(GTK_CONTAINER(rbox), check_case);
 	gtk_container_add(GTK_CONTAINER(rbox), check_wholeword);
-	gtk_container_add(GTK_CONTAINER(rbox), gtk_label_new(NULL));
 	
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_container_add(GTK_CONTAINER(hbox), lbox);
 	gtk_container_add(GTK_CONTAINER(hbox), rbox);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
+	gtk_container_add(GTK_CONTAINER(vbox), frame_recursive);
 	
-	add_extra_widgets("check_extra_1", _("E_xtra options 1:"),
-					  "entry_extra_1", vbox);
-	add_extra_widgets("check_extra_2", _("E_xtra options 2:"),
-					  "entry_extra_2", vbox);
-	add_extra_widgets("check_extra_3", _("E_xtra options 3:"),
-					  "entry_extra_3", vbox);
+	const gchar *tooltip = _("Exclude subdirs when searching for files (separated by spaces)");
+	add_checkentry_widgets("check_excludedirs_1", _("_Exclude 1:"),
+						   "entry_excludedirs_1", tooltip, vbox_recursive, TRUE);
+	add_checkentry_widgets("check_excludedirs_2", _("_Exclude 2:"),
+						   "entry_excludedirs_2", tooltip, vbox_recursive, TRUE);
+	add_checkentry_widgets("check_excludedirs_3", _("_Exclude 3:"),
+						   "entry_excludedirs_3", tooltip, vbox_recursive, TRUE);
+	
+	add_checkentry_widgets("check_extra", _("E_xtra options:"),
+						   "entry_extra", _("Other options to pass to Grep"),
+						   vbox, FALSE);
+	
+	gtk_widget_set_sensitive(vbox_recursive, FALSE);
 	
 	g_signal_connect(fif_dlg.dialog, "response",
 					 G_CALLBACK(on_find_in_files_dialog_response),
@@ -1655,15 +1678,35 @@ fail:
 }
 
 
+static void append_multi_options(GString *gstr, gchar *multi_options,
+								 const gchar *option_name)
+{
+	g_strstrip(multi_options);
+	if (!*multi_options) return;
+	
+	GString *option = g_string_new(option_name);
+	g_string_prepend(option, " --");
+	g_string_append(option, "=");
+	
+	GString *multi = g_string_new(multi_options);
+	do {} while (utils_string_replace_all(multi, "  ", " "));
+	g_string_prepend_c(multi, ' ');
+	
+	/* put option before each pattern */
+	utils_string_replace_all(multi, " ", option->str);
+	g_string_append(gstr, multi->str);
+	
+	g_string_free(multi, TRUE);
+	g_string_free(option, TRUE);
+}
+
 static void append_extra_options(GString *gstr, gchar *extra_options)
 {
 	g_strstrip(extra_options);
+	if (!*extra_options) return;
 	
-	if (*extra_options)
-	{
-		g_string_append_c(gstr, ' ');
-		g_string_append(gstr, extra_options);
-	}
+	g_string_append_c(gstr, ' ');
+	g_string_append(gstr, extra_options);
 }
 
 static GString *get_grep_options(void)
@@ -1684,24 +1727,21 @@ static GString *get_grep_options(void)
 	else
 		g_string_append_c(gstr, 'E');
 	
-	if (settings.fif_use_extra_options1)
-		append_extra_options(gstr, settings.fif_extra_options1);
-	if (settings.fif_use_extra_options2)
-		append_extra_options(gstr, settings.fif_extra_options2);
-	if (settings.fif_use_extra_options3)
-		append_extra_options(gstr, settings.fif_extra_options3);
-	
-	g_strstrip(settings.fif_files);
-	
-	if (settings.fif_files_mode != FILES_MODE_ALL && *settings.fif_files)
-	{	/* put --include= before each pattern */
-		GString *tmp = g_string_new(settings.fif_files);
-		do {} while (utils_string_replace_all(tmp, "  ", " "));
-		g_string_prepend_c(tmp, ' ');
-		utils_string_replace_all(tmp, " ", " --include=");
-		g_string_append(gstr, tmp->str);
-		g_string_free(tmp, TRUE);
+	if (settings.fif_recursive)
+	{
+		if (settings.fif_use_excludedirs_1)
+			append_multi_options(gstr, settings.fif_excludedirs_1, "exclude-dir");
+		if (settings.fif_use_excludedirs_2)
+			append_multi_options(gstr, settings.fif_excludedirs_2, "exclude-dir");
+		if (settings.fif_use_excludedirs_3)
+			append_multi_options(gstr, settings.fif_excludedirs_3, "exclude-dir");
 	}
+	if (settings.fif_use_extra_options)
+		append_extra_options(gstr, settings.fif_extra_options);
+	
+	if (settings.fif_files_mode != FILES_MODE_ALL)
+		append_multi_options(gstr, settings.fif_files, "include");
+	
 	return gstr;
 }
 

@@ -123,3 +123,4 @@ Makefile.in
 *.gch
 a.out
 *.gch
+po/.intltool-merge-cache.lock
