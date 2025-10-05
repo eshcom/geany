@@ -81,7 +81,7 @@ void tm_workspace_update_source_file_buffer(TMSourceFile *source_file,
 											guchar *text_buf, gsize buf_size);
 
 void tm_workspace_free(void);
-void tm_workspace_free_prj(void); // esh: Frees the project tags/typenames.
+void tm_workspace_free_prj(void); // esh: Frees the project tags/typenames
 
 
 #ifdef TM_DEBUG

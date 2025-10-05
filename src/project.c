@@ -1379,6 +1379,10 @@ void project_finalize(void)
 {
 }
 
+
+/* can be used to load tags from any tag-file format (see TMFileFormat),
+ * to load tags from a tag-file of the TM_FILE_FORMAT_CTAGS format,
+ * you must pass base_path */
 void project_load_tags()
 {
 	gchar *base_path = project_get_base_path();
