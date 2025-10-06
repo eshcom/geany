@@ -302,3 +302,13 @@ t			\ntest';
 	sft_info->name = utils_get_setting_string(config, "setfiletype",	\
 											  #name, NULL);				\
 } G_STMT_END
+
+
+size_t length = end ? end - file->line.buffer : strlen(file->line.buffer);
+
+size_t length = end ? end - file->line.buffer
+					: strlen(file->line.buffer);
+
+size_t length = (buff).strlen();
+size_t length = buff.strlen();
+size_t length = std::strlen(s);
