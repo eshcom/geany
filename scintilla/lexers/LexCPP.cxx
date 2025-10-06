@@ -913,15 +913,18 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
 	
-	// esh: define lastOper for SCE_C_STD_FUNC highlighting
-	int lastOper = ' ';
+	// esh: define lastOper/lastOperPrev for SCE_C_STD_FUNC highlighting
+	int lastOper = ' ', lastOperPrev = ' ';
 	if (startPos > 0) {
 		Sci_Position back = startPos;
 		while (--back) {
 			if (IsSpace(styler[back])) {
 				continue;
 			} else if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
-				lastOper = styler[back];
+				lastOper = styler[back--];
+				if (back && MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
+					lastOperPrev = styler[back];
+				}
 			}
 			break;
 		}
@@ -1164,7 +1167,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_C_MACRO|activitySet);
 						
 					} else if (styler[i] == '(') {
-						if (lastOper != ':' && lastOper != '.' && stdFuncs.InList(s)) {
+						if (!(lastOperPrev == ':' && lastOper == ':')
+							&& lastOper != '.' && stdFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_STD_FUNC|activitySet);
 						} else if (addFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_ADD_FUNC|activitySet);
@@ -1213,6 +1217,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.SetState(SCE_C_DEFAULT|activitySet);
 					}
 					lastOper = ' ';
+					lastOperPrev = ' ';
 				}
 				break;
 				
@@ -1692,6 +1697,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_C_OPERATOR|activitySet);
 				lastOper = sc.ch;
+				lastOperPrev = IsOperator(sc.chPrev) ? sc.chPrev : ' ';
+				
 				if (options.jsonKeyStrings && !(jsonLastOper == '[' && sc.ch == ','))
 					jsonLastOper = sc.ch;
 			}
