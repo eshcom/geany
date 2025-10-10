@@ -970,7 +970,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 				else if (g_strcmp0(prefix, ".") == 0)
 					*type = tm_tag_function_t | tm_tag_method_t;
 				else
-					*type = tm_tag_max_t & ~(tm_tag_externvar_t);
+					*type = tm_tag_max_t & ~tm_tag_externvar_t;
 			}
 			else if (prefix == NULL || *prefix == '\0')
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_member_t);

@@ -2721,8 +2721,8 @@ void document_update_tags(GeanyDocument *doc)
 	/* Parse Scintilla's buffer directly using TagManager
 	 * Note: this buffer *MUST NOT* be modified */
 	gsize len = sci_get_length(doc->editor->sci);
-	guchar *buffer_ptr = (guchar *) SSM(doc->editor->sci,
-										SCI_GETCHARACTERPOINTER, 0, 0);
+	guchar *buffer_ptr = (guchar *)SSM(doc->editor->sci,
+									   SCI_GETCHARACTERPOINTER, 0, 0);
 	tm_workspace_update_source_file_buffer(doc->tm_file, buffer_ptr, len);
 	
 	sidebar_update_tag_list(doc, TRUE);

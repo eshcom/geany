@@ -399,7 +399,7 @@ static gint format_range(DocInfo *dinfo, gboolean draw)
 
 	cairo_save(dinfo->fr.hdc);
 	cairo_scale(dinfo->fr.hdc, dinfo->sci_scale, dinfo->sci_scale);
-	pos = (gint) SSM(dinfo->sci, SCI_FORMATRANGE, draw, (sptr_t) &dinfo->fr);
+	pos = (gint)SSM(dinfo->sci, SCI_FORMATRANGE, draw, (sptr_t) &dinfo->fr);
 	cairo_restore(dinfo->fr.hdc);
 
 	return pos;

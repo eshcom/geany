@@ -13,7 +13,7 @@ namespace Scintilla {
 class CharClassify {
 public:
 	CharClassify();
-
+	
 	enum cc { ccSpace, ccNewLine, ccWord, ccPunctuation };
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, cc newCharClass);
@@ -23,7 +23,7 @@ public:
 
 private:
 	enum { maxChar=256 };
-	unsigned char charClass[maxChar];    // not type cc to save space
+	unsigned char charClass[maxChar];	// not type cc to save space
 };
 
 }

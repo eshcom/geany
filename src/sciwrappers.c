@@ -43,16 +43,14 @@
 
 #ifndef NDEBUG
 
-sptr_t sci_send_message_internal (const gchar *file, guint line, ScintillaObject *sci,
-	guint msg, uptr_t wparam, sptr_t lparam)
+sptr_t sci_send_message_internal(const gchar *file, guint line,
+								 ScintillaObject *sci, guint msg,
+								 uptr_t wparam, sptr_t lparam)
 {
-	sptr_t result;
-	gint status;
-
 	scintilla_send_message(sci, SCI_SETSTATUS, 0, 0);
-	result = scintilla_send_message(sci, msg, wparam, lparam);
-	status = scintilla_send_message(sci, SCI_GETSTATUS, 0, 0);
-
+	sptr_t result = scintilla_send_message(sci, msg, wparam, lparam);
+	gint status = scintilla_send_message(sci, SCI_GETSTATUS, 0, 0);
+	
 	if (status != 0)
 	{
 		const gchar *sub_msg = "unknown";
@@ -68,27 +66,20 @@ sptr_t sci_send_message_internal (const gchar *file, guint line, ScintillaObject
 				sub_msg = "regular expression is invalid";
 				break;
 			default:
-				if (status >= SC_STATUS_WARN_START)
-					sub_msg = "unknown warning";
-				else
-					sub_msg = "unknown failure";
+				sub_msg = (status >= SC_STATUS_WARN_START) ? "unknown warning"
+														   : "unknown failure";
 				break;
 		}
 #define SCI_STATUS_FORMAT_STRING "%s:%u: scintilla has non-zero status " \
 			"code '%d' after sending message '%u' to instance '%p' with " \
 			"wParam='%lu' and lParam='%ld': %s"
 		if (status >= SC_STATUS_WARN_START)
-		{
 			g_warning(SCI_STATUS_FORMAT_STRING, file, line, status, msg,
-				(gpointer)sci, wparam, lparam, sub_msg);
-		}
+					  (gpointer)sci, wparam, lparam, sub_msg);
 		else
-		{
 			g_critical(SCI_STATUS_FORMAT_STRING, file, line, status, msg,
-				(gpointer)sci, wparam, lparam, sub_msg);
-		}
+					   (gpointer)sci, wparam, lparam, sub_msg);
 	}
-
 	return result;
 }
 #endif
@@ -100,27 +91,23 @@ void sci_set_line_numbers(ScintillaObject *sci, gboolean set)
 	if (set)
 	{
 		gchar tmp_str[15];
-		gint len = (gint) SSM(sci, SCI_GETLINECOUNT, 0, 0);
-		gint width;
-
+		gint len = (gint)SSM(sci, SCI_GETLINECOUNT, 0, 0);
+		
 		g_snprintf(tmp_str, 15, "_%d", len);
-		width = sci_text_width(sci, STYLE_LINENUMBER, tmp_str);
+		gint width = sci_text_width(sci, STYLE_LINENUMBER, tmp_str);
 		SSM(sci, SCI_SETMARGINWIDTHN, 0, width);
 		SSM(sci, SCI_SETMARGINSENSITIVEN, 0, FALSE); /* use default behaviour */
 	}
 	else
-	{
 		SSM(sci, SCI_SETMARGINWIDTHN, 0, 0);
-	}
 }
 
 
-void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column, const gchar *colour)
+void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column,
+							 const gchar *colour)
 {
-	glong colour_val = utils_parse_color_to_bgr(colour); /* Scintilla uses a "long" value */
-
-	if (column == 0)
-		type = 2;
+	if (column == 0) type = 2;
+	
 	switch (type)
 	{
 		case 0:
@@ -139,8 +126,10 @@ void sci_set_mark_long_lines(ScintillaObject *sci, gint type, gint column, const
 			return;
 		}
 	}
-	SSM(sci, SCI_SETEDGECOLUMN, (uptr_t) column, 0);
-	SSM(sci, SCI_SETEDGECOLOUR, (uptr_t) colour_val, 0);
+	SSM(sci, SCI_SETEDGECOLUMN, (uptr_t)column, 0);
+	
+	glong colour_val = utils_parse_color_to_bgr(colour); /* Scintilla uses a "long" value */
+	SSM(sci, SCI_SETEDGECOLOUR, (uptr_t)colour_val, 0);
 }
 
 
@@ -203,28 +192,26 @@ void sci_set_lines_wrapped(ScintillaObject *sci, gboolean set)
 
 gint sci_get_eol_mode(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETEOLMODE, 0, 0);
+	return (gint)SSM(sci, SCI_GETEOLMODE, 0, 0);
 }
 
 
 void sci_set_eol_mode(ScintillaObject *sci, gint eolmode)
 {
-	SSM(sci, SCI_SETEOLMODE, (uptr_t) eolmode, 0);
+	SSM(sci, SCI_SETEOLMODE, (uptr_t)eolmode, 0);
 }
 
 
 void sci_convert_eols(ScintillaObject *sci, gint eolmode)
 {
-	SSM(sci, SCI_CONVERTEOLS, (uptr_t) eolmode, 0);
+	SSM(sci, SCI_CONVERTEOLS, (uptr_t)eolmode, 0);
 }
 
 
 void sci_add_text(ScintillaObject *sci, const gchar *text)
 {
-	if (text != NULL)
-	{ /* if null text is passed scintilla will segfault */
-		SSM(sci, SCI_ADDTEXT, strlen(text), (sptr_t) text);
-	}
+	if (text != NULL) /* if null text is passed to scintilla will segfault */
+		SSM(sci, SCI_ADDTEXT, strlen(text), (sptr_t)text);
 }
 
 
@@ -234,9 +221,8 @@ void sci_add_text(ScintillaObject *sci, const gchar *text)
 GEANY_API_SYMBOL
 void sci_set_text(ScintillaObject *sci, const gchar *text)
 {
-	if (text != NULL) { /* if null text is passed to scintilla will segfault */
-		SSM(sci, SCI_SETTEXT, 0, (sptr_t) text);
-	}
+	if (text != NULL) /* if null text is passed to scintilla will segfault */
+		SSM(sci, SCI_SETTEXT, 0, (sptr_t)text);
 }
 
 
@@ -254,15 +240,13 @@ gboolean sci_can_redo(ScintillaObject *sci)
 
 void sci_undo(ScintillaObject *sci)
 {
-	if (sci_can_undo(sci))
-		SSM(sci, SCI_UNDO, 0, 0);
+	if (sci_can_undo(sci)) SSM(sci, SCI_UNDO, 0, 0);
 }
 
 
 void sci_redo(ScintillaObject *sci)
 {
-	if (sci_can_redo(sci))
-		SSM(sci, SCI_REDO, 0, 0);
+	if (sci_can_redo(sci)) SSM(sci, SCI_REDO, 0, 0);
 }
 
 
@@ -329,7 +313,7 @@ void sci_zoom_off(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_set_marker_at_line(ScintillaObject *sci, gint line_number, gint marker)
 {
-	SSM(sci, SCI_MARKERADD, (uptr_t) line_number, marker);
+	SSM(sci, SCI_MARKERADD, (uptr_t)line_number, marker);
 }
 
 
@@ -340,7 +324,7 @@ void sci_set_marker_at_line(ScintillaObject *sci, gint line_number, gint marker)
 GEANY_API_SYMBOL
 void sci_delete_marker_at_line(ScintillaObject *sci, gint line_number, gint marker)
 {
-	SSM(sci, SCI_MARKERDELETE, (uptr_t) line_number, marker);
+	SSM(sci, SCI_MARKERDELETE, (uptr_t)line_number, marker);
 }
 
 
@@ -352,18 +336,14 @@ void sci_delete_marker_at_line(ScintillaObject *sci, gint line_number, gint mark
 GEANY_API_SYMBOL
 gboolean sci_is_marker_set_at_line(ScintillaObject *sci, gint line, gint marker)
 {
-	gint state;
-
-	state = (gint) SSM(sci, SCI_MARKERGET, (uptr_t) line, 0);
+	gint state = (gint)SSM(sci, SCI_MARKERGET, (uptr_t)line, 0);
 	return (state & (1 << marker));
 }
 
 
 void sci_toggle_marker_at_line(ScintillaObject *sci, gint line, gint marker)
 {
-	gboolean set = sci_is_marker_set_at_line(sci, line, marker);
-
-	if (!set)
+	if (!sci_is_marker_set_at_line(sci, line, marker))
 		sci_set_marker_at_line(sci, line, marker);
 	else
 		sci_delete_marker_at_line(sci, line, marker);
@@ -373,13 +353,12 @@ void sci_toggle_marker_at_line(ScintillaObject *sci, gint line, gint marker)
 /* Returns the line number of the next marker that matches marker_mask, or -1.
  * marker_mask is a bitor of 1 << marker_index. (See MarkerHandleSet::MarkValue()).
  * Note: If there is a marker on the line, it returns the same line. */
-gint sci_marker_next(ScintillaObject *sci, gint line, gint marker_mask, gboolean wrap)
+gint sci_marker_next(ScintillaObject *sci, gint line,
+					 gint marker_mask, gboolean wrap)
 {
-	gint marker_line;
-
-	marker_line = (gint) SSM(sci, SCI_MARKERNEXT, (uptr_t) line, marker_mask);
+	gint marker_line = (gint)SSM(sci, SCI_MARKERNEXT, (uptr_t)line, marker_mask);
 	if (wrap && marker_line == -1)
-		marker_line = (gint) SSM(sci, SCI_MARKERNEXT, 0, marker_mask);
+		marker_line = (gint)SSM(sci, SCI_MARKERNEXT, 0, marker_mask);
 	return marker_line;
 }
 
@@ -387,17 +366,16 @@ gint sci_marker_next(ScintillaObject *sci, gint line, gint marker_mask, gboolean
 /* Returns the line number of the previous marker that matches marker_mask, or -1.
  * marker_mask is a bitor of 1 << marker_index. (See MarkerHandleSet::MarkValue()).
  * Note: If there is a marker on the line, it returns the same line. */
-gint sci_marker_previous(ScintillaObject *sci, gint line, gint marker_mask, gboolean wrap)
+gint sci_marker_previous(ScintillaObject *sci, gint line,
+						 gint marker_mask, gboolean wrap)
 {
-	gint marker_line;
-
-	marker_line = (gint) SSM(sci, SCI_MARKERPREVIOUS, (uptr_t) line, marker_mask);
+	gint marker_line = (gint)SSM(sci, SCI_MARKERPREVIOUS, (uptr_t)line,
+								 marker_mask);
 	if (wrap && marker_line == -1)
 	{
-		gint len = sci_get_length(sci);
-		gint last_line = sci_get_line_from_position(sci, len - 1);
-
-		marker_line = (gint) SSM(sci, SCI_MARKERPREVIOUS, (uptr_t) last_line, marker_mask);
+		gint last_line = sci_get_line_from_position(sci, sci_get_length(sci) - 1);
+		marker_line = (gint)SSM(sci, SCI_MARKERPREVIOUS, (uptr_t)last_line,
+								marker_mask);
 	}
 	return marker_line;
 }
@@ -410,7 +388,7 @@ gint sci_marker_previous(ScintillaObject *sci, gint line, gint marker_mask, gboo
 GEANY_API_SYMBOL
 gint sci_get_line_from_position(ScintillaObject *sci, gint position)
 {
-	return (gint) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) position, 0);
+	return (gint)SSM(sci, SCI_LINEFROMPOSITION, (uptr_t)position, 0);
 }
 
 
@@ -421,13 +399,13 @@ gint sci_get_line_from_position(ScintillaObject *sci, gint position)
 GEANY_API_SYMBOL
 gint sci_get_col_from_position(ScintillaObject *sci, gint position)
 {
-	return (gint) SSM(sci, SCI_GETCOLUMN, (uptr_t) position, 0);
+	return (gint)SSM(sci, SCI_GETCOLUMN, (uptr_t)position, 0);
 }
 
 
 gint sci_get_position_from_col(ScintillaObject *sci, gint line, gint col)
 {
-	return (gint) SSM(sci, SCI_FINDCOLUMN, line, col);
+	return (gint)SSM(sci, SCI_FINDCOLUMN, line, col);
 }
 
 
@@ -438,7 +416,7 @@ gint sci_get_position_from_col(ScintillaObject *sci, gint line, gint col)
 GEANY_API_SYMBOL
 gint sci_get_position_from_line(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_POSITIONFROMLINE, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_POSITIONFROMLINE, (uptr_t)line, 0);
 }
 
 
@@ -448,18 +426,18 @@ gint sci_get_position_from_line(ScintillaObject *sci, gint line)
 GEANY_API_SYMBOL
 gint sci_get_current_position(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETCURRENTPOS, 0, 0);
+	return (gint)SSM(sci, SCI_GETCURRENTPOS, 0, 0);
 }
 
 
 gint sci_get_cursor_virtual_space(ScintillaObject *sci)
 {
 	gint selection_mode = sci_get_selection_mode(sci);
-
-	return selection_mode == SC_SEL_RECTANGLE || selection_mode == SC_SEL_THIN ?
-		SSM(sci, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0) :
-		SSM(sci, SCI_GETSELECTIONNCARETVIRTUALSPACE,
-			SSM(sci, SCI_GETMAINSELECTION, 0, 0), 0);
+	
+	return selection_mode == SC_SEL_RECTANGLE || selection_mode == SC_SEL_THIN
+			? SSM(sci, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0)
+			: SSM(sci, SCI_GETSELECTIONNCARETVIRTUALSPACE,
+				  SSM(sci, SCI_GETMAINSELECTION, 0, 0), 0);
 }
 
 
@@ -468,14 +446,15 @@ gint sci_get_cursor_virtual_space(ScintillaObject *sci)
  * @param position Position.
  * @param scroll_to_caret Whether to scroll the cursor in view. */
 GEANY_API_SYMBOL
-void sci_set_current_position(ScintillaObject *sci, gint position, gboolean scroll_to_caret)
+void sci_set_current_position(ScintillaObject *sci, gint position,
+							  gboolean scroll_to_caret)
 {
 	if (scroll_to_caret)
-		SSM(sci, SCI_GOTOPOS, (uptr_t) position, 0);
+		SSM(sci, SCI_GOTOPOS, (uptr_t)position, 0);
 	else
 	{
-		SSM(sci, SCI_SETCURRENTPOS, (uptr_t) position, 0);
-		SSM(sci, SCI_SETANCHOR, (uptr_t) position, 0); /* to avoid creation of a selection */
+		SSM(sci, SCI_SETCURRENTPOS, (uptr_t)position, 0);
+		SSM(sci, SCI_SETANCHOR, (uptr_t)position, 0); /* to avoid creation of a selection */
 	}
 	SSM(sci, SCI_CHOOSECARETX, 0, 0);
 }
@@ -496,7 +475,7 @@ void sci_set_current_line(ScintillaObject *sci, gint line)
 GEANY_API_SYMBOL
 gint sci_get_line_count(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETLINECOUNT, 0, 0);
+	return (gint)SSM(sci, SCI_GETLINECOUNT, 0, 0);
 }
 
 
@@ -506,7 +485,7 @@ gint sci_get_line_count(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_set_selection_start(ScintillaObject *sci, gint position)
 {
-	SSM(sci, SCI_SETSELECTIONSTART, (uptr_t) position, 0);
+	SSM(sci, SCI_SETSELECTIONSTART, (uptr_t)position, 0);
 }
 
 
@@ -516,13 +495,13 @@ void sci_set_selection_start(ScintillaObject *sci, gint position)
 GEANY_API_SYMBOL
 void sci_set_selection_end(ScintillaObject *sci, gint position)
 {
-	SSM(sci, SCI_SETSELECTIONEND, (uptr_t) position, 0);
+	SSM(sci, SCI_SETSELECTIONEND, (uptr_t)position, 0);
 }
 
 
 void sci_set_selection(ScintillaObject *sci, gint anchorPos, gint currentPos)
 {
-	SSM(sci, SCI_SETSEL, (uptr_t) anchorPos, currentPos);
+	SSM(sci, SCI_SETSEL, (uptr_t)anchorPos, currentPos);
 }
 
 
@@ -533,7 +512,7 @@ void sci_set_selection(ScintillaObject *sci, gint anchorPos, gint currentPos)
 GEANY_API_SYMBOL
 gint sci_get_line_end_position(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETLINEENDPOSITION, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETLINEENDPOSITION, (uptr_t)line, 0);
 }
 
 
@@ -567,7 +546,7 @@ void sci_clear(ScintillaObject *sci)
 GEANY_API_SYMBOL
 gint sci_get_selection_start(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETSELECTIONSTART, 0, 0);
+	return (gint)SSM(sci, SCI_GETSELECTIONSTART, 0, 0);
 }
 
 
@@ -577,7 +556,7 @@ gint sci_get_selection_start(ScintillaObject *sci)
 GEANY_API_SYMBOL
 gint sci_get_selection_end(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETSELECTIONEND, 0, 0);
+	return (gint)SSM(sci, SCI_GETSELECTIONEND, 0, 0);
 }
 
 
@@ -587,7 +566,7 @@ gint sci_get_selection_end(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_replace_sel(ScintillaObject *sci, const gchar *text)
 {
-	SSM(sci, SCI_REPLACESEL, 0, (sptr_t) text);
+	SSM(sci, SCI_REPLACESEL, 0, (sptr_t)text);
 }
 
 
@@ -597,7 +576,7 @@ void sci_replace_sel(ScintillaObject *sci, const gchar *text)
 GEANY_API_SYMBOL
 gint sci_get_length(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETLENGTH, 0, 0);
+	return (gint)SSM(sci, SCI_GETLENGTH, 0, 0);
 }
 
 
@@ -608,16 +587,16 @@ gint sci_get_length(ScintillaObject *sci)
 GEANY_API_SYMBOL
 gint sci_get_lexer(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETLEXER, 0, 0);
+	return (gint)SSM(sci, SCI_GETLEXER, 0, 0);
 }
 
 
 void sci_set_lexer(ScintillaObject *sci, guint lexer_id)
 {
 	gint old = sci_get_lexer(sci);
-
+	
 	SSM(sci, SCI_SETLEXER, lexer_id, 0);
-
+	
 	if (old != (gint)lexer_id)
 		SSM(sci, SCI_CLEARDOCUMENTSTYLE, 0, 0);
 }
@@ -630,7 +609,7 @@ void sci_set_lexer(ScintillaObject *sci, guint lexer_id)
 GEANY_API_SYMBOL
 gint sci_get_line_length(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_LINELENGTH, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_LINELENGTH, (uptr_t)line, 0);
 }
 
 
@@ -638,10 +617,10 @@ gint sci_get_line_length(ScintillaObject *sci, gint line)
  * works with any string buffer messages that follow the Windows message convention. */
 gchar *sci_get_string(ScintillaObject *sci, guint msg, gulong wParam)
 {
-	gint size = (gint) SSM(sci, msg, wParam, 0);
+	gint size = (gint)SSM(sci, msg, wParam, 0);
 	gchar *str = g_malloc(size + 1);
-
-	SSM(sci, msg, wParam, (sptr_t) str);
+	
+	SSM(sci, msg, wParam, (sptr_t)str);
 	str[size] = '\0';	/* ensure termination, needed for SCI_GETLINE */
 	return str;
 }
@@ -654,7 +633,7 @@ gchar *sci_get_string(ScintillaObject *sci, guint msg, gulong wParam)
 GEANY_API_SYMBOL
 gchar *sci_get_line(ScintillaObject *sci, gint line_num)
 {
-	return sci_get_string(sci, SCI_GETLINE, (gulong) line_num);
+	return sci_get_string(sci, SCI_GETLINE, (gulong)line_num);
 }
 
 
@@ -668,7 +647,7 @@ gchar *sci_get_line(ScintillaObject *sci, gint line_num)
 GEANY_API_SYMBOL
 void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 {
-	SSM(sci, SCI_GETTEXT, (uptr_t) len, (sptr_t) text);
+	SSM(sci, SCI_GETTEXT, (uptr_t)len, (sptr_t)text);
 }
 
 
@@ -684,13 +663,11 @@ void sci_get_text(ScintillaObject *sci, gint len, gchar *text)
 GEANY_API_SYMBOL
 gchar *sci_get_contents(ScintillaObject *sci, gint buffer_len)
 {
-	gchar *text;
-
 	if (buffer_len < 0)
 		buffer_len = sci_get_length(sci) + 1;
-
-	text = g_malloc(buffer_len);
-	SSM(sci, SCI_GETTEXT, (uptr_t) buffer_len, (sptr_t) text);
+	
+	gchar *text = g_malloc(buffer_len);
+	SSM(sci, SCI_GETTEXT, (uptr_t)buffer_len, (sptr_t)text);
 	return text;
 }
 
@@ -705,7 +682,7 @@ gchar *sci_get_contents(ScintillaObject *sci, gint buffer_len)
 GEANY_API_SYMBOL
 void sci_get_selected_text(ScintillaObject *sci, gchar *text)
 {
-	SSM(sci, SCI_GETSELTEXT, 0, (sptr_t) text);
+	SSM(sci, SCI_GETSELTEXT, 0, (sptr_t)text);
 }
 
 
@@ -729,14 +706,15 @@ gchar *sci_get_selection_contents(ScintillaObject *sci)
 GEANY_API_SYMBOL
 gint sci_get_selected_text_length(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETSELTEXT, 0, 0);
+	return (gint)SSM(sci, SCI_GETSELTEXT, 0, 0);
 }
 
 
 gint sci_get_position_from_xy(ScintillaObject *sci, gint x, gint y, gboolean nearby)
 {
 	/* for nearby return -1 if there is no character near to the x,y point. */
-	return (gint) SSM(sci, (nearby) ? SCI_POSITIONFROMPOINTCLOSE : SCI_POSITIONFROMPOINT, (uptr_t) x, y);
+	return (gint)SSM(sci, nearby ? SCI_POSITIONFROMPOINTCLOSE
+								 : SCI_POSITIONFROMPOINT, (uptr_t)x, y);
 }
 
 
@@ -747,7 +725,7 @@ gint sci_get_position_from_xy(ScintillaObject *sci, gint x, gint y, gboolean nea
 GEANY_API_SYMBOL
 gboolean sci_get_line_is_visible(ScintillaObject *sci, gint line)
 {
-	return SSM(sci, SCI_GETLINEVISIBLE, (uptr_t) line, 0) != FALSE;
+	return SSM(sci, SCI_GETLINEVISIBLE, (uptr_t)line, 0) != FALSE;
 }
 
 
@@ -757,38 +735,38 @@ gboolean sci_get_line_is_visible(ScintillaObject *sci, gint line)
 GEANY_API_SYMBOL
 void sci_ensure_line_is_visible(ScintillaObject *sci, gint line)
 {
-	SSM(sci, SCI_ENSUREVISIBLE, (uptr_t) line, 0);
+	SSM(sci, SCI_ENSUREVISIBLE, (uptr_t)line, 0);
 }
 
 
 gint sci_get_fold_level(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETFOLDLEVEL, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETFOLDLEVEL, (uptr_t)line, 0);
 }
 
 
 /* Get the line number of the fold point before start_line, or -1 if there isn't one */
 gint sci_get_fold_parent(ScintillaObject *sci, gint start_line)
 {
-	return (gint) SSM(sci, SCI_GETFOLDPARENT, (uptr_t) start_line, 0);
+	return (gint)SSM(sci, SCI_GETFOLDPARENT, (uptr_t)start_line, 0);
 }
 
 
 void sci_toggle_fold(ScintillaObject *sci, gint line)
 {
-	SSM(sci, SCI_TOGGLEFOLD, (uptr_t) line, 0);
+	SSM(sci, SCI_TOGGLEFOLD, (uptr_t)line, 0);
 }
 
 
 gboolean sci_get_fold_expanded(ScintillaObject *sci, gint line)
 {
-	return SSM(sci, SCI_GETFOLDEXPANDED, (uptr_t) line, 0) != FALSE;
+	return SSM(sci, SCI_GETFOLDEXPANDED, (uptr_t)line, 0) != FALSE;
 }
 
 
 void sci_colourise(ScintillaObject *sci, gint start, gint end)
 {
-	SSM(sci, SCI_COLOURISE, (uptr_t) start, end);
+	SSM(sci, SCI_COLOURISE, (uptr_t)start, end);
 }
 
 
@@ -800,13 +778,13 @@ void sci_clear_all(ScintillaObject *sci)
 
 gint sci_get_end_styled(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETENDSTYLED, 0, 0);
+	return (gint)SSM(sci, SCI_GETENDSTYLED, 0, 0);
 }
 
 
 void sci_set_tab_width(ScintillaObject *sci, gint width)
 {
-	SSM(sci, SCI_SETTABWIDTH, (uptr_t) width, 0);
+	SSM(sci, SCI_SETTABWIDTH, (uptr_t)width, 0);
 }
 
 
@@ -819,7 +797,7 @@ void sci_set_tab_width(ScintillaObject *sci, gint width)
 GEANY_API_SYMBOL
 gint sci_get_tab_width(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETTABWIDTH, 0, 0);
+	return (gint)SSM(sci, SCI_GETTABWIDTH, 0, 0);
 }
 
 
@@ -830,7 +808,7 @@ gint sci_get_tab_width(ScintillaObject *sci)
 GEANY_API_SYMBOL
 gchar sci_get_char_at(ScintillaObject *sci, gint pos)
 {
-	return (gchar) SSM(sci, SCI_GETCHARAT, (uptr_t) pos, 0);
+	return (gchar)SSM(sci, SCI_GETCHARAT, (uptr_t)pos, 0);
 }
 
 
@@ -842,7 +820,7 @@ void sci_set_savepoint(ScintillaObject *sci)
 
 void sci_set_indentation_guides(ScintillaObject *sci, gint mode)
 {
-	SSM(sci, SCI_SETINDENTATIONGUIDES, (uptr_t) mode, 0);
+	SSM(sci, SCI_SETINDENTATIONGUIDES, (uptr_t)mode, 0);
 }
 
 
@@ -870,8 +848,10 @@ gboolean sci_has_selection(ScintillaObject *sci)
 
 void sci_goto_pos(ScintillaObject *sci, gint pos, gboolean unfold)
 {
-	if (unfold) SSM(sci, SCI_ENSUREVISIBLE, (uptr_t) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) pos, 0), 0);
-	SSM(sci, SCI_GOTOPOS, (uptr_t) pos, 0);
+	if (unfold)
+		SSM(sci, SCI_ENSUREVISIBLE,
+			(uptr_t)SSM(sci, SCI_LINEFROMPOSITION, (uptr_t)pos, 0), 0);
+	SSM(sci, SCI_GOTOPOS, (uptr_t)pos, 0);
 }
 
 
@@ -884,10 +864,8 @@ void sci_set_search_anchor(ScintillaObject *sci)
 /* removes a selection if pos < 0 */
 void sci_set_anchor(ScintillaObject *sci, gint pos)
 {
-	if (pos < 0)
-		pos = sci_get_current_position(sci);
-
-	SSM(sci, SCI_SETANCHOR, (uptr_t) pos, 0);
+	if (pos < 0) pos = sci_get_current_position(sci);
+	SSM(sci, SCI_SETANCHOR, (uptr_t)pos, 0);
 }
 
 
@@ -902,21 +880,21 @@ void sci_scroll_caret(ScintillaObject *sci)
 
 void sci_scroll_columns(ScintillaObject *sci, gint columns)
 {
-	SSM(sci, SCI_LINESCROLL, (uptr_t) columns, 0);
+	SSM(sci, SCI_LINESCROLL, (uptr_t)columns, 0);
 }
 
 
 gint sci_search_next(ScintillaObject *sci, gint flags, const gchar *text)
 {
 	/* FIXME: SCI_SEACHNEXT() actually returns long */
-	return (gint) SSM(sci, SCI_SEARCHNEXT, (uptr_t) flags, (sptr_t) text);
+	return (gint)SSM(sci, SCI_SEARCHNEXT, (uptr_t)flags, (sptr_t)text);
 }
 
 
 gint sci_search_prev(ScintillaObject *sci, gint flags, const gchar *text)
 {
 	/* FIXME: SCI_SEACHPREV() actually returns long */
-	return (gint) SSM(sci, SCI_SEARCHPREV, (uptr_t) flags, (sptr_t) text);
+	return (gint)SSM(sci, SCI_SEARCHPREV, (uptr_t)flags, (sptr_t)text);
 }
 
 
@@ -936,7 +914,7 @@ gint sci_search_prev(ScintillaObject *sci, gint flags, const gchar *text)
 GEANY_API_SYMBOL
 gint sci_find_text(ScintillaObject *sci, gint flags, struct Sci_TextToFind *ttf)
 {
-	return (gint) SSM(sci, SCI_FINDTEXT, (uptr_t) flags, (sptr_t) ttf);
+	return (gint)SSM(sci, SCI_FINDTEXT, (uptr_t)flags, (sptr_t)ttf);
 }
 
 /* * Sets the font for a particular style.
@@ -944,12 +922,14 @@ gint sci_find_text(ScintillaObject *sci, gint flags, struct Sci_TextToFind *ttf)
  * @param style The style.
  * @param font The font name.
  * @param size The font (fractional) size. */
-void sci_set_font_fractional(ScintillaObject *sci, gint style, const gchar *font, gdouble size)
+void sci_set_font_fractional(ScintillaObject *sci, gint style,
+							 const gchar *font, gdouble size)
 {
-	SSM(sci, SCI_STYLESETFONT, (uptr_t) style, (sptr_t) font);
-
+	SSM(sci, SCI_STYLESETFONT, (uptr_t)style, (sptr_t)font);
+	
 	/* Adding 0.5 is for rounding. */
-	SSM(sci, SCI_STYLESETSIZEFRACTIONAL, (uptr_t) style, (sptr_t) (SC_FONT_SIZE_MULTIPLIER * size + 0.5));
+	SSM(sci, SCI_STYLESETSIZEFRACTIONAL, (uptr_t)style,
+		(sptr_t)(SC_FONT_SIZE_MULTIPLIER * size + 0.5));
 }
 
 /** Sets the font for a particular style.
@@ -974,14 +954,15 @@ void sci_set_font(ScintillaObject *sci, gint style, const gchar *font, gint size
 GEANY_API_SYMBOL
 void sci_goto_line(ScintillaObject *sci, gint line, gboolean unfold)
 {
-	if (unfold) SSM(sci, SCI_ENSUREVISIBLE, (uptr_t) line, 0);
-	SSM(sci, SCI_GOTOLINE, (uptr_t) line, 0);
+	if (unfold)
+		SSM(sci, SCI_ENSUREVISIBLE, (uptr_t)line, 0);
+	SSM(sci, SCI_GOTOLINE, (uptr_t)line, 0);
 }
 
 
 void sci_marker_delete_all(ScintillaObject *sci, gint marker)
 {
-	SSM(sci, SCI_MARKERDELETEALL, (uptr_t) marker, 0);
+	SSM(sci, SCI_MARKERDELETEALL, (uptr_t)marker, 0);
 }
 
 
@@ -992,26 +973,26 @@ void sci_marker_delete_all(ScintillaObject *sci, gint marker)
 GEANY_API_SYMBOL
 gint sci_get_style_at(ScintillaObject *sci, gint position)
 {
-	return (gint) SSM(sci, SCI_GETSTYLEAT, (uptr_t) position, 0);
+	return (gint)SSM(sci, SCI_GETSTYLEAT, (uptr_t)position, 0);
 }
 
 
 void sci_set_codepage(ScintillaObject *sci, gint cp)
 {
 	g_return_if_fail(cp == 0 || cp == SC_CP_UTF8);
-	SSM(sci, SCI_SETCODEPAGE, (uptr_t) cp, 0);
+	SSM(sci, SCI_SETCODEPAGE, (uptr_t)cp, 0);
 }
 
 
 void sci_assign_cmdkey(ScintillaObject *sci, gint key, gint command)
 {
-	SSM(sci, SCI_ASSIGNCMDKEY, (uptr_t) key, command);
+	SSM(sci, SCI_ASSIGNCMDKEY, (uptr_t)key, command);
 }
 
 
 void sci_clear_cmdkey(ScintillaObject *sci, gint key)
 {
-	SSM(sci, SCI_CLEARCMDKEY, (uptr_t) key, 0);
+	SSM(sci, SCI_CLEARCMDKEY, (uptr_t)key, 0);
 }
 
 
@@ -1045,11 +1026,9 @@ void sci_get_text_range(ScintillaObject *sci, gint start, gint end, gchar *text)
 GEANY_API_SYMBOL
 gchar *sci_get_contents_range(ScintillaObject *sci, gint start, gint end)
 {
-	gchar *text;
-
 	g_return_val_if_fail(start < end, NULL);
-
-	text = g_malloc((gsize)(end - start) + 1);
+	
+	gchar *text = g_malloc((gsize)(end - start) + 1);
 	sci_get_text_range(sci, start, end, text);
 	return text;
 }
@@ -1074,34 +1053,35 @@ void sci_selection_duplicate(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_insert_text(ScintillaObject *sci, gint pos, const gchar *text)
 {
-	SSM(sci, SCI_INSERTTEXT, (uptr_t) pos, (sptr_t) text);
+	SSM(sci, SCI_INSERTTEXT, (uptr_t)pos, (sptr_t)text);
 }
 
 
 GEANY_API_SYMBOL
 void sci_set_target_start(ScintillaObject *sci, gint start)
 {
-	SSM(sci, SCI_SETTARGETSTART, (uptr_t) start, 0);
+	SSM(sci, SCI_SETTARGETSTART, (uptr_t)start, 0);
 }
 
 
 GEANY_API_SYMBOL
 void sci_set_target_end(ScintillaObject *sci, gint end)
 {
-	SSM(sci, SCI_SETTARGETEND, (uptr_t) end, 0);
+	SSM(sci, SCI_SETTARGETEND, (uptr_t)end, 0);
 }
 
 
 GEANY_API_SYMBOL
 gint sci_replace_target(ScintillaObject *sci, const gchar *text, gboolean regex)
 {
-	return (gint) SSM(sci, (regex) ? SCI_REPLACETARGETRE : SCI_REPLACETARGET, (uptr_t) -1, (sptr_t) text);
+	return (gint)SSM(sci, regex ? SCI_REPLACETARGETRE
+								: SCI_REPLACETARGET, (uptr_t)-1, (sptr_t)text);
 }
 
 
 void sci_set_keywords(ScintillaObject *sci, guint k, const gchar *text)
 {
-	SSM(sci, SCI_SETKEYWORDS, k, (sptr_t) text);
+	SSM(sci, SCI_SETKEYWORDS, k, (sptr_t)text);
 }
 
 
@@ -1131,7 +1111,8 @@ void sci_send_command(ScintillaObject *sci, gint cmd)
 GEANY_API_SYMBOL
 gint sci_get_current_line(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) SSM(sci, SCI_GETCURRENTPOS, 0, 0), 0);
+	return (gint)SSM(sci, SCI_LINEFROMPOSITION,
+					 (uptr_t)SSM(sci, SCI_GETCURRENTPOS, 0, 0), 0);
 }
 
 
@@ -1140,30 +1121,27 @@ gint sci_get_current_line(ScintillaObject *sci)
  * Returns 2 if a whole line is selected including the line break char(s). */
 gint sci_get_lines_selected(ScintillaObject *sci)
 {
-	gint start = (gint) SSM(sci, SCI_GETSELECTIONSTART, 0, 0);
-	gint end = (gint) SSM(sci, SCI_GETSELECTIONEND, 0, 0);
-	gint line_start;
-	gint line_end;
-
-	if (start == end)
-		return 0; /* no selection */
-
-	line_start = (gint) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) start, 0);
-	line_end = (gint) SSM(sci, SCI_LINEFROMPOSITION, (uptr_t) end, 0);
-
+	gint start = (gint)SSM(sci, SCI_GETSELECTIONSTART, 0, 0);
+	gint end = (gint)SSM(sci, SCI_GETSELECTIONEND, 0, 0);
+	
+	if (start == end) return 0; /* no selection */
+	
+	gint line_start = (gint)SSM(sci, SCI_LINEFROMPOSITION, (uptr_t)start, 0);
+	gint line_end = (gint)SSM(sci, SCI_LINEFROMPOSITION, (uptr_t)end, 0);
+	
 	return line_end - line_start + 1;
 }
 
 
 gint sci_get_first_visible_line(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETFIRSTVISIBLELINE, 0, 0);
+	return (gint)SSM(sci, SCI_GETFIRSTVISIBLELINE, 0, 0);
 }
 
 
 /**
- *  Sets the current indicator. This is necessary to define an indicator for a range of text or
- *  clearing indicators for a range of text.
+ *  Sets the current indicator. This is necessary to define an indicator
+ *  for a range of text or clearing indicators for a range of text.
  *
  *  @param sci Scintilla widget.
  *  @param indic The indicator number to set.
@@ -1175,21 +1153,21 @@ gint sci_get_first_visible_line(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_indicator_set(ScintillaObject *sci, gint indic)
 {
-	SSM(sci, SCI_SETINDICATORCURRENT, (uptr_t) indic, 0);
+	SSM(sci, SCI_SETINDICATORCURRENT, (uptr_t)indic, 0);
 }
 
 
 void sci_indicator_fill(ScintillaObject *sci, gint pos, gint len)
 {
-	SSM(sci, SCI_INDICATORFILLRANGE, (uptr_t) pos, len);
+	SSM(sci, SCI_INDICATORFILLRANGE, (uptr_t)pos, len);
 }
 
 
 /**
  *  Clears the currently set indicator from a range of text.
  *  Starting at @a pos, @a len characters long.
- *  In order to make this function properly, you need to set the current indicator before with
- *  @ref sci_indicator_set().
+ *  In order to make this function properly, you need to set
+ *  the current indicator before with @ref sci_indicator_set().
  *
  *  @param sci Scintilla widget.
  *  @param pos Starting position.
@@ -1200,7 +1178,7 @@ void sci_indicator_fill(ScintillaObject *sci, gint pos, gint len)
 GEANY_API_SYMBOL
 void sci_indicator_clear(ScintillaObject *sci, gint pos, gint len)
 {
-	SSM(sci, SCI_INDICATORCLEARRANGE, (uptr_t) pos, len);
+	SSM(sci, SCI_INDICATORCLEARRANGE, (uptr_t)pos, len);
 }
 
 
@@ -1212,13 +1190,13 @@ void sci_select_all(ScintillaObject *sci)
 
 gint sci_get_line_indent_position(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETLINEINDENTPOSITION, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETLINEINDENTPOSITION, (uptr_t)line, 0);
 }
 
 
 void sci_set_autoc_max_height(ScintillaObject *sci, gint val)
 {
-	SSM(sci, SCI_AUTOCSETMAXHEIGHT, (uptr_t) val, 0);
+	SSM(sci, SCI_AUTOCSETMAXHEIGHT, (uptr_t)val, 0);
 }
 
 
@@ -1232,13 +1210,13 @@ void sci_set_autoc_max_height(ScintillaObject *sci, gint val)
 GEANY_API_SYMBOL
 gint sci_find_matching_brace(ScintillaObject *sci, gint pos)
 {
-	return (gint) SSM(sci, SCI_BRACEMATCH, (uptr_t) pos, 0);
+	return (gint)SSM(sci, SCI_BRACEMATCH, (uptr_t)pos, 0);
 }
 
 
 gint sci_get_overtype(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETOVERTYPE, 0, 0);
+	return (gint)SSM(sci, SCI_GETOVERTYPE, 0, 0);
 }
 
 
@@ -1256,13 +1234,13 @@ void sci_set_use_tabs(ScintillaObject *sci, gboolean set)
 
 gint sci_get_pos_at_line_sel_start(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETLINESELSTARTPOSITION, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETLINESELSTARTPOSITION, (uptr_t)line, 0);
 }
 
 
 gint sci_get_pos_at_line_sel_end(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETLINESELENDPOSITION, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETLINESELENDPOSITION, (uptr_t)line, 0);
 }
 
 
@@ -1272,7 +1250,7 @@ gint sci_get_pos_at_line_sel_end(ScintillaObject *sci, gint line)
 GEANY_API_SYMBOL
 gint sci_get_selection_mode(ScintillaObject *sci)
 {
-	return (gint) SSM(sci, SCI_GETSELECTIONMODE, 0, 0);
+	return (gint)SSM(sci, SCI_GETSELECTIONMODE, 0, 0);
 }
 
 
@@ -1282,7 +1260,7 @@ gint sci_get_selection_mode(ScintillaObject *sci)
 GEANY_API_SYMBOL
 void sci_set_selection_mode(ScintillaObject *sci, gint mode)
 {
-	SSM(sci, SCI_SETSELECTIONMODE, (uptr_t) mode, 0);
+	SSM(sci, SCI_SETSELECTIONMODE, (uptr_t)mode, 0);
 }
 
 
@@ -1303,7 +1281,7 @@ void sci_set_scrollbar_mode(ScintillaObject *sci, gboolean visible)
 GEANY_API_SYMBOL
 void sci_set_line_indentation(ScintillaObject *sci, gint line, gint indent)
 {
-	SSM(sci, SCI_SETLINEINDENTATION, (uptr_t) line, indent);
+	SSM(sci, SCI_SETLINEINDENTATION, (uptr_t)line, indent);
 }
 
 
@@ -1317,19 +1295,19 @@ void sci_set_line_indentation(ScintillaObject *sci, gint line, gint indent)
 GEANY_API_SYMBOL
 gint sci_get_line_indentation(ScintillaObject *sci, gint line)
 {
-	return (gint) SSM(sci, SCI_GETLINEINDENTATION, (uptr_t) line, 0);
+	return (gint)SSM(sci, SCI_GETLINEINDENTATION, (uptr_t)line, 0);
 }
 
 
 void sci_set_caret_policy_x(ScintillaObject *sci, gint policy, gint slop)
 {
-	SSM(sci, SCI_SETXCARETPOLICY, (uptr_t) policy, slop);
+	SSM(sci, SCI_SETXCARETPOLICY, (uptr_t)policy, slop);
 }
 
 
 void sci_set_caret_policy_y(ScintillaObject *sci, gint policy, gint slop)
 {
-	SSM(sci, SCI_SETYCARETPOLICY, (uptr_t) policy, slop);
+	SSM(sci, SCI_SETYCARETPOLICY, (uptr_t)policy, slop);
 }
 
 
@@ -1347,7 +1325,7 @@ void sci_cancel(ScintillaObject *sci)
 
 gint sci_get_position_after(ScintillaObject *sci, gint start)
 {
-	return (gint) SSM(sci, SCI_POSITIONAFTER, (uptr_t) start, 0);
+	return (gint)SSM(sci, SCI_POSITIONAFTER, (uptr_t)start, 0);
 }
 
 
@@ -1359,7 +1337,7 @@ void sci_lines_join(ScintillaObject *sci)
 
 gint sci_text_width(ScintillaObject *sci, gint styleNumber, const gchar *text)
 {
-	return (gint) SSM(sci, SCI_TEXTWIDTH, (uptr_t) styleNumber, (sptr_t) text);
+	return (gint)SSM(sci, SCI_TEXTWIDTH, (uptr_t)styleNumber, (sptr_t)text);
 }
 
 
@@ -1375,13 +1353,15 @@ void sci_move_selected_lines_up(ScintillaObject *sci)
 }
 
 
-gint sci_word_start_position(ScintillaObject *sci, gint position, gboolean onlyWordCharacters)
+gint sci_word_start_position(ScintillaObject *sci, gint position,
+							 gboolean onlyWordCharacters)
 {
 	return SSM(sci, SCI_WORDSTARTPOSITION, position, onlyWordCharacters);
 }
 
 
-gint sci_word_end_position(ScintillaObject *sci, gint position, gboolean onlyWordCharacters)
+gint sci_word_end_position(ScintillaObject *sci, gint position,
+						   gboolean onlyWordCharacters)
 {
 	return SSM(sci, SCI_WORDENDPOSITION, position, onlyWordCharacters);
 }

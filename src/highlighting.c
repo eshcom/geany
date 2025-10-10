@@ -619,13 +619,13 @@ static void styleset_common_init(GKeyFile *config, GKeyFile *config_home)
 
 static void set_character_classes(ScintillaObject *sci, guint ft_id)
 {
-	const gchar *word = (ft_id == GEANY_FILETYPES_NONE
+	const gchar *wordchars = (ft_id == GEANY_FILETYPES_NONE
 										? common_style_set.wordchars
 										: style_sets[ft_id].wordchars);
 	gchar *whitespace;
 	guint i, j;
 	
-	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t)word);
+	SSM(sci, SCI_SETWORDCHARS, 0, (sptr_t)wordchars);
 	
 	/* setting wordchars resets character classes, so we have
 	 * to set whitespaces after wordchars, but we want wordchars
@@ -633,7 +633,7 @@ static void set_character_classes(ScintillaObject *sci, guint ft_id)
 	whitespace = g_malloc0(strlen(whitespace_chars) + 1);
 	for (i = 0, j = 0; whitespace_chars[i] != 0; i++)
 	{
-		if (!strchr(word, whitespace_chars[i]))
+		if (!strchr(wordchars, whitespace_chars[i]))
 			whitespace[j++] = whitespace_chars[i];
 	}
 	whitespace[j] = 0;
