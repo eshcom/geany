@@ -22,7 +22,7 @@ CharClassify::CharClassify() : charClass{} {
 void CharClassify::SetDefaultCharClasses(bool includeWordClass) {
 	// Initialize all char classes to default values
 	for (int ch = 0; ch < 256; ch++) {
-		if (ch == '\r' || ch == '\n')
+		if (IsCRLF(ch))
 			charClass[ch] = ccNewLine;
 		else if (ch < 0x20 || ch == ' ')
 			charClass[ch] = ccSpace;

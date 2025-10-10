@@ -607,7 +607,7 @@ static void show_autocomplete(ScintillaObject *sci, gsize rootlen,
 		return;
 	}
 	/* store whether a calltip is showing, so we can reshow it after autocompletion */
-	calltip.set = (gboolean) SSM(sci, SCI_CALLTIPACTIVE, 0, 0);
+	calltip.set = (gboolean)SSM(sci, SCI_CALLTIPACTIVE, 0, 0);
 	SSM(sci, SCI_AUTOCSHOW, rootlen, (sptr_t)words->str);
 }
 
