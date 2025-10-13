@@ -28,6 +28,7 @@ int Scintilla_LinkLexers(void);
 
 // Include header that defines basic numeric types.
 #include <stdint.h>
+#include <stdbool.h>
 
 // Define uptr_t, an unsigned integer type large enough to hold a pointer.
 typedef uintptr_t uptr_t;
@@ -526,6 +527,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETMOUSEDWELLTIME 2265
 #define SCI_WORDSTARTPOSITION 2266
 #define SCI_WORDENDPOSITION 2267
+#define SCI_WORDSTARTPOSITIONEXT 2038
+#define SCI_WORDENDPOSITIONEXT 2039
 #define SCI_ISRANGEWORD 2691
 #define SC_IDLESTYLING_NONE 0
 #define SC_IDLESTYLING_TOVISIBLE 1
@@ -1160,6 +1163,11 @@ struct Sci_Rectangle {
 	int top;
 	int right;
 	int bottom;
+};
+
+struct Sci_WordSelect {
+	bool onlyWordCharacters;
+	int styleStart;
 };
 
 /* This structure is used in printing and requires some of the graphics types

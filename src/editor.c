@@ -607,7 +607,7 @@ static void show_autocomplete(ScintillaObject *sci, gsize rootlen,
 		return;
 	}
 	/* store whether a calltip is showing, so we can reshow it after autocompletion */
-	calltip.set = (gboolean)SSM(sci, SCI_CALLTIPACTIVE, 0, 0);
+	calltip.set = (gboolean) SSM(sci, SCI_CALLTIPACTIVE, 0, 0);
 	SSM(sci, SCI_AUTOCSHOW, rootlen, (sptr_t)words->str);
 }
 
@@ -2132,8 +2132,9 @@ void editor_find_current_word_sciwc(GeanyEditor *editor, gint pos,
 	
 	if (pos == -1) pos = sci_get_current_position(editor->sci);
 	
-	gint start = sci_word_start_position(editor->sci, pos, TRUE);
-	gint end = sci_word_end_position(editor->sci, pos, TRUE);
+	gint styleStart = -1;
+	gint start = sci_word_start_position(editor->sci, pos, &styleStart, TRUE);
+	gint end = sci_word_end_position(editor->sci, pos, &styleStart, TRUE);
 	
 	if (start == end) /* caret in whitespaces sequence */
 		*word = 0;
@@ -2512,7 +2513,8 @@ static GSList *get_doc_words(ScintillaObject *sci, gchar *root, gsize rootlen)
 		word_end = pos_find + rootlen;
 		if (pos_find != current)
 		{
-			word_end = sci_word_end_position(sci, word_end, TRUE);
+			gint styleStart = -1;
+			word_end = sci_word_end_position(sci, word_end, &styleStart, TRUE);
 			
 			word_length = word_end - pos_find;
 			if (word_length > rootlen)
@@ -4071,14 +4073,17 @@ void editor_select_word(GeanyEditor *editor)
 	g_return_if_fail(editor != NULL);
 	
 	gint pos = SSM(editor->sci, SCI_GETCURRENTPOS, 0, 0);
-	gint start = sci_word_start_position(editor->sci, pos, TRUE);
-	gint end = sci_word_end_position(editor->sci, pos, TRUE);
+	gint styleStart = -1;
+	gint start = sci_word_start_position(editor->sci, pos, &styleStart, TRUE);
+	gint end = sci_word_end_position(editor->sci, pos, &styleStart, TRUE);
 	
 	if (start == end) /* caret in whitespaces sequence */
 	{	/* look forward but reverse the selection direction,
 		 * so the caret end up stay as near as the original position. */
-		end = sci_word_end_position(editor->sci, pos, FALSE);
-		start = sci_word_end_position(editor->sci, end, TRUE);
+		// esh: styleStart is still -1 (see Document::ExtendWordSelect())
+		end = sci_word_end_position(editor->sci, pos, &styleStart, FALSE);
+		// esh: styleStart is still -1 (see Document::ExtendWordSelect())
+		start = sci_word_end_position(editor->sci, end, &styleStart, TRUE);
 		if (start == end) return;
 	}
 	sci_set_selection(editor->sci, start, end);

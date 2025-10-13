@@ -1354,15 +1354,25 @@ void sci_move_selected_lines_up(ScintillaObject *sci)
 
 
 gint sci_word_start_position(ScintillaObject *sci, gint position,
-							 gboolean onlyWordCharacters)
+							 gint *styleStart, gboolean onlyWordCharacters)
 {
-	return SSM(sci, SCI_WORDSTARTPOSITION, position, onlyWordCharacters);
+	struct Sci_WordSelect ws;
+	ws.onlyWordCharacters = onlyWordCharacters;
+	ws.styleStart = *styleStart;
+	gint pos = SSM(sci, SCI_WORDSTARTPOSITIONEXT, position, (sptr_t) &ws);
+	*styleStart = ws.styleStart;
+	return pos;
 }
 
 
 gint sci_word_end_position(ScintillaObject *sci, gint position,
-						   gboolean onlyWordCharacters)
+						   gint *styleStart, gboolean onlyWordCharacters)
 {
-	return SSM(sci, SCI_WORDENDPOSITION, position, onlyWordCharacters);
+	struct Sci_WordSelect ws;
+	ws.onlyWordCharacters = onlyWordCharacters;
+	ws.styleStart = *styleStart;
+	gint pos = SSM(sci, SCI_WORDENDPOSITIONEXT, position, (sptr_t) &ws);
+	*styleStart = ws.styleStart;
+	return pos;
 }
 

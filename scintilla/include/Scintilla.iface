@@ -1318,6 +1318,12 @@ fun int WordStartPosition=2266(position pos, bool onlyWordCharacters)
 # Get position of end of word.
 fun int WordEndPosition=2267(position pos, bool onlyWordCharacters)
 
+# Get position of start of word.
+fun int WordStartPositionExt=2038(position pos, wordselect ws)
+
+# Get position of end of word.
+fun int WordEndPositionExt=2039(position pos, wordselect ws)
+
 # Is the range start..end considered a word?
 fun bool IsRangeWord=2691(position start, position end)
 

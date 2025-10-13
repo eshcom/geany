@@ -225,9 +225,9 @@ void		sci_cancel					(ScintillaObject *sci);
 
 gint		sci_get_position_after		(ScintillaObject *sci, gint start);
 gint		sci_word_start_position		(ScintillaObject *sci, gint position,
-										 gboolean onlyWordCharacters);
+										 gint *styleStart, gboolean onlyWordCharacters);
 gint		sci_word_end_position		(ScintillaObject *sci, gint position,
-										 gboolean onlyWordCharacters);
+										 gint *styleStart, gboolean onlyWordCharacters);
 
 void		sci_lines_join				(ScintillaObject *sci);
 gint		sci_text_width				(ScintillaObject *sci, gint styleNumber,
