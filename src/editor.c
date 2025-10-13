@@ -1729,11 +1729,27 @@ static WordBound read_word(gchar *chunk, gint pos, gchar *word, gsize wordlen,
 							 !IS_ASCII(chunk[startword - 1])))
 		startword--;
 	
+	if (lang == TM_PARSER_ELIXIR)
+	{	// skip "not" oper (!)
+		while (chunk[startword] == '!') startword++;
+		if (endword < startword) endword = startword;
+	}
+	
 	if (!stem)
 	{
 		while (chunk[endword] != 0 && (strchr(wc, chunk[endword]) ||
 									   !IS_ASCII(chunk[endword])))
 			endword++;
+		
+		if (lang == TM_PARSER_ELIXIR)
+		{	// skip oper (! or ?) after word suffix (! or ?)
+			inline gboolean is_suffix(gchar ch) {
+				return ch == '!' || ch == '?';
+			}
+			while ((endword - 1) > startword && is_suffix(chunk[endword - 1])
+											 && is_suffix(chunk[endword - 2]))
+				endword--;
+		}
 	}
 	
 	if (tm_parser_has_quoted_identifiers(lang))
