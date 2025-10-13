@@ -70,6 +70,13 @@ typedef struct
 	gboolean lower   /* input: search only for lines with lower number than @line */;
 } TreeSearchData;
 
+// esh:
+typedef struct
+{
+	const gchar *scope;
+	const gchar *name;
+} TagInfo;
+
 
 static GPtrArray *top_level_iter_names = NULL;
 
@@ -173,12 +180,19 @@ static const gchar *get_tag_scope(const TMTag *tag)
 	return NULL;
 }
 
-
 static const gchar *get_tag_name(const TMTag *tag)
 {
 	if (!EMPTY(tag->displayName))
 		return tag->displayName;
 	return tag->name;
+}
+
+static const TagInfo get_tag_info(const TMTag *tag)
+{
+	if (!EMPTY(tag->displayName))
+		return (TagInfo){tag->displayScope, tag->displayName};
+	else
+		return (TagInfo){tag->scope, tag->name};
 }
 
 
@@ -916,9 +930,7 @@ static void hide_empty_rows(GtkTreeStore *store)
 static const gchar *get_symbol_name(GeanyDocument *doc, const TMTag *tag,
 									gboolean found_parent)
 {
-	const gchar *scope = get_tag_scope(tag);
-	const gchar *name = get_tag_name(tag);
-	gchar *utf8_name;
+	const TagInfo tagInfo = get_tag_info(tag);
 	static GString *buffer = NULL; /* buffer will be small so we can keep it for reuse */
 	gboolean doc_is_utf8 = FALSE;
 	
@@ -929,14 +941,11 @@ static const gchar *get_symbol_name(GeanyDocument *doc, const TMTag *tag,
 		doc_is_utf8 = TRUE;
 	else /* normally the tags will always be in UTF-8 since we parse from our buffer,
 		  * but a plugin might have called tm_source_file_update(), so check to be sure */
-		doc_is_utf8 = g_utf8_validate(name, -1, NULL);
+		doc_is_utf8 = g_utf8_validate(tagInfo.name, -1, NULL);
 	
-	if (!doc_is_utf8)
-		utf8_name = encodings_convert_to_utf8_from_charset(name, -1,
-														   doc->encoding, TRUE);
-	else
-		utf8_name = (gchar *)name;
-	
+	gchar *utf8_name = doc_is_utf8 ? (gchar *)tagInfo.name
+								   : encodings_convert_to_utf8_from_charset(
+										tagInfo.name, -1, doc->encoding, TRUE);
 	if (utf8_name == NULL) return NULL;
 	
 	if (!buffer)
@@ -945,12 +954,11 @@ static const gchar *get_symbol_name(GeanyDocument *doc, const TMTag *tag,
 		g_string_truncate(buffer, 0);
 	
 	/* check first char of scope is a wordchar */
-	if (!found_parent && scope && strpbrk(scope, GEANY_WORDCHARS) == scope)
+	if (!found_parent && tagInfo.scope &&
+		strpbrk(tagInfo.scope, GEANY_WORDCHARS) == tagInfo.scope)
 	{
-		const gchar *sep = symbols_get_context_separator(doc->file_type->id);
-		
-		g_string_append(buffer, scope);
-		g_string_append(buffer, sep);
+		g_string_append(buffer, tagInfo.scope);
+		g_string_append(buffer, symbols_get_context_separator(doc->file_type->id));
 	}
 	g_string_append(buffer, utf8_name);
 	
@@ -1175,26 +1183,26 @@ static void parents_table_tree_value_free(gpointer data)
 static void update_parents_table(GHashTable *table, const TMTag *tag,
 								 const GtkTreeIter *iter)
 {
-	const gchar *scope = get_tag_scope(tag);
-	const gchar *name = get_tag_name(tag);
+	const TagInfo tagInfo = get_tag_info(tag);
 	const gchar *name_tmp;
 	gchar *name_free = NULL;
 	
-	if (EMPTY(scope))
+	if (EMPTY(tagInfo.scope))
 	{	/* simple case, just use the tag name */
-		name_tmp = name;
+		name_tmp = tagInfo.name;
 	}
 	else if (!tm_parser_has_full_context(tag->lang))
 	{	/* if the parser doesn't use fully qualified scope, use the name
 		 * alone but prevent Foo::Foo from making parent = child */
-		name_tmp = utils_str_equal(scope, name) ? NULL : name;
+		name_tmp = utils_str_equal(tagInfo.scope, tagInfo.name)
+										? NULL : tagInfo.name;
 	}
 	else
 	{	/* build the fully qualified scope as get_tag_scope()
 		 * would return it for a child tag */
-		name_free = g_strconcat(scope,
+		name_free = g_strconcat(tagInfo.scope,
 								tm_parser_context_separator(tag->lang),
-								name, NULL);
+								tagInfo.name, NULL);
 		name_tmp = name_free;
 	}
 	

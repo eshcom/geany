@@ -5,7 +5,7 @@ defmodule Df.UseCases.UserAction do
   """
   alias Df.Repository.Permission
   alias Df.Repository.Permissions.Storage, as: PermissionsStorage
-  alias Sayings.{Greetings, Farewells}
+  alias Sayings.{Greetings, Farewells, Tmp1.Tmp2}
 
   #FIXME: test taskmarket
   use Memoize
@@ -645,6 +645,37 @@ defmodule MyRouter do
       alias = "test2"
       alias
     end
+
+    @impl true
+    def new(_params), do: %__MODULE__{}
+
+    alias Df.Validation.Check
+
+    defimpl Check do
+      @code "D011"
+      @level :warning
+
+      @spec run(Check.t(), Object.t()) :: [String.t()]
+      def run(%Test2{} = _check, %Object{vars: vars, diagram: diagram}), do: []
+    end
+
+    alias Df.Proto
+
+    defimpl Proto.Project do
+      @code "D012"
+      @level :error
+
+      @spec run() :: :ok | :error
+      def run(), do: :ok
+    end
+
+    defimpl Df.Proto.ReleaseProject do
+      @code "D012"
+      @level :error
+
+      @spec run() :: :ok | :error
+      def run(), do: :ok
+    end
   end
 end
 
@@ -653,15 +684,21 @@ end
 # ------------------------------
 
 alias :queue, as: Queue
+alias :mnesia, as: Mnesia
+alias :mnesia2, as: Mnesia2
 
 # здесь модули внутри {} должны подсвечиваться тем же стилем, что и OpenApiSpex
 alias OpenApiSpex.{Components, Parameter, Reference, RequestBody, Response, Schema}
 
-%Reference{
+%Reference2{
   # здесь "$ref" - строковый атом
-  "$ref": change_ref(ref_name),
-  nullable: nullable,
-  description: description
+  "$ref": Reference.change_ref(ref_name),
+  field11: :mnesia.get_item(),
+  field12: :mnesia2.get_item(),
+  field21: Mnesia.get_item()
+  field22: Mnesia2.get_item()
+  field3: Schema.get_item(),
+  field4: Schema2.get_item()
 }
 
 @ets_prefixes __MODULE__.Prefixes
@@ -671,7 +708,6 @@ def ets_list(), do: @ets_list
 def ets_list2(), do: @ets_list
 
 # ------------------------------
-
 
 !test1!()
 *test2!()
@@ -698,3 +734,11 @@ def ets_list2(), do: @ets_list
 *test1?!()
 !test1?*()
 *test1?*()
+
+# ------------------------------
+
+defprotocol Test1.Test2 do
+	@test  234
+	
+	def fn1(), do: :ok
+end
