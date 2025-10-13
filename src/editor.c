@@ -2259,10 +2259,8 @@ static gboolean append_calltip(GString *str, const TMTag *tag,
 		}
 		if (tag->scope)
 		{
-			const gchar *cosep = symbols_get_context_separator(ft_id);
-			
 			g_string_append(str, tag->scope);
-			g_string_append(str, cosep);
+			g_string_append(str, symbols_get_context_separator(ft_id));
 		}
 		g_string_append(str, tag->name);
 		g_string_append_c(str, ' ');
