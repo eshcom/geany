@@ -737,12 +737,14 @@ void Editor::SetEmptySelection(Sci::Position currentPos_) {
 void Editor::MultipleSelectAdd(AddNumber addNumber) {
 	if (SelectionEmpty() || !multipleSelection) {
 		// Select word at caret
-		const Sci::Position startWord = pdoc->ExtendWordSelect(sel.MainCaret(), -1, true);
-		const Sci::Position endWord = pdoc->ExtendWordSelect(startWord, 1, true);
+		int styleStart = -1;
+		const Sci::Position startWord = pdoc->ExtendWordSelect(sel.MainCaret(), -1,
+															   &styleStart, true);
+		const Sci::Position endWord = pdoc->ExtendWordSelect(startWord, 1,
+															 &styleStart, true);
 		TrimAndSetSelection(endWord, startWord);
 
 	} else {
-
 		if (!pdoc->HasCaseFolder())
 			pdoc->SetCaseFolder(CaseFolderForEncoding());
 
@@ -4448,15 +4450,21 @@ void Editor::WordSelection(Sci::Position pos) {
 		// Extend backward to the word containing pos.
 		// Skip ExtendWordSelect if the line is empty or if pos is after the last character.
 		// This ensures that a series of empty lines isn't counted as a single "word".
-		if (!pdoc->IsLineEndPosition(pos))
-			pos = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(pos + 1, 1), -1);
+		if (!pdoc->IsLineEndPosition(pos)) {
+			int styleStart = -1;
+			pos = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(pos + 1, 1),
+										 -1, &styleStart);
+		}
 		TrimAndSetSelection(pos, wordSelectAnchorEndPos);
 	} else if (pos > wordSelectAnchorEndPos) {
 		// Extend forward to the word containing the character to the left of pos.
 		// Skip ExtendWordSelect if the line is empty or if pos is the first position on the line.
 		// This ensures that a series of empty lines isn't counted as a single "word".
-		if (pos > pdoc->LineStart(pdoc->LineFromPosition(pos)))
-			pos = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(pos - 1, -1), 1);
+		if (pos > pdoc->LineStart(pdoc->LineFromPosition(pos))) {
+			int styleStart = -1;
+			pos = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(pos - 1, -1),
+										 1, &styleStart);
+		}
 		TrimAndSetSelection(pos, wordSelectAnchorStartPos);
 	} else {
 		// Select only the anchored word
@@ -4562,14 +4570,17 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 
 			Sci::Position startWord, endWord;
 			if ((sel.MainCaret() >= originalAnchorPos) && !pdoc->IsLineEndPosition(charPos)) {
-				startWord = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(charPos + 1, 1), -1);
-				endWord = pdoc->ExtendWordSelect(charPos, 1);
+				int styleStart = -1;
+				startWord = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(charPos + 1, 1),
+												   -1, &styleStart);
+				endWord = pdoc->ExtendWordSelect(charPos, 1, &styleStart);
 			} else {
 				// Selecting backwards, or anchor beyond last character on line. In these cases,
 				// we select the word containing the character to the *left* of the anchor.
 				if (charPos > pdoc->LineStart(pdoc->LineFromPosition(charPos))) {
-					startWord = pdoc->ExtendWordSelect(charPos, -1);
-					endWord = pdoc->ExtendWordSelect(startWord, 1);
+					int styleStart = -1;
+					startWord = pdoc->ExtendWordSelect(charPos, -1, &styleStart);
+					endWord = pdoc->ExtendWordSelect(startWord, 1, &styleStart);
 				} else {
 					// Anchor at start of line; select nothing to begin with.
 					startWord = charPos;
@@ -6599,12 +6610,30 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETMOUSEDWELLTIME:
 		return dwellDelay;
 
-	case SCI_WORDSTARTPOSITION:
-		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), -1, lParam != 0);
-
-	case SCI_WORDENDPOSITION:
-		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), 1, lParam != 0);
-
+	case SCI_WORDSTARTPOSITION: {
+		int styleStart = -1;
+		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), -1,
+									  &styleStart, lParam != 0);
+	}
+	case SCI_WORDENDPOSITION: {
+		int styleStart = -1;
+		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), 1,
+									  &styleStart, lParam != 0);
+	}
+	case SCI_WORDSTARTPOSITIONEXT: {
+		if (lParam == 0) return 0;
+		Sci_WordSelect *ws = static_cast<Sci_WordSelect *>(PtrFromSPtr(lParam));
+		
+		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), -1,
+									  &ws->styleStart, ws->onlyWordCharacters);
+	}
+	case SCI_WORDENDPOSITIONEXT: {
+		if (lParam == 0) return 0;
+		Sci_WordSelect *ws = static_cast<Sci_WordSelect *>(PtrFromSPtr(lParam));
+		
+		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), 1,
+									  &ws->styleStart, ws->onlyWordCharacters);
+	}
 	case SCI_ISRANGEWORD:
 		return pdoc->IsWordAt(static_cast<Sci::Position>(wParam), lParam);
 

@@ -1710,38 +1710,119 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 	return charClass.GetClass(static_cast<unsigned char>(ch));
 }
 
+#define DO_SEARCH_WORD_BACKWARD									\
+	while (pos > 0) {											\
+		const CharacterExtracted cePrev = CharacterBefore(pos);	\
+		if (WordCharacterClass(cePrev.character) != ccStart)	\
+			break;												\
+		pos -= cePrev.widthBytes;								\
+	}
+
+#define DO_SEARCH_WORD_BACKWARD_WITH_STYLE						\
+	while (pos > 0) {											\
+		const CharacterExtracted cePrev = CharacterBefore(pos);	\
+		if (WordCharacterClass(cePrev.character) != ccStart		\
+			|| cb.StyleAt(pos - cePrev.widthBytes) != *sStart)	\
+			break;												\
+		pos -= cePrev.widthBytes;								\
+	}
+
+#define DO_SEARCH_WORD_FORWARD									\
+	while (pos < Length()) {									\
+		const CharacterExtracted ceNext = CharacterAfter(pos);	\
+		if (WordCharacterClass(ceNext.character) != ccStart)	\
+			break;												\
+		pos += ceNext.widthBytes;								\
+	}
+
+#define DO_SEARCH_WORD_FORWARD_WITH_STYLE						\
+	while (pos < Length()) {									\
+		const CharacterExtracted ceNext = CharacterAfter(pos);	\
+		if (WordCharacterClass(ceNext.character) != ccStart		\
+			|| cb.StyleAt(pos) != *sStart)						\
+			break;												\
+		pos += ceNext.widthBytes;								\
+	}
+
 /**
  * Used by commmands that want to select whole words.
  * Finds the start of word at pos when delta < 0 or the end of the word when delta >= 0.
  */
-Sci::Position Document::ExtendWordSelect(Sci::Position pos, int delta,
+Sci::Position Document::ExtendWordSelect(Sci::Position pos, int delta, int *sStart,
 										 bool onlyWordCharacters) const {
 	CharClassify::cc ccStart = CharClassify::ccWord;
+	
 	if (delta < 0) { // esh: finding the begin of a sequence
 		if (!onlyWordCharacters) {
 			const CharacterExtracted ce = CharacterBefore(pos);
 			ccStart = WordCharacterClass(ce.character);
 		}
-		while (pos > 0) {
+		if (ccStart == CharClassify::ccWord && *sStart < 0 && pos > 0) {
 			const CharacterExtracted ce = CharacterBefore(pos);
-			if (WordCharacterClass(ce.character) != ccStart)
-				break;
-			pos -= ce.widthBytes;
+			if (WordCharacterClass(ce.character) == ccStart)
+				*sStart = cb.StyleAt(pos - ce.widthBytes);
 		}
+		if (ccStart == CharClassify::ccWord && *sStart >= 0)
+			DO_SEARCH_WORD_BACKWARD_WITH_STYLE
+		else
+			DO_SEARCH_WORD_BACKWARD
+		
 	} else { // esh: finding the end of a sequence
 		if (!onlyWordCharacters && pos < Length()) {
 			const CharacterExtracted ce = CharacterAfter(pos);
 			ccStart = WordCharacterClass(ce.character);
 		}
-		while (pos < Length()) {
+		if (ccStart == CharClassify::ccWord && *sStart < 0 && pos < Length()) {
 			const CharacterExtracted ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != ccStart)
-				break;
-			pos += ce.widthBytes;
+			if (WordCharacterClass(ce.character) == ccStart)
+				*sStart = cb.StyleAt(pos);
 		}
+		if (ccStart == CharClassify::ccWord && *sStart >= 0)
+			DO_SEARCH_WORD_FORWARD_WITH_STYLE
+		else
+			DO_SEARCH_WORD_FORWARD
 	}
 	return MovePositionOutsideChar(pos, delta, true);
 }
+
+#define SEARCH_WORD_BACKWARD											\
+	if (pos <= 0) return pos;											\
+	CharacterExtracted ce = CharacterBefore(pos);						\
+	const CharClassify::cc ccStart = WordCharacterClass(ce.character);	\
+	pos -= ce.widthBytes;												\
+	if (ccStart == CharClassify::ccWord) {								\
+		const int style = cb.StyleAt(pos);								\
+		const int *sStart = &style;										\
+		DO_SEARCH_WORD_BACKWARD_WITH_STYLE								\
+	}
+
+#define SKIP_SPACES_BACKWARD											\
+	while (pos > 0) {													\
+		const CharacterExtracted ce2 = CharacterBefore(pos);			\
+		if (WordCharacterClass(ce2.character) != CharClassify::ccSpace)	\
+			break;														\
+		pos -= ce2.widthBytes;											\
+	}
+
+#define SEARCH_WORD_FORWARD												\
+	if (pos >= Length()) return pos;									\
+	CharacterExtracted ce = CharacterAfter(pos);						\
+	const CharClassify::cc ccStart = WordCharacterClass(ce.character);	\
+	const int style = cb.StyleAt(pos);									\
+	const int *sStart = &style;											\
+	pos += ce.widthBytes;												\
+	if (ccStart == CharClassify::ccWord)								\
+		DO_SEARCH_WORD_FORWARD_WITH_STYLE								\
+	else																\
+		DO_SEARCH_WORD_FORWARD
+
+#define SKIP_SPACES_FORWARD												\
+	while (pos < Length()) {											\
+		const CharacterExtracted ce2 = CharacterAfter(pos);				\
+		if (WordCharacterClass(ce2.character) != CharClassify::ccSpace)	\
+			break;														\
+		pos += ce2.widthBytes;											\
+	}
 
 /**
  * Find the start of the next word in either a forward (delta >= 0)
@@ -1752,37 +1833,13 @@ Sci::Position Document::ExtendWordSelect(Sci::Position pos, int delta,
  */
 Sci::Position Document::NextWordStart(Sci::Position pos, int delta) const {
 	if (delta < 0) {
-		while (pos > 0) {
-			const CharacterExtracted ce = CharacterBefore(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
-				break;
-			pos -= ce.widthBytes;
-		}
-		if (pos > 0) {
-			CharacterExtracted ce = CharacterBefore(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
-			while (pos > 0) {
-				ce = CharacterBefore(pos);
-				if (WordCharacterClass(ce.character) != ccStart)
-					break;
-				pos -= ce.widthBytes;
-			}
-		}
+		SKIP_SPACES_BACKWARD
+		SEARCH_WORD_BACKWARD
+		else
+			DO_SEARCH_WORD_BACKWARD
 	} else {
-		CharacterExtracted ce = CharacterAfter(pos);
-		const CharClassify::cc ccStart = WordCharacterClass(ce.character);
-		while (pos < Length()) {
-			ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != ccStart)
-				break;
-			pos += ce.widthBytes;
-		}
-		while (pos < Length()) {
-			ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
-				break;
-			pos += ce.widthBytes;
-		}
+		SEARCH_WORD_FORWARD
+		SKIP_SPACES_FORWARD
 	}
 	return pos;
 }
@@ -1796,41 +1853,13 @@ Sci::Position Document::NextWordStart(Sci::Position pos, int delta) const {
  */
 Sci::Position Document::NextWordEnd(Sci::Position pos, int delta) const {
 	if (delta < 0) {
-		if (pos > 0) {
-			CharacterExtracted ce = CharacterBefore(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
-			if (ccStart != CharClassify::ccSpace) {
-				while (pos > 0) {
-					ce = CharacterBefore(pos);
-					if (WordCharacterClass(ce.character) != ccStart)
-						break;
-					pos -= ce.widthBytes;
-				}
-			}
-			while (pos > 0) {
-				ce = CharacterBefore(pos);
-				if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
-					break;
-				pos -= ce.widthBytes;
-			}
-		}
+		SEARCH_WORD_BACKWARD
+		else if (ccStart != CharClassify::ccSpace)
+			DO_SEARCH_WORD_BACKWARD
+		SKIP_SPACES_BACKWARD
 	} else {
-		while (pos < Length()) {
-			const CharacterExtracted ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
-				break;
-			pos += ce.widthBytes;
-		}
-		if (pos < Length()) {
-			CharacterExtracted ce = CharacterAfter(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
-			while (pos < Length()) {
-				ce = CharacterAfter(pos);
-				if (WordCharacterClass(ce.character) != ccStart)
-					break;
-				pos += ce.widthBytes;
-			}
-		}
+		SKIP_SPACES_FORWARD
+		SEARCH_WORD_FORWARD
 	}
 	return pos;
 }

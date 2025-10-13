@@ -418,10 +418,13 @@ void ScintillaBase::AutoCompleteCompleted(char ch, unsigned int completionMethod
 		return;
 
 	Sci::Position endPos = sel.MainCaret();
-	if (ac.dropRestOfWord)
-		endPos = pdoc->ExtendWordSelect(endPos, 1, true);
+	if (ac.dropRestOfWord) {
+		int styleStart = -1;
+		endPos = pdoc->ExtendWordSelect(endPos, 1, &styleStart, true);
+	}
 	if (endPos < firstPos)
 		return;
+	
 	AutoCompleteInsert(firstPos, endPos - firstPos, selected.c_str(), selected.length());
 	SetLastXChosen();
 

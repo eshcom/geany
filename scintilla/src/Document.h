@@ -441,7 +441,7 @@ public:
 	void GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter,
 								Sci::Line line, Sci::Line lastLine);
 	
-	Sci::Position ExtendWordSelect(Sci::Position pos, int delta,
+	Sci::Position ExtendWordSelect(Sci::Position pos, int delta, int *sStart,
 								   bool onlyWordCharacters=false) const;
 	Sci::Position NextWordStart(Sci::Position pos, int delta) const;
 	Sci::Position NextWordEnd(Sci::Position pos, int delta) const;
