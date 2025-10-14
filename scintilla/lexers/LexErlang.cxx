@@ -166,8 +166,8 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	// esh: find func definition for correct highlighting
 	//		(SCE_ERLANG_FUNCTION or SCE_ERLANG_STD_FUNC)
 	if (IsValidFuncDefStyle(initStyle) && startPos > 0) {
-		Sci_Position lineCurrent = styler.GetLine(startPos);
-		if (lineCurrent > 0) {
+		Sci_Position currentLine = styler.GetLine(startPos);
+		if (currentLine > 0) {
 			Sci_PositionU limit = startPos > 300 ? startPos - 300 : 0;
 			Sci_PositionU newStartPos = startPos;
 			bool end_bracket_found = false;
@@ -184,7 +184,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					int style = styler.StyleAt(newStartPos - 1);
 					if (style == SCE_ERLANG_FUNCTION || style == SCE_ERLANG_STD_FUNC) {
 						Sci_Position newLine = styler.GetLine(newStartPos);
-						if (newLine < lineCurrent) {
+						if (newLine < currentLine) {
 							newStartPos = styler.LineStart(newLine);
 							length += (startPos - newStartPos);
 							startPos = newStartPos;
