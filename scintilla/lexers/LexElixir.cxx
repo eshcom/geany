@@ -46,7 +46,7 @@ struct SingleStringExpState {
 
 struct ModuleAliases {
 	std::string module;
-	std::vector<std::string> aliases;
+	std::map<std::string, std::string> aliases;
 };
 
 struct AtomPunctSequence {
@@ -452,12 +452,8 @@ public:
 	}
 
 private:
-	void ProcessLineEnd(StyleContext &sc,
-						std::vector<SingleStringExpState> &stringStateStack,
-						int &stringState);
-	
 	void InsertModule(StyleContext &sc, const char *module);
-	void InsertAlias(const char *alias);
+	const char *InsertAlias(const char *alias);
 	const char *GetModule(const char *ident, Sci_Position currentLine);
 };
 
@@ -526,54 +522,60 @@ Sci_Position SCI_METHOD LexerElixir::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void LexerElixir::ProcessLineEnd(StyleContext &sc,
-								 std::vector<SingleStringExpState> &stringStateStack,
-								 int &stringState) {
-	if (!stringStateStack.empty()) {
-		std::pair<Sci_Position, std::vector<SingleStringExpState>> val;
-		val.first = sc.currentLine;
-		val.second = stringStateStack;
-		
-		stringStateAtEol.insert(val);
-	}
-}
-
 void LexerElixir::InsertModule(StyleContext &sc, const char *module) {
 	std::pair<Sci_Position, ModuleAliases> val;
 	val.first = sc.currentLine;
-	val.second = {std::string(module), std::vector<std::string>()};
+	val.second = {std::string(module), std::map<std::string, std::string>()};
 	
 	moduleAliasesAtEol.insert(val);
 }
 
-void LexerElixir::InsertAlias(const char *alias) {
-	if (moduleAliasesAtEol.empty()) return;
+const char *LexerElixir::InsertAlias(const char *alias) {
+	if (moduleAliasesAtEol.empty()) return alias;
 	
 	std::map<Sci_Position, ModuleAliases>::iterator iter =
 		std::prev(moduleAliasesAtEol.end());
 	
+	std::pair<std::string, std::string> val;
+	
+	const char *shortAlias;
 	if (alias) {
-		iter->second.aliases.push_back(std::string(alias));
+		const char *search = strrchr(alias, '.');
+		std::string module = std::string(iter->second.module);
+		
+		if (search && search[1]) {
+			if (search > alias) {
+				module += '.';
+				module.append(alias, search - alias);
+			}
+			shortAlias = ++search;
+		} else {
+			shortAlias = alias;
+		}
+		val.second = module;
 	} else {
 		const char *module = iter->second.module.c_str();
-		alias = strrchr(module, '.');
-		iter->second.aliases.push_back(std::string(alias ? ++alias : module));
+		const char *search = strrchr(module, '.');
+		shortAlias = (search && search[1]) ? ++search : module;
+		val.second = std::string(module);
 	}
+	val.first = std::string(shortAlias);
+	iter->second.aliases.insert(val);
+	return shortAlias;
 }
 
-const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) {
+const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) {
 	std::map<Sci_Position, ModuleAliases>::iterator mIter =
 		moduleAliasesAtEol.begin();
 	for (; mIter != moduleAliasesAtEol.end(); mIter = std::next(mIter)) {
-		if (mIter->first < currentLine) {
-			std::vector<std::string>::iterator aIter = mIter->second.aliases.begin();
-			for (; aIter != mIter->second.aliases.end(); aIter = std::next(aIter)) {
-				if (strcmp(aIter->c_str(), ident) == 0)
-					return mIter->second.module.c_str();
-			}
+		if (mIter->first <= currentLine) {
+			std::map<std::string, std::string>::iterator aIter =
+				mIter->second.aliases.find(alias);
+			if (aIter != mIter->second.aliases.end())
+				return aIter->second.c_str();
 		}
 	}
-	return ident;
+	return alias;
 }
 
 
@@ -582,9 +584,14 @@ const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) 
 
 #define CHECK_LINE_END														\
 	if (sc.atLineEnd) {														\
-		ProcessLineEnd(sc, stringStateStack, string_state);					\
+		if (!stringStateStack.empty()) {									\
+			std::pair<Sci_Position, std::vector<SingleStringExpState>> val;	\
+			val.first = sc.currentLine;										\
+			val.second = stringStateStack;									\
+			stringStateAtEol.insert(val);									\
+		}																	\
 		if (!sc.More()) break;												\
-		lineEndCurr = styler.LineEnd(++lineCurrent);						\
+		lineEndCurr = styler.LineEnd(sc.currentLine + 1);					\
 	}
 
 #define MOVE_INDEX_TO_NONSPACE												\
@@ -604,6 +611,11 @@ const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) 
 	module_type == KERNEL_MODULE && stdFuncs.InList(cur)					\
 		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)								\
 		: sc.ChangeState(SCE_ELIXIR_FUNCTION);
+
+#define CHANGE_STATE_BY_ERLMODULE											\
+	stdErlModules.InList(cur)												\
+		? sc.ChangeState(SCE_ELIXIR_STD_ERL_MODULE)							\
+		: sc.ChangeState(SCE_ELIXIR_ERL_MODULE);
 
 #define CHANGE_STATE_BY_FUNCLIST											\
 	if (stdFuncs.InList(cur)) {												\
@@ -663,7 +675,6 @@ const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) 
 		sc.SetState(SCE_ELIXIR_STRING_SUBOPER);								\
 		sc.Forward();														\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
-		CHECK_LINE_END														\
 		is_at_symb = true; /* otherwise atoms of the form :'tes#{}t@test'
 							  will be incorrectly highlighted */
 
@@ -687,7 +698,6 @@ const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) 
 	if (sc.Match(GetTripleQuote(closing_char))) {							\
 		sc.Forward(2);														\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);								\
-		CHECK_LINE_END														\
 	}
 
 #define CHECK_CLOSING_CHAR													\
@@ -699,7 +709,6 @@ const char *LexerElixir::GetModule(const char *ident, Sci_Position currentLine) 
 				sc.Forward();												\
 		}																	\
 		sc.SetState(SCE_ELIXIR_DEFAULT);									\
-		CHECK_LINE_END														\
 	}
 
 #define CHECK_CLOSING_STRING												\
@@ -738,7 +747,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	std::vector<SingleStringExpState> stringStateStack;
 	SingleStringExpState *currentStringExp = NULL;
 	
-	Sci_Position lineCurrent = styler.GetLine(startPos);
 	Sci_PositionU endPos = startPos + length;
 	
 	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
@@ -872,24 +880,24 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	// Set up state stack from last line and remove any subsequent string at eol states
 	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator ssIter;
-	ssIter = stringStateAtEol.find(lineCurrent - 1);
+	ssIter = stringStateAtEol.find(sc.currentLine - 1);
 	if (ssIter != stringStateAtEol.end() && !ssIter->second.empty()) {
 		stringStateStack = ssIter->second;
 		currentStringExp = &stringStateStack.back();
 	}
-	ssIter = stringStateAtEol.lower_bound(lineCurrent);
+	ssIter = stringStateAtEol.lower_bound(sc.currentLine);
 	if (ssIter != stringStateAtEol.end()) {
 		stringStateAtEol.erase(ssIter, stringStateAtEol.end());
 	}
 	
 	// Remove any subsequent module aliases at eol
 	std::map<Sci_Position, ModuleAliases>::iterator maIter;
-	maIter = moduleAliasesAtEol.lower_bound(lineCurrent);
+	maIter = moduleAliasesAtEol.lower_bound(sc.currentLine);
 	if (maIter != moduleAliasesAtEol.end()) {
 		moduleAliasesAtEol.erase(maIter, moduleAliasesAtEol.end());
 	}
 	
-	Sci_PositionU lineEndCurr = styler.LineEnd(lineCurrent);
+	Sci_PositionU lineEndCurr = styler.LineEnd(sc.currentLine);
 	
 	for (; sc.More(); sc.Forward()) {
 		if (sc.state == SCE_ELIXIR_STRING_SUBOPER) {
@@ -999,16 +1007,15 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
-					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				SKIP_SPACES
 				if (sc.ch == '.') {
-					if (stdErlModules.InList(cur)) {
-						sc.ChangeState(SCE_ELIXIR_STD_ERL_MODULE);
-					} else {
-						sc.ChangeState(SCE_ELIXIR_ERL_MODULE);
-					}
+					CHANGE_STATE_BY_ERLMODULE
+				} else if (sc.ch == ',' && ident_state == ALIAS_STATE) {
+					CHANGE_STATE_BY_ERLMODULE
+					InsertModule(sc, cur);
+					ident_state = ALIAS_AS_STATE;
 				} else if (stdAtoms.InList(cur)) {
 					sc.ChangeState(SCE_ELIXIR_STD_ATOM);
 				}
@@ -1027,7 +1034,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				CHECK_INTERPOLATE_STRING
 				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
-					CHECK_LINE_END
 				}
 			} break;
 			/* -------------------------------------------------------------- */
@@ -1041,7 +1047,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
-					CHECK_LINE_END
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
@@ -1054,7 +1059,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				CHECK_INTERPOLATE_STRING
 				} else if (sc.ch == closing_char) {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
-					CHECK_LINE_END
 				}
 			} break;
 			/* -------------------------------------------------------------- */
@@ -1093,7 +1097,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_ELIXIR_DEFAULT);
 				} else {
 					sc.ForwardSetState(SCE_ELIXIR_DEFAULT);
-					CHECK_LINE_END
 				}
 			} break;
 			
@@ -1165,10 +1168,11 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
 				
+				const char *alias = NULL;
 				if (ident_state == ALIAS_STATE) {
 					InsertModule(sc, cur);
 					if (sc.atLineEnd) {
-						InsertAlias(NULL);
+						alias = InsertAlias(NULL);
 						ident_state = NONE_STATE;
 					} else if (sc.ch == ',') {
 						ident_state = ALIAS_AS_STATE;
@@ -1177,14 +1181,23 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						ident_state = ALIAS_GRP_STATE;
 					}
 				} else if (ident_state == ALIAS_AS_STATE) {
-					InsertAlias(cur);
+					alias = InsertAlias(cur);
 					ident_state = NONE_STATE;
 				} else if (ident_state == ALIAS_GRP_STATE) {
-					InsertAlias(cur);
+					alias = InsertAlias(cur);
 					if (sc.ch == '}' || sc.atLineEnd)
 						ident_state = NONE_STATE;
 				}
-				const char *ident = GetModule(cur, lineCurrent);
+				const char *ident;
+				char *tmpAlias = NULL;
+				if (alias) {
+					ident = GetModule(alias, sc.currentLine);
+				} else {
+					const char *search = strchr(cur, '.');
+					tmpAlias = (search && search > cur) ? strndup(cur, search - cur)
+														: strdup(cur);
+					ident = GetModule(tmpAlias, sc.currentLine);
+				}
 				
 				if (stdExcepts.InList(ident)) {
 					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
@@ -1192,9 +1205,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE);
 					module_type = (strcmp(ident, "Kernel") == 0) ? KERNEL_MODULE
 																 : OTHER_MODULE;
+				} else if (stdErlModules.InList(ident)) {
+					sc.ChangeState(SCE_ELIXIR_STD_ERL_MODULE);
 				}
 				sc.SetState(sc.ch == '.' && ident_state == ALIAS_GRP_STATE
 							? SCE_ELIXIR_OPERATOR : SCE_ELIXIR_DEFAULT);
+				free(tmpAlias);
 			} break;
 			
 			case SCE_ELIXIR_MODULE_ATTR : {
@@ -1202,7 +1218,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
-					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				RemoveAllSpaces(cur);
@@ -1229,7 +1244,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					continue;
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
-					CHECK_LINE_END
 				}
 				sc.GetCurrent(cur, sizeof(cur));
 				
@@ -1246,7 +1260,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.SetState(SCE_ELIXIR_OPERATOR);
 							sc.ForwardSetState(SCE_ELIXIR_UNKNOWN);
 							sc.Forward();
-							CHECK_LINE_END
 						}
 					}
 				} else if (ident_state == DEFNAME_STATE ||
@@ -1333,6 +1346,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			} break;
 		}
+		
+		CHECK_LINE_END
 		
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_ELIXIR_DEFAULT || sc.state == SCE_ELIXIR_UNKNOWN) {

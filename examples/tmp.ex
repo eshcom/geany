@@ -688,17 +688,31 @@ alias :mnesia, as: Mnesia
 alias :mnesia2, as: Mnesia2
 
 # здесь модули внутри {} должны подсвечиваться тем же стилем, что и OpenApiSpex
-alias OpenApiSpex.{Components, Parameter, Reference, RequestBody, Response, Schema}
+alias OpenApiSpex.{Mod1.Mod2, Parameter, Reference, RequestBody, Response, Schema}
+alias Broadway
+alias Broadway.Test123
+alias Broadway, as: Broadway2
 
 %Reference2{
   # здесь "$ref" - строковый атом
-  "$ref": Reference.change_ref(ref_name),
+  "$ref1": Reference.change_ref(ref_name),
+  "$ref2": Reference.New.change_ref(ref_name),
+  "$ref3": OpenApiSpex.change_ref(ref_name),
+  "$ref4": OpenApiSpex.New.change_ref(ref_name),
   field11: :mnesia.get_item(),
   field12: :mnesia2.get_item(),
-  field21: Mnesia.get_item()
-  field22: Mnesia2.get_item()
-  field3: Schema.get_item(),
-  field4: Schema2.get_item()
+  field21: Mnesia.get_item(),
+  field22: Mnesia2.get_item(),
+  field31: Schema.get_item(),
+  field32: Schema2.get_item(),
+  field41: Mod1.get_item(),
+  field42: Mod2.get_item(),
+  field51: Broadway.get_item(),
+  field52: Broadway.New.get_item(),
+  field53: Broadway2.get_item(),
+  field54: Broadway2.New.get_item(),
+  field55: Test123.get_item(),
+  field56: Test123.New.get_item()
 }
 
 @ets_prefixes __MODULE__.Prefixes
