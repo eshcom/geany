@@ -245,6 +245,22 @@ bool MatchWord(Sci_Position pos, Accessor &styler, const char *s) {
 	return !IsAlnumWordChar(styler.SafeGetCharAt(pos+i));
 }
 
+bool IsQuotedField(Sci_Position pos, Sci_PositionU endPos, Accessor &styler) {
+	char closing_char = styler[pos];
+	
+	while (++pos < endPos) {
+		if (styler[pos] == '\\') {
+			pos++; // Skip any character after the backslash
+			continue;
+		} else if (styler[pos] == closing_char) {
+			if (++pos < endPos && styler[pos] == ':')
+				return true;
+			break;
+		}
+	}
+	return false;
+}
+
 // Options used for LexerElixir
 struct OptionsElixir {
 	bool escapeSequence;
@@ -1328,11 +1344,14 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(assign_to_strfield ? SCE_ELIXIR_TRIPLEVAL
 												   : SCE_ELIXIR_TRIPLE);
 					sc.Forward(2);
+				} else if (IsQuotedField(sc.currentPos, endPos, styler)) {
+					sc.SetState(SCE_ELIXIR_ATOM_QUOTED);
+					is_at_symb = false;
 				} else {
 					sc.SetState(assign_to_strfield ? SCE_ELIXIR_STRINGVAL
 												   : SCE_ELIXIR_STRING);
 				}
-				closing_char = '\"';
+				closing_char = sc.ch;
 				string_state = sc.state;
 				canbe_interpolate = true;
 				
@@ -1341,11 +1360,14 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(assign_to_strfield ? SCE_ELIXIR_TRIPLEVAL
 												   : SCE_ELIXIR_TRIPLE);
 					sc.Forward(2);
+				} else if (IsQuotedField(sc.currentPos, endPos, styler)) {
+					sc.SetState(SCE_ELIXIR_ATOM_QUOTED);
+					is_at_symb = false;
 				} else {
 					sc.SetState(assign_to_strfield ? SCE_ELIXIR_CHARSTRVAL
 												   : SCE_ELIXIR_CHARSTR);
 				}
-				closing_char = '\'';
+				closing_char = sc.ch;
 				string_state = sc.state;
 				canbe_interpolate = true;
 				
