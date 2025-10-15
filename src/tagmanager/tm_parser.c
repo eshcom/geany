@@ -935,25 +935,22 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 		
 		case TM_PARSER_C:
 		case TM_PARSER_CPP:
-			if (g_strcmp0(prefix, "->") == 0)
-				//~ example: ppo->indentChar
-				*type = tm_tag_member_t;
-			else if (g_strcmp0(prefix, ".") == 0)
+			if (g_strcmp0(prefix, "->") == 0 || g_strcmp0(prefix, ".") == 0)
 			{
 				if (g_strcmp0(suffix, "(") == 0)
-					//~ example: styler.Match(keyword_start,"fun")
+					//~ examples: pdoc->ExtendWordSelect(), styler.Match()
 					*type = tm_tag_function_t;
 				else
-					//~ example: wordbound.end
+					//~ examples: pdoc->dbcsCodePage, wordbound.end
 					*type = tm_tag_member_t;
 			}
 			else if (g_strcmp0(suffix, "(") == 0)
 				*type = tm_tag_function_t | tm_tag_macro_with_arg_t;
 			else if (g_strcmp0(suffix, "::") == 0)
-				//~ example: CharacterSet::setNone
+				//~ examples: CharacterSet::setNone, CharacterSet::setDigits
 				*type = tm_tag_class_t;
 			else if (g_strcmp0(suffix, ":") == 0)
-				//~ example:
+				//~ examples:
 				//~ case TM_PARSER_C:
 				//~ startPos == 0 ? SCE_ERLANG_DEFAULT : styler.StyleAt(startPos - 1);
 				*type = tm_tag_max_t & ~(tm_tag_class_t | tm_tag_function_t |
@@ -990,7 +987,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 			else
 				*type = tm_tag_max_t;
 			
-			*type &= ~tm_tag_other_t; // exlude aliases
+			*type &= ~tm_tag_other_t; // exclude aliases
 			break;
 		
 		default:
