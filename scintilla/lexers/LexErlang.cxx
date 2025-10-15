@@ -224,7 +224,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	module_type_t module_type = NONE_MODULE;
 	
-	char cur[100];
+	char ident[100];
 	int last_comment_state;
 	int last_state = SCE_ERLANG_DEFAULT;
 	int last_oper = ' ';
@@ -273,14 +273,15 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				if (IsAlnum(sc.ch))
 					continue;
 				// Try to match documentation comment
-				sc.GetCurrent(cur, sizeof(cur));
+				sc.GetCurrent(ident, sizeof(ident));
 				if (sc.state == SCE_ERLANG_COMMENT_TAG) {
-					if (!commentTags.InList(cur))
+					if (!commentTags.InList(ident))
 						sc.ChangeState(last_comment_state);
 				} else {
-					if (!commentMacroTags.InList(cur)) {
-						sc.ChangeState(commentTags.InList(cur) ? SCE_ERLANG_COMMENT_TAG
-															   : last_comment_state);
+					if (!commentMacroTags.InList(ident)) {
+						sc.ChangeState(commentTags.InList(ident)
+											? SCE_ERLANG_COMMENT_TAG
+											: last_comment_state);
 					} else {
 						while (sc.ch != '}' && !sc.atLineEnd)
 							sc.Forward();
@@ -398,12 +399,12 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				if (IsAlnumWordChar(sc.ch)) {
 					continue;
 				}
-				sc.GetCurrent(cur, sizeof(cur));
-				RemoveAllSpaces(cur);
+				sc.GetCurrent(ident, sizeof(ident));
+				RemoveAllSpaces(ident);
 				
-				if (stdModuleAttrs.InList(cur)) {
+				if (stdModuleAttrs.InList(ident)) {
 					sc.ChangeState(SCE_ERLANG_STD_MODULE_ATTR);
-				} else if (!preprocList.InList(cur)) {
+				} else if (!preprocList.InList(ident)) {
 					sc.ChangeState(SCE_ERLANG_MODULE_ATTR);
 				}
 				sc.SetState(SCE_ERLANG_DEFAULT);
@@ -422,30 +423,30 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.Forward();
 					continue;
 				}
-				sc.GetCurrent(cur, sizeof(cur));
+				sc.GetCurrent(ident, sizeof(ident));
 				SKIP_SPACES
 				
 				if (sc.ch == ':' && sc.chNext != '=' && sc.chNext != ':') {
 					// esh: set module type,
 					//		exclude map-key updates, example: #{data:=test}
 					//		exclude record field type, example: handler = none :: atom()
-					module_type = (strcmp(cur, "erlang") == 0) ? ERLANG_MODULE
-															   : OTHER_MODULE;
+					module_type = (strcmp(ident, "erlang") == 0) ? ERLANG_MODULE
+																 : OTHER_MODULE;
 					sc.Forward();
-					sc.ChangeState(stdModules.InList(cur) ? SCE_ERLANG_STD_MODULE
-														  : SCE_ERLANG_MODULE);
+					sc.ChangeState(stdModules.InList(ident) ? SCE_ERLANG_STD_MODULE
+															: SCE_ERLANG_MODULE);
 				} else {
-					if (stdWords.InList(cur)) {
+					if (stdWords.InList(ident)) {
 						sc.ChangeState(SCE_ERLANG_STD_WORD);
 						
 					} else if (module_type == ERLANG_MODULE) {
-						sc.ChangeState(stdFuncs.InList(cur) ? SCE_ERLANG_STD_FUNC
-															: SCE_ERLANG_UNKNOWN);
+						sc.ChangeState(stdFuncs.InList(ident) ? SCE_ERLANG_STD_FUNC
+															  : SCE_ERLANG_UNKNOWN);
 					} else if (module_type == OTHER_MODULE && sc.ch == '(') {
 						sc.ChangeState(SCE_ERLANG_FUNCTION);
 						
 					} else if (module_type == NONE_MODULE && sc.ch == '(') {
-						sc.ChangeState(stdFuncs.InList(cur) &&
+						sc.ChangeState(stdFuncs.InList(ident) &&
 										!isFuncDefinition(sc.currentPos + 1,
 														  endPos, styler)
 											? SCE_ERLANG_STD_FUNC
@@ -456,17 +457,17 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 							i++;
 						if (IsDigit(styler[i])) {
 							if (module_type == ERLANG_MODULE) {
-								sc.ChangeState(stdFuncs.InList(cur)
+								sc.ChangeState(stdFuncs.InList(ident)
 													? SCE_ERLANG_STD_FUNC
 													: SCE_ERLANG_UNKNOWN);
 							} else if (module_type == NONE_MODULE &&
-										stdFuncs.InList(cur)) {
+											stdFuncs.InList(ident)) {
 								sc.ChangeState(SCE_ERLANG_STD_FUNC);
 							} else {
 								sc.ChangeState(SCE_ERLANG_FUNCTION);
 							}
 						}
-					} else if (stdAtoms.InList(cur)) {
+					} else if (stdAtoms.InList(ident)) {
 						sc.ChangeState(SCE_ERLANG_STD_ATOM);
 					}
 				}
@@ -515,10 +516,10 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 				}
 			case SCE_ERLANG_MACRO : {
 				if (!IsAlnumWordChar(sc.ch) && sc.ch != '@') {
-					sc.GetCurrent(cur, sizeof(cur));
-					RemoveAllSpaces(cur);
+					sc.GetCurrent(ident, sizeof(ident));
+					RemoveAllSpaces(ident);
 					
-					if (stdMacros.InList(cur)) {
+					if (stdMacros.InList(ident)) {
 						sc.ChangeState(SCE_ERLANG_STD_MACRO);
 					}
 					sc.SetState(SCE_ERLANG_DEFAULT);
