@@ -608,19 +608,19 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		sc.Forward();
 
 #define CHANGE_STATE_BY_MODULE												\
-	module_type == KERNEL_MODULE && stdFuncs.InList(cur)					\
+	module_type == KERNEL_MODULE && stdFuncs.InList(ident)					\
 		? sc.ChangeState(SCE_ELIXIR_STD_FUNC)								\
 		: sc.ChangeState(SCE_ELIXIR_FUNCTION);
 
 #define CHANGE_STATE_BY_ERLMODULE											\
-	stdErlModules.InList(cur)												\
+	stdErlModules.InList(ident)												\
 		? sc.ChangeState(SCE_ELIXIR_STD_ERL_MODULE)							\
 		: sc.ChangeState(SCE_ELIXIR_ERL_MODULE);
 
 #define CHANGE_STATE_BY_FUNCLIST											\
-	if (stdFuncs.InList(cur)) {												\
+	if (stdFuncs.InList(ident)) {											\
 		sc.ChangeState(SCE_ELIXIR_STD_FUNC);								\
-	} else if (!exclLibFuncs.InList(cur) && libMacros.InList(cur)) {		\
+	} else if (!exclLibFuncs.InList(ident) && libMacros.InList(ident)) {	\
 		sc.ChangeState(SCE_ELIXIR_LIB_FUNC);								\
 	} else {																\
 		sc.ChangeState(SCE_ELIXIR_FUNCTION);								\
@@ -635,16 +635,16 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		/* do not change the state */										\
 	} else if ((!IsOperator(sc.ch) || sc.Match('<', '<')					\
 				|| strchr("{[%:~^!?", sc.ch))								\
-			   && !exclLibMacros.InList(cur) && libMacros.InList(cur)) {	\
+			   && !exclLibMacros.InList(ident) && libMacros.InList(ident)) {\
 		/* { - tuple, [ - list, % - map/struct, : - atom, ~ - string,
 		 * << - binary string, ^ - pin oper, ! - not oper
 		 * ? - char */														\
-		if ((strcmp(cur, "channel") == 0 && sc.ch != '"') ||				\
-			(strcmp(cur, "socket") == 0 && sc.ch != '"') ||					\
-			(strcmp(cur, "schema") == 0 && sc.ch != '"') ||					\
-			(strcmp(cur, "execute") == 0 && sc.ch != '"') ||				\
-			(strcmp(cur, "config") == 0 && sc.ch != ':') ||					\
-			(strcmp(cur, "field") == 0 && sc.ch != ':')) {					\
+		if ((strcmp(ident, "channel") == 0 && sc.ch != '"') ||				\
+			(strcmp(ident, "socket") == 0 && sc.ch != '"') ||				\
+			(strcmp(ident, "schema") == 0 && sc.ch != '"') ||				\
+			(strcmp(ident, "execute") == 0 && sc.ch != '"') ||				\
+			(strcmp(ident, "config") == 0 && sc.ch != ':') ||				\
+			(strcmp(ident, "field") == 0 && sc.ch != ':')) {				\
 			/* do not change the state */									\
 		} else {															\
 			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);							\
@@ -764,7 +764,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	ident_state_t ident_state = NONE_STATE;
 	module_type_t module_type = NONE_MODULE;
 	
-	char cur[100];
+	char ident[100];
 	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
 	
 	// esh: added string_state for escape/format sequences highlighting
@@ -1008,15 +1008,15 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
-				sc.GetCurrent(cur, sizeof(cur));
+				sc.GetCurrent(ident, sizeof(ident));
 				SKIP_SPACES
 				if (sc.ch == '.') {
 					CHANGE_STATE_BY_ERLMODULE
 				} else if (sc.ch == ',' && ident_state == ALIAS_STATE) {
 					CHANGE_STATE_BY_ERLMODULE
-					InsertModule(sc, cur);
+					InsertModule(sc, ident);
 					ident_state = ALIAS_AS_STATE;
-				} else if (stdAtoms.InList(cur)) {
+				} else if (stdAtoms.InList(ident)) {
 					sc.ChangeState(SCE_ELIXIR_STD_ATOM);
 				}
 				sc.SetState(SCE_ELIXIR_DEFAULT);
@@ -1165,12 +1165,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						continue;
 					}
 				}
-				sc.GetCurrent(cur, sizeof(cur));
-				RemoveAllSpaces(cur);
+				sc.GetCurrent(ident, sizeof(ident));
+				RemoveAllSpaces(ident);
 				
 				const char *alias = NULL;
 				if (ident_state == ALIAS_STATE) {
-					InsertModule(sc, cur);
+					InsertModule(sc, ident);
 					if (sc.atLineEnd) {
 						alias = InsertAlias(NULL);
 						ident_state = NONE_STATE;
@@ -1181,31 +1181,32 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						ident_state = ALIAS_GRP_STATE;
 					}
 				} else if (ident_state == ALIAS_AS_STATE) {
-					alias = InsertAlias(cur);
+					alias = InsertAlias(ident);
 					ident_state = NONE_STATE;
 				} else if (ident_state == ALIAS_GRP_STATE) {
-					alias = InsertAlias(cur);
+					alias = InsertAlias(ident);
 					if (sc.ch == '}' || sc.atLineEnd)
 						ident_state = NONE_STATE;
 				}
-				const char *ident;
+				const char *module;
 				char *tmpAlias = NULL;
 				if (alias) {
-					ident = GetModule(alias, sc.currentLine);
+					module = GetModule(alias, sc.currentLine);
 				} else {
-					const char *search = strchr(cur, '.');
-					tmpAlias = (search && search > cur) ? strndup(cur, search - cur)
-														: strdup(cur);
-					ident = GetModule(tmpAlias, sc.currentLine);
+					const char *search = strchr(ident, '.');
+					tmpAlias = (search && search > ident)
+									? strndup(ident, search - ident)
+									: strdup(ident);
+					module = GetModule(tmpAlias, sc.currentLine);
 				}
 				
-				if (stdExcepts.InList(ident)) {
+				if (stdExcepts.InList(module)) {
 					sc.ChangeState(SCE_ELIXIR_STD_EXCEPT);
-				} else if (stdModules.InList(ident)) {
+				} else if (stdModules.InList(module)) {
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE);
-					module_type = (strcmp(ident, "Kernel") == 0) ? KERNEL_MODULE
-																 : OTHER_MODULE;
-				} else if (stdErlModules.InList(ident)) {
+					module_type = (strcmp(module, "Kernel") == 0) ? KERNEL_MODULE
+																  : OTHER_MODULE;
+				} else if (stdErlModules.InList(module)) {
 					sc.ChangeState(SCE_ELIXIR_STD_ERL_MODULE);
 				}
 				sc.SetState(sc.ch == '.' && ident_state == ALIAS_GRP_STATE
@@ -1219,16 +1220,16 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
-				sc.GetCurrent(cur, sizeof(cur));
-				RemoveAllSpaces(cur);
+				sc.GetCurrent(ident, sizeof(ident));
+				RemoveAllSpaces(ident);
 				
-				if (stdModuleAttrs.InList(cur)) {
+				if (stdModuleAttrs.InList(ident)) {
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE_ATTR);
 					
-					if (strcmp(cur, "@spec") == 0 ||
-						strcmp(cur, "@type") == 0 ||
-						strcmp(cur, "@callback") == 0 ||
-						strcmp(cur, "@macrocallback") == 0) {
+					if (strcmp(ident, "@spec") == 0 ||
+						strcmp(ident, "@type") == 0 ||
+						strcmp(ident, "@callback") == 0 ||
+						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
 						maybe_typefunc = true;
 					} else {
@@ -1245,13 +1246,13 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (isWordEnd(sc.ch)) {
 					sc.Forward();
 				}
-				sc.GetCurrent(cur, sizeof(cur));
+				sc.GetCurrent(ident, sizeof(ident));
 				
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
 						if (ident_state == NONE_STATE ||
 							(ident_state == ALIAS_AS_STATE
-							 && strcmp(cur, "as") == 0)) {
+							 && strcmp(ident, "as") == 0)) {
 							sc.ChangeState(SCE_ELIXIR_FIELD);
 						} else {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN);
@@ -1275,24 +1276,24 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							if (IsDigit(styler[i]))
 								CHANGE_STATE_BY_MODULE
 						}
-					} else if (stdWords.InList(cur)) {
+					} else if (stdWords.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
 					} else if ((IsUpper(sc.ch) || sc.Match('_', '_') ||
 								(sc.ch == ':' && IsLower(sc.chNext)))
-							   && addWords.InList(cur)) {
+							   && addWords.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_ADD_WORD);
-					} else if (stdAtoms.InList(cur)) {
+					} else if (stdAtoms.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_ATOM);
-					} else if (stdMacros.InList(cur)) {
+					} else if (stdMacros.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_MACRO);
 					} else if (ident_state == TYPEOPER_STATE) {
-						sc.ChangeState(strcmp(cur, "t") == 0 ? SCE_ELIXIR_FUNCTION
-															 : SCE_ELIXIR_TYPE_FUNC);
-					} else if (maybe_typefunc && sc.ch != ':' &&
-							   typeFuncs.InList(cur)) {
+						sc.ChangeState(strcmp(ident, "t") == 0 ? SCE_ELIXIR_FUNCTION
+															   : SCE_ELIXIR_TYPE_FUNC);
+					} else if (maybe_typefunc && sc.ch != ':'
+							   && typeFuncs.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_TYPE_FUNC);
-					} else if (sc.ch == '(' || (ident_state == PIPEOPER_STATE &&
-												sc.ch != '.')) {
+					} else if (sc.ch == '(' || (ident_state == PIPEOPER_STATE
+												&& sc.ch != '.')) {
 						CHANGE_STATE_BY_FUNCLIST
 					} else if (sc.ch == '/') {
 						MOVE_INDEX_TO_NONSPACE
@@ -1301,18 +1302,18 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						} else CHECK_LIB_MACROS
 					} else CHECK_LIB_MACROS
 				}
-				if (sc.state == SCE_ELIXIR_STD_WORD &&
-					(strcmp(cur, "def") == 0 ||
-					 strcmp(cur, "defp") == 0 ||
-					 strcmp(cur, "defguard") == 0 ||
-					 strcmp(cur, "defguardp") == 0 ||
-					 strcmp(cur, "defmacro") == 0 ||
-					 strcmp(cur, "defmacrop") == 0 ||
-					 strcmp(cur, "defmemo") == 0 ||
-					 strcmp(cur, "defmemop") == 0))
+				if (sc.state == SCE_ELIXIR_STD_WORD
+					&& (strcmp(ident, "def") == 0 ||
+						strcmp(ident, "defp") == 0 ||
+						strcmp(ident, "defguard") == 0 ||
+						strcmp(ident, "defguardp") == 0 ||
+						strcmp(ident, "defmacro") == 0 ||
+						strcmp(ident, "defmacrop") == 0 ||
+						strcmp(ident, "defmemo") == 0 ||
+						strcmp(ident, "defmemop") == 0))
 					ident_state = DEFNAME_STATE;
-				else if (sc.state == SCE_ELIXIR_ADD_WORD &&
-						 strcmp(cur, "alias") == 0)
+				else if (sc.state == SCE_ELIXIR_ADD_WORD
+						 && strcmp(ident, "alias") == 0)
 					ident_state = ALIAS_STATE;
 				else if (ident_state != ALIAS_AS_STATE)
 					ident_state = NONE_STATE;
