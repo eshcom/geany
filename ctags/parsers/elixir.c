@@ -1,5 +1,5 @@
 /*
-*   Copyright (c) 2025, esh <esh.eburg@gmail.com>
+*   Copyright (c) 2025, Egor Shinkarev <esheburg@gmail.com>
 *
 *   This source code is released for free distribution under the terms of the
 *   GNU General Public License version 2 or (at your option) any later version.
@@ -86,7 +86,7 @@ typedef struct {
 static Scope getCurrentScope(void)
 {
 	vString *const vScopeName = vStringNew();
-	int scopeKindIndex = -1;
+	int scopeKindIndex = K_MODULE;
 	
 	NestingLevel *nl = nestingLevelsGetCurrent(nesting);
 	tagEntryInfo *tag = getEntryOfNestingLevel(nl);
@@ -124,10 +124,9 @@ static Scope getCurrentScope(void)
 static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar)
 {
 	if (quoteChar == '\"')
-		return strncmp(cp, R"(""")", 3) == 0;
+		return strncmp((const char *)cp, R"(""")", 3) == 0;
 	if (quoteChar == '\'')
-		return strncmp(cp, R"(''')", 3) == 0;
-	
+		return strncmp((const char *)cp, R"(''')", 3) == 0;
 	return false;
 }
 
@@ -225,6 +224,8 @@ static void checkMultilineString(const unsigned char *cp)
 		}
 		else
 		{
+			if (*cp == '#') break; // skip comment to the end
+			
 			if (*cp == '~' && strchr(L_LITERAL_PREFIX U_LITERAL_PREFIX, cp[1])
 				&& cp[2])
 			{
@@ -288,7 +289,7 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 		Scope currScope = getCurrentScope();
 		int r;
 		
-		if (kind == K_MODULE)
+		if (kind == K_MODULE || kind == K_PROTO)
 		{
 			Scope scope = {vStringNewCopy(currScope.name), currScope.kindIndex};
 			const char *search = strrchr(tagFullName, SCOPE_SEPARATOR);
@@ -331,7 +332,7 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 			
 			for (size_t i = 0; i < countEntryInCorkQueue(); i++)
 			{
-				tagEntryInfo *tag = getEntryInCorkQueue(i);
+				const tagEntryInfo *tag = getEntryInCorkQueue(i);
 				if (tag && tag->kindIndex == K_ALIAS &&
 					strcmp(tag->name, alias) == 0)
 				{
