@@ -1392,15 +1392,17 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 					gint match = utils_match_dirs(path, base_path);
 					if (match == MATCH_DIRS_PREF_2)
 					{	// navigate from path to base_path
+						gchar *tpath = g_strdup(path);
 						while (TRUE)
 						{
-							SETPTR(path, g_path_get_dirname(path));
+							SETPTR(tpath, g_path_get_dirname(tpath));
 							SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-														  path, sel, NULL));
-							if (utils_match_dirs(path, base_path) == MATCH_DIRS_FULL
+														  tpath, sel, NULL));
+							if (utils_match_dirs(tpath, base_path) == MATCH_DIRS_FULL
 								|| g_file_test(filename, G_FILE_TEST_EXISTS))
 								break;
 						}
+						g_free(tpath);
 						currpath_match_proj = TRUE;
 					}
 					else if (match == MATCH_DIRS_FULL)
@@ -1417,9 +1419,33 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 													  base_name, sel, NULL));
 						g_free(base_name);
 					}
+					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+					{	// try <base_path>/main/<sel>
+						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+													  "main", sel, NULL));
+					}
+					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+					{	// try <base_path>/lib/<sel>
+						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+													  "lib", sel, NULL));
+					}
 					g_free(base_path);
 				}
 				
+				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// try ../main/<sel>
+					gchar *parent_dir = g_path_get_dirname(path);
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
+												  "main", sel, NULL));
+					g_free(parent_dir);
+				}
+				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// try ../lib/<sel>
+					gchar *parent_dir = g_path_get_dirname(path);
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
+												  "lib", sel, NULL));
+					g_free(parent_dir);
+				}
 				if (!currpath_match_proj &&
 					!g_file_test(filename, G_FILE_TEST_EXISTS))
 				{	// navigate from path to parent dir: level(path) - 2
