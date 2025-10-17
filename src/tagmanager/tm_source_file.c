@@ -470,8 +470,16 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 				g_free(tag->inheritance);
 				tag->inheritance = g_strdup(value);
 			}
-			else if (strcmp(key, "implementation") == 0) /* implementation limit */
-				tag->impl = get_tag_impl(value);
+			else if (strcmp(key, "implementation") == 0)
+			{
+				if (lang == TM_PARSER_ELIXIR)
+				{
+					g_free(tag->scope);
+					tag->scope = g_strdup(value);
+				}
+				else /* implementation limit */
+					tag->impl = get_tag_impl(value);
+			}
 			else if (strcmp(key, "line") == 0) /* line */
 				tag->line = atol(value);
 			else if (strcmp(key, "access") == 0) /* access */
@@ -482,9 +490,11 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 					 strcmp(key, "function") == 0 ||
 					 strcmp(key, "struct") == 0 ||
 					 strcmp(key, "union") == 0 ||
-					 strcmp(key, "module") == 0) /* Name of the namespace/class/enum/function/struct/union/module
-													in which this tag is a member */
-			{
+					 strcmp(key, "macro") == 0 ||
+					 strcmp(key, "module") == 0 ||
+					 strcmp(key, "protocol") == 0)
+			{	/* Name of the namespace/class/enum/function/struct/union/etc.
+				   in which this tag is a member */
 				g_free(tag->scope);
 				tag->scope = g_strdup(value);
 			}

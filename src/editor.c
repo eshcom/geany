@@ -2022,7 +2022,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 	
 	tm_parser_define_type(type, lang, word_prefix, word_suffix);
 	
-	ui_set_statusbar(TRUE, "word: prefix = '%s', suffix = '%s', type = %d",
+	ui_set_statusbar(TRUE, "!word! prefix: '%s', suffix: '%s', type: %d",
 					 word_prefix, word_suffix, *type); // esh: log
 	// word_prefix will be free later
 	g_free(word_suffix);
@@ -2037,8 +2037,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 		{
 			static gchar tmp_scope[GEANY_MAX_WORD_LENGTH];
 			ScopeBound tmp_bound, scopebound;
-			
 			guint scope_parts_cnt = 0;
+			GString *gscope = g_string_new(NULL);
 			
 			while (TRUE)
 			{
@@ -2046,12 +2046,21 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 											tmp_scope, scopelen, wc);
 				if (*tmp_scope == '\0') break;
 				
-				g_strlcpy(scope, tmp_scope, scopelen);
+				if (lang == TM_PARSER_ELIXIR)
+				{	// collect a full scope for these langs
+					if (gscope->len > 0)
+						g_string_prepend(gscope, context_sep);
+				}
+				else
+					g_string_truncate(gscope, 0);
+				
+				g_string_prepend(gscope, tmp_scope);
 				scopebound = tmp_bound;
 				pos = scopebound.bound.start;
-				
 				scope_parts_cnt++;
 			}
+			g_strlcpy(scope, gscope->str, scopelen);
+			g_string_free(gscope, TRUE);
 			
 			if (*scope != '\0')
 			{

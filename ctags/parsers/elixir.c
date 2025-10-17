@@ -24,18 +24,27 @@
 *   DATA DEFINITIONS
 */
 typedef enum {
-	K_ATTRIBUTE, K_FUNCTION, K_TYPE, K_MODULE, K_MACRO, K_PROTO, K_IMPL, K_ALIAS
+	K_MODULE,
+	K_PROTO,
+	K_IMPL,
+	K_ATTRIBUTE,
+	K_FUNCTION,
+	K_DELEGATE,
+	K_MACRO,
+	K_TYPE,
+	K_SPECIAL
 } elixirKind;
 
 static kindDefinition ElixirKinds[] = {
-	{true, 'a', "attribute",      "module attributes"},
-	{true, 'f', "function",       "functions"},
-	{true, 't', "type",           "type definitions"},
 	{true, 'm', "module",         "modules"},
-	{true, 'M', "macro",          "macros"},
 	{true, 'p', "protocol",       "protocols"},
 	{true, 'i', "implementation", "protocol implementations"},
-	{true, 'l', "alias",          "alias definitions"},
+	{true, 'a', "attribute",      "module attributes"},
+	{true, 'f', "function",       "functions"},
+	{true, 'd', "delegate",       "delegates"},
+	{true, 'M', "macro",          "macros"},
+	{true, 't', "type",           "type definitions"},
+	{true, 's', "special",        "special definitions (alias, use, etc.)"},
 };
 
 static NestingLevels *nesting = NULL;
@@ -43,8 +52,19 @@ static NestingLevels *nesting = NULL;
 struct nlUserData {
 	int indent;
 };
-#define EX_NL_INDENTATION(nl) \
+#define EX_NL_INDENTATION(nl)			\
 	((struct nlUserData *)nestingLevelGetUserData(nl))->indent
+
+#define EMPTY(ptr)						\
+	(!(ptr) || !*(ptr))
+
+#define FREE_SCOPE(scope)				\
+	free(scope.displayName);			\
+	free(scope.name);
+
+#define SET_SCOPE_NAME(scope, newName)	\
+	free(scope.name);					\
+	scope.name = newName;
 
 #define SCOPE_SEPARATOR '.'
 
@@ -53,7 +73,13 @@ struct nlUserData {
 
 static ptrArray *stringStack = NULL;
 
-typedef struct sStringInfo {
+typedef struct {
+	char *name;
+	char *displayName;
+	int kind;
+} Scope;
+
+typedef struct {
 	char closingChar;
 	bool isTriple;
 	bool canbeInterpolate;
@@ -78,47 +104,47 @@ static stringInfo *stringInfoNew(char closingChar, bool isTriple,
  * necessary. If successful you will find class name in vString
  */
 
-typedef struct {
-	vString *name;
-	int kindIndex;
-} Scope;
+static char *makeScopeName(const char *scope, const char *name, int kindIndex,
+						   bool display)
+{
+	vString *const vScopeName = vStringNew();
+	
+	if (!EMPTY(scope)) vStringCatS(vScopeName, scope);
+	
+	if (kindIndex == K_MODULE || kindIndex == K_PROTO || kindIndex == K_IMPL ||
+		(kindIndex == K_MACRO && (display || strcmp(name, "__using__") != 0)))
+	{
+		if (vStringLength(vScopeName) > 0)
+			vStringPut(vScopeName, SCOPE_SEPARATOR);
+		vStringCatS(vScopeName, name);
+	}
+	char *scopeName = NULL;
+	if (vStringLength(vScopeName) > 0)
+	{
+		scopeName = strdup(vStringValue(vScopeName));
+		vStringDelete(vScopeName);
+	}
+	return scopeName;
+}
 
 static Scope getCurrentScope(void)
 {
-	vString *const vScopeName = vStringNew();
-	int scopeKindIndex = K_MODULE;
+	char *name = NULL, *displayName = NULL;
+	int kind = K_MODULE;
 	
 	NestingLevel *nl = nestingLevelsGetCurrent(nesting);
 	tagEntryInfo *tag = getEntryOfNestingLevel(nl);
+	
 	if (tag)
 	{
-		const char *scope, *name;
-		if (tag->displayName && *tag->displayName)
-		{
-			scope = tag->extensionFields.displayScopeName;
-			name = tag->displayName;
-		}
-		else
-		{
-			scope = tag->extensionFields.scopeName;
-			name = tag->name;
-		}
-		if (scope && *scope) vStringCatS(vScopeName, scope);
-		
-		if (tag->kindIndex == K_MODULE ||
-			tag->kindIndex == K_PROTO ||
-			tag->kindIndex == K_IMPL)
-		{
-			if (vStringLength(vScopeName) > 0)
-				vStringPut(vScopeName, SCOPE_SEPARATOR);
-			vStringCatS(vScopeName, name);
-		}
-		scopeKindIndex = tag->kindIndex;
+		name = makeScopeName(tag->extensionFields.scopeName,
+							 tag->name, tag->kindIndex, false);
+		displayName = makeScopeName(tag->extensionFields.displayScopeName,
+									tag->displayName, tag->kindIndex, true);
+		kind = tag->kindIndex;
 	}
-	return (Scope){vScopeName, scopeKindIndex};
+	return (Scope){name, displayName, kind};
 }
-
-#define freeScope(scope) vStringDelete(scope.name);
 
 
 static inline bool matchTripleQuote(const unsigned char *cp, char quoteChar)
@@ -153,8 +179,7 @@ static inline char getClosingChar(char openingChar)
 }
 
 static int makeTag(const char *name, elixirKind kind, bool private,
-				   const Scope scope, const char *displayName,
-				   const char *displayScopeName)
+				   Scope scope, const char *inheritance, const char *displayName)
 {
 	int r = CORK_NIL;
 	
@@ -165,18 +190,15 @@ static int makeTag(const char *name, elixirKind kind, bool private,
 		
 		tag.isFileScope = private;
 		tag.displayName = displayName;
-		tag.extensionFields.displayScopeName = displayScopeName;
-		
-		if (vStringLength(scope.name) > 0)
-		{
-			tag.extensionFields.scopeName = vStringValue(scope.name);
-			tag.extensionFields.scopeKindIndex = scope.kindIndex;
-		}
+		tag.extensionFields.scopeName = scope.name;
+		tag.extensionFields.scopeKindIndex = scope.kind;
+		tag.extensionFields.displayScopeName = scope.displayName;
+		tag.extensionFields.inheritance = inheritance;
 		
 		r = makeTagEntry(&tag);
 		//~ printf("!!!kind: %d, scope: %s, name: %s, dispscope: %s, dispname: %s\n",
 			   //~ kind, tag.extensionFields.scopeName, tag.name,
-			   //~ displayScopeName, displayName);
+			   //~ tag.extensionFields.displayScopeName, tag.displayName);
 	}
 	return r;
 }
@@ -277,6 +299,41 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 	return cp;
 }
 
+#define MAKE_TAG_FULLNAME(ident)									\
+	vString *const vFullName = vStringNew();						\
+	const char *search = strchr(ident, SCOPE_SEPARATOR);			\
+	char *prefix;													\
+	if (search && search[1] && search > ident)						\
+	{																\
+		prefix = strndup(ident, search - ident);					\
+		search++; /* skip SCOPE_SEPARATOR */						\
+	}																\
+	else															\
+	{																\
+		prefix = strdup(ident);										\
+		search = ident;												\
+	}																\
+	for (size_t i = 0; i < countEntryInCorkQueue(); i++)			\
+	{																\
+		const tagEntryInfo *tag = getEntryInCorkQueue(i);			\
+		if (tag && tag->kindIndex == K_SPECIAL &&					\
+			strcmp(tag->name, prefix) == 0)							\
+		{															\
+			const char *module = tag->extensionFields.inheritance;	\
+			if (!EMPTY(module))										\
+				vStringCatS(vFullName, module);						\
+			break;													\
+		}															\
+	}																\
+	if (vStringLength(vFullName) == 0)								\
+		vStringCatS(vFullName, ident);								\
+	else if (search > ident)										\
+	{																\
+		vStringPut(vFullName, SCOPE_SEPARATOR);						\
+		vStringCatS(vFullName, search);								\
+	}																\
+	free(prefix);
+
 static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind kind,
 										   bool private, int indent)
 {
@@ -285,101 +342,66 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 	
 	if (vStringLength(identifier) > 0)
 	{
-		const char *tagFullName = vStringValue(identifier);
+		const char *ident = vStringValue(identifier);
 		Scope currScope = getCurrentScope();
 		int r;
 		
 		if (kind == K_MODULE || kind == K_PROTO)
 		{
-			Scope scope = {vStringNewCopy(currScope.name), currScope.kindIndex};
-			const char *search = strrchr(tagFullName, SCOPE_SEPARATOR);
+			vString *const vScope = currScope.name ? vStringNewInit(currScope.name)
+												   : vStringNew();
+			const char *search = strrchr(ident, SCOPE_SEPARATOR);
 			
 			if (search && search[1])
 			{	// if SCOPE_SEPARATOR is found and there is something else after it
-				if (search > tagFullName)	// there is something else before it
+				if (search > ident)	// there is something else before it
 				{
-					if (vStringLength(scope.name) > 0)
-						vStringPut(scope.name, SCOPE_SEPARATOR);
-					vStringNCatS(scope.name, tagFullName, search - tagFullName);
+					if (vStringLength(vScope) > 0)
+						vStringPut(vScope, SCOPE_SEPARATOR);
+					vStringNCatS(vScope, ident, search - ident);
 				}
 				search++; // skip SCOPE_SEPARATOR
 			}
 			else
-				search = tagFullName;
+				search = ident;
 			
-			r = makeTag(search, kind, private, scope,
-						tagFullName, vStringValue(currScope.name));
-			
-			freeScope(scope);
+			SET_SCOPE_NAME(currScope, strdup(vStringValue(vScope)));
+			r = makeTag(search, kind, private, currScope, NULL, ident);
+			vStringDelete(vScope);
 		}
 		else if (kind == K_IMPL)
 		{
-			const char *search = strchr(tagFullName, SCOPE_SEPARATOR);
-			char *alias;
+			MAKE_TAG_FULLNAME(ident);
+			const char *fullName = vStringValue(vFullName);
+			char *scope = NULL;
 			
-			if (search && search[1] && search > tagFullName)
+			if (strcmp(fullName, "unquote") == 0)
 			{
-				alias = strndup(tagFullName, search - tagFullName);
-				search++; // skip SCOPE_SEPARATOR
+				search = fullName;
+				scope = strdup(currScope.name);
 			}
 			else
 			{
-				alias = strdup(tagFullName);
-				search = tagFullName;
-			}
-			
-			vString *const tagName = vStringNew();
-			
-			for (size_t i = 0; i < countEntryInCorkQueue(); i++)
-			{
-				const tagEntryInfo *tag = getEntryInCorkQueue(i);
-				if (tag && tag->kindIndex == K_ALIAS &&
-					strcmp(tag->name, alias) == 0)
-				{
-					const char *scopeName;
-					if (tag->extensionFields.displayScopeName &&
-						*tag->extensionFields.displayScopeName)
-						scopeName = tag->extensionFields.displayScopeName;
-					else
-						scopeName = tag->extensionFields.scopeName;
-					
-					if (scopeName && *scopeName)
-						vStringCatS(tagName, scopeName);
-					break;
+				search = strrchr(fullName, SCOPE_SEPARATOR);
+				
+				if (search && search[1])
+				{	// if SCOPE_SEPARATOR is found and there is something else after it
+					if (search > fullName)	// there is something else before it
+						scope = strndup(fullName, search - fullName);
+					search++; // skip SCOPE_SEPARATOR
 				}
+				else
+					search = fullName;
 			}
-			if (vStringLength(tagName) == 0)
-				vStringCatS(tagName, tagFullName);
-			else if (search > tagFullName)
-			{
-				vStringPut(tagName, SCOPE_SEPARATOR);
-				vStringCatS(tagName, search);
-			}
-			free(alias);
 			
-			Scope scope = {vStringNew(), currScope.kindIndex};
-			tagFullName = vStringValue(tagName);
-			search = strrchr(tagFullName, SCOPE_SEPARATOR);
-			
-			if (search && search[1])
-			{	// if SCOPE_SEPARATOR is found and there is something else after it
-				if (search > tagFullName)	// there is something else before it
-					vStringNCatS(scope.name, tagFullName, search - tagFullName);
-				search++; // skip SCOPE_SEPARATOR
-			}
-			else
-				search = tagFullName;
-			
-			r = makeTag(search, kind, private, scope,
-						tagFullName, vStringValue(currScope.name));
-			freeScope(scope);
-			vStringDelete(tagName);
+			SET_SCOPE_NAME(currScope, scope);
+			r = makeTag(search, kind, private, currScope, NULL, fullName);
+			vStringDelete(vFullName); // search can refer to vFullName, so delete here
 		}
 		else
-			r = makeTag(tagFullName, kind, private, currScope, NULL, NULL);
+			r = makeTag(ident, kind, private, currScope, NULL, ident);
 		
-		freeScope(currScope);
-		
+		FREE_SCOPE(currScope);
 		NestingLevel *nl = nestingLevelsPush(nesting, r);
 		EX_NL_INDENTATION(nl) = indent;
 	}
@@ -387,17 +409,41 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 	return cp;
 }
 
-static const unsigned char *parseMemberTag(const unsigned char *cp,
-										   elixirKind kind, bool private)
+static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind kind,
+										   bool private, bool delegate)
 {
 	vString *const identifier = vStringNew();
 	cp = parseIdentifier(cp, identifier);
 	
 	if (vStringLength(identifier) > 0)
 	{
-		Scope scope = getCurrentScope();
-		makeTag(vStringValue(identifier), kind, private, scope, NULL, NULL);
-		freeScope(scope);
+		const char *ident;
+		char *module = NULL;
+		
+		if (delegate)
+		{
+			const unsigned char *search = (const unsigned char *)
+											strstr((const char *)cp, "to:");
+			if (search)
+			{
+				cp = skipSpace(search + 3/* skip "to:" */);
+				vString *const vIdent = vStringNew();
+				cp = parseIdentifier(cp, vIdent);
+				
+				if (vStringLength(vIdent) > 0)
+				{
+					MAKE_TAG_FULLNAME(vStringValue(vIdent));
+					module = strdup(vStringValue(vFullName));
+					vStringDelete(vFullName);
+				}
+				vStringDelete(vIdent);
+			}
+		}
+		Scope currScope = getCurrentScope();
+		ident = vStringValue(identifier);
+		makeTag(ident, kind, private, currScope, module, ident);
+		FREE_SCOPE(currScope);
+		free(module);
 	}
 	vStringDelete(identifier);
 	return cp;
@@ -412,38 +458,39 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 	int len = vStringLength(identifier);
 	if (len > 0)
 	{
+		Scope currScope = getCurrentScope();
 		const char *const ident = vStringValue(identifier);
 		
 		if (ident[len - 1] == SCOPE_SEPARATOR && *cp == '{')
-		{
+		{	// alias Sayings.{Greetings, Farewells, Parent.Child}
 			while (*(++cp))
 			{
 				cp = skipSpace(cp);
 				if (isupper(*cp))
 				{
-					vString *const alias = vStringNew();
-					cp = parseIdentifier(cp, alias);
+					vString *const vAlias = vStringNew();
+					cp = parseIdentifier(cp, vAlias);
 					
-					if (vStringLength(alias) > 0)
+					if (vStringLength(vAlias) > 0)
 					{
-						vString *const module = vStringNewNInit(ident, len - 1);
-						if (vStringLength(module) > 0)
-							vStringPut(module, SCOPE_SEPARATOR);
-						vStringCat(module, alias);
+						vString *const vModule = vStringNewNInit(ident, len - 1);
+						if (vStringLength(vModule) > 0)
+							vStringPut(vModule, SCOPE_SEPARATOR);
+						vStringCat(vModule, vAlias);
 						
-						const char *aliasName = vStringValue(alias);
-						const char *search = strrchr(aliasName, SCOPE_SEPARATOR);
+						const char *alias = vStringValue(vAlias);
+						const char *search = strrchr(alias, SCOPE_SEPARATOR);
 						
-						if (search && search[1] && search > aliasName)
+						if (search && search[1] && search > alias)
 							search++; // skip SCOPE_SEPARATOR
 						else
-							search = aliasName;
+							search = alias;
 						
-						makeTag(search, K_ALIAS, false,
-								(Scope){module, K_MODULE}, NULL, NULL);
-						vStringDelete(module);
+						makeTag(search, K_SPECIAL, true, currScope,
+								vStringValue(vModule), search);
+						vStringDelete(vModule);
 					}
-					vStringDelete(alias);
+					vStringDelete(vAlias);
 					if (!*cp) break;
 				}
 				else if (*cp == ',')
@@ -456,7 +503,7 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 			}
 		}
 		else if (*cp == ',')
-		{
+		{	// alias Df.Repo.Users.Storage, as: UsersStorage
 			cp = skipSpace(++cp);
 			while (islower(*cp)) cp++; // skip "as" keyword
 			
@@ -465,35 +512,48 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 				cp = skipSpace(++cp);
 				if (isupper(*cp))
 				{
-					vString *const alias = vStringNew();
-					cp = parseIdentifier(cp, alias);
+					vString *const vAlias = vStringNew();
+					cp = parseIdentifier(cp, vAlias);
 					
-					if (vStringLength(alias) > 0)
+					if (vStringLength(vAlias) > 0)
 					{
-						vString *const module = vStringNewInit(ident);
-						makeTag(vStringValue(alias), K_ALIAS, false,
-								(Scope){module, K_MODULE}, NULL, NULL);
-						vStringDelete(module);
+						const char *alias = vStringValue(vAlias);
+						makeTag(alias, K_SPECIAL, true, currScope, ident, alias);
 					}
-					vStringDelete(alias);
+					vStringDelete(vAlias);
 				}
 			}
 		}
 		else
-		{
+		{	// alias Df.Repo.User
 			const char *search = strrchr(ident, SCOPE_SEPARATOR);
 			
+			// if SCOPE_SEPARATOR is found and there is something else after it
+			// and there is something else before it
 			if (search && search[1] && search > ident)
-			{	// if SCOPE_SEPARATOR is found and there is something else after it
-				// and there is something else before it
+			{
 				search++; // skip SCOPE_SEPARATOR
-				vString *const module = vStringNewInit(ident);
-				
-				makeTag(search, K_ALIAS, false,
-						(Scope){module, K_MODULE}, NULL, NULL);
-				vStringDelete(module);
+				makeTag(search, K_SPECIAL, true, currScope, ident, search);
 			}
 		}
+		FREE_SCOPE(currScope);
+	}
+	vStringDelete(identifier);
+	return cp;
+}
+
+static const unsigned char *parseUseTag(const unsigned char *cp)
+{
+	vString *const identifier = vStringNew();
+	cp = parseIdentifier(cp, identifier);
+	
+	if (vStringLength(identifier) > 0)
+	{
+		MAKE_TAG_FULLNAME(vStringValue(identifier));
+		Scope currScope = getCurrentScope();
+		makeTag("<use>", K_SPECIAL, true, currScope, vStringValue(vFullName), "<use>");
+		FREE_SCOPE(currScope);
+		vStringDelete(vFullName);
 	}
 	vStringDelete(identifier);
 	return cp;
@@ -515,18 +575,20 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		cp = parseStructTag(cp, K_MACRO, true, indent);
 	else if (strcmp(kwval, "defimpl") == 0)
 		cp = parseStructTag(cp, K_IMPL, false, indent);
+	else if (strcmp(kwval, "defdelegate") == 0)
+		cp = parseMemberTag(cp, K_DELEGATE, false, true);
 	else if (strcmp(kwval, "defp") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, true);
+		cp = parseMemberTag(cp, K_FUNCTION, true, false);
 	else if (strcmp(kwval, "def") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, false);
+		cp = parseMemberTag(cp, K_FUNCTION, false, false);
 	else if (strcmp(kwval, "defmemop") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, true);
+		cp = parseMemberTag(cp, K_FUNCTION, true, false);
 	else if (strcmp(kwval, "defmemo") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, false);
+		cp = parseMemberTag(cp, K_FUNCTION, false, false);
 	else if (strcmp(kwval, "@typep") == 0)
-		cp = parseMemberTag(cp, K_TYPE, true);
+		cp = parseMemberTag(cp, K_TYPE, true, false);
 	else if (strcmp(kwval, "@type") == 0 || strcmp(kwval, "@opaque") == 0)
-		cp = parseMemberTag(cp, K_TYPE, false);
+		cp = parseMemberTag(cp, K_TYPE, false, false);
 	else if (strcmp(kwval, "@after_compile") == 0 ||
 			 strcmp(kwval, "@before_compile") == 0 ||
 			 strcmp(kwval, "@behaviour") == 0 ||
@@ -550,12 +612,14 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		/* skip */;
 	else if (strcmp(kwval, "alias") == 0)
 		cp = parseAliasTag(cp);
+	else if (strcmp(kwval, "use") == 0)
+		cp = parseUseTag(cp);
 	else if (*kwval == '@' && kwval[1] && *cp &&
 			 (isalnum(*cp) || strchr("\"{[(%:~_", *cp)))
 	{
-		Scope scope = getCurrentScope();
-		makeTag(kwval, K_ATTRIBUTE, true, scope, NULL, NULL);
-		freeScope(scope);
+		Scope currScope = getCurrentScope();
+		makeTag(kwval, K_ATTRIBUTE, true, currScope, NULL, kwval);
+		FREE_SCOPE(currScope);
 	}
 	else if (strcmp(kwval, "end") == 0)
 	{

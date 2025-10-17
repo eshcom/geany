@@ -524,7 +524,7 @@ GPtrArray *tm_tags_extract(GPtrArray *tags_array, TMTagType tag_types)
 	{
 		if (tags_array->pdata[i] != NULL)
 		{
-			if (tag_types & (((TMTag *)tags_array->pdata[i])->type))
+			if (tag_types & (TM_TAG(tags_array->pdata[i])->type))
 				g_ptr_array_add(new_tags, tags_array->pdata[i]);
 		}
 	}
