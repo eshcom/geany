@@ -178,12 +178,13 @@ static TMParserMapEntry map_DOCBOOK[] = {
 static TMParserMapEntry map_ELIXIR[] = {
 	{'a', tm_tag_variable_t},	// module attribute
 	{'f', tm_tag_function_t},	// function
+	{'d', tm_tag_function_t},	// delegate
 	{'t', tm_tag_typedef_t},	// type definition
 	{'m', tm_tag_namespace_t},	// module
 	{'M', tm_tag_macro_t},		// macro
 	{'p', tm_tag_interface_t},	// protocol
 	{'i', tm_tag_struct_t},		// protocol implementation
-	{'l', tm_tag_other_t},		// alias definition
+	{'s', tm_tag_other_t},		// special definition (alias, use, etc.)
 };
 
 static TMParserMapEntry map_ERLANG[] = {
@@ -884,12 +885,22 @@ gboolean tm_parser_strict_scope(TMParserType lang)
 	switch (lang)
 	{
 		case TM_PARSER_NONE:
-		case TM_PARSER_ELIXIR:	// TODO: esh: temporary solution
 		case TM_PARSER_PYTHON:
 		case TM_PARSER_GO:		// as long as ctags does not contain scope (package name)
 			return FALSE;
 		default:
 			return TRUE;
+	}
+}
+
+gboolean tm_parser_filter_by_file(TMParserType lang, const gchar *scope)
+{
+	switch (lang)
+	{
+		case TM_PARSER_ELIXIR:
+			return !(scope && *scope);
+		default:
+			return (g_strcmp0(scope, "*") != 0);
 	}
 }
 
@@ -982,8 +993,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 		
 		case TM_PARSER_ELIXIR:
 			if (g_strcmp0(suffix, "(") == 0)
-				*type = tm_tag_function_t       | tm_tag_method_t |
-						tm_tag_macro_with_arg_t | tm_tag_prototype_t;
+				*type = tm_tag_function_t | tm_tag_macro_t;
 			else
 				*type = tm_tag_max_t;
 			

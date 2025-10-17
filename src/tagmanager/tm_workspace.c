@@ -715,12 +715,13 @@ GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type
 
 /* esh: Returns all matching tags found in the project tags
  * 		(based on tm_workspace_find) */
-GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType lang)
+GPtrArray *tm_workspace_find_prj(const char *name, const char *scope,
+								 TMTagType type, TMParserType lang)
 {
 	GPtrArray *tags = g_ptr_array_new();
 	
 	fill_find_tags_array(tags, theWorkspace->project_tags,
-						 name, NULL, type, lang);
+						 name, scope, type, lang);
 	return tags;
 }
 

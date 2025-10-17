@@ -139,6 +139,8 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 
 gboolean tm_parser_strict_scope(TMParserType lang);
 
+gboolean tm_parser_filter_by_file(TMParserType lang, const gchar *scope);
+
 void tm_parser_define_type(TMTagType *type, TMParserType lang,
 						   const gchar *prefix, const gchar *suffix);
 

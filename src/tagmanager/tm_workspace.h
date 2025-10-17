@@ -64,7 +64,8 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type,
 							 TMTagAttrType *attrs, TMParserType lang);
 //~ esh: for symbols.c/goto_tag
-GPtrArray *tm_workspace_find_prj(const char *name, TMTagType type, TMParserType lang);
+GPtrArray *tm_workspace_find_prj(const char *name, const char *scope,
+								 TMTagType type, TMParserType lang);
 
 GPtrArray *tm_workspace_find_prefix(const char *prefix, TMParserType lang,
 									guint max_num);

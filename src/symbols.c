@@ -2121,7 +2121,7 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 }
 
 
-static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
+static GPtrArray *filter_tags_by_scope(const GPtrArray *tags, const gchar *scope,
 									   TMParserType lang)
 {
 	const gchar *context_sep = tm_parser_context_separator(lang);
@@ -2131,10 +2131,16 @@ static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 	guint i;
 	foreach_ptr_array(tmtag, i, tags)
 	{
-		// example: goto tag "setDigits" in "CharacterSet::setDigits",
-		// found tag "setDigits" with scope: Scintilla::CharacterSet::setBase
-		if (tmtag->scope)
+		if (EMPTY(tmtag->scope)) continue;
+		
+		if (lang == TM_PARSER_ELIXIR)
 		{
+			if (utils_str_equal(tmtag->scope, scope))
+				g_ptr_array_add(filtered_tags, tmtag);
+		}
+		else
+		{	// example: goto tag "setDigits" in "CharacterSet::setDigits",
+			// found tag "setDigits" with scope: Scintilla::CharacterSet::setBase
 			gchar **item, **items = g_strsplit(tmtag->scope, context_sep, 0);
 			foreach_strv(item, items)
 			{
@@ -2150,7 +2156,7 @@ static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 	return filtered_tags;
 }
 
-static GPtrArray *filter_tags_by_filled_scope(GPtrArray *tags)
+static GPtrArray *filter_tags_by_filled_scope(const GPtrArray *tags)
 {
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	
@@ -2164,7 +2170,7 @@ static GPtrArray *filter_tags_by_filled_scope(GPtrArray *tags)
 	return filtered_tags;
 }
 
-static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
+static GPtrArray *filter_tags_by_type(const GPtrArray *tags, const TMTagType type)
 {
 	GPtrArray *filtered_tags = g_ptr_array_new();
 	
@@ -2178,7 +2184,8 @@ static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
 	return filtered_tags;
 }
 
-static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
+static GPtrArray *filter_tags_by_file(const GPtrArray *tags,
+									  const TMSourceFile *file,
 									  const TMTagType type)
 {
 	GPtrArray *filtered_tags = g_ptr_array_new();
@@ -2208,6 +2215,21 @@ static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
 	return filtered_tags;
 }
 
+static GPtrArray *filter_tags_by_file_strict(const GPtrArray *tags,
+											 const TMSourceFile *file)
+{
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	
+	TMTag *tmtag;
+	guint i;
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if (tmtag->file == file)
+			g_ptr_array_add(filtered_tags, tmtag);
+	}
+	return filtered_tags;
+}
+
 static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags,
 							  gboolean force_replace)
 {
@@ -2218,137 +2240,6 @@ static void filter_tags_check(GPtrArray **old_tags, GPtrArray **new_tags,
 	}
 	else
 		g_ptr_array_free(*new_tags, TRUE);
-}
-
-static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
-							  TMSourceFile *current_file, const gchar *scope,
-							  TMTagType type, TMParserType lang,
-							  gboolean definition, gboolean is_project_tags)
-{
-	const gchar *PRINT_TAG = is_project_tags ? "ptag" : "stag";
-	GPtrArray *filtered_tags = g_ptr_array_new();
-	TMTag *tmtag, *last_tag = NULL;
-	guint i;
-	
-	foreach_ptr_array(tmtag, i, tags)
-	{
-		if ((definition && !(tmtag->type & tm_forward_types)) ||
-			(!definition && (tmtag->type & tm_forward_types)))
-		{
-			/* If there are typedefs of e.g. a struct such as
-			 * "typedef struct Foo {} Foo;", filter out the typedef unless
-			 * cursor is at the struct name. */
-			if (last_tag != NULL && last_tag->file == tmtag->file &&
-				last_tag->type != tm_tag_typedef_t && tmtag->type == tm_tag_typedef_t)
-			{
-				ui_set_statusbar(TRUE, "%s: scope = %s, name = %s, type = %d, "
-										"var_type = %s, file = %s, line = %lu, arglist = %s",
-								 PRINT_TAG, tmtag->scope, tmtag->name, tmtag->type,
-								 tmtag->var_type, tmtag->file->short_name, tmtag->line,
-								 tmtag->arglist); // esh: log
-				// esh: fixed goto tm_tag_typedef_t tag for Erlang lang
-				// example: server_config.hrl (goto sort_index typedef):
-				//          position = undefined :: sort_index()
-				if (last_tag == current_tag ||
-					(lang == TM_PARSER_ERLANG && !current_tag))
-					g_ptr_array_add(filtered_tags, tmtag);
-			}
-			else if (tmtag != current_tag)
-			{
-				ui_set_statusbar(TRUE, "%s: scope = %s, name = %s, type = %d, "
-										"var_type = %s, file = %s, line = %lu, arglist = %s",
-								 PRINT_TAG, tmtag->scope, tmtag->name, tmtag->type,
-								 tmtag->var_type, tmtag->file->short_name, tmtag->line,
-								 tmtag->arglist); // esh: log
-				g_ptr_array_add(filtered_tags, tmtag);
-			}
-			last_tag = tmtag;
-		}
-	}
-	
-	GPtrArray *new_tags;
-	
-	if (filtered_tags->len > 0 && definition && !EMPTY(scope))
-	{
-		gboolean strict_scope = tm_parser_strict_scope(lang);
-		
-		if (g_strcmp0(scope, "*") != 0)
-		{
-			new_tags = filter_tags_by_scope(filtered_tags, scope, lang);
-			filter_tags_check(&filtered_tags, &new_tags, strict_scope);
-		}
-		else if (strict_scope)
-		{	// also scope = "*"
-			new_tags = filter_tags_by_filled_scope(filtered_tags);
-			filter_tags_check(&filtered_tags, &new_tags, strict_scope);
-		}
-	}
-	
-	if (filtered_tags->len > 0 && definition && type != tm_tag_undef_t)
-	{
-		new_tags = filter_tags_by_type(filtered_tags, type);
-		filter_tags_check(&filtered_tags, &new_tags, TRUE);
-	}
-	
-	if (filtered_tags->len > 1 && current_file && g_strcmp0(scope, "*") != 0)
-	{
-		new_tags = filter_tags_by_file(filtered_tags, current_file,
-									   tm_parser_get_filter_type(lang, type));
-		filter_tags_check(&filtered_tags, &new_tags, FALSE);
-	}
-	
-	return filtered_tags;
-}
-
-static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_line,
-								   const GPtrArray *all_tags, const gchar *scope,
-								   TMTagType type, TMParserType lang,
-								   gboolean definition, gboolean is_project_tags)
-{
-	GPtrArray *tags = g_ptr_array_new();
-	TMTag *tmtag, *current_tag = NULL;
-	guint i;
-	
-	/* get rid of global tags and find tag at current line */
-	foreach_ptr_array(tmtag, i, all_tags)
-	{
-		if (tmtag->file)
-		{
-			g_ptr_array_add(tags, tmtag);
-			
-			if (tmtag->line == current_line)
-			{
-				if (is_project_tags)
-				{
-					if (current_file && utils_str_equal(current_file->file_name,
-														tmtag->file->file_name))
-						current_tag = tmtag;
-				}
-				else
-				{
-					if (tmtag->file == current_file)
-						current_tag = tmtag;
-				}
-			}
-		}
-	}
-	if (current_tag)
-		/* swap definition/declaration search */
-		definition = current_tag->type & tm_forward_types;
-	
-	GPtrArray *filtered_tags = filter_tags(tags, current_tag, current_file,
-										   scope, type, lang, definition,
-										   is_project_tags);
-	if (filtered_tags->len == 0)
-	{
-		/* if we didn't find anything, try again with the opposite type */
-		g_ptr_array_free(filtered_tags, TRUE);
-		filtered_tags = filter_tags(tags, current_tag, current_file,
-									scope, type, lang, !definition,
-									is_project_tags);
-	}
-	g_ptr_array_free(tags, TRUE);
-	return filtered_tags;
 }
 
 
@@ -2394,8 +2285,21 @@ static gboolean scopes_and_types_equal(const gchar *pscope, TMTagType ptype,
 	return ptype == stype && scopes_equal;
 }
 
-static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
+static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
+								 TMTagType type, TMParserType lang)
 {
+	GPtrArray *tags = tm_workspace_find(name, scope, type, NULL, lang);
+	
+	if (!app->project)
+		return tags;
+	
+	if (!app->tm_workspace->project_tags)
+		project_load_tags();
+	
+	if (!app->tm_workspace->project_tags)
+		return tags;
+	
+	GPtrArray *ptags = tm_workspace_find_prj(name, scope, type, lang);
 	TMTag *ptag;
 	guint i;
 	guint tags_len = tags->len;
@@ -2408,9 +2312,11 @@ static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
 		{
 			TMTag *tag = g_ptr_array_index(tags, j);
 			
-			if (scopes_and_types_equal(ptag->scope, ptag->type, tag->scope, tag->type)
+			if (scopes_and_types_equal(ptag->scope, ptag->type,
+										tag->scope, tag->type)
 				&& g_strcmp0(ptag->name, tag->name) == 0
-				&& g_strcmp0(ptag->file->file_name, tag->file->file_name) == 0)
+				&& g_strcmp0(ptag->file->file_name,
+							 tag->file->file_name) == 0)
 			{
 				equal = TRUE;
 				break;
@@ -2418,49 +2324,257 @@ static void merge_tags(GPtrArray *tags, GPtrArray *ptags)
 		}
 		if (!equal) g_ptr_array_add(tags, ptag);
 	}
+	g_ptr_array_free(ptags, TRUE);
+	return tags;
 }
+
+
+#define FILTER_TAGS_BY_SCOPE													\
+	if (g_strcmp0(scope, "*") != 0)												\
+		new_tags = filter_tags_by_scope(filtered_tags, scope, lang);			\
+	else if (tm_parser_strict_scope(lang))										\
+		/* also scope = "*" */													\
+		new_tags = filter_tags_by_filled_scope(filtered_tags);					\
+	else																		\
+		new_tags = NULL;
+
+
+static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
+							  TMSourceFile *current_file, const gchar *scope,
+							  TMTagType type, TMParserType lang,
+							  gboolean definition)
+{
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	TMTag *tmtag, *last_tag = NULL;
+	guint i;
+	
+	foreach_ptr_array(tmtag, i, tags)
+	{
+		if ((definition && !(tmtag->type & tm_forward_types)) ||
+			(!definition && (tmtag->type & tm_forward_types)))
+		{
+			ui_set_statusbar(TRUE, "!tag! scope: %s, name: %s, type: %d, "
+									"var_type: %s, file: %s, line: %lu, arglist: %s",
+							 tmtag->scope, tmtag->name, tmtag->type,
+							 tmtag->var_type, tmtag->file->short_name,
+							 tmtag->line, tmtag->arglist); // esh: log
+			
+			/* If there are typedefs of e.g. a struct such as
+			 * "typedef struct Foo {} Foo;", filter out the typedef unless
+			 * cursor is at the struct name. */
+			if (last_tag != NULL && last_tag->file == tmtag->file &&
+				last_tag->type != tm_tag_typedef_t && tmtag->type == tm_tag_typedef_t)
+			{
+				// esh: fixed goto tm_tag_typedef_t tag for Erlang lang
+				// example: server_config.hrl (goto sort_index typedef):
+				//          position = undefined :: sort_index()
+				if (last_tag == current_tag ||
+					(lang == TM_PARSER_ERLANG && !current_tag))
+					g_ptr_array_add(filtered_tags, tmtag);
+			}
+			else if (tmtag != current_tag)
+				g_ptr_array_add(filtered_tags, tmtag);
+			
+			last_tag = tmtag;
+		}
+	}
+	
+	GPtrArray *new_tags;
+	
+	if (filtered_tags->len > 0 && definition && !EMPTY(scope))
+	{
+		FILTER_TAGS_BY_SCOPE
+		
+		if (new_tags)
+		{
+			if (lang == TM_PARSER_ELIXIR)
+			{
+				if (new_tags->len == 1)
+				{
+					tmtag = new_tags->pdata[0];
+					if (!EMPTY(tmtag->inheritance)) // is a delegate
+					{
+						scope = tmtag->inheritance;
+						FILTER_TAGS_BY_SCOPE
+					}
+				}
+				else if (new_tags->len == 0)
+				{
+					GPtrArray *use_tags = wrap_find_tags("<use>", scope,
+														 tm_tag_other_t, lang);
+					if (use_tags->len > 0)
+					{
+						scope = TM_TAG(use_tags->pdata[0])->inheritance;
+						FILTER_TAGS_BY_SCOPE
+					}
+					g_ptr_array_free(use_tags, TRUE);
+				}
+			}
+			filter_tags_check(&filtered_tags, &new_tags, TRUE);
+		}
+	}
+	
+	if (filtered_tags->len > 0 && definition && type != tm_tag_undef_t)
+	{
+		new_tags = filter_tags_by_type(filtered_tags, type);
+		filter_tags_check(&filtered_tags, &new_tags, TRUE);
+	}
+	
+	if (filtered_tags->len > 1 && current_file &&
+		tm_parser_filter_by_file(lang, scope))
+	{
+		new_tags = filter_tags_by_file(filtered_tags, current_file,
+									   tm_parser_get_filter_type(lang, type));
+		filter_tags_check(&filtered_tags, &new_tags, FALSE);
+	}
+	
+	return filtered_tags;
+}
+
+static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_line,
+								   const GPtrArray *all_tags, const gchar *scope,
+								   TMTagType type, TMParserType lang,
+								   gboolean definition)
+{
+	GPtrArray *tags = g_ptr_array_new();
+	TMTag *tmtag, *current_tag = NULL;
+	guint i;
+	
+	/* get rid of global tags and find tag at current line */
+	foreach_ptr_array(tmtag, i, all_tags)
+	{
+		if (tmtag->file)
+		{
+			g_ptr_array_add(tags, tmtag);
+			
+			if (tmtag->file == current_file && tmtag->line == current_line)
+				current_tag = tmtag;
+		}
+	}
+	if (current_tag)
+		/* swap definition/declaration search */
+		definition = current_tag->type & tm_forward_types;
+	
+	GPtrArray *filtered_tags = filter_tags(tags, current_tag, current_file,
+										   scope, type, lang, definition);
+	if (filtered_tags->len == 0)
+	{	/* if we didn't find anything, try again with the opposite type */
+		g_ptr_array_free(filtered_tags, TRUE);
+		filtered_tags = filter_tags(tags, current_tag, current_file,
+									scope, type, lang, !definition);
+	}
+	g_ptr_array_free(tags, TRUE);
+	return filtered_tags;
+}
+
+
+#define GET_CURR_ALIAS_TAGS(name)												\
+	GPtrArray *tags = tm_workspace_find(name, NULL, tm_tag_other_t, NULL, lang);\
+	GPtrArray *new_tags = filter_tags_by_file_strict(tags, curr_doc->tm_file);	\
+	filter_tags_check(&tags, &new_tags, TRUE);
+
 
 static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
 {
-	ui_set_statusbar(TRUE, "goto_tag: type = %d, scope = %s, name = %s",
-					 type, scope, name); // esh: log
-	
 	GeanyDocument *curr_doc = document_get_current();
-	guint current_line = sci_get_current_line(curr_doc->editor->sci) + 1;
+	TMParserType lang = curr_doc->file_type->lang;
+	guint curr_line = sci_get_current_line(curr_doc->editor->sci) + 1;
+	GString *gscope = g_string_new(NULL);
+	TMTagType tag_types = tm_tag_max_t;
+	TMTag *tag;
+	guint i;
 	
-	GPtrArray *all_tags = tm_workspace_find(name, NULL, tm_tag_max_t, NULL,
-											curr_doc->file_type->lang);
-	
-	GPtrArray *tags = wrap_filter_tags(curr_doc->tm_file, current_line, all_tags,
-									   scope, type, curr_doc->file_type->lang,
-									   definition, FALSE);
-	g_ptr_array_free(all_tags, TRUE);
-	
-	if (app->project)
+	if (lang == TM_PARSER_ELIXIR)
 	{
-		if (!app->tm_workspace->project_tags)
-			project_load_tags();
+		tag_types &= ~tm_tag_other_t; // exclude aliases
 		
-		if (app->tm_workspace->project_tags)
+		if (EMPTY(scope))
 		{
-			all_tags = tm_workspace_find_prj(name, tm_tag_max_t,
-											 curr_doc->file_type->lang);
+			GET_CURR_ALIAS_TAGS(name);
 			
-			GPtrArray *ptags = wrap_filter_tags(curr_doc->tm_file, current_line,
-												all_tags, scope, type,
-												curr_doc->file_type->lang,
-												definition, TRUE);
-			g_ptr_array_free(all_tags, TRUE);
+			foreach_ptr_array(tag, i, tags)
+			{
+				if (tag->line <= curr_line)
+				{
+					const char *module = tag->inheritance;
+					const gchar *search = strrchr(module, '.');
+					if (search)
+					{
+						if (search > module)	// there is something else before dot
+							g_string_append_len(gscope, module, search - module);
+						
+						if (search[1])				// there is something else after dot
+							name = search + 1;		// skip dot
+					}
+					else
+						name = module;
+					break;
+				}
+			}
+			g_ptr_array_free(tags, TRUE);
+		}
+		else
+		{
+			const gchar *search = strchr(scope, '.');
+			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
+													  : g_strdup(scope);
+			GET_CURR_ALIAS_TAGS(alias);
+			g_free(alias);
 			
-			merge_tags(tags, ptags);
-			g_ptr_array_free(ptags, TRUE);
+			foreach_ptr_array(tag, i, tags)
+			{
+				if (tag->line <= curr_line)
+				{
+					g_string_append(gscope, tag->inheritance);
+					if (search && search[1])
+						g_string_append(gscope, search);
+					break;
+				}
+			}
+			g_ptr_array_free(tags, TRUE);
+			
+			if (gscope->len == 0) // alias not found
+			{	// try to find a scope (module definition) in the current doc
+				search = strrchr(scope, '.');
+				if (search && search[1])
+					search++; // skip dot
+				else
+					search = scope;
+				
+				tags = tm_workspace_find(search, NULL, tm_tag_namespace_t, NULL, lang);
+				new_tags = filter_tags_by_file_strict(tags, curr_doc->tm_file);
+				filter_tags_check(&tags, &new_tags, TRUE);
+				
+				if (tags->len > 0)
+				{	// current doc contains the required scope (module definition)
+					tag = tags->pdata[0];
+					g_string_append(gscope, tag->scope);
+					g_string_append_c(gscope, '.');
+					g_string_append(gscope, tag->name);
+					
+					if (!g_str_has_suffix(gscope->str, scope))
+						g_string_truncate(gscope, 0);
+				}
+				g_ptr_array_free(tags, TRUE);
+			}
 		}
 	}
+	if (gscope->len == 0 && !EMPTY(scope))
+		g_string_append(gscope, scope);
+	
+	ui_set_statusbar(TRUE, "!goto! type: %d, scope: %s, name: %s",
+					 type, gscope->str, name); // esh: log
+	
+	GPtrArray *all_tags = wrap_find_tags(name, NULL, tag_types, lang);
+	GPtrArray *tags = wrap_filter_tags(curr_doc->tm_file, curr_line, all_tags,
+									   gscope->str, type, lang, definition);
+	g_ptr_array_free(all_tags, TRUE);
+	g_string_free(gscope, TRUE);
 	
 	if (tags->len == 1)
 	{
-		TMTag *tag = tags->pdata[0];
+		tag = tags->pdata[0];
 		GeanyDocument *new_doc = document_find_by_real_path(tag->file->file_name);
 		if (!new_doc) // not found in opened document, should open
 			new_doc = document_open_file(tag->file->file_name, FALSE, NULL, NULL);
@@ -2474,8 +2588,6 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		TMTag *best_tag = find_best_goto_tag(curr_doc, tags);
 		if (best_tag) g_ptr_array_add(tag_list, best_tag);
 		
-		TMTag *tag;
-		guint i;
 		foreach_ptr_array(tag, i, tags)
 			if (tag != best_tag) g_ptr_array_add(tag_list, tag);
 		
