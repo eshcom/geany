@@ -2124,12 +2124,11 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 									   TMParserType lang)
 {
-	TMTag *tmtag = NULL;
-	GPtrArray *filtered_tags = g_ptr_array_new();
-	guint i;
-	
 	const gchar *context_sep = tm_parser_context_separator(lang);
+	GPtrArray *filtered_tags = g_ptr_array_new();
 	
+	TMTag *tmtag;
+	guint i;
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		// example: goto tag "setDigits" in "CharacterSet::setDigits",
@@ -2153,10 +2152,10 @@ static GPtrArray *filter_tags_by_scope(GPtrArray *tags, const gchar *scope,
 
 static GPtrArray *filter_tags_by_filled_scope(GPtrArray *tags)
 {
-	TMTag *tmtag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	guint i;
 	
+	TMTag *tmtag;
+	guint i;
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		if (!EMPTY(tmtag->scope))
@@ -2167,10 +2166,10 @@ static GPtrArray *filter_tags_by_filled_scope(GPtrArray *tags)
 
 static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
 {
-	TMTag *tmtag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	guint i;
 	
+	TMTag *tmtag;
+	guint i;
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		if (tmtag->type & type)
@@ -2182,11 +2181,11 @@ static GPtrArray *filter_tags_by_type(GPtrArray *tags, const TMTagType type)
 static GPtrArray *filter_tags_by_file(GPtrArray *tags, const TMSourceFile *file,
 									  const TMTagType type)
 {
-	TMTag *tmtag = NULL;
 	GPtrArray *filtered_tags = g_ptr_array_new();
-	guint i;
-	
 	gchar *fname_wo_ext = utils_remove_ext_from_filename(file->file_name, TRUE);
+	
+	TMTag *tmtag;
+	guint i;
 	foreach_ptr_array(tmtag, i, tags)
 	{
 		if ((tmtag->type & type)
@@ -2226,10 +2225,10 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 							  TMTagType type, TMParserType lang,
 							  gboolean definition, gboolean is_project_tags)
 {
-	TMTag *tmtag, *last_tag = NULL;
-	GPtrArray *filtered_tags = g_ptr_array_new();
-	guint i;
 	const gchar *PRINT_TAG = is_project_tags ? "ptag" : "stag";
+	GPtrArray *filtered_tags = g_ptr_array_new();
+	TMTag *tmtag, *last_tag = NULL;
+	guint i;
 	
 	foreach_ptr_array(tmtag, i, tags)
 	{
@@ -2306,8 +2305,8 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 								   TMTagType type, TMParserType lang,
 								   gboolean definition, gboolean is_project_tags)
 {
-	TMTag *tmtag, *current_tag = NULL;
 	GPtrArray *tags = g_ptr_array_new();
+	TMTag *tmtag, *current_tag = NULL;
 	guint i;
 	
 	/* get rid of global tags and find tag at current line */
@@ -2461,13 +2460,11 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	
 	if (tags->len == 1)
 	{
-		TMTag *tmtag = tags->pdata[0];
-		GeanyDocument *new_doc = document_find_by_real_path(
-										tmtag->file->file_name);
+		TMTag *tag = tags->pdata[0];
+		GeanyDocument *new_doc = document_find_by_real_path(tag->file->file_name);
 		if (!new_doc) // not found in opened document, should open
-			new_doc = document_open_file(tmtag->file->file_name,
-										 FALSE, NULL, NULL);
-		navqueue_goto_line(curr_doc, new_doc, tmtag->line);
+			new_doc = document_open_file(tag->file->file_name, FALSE, NULL, NULL);
+		navqueue_goto_line(curr_doc, new_doc, tag->line);
 	}
 	else if (tags->len > 1)
 	{
@@ -2479,19 +2476,15 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		
 		TMTag *tag;
 		guint i;
-		
 		foreach_ptr_array(tag, i, tags)
-		{
 			if (tag != best_tag) g_ptr_array_add(tag_list, tag);
-		}
-		show_goto_popup(curr_doc, tag_list, best_tag != NULL);
 		
+		show_goto_popup(curr_doc, tag_list, best_tag != NULL);
 		g_ptr_array_free(tag_list, TRUE);
 	}
 	
 	gboolean found = tags->len > 0;
 	g_ptr_array_free(tags, TRUE);
-	
 	return found;
 }
 
