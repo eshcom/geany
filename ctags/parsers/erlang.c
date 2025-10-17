@@ -77,8 +77,7 @@ static bool isMultilineString(const unsigned char *cp, bool isString)
 
 static const unsigned char *skipSpace(const unsigned char *cp)
 {
-	while (isspace(*cp))
-		cp++;
+	while (isspace(*cp)) cp++;
 	return cp;
 }
 
@@ -139,12 +138,10 @@ static void parseModuleTag(const unsigned char *cp, vString *const module)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (vStringLength(identifier) > 0)
-	{
-		makeSimpleTag(identifier, K_MODULE);
-		/* All further entries go in the new module */
-		vStringCopy(module, identifier);
-	}
+	makeSimpleTag(identifier, K_MODULE);
+	
+	/* All further entries go in the new module */
+	vStringCopy(module, identifier);
 	vStringDelete(identifier);
 }
 
@@ -152,8 +149,7 @@ static void parseSimpleTag(const unsigned char *cp, erlangKind kind)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (vStringLength(identifier) > 0)
-		makeSimpleTag(identifier, kind);
+	makeSimpleTag(identifier, kind);
 	vStringDelete(identifier);
 }
 
@@ -161,8 +157,7 @@ static void parseFunctionTag(const unsigned char *cp, vString *const module)
 {
 	vString *const identifier = vStringNew();
 	parseIdentifier(cp, identifier);
-	if (vStringLength(identifier) > 0)
-		makeMemberTag(identifier, K_FUNCTION, module);
+	makeMemberTag(identifier, K_FUNCTION, module);
 	vStringDelete(identifier);
 }
 
@@ -184,8 +179,7 @@ static void parseDirective(const unsigned char *cp, vString *const module)
 	cp = parseIdentifier(cp, directive);
 	cp = skipSpace(cp);
 	
-	if (*cp == '(')
-		cp++;
+	if (*cp == '(') cp++;
 	
 	const char *const drtv = vStringValue(directive);
 	
