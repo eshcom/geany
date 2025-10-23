@@ -855,25 +855,46 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 	switch (lang)
 	{
 		case TM_PARSER_ERLANG:
-			// ignore scope, examples:
-			//		case (module()):test1() of	- "case" is scope
-			//		?module:test1()				- "module" is scope
-			//		Module:test1()				- "Module" is scope
 			if (*scope != '\0' && (brackets || g_strcmp0(prefix, "?") == 0 ||
 								   !(*scope == '\'' || islower(*scope))))
-				*scope = '\0';
+				// any scope, examples:
+				// case (module()):test1() of	scope "case" is a standard keyword
+				// ?module:test1()				scope "module" is a macro containing a module
+				// Module:test1()				scope "Module" is a variable containing a module
+				g_strlcpy(scope, "*", scopelen);
+			else if (*scope == '\0' && g_strcmp0(suffix, ":") == 0)
+				// scope is not specified, but the separator is there
+				g_strlcpy(scope, "*", scopelen);
+			break;
+		
+		case TM_PARSER_ELIXIR:
+			if (scope_parts_cnt == 1 &&
+				(islower(*scope) || g_str_has_prefix(scope, "__")))
+				// any scope, examples:
+				// module.handle_special(token.path, mode, context)
+				//		scope "module" is a variable containing a module
+				// __MODULE__.get_validation_module_for_file(path)
+				//		scope "__MODULE__" is a macro containing a module
+				g_strlcpy(scope, "*", scopelen);
+			else if (*scope == '\0' && g_strcmp0(suffix, ".") == 0)
+				// scope is not specified, but the separator is there
+				g_strlcpy(scope, "*", scopelen);
 			break;
 		
 		case TM_PARSER_PYTHON:
 			if (*scope == '\0')
 				g_strlcpy(scope, "*", scopelen);
-			else if (g_strcmp0(scope, "self") == 0 || g_strcmp0(scope, "cls") == 0)
+			else if (g_strcmp0(scope, "self") == 0 ||
+					 g_strcmp0(scope, "cls") == 0)
 				g_strlcpy(scope, scope_parts_cnt > 1 ? "*" : "", scopelen);
 			break;
 		
 		case TM_PARSER_C:
 		case TM_PARSER_CPP:
-			if (*scope == '\0' && g_strcmp0(suffix, ".") == 0)
+			if (*scope == '\0' && (g_strcmp0(suffix, "->") == 0 ||
+								   g_strcmp0(suffix, "::") == 0 ||
+								   g_strcmp0(suffix, ".") == 0))
+				// scope is not specified, but the separator is there
 				g_strlcpy(scope, "*", scopelen);
 			break;
 	}
@@ -898,7 +919,7 @@ gboolean tm_parser_filter_by_file(TMParserType lang, const gchar *scope)
 	switch (lang)
 	{
 		case TM_PARSER_ELIXIR:
-			return !(scope && *scope);
+			return !(scope && *scope); // filter by file only if scope is not specified
 		default:
 			return (g_strcmp0(scope, "*") != 0);
 	}

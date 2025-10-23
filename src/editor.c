@@ -657,16 +657,11 @@ static gboolean match_last_chars(ScintillaObject *sci, gchar *chunk,
 	gsize len = strlen(str);
 	g_return_val_if_fail(len < 100, FALSE);
 	
-	if ((gint)len > pos)
+	if (len > pos)
 		return FALSE;
 	
 	if (chunk)
-	{
-		gchar *buf = g_strndup(&chunk[pos - len], len);
-		gboolean match = (strcmp(str, buf) == 0);
-		g_free(buf);
-		return match;
-	}
+		return strncmp(&chunk[pos - len], str, len) == 0;
 	else
 	{
 		gchar *buf = g_alloca(len + 1); // allocate in stack - will be free auto
