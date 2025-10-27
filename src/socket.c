@@ -290,11 +290,11 @@ gint socket_init(gint argc, gchar **argv)
 	 * query and block for several seconds so better skip it. */
 #ifndef GDK_WINDOWING_QUARTZ
 	if (display != NULL)
-		display_name = g_strdup(gdk_display_get_name(display));
+		display_name = utils_strdupa(gdk_display_get_name(display));
 #endif
 
 	if (display_name == NULL)
-		display_name = g_strdup("NODISPLAY");
+		display_name = utils_strdupa("NODISPLAY");
 
 	/* these lines are taken from dcopc.c in kdelibs */
 	if ((p = strrchr(display_name, '.')) > strrchr(display_name, ':') && p != NULL)
@@ -309,8 +309,6 @@ gint socket_init(gint argc, gchar **argv)
 	if (socket_info.file_name == NULL)
 		socket_info.file_name = g_strdup_printf("%s%cgeany_socket_%s_%s",
 			app->configdir, G_DIR_SEPARATOR, hostname, display_name);
-
-	g_free(display_name);
 
 	/* check whether the real user id is the same as this of the socket file */
 	check_socket_permissions();
@@ -675,9 +673,8 @@ gboolean socket_lock_input_cb(GIOChannel *source, GIOCondition condition, gpoint
 	/* first get the command */
 	while (socket_fd_gets(sock, buf, sizeof(buf)) != -1)
 	{
-		gchar *command = g_strstrip(g_strdup(buf));
+		gchar *command = g_strstrip(utils_strdupa(buf));
 		geany_debug("Received IPC command from remote instance: %s", command);
-		g_free(command);
 		
 		if (strncmp(buf, "open", 4) == 0)
 		{

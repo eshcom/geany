@@ -61,8 +61,11 @@ G_BEGIN_DECLS
  * @note You must include @c string.h yourself.
  * @warning Don't use excessively or for long strings otherwise there may be
  *          stack exhaustion - see the GLib docs for @c g_alloca(). */
-#define utils_strdupa(str) \
+#define utils_strdupa(str)			\
 	strcpy(g_alloca(strlen(str) + 1), str)
+
+#define utils_strndupa(str, count)	\
+	strncpy(g_alloca(count + 1), str, count)
 
 /* Get a keyfile setting, using the home keyfile if the key exists,
  * otherwise system keyfile. */

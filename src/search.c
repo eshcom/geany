@@ -1571,10 +1571,10 @@ static void on_replace_dialog_response(GtkDialog *dialog, gint response,
 	gboolean search_backwards_re = settings.replace_search_backwards;
 	gboolean search_replace_escape_re = settings.replace_escape_sequences;
 	
-	gchar *find = g_strdup(gtk_entry_get_text(
-								GTK_ENTRY(replace_dlg.find_entry)));
-	gchar *replace = g_strdup(gtk_entry_get_text(
-								GTK_ENTRY(replace_dlg.replace_entry)));
+	gchar *find = utils_strdupa(gtk_entry_get_text(
+									GTK_ENTRY(replace_dlg.find_entry)));
+	gchar *replace = utils_strdupa(gtk_entry_get_text(
+										GTK_ENTRY(replace_dlg.replace_entry)));
 	
 	GeanyFindFlags search_flags_re = int_search_flags(
 										settings.replace_case_sensitive,
@@ -1588,8 +1588,8 @@ static void on_replace_dialog_response(GtkDialog *dialog, gint response,
 		(strcmp(find, replace) == 0))
 		goto fail;
 	
-	gchar *original_find = g_strdup(find);
-	gchar *original_replace = g_strdup(replace);
+	gchar *original_find = utils_strdupa(find);
+	gchar *original_replace = utils_strdupa(replace);
 	
 	if (search_flags_re & GEANY_FIND_REGEXP)
 	{
@@ -1662,19 +1662,11 @@ static void on_replace_dialog_response(GtkDialog *dialog, gint response,
 			if (settings.replace_close_dialog)
 				gtk_widget_hide(replace_dlg.dialog);
 	}
-	g_free(find);
-	g_free(replace);
-	g_free(original_find);
-	g_free(original_replace);
 	return;
 	
 fail:
 	utils_beep();
 	gtk_widget_grab_focus(replace_dlg.find_entry);
-	g_free(find);
-	g_free(replace);
-	g_free(original_find);
-	g_free(original_replace);
 }
 
 
@@ -2468,8 +2460,7 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 	
 	gchar *short_filename = g_path_get_basename(DOC_FILENAME(doc));
 	gchar *escape_filename = g_markup_escape_text(short_filename, -1);
-	
-	gchar *trim_search_text = g_strstrip(g_strdup(search_text));
+	gchar *trim_search_text = g_strstrip(utils_strdupa(search_text));
 	
 	struct Sci_TextToFind ttf;
 	ttf.chrg.cpMin = 0;
@@ -2498,7 +2489,6 @@ static gint find_document_usage(GeanyDocument *doc, const gchar *search_text,
 	g_slist_free(matches);
 	g_free(short_filename);
 	g_free(escape_filename);
-	g_free(trim_search_text);
 	return count;
 }
 

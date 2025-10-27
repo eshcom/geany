@@ -431,14 +431,12 @@ gboolean utils_is_absolute_path(const gchar *path)
 gboolean utils_filename_has_prefix(const gchar *path, const gchar *prefix)
 {
 /* esh: optimization for linux: don't use g_strndup and utils_filenamecmp (strcmp),
- * 		use strncmp without creating new string */
+ * 		use g_str_has_prefix without creating new string */
 #ifdef G_OS_WIN32
-	gchar *head = g_strndup(path, strlen(prefix));
-	gboolean ret = utils_str_casecmp(head, prefix) == 0;
-	g_free(head);
-	return ret;
+	gchar *head = utils_strndupa(path, strlen(prefix));
+	return utils_str_casecmp(head, prefix) == 0;
 #else
-	return strncmp(path, prefix, strlen(prefix)) == 0;
+	return g_str_has_prefix(path, prefix);
 #endif
 }
 
@@ -604,7 +602,7 @@ gchar *utils_str_middle_truncate(const gchar *string, guint truncate_length)
 	
 	/* Make sure the string is not already small enough. */
 	if (n_chars <= truncate_length)
-		return g_strdup (string);
+		return g_strdup(string);
 	
 	/* Find the 'middle' where the truncation will occur. */
 	num_left_chars = (truncate_length - delimiter_length) / 2;

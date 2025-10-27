@@ -1047,7 +1047,7 @@ static void copy_ft_groups(GKeyFile *kf)
 		if (!name || !name[1]) continue; /* no name or no parent name */
 		
 		gchar *group = *ptr;
-		gchar *old_group = g_strdup(group);
+		gchar *old_group = utils_strdupa(group);
 		
 		/* terminate group at '=' */
 		*name = 0;
@@ -1060,7 +1060,6 @@ static void copy_ft_groups(GKeyFile *kf)
 			/* move old group keys (foo=bar) to proper group name (foo) */
 			copy_keys(kf, group, kf, old_group);
 		}
-		g_free(old_group);
 	}
 	g_strfreev(groups);
 }
