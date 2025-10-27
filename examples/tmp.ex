@@ -6,7 +6,7 @@ defmodule Df.UseCases.UserAction do
   alias Df.Repository.Permission
   alias Df.Repository.Permissions.Storage, as: PermissionsStorage
   alias Sayings.{Greetings, Farewells, Tmp1.Tmp2}
-
+  
   #FIXME: test taskmarket
   use Memoize
   #TODO
@@ -49,6 +49,13 @@ defmodule Df.UseCases.UserAction do
       true
     end
   end
+
+  alias __MODULE__.{MyBehaviour}
+  alias __MODULE__.MyBehaviour
+  alias __MODULE__.MyBehaviour, as: My
+
+  defp alias_by_mod1(), do: My.alias()
+  defp alias_by_mod2(), do: MyBehaviour.alias()
 
   @type hint() :: %{
           required(:location) => any(),
