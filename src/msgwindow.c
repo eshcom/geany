@@ -485,8 +485,8 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	/* TODO: find the real cause for the display problem /
 	 *       if it is GtkTreeView file a bug report */
 	gsize len = strlen(string);
-	gchar *tmp = (len > 1024) ? g_strndup(string, 1024) : g_strdup(string);
-	
+	gchar *tmp = (len > 1024) ? utils_strndupa(string, 1024)
+							  : utils_strdupa(string);
 	gchar *utf8_msg, *utf8_markup;
 	
 	utf8_msg = g_utf8_validate(tmp, -1, NULL)
@@ -506,7 +506,6 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 					   MSG_COL_COLOR, get_color(msg_color),
 					   MSG_COL_STRING, utf8_msg,
 					   MSG_COL_MARKUP, utf8_markup, -1);
-	g_free(tmp);
 	
 	if (utf8_msg != tmp) g_free(utf8_msg);
 	if (utf8_markup != markup) g_free(utf8_markup);
@@ -1196,9 +1195,8 @@ void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 	
 	if (G_UNLIKELY(string == NULL)) return;
 	
-	gchar *utf8_dir = (dir == NULL) ? utils_get_utf8_from_locale(build_info.dir)
-									: g_strdup(dir);
-	
+	gchar *utf8_dir = dir ? (gchar *)dir
+						  : utils_get_utf8_from_locale(build_info.dir);
 	g_return_if_fail(utf8_dir != NULL);
 	
 	gchar *trimmed_string = g_strdup(string);
@@ -1212,8 +1210,9 @@ void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 		parse_compiler_error_line(trimmed_string, filename, line);
 	}
 	make_absolute(filename, utf8_dir);
+	
+	if (utf8_dir != dir) g_free(utf8_dir);
 	g_free(trimmed_string);
-	g_free(utf8_dir);
 }
 
 

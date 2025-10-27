@@ -667,7 +667,7 @@ static void tb_editor_set_item_values(const gchar *name, GtkListStore *store, Gt
 	if (action == NULL)
 	{
 		if (utils_str_equal(name, TB_EDITOR_SEPARATOR))
-			label_clean = g_strdup(TB_EDITOR_SEPARATOR_LABEL);
+			label_clean = utils_strdupa(TB_EDITOR_SEPARATOR_LABEL);
 		else
 			return;
 	}
@@ -679,7 +679,7 @@ static void tb_editor_set_item_values(const gchar *name, GtkListStore *store, Gt
 
 		g_object_get(action, "label", &label, NULL);
 		if (label != NULL)
-			label_clean = utils_str_remove_chars(g_strdup(label), "_");
+			label_clean = utils_str_remove_chars(utils_strdupa(label), "_");
 	}
 
 	gtk_list_store_set(store, iter,
@@ -690,7 +690,6 @@ static void tb_editor_set_item_values(const gchar *name, GtkListStore *store, Gt
 
 	g_free(icon);
 	g_free(label);
-	g_free(label_clean);
 }
 
 

@@ -840,15 +840,13 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		apply_editor_prefs();
 		
 		/* get and set the project file patterns */
-		gchar *tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(e->patterns)));
+		gchar *tmp = utils_strdupa(gtk_entry_get_text(GTK_ENTRY(e->patterns)));
 		GString *str = g_string_new(g_strstrip(tmp));
 		do {} while (utils_string_replace_all(str, "  ", " "));
 		
 		g_strfreev(p->file_patterns);
 		p->file_patterns = g_strsplit(str->str, " ", -1);
-		
 		g_string_free(str, TRUE);
-		g_free(tmp);
 	}
 	
 	update_ui();

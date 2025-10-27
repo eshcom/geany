@@ -2953,15 +2953,11 @@ static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos,
 											 const gchar *word)
 {
 	gint ft_id = editor->document->file_type->id;
-	gchar *str = g_strstrip(g_strdup(word));
+	gchar *str = g_strstrip(utils_strdupa(word));
 	
 	const gchar *completion = snippets_find_completion_by_name(
 									filetypes[ft_id]->name, str);
-	if (completion == NULL)
-	{
-		g_free(str);
-		return FALSE;
-	}
+	if (!completion) return FALSE;
 	
 	/* remove the typed word, it will be added again by the used auto completion
 	 * (not really necessary but this makes the auto completion more flexible,
@@ -2978,7 +2974,6 @@ static gboolean snippets_complete_constructs(GeanyEditor *editor, gint pos,
 	editor_insert_snippet(editor, pos, completion);
 	sci_scroll_caret(sci);
 	
-	g_free(str);
 	return TRUE;
 }
 

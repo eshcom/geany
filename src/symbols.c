@@ -462,8 +462,7 @@ static gboolean find_toplevel_iter(GtkTreeStore *store, GtkTreeIter *iter,
 			g_free(candidate);
 			return TRUE;
 		}
-		else
-			g_free(candidate);
+		g_free(candidate);
 	}
 	while (gtk_tree_model_iter_next(model, iter));
 	
@@ -1662,7 +1661,7 @@ int symbols_generate_global_tags(int argc, char **argv, gboolean want_preprocess
 		/* Create global taglist */
 		const char *tags_file = argv[1];
 		
-		char *utf8_fname = utils_get_utf8_from_locale(tags_file);
+		gchar *utf8_fname = utils_get_utf8_from_locale(tags_file);
 		GeanyFiletype *ft = detect_global_tags_filetype(utf8_fname);
 		g_free(utf8_fname);
 		
@@ -2497,15 +2496,15 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 			{
 				if (tag->line <= curr_line)
 				{
-					const char *module = tag->inheritance;
+					const gchar *module = tag->inheritance;
 					const gchar *search = strrchr(module, '.');
 					if (search)
 					{
 						if (search > module)	// there is something else before dot
 							g_string_append_len(gscope, module, search - module);
 						
-						if (search[1])				// there is something else after dot
-							name = search + 1;		// skip dot
+						if (search[1])			// there is something else after dot
+							name = search + 1;	// skip dot
 					}
 					else
 						name = module;
@@ -2517,10 +2516,10 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		else
 		{
 			const gchar *search = strchr(scope, '.');
-			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
-													  : g_strdup(scope);
+			gchar *alias = (search && search > scope)
+										? utils_strndupa(scope, search - scope)
+										: utils_strdupa(scope);
 			GET_CURR_ALIAS_TAGS(alias);
-			g_free(alias);
 			
 			foreach_ptr_array(tag, i, tags)
 			{

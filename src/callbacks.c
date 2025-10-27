@@ -1532,12 +1532,12 @@ void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data)
 	if (doc->file_type != NULL &&
 		!EMPTY(doc->file_type->context_action_cmd))
 	{
-		command = g_strdup(doc->file_type->context_action_cmd);
+		command = utils_strdupa(doc->file_type->context_action_cmd);
 		check_msg = _("Check the path setting in Filetype configuration.");
 	}
 	else
 	{
-		command = g_strdup(tool_prefs.context_action_cmd);
+		command = utils_strdupa(tool_prefs.context_action_cmd);
 		check_msg = _("Check the path setting in Preferences.");
 	}
 	
@@ -1565,7 +1565,6 @@ void on_context_action1_activate(GtkMenuItem *menuitem, gpointer user_data)
 		ui_set_statusbar(TRUE, _("No context action set."));
 	
 	g_free(word);
-	g_free(command);
 }
 
 
