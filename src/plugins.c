@@ -1717,42 +1717,36 @@ static gint pm_tree_sort_func(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *
 
 static gboolean pm_tree_search(const gchar *key, const gchar *haystack)
 {
-	gchar *normalized_string = NULL;
-	gchar *normalized_key = NULL;
-	gchar *case_normalized_string = NULL;
-	gchar *case_normalized_key = NULL;
 	gboolean matched = TRUE;
-
-	normalized_string = g_utf8_normalize(haystack, -1, G_NORMALIZE_ALL);
-	normalized_key = g_utf8_normalize(key, -1, G_NORMALIZE_ALL);
-
-	if (normalized_string != NULL && normalized_key != NULL)
+	gchar *normalized_string = g_utf8_normalize(haystack, -1, G_NORMALIZE_ALL);
+	gchar *normalized_key = g_utf8_normalize(key, -1, G_NORMALIZE_ALL);
+	
+	if (normalized_string && normalized_key)
 	{
-		GString *stripped_key;
-		gchar **subkey, **subkeys;
-
-		case_normalized_string = g_utf8_casefold(normalized_string, -1);
-		case_normalized_key = g_utf8_casefold(normalized_key, -1);
-		stripped_key = g_string_new(case_normalized_key);
+		gchar *case_normalized_string = g_utf8_casefold(normalized_string, -1);
+		gchar *case_normalized_key = g_utf8_casefold(normalized_key, -1);
+		
+		GString *stripped_key = g_string_new(case_normalized_key);
 		do {} while (utils_string_replace_all(stripped_key, "  ", " "));
-		subkeys = g_strsplit(stripped_key->str, " ", -1);
+		
+		gchar **subkey, **subkeys = g_strsplit(stripped_key->str, " ", -1);
 		g_string_free(stripped_key, TRUE);
+		
 		foreach_strv(subkey, subkeys)
 		{
-			if (strstr(case_normalized_string, *subkey) == NULL)
+			if (!strstr(case_normalized_string, *subkey))
 			{
 				matched = FALSE;
 				break;
 			}
 		}
 		g_strfreev(subkeys);
+		g_free(case_normalized_key);
+		g_free(case_normalized_string);
 	}
-
-	g_free(normalized_key);
+	
 	g_free(normalized_string);
-	g_free(case_normalized_key);
-	g_free(case_normalized_string);
-
+	g_free(normalized_key);
 	return matched;
 }
 

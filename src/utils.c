@@ -1876,9 +1876,7 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
 	gchar *w = string;
 	
 	foreach_str(r, string)
-	{
 		if (!strchr(chars, *r)) *w++ = *r;
-	}
 	*w = 0x0;
 	
 	return string;
