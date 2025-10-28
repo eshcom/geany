@@ -128,6 +128,185 @@ FoundStats by_utils_strequal(const gchar *search)
 	return foundStats;
 }
 
+gint utils_strpos(const gchar *haystack, const gchar *needle)
+{
+	if (!*needle) return -1;
+	
+	const gchar *sub = strstr(haystack, needle);
+	if (!sub) return -1;
+	
+	return sub - haystack;
+}
+
+gint utils_string_find(GString *haystack, gint start, gint end,
+					   const gchar *needle)
+{
+	g_return_val_if_fail(haystack != NULL, -1);
+	if (haystack->len == 0)
+		return -1;
+	
+	g_return_val_if_fail(start >= 0, -1);
+	if (start >= (gint)haystack->len)
+		return -1;
+	
+	g_return_val_if_fail(!EMPTY(needle), -1);
+	
+	if (end < 0)
+		end = haystack->len;
+	
+	gint pos = utils_strpos(haystack->str + start, needle);
+	if (pos == -1)
+		return -1;
+	
+	pos += start;
+	if (pos >= end)
+		return -1;
+	return pos;
+}
+
+gint utils_string_replace(GString *str, gint pos, gint len,
+						  const gchar *replace)
+{
+	g_string_erase(str, pos, len);
+	if (replace)
+	{
+		g_string_insert(str, pos, replace);
+		pos += strlen(replace);
+	}
+	return pos;
+}
+
+guint utils_string_replace_all(GString *haystack, const gchar *needle,
+							   const gchar *replace)
+{
+	guint count = 0;
+	gint pos = 0;
+	gsize needle_length = strlen(needle);
+	
+	while (1)
+	{
+		pos = utils_string_find(haystack, pos, -1, needle);
+		
+		if (pos == -1) break;
+		
+		pos = utils_string_replace(haystack, pos, needle_length, replace);
+		count++;
+	}
+	return count;
+}
+
+void utils_string_reduce_spaces1(GString *haystack)
+{
+	if (haystack->len == 0) return;
+	
+	gchar *new_str = g_alloca(haystack->len + 1);
+	gchar *dst = new_str;
+	gboolean is_space_last = FALSE;
+	
+	const gchar *src;
+	foreach_str(src, haystack->str)
+	{
+		if (*src == ' ')
+		{
+			if (is_space_last) continue;
+			else is_space_last = TRUE;
+		}
+		else is_space_last = FALSE;
+		
+		*dst++ = *src;
+	}
+	*dst = '\0';
+	g_string_assign(haystack, new_str);
+}
+
+void utils_string_reduce_spaces2(GString *haystack)
+{
+	if (haystack->len == 0) return;
+	
+	gboolean is_space_last = FALSE;
+	gssize pos = 0;
+	
+	while (pos < haystack->len)
+	{
+		if (haystack->str[pos] == ' ')
+		{
+			if (is_space_last)
+			{
+				g_string_erase(haystack, pos, 1);
+				continue;
+			}
+			else is_space_last = TRUE;
+		}
+		else is_space_last = FALSE;
+		
+		pos++;
+	}
+}
+
+void utils_string_reduce_spaces3(GString *haystack)
+{
+	if (haystack->len == 0) return;
+	
+	gboolean is_space_last = FALSE;
+	gssize pos = 0, erase_pos = 0, erase_cnt = 0;
+	
+	while (pos < haystack->len)
+	{
+		if (haystack->str[pos] == ' ')
+		{
+			if (is_space_last)
+				erase_cnt++;
+			else
+			{
+				is_space_last = TRUE;
+				erase_pos = pos + 1;
+				erase_cnt = 0;
+			}
+		}
+		else
+		{
+			is_space_last = FALSE;
+			
+			if (erase_cnt > 0)
+			{
+				g_string_erase(haystack, erase_pos, erase_cnt);
+				pos = erase_pos;
+				erase_cnt = 0;
+			}
+		}
+		pos++;
+	}
+	if (erase_cnt > 0)
+		g_string_erase(haystack, erase_pos, erase_cnt);
+}
+
+static gchar *gen_multi_options1(const gchar *multi_options, const gchar *option)
+{
+	GString *multi = g_string_new(multi_options);
+	utils_string_reduce_spaces2(multi);
+	g_string_prepend_c(multi, ' ');
+	utils_string_replace_all(multi, " ", option);
+	
+	return g_string_free(multi, FALSE);
+}
+
+static gchar *gen_multi_options2(const gchar *multi_options, const gchar *option)
+{
+	GString *multi = g_string_new(NULL);
+	gchar **item, **items = g_strsplit(multi_options, " ", -1);
+	
+	foreach_strv(item, items)
+	{
+		if (**item)
+		{
+			g_string_append(multi, option);
+			g_string_append(multi, *item);
+		}
+	}
+	return g_string_free(multi, FALSE);
+}
+
+// -------------------------------------------------------------------
 void run_test_case01()
 {
 	if (!load_data())
@@ -611,9 +790,90 @@ void run_test_case16()
 	printf("equal24: %d\n", equal);		// not equal
 }
 
+void run_test_case17()
+{
+	const gchar *str = "*.h *.c *.cxx *.iface ru.po *.pot *.glade filetypes.* "
+					   "*.gtkrc *.conf *.xml *.css *.sh Makefile.am";
+	//~ const gchar *str = "    *.h   *.c *.cxx    *.iface ru.po   *.pot *.glade  "
+					   //~ "filetypes.*  *.gtkrc *.conf *.xml *.css *.sh   Makefile.am  ";
+	GString *gstr;
+	gint64 start;
+	gint cnt = 10000;
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gstr = g_string_new(str);
+		do {} while (utils_string_replace_all(gstr, "  ", " "));
+		//~ printf("1: '%s'\n", gstr->str);
+		g_string_free(gstr, TRUE);
+	}
+	printf("utils_string_replace_all: %ld\n", g_get_real_time() - start);
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gstr = g_string_new(str);
+		utils_string_reduce_spaces1(gstr);
+		//~ printf("2: '%s'\n", gstr->str);
+		g_string_free(gstr, TRUE);
+	}
+	printf("utils_string_reduce_spaces1: %ld\n", g_get_real_time() - start);
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gstr = g_string_new(str);
+		utils_string_reduce_spaces2(gstr);
+		//~ printf("3: '%s'\n", gstr->str);
+		g_string_free(gstr, TRUE);
+	}
+	printf("utils_string_reduce_spaces2: %ld\n", g_get_real_time() - start);
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gstr = g_string_new(str);
+		utils_string_reduce_spaces3(gstr);
+		//~ printf("4: '%s'\n", gstr->str);
+		g_string_free(gstr, TRUE);
+	}
+	printf("utils_string_reduce_spaces3: %ld\n", g_get_real_time() - start);
+}
+
+void run_test_case18()
+{
+	const gchar *option = " --name=";
+	const gchar *multi = "*.h *.c *.cxx *.iface ru.po *.pot *.glade filetypes.* "
+						 "*.gtkrc *.conf *.xml *.css *.sh Makefile.am";
+	//~ const gchar *multi = "*.h   *.c *.cxx    *.iface ru.po   *.pot *.glade  "
+						 //~ "filetypes.*  *.gtkrc *.conf *.xml *.css *.sh   Makefile.am";
+	gint64 start;
+	gint cnt = 10000;
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gchar *tmp = gen_multi_options1(multi, option);
+		//~ printf("1: '%s'\n", tmp);
+		g_free(tmp);
+	}
+	printf("gen_multi_options1: %ld\n", g_get_real_time() - start);
+	
+	start = g_get_real_time();
+	for (gint i = 0; i < cnt; i++)
+	{
+		gchar *tmp = gen_multi_options2(multi, option);
+		//~ printf("2: '%s'\n", tmp);
+		g_free(tmp);
+	}
+	printf("gen_multi_options2: %ld\n", g_get_real_time() - start);
+	
+}
+
 int main(void)
 {
-	//~ run_test_case16();
+	run_test_case18();
 	printf("OK\n");
 	return 0;
 }

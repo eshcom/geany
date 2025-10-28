@@ -1636,6 +1636,36 @@ guint utils_string_regex_replace_all(GString *haystack, GRegex *regex,
 }
 
 
+/**
+ * esh: This function was added to replace code blocks like:
+ * 		do {} while (utils_string_replace_all(str, "  ", " "));
+ **/
+GEANY_API_SYMBOL
+void utils_string_reduce_spaces(GString *haystack)
+{
+	if (haystack->len == 0) return;
+	
+	gboolean is_space_last = FALSE;
+	gssize pos = 0;
+	
+	while (pos < haystack->len)
+	{
+		if (haystack->str[pos] == ' ')
+		{
+			if (is_space_last)
+			{
+				g_string_erase(haystack, pos, 1);
+				continue;
+			}
+			else is_space_last = TRUE;
+		}
+		else is_space_last = FALSE;
+		
+		pos++;
+	}
+}
+
+
 /* Get project or default startup directory (if set), or NULL. */
 const gchar *utils_get_default_dir_utf8(void)
 {
