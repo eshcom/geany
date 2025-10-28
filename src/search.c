@@ -1681,7 +1681,7 @@ static void append_multi_options(GString *gstr, gchar *multi_options,
 	g_string_append(option, "=");
 	
 	GString *multi = g_string_new(multi_options);
-	do {} while (utils_string_replace_all(multi, "  ", " "));
+	utils_string_reduce_spaces(multi);
 	g_string_prepend_c(multi, ' ');
 	
 	/* put option before each pattern */

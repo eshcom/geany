@@ -1727,7 +1727,7 @@ static gboolean pm_tree_search(const gchar *key, const gchar *haystack)
 		gchar *case_normalized_key = g_utf8_casefold(normalized_key, -1);
 		
 		GString *stripped_key = g_string_new(case_normalized_key);
-		do {} while (utils_string_replace_all(stripped_key, "  ", " "));
+		utils_string_reduce_spaces(stripped_key);
 		
 		gchar **subkey, **subkeys = g_strsplit(stripped_key->str, " ", -1);
 		g_string_free(stripped_key, TRUE);
