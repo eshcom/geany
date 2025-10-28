@@ -1463,7 +1463,7 @@ void history_load(ComboIndex combo_index)
 	{
 		gchar **ptr;
 		gchar *value;
-		foreach_str(ptr, keys)
+		foreach_strv(ptr, keys)
 		{
 			value = g_key_file_get_string(config, combo.name, *ptr, NULL);
 			gtk_combo_box_text_append_text(combo.widget, value);
