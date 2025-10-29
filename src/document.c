@@ -1186,8 +1186,9 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 	gint widths[7] = { 0 }; /* width can be from 2 to 8 */
 	gint width, i;
 	
-	/* force 8 at detection time for tab & spaces -- anyway we don't use tabs at this point */
-	sci_set_tab_width(sci, 8);
+	/* force hard_tab_width at detection time for tab & spaces -
+	 * anyway we don't use tabs at this point */
+	sci_set_tab_width(sci, iprefs->hard_tab_width);
 	
 	gint line_count = sci_get_line_count(sci);
 	for (gint line = 0; line < line_count; line++)
