@@ -778,38 +778,35 @@ void filetypes_select_radio_item(const GeanyFiletype *ft)
 	/* ignore_callback has to be set by the caller */
 	g_return_if_fail(ignore_callback);
 	
-	if (ft == NULL)
-		ft = filetypes[GEANY_FILETYPES_NONE];
-	
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ft->priv->menu_item),
-								   TRUE);
+	if (ft == NULL) ft = filetypes[GEANY_FILETYPES_NONE];
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ft->priv->menu_item), TRUE);
 }
 
 
 static void on_filetype_change(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	GeanyDocument *doc = document_get_current();
-	
-	if (ignore_callback || doc == NULL ||
-		!gtk_check_menu_item_get_active(menuitem))
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
 		return;
 	
-	document_set_filetype(doc, (GeanyFiletype*)user_data);
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	document_set_filetype(doc, (GeanyFiletype *)user_data);
 }
 
 
 static void create_radio_menu_item(GtkWidget *menu, GeanyFiletype *ftype)
 {
 	static GSList *group = NULL;
-	GtkWidget *tmp;
+	GtkWidget *item;
 	
-	tmp = gtk_radio_menu_item_new_with_label(group, ftype->title);
-	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(tmp));
-	ftype->priv->menu_item = tmp;
-	gtk_widget_show(tmp);
-	gtk_container_add(GTK_CONTAINER(menu), tmp);
-	g_signal_connect(tmp, "activate", G_CALLBACK(on_filetype_change),
-					 (gpointer) ftype);
+	item = gtk_radio_menu_item_new_with_label(group, ftype->title);
+	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(item));
+	ftype->priv->menu_item = item;
+	gtk_widget_show(item);
+	gtk_container_add(GTK_CONTAINER(menu), item);
+	g_signal_connect(item, "activate", G_CALLBACK(on_filetype_change),
+					 (gpointer)ftype);
 }
 
 

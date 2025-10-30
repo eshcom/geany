@@ -1335,19 +1335,14 @@ void ScintillaGTK::CreateCallTipWindow(PRectangle rc) {
 }
 
 void ScintillaGTK::AddToPopUp(const char *label, int cmd, bool enabled) {
-	GtkWidget *menuItem;
-	if (label[0])
-		menuItem = gtk_menu_item_new_with_label(label);
-	else
-		menuItem = gtk_separator_menu_item_new();
+	GtkWidget *menuItem = label[0] ? gtk_menu_item_new_with_label(label)
+								   : gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(popup.GetID()), menuItem);
 	g_object_set_data(G_OBJECT(menuItem), "CmdNum", GINT_TO_POINTER(cmd));
 	g_signal_connect(G_OBJECT(menuItem), "activate", G_CALLBACK(PopUpCB), this);
-
-	if (cmd) {
-		if (menuItem)
-			gtk_widget_set_sensitive(menuItem, enabled);
-	}
+	
+	if (cmd && menuItem)
+		gtk_widget_set_sensitive(menuItem, enabled);
 }
 
 bool ScintillaGTK::OwnPrimarySelection() {

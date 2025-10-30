@@ -1104,7 +1104,8 @@ static void document_save_cb(GObject *obj, GeanyDocument *doc, gpointer user_dat
 
 static void kb_activate(guint key_id)
 {
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(geany->main_widgets->sidebar_notebook), page_number);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(geany->main_widgets->sidebar_notebook),
+								  page_number);
 	switch (key_id)
 	{
 		case KB_FOCUS_FILE_LIST:

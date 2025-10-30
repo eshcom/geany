@@ -621,12 +621,12 @@ static void save_ui_prefs(GKeyFile *config)
 	if (prefs.save_winpos || prefs.save_wingeom)
 	{
 		GdkWindowState wstate;
-
+		
 		g_key_file_set_integer(config, PACKAGE, "treeview_position",
-				gtk_paned_get_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "hpaned1"))));
+							   ui_paned_get_position(main_widgets.window, "hpaned1"));
 		g_key_file_set_integer(config, PACKAGE, "msgwindow_position",
-				gtk_paned_get_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "vpaned1"))));
-
+							   ui_paned_get_position(main_widgets.window, "vpaned1"));
+		
 		gtk_window_get_position(GTK_WINDOW(main_widgets.window), &ui_prefs.geometry[0], &ui_prefs.geometry[1]);
 		gtk_window_get_size(GTK_WINDOW(main_widgets.window), &ui_prefs.geometry[2], &ui_prefs.geometry[3]);
 		wstate = gdk_window_get_state(gtk_widget_get_window(main_widgets.window));
@@ -1343,31 +1343,30 @@ void configuration_apply_settings(void)
 	if (scribble_text)
 	{	/* update the scribble widget, because now it's realized */
 		GtkTextIter iter;
-		GtkTextBuffer *buffer =
-			gtk_text_view_get_buffer(GTK_TEXT_VIEW(msgwindow.scribble));
-
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
+										GTK_TEXT_VIEW(msgwindow.scribble));
 		gtk_text_buffer_set_text(buffer, scribble_text, -1);
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, scribble_pos);
 		gtk_text_buffer_place_cursor(buffer, &iter);
 	}
 	g_free(scribble_text);
-
+	
 	/* set the position of the hpaned and vpaned */
 	if (prefs.save_winpos)
 	{
-		gtk_paned_set_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "hpaned1")), hpan_position);
-		gtk_paned_set_position(GTK_PANED(ui_lookup_widget(main_widgets.window, "vpaned1")), vpan_position);
+		ui_paned_set_position(main_widgets.window, "hpaned1", hpan_position);
+		ui_paned_set_position(main_widgets.window, "vpaned1", vpan_position);
 	}
-
+	
 	/* set fullscreen after initial draw so that returning to normal view is the right size.
 	 * fullscreen mode is disabled by default, so act only if it is true */
 	if (ui_prefs.fullscreen)
 	{
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "menu_fullscreen1")), TRUE);
+		ui_menu_item_set_active(main_widgets.window, "menu_fullscreen1", TRUE);
 		ui_prefs.fullscreen = TRUE;
 		ui_set_fullscreen();
 	}
-
+	
 	msgwin_show_hide_tabs();
 }
 

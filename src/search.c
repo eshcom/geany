@@ -1258,20 +1258,15 @@ static void on_find_replace_checkbutton_toggled(GtkToggleButton *togglebutton,
 	if (togglebutton == chk_regexp)
 	{
 		gboolean regex_set = gtk_toggle_button_get_active(chk_regexp);
-		GtkWidget *check_word = ui_lookup_widget(dialog, "check_word");
-		GtkWidget *check_wordstart = ui_lookup_widget(dialog, "check_wordstart");
-		GtkWidget *check_escape = ui_lookup_widget(dialog, "check_escape");
-		GtkWidget *check_multiline = ui_lookup_widget(dialog, "check_multiline");
 		gboolean replace = (dialog != find_dlg.dialog);
 		const char *back_button[2] = { "btn_previous" , "check_back" };
 		
 		/* hide options that don't apply to regex searches */
-		gtk_widget_set_sensitive(check_escape, !regex_set);
-		gtk_widget_set_sensitive(ui_lookup_widget(dialog, back_button[replace]),
-								 !regex_set);
-		gtk_widget_set_sensitive(check_word, !regex_set);
-		gtk_widget_set_sensitive(check_wordstart, !regex_set);
-		gtk_widget_set_sensitive(check_multiline, regex_set);
+		ui_widget_set_sensitive(dialog, "check_escape", !regex_set);
+		ui_widget_set_sensitive(dialog, back_button[replace], !regex_set);
+		ui_widget_set_sensitive(dialog, "check_word", !regex_set);
+		ui_widget_set_sensitive(dialog, "check_wordstart", !regex_set);
+		ui_widget_set_sensitive(dialog, "check_multiline", regex_set);
 	}
 }
 
@@ -2259,7 +2254,7 @@ static gint find_regex(ScintillaObject *sci, guint pos, GRegex *regex,
 	{
 		gint line = sci_get_line_from_position(sci, pos);
 		
-		for (;;)
+		while (TRUE)
 		{
 			gint start = sci_get_position_from_line(sci, line);
 			gint end = sci_get_line_end_position(sci, line);
