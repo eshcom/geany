@@ -1014,7 +1014,7 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 		
 		case TM_PARSER_ELIXIR:
 			if (g_strcmp0(suffix, "(") == 0)
-				*type = tm_tag_function_t | tm_tag_macro_t;
+				*type = tm_tag_function_t | tm_tag_macro_t | tm_tag_typedef_t;
 			else
 				*type = tm_tag_max_t;
 			
