@@ -617,9 +617,8 @@ static gboolean vte_button_pressed(GtkWidget *widget, GdkEventButton *event,
 {
 	if (event->button == 3)
 	{
-		GtkWidget *item = ui_lookup_widget(vc->menu, "item_set_project_path");
-		ui_widget_show_hide(item, app->project != NULL);
-		
+		ui_widget_set_visible(vc->menu, "item_set_project_path",
+							  app->project != NULL);
 		gtk_widget_grab_focus(vc->vte);
 		gtk_menu_popup(GTK_MENU(vc->menu), NULL, NULL, NULL, NULL,
 					   event->button, event->time);
@@ -815,16 +814,19 @@ static void vte_popup_menu_clicked(GtkMenuItem *menuitem, gpointer user_data)
 		}
 		case POPUP_PREFERENCES:
 		{
-			GtkWidget *notebook, *tab_page;
-			
 			prefs_show_dialog();
 			
-			notebook = ui_lookup_widget(ui_widgets.prefs_dialog, "notebook2");
-			tab_page = ui_lookup_widget(ui_widgets.prefs_dialog, "frame_term");
+			static GtkNotebook *nbook = NULL;
+			static GtkWidget *frame = NULL;
 			
-			gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook),
-				gtk_notebook_page_num(GTK_NOTEBOOK(notebook), GTK_WIDGET(tab_page)));
+			if (nbook == NULL)
+			{
+				nbook = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog,
+													  "notebook2"));
+				frame = ui_lookup_widget(ui_widgets.prefs_dialog, "frame_term");
+			}
 			
+			ui_notebook_set_current_page(nbook, frame);
 			break;
 		}
 	}
@@ -1063,8 +1065,7 @@ static void on_check_run_in_vte_toggled(GtkToggleButton *togglebutton,
 										GtkWidget *user_data)
 {
 	g_return_if_fail(GTK_IS_WIDGET(user_data));
-	gtk_widget_set_sensitive(user_data,
-							 gtk_toggle_button_get_active(togglebutton));
+	gtk_widget_set_sensitive(user_data, gtk_toggle_button_get_active(togglebutton));
 }
 
 
@@ -1096,23 +1097,18 @@ void vte_append_preferences_tab(void)
 {
 	if (vte_info.have_vte)
 	{
-		GtkWidget *frame_term, *button_shell, *entry_shell;
+		GtkWidget *entry_shell;
 		GtkWidget *check_run_in_vte, *check_skip_script;
 		GtkWidget *font_button, *fg_color_button, *bg_color_button;
 		
-		button_shell = GTK_WIDGET(ui_lookup_widget(ui_widgets.prefs_dialog,
-												   "button_term_shell"));
-		entry_shell = GTK_WIDGET(ui_lookup_widget(ui_widgets.prefs_dialog,
-												  "entry_shell"));
-		ui_setup_open_button_callback(button_shell, NULL,
-			GTK_FILE_CHOOSER_ACTION_OPEN, GTK_ENTRY(entry_shell));
+		entry_shell = ui_lookup_widget(ui_widgets.prefs_dialog, "entry_shell");
+		ui_setup_open_btn_callback(ui_widgets.prefs_dialog, "button_term_shell",
+								   NULL, GTK_FILE_CHOOSER_ACTION_OPEN, entry_shell);
 		
-		check_skip_script = GTK_WIDGET(ui_lookup_widget(ui_widgets.prefs_dialog,
-														"check_skip_script"));
-		gtk_widget_set_sensitive(check_skip_script, vc->run_in_vte);
-		
-		check_run_in_vte = GTK_WIDGET(ui_lookup_widget(ui_widgets.prefs_dialog,
-													   "check_run_in_vte"));
+		check_skip_script = ui_widget_set_sensitive(ui_widgets.prefs_dialog,
+													"check_skip_script",
+													vc->run_in_vte);
+		check_run_in_vte = ui_lookup_widget(ui_widgets.prefs_dialog, "check_run_in_vte");
 		g_signal_connect(G_OBJECT(check_run_in_vte), "toggled",
 						 G_CALLBACK(on_check_run_in_vte_toggled), check_skip_script);
 		
@@ -1127,8 +1123,7 @@ void vte_append_preferences_tab(void)
 		g_signal_connect(bg_color_button, "color-set",
 						 G_CALLBACK(on_term_bg_color_set), NULL);
 		
-		frame_term = ui_lookup_widget(ui_widgets.prefs_dialog, "frame_term");
-		gtk_widget_show_all(frame_term);
+		ui_widget_show_all(ui_widgets.prefs_dialog, "frame_term");
 	}
 }
 

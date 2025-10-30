@@ -174,7 +174,6 @@ void toolbar_item_ref(GtkToolItem *item)
 
 static GtkWidget *toolbar_reload(const gchar *markup)
 {
-	gint i;
 	GSList *l;
 	GtkWidget *entry;
 	GError *error = NULL;
@@ -183,7 +182,7 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 	GtkWidget *toolbar_new_file_menu = NULL;
 	GtkWidget *toolbar_recent_files_menu = NULL;
 	GtkWidget *toolbar_build_menu = NULL;
-
+	
 	/* Cleanup old toolbar */
 	if (merge_id > 0)
 	{
@@ -203,18 +202,16 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 		toolbar_build_menu = geany_menu_button_action_get_menu(
 					GEANY_MENU_BUTTON_ACTION(gtk_action_group_get_action(group, "Build")));
 		g_object_ref(toolbar_build_menu);
-
+		
 		/* Get rid of it! */
 		gtk_widget_destroy(main_widgets.toolbar);
-
+		
 		gtk_ui_manager_remove_ui(uim, merge_id);
 		gtk_ui_manager_ensure_update(uim);
 	}
-
+	
 	if (markup != NULL)
-	{
 		merge_id = gtk_ui_manager_add_ui_from_string(uim, markup, -1, &error);
-	}
 	else
 	{
 		/* Load the toolbar UI XML file from disk (first from config dir, then try data dir) */
@@ -226,7 +223,7 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 				geany_debug("Loading user toolbar UI definition failed (%s).", error->message);
 			g_error_free(error);
 			error = NULL;
-
+			
 			SETPTR(filename, g_build_filename(app->datadir, "ui_toolbar.xml", NULL));
 			merge_id = gtk_ui_manager_add_ui_from_file(uim, filename, &error);
 		}
@@ -242,30 +239,28 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 	}
 	main_widgets.toolbar = gtk_ui_manager_get_widget(uim, "/ui/GeanyToolbar");
 	ui_init_toolbar_widgets();
-
+	
 	/* add the toolbar again to the main window */
 	if (toolbar_prefs.append_to_menu)
 	{
-		GtkWidget *hbox_menubar = ui_lookup_widget(main_widgets.window, "hbox_menubar");
-		gtk_box_pack_start(GTK_BOX(hbox_menubar), main_widgets.toolbar, TRUE, TRUE, 0);
+		GtkWidget *hbox_menubar = ui_box_pack_start(main_widgets.window, "hbox_menubar",
+													main_widgets.toolbar, TRUE, TRUE, 0);
 		gtk_box_reorder_child(GTK_BOX(hbox_menubar), main_widgets.toolbar, 1);
 	}
 	else
 	{
-		GtkWidget *box = ui_lookup_widget(main_widgets.window, "vbox1");
-
-		gtk_box_pack_start(GTK_BOX(box), main_widgets.toolbar, FALSE, FALSE, 0);
-		gtk_box_reorder_child(GTK_BOX(box), main_widgets.toolbar, 1);
+		GtkWidget *vbox = ui_box_pack_start(main_widgets.window, "vbox1",
+											main_widgets.toolbar, FALSE, FALSE, 0);
+		gtk_box_reorder_child(GTK_BOX(vbox), main_widgets.toolbar, 1);
 	}
 	gtk_widget_show(main_widgets.toolbar);
-
+	
 	/* re-add und unref the plugin toolbar items */
-	i = toolbar_get_insert_position();
+	gint i = toolbar_get_insert_position();
 	foreach_slist(l, plugin_items)
 	{
-		gtk_toolbar_insert(GTK_TOOLBAR(main_widgets.toolbar), l->data, i);
+		gtk_toolbar_insert(GTK_TOOLBAR(main_widgets.toolbar), l->data, i++);
 		g_object_unref(l->data);
-		i++;
 	}
 	/* re-add und unref the submenus of menu toolbar items */
 	if (toolbar_new_file_menu != NULL)
@@ -286,35 +281,36 @@ static GtkWidget *toolbar_reload(const gchar *markup)
 			gtk_action_group_get_action(group, "Build")), toolbar_build_menu);
 		g_object_unref(toolbar_build_menu);
 	}
-
+	
 	/* update button states */
 	if (main_status.main_window_realized)
 	{
 		GeanyDocument *doc = document_get_current();
 		gboolean doc_changed = (doc != NULL) ? doc->changed : FALSE;
-
+		
 		ui_document_buttons_update();
 		ui_save_buttons_toggle(doc_changed); /* update save all */
 		ui_update_popup_reundo_items(doc);
-
+		
 		toolbar_apply_settings();
 	}
-
+	
 	/* Signals */
 	g_signal_connect(main_widgets.toolbar, "button-press-event",
-		G_CALLBACK(toolbar_popup_menu), NULL);
+					 G_CALLBACK(toolbar_popup_menu), NULL);
 	g_signal_connect(main_widgets.toolbar, "key-press-event",
-		G_CALLBACK(on_escape_key_press_event), NULL);
-
+					 G_CALLBACK(on_escape_key_press_event), NULL);
+	
 	/* We don't need to disconnect those signals as this is done automatically when the entry
 	 * widgets are destroyed, happens when the toolbar itself is destroyed. */
 	entry = toolbar_get_widget_child_by_name("SearchEntry");
 	if (entry != NULL)
 		g_signal_connect(entry, "motion-notify-event", G_CALLBACK(on_motion_event), NULL);
+	
 	entry = toolbar_get_widget_child_by_name("GotoEntry");
 	if (entry != NULL)
 		g_signal_connect(entry, "motion-notify-event", G_CALLBACK(on_motion_event), NULL);
-
+	
 	return main_widgets.toolbar;
 }
 
@@ -428,9 +424,7 @@ void toolbar_update_ui(void)
 	/* the separator between the menubar and the toolbar */
 	first_item = gtk_toolbar_get_nth_item(GTK_TOOLBAR(main_widgets.toolbar), 0);
 	if (first_item != NULL && GTK_IS_SEPARATOR_TOOL_ITEM(first_item))
-	{
 		gtk_widget_destroy(GTK_WIDGET(first_item));
-	}
 
 	parent = gtk_widget_get_parent(main_widgets.toolbar);
 
@@ -541,8 +535,8 @@ void toolbar_finalize(void)
 void toolbar_show_hide(void)
 {
 	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
-		ui_lookup_widget(main_widgets.window, "menu_show_toolbar1")), toolbar_prefs.visible);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_toolbar1",
+							toolbar_prefs.visible);
 	ui_widget_show_hide(main_widgets.toolbar, toolbar_prefs.visible);
 	ignore_callback = FALSE;
 }

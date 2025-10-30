@@ -266,12 +266,9 @@ static void populate_file_template_menu(GtkWidget *menu)
 
 static void create_file_template_menu(void)
 {
-	GtkWidget *item;
-	
 	new_with_template_menu = gtk_menu_new();
-	item = ui_lookup_widget(main_widgets.window, "menu_new_with_template1");
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), new_with_template_menu);
-	
+	ui_menu_item_set_submenu(main_widgets.window, "menu_new_with_template1",
+							 new_with_template_menu);
 	new_with_template_toolbar_menu = gtk_menu_new();
 	g_object_ref(new_with_template_toolbar_menu);
 	geany_menu_button_action_set_menu(

@@ -538,8 +538,8 @@ static void create_properties_dialog(PropertyDialogElements *e)
 		wid = ui_lookup_widget(e->dialog, "button_project_dialog_base_path");
 		base_path_button_handler_id =
 			g_signal_connect(wid, "clicked",
-				G_CALLBACK(on_project_properties_base_path_button_clicked),
-				e->base_path);
+							 G_CALLBACK(on_project_properties_base_path_button_clicked),
+							 e->base_path);
 	}
 	
 	/* Same as above, should be in Glade but can't due to bug in 3.8.1 */
@@ -560,9 +560,6 @@ static void show_project_properties(gboolean show_build)
 	g_return_if_fail(p != NULL);
 	
 	static PropertyDialogElements e;
-	GtkWidget *widget = NULL;
-	GtkWidget *radio_long_line_custom;
-	GtkTextBuffer *buffer;
 	
 	if (e.dialog == NULL)
 		create_properties_dialog(&e);
@@ -578,7 +575,10 @@ static void show_project_properties(gboolean show_build)
 	gtk_label_set_text(GTK_LABEL(e.file_name), p->file_name);
 	gtk_entry_set_text(GTK_ENTRY(e.base_path), p->base_path);
 	
-	radio_long_line_custom = ui_lookup_widget(e.dialog, "radio_long_line_custom_project");
+	GtkWidget *radio_long_line_custom = ui_lookup_widget(e.dialog,
+													"radio_long_line_custom_project");
+	GtkWidget *widget = NULL;
+	
 	switch (p->priv->long_line_behaviour)
 	{
 		case 0: widget = ui_lookup_widget(e.dialog, "radio_long_line_disabled_project"); break;
@@ -587,14 +587,13 @@ static void show_project_properties(gboolean show_build)
 	}
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 	
-	widget = ui_lookup_widget(e.dialog, "spin_long_line_project");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget),
-							  (gdouble)p->priv->long_line_column);
+	widget = ui_spin_btn_set_value(e.dialog, "spin_long_line_project",
+								   p->priv->long_line_column);
 	on_radio_long_line_custom_toggled(GTK_TOGGLE_BUTTON(radio_long_line_custom),
 									  widget);
 	
 	/* set text */
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(e.description));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(e.description));
 	gtk_text_buffer_set_text(buffer, p->description ? p->description : "", -1);
 	
 	/* set the file patterns */
@@ -607,10 +606,8 @@ static void show_project_properties(gboolean show_build)
 	gtk_widget_show_all(e.dialog);
 	
 	/* note: notebook page must be shown before setting current page */
-	if (show_build)
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(e.notebook), e.build_page_num);
-	else
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(e.notebook), 0);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(e.notebook),
+								  show_build ? e.build_page_num : 0);
 	
 	while (gtk_dialog_run(GTK_DIALOG(e.dialog)) == GTK_RESPONSE_OK)
 	{
@@ -822,21 +819,16 @@ static gboolean update_config(const PropertyDialogElements *e, gboolean new_proj
 		}
 		build_menu_update(doc);
 		
-		widget = ui_lookup_widget(e->dialog, "radio_long_line_disabled_project");
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+		if (ui_toggle_btn_get_active(e->dialog, "radio_long_line_disabled_project"))
 			p->priv->long_line_behaviour = 0;
-		else
-		{
-			widget = ui_lookup_widget(e->dialog, "radio_long_line_default_project");
-			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-				p->priv->long_line_behaviour = 1;
-			else
-				/* "Custom" radio button must be checked */
-				p->priv->long_line_behaviour = 2;
-		}
+		else if (ui_toggle_btn_get_active(e->dialog, "radio_long_line_default_project"))
+			p->priv->long_line_behaviour = 1;
+		else /* "Custom" radio button must be checked */
+			p->priv->long_line_behaviour = 2;
 		
-		widget = ui_lookup_widget(e->dialog, "spin_long_line_project");
-		p->priv->long_line_column = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+		p->priv->long_line_column =
+				ui_spin_button_get_value_as_int(e->dialog, "spin_long_line_project");
+		
 		apply_editor_prefs();
 		
 		/* get and set the project file patterns */
@@ -990,8 +982,7 @@ static void on_entries_changed(GtkEditable *editable, PropertyDialogElements *e)
 static void on_radio_long_line_custom_toggled(GtkToggleButton *radio,
 											  GtkWidget *spin_long_line)
 {
-	gtk_widget_set_sensitive(spin_long_line,
-							 gtk_toggle_button_get_active(radio));
+	gtk_widget_set_sensitive(spin_long_line, gtk_toggle_button_get_active(radio));
 }
 
 
@@ -1253,18 +1244,17 @@ void project_setup_prefs(void)
 {
 	g_return_if_fail(local_prefs.project_file_path != NULL);
 	
-	GtkWidget *path_entry = ui_lookup_widget(ui_widgets.prefs_dialog,
-											 "project_file_path_entry");
-	GtkWidget *path_btn = ui_lookup_widget(ui_widgets.prefs_dialog,
-										   "project_file_path_button");
 	static gboolean callback_setup = FALSE;
 	
-	gtk_entry_set_text(GTK_ENTRY(path_entry), local_prefs.project_file_path);
+	GtkWidget *path_entry = ui_entry_set_text(ui_widgets.prefs_dialog,
+											  "project_file_path_entry",
+											  local_prefs.project_file_path);
 	if (!callback_setup)
 	{	/* connect the callback only once */
 		callback_setup = TRUE;
-		ui_setup_open_button_callback(path_btn, NULL,
-			GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_ENTRY(path_entry));
+		ui_setup_open_btn_callback(ui_widgets.prefs_dialog, "project_file_path_button",
+								   NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+								   path_entry);
 	}
 }
 
@@ -1272,11 +1262,8 @@ void project_setup_prefs(void)
 /* Update project-related preferences after using the Preferences dialog. */
 void project_apply_prefs(void)
 {
-	GtkWidget *path_entry = ui_lookup_widget(ui_widgets.prefs_dialog,
-											 "project_file_path_entry");
-	
-	const gchar *str = gtk_entry_get_text(GTK_ENTRY(path_entry));
-	SETPTR(local_prefs.project_file_path, g_strdup(str));
+	SETPTR(local_prefs.project_file_path,
+		   ui_entry_get_text(ui_widgets.prefs_dialog, "project_file_path_entry"));
 }
 
 

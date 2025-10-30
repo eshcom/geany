@@ -424,14 +424,15 @@ static GeanyBuildCommand *get_next_build_cmd(GeanyDocument *doc, guint cmdgrp, g
 
 
 /* shortcut to start looking at the top */
-static GeanyBuildCommand *get_build_cmd(GeanyDocument *doc, guint grp, guint cmdindex, guint *from)
+static GeanyBuildCommand *get_build_cmd(GeanyDocument *doc, guint grp,
+										guint cmdindex, guint *from)
 {
 	return get_next_build_cmd(doc, grp, cmdindex, GEANY_BCS_COUNT, from);
 }
 
 
-#define return_nonblank_regex(src, ptr)\
-	if (!EMPTY(ptr)) \
+#define return_nonblank_regex(src, ptr)	\
+	if (!EMPTY(ptr))					\
 		{ *fr = (src); return &(ptr); }
 
 
@@ -701,11 +702,8 @@ void build_activate_menu_item(const GeanyBuildGroup grp, const guint cmd)
 static void clear_all_errors(void)
 {
 	guint i;
-	
 	foreach_document(i)
-	{
 		editor_indicator_clear_errors(documents[i]->editor);
-	}
 }
 
 
@@ -1253,28 +1251,28 @@ static void on_build_menu_item(GtkWidget *w, gpointer user_data)
 	GeanyBuildCommand *bc;
 	guint grp = GPOINTER_TO_GRP(user_data);
 	guint cmd = GPOINTER_TO_CMD(user_data);
-
+	
 	if (doc && doc->changed)
 	{
 		if (!document_save_file(doc, FALSE))
 			return;
 	}
 	g_signal_emit_by_name(geany_object, "build-start");
-
+	
 	if (grp == GEANY_GBG_NON_FT && cmd == GBO_TO_CMD(GEANY_GBO_CUSTOM))
 	{
 		static GtkWidget *dialog = NULL; /* keep dialog for combo history */
-
-		if (! dialog)
+		
+		if (!dialog)
 		{
-			dialog = dialogs_show_input_persistent(_("Custom Text"), GTK_WINDOW(main_widgets.window),
-				_("Enter custom text here, all entered text is appended to the command."),
-				build_info.custom_target, &on_make_custom_input_response, NULL);
+			dialog = dialogs_show_input_persistent(
+						_("Custom Text"), GTK_WINDOW(main_widgets.window),
+						_("Enter custom text here, all entered text is appended to the command."),
+						build_info.custom_target, &on_make_custom_input_response, NULL);
 		}
 		else
-		{
 			gtk_widget_show(dialog);
-		}
+		
 		return;
 	}
 	else if (grp == GEANY_GBG_EXEC)
@@ -1285,14 +1283,12 @@ static void on_build_menu_item(GtkWidget *w, gpointer user_data)
 			return;
 		}
 		bc = get_build_cmd(doc, grp, cmd, NULL);
-		if (bc != NULL && strcmp(bc->command, "builtin") == 0)
+		if (bc && strcmp(bc->command, "builtin") == 0)
 		{
-			const gchar *uri_file_prefix;
-			gchar *uri;
-			if (doc == NULL)
-				return;
-			uri_file_prefix = utils_get_uri_file_prefix();
-			uri = g_strconcat(uri_file_prefix, doc->file_name, NULL);
+			if (!doc) return;
+			
+			const gchar *uri_file_prefix = utils_get_uri_file_prefix();
+			gchar *uri = g_strconcat(uri_file_prefix, doc->file_name, NULL);
 			utils_open_browser(uri);
 			g_free(uri);
 		}
@@ -1434,8 +1430,7 @@ static void create_build_menu(BuildMenuItems *build_menu_items)
 	}
 	build_menu_items->menu = menu;
 	gtk_widget_show(menu);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ui_lookup_widget(main_widgets.window, "build1")),
-							  menu);
+	ui_menu_item_set_submenu(main_widgets.window, "build1", menu);
 }
 
 
@@ -1597,17 +1592,16 @@ void build_menu_update(GeanyDocument *doc)
 static void set_stop_button(gboolean stop)
 {
 	const gchar *button_stock_id = NULL;
-	GtkToolButton *run_button;
-
-	run_button = GTK_TOOL_BUTTON(toolbar_get_widget_by_name("Run"));
+	GtkToolButton *run_button = GTK_TOOL_BUTTON(toolbar_get_widget_by_name("Run"));
+	
 	if (run_button != NULL)
 		button_stock_id = gtk_tool_button_get_stock_id(run_button);
-
+	
 	if (stop && utils_str_equal(button_stock_id, GTK_STOCK_STOP))
 		return;
-	if (! stop && utils_str_equal(button_stock_id, GTK_STOCK_EXECUTE))
+	if (!stop && utils_str_equal(button_stock_id, GTK_STOCK_EXECUTE))
 		return;
-
+	
 	 /* use the run button also as stop button  */
 	if (stop)
 	{
@@ -1643,16 +1637,17 @@ static void on_toolbutton_build_activate(GtkWidget *menuitem, gpointer user_data
 static void on_toolbutton_make_activate(GtkWidget *menuitem, gpointer user_data)
 {
 	gchar *msg;
-
+	
 	last_toolbutton_action = user_data;
 	if (last_toolbutton_action == GBO_TO_POINTER(GEANY_GBO_MAKE_ALL))
-			msg = _("Build the current file with Make and the default target");
+		msg = _("Build the current file with Make and the default target");
 	else if (last_toolbutton_action == GBO_TO_POINTER(GEANY_GBO_CUSTOM))
-			msg = _("Build the current file with Make and the specified target");
+		msg = _("Build the current file with Make and the specified target");
 	else if (last_toolbutton_action == GBO_TO_POINTER(GEANY_GBO_MAKE_OBJECT))
-			msg = _("Compile the current file with Make");
+		msg = _("Compile the current file with Make");
 	else
-			msg = NULL;
+		msg = NULL;
+	
 	g_object_set(widgets.build_action, "tooltip", msg, NULL);
 	on_build_menu_item(menuitem, user_data);
 }
@@ -1661,7 +1656,7 @@ static void on_toolbutton_make_activate(GtkWidget *menuitem, gpointer user_data)
 static void kill_process(GPid *pid)
 {
 	GError *error = NULL;
-
+	
 	if (spawn_kill_process(*pid, &error))
 	{
 		*pid = 0;
@@ -1669,7 +1664,8 @@ static void kill_process(GPid *pid)
 	}
 	else
 	{
-		ui_set_statusbar(TRUE, _("Process could not be stopped (%s)."), error->message);
+		ui_set_statusbar(TRUE, _("Process could not be stopped (%s)."),
+						 error->message);
 		g_error_free(error);
 	}
 }
@@ -1678,10 +1674,8 @@ static void kill_process(GPid *pid)
 static void on_build_next_error(GtkWidget *menuitem, gpointer user_data)
 {
 	if (ui_tree_view_find_next(GTK_TREE_VIEW(msgwindow.tree_compiler),
-		msgwin_goto_compiler_file_line))
-	{
+							   msgwin_goto_compiler_file_line))
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_COMPILER);
-	}
 	else
 		ui_set_statusbar(FALSE, _("No more build errors."));
 }
@@ -1690,10 +1684,8 @@ static void on_build_next_error(GtkWidget *menuitem, gpointer user_data)
 static void on_build_previous_error(GtkWidget *menuitem, gpointer user_data)
 {
 	if (ui_tree_view_find_previous(GTK_TREE_VIEW(msgwindow.tree_compiler),
-		msgwin_goto_compiler_file_line))
-	{
+								   msgwin_goto_compiler_file_line))
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(msgwindow.notebook), MSG_COMPILER);
-	}
 	else
 		ui_set_statusbar(FALSE, _("No more build errors."));
 }
@@ -1702,13 +1694,9 @@ static void on_build_previous_error(GtkWidget *menuitem, gpointer user_data)
 void build_toolbutton_build_clicked(GtkAction *action, gpointer unused)
 {
 	if (last_toolbutton_action == GBO_TO_POINTER(GEANY_GBO_BUILD))
-	{
 		on_build_menu_item(NULL, GBO_TO_POINTER(GEANY_GBO_BUILD));
-	}
 	else
-	{
 		on_build_menu_item(NULL, last_toolbutton_action);
-	}
 }
 
 
@@ -1796,7 +1784,7 @@ static void on_clear_dialog_row(GtkWidget *unused, gpointer user_data)
 
 static void on_clear_dialog_regex_row(GtkEntry *regex, gpointer unused)
 {
-	gtk_entry_set_text(regex,"");
+	gtk_entry_set_text(regex, "");
 }
 
 
@@ -1999,8 +1987,7 @@ GtkWidget *build_commands_table(GeanyDocument *doc, GeanyBuildSource dst, BuildT
 	if (fields->fileregexstring != NULL && *(fields->fileregexstring) != NULL)
 	{
 		gtk_entry_set_text(GTK_ENTRY(fields->fileregex), *(fields->fileregexstring));
-		if (src > dst)
-			sensitivity = FALSE;
+		if (src > dst) sensitivity = FALSE;
 	}
 	gtk_table_attach(table, fields->fileregex, DC_ENTRIES + 1, DC_CLEAR, row, row + 1, GTK_FILL,
 		GTK_FILL | GTK_EXPAND, entry_x_padding, entry_y_padding);
@@ -2376,7 +2363,7 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 		switch (src)
 		{
 			case GEANY_BCS_FT:			/**< System filetype values. */
-				ft = (GeanyFiletype*)p;
+				ft = (GeanyFiletype *)p;
 				if (ft == NULL)
 					return;
 				build_load_menu_grp(config, &(ft->priv->filecmds), GEANY_GBG_FT, NULL, TRUE);
@@ -2386,7 +2373,7 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 						g_key_file_get_string(config, build_grp_name, "error_regex", NULL));
 				break;
 			case GEANY_BCS_HOME_FT:		/**< Filetypes in ~/.config/geany/filedefs */
-				ft = (GeanyFiletype*)p;
+				ft = (GeanyFiletype *)p;
 				if (ft == NULL)
 					return;
 				build_load_menu_grp(config, &(ft->priv->homefilecmds), GEANY_GBG_FT, NULL, FALSE);
@@ -2440,7 +2427,7 @@ void build_load_menu(GKeyFile *config, GeanyBuildSource src, gpointer p)
 	switch (src)
 	{
 		case GEANY_BCS_FT:
-			ft = (GeanyFiletype*)p;
+			ft = (GeanyFiletype *)p;
 			value = g_key_file_get_string(config, "build_settings", "compiler", NULL);
 			if (value != NULL)
 			{
@@ -2591,7 +2578,7 @@ void build_save_menu(GKeyFile *config, gpointer ptr, GeanyBuildSource src)
 	switch (src)
 	{
 		case GEANY_BCS_HOME_FT:
-			ft = (GeanyFiletype*)ptr;
+			ft = (GeanyFiletype *)ptr;
 			if (ft == NULL)
 				return;
 			build_save_menu_grp(config, ft->priv->homefilecmds, GEANY_GBG_FT, NULL);
@@ -2782,17 +2769,17 @@ void build_init(void)
 
 gboolean build_keybinding(guint key_id)
 {
-	GtkWidget *item;
-	BuildMenuItems *menu_items;
 	GeanyDocument *doc = document_get_current();
-
+	
 	if (doc == NULL)
 		return TRUE;
-
-	if (!gtk_widget_is_sensitive(ui_lookup_widget(main_widgets.window, "build1")))
+	
+	if (!ui_widget_is_sensitive(main_widgets.window, "build1"))
 		return TRUE;
-
-	menu_items = build_get_menu_items(doc->file_type->id);
+	
+	BuildMenuItems *menu_items = build_get_menu_items(doc->file_type->id);
+	GtkWidget *item;
+	
 	/* TODO make it a table??*/
 	switch (key_id)
 	{

@@ -299,9 +299,8 @@ static void prepare_openfiles(void)
 	
 	/* set policy settings for the scolledwindow around the treeview again,
 	 * because glade doesn't keep the settings */
-	gtk_scrolled_window_set_policy(
-		GTK_SCROLLED_WINDOW(ui_lookup_widget(main_widgets.window, "scrolledwindow7")),
-		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	ui_scrolled_window_set_policy(main_widgets.window, "scrolledwindow7",
+								  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
 	GtkCellRenderer *icon_renderer = gtk_cell_renderer_pixbuf_new();
 	GtkCellRenderer *text_renderer = gtk_cell_renderer_text_new();
@@ -1264,11 +1263,10 @@ void sidebar_focus_symbols_tab(void)
 	if (ui_prefs.sidebar_visible && interface_prefs.sidebar_symbols_visible)
 	{
 		GtkNotebook *notebook = GTK_NOTEBOOK(main_widgets.sidebar_notebook);
-		GtkWidget *symbol_list_scrollwin =
-						gtk_notebook_get_nth_page(notebook, TREEVIEW_SYMBOL);
-		
+		GtkWidget *symbols_scrollwin = gtk_notebook_get_nth_page(notebook,
+																 TREEVIEW_SYMBOL);
 		gtk_notebook_set_current_page(notebook, TREEVIEW_SYMBOL);
-		gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(symbol_list_scrollwin)));
+		gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(symbols_scrollwin)));
 	}
 }
 

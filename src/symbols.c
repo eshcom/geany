@@ -1306,9 +1306,8 @@ static void tags_table_remove(GHashTable *table, TMTag *tag)
 			/* should always be the first element as we returned the first one in
 			 * tags_table_lookup() */
 			foreach_list(node, list)
-			{
 				if (((GList *)node->data)->data == tag) break;
-			}
+			
 			list = g_list_delete_link(list, node);
 			if (!list)
 				g_tree_remove(tree, GINT_TO_POINTER(tag->line));
@@ -2095,7 +2094,6 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 	foreach_ptr_array(tag, i, tags)
 	{
 		guint j;
-		
 		foreach_document(j)
 		{
 			if (g_strcmp0(documents[j]->real_path, tag->file->file_name) == 0)
@@ -2962,13 +2960,10 @@ static void on_symbol_tree_menu_show(GtkWidget *widget, gpointer user_data)
 	
 	if (doc->priv->symbol_list_sort_mode == SYMBOLS_SORT_BY_NAME)
 		gtk_check_menu_item_set_active(
-					GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_name),
-					TRUE);
+			GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_name), TRUE);
 	else
 		gtk_check_menu_item_set_active(
-					GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_appearance),
-					TRUE);
-	
+			GTK_CHECK_MENU_ITEM(symbol_menu.sort_by_appearance), TRUE);
 	ignore_callback = FALSE;
 }
 

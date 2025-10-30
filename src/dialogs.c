@@ -87,7 +87,49 @@ filesel_state = {
 };
 
 
-static gint filetype_combo_box_get_active_filetype(GtkComboBox *combo);
+/* the filetype, or -1 for auto-detect */
+static gint filetype_combo_box_get_active_filetype(GtkWidget *parent,
+												   const gchar *name)
+{
+	GtkComboBox *combo = GTK_COMBO_BOX(ui_lookup_widget(parent, name));
+	
+	gint id = -1;
+	GtkTreeIter iter;
+	
+	if (gtk_combo_box_get_active_iter(combo, &iter))
+	{
+		GtkTreeModel *model = gtk_combo_box_get_model(combo);
+		gtk_tree_model_get(model, &iter, 0, &id, -1);
+	}
+	return id;
+}
+
+
+static gboolean filetype_combo_box_set_active_filetype(GtkWidget *parent,
+													   const gchar *name,
+													   const gint id)
+{
+	GtkComboBox *combo = GTK_COMBO_BOX(ui_lookup_widget(parent, name));
+	
+	GtkTreeModel *model = gtk_combo_box_get_model(combo);
+	GtkTreeIter iter;
+	
+	if (gtk_tree_model_get_iter_first(model, &iter))
+	{
+		do
+		{
+			gint row_id;
+			gtk_tree_model_get(model, &iter, 0, &row_id, -1);
+			if (id == row_id)
+			{
+				gtk_combo_box_set_active_iter(combo, &iter);
+				return TRUE;
+			}
+		}
+		while (ui_tree_model_iter_any_next(model, &iter, TRUE));
+	}
+	return FALSE;
+}
 
 
 /* gets the ID of the current file filter */
@@ -126,34 +168,35 @@ static void file_chooser_set_filter_idx(GtkFileChooser *chooser, guint idx)
 static gboolean open_file_dialog_handle_response(GtkWidget *dialog, gint response)
 {
 	gboolean ret = TRUE;
-
+	
 	if (response == GTK_RESPONSE_ACCEPT || response == GEANY_RESPONSE_VIEW)
 	{
-		GSList *filelist;
+		filesel_state.open.more_options_visible =
+				ui_expander_get_expanded(dialog, "more_options_expander");
+		filesel_state.open.filter_idx =
+				file_chooser_get_filter_idx(GTK_FILE_CHOOSER(dialog));
+		filesel_state.open.filetype_idx =
+				filetype_combo_box_get_active_filetype(dialog, "filetype_combo");
+		
 		GeanyFiletype *ft = NULL;
 		const gchar *charset = NULL;
-		GtkWidget *expander = ui_lookup_widget(dialog, "more_options_expander");
-		GtkWidget *filetype_combo = ui_lookup_widget(dialog, "filetype_combo");
-		GtkWidget *encoding_combo = ui_lookup_widget(dialog, "encoding_combo");
-		gboolean ro = (response == GEANY_RESPONSE_VIEW);	/* View clicked */
-
-		filesel_state.open.more_options_visible = gtk_expander_get_expanded(GTK_EXPANDER(expander));
-		filesel_state.open.filter_idx = file_chooser_get_filter_idx(GTK_FILE_CHOOSER(dialog));
-		filesel_state.open.filetype_idx = filetype_combo_box_get_active_filetype(GTK_COMBO_BOX(filetype_combo));
-
+		
 		/* ignore detect from file item */
 		if (filesel_state.open.filetype_idx >= 0)
 			ft = filetypes_index(filesel_state.open.filetype_idx);
-
-		filesel_state.open.encoding_idx = ui_encodings_combo_box_get_active_encoding(GTK_COMBO_BOX(encoding_combo));
+		
+		
+		filesel_state.open.encoding_idx =
+				ui_combo_box_get_active_encoding(dialog, "encoding_combo");
 		if (filesel_state.open.encoding_idx >= 0 && filesel_state.open.encoding_idx < GEANY_ENCODINGS_MAX)
 			charset = encodings[filesel_state.open.encoding_idx].charset;
-
-		filelist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
+		
+		GSList *filelist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 		if (filelist != NULL)
 		{
+			gboolean ro = (response == GEANY_RESPONSE_VIEW);	/* View clicked */
 			const gchar *first = filelist->data;
-
+			
 			// When there's only one filename it may have been typed manually
 			if (!filelist->next && !g_file_test(first, G_FILE_TEST_EXISTS))
 			{
@@ -161,37 +204,34 @@ static gboolean open_file_dialog_handle_response(GtkWidget *dialog, gint respons
 				ret = FALSE;
 			}
 			else
-			{
 				document_open_files(filelist, ro, ft, charset);
-			}
+			
 			g_slist_foreach(filelist, (GFunc) g_free, NULL);	/* free filenames */
 		}
 		g_slist_free(filelist);
 	}
 	if (app->project && !EMPTY(app->project->base_path))
 		gtk_file_chooser_remove_shortcut_folder(GTK_FILE_CHOOSER(dialog),
-			app->project->base_path, NULL);
+												app->project->base_path, NULL);
 	return ret;
 }
 
 
 static void on_file_open_show_hidden_notify(GObject *filechooser,
-	GParamSpec *pspec, gpointer data)
+											GParamSpec *pspec, gpointer data)
 {
-	GtkWidget *toggle_button;
-
-	toggle_button = ui_lookup_widget(GTK_WIDGET(filechooser), "check_hidden");
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_button),
-		gtk_file_chooser_get_show_hidden(GTK_FILE_CHOOSER(filechooser)));
+	ui_toggle_btn_set_active(GTK_WIDGET(filechooser), "check_hidden",
+							 gtk_file_chooser_get_show_hidden(
+									GTK_FILE_CHOOSER(filechooser)));
 }
 
 
-static void
-on_file_open_check_hidden_toggled(GtkToggleButton *togglebutton, GtkWidget *dialog)
+static void on_file_open_check_hidden_toggled(GtkToggleButton *togglebutton,
+											  GtkWidget *dialog)
 {
 	filesel_state.open.show_hidden = gtk_toggle_button_get_active(togglebutton);
-	gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), filesel_state.open.show_hidden);
+	gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog),
+									 filesel_state.open.show_hidden);
 }
 
 
@@ -257,44 +297,6 @@ static GtkWidget *create_filetype_combo_box(void)
 	g_object_unref(store);
 
 	return combo;
-}
-
-
-/* the filetype, or -1 for auto-detect */
-static gint filetype_combo_box_get_active_filetype(GtkComboBox *combo)
-{
-	gint id = -1;
-	GtkTreeIter iter;
-
-	if (gtk_combo_box_get_active_iter(combo, &iter))
-	{
-		GtkTreeModel *model = gtk_combo_box_get_model(combo);
-		gtk_tree_model_get(model, &iter, 0, &id, -1);
-	}
-	return id;
-}
-
-
-static gboolean filetype_combo_box_set_active_filetype(GtkComboBox *combo, const gint id)
-{
-	GtkTreeModel *model = gtk_combo_box_get_model(combo);
-	GtkTreeIter iter;
-
-	if (gtk_tree_model_get_iter_first(model, &iter))
-	{
-		do
-		{
-			gint row_id;
-			gtk_tree_model_get(model, &iter, 0, &row_id, -1);
-			if (id == row_id)
-			{
-				gtk_combo_box_set_active_iter(combo, &iter);
-				return TRUE;
-			}
-		}
-		while (ui_tree_model_iter_any_next(model, &iter, TRUE));
-	}
-	return FALSE;
 }
 
 
@@ -423,26 +425,25 @@ static GtkWidget *create_open_file_dialog(void)
 static void open_file_dialog_apply_settings(GtkWidget *dialog)
 {
 	static gboolean initialized = FALSE;
-	GtkWidget *check_hidden = ui_lookup_widget(dialog, "check_hidden");
-	GtkWidget *filetype_combo = ui_lookup_widget(dialog, "filetype_combo");
-	GtkWidget *encoding_combo = ui_lookup_widget(dialog, "encoding_combo");
-	GtkWidget *expander = ui_lookup_widget(dialog, "more_options_expander");
-
+	
 	/* we can't know the initial position of combo boxes, so retrieve it the first time */
-	if (! initialized)
+	if (!initialized)
 	{
-		filesel_state.open.filter_idx = file_chooser_get_filter_idx(GTK_FILE_CHOOSER(dialog));
-
+		filesel_state.open.filter_idx = file_chooser_get_filter_idx(
+												GTK_FILE_CHOOSER(dialog));
 		initialized = TRUE;
 	}
 	else
-	{
-		file_chooser_set_filter_idx(GTK_FILE_CHOOSER(dialog), filesel_state.open.filter_idx);
-	}
-	gtk_expander_set_expanded(GTK_EXPANDER(expander), filesel_state.open.more_options_visible);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_hidden), filesel_state.open.show_hidden);
-	ui_encodings_combo_box_set_active_encoding(GTK_COMBO_BOX(encoding_combo), filesel_state.open.encoding_idx);
-	filetype_combo_box_set_active_filetype(GTK_COMBO_BOX(filetype_combo), filesel_state.open.filetype_idx);
+		file_chooser_set_filter_idx(GTK_FILE_CHOOSER(dialog),
+									filesel_state.open.filter_idx);
+	
+	ui_expander_set_expanded(dialog, "more_options_expander",
+							 filesel_state.open.more_options_visible);
+	ui_toggle_btn_set_active(dialog, "check_hidden", filesel_state.open.show_hidden);
+	ui_combo_box_set_active_encoding(dialog, "encoding_combo",
+									 filesel_state.open.encoding_idx);
+	filetype_combo_box_set_active_filetype(dialog, "filetype_combo",
+										   filesel_state.open.filetype_idx);
 }
 
 
@@ -846,30 +847,26 @@ gboolean dialogs_show_unsaved_file(GeanyDocument *doc)
 		gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dlg), (font))
 #endif
 
-static void
-on_font_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
+static void on_font_dialog_response(GtkDialog *dialog, gint response,
+									gpointer user_data)
 {
 	gboolean close = TRUE;
-
+	
 	switch (response)
 	{
 		case GTK_RESPONSE_APPLY:
 		case GTK_RESPONSE_OK:
 		{
-			gchar *fontname;
-
-			fontname = gtk_font_selection_dialog_get_font_name(
-				GTK_FONT_SELECTION_DIALOG(ui_widgets.open_fontsel));
+			gchar *fontname = gtk_font_selection_dialog_get_font_name(
+								GTK_FONT_SELECTION_DIALOG(ui_widgets.open_fontsel));
 			ui_set_editor_font(fontname);
 			g_free(fontname);
-
+			
 			close = (response == GTK_RESPONSE_OK);
 			break;
 		}
 	}
-
-	if (close)
-		gtk_widget_hide(ui_widgets.open_fontsel);
+	if (close) gtk_widget_hide(ui_widgets.open_fontsel);
 }
 
 
@@ -883,33 +880,34 @@ void dialogs_show_open_font(void)
 		return;
 	}
 #endif
-
 	if (ui_widgets.open_fontsel == NULL)
 	{
-		GtkWidget *apply_button;
-
 		ui_widgets.open_fontsel = gtk_font_selection_dialog_new(_("Choose font"));
 		gtk_container_set_border_width(GTK_CONTAINER(ui_widgets.open_fontsel), 4);
 		gtk_window_set_modal(GTK_WINDOW(ui_widgets.open_fontsel), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(ui_widgets.open_fontsel), TRUE);
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(ui_widgets.open_fontsel), TRUE);
-		gtk_window_set_type_hint(GTK_WINDOW(ui_widgets.open_fontsel), GDK_WINDOW_TYPE_HINT_DIALOG);
+		gtk_window_set_type_hint(GTK_WINDOW(ui_widgets.open_fontsel),
+								 GDK_WINDOW_TYPE_HINT_DIALOG);
 		gtk_widget_set_name(ui_widgets.open_fontsel, "GeanyDialog");
-
-		apply_button = gtk_dialog_get_widget_for_response(GTK_DIALOG(ui_widgets.open_fontsel), GTK_RESPONSE_APPLY);
-
-		if (apply_button)
-			gtk_widget_show(apply_button);
-
-		g_signal_connect(ui_widgets.open_fontsel,
-					"delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
-		g_signal_connect(ui_widgets.open_fontsel,
-					"response", G_CALLBACK(on_font_dialog_response), NULL);
-
-		gtk_window_set_transient_for(GTK_WINDOW(ui_widgets.open_fontsel), GTK_WINDOW(main_widgets.window));
+		
+		GtkWidget *apply_button = gtk_dialog_get_widget_for_response(
+										GTK_DIALOG(ui_widgets.open_fontsel),
+										GTK_RESPONSE_APPLY);
+		if (apply_button) gtk_widget_show(apply_button);
+		
+		g_signal_connect(ui_widgets.open_fontsel, "delete-event",
+						 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+		g_signal_connect(ui_widgets.open_fontsel, "response",
+						 G_CALLBACK(on_font_dialog_response), NULL);
+		
+		gtk_window_set_transient_for(GTK_WINDOW(ui_widgets.open_fontsel),
+									 GTK_WINDOW(main_widgets.window));
 	}
 	gtk_font_selection_dialog_set_font_name(
-		GTK_FONT_SELECTION_DIALOG(ui_widgets.open_fontsel), interface_prefs.editor_font);
+			GTK_FONT_SELECTION_DIALOG(ui_widgets.open_fontsel),
+			interface_prefs.editor_font);
+	
 	/* We make sure the dialog is visible. */
 	gtk_window_present(GTK_WINDOW(ui_widgets.open_fontsel));
 }
@@ -947,16 +945,16 @@ typedef struct
 InputDialogData;
 
 
-static void
-on_input_dialog_response(GtkDialog *dialog, gint response, InputDialogData *data)
+static void on_input_dialog_response(GtkDialog *dialog, gint response,
+									 InputDialogData *data)
 {
 	if (response == GTK_RESPONSE_ACCEPT)
 	{
 		const gchar *str = gtk_entry_get_text(GTK_ENTRY(data->entry));
-
+		
 		if (data->combo != NULL)
 			ui_combo_box_add_to_history(GTK_COMBO_BOX_TEXT(data->combo), str, 0);
-
+		
 		data->callback(str, data->data);
 	}
 	gtk_widget_hide(GTK_WIDGET(dialog));
@@ -1148,19 +1146,16 @@ gboolean dialogs_show_input_numeric(const gchar *title, const gchar *label_text,
 
 void dialogs_show_file_properties(GeanyDocument *doc)
 {
-	GtkWidget *dialog, *label, *image, *check;
-	gchar *file_size, *title, *base_name, *time_changed, *time_modified, *time_accessed, *enctext;
-	gchar *short_name;
-#ifdef HAVE_SYS_TYPES_H
-	GStatBuf st;
-	off_t filesize;
-	mode_t mode;
-	gchar *locale_filename;
-#else
-	gint filesize = 0;
-	gint mode = 0;
-#endif
-
+	g_return_if_fail(doc == NULL || doc->is_valid);
+	
+	if (doc == NULL || doc->file_name == NULL)
+	{
+		dialogs_show_msgbox(GTK_MESSAGE_ERROR,
+		_("An error occurred or file information could not be retrieved "
+		  "(e.g. from a new file)."));
+		return;
+	}
+	
 /* define this ones, to avoid later trouble */
 #ifndef S_IRUSR
 # define S_IRUSR 0
@@ -1175,19 +1170,15 @@ void dialogs_show_file_properties(GeanyDocument *doc)
 # define S_IWOTH 0
 # define S_IXOTH 0
 #endif
-
-	g_return_if_fail(doc == NULL || doc->is_valid);
-
-	if (doc == NULL || doc->file_name == NULL)
-	{
-		dialogs_show_msgbox(GTK_MESSAGE_ERROR,
-		_("An error occurred or file information could not be retrieved (e.g. from a new file)."));
-		return;
-	}
-
-
+	
+	gchar *time_changed, *time_modified, *time_accessed;
+	
 #ifdef HAVE_SYS_TYPES_H
-	locale_filename = utils_get_locale_from_utf8(doc->file_name);
+	gchar *locale_filename = utils_get_locale_from_utf8(doc->file_name);
+	GStatBuf st;
+	off_t filesize;
+	mode_t mode;
+	
 	if (g_stat(locale_filename, &st) == 0)
 	{
 		/* first copy the returned string and the trim it, to not modify the static glibc string
@@ -1208,80 +1199,64 @@ void dialogs_show_file_properties(GeanyDocument *doc)
 	}
 	g_free(locale_filename);
 #else
+	gint filesize = 0;
+	gint mode = 0;
+	
 	time_changed  = g_strdup(_("unknown"));
 	time_modified = g_strdup(_("unknown"));
 	time_accessed = g_strdup(_("unknown"));
 #endif
-
-	base_name = g_path_get_basename(doc->file_name);
-	short_name = utils_str_middle_truncate(base_name, 30);
-	title = g_strdup_printf(_("%s Properties"), short_name);
-	dialog = ui_builder_get_object("properties_dialog");
+	
+	gchar *base_name = g_path_get_basename(doc->file_name);
+	gchar *short_name = utils_str_middle_truncate(base_name, 30);
+	gchar *title = g_strdup_printf(_("%s Properties"), short_name);
+	GtkWidget *dialog = ui_builder_get_object("properties_dialog");
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
+	gtk_widget_set_name(dialog, "GeanyDialog");
 	g_free(short_name);
 	g_free(title);
-	gtk_widget_set_name(dialog, "GeanyDialog");
-
-	label = ui_lookup_widget(dialog, "file_name_label");
-	gtk_label_set_text(GTK_LABEL(label), base_name);
-
-	image = ui_lookup_widget(dialog, "file_type_image");
-	gtk_image_set_from_pixbuf(GTK_IMAGE(image), doc->file_type->icon);
-
-	label = ui_lookup_widget(dialog, "file_type_label");
-	gtk_label_set_text(GTK_LABEL(label), doc->file_type->title);
-
-	label = ui_lookup_widget(dialog, "file_size_label");
-	file_size = utils_make_human_readable_str(filesize, 1, 0);
-	gtk_label_set_text(GTK_LABEL(label), file_size);
-	g_free(file_size);
-
-	label = ui_lookup_widget(dialog, "file_location_label");
-	gtk_label_set_text(GTK_LABEL(label), doc->file_name);
-
-	check = ui_lookup_widget(dialog, "file_read_only_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), doc->readonly);
-
-	label = ui_lookup_widget(dialog, "file_encoding_label");
-	enctext = g_strdup_printf("%s %s",
-		doc->encoding,
-		(encodings_is_unicode_charset(doc->encoding)) ?
-			((doc->has_bom) ? _("(with BOM)") : _("(without BOM)")) : "");
-	gtk_label_set_text(GTK_LABEL(label), enctext);
-	g_free(enctext);
-
-	label = ui_lookup_widget(dialog, "file_modified_label");
-	gtk_label_set_text(GTK_LABEL(label), time_modified);
-	label = ui_lookup_widget(dialog, "file_changed_label");
-	gtk_label_set_text(GTK_LABEL(label), time_changed);
-	label = ui_lookup_widget(dialog, "file_accessed_label");
-	gtk_label_set_text(GTK_LABEL(label), time_accessed);
-
-	/* permissions */
-	check = ui_lookup_widget(dialog, "file_perm_owner_r_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IRUSR);
-	check = ui_lookup_widget(dialog, "file_perm_owner_w_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IWUSR);
-	check = ui_lookup_widget(dialog, "file_perm_owner_x_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IXUSR);
-	check = ui_lookup_widget(dialog, "file_perm_group_r_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IRGRP);
-	check = ui_lookup_widget(dialog, "file_perm_group_w_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IWGRP);
-	check = ui_lookup_widget(dialog, "file_perm_group_x_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IXGRP);
-	check = ui_lookup_widget(dialog, "file_perm_other_r_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IROTH);
-	check = ui_lookup_widget(dialog, "file_perm_other_w_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IWOTH);
-	check = ui_lookup_widget(dialog, "file_perm_other_x_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), mode & S_IXOTH);
-
+	
+	ui_label_set_text(dialog, "file_name_label", base_name);
 	g_free(base_name);
+	
+	ui_image_set_from_pixbuf(dialog, "file_type_image", doc->file_type->icon);
+	ui_label_set_text(dialog, "file_type_label", doc->file_type->title);
+	
+	gchar *file_size = utils_make_human_readable_str(filesize, 1, 0);
+	ui_label_set_text(dialog, "file_size_label", file_size);
+	g_free(file_size);
+	
+	ui_label_set_text(dialog, "file_location_label", doc->file_name);
+	ui_toggle_btn_set_active(dialog, "file_read_only_check", doc->readonly);
+	
+	const gchar *text;
+	if (encodings_is_unicode_charset(doc->encoding))
+		text = doc->has_bom ? _("(with BOM)") : _("(without BOM)");
+	else
+		text = "";
+	gchar *enctext = g_strdup_printf("%s %s", doc->encoding, text);
+	ui_label_set_text(dialog, "file_encoding_label", enctext);
+	g_free(enctext);
+	
+	ui_label_set_text(dialog, "file_modified_label", time_modified);
+	ui_label_set_text(dialog, "file_changed_label", time_changed);
+	ui_label_set_text(dialog, "file_accessed_label", time_accessed);
+	
+	/* permissions */
+	ui_toggle_btn_set_active(dialog, "file_perm_owner_r_check", mode & S_IRUSR);
+	ui_toggle_btn_set_active(dialog, "file_perm_owner_w_check", mode & S_IWUSR);
+	ui_toggle_btn_set_active(dialog, "file_perm_owner_x_check", mode & S_IXUSR);
+	ui_toggle_btn_set_active(dialog, "file_perm_group_r_check", mode & S_IRGRP);
+	ui_toggle_btn_set_active(dialog, "file_perm_group_w_check", mode & S_IWGRP);
+	ui_toggle_btn_set_active(dialog, "file_perm_group_x_check", mode & S_IXGRP);
+	ui_toggle_btn_set_active(dialog, "file_perm_other_r_check", mode & S_IROTH);
+	ui_toggle_btn_set_active(dialog, "file_perm_other_w_check", mode & S_IWOTH);
+	ui_toggle_btn_set_active(dialog, "file_perm_other_x_check", mode & S_IXOTH);
+	
 	g_free(time_changed);
 	g_free(time_modified);
 	g_free(time_accessed);
-
+	
 	gtk_widget_show(dialog);
 }
 

@@ -79,7 +79,6 @@
 /*static gboolean switch_tv_notebook_page = FALSE; */
 
 
-
 /* wrapper function to abort exit process if cancel button is pressed */
 static gboolean on_window_delete_event(GtkWidget *widget, GdkEvent *event,
 									   gpointer gdata)
@@ -182,11 +181,15 @@ static void on_edit1_menu_show(GtkMenu *menu, gpointer user_data)
 	ui_update_menu_copy_items(doc);
 	ui_update_insert_include_item(doc, 1);
 	
-	GtkWidget *item = ui_lookup_widget(main_widgets.window, "plugin_preferences1");
+	static GtkWidget *menuitem = NULL;
+	
+	if (menuitem == NULL)
+		menuitem = ui_lookup_widget(main_widgets.window, "plugin_preferences1");
+	
 #ifndef HAVE_PLUGINS
-	gtk_widget_hide(item);
+	gtk_widget_hide(menuitem);
 #else
-	gtk_widget_set_sensitive(item, plugins_have_preferences());
+	gtk_widget_set_sensitive(menuitem, plugins_have_preferences());
 #endif
 }
 
@@ -383,9 +386,7 @@ void on_toolbutton_search_clicked(GtkAction *action, gpointer user_data)
 /* hides toolbar from toolbar popup menu */
 static void on_hide_toolbar1_activate(GtkMenuItem *menuitem, gpointer user_data)
 {
-	GtkWidget *tool_item = ui_lookup_widget(GTK_WIDGET(main_widgets.window),
-											"menu_show_toolbar1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tool_item), FALSE);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_toolbar1", FALSE);
 }
 
 
@@ -482,7 +483,6 @@ static void convert_eol(gint mode)
 					  GINT_TO_POINTER(sci_get_eol_mode(doc->editor->sci)));
 	
 	sci_set_eol_mode(doc->editor->sci, mode);
-	
 	ui_update_statusbar(doc, -1);
 }
 
@@ -592,8 +592,7 @@ static void on_show_toolbar1_toggled(GtkCheckMenuItem *checkmenuitem,
 	if (ignore_callback) return;
 	
 	toolbar_prefs.visible = (toolbar_prefs.visible) ? FALSE : TRUE;
-	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar),
-						toolbar_prefs.visible);
+	ui_widget_show_hide(GTK_WIDGET(main_widgets.toolbar), toolbar_prefs.visible);
 }
 
 
@@ -1328,17 +1327,16 @@ void on_project_properties1_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 static void on_project1_menu_show(GtkMenu *menu, gpointer user_data)
 {
-	static GtkWidget *item_close = NULL;
-	static GtkWidget *item_properties = NULL;
+	static GtkWidget *close_item = NULL;
+	static GtkWidget *props_item = NULL;
 	
-	if (item_close == NULL)
+	if (close_item == NULL)
 	{
-		item_close = ui_lookup_widget(main_widgets.window, "project_close1");
-		item_properties = ui_lookup_widget(main_widgets.window,
-										   "project_properties1");
+		close_item = ui_lookup_widget(main_widgets.window, "project_close1");
+		props_item = ui_lookup_widget(main_widgets.window, "project_properties1");
 	}
-	gtk_widget_set_sensitive(item_close, (app->project != NULL));
-	gtk_widget_set_sensitive(item_properties, (app->project != NULL));
+	gtk_widget_set_sensitive(close_item, (app->project != NULL));
+	gtk_widget_set_sensitive(props_item, (app->project != NULL));
 	gtk_widget_set_sensitive(ui_widgets.recent_projects_menuitem,
 							 g_queue_get_length(ui_prefs.recent_projects_queue) > 0);
 }
@@ -1572,56 +1570,51 @@ void on_menu_toggle_all_additional_widgets1_activate(GtkMenuItem *menuitem,
 													 gpointer user_data)
 {
 	static gint hide_all = -1;
-	GtkCheckMenuItem *msgw = GTK_CHECK_MENU_ITEM(
-									ui_lookup_widget(main_widgets.window,
-													 "menu_show_messages_window1"));
-	GtkCheckMenuItem *toolbari = GTK_CHECK_MENU_ITEM(
-									ui_lookup_widget(main_widgets.window,
-													 "menu_show_toolbar1"));
+	static GtkCheckMenuItem *msgw_item = NULL;
+	static GtkCheckMenuItem *tool_item = NULL;
+	
+	if (msgw_item == NULL)
+	{
+		msgw_item = GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
+														 "menu_show_messages_window1"));
+		tool_item = GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
+														 "menu_show_toolbar1"));
+	}
 	
 	/* get the initial state (necessary if Geany was closed with hide_all = TRUE) */
 	if (G_UNLIKELY(hide_all == -1))
-	{
-		if (!gtk_check_menu_item_get_active(msgw) &&
-			!interface_prefs.show_notebook_tabs &&
-			!gtk_check_menu_item_get_active(toolbari))
-			hide_all = TRUE;
-		else
-			hide_all = FALSE;
-	}
+		hide_all = (!gtk_check_menu_item_get_active(msgw_item) &&
+					!interface_prefs.show_notebook_tabs &&
+					!gtk_check_menu_item_get_active(tool_item));
 	hide_all = !hide_all; /* toggle */
 	
 	if (hide_all)
 	{
-		if (gtk_check_menu_item_get_active(msgw))
-			gtk_check_menu_item_set_active(msgw,
-								!gtk_check_menu_item_get_active(msgw));
+		if (gtk_check_menu_item_get_active(msgw_item))
+			gtk_check_menu_item_set_active(msgw_item, FALSE);
 		
 		interface_prefs.show_notebook_tabs = FALSE;
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook),
 								   interface_prefs.show_notebook_tabs);
 		
-		ui_statusbar_showhide(FALSE);
+		ui_statusbar_show_hide(FALSE);
 		
-		if (gtk_check_menu_item_get_active(toolbari))
-			gtk_check_menu_item_set_active(toolbari,
-								!gtk_check_menu_item_get_active(toolbari));
+		if (gtk_check_menu_item_get_active(tool_item))
+			gtk_check_menu_item_set_active(tool_item, FALSE);
 	}
 	else
 	{
-		if (!gtk_check_menu_item_get_active(msgw))
-			gtk_check_menu_item_set_active(msgw,
-								!gtk_check_menu_item_get_active(msgw));
+		if (!gtk_check_menu_item_get_active(msgw_item))
+			gtk_check_menu_item_set_active(msgw_item, TRUE);
 		
 		interface_prefs.show_notebook_tabs = TRUE;
 		gtk_notebook_set_show_tabs(GTK_NOTEBOOK(main_widgets.notebook),
 								   interface_prefs.show_notebook_tabs);
 		
-		ui_statusbar_showhide(TRUE);
+		ui_statusbar_show_hide(TRUE);
 		
-		if (!gtk_check_menu_item_get_active(toolbari))
-			gtk_check_menu_item_set_active(toolbari,
-								!gtk_check_menu_item_get_active(toolbari));
+		if (!gtk_check_menu_item_get_active(tool_item))
+			gtk_check_menu_item_set_active(tool_item, TRUE);
 	}
 }
 
@@ -1736,18 +1729,19 @@ void on_replace_spaces_activate(GtkMenuItem *menuitem, gpointer user_data)
 
 static void on_search1_menu_show(GtkMenu *menu, gpointer user_data)
 {
-	GtkWidget *next_message = ui_lookup_widget(main_widgets.window,
-											   "next_message1");
-	GtkWidget *previous_message = ui_lookup_widget(main_widgets.window,
-												   "previous_message1");
+	static GtkWidget *next_msg = NULL;
+	static GtkWidget *prev_msg = NULL;
 	
+	if (next_msg == NULL)
+	{
+		next_msg = ui_lookup_widget(main_widgets.window, "next_message1");
+		prev_msg = ui_lookup_widget(main_widgets.window, "previous_message1");
+	}
 	/* enable commands if the messages window has any items */
-	gboolean have_messages = gtk_tree_model_iter_n_children(
-										GTK_TREE_MODEL(msgwindow.store_msg),
-										NULL) > 0;
-	
-	gtk_widget_set_sensitive(next_message, have_messages);
-	gtk_widget_set_sensitive(previous_message, have_messages);
+	gboolean have_msgs = gtk_tree_model_iter_n_children(
+									GTK_TREE_MODEL(msgwindow.store_msg), NULL) > 0;
+	gtk_widget_set_sensitive(next_msg, have_msgs);
+	gtk_widget_set_sensitive(prev_msg, have_msgs);
 }
 
 
@@ -1820,15 +1814,11 @@ static gboolean on_window_state_event(GtkWidget *widget,
 static void show_notebook_page(const gchar *notebook_name,
 							   const gchar *page_name)
 {
-	GtkWidget *widget;
-	GtkNotebook *notebook;
-	
-	widget = ui_lookup_widget(ui_widgets.prefs_dialog, page_name);
-	notebook = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog,
-											 notebook_name));
-	if (notebook != NULL && widget != NULL)
-		gtk_notebook_set_current_page(notebook,
-									  gtk_notebook_page_num(notebook, widget));
+	GtkWidget *widget = ui_lookup_widget(ui_widgets.prefs_dialog, page_name);
+	GtkNotebook *notebook = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog,
+														  notebook_name));
+	if (notebook && widget)
+		ui_notebook_set_current_page(notebook, widget);
 }
 
 
@@ -2012,10 +2002,12 @@ static void on_detect_type_from_file_activate(GtkMenuItem *menuitem,
 static void on_show_symbol_list_toggled(GtkToggleButton *button,
 										gpointer user_data)
 {
-	GtkWidget *widget = ui_lookup_widget(ui_widgets.prefs_dialog,
-										 "box_show_symbol_list_children");
+	static GtkWidget *box = NULL;
 	
-	gtk_widget_set_sensitive(widget, gtk_toggle_button_get_active(button));
+	if (box == NULL)
+		box = ui_lookup_widget(ui_widgets.prefs_dialog,
+							   "box_show_symbol_list_children");
+	gtk_widget_set_sensitive(box, gtk_toggle_button_get_active(button));
 }
 
 

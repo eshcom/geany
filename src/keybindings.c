@@ -297,11 +297,9 @@ static void add_kb(GeanyKeyGroup *group, gsize key_id,
 				   GdkModifierType mod, const gchar *kf_name,
 				   const gchar *label, const gchar *widget_name)
 {
-	GtkWidget *widget = widget_name ? ui_lookup_widget(main_widgets.window, widget_name)
-									: NULL;
-	
-	keybindings_set_item(group, key_id, callback,
-		key, mod, kf_name, label, widget);
+	GtkWidget *widget = widget_name ? ui_lookup_widget(main_widgets.window,
+													   widget_name) : NULL;
+	keybindings_set_item(group, key_id, callback, key, mod, kf_name, label, widget);
 }
 
 
@@ -907,7 +905,7 @@ static void add_menu_accel(GeanyKeyGroup *group, guint kb_id,
 #define GEANY_ADD_POPUP_ACCEL(kb_id, wid)						\
 	add_menu_accel(group, kb_id,								\
 				   ui_lookup_widget(main_widgets.editor_menu,	\
-				   G_STRINGIFY(wid)))
+									G_STRINGIFY(wid)))
 
 /* set the menu item accelerator shortcuts (just for visibility, they are handled anyway) */
 /* FIXME: update those during runtime */
@@ -1095,15 +1093,18 @@ static GtkWidget *create_dialog(void)
 static void key_dialog_show_prefs(void)
 {
 	prefs_show_dialog();
-	/* select the KB page */
-	GtkWidget *wid = ui_lookup_widget(ui_widgets.prefs_dialog, "frame22");
-	if (wid != NULL)
+	
+	static GtkNotebook *nbook = NULL;
+	static GtkWidget *frame = NULL;
+	
+	if (nbook == NULL)
 	{
-		GtkNotebook *nb = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog,
-														"notebook2"));
-		if (nb != NULL)
-			gtk_notebook_set_current_page(nb, gtk_notebook_page_num(nb, wid));
+		nbook = GTK_NOTEBOOK(ui_lookup_widget(ui_widgets.prefs_dialog, "notebook2"));
+		frame = ui_lookup_widget(ui_widgets.prefs_dialog, "frame22");
 	}
+	
+	/* select the KB page */
+	ui_notebook_set_current_page(nbook, frame);
 }
 
 
@@ -1278,11 +1279,6 @@ static gboolean set_sensitive(gpointer widget)
 
 static gboolean check_vte(GdkModifierType state, guint keyval)
 {
-	guint i;
-	GeanyKeyBinding *kb;
-	GeanyKeyGroup *group;
-	GtkWidget *widget;
-	
 	if (gtk_window_get_focus(GTK_WINDOW(main_widgets.window)) != vc->vte)
 		return FALSE;
 	if (!vc->enable_bash_keys)
@@ -1298,7 +1294,10 @@ static gboolean check_vte(GdkModifierType state, guint keyval)
 		return FALSE;
 	
 	/* make focus commands override any bash commands */
-	group = keybindings_get_core_group(GEANY_KEY_GROUP_FOCUS);
+	GeanyKeyGroup *group = keybindings_get_core_group(GEANY_KEY_GROUP_FOCUS);
+	GeanyKeyBinding *kb;
+	guint i;
+	
 	foreach_ptr_array(kb, i, group->key_items)
 	{
 		if (state == kb->mods && keyval == kb->key)
@@ -1308,13 +1307,12 @@ static gboolean check_vte(GdkModifierType state, guint keyval)
 	/* Temporarily disable the menus to prevent conflicting menu accelerators
 	 * from overriding the VTE bash shortcuts.
 	 * Note: maybe there's a better way of doing this ;-) */
-	widget = ui_lookup_widget(main_widgets.window, "menubar1");
-	gtk_widget_set_sensitive(widget, FALSE);
+	GtkWidget *widget = ui_widget_set_sensitive(main_widgets.window,
+												"menubar1", FALSE);
 	g_idle_add_full(G_PRIORITY_HIGH, set_sensitive, widget, NULL);
 	
-	widget = main_widgets.editor_menu;
-	gtk_widget_set_sensitive(widget, FALSE);
-	g_idle_add(set_sensitive, widget);
+	gtk_widget_set_sensitive(main_widgets.editor_menu, FALSE);
+	g_idle_add(set_sensitive, main_widgets.editor_menu);
 	return TRUE;
 }
 #endif
@@ -1777,21 +1775,13 @@ static gboolean cb_func_view_action(guint key_id)
 
 static void cb_func_menu_fullscreen(G_GNUC_UNUSED guint key_id)
 {
-	GtkCheckMenuItem *c = GTK_CHECK_MENU_ITEM(
-								ui_lookup_widget(main_widgets.window,
-												 "menu_fullscreen1"));
-	
-	gtk_check_menu_item_set_active(c, !gtk_check_menu_item_get_active(c));
+	ui_menu_item_revert_active(main_widgets.window, "menu_fullscreen1");
 }
 
 
 static void cb_func_menu_messagewindow(G_GNUC_UNUSED guint key_id)
 {
-	GtkCheckMenuItem *c = GTK_CHECK_MENU_ITEM(
-								ui_lookup_widget(main_widgets.window,
-												 "menu_show_messages_window1"));
-	
-	gtk_check_menu_item_set_active(c, !gtk_check_menu_item_get_active(c));
+	ui_menu_item_revert_active(main_widgets.window, "menu_show_messages_window1");
 }
 
 
@@ -1800,17 +1790,11 @@ static gboolean read_current_word(GeanyDocument *doc, gboolean sci_word)
 	g_return_val_if_fail(DOC_VALID(doc), FALSE);
 	
 	if (sci_word)
-	{
-		editor_find_current_word_sciwc(doc->editor, -1,
-									   editor_info.current_word,
+		editor_find_current_word_sciwc(doc->editor, -1, editor_info.current_word,
 									   GEANY_MAX_WORD_LENGTH);
-	}
 	else
-	{
-		editor_find_current_word(doc->editor, -1,
-								 editor_info.current_word,
+		editor_find_current_word(doc->editor, -1, editor_info.current_word,
 								 GEANY_MAX_WORD_LENGTH, NULL);
-	}
 	return (*editor_info.current_word != 0);
 }
 
@@ -2836,8 +2820,7 @@ static gboolean cb_func_insert_action(guint key_id)
 			editor_insert_alternative_whitespace(doc->editor);
 			break;
 		case GEANY_KEYS_INSERT_DATE:
-			gtk_menu_item_activate(GTK_MENU_ITEM(
-				ui_lookup_widget(main_widgets.window, "insert_date_custom1")));
+			ui_menu_item_activate(main_widgets.window, "insert_date_custom1");
 			break;
 		case GEANY_KEYS_INSERT_LINEAFTER:
 			insert_line_after(doc->editor);

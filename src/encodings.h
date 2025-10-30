@@ -63,7 +63,7 @@ typedef enum
 	GEANY_ENCODING_ISO_8859_14,
 	GEANY_ENCODING_ISO_8859_15,
 	GEANY_ENCODING_ISO_8859_16,
-
+	
 	GEANY_ENCODING_UTF_7,
 	GEANY_ENCODING_UTF_8,
 	GEANY_ENCODING_UTF_16LE,
@@ -72,42 +72,42 @@ typedef enum
 	GEANY_ENCODING_UCS_2BE,
 	GEANY_ENCODING_UTF_32LE,
 	GEANY_ENCODING_UTF_32BE,
-
+	
 	GEANY_ENCODING_ARMSCII_8,
 	GEANY_ENCODING_BIG5,
 	GEANY_ENCODING_BIG5_HKSCS,
 	GEANY_ENCODING_CP_866,
-
+	
 	GEANY_ENCODING_EUC_JP,
 	GEANY_ENCODING_EUC_KR,
 	GEANY_ENCODING_EUC_TW,
-
+	
 	GEANY_ENCODING_GB18030,
 	GEANY_ENCODING_GB2312,
 	GEANY_ENCODING_GBK,
 	GEANY_ENCODING_GEOSTD8,
 	GEANY_ENCODING_HZ,
-
+	
 	GEANY_ENCODING_IBM_850,
 	GEANY_ENCODING_IBM_852,
 	GEANY_ENCODING_IBM_855,
 	GEANY_ENCODING_IBM_857,
 	GEANY_ENCODING_IBM_862,
 	GEANY_ENCODING_IBM_864,
-
+	
 	GEANY_ENCODING_ISO_2022_JP,
 	GEANY_ENCODING_ISO_2022_KR,
 	GEANY_ENCODING_ISO_IR_111,
 	GEANY_ENCODING_JOHAB,
 	GEANY_ENCODING_KOI8_R,
 	GEANY_ENCODING_KOI8_U,
-
+	
 	GEANY_ENCODING_SHIFT_JIS,
 	GEANY_ENCODING_TCVN,
 	GEANY_ENCODING_TIS_620,
 	GEANY_ENCODING_UHC,
 	GEANY_ENCODING_VISCII,
-
+	
 	GEANY_ENCODING_WINDOWS_1250,
 	GEANY_ENCODING_WINDOWS_1251,
 	GEANY_ENCODING_WINDOWS_1252,
@@ -117,22 +117,23 @@ typedef enum
 	GEANY_ENCODING_WINDOWS_1256,
 	GEANY_ENCODING_WINDOWS_1257,
 	GEANY_ENCODING_WINDOWS_1258,
-
+	
 	GEANY_ENCODING_NONE,
 	GEANY_ENCODING_CP_932,
-
+	
 	GEANY_ENCODINGS_MAX
 }
 GeanyEncodingIndex;
 
-gchar *encodings_convert_to_utf8(const gchar *buffer, gssize size, gchar **used_encoding);
+gchar *encodings_convert_to_utf8(const gchar *buffer, gssize size,
+								 gchar **used_encoding);
 
 /* Converts a string from the given charset to UTF-8.
  * If fast is set, no further checks are performed. */
 gchar *encodings_convert_to_utf8_from_charset(const gchar *buffer, gssize size,
 											  const gchar *charset, gboolean fast);
 
-const gchar* encodings_get_charset_from_index(gint idx);
+const gchar *encodings_get_charset_from_index(gint idx);
 
 G_END_DECLS
 

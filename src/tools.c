@@ -601,17 +601,19 @@ static void cc_insert_custom_command_items(GtkMenu *me, const gchar *label, cons
 
 void tools_create_insert_custom_command_menu_items(void)
 {
-	GtkMenu *menu_edit = GTK_MENU(ui_lookup_widget(main_widgets.window, "send_selection_to2_menu"));
+	GtkMenu *menu_edit = GTK_MENU(ui_lookup_widget(main_widgets.window,
+												   "send_selection_to2_menu"));
 	GtkWidget *item;
 	GList *me_children, *node;
-
+	
 	/* first clean the menus to be able to rebuild them */
 	me_children = gtk_container_get_children(GTK_CONTAINER(menu_edit));
 	foreach_list(node, me_children)
 		gtk_widget_destroy(GTK_WIDGET(node->data));
 	g_list_free(me_children);
-
-	if (ui_prefs.custom_commands == NULL || g_strv_length(ui_prefs.custom_commands) == 0)
+	
+	if (ui_prefs.custom_commands == NULL ||
+		g_strv_length(ui_prefs.custom_commands) == 0)
 	{
 		item = gtk_menu_item_new_with_label(_("No custom commands defined."));
 		gtk_container_add(GTK_CONTAINER(menu_edit), item);
@@ -620,28 +622,25 @@ void tools_create_insert_custom_command_menu_items(void)
 	}
 	else
 	{
-		guint i, len;
 		gint idx = 0;
-		len = g_strv_length(ui_prefs.custom_commands);
-		for (i = 0; i < len; i++)
+		guint len = g_strv_length(ui_prefs.custom_commands);
+		for (guint i = 0; i < len; i++)
 		{
 			const gchar *label = ui_prefs.custom_commands_labels[i];
-
+			
 			if (EMPTY(label))
 				label = ui_prefs.custom_commands[i];
 			if (!EMPTY(label)) /* skip empty items */
-			{
-				cc_insert_custom_command_items(menu_edit, label, ui_prefs.custom_commands[i], idx);
-				idx++;
-			}
+				cc_insert_custom_command_items(menu_edit, label,
+											   ui_prefs.custom_commands[i], idx++);
 		}
 	}
-
+	
 	/* separator and Set menu item */
 	item = gtk_separator_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(menu_edit), item);
 	gtk_widget_show(item);
-
+	
 	cc_insert_custom_command_items(menu_edit, _("Set Custom Commands"), NULL, -1);
 }
 

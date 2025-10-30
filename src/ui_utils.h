@@ -149,6 +149,60 @@ void ui_tree_view_set_tooltip_text_column(GtkTreeView *tree_view, gint column);
 
 void ui_load_color(const gchar *color_name, GdkColor *color);
 
+// ----------- Wrappers with widget search by name (ui_lookup_widget) ------------
+GtkWidget *ui_setup_open_btn_callback(GtkWidget *parent, const gchar *name,
+									  const gchar *title,
+									  GtkFileChooserAction action, GtkWidget *entry);
+GtkWidget *ui_orientable_set_orientation(GtkWidget *parent, const gchar *name,
+										 gint orientation);
+GtkWidget *ui_scrolled_window_set_policy(GtkWidget *parent, const gchar *name,
+										 GtkPolicyType hscrollbar_policy,
+										 GtkPolicyType vscrollbar_policy);
+GtkWidget *ui_image_set_from_pixbuf(GtkWidget *parent, const gchar *name,
+									GdkPixbuf *icon);
+GtkWidget *ui_menu_item_set_submenu(GtkWidget *parent, const gchar *name,
+									GtkWidget *submenu);
+GtkWidget *ui_expander_set_expanded(GtkWidget *parent, const gchar *name,
+									gboolean expanded);
+GtkWidget *ui_color_btn_set_color(GtkWidget *parent, const gchar *name,
+								  const GdkColor *color);
+GtkWidget *ui_font_btn_set_font(GtkWidget *parent, const gchar *name,
+								const gchar *font_name);
+GtkWidget *ui_spin_btn_set_value(GtkWidget *parent, const gchar *name, gint value);
+GtkWidget *ui_paned_set_position(GtkWidget *parent, const gchar *name, gint position);
+GtkWidget *ui_entry_set_text(GtkWidget *parent, const gchar *name, const gchar *text);
+GtkWidget *ui_label_set_text(GtkWidget *parent, const gchar *name, const gchar *text);
+GtkWidget *ui_toggle_btn_set_active(GtkWidget *parent, const gchar *name,
+									gboolean active);
+GtkWidget *ui_combo_box_set_active(GtkWidget *parent, const gchar *name, gint index);
+GtkWidget *ui_menu_item_set_active(GtkWidget *parent, const gchar *item_name,
+								   gboolean active);
+GtkWidget *ui_widget_set_sensitive(GtkWidget *parent, const gchar *name,
+								   gboolean sensitive);
+GtkWidget *ui_widget_set_visible(GtkWidget *parent, const gchar *name,
+								 gboolean visible);
+GtkWidget *ui_widget_show_all(GtkWidget *parent, const gchar *name);
+GtkWidget *ui_widget_show(GtkWidget *parent, const gchar *name);
+GtkWidget *ui_widget_hide(GtkWidget *parent, const gchar *name);
+GtkWidget *ui_menu_item_activate(GtkWidget *parent, const gchar *name);
+GtkWidget *ui_menu_item_revert_active(GtkWidget *parent, const gchar *name);
+GtkWidget *ui_box_pack_start(GtkWidget *parent, const gchar *name,
+							 GtkWidget *child, gboolean expand,
+							 gboolean fill, guint padding);
+GtkWidget *ui_combo_box_set_active_encoding(GtkWidget *parent, const gchar *name,
+											gint enc);
+gboolean ui_toggle_btn_get_active(GtkWidget *parent, const gchar *name);
+gboolean ui_expander_get_expanded(GtkWidget *parent, const gchar *name);
+gboolean ui_widget_is_sensitive(GtkWidget *parent, const gchar *name);
+gchar *ui_entry_get_text(GtkWidget *parent, const gchar *name);
+gchar *ui_editable_get_chars(GtkWidget *parent, const gchar *name);
+gint ui_combo_box_get_active(GtkWidget *parent, const gchar *name);
+gint ui_spin_button_get_value_as_int(GtkWidget *parent, const gchar *name);
+gint ui_combo_box_get_active_encoding(GtkWidget *parent, const gchar *name);
+gint ui_paned_get_position(GtkWidget *parent, const gchar *name);
+void ui_notebook_set_current_page(GtkNotebook *notebook, GtkWidget *widget);
+// -------------------------------------------------------------------------------
+
 
 #ifndef GEANY_DISABLE_DEPRECATED
 GtkWidget *ui_frame_new_with_alignment(const gchar *label_text,
@@ -263,7 +317,7 @@ GtkWidget *create_project_dialog(void);
 GtkWidget *create_toolbar_popup_menu1(void);
 GtkWidget *create_window1(void);
 
-void ui_widget_set_sensitive(GtkWidget *widget, gboolean set);
+void ui_widget_set_sensitive_w(GtkWidget *widget, gboolean set);
 
 void ui_entry_add_activate_backward_signal(GtkEntry *entry);
 
@@ -357,7 +411,7 @@ gboolean ui_tree_view_find_previous(GtkTreeView *treeview, TVMatchCallback cb);
 gboolean ui_tree_model_iter_any_next(GtkTreeModel *model, GtkTreeIter *iter,
 									 gboolean down);
 
-void ui_statusbar_showhide(gboolean state);
+void ui_statusbar_show_hide(gboolean state);
 
 void ui_toggle_editor_features(GeanyUIEditorFeatures feature);
 

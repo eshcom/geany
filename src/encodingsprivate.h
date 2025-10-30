@@ -33,7 +33,7 @@ typedef enum
 	ASIAN,
 	MIDDLEEASTERN,
 	UNICODE,
-
+	
 	GEANY_ENCODING_GROUPS_MAX
 }
 GeanyEncodingGroup;
@@ -41,19 +41,19 @@ GeanyEncodingGroup;
 /* Structure to represent an encoding to be used in Geany. */
 typedef struct GeanyEncoding
 {
-	GeanyEncodingIndex      idx; /* The index of the encoding inside globa encodes array.*/
-	gint                    order; /* Internally used member for grouping */
-	GeanyEncodingGroup      group; /* Internally used member for grouping */
-	const gchar            *charset; /* String representation of the encoding, e.g. "ISO-8859-3" */
-	const gchar            *name; /* Translatable and descriptive name of the encoding, e.g. "South European" */
+	GeanyEncodingIndex  idx;     /* The index of the encoding inside globa encodes array.*/
+	gint                order;   /* Internally used member for grouping */
+	GeanyEncodingGroup  group;   /* Internally used member for grouping */
+	const gchar        *charset; /* String representation of the encoding, e.g. "ISO-8859-3" */
+	const gchar        *name;    /* Translatable and descriptive name of the encoding, e.g. "South European" */
 }
 GeanyEncoding;
 
-const GeanyEncoding* encodings_get_from_charset(const gchar *charset);
-const GeanyEncoding* encodings_get_from_index(gint idx);
+const GeanyEncoding *encodings_get_from_charset(const gchar *charset);
+const GeanyEncoding *encodings_get_from_index(gint idx);
 
-gchar* encodings_to_string(const GeanyEncoding* enc);
-const gchar* encodings_get_charset(const GeanyEncoding* enc);
+gchar *encodings_to_string(const GeanyEncoding *enc);
+const gchar *encodings_get_charset(const GeanyEncoding *enc);
 
 void encodings_select_radio_item(const gchar *charset);
 
@@ -64,17 +64,23 @@ GtkTreeStore *encodings_encoding_store_new(gboolean has_detect);
 
 gint encodings_encoding_store_get_encoding(GtkTreeStore *store, GtkTreeIter *iter);
 
-gboolean encodings_encoding_store_get_iter(GtkTreeStore *store, GtkTreeIter *iter, gint enc);
+gboolean encodings_encoding_store_get_iter(GtkTreeStore *store, GtkTreeIter *iter,
+										   gint enc);
 
-void encodings_encoding_store_cell_data_func(GtkCellLayout *cell_layout, GtkCellRenderer *cell,
-                                             GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data);
+void encodings_encoding_store_cell_data_func(GtkCellLayout *cell_layout,
+											 GtkCellRenderer *cell,
+											 GtkTreeModel *tree_model,
+											 GtkTreeIter *iter, gpointer data);
 
 gboolean encodings_is_unicode_charset(const gchar *string);
 
-gboolean encodings_convert_to_utf8_auto(gchar **buf, gsize *size, const gchar *forced_enc,
-                                        gchar **used_encoding, gboolean *has_bom, gboolean *partial);
+gboolean encodings_convert_to_utf8_auto(gchar **buf, gsize *size,
+										const gchar *forced_enc,
+										gchar **used_encoding,
+										gboolean *has_bom, gboolean *partial);
 
-GeanyEncodingIndex encodings_scan_unicode_bom(const gchar *string, gsize len, guint *bom_len);
+GeanyEncodingIndex encodings_scan_unicode_bom(const gchar *string, gsize len,
+											  guint *bom_len);
 
 GeanyEncodingIndex encodings_get_idx_from_charset(const gchar *charset);
 

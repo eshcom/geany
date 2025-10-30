@@ -408,10 +408,7 @@ void msgwin_show_hide(gboolean show)
 {
 	ui_prefs.msgwindow_visible = show;
 	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(
-		GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-											 "menu_show_messages_window1")),
-		show);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_messages_window1", show);
 	ignore_callback = FALSE;
 	ui_widget_show_hide(main_widgets.message_window_notebook, show);
 	/* set the input focus back to the editor */

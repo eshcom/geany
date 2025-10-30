@@ -204,16 +204,15 @@ static void apply_settings(void)
 	if (!ui_prefs.msgwindow_visible)
 	{
 		ignore_callback = TRUE;
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(
-					main_widgets.window, "menu_show_messages_window1")), FALSE);
+		ui_menu_item_set_active(main_widgets.window, "menu_show_messages_window1",
+								FALSE);
 		gtk_widget_hide(main_widgets.message_window_notebook);
 		ignore_callback = FALSE;
 	}
 	if (!ui_prefs.sidebar_visible)
 	{
 		ignore_callback = TRUE;
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(
-					main_widgets.window, "menu_show_sidebar1")), FALSE);
+		ui_menu_item_set_active(main_widgets.window, "menu_show_sidebar1", FALSE);
 		ignore_callback = FALSE;
 	}
 	
@@ -242,16 +241,14 @@ static void apply_settings(void)
 	if (!vte_info.have_vte)
 #endif
 	{
-		gtk_widget_set_sensitive(ui_lookup_widget(
-					main_widgets.window, "send_selection_to_vte1"), FALSE);
+		ui_widget_set_sensitive(main_widgets.window, "send_selection_to_vte1", FALSE);
 	}
 	
 	if (interface_prefs.sidebar_pos != GTK_POS_LEFT)
 		ui_swap_sidebar_pos();
 	
-	gtk_orientable_set_orientation(
-					GTK_ORIENTABLE(ui_lookup_widget(main_widgets.window, "vpaned1")),
-					interface_prefs.msgwin_orientation);
+	ui_orientable_set_orientation(main_widgets.window, "vpaned1",
+								  interface_prefs.msgwin_orientation);
 }
 
 

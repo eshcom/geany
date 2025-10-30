@@ -359,17 +359,10 @@ static void split_view(gboolean horizontal)
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(splitwin_notebook), FALSE);
 	gtk_notebook_append_page(GTK_NOTEBOOK(splitwin_notebook), box, NULL);
 	gtk_container_add(GTK_CONTAINER(pane), splitwin_notebook);
-
+	
 	set_editor(&edit_window, doc->editor);
-
-	if (horizontal)
-	{
-		gtk_paned_set_position(GTK_PANED(pane), width);
-	}
-	else
-	{
-		gtk_paned_set_position(GTK_PANED(pane), height);
-	}
+	
+	gtk_paned_set_position(GTK_PANED(pane), horizontal ? width : height);
 	gtk_widget_show_all(pane);
 }
 

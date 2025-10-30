@@ -72,8 +72,8 @@
 GeanyInterfacePrefs	interface_prefs;
 GeanyMainWidgets	main_widgets;
 
-UIPrefs			ui_prefs;
-UIWidgets		ui_widgets;
+UIPrefs				ui_prefs;
+UIWidgets			ui_widgets;
 
 static GtkBuilder	*builder = NULL;
 static GtkWidget	*window1 = NULL;
@@ -123,10 +123,9 @@ static void ui_menu_sort_by_label(GtkMenu *menu);
 
 
 /* simple wrapper for gtk_widget_set_sensitive() to allow widget being NULL */
-void ui_widget_set_sensitive(GtkWidget *widget, gboolean set)
+void ui_widget_set_sensitive_w(GtkWidget *widget, gboolean set)
 {
-	if (widget != NULL)
-		gtk_widget_set_sensitive(widget, set);
+	if (widget) gtk_widget_set_sensitive(widget, set);
 }
 
 
@@ -136,7 +135,6 @@ static void set_statusbar(const gchar *text, gint text_color, gboolean allow_ove
 {
 	static guint id = 0;
 	static glong last_time = 0;
-	GTimeVal timeval;
 	const gint GEANY_STATUS_TIMEOUT = 1;
 	
 	if (!interface_prefs.statusbar_visible)
@@ -145,6 +143,7 @@ static void set_statusbar(const gchar *text, gint text_color, gboolean allow_ove
 	if (id == 0)
 		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(ui_widgets.statusbar),
 										  "geany-main");
+	GTimeVal timeval;
 	g_get_current_time(&timeval);
 	
 	if (!allow_override)
@@ -220,16 +219,12 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 	const gchar *fmt;
 	const gchar *expos;	/* % expansion position */
 	const gchar sp[] = "      ";
-	GString *stats_str;
+	
 	ScintillaObject *sci = doc->editor->sci;
+	GString *stats_str = g_string_sized_new(120);
 	
-	if (!EMPTY(ui_prefs.statusbar_template))
-		fmt = ui_prefs.statusbar_template;
-	else
-		fmt = _(DEFAULT_STATUSBAR_TEMPLATE);
-	
-	stats_str = g_string_sized_new(120);
-	
+	fmt = EMPTY(ui_prefs.statusbar_template) ? _(DEFAULT_STATUSBAR_TEMPLATE)
+											 : ui_prefs.statusbar_template;
 	while ((expos = strchr(fmt, '%')) != NULL)
 	{
 		/* append leading text before % char */
@@ -242,7 +237,7 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 				break;
 			case 'L':
 				g_string_append_printf(stats_str, "%d",
-					sci_get_line_count(doc->editor->sci));
+									   sci_get_line_count(doc->editor->sci));
 				break;
 			case 'c':
 				g_string_append_printf(stats_str, "%d", vcol);
@@ -257,26 +252,33 @@ static gchar *create_statusbar_statistics(GeanyDocument *doc, guint line,
 			{
 				gint len = sci_get_selected_text_length(sci) - 1;
 				/* check if whole lines are selected */
-				if (!len || sci_get_col_from_position(sci,
-						sci_get_selection_start(sci)) != 0 ||
-					sci_get_col_from_position(sci,
-						sci_get_selection_end(sci)) != 0)
+				if (!len
+					|| sci_get_col_from_position(sci, sci_get_selection_start(sci)) != 0
+					|| sci_get_col_from_position(sci, sci_get_selection_end(sci)) != 0)
 					g_string_append_printf(stats_str, "%d", len);
 				else /* L = lines */
 					g_string_append_printf(stats_str, _("%dL"),
-						sci_get_lines_selected(doc->editor->sci) - 1);
+							sci_get_lines_selected(doc->editor->sci) - 1);
 				break;
 			}
 			case 'n' :
 				g_string_append_printf(stats_str, "%d",
-					sci_get_selected_text_length(doc->editor->sci) - 1);
+						sci_get_selected_text_length(doc->editor->sci) - 1);
 				break;
 			case 'w':
-				/* RO = read-only */
-				g_string_append(stats_str, (doc->readonly) ? _("RO ") :
-					/* OVR = overwrite/overtype, INS = insert */
-					(sci_get_overtype(doc->editor->sci) ? _("OVR") : _("INS")));
+			{
+				/* RO = read-only, OVR = overwrite/overtype, INS = insert */
+				const gchar *text;
+				if (doc->readonly)
+					text = _("RO ");
+				else if (sci_get_overtype(doc->editor->sci))
+					text = _("OVR");
+				else
+					text = _("INS");
+				
+				g_string_append(stats_str, text);
 				break;
+			}
 			case 'r':
 				if (doc->readonly)
 				{
@@ -461,8 +463,6 @@ void ui_set_window_title(GeanyDocument *doc)
 
 void ui_set_editor_font(const gchar *font_name)
 {
-	guint i;
-	
 	g_return_if_fail(font_name != NULL);
 	
 	/* do nothing if font has not changed */
@@ -474,7 +474,7 @@ void ui_set_editor_font(const gchar *font_name)
 	interface_prefs.editor_font = g_strdup(font_name);
 	
 	/* We copy the current style, and update the font in all open tabs. */
-	for (i = 0; i < documents_array->len; i++)
+	for (guint i = 0; i < documents_array->len; i++)
 	{
 		if (documents[i]->editor)
 			editor_set_font(documents[i]->editor, interface_prefs.editor_font);
@@ -514,54 +514,50 @@ void ui_update_popup_reundo_items(GeanyDocument *doc)
 	/* index 0 is the popup menu, 1 is the menubar, 2 is the toolbar */
 	len = G_N_ELEMENTS(widgets.undo_items);
 	for (i = 0; i < len; i++)
-		ui_widget_set_sensitive(widgets.undo_items[i], enable_undo);
+		ui_widget_set_sensitive_w(widgets.undo_items[i], enable_undo);
 	
 	len = G_N_ELEMENTS(widgets.redo_items);
 	for (i = 0; i < len; i++)
-		ui_widget_set_sensitive(widgets.redo_items[i], enable_redo);
+		ui_widget_set_sensitive_w(widgets.redo_items[i], enable_redo);
 }
 
 
 void ui_update_popup_copy_items(GeanyDocument *doc)
 {
-	gboolean enable;
-	guint i, len;
-	
 	g_return_if_fail(doc == NULL || doc->is_valid);
 	
-	enable = (doc == NULL) ? FALSE : sci_has_selection(doc->editor->sci);
+	gboolean enable = doc ? sci_has_selection(doc->editor->sci) : FALSE;
+	guint len = G_N_ELEMENTS(widgets.popup_copy_items);
 	
-	len = G_N_ELEMENTS(widgets.popup_copy_items);
-	for (i = 0; i < len; i++)
-		ui_widget_set_sensitive(widgets.popup_copy_items[i], enable);
+	for (guint i = 0; i < len; i++)
+		ui_widget_set_sensitive_w(widgets.popup_copy_items[i], enable);
 }
 
 
 void ui_update_popup_goto_items(gboolean enable)
 {
-	guint i, len;
-	len = G_N_ELEMENTS(widgets.popup_goto_items);
-	for (i = 0; i < len; i++)
-		ui_widget_set_sensitive(widgets.popup_goto_items[i], enable);
+	guint len = G_N_ELEMENTS(widgets.popup_goto_items);
+	
+	for (guint i = 0; i < len; i++)
+		ui_widget_set_sensitive_w(widgets.popup_goto_items[i], enable);
 }
 
 
 void ui_menu_copy_items_set_sensitive(gboolean sensitive)
 {
-	guint i, len;
+	guint len = G_N_ELEMENTS(widgets.menu_copy_items);
 	
-	len = G_N_ELEMENTS(widgets.menu_copy_items);
-	for (i = 0; i < len; i++)
-		ui_widget_set_sensitive(widgets.menu_copy_items[i], sensitive);
+	for (guint i = 0; i < len; i++)
+		ui_widget_set_sensitive_w(widgets.menu_copy_items[i], sensitive);
 }
 
 
 void ui_update_menu_copy_items(GeanyDocument *doc)
 {
+	g_return_if_fail(doc == NULL || doc->is_valid);
+	
 	gboolean enable = FALSE;
 	GtkWidget *focusw = gtk_window_get_focus(GTK_WINDOW(main_widgets.window));
-	
-	g_return_if_fail(doc == NULL || doc->is_valid);
 	
 	if (IS_SCINTILLA(focusw))
 		enable = (doc == NULL) ? FALSE : sci_has_selection(doc->editor->sci);
@@ -579,9 +575,9 @@ void ui_update_menu_copy_items(GeanyDocument *doc)
 
 void ui_update_insert_include_item(GeanyDocument *doc, gint item)
 {
-	gboolean enable = FALSE;
-	
 	g_return_if_fail(doc == NULL || doc->is_valid);
+	
+	gboolean enable = FALSE;
 	
 	if (doc == NULL || doc->file_type == NULL)
 		enable = FALSE;
@@ -589,29 +585,29 @@ void ui_update_insert_include_item(GeanyDocument *doc, gint item)
 			 doc->file_type->id == GEANY_FILETYPES_CPP)
 		enable = TRUE;
 	
-	ui_widget_set_sensitive(widgets.menu_insert_include_items[item], enable);
+	ui_widget_set_sensitive_w(widgets.menu_insert_include_items[item], enable);
 }
 
 
 void ui_update_fold_items(void)
 {
-	ui_widget_show_hide(ui_lookup_widget(main_widgets.window, "menu_fold_all1"),
-						editor_prefs.folding);
-	ui_widget_show_hide(ui_lookup_widget(main_widgets.window, "menu_unfold_all1"),
-						editor_prefs.folding);
-	ui_widget_show_hide(ui_lookup_widget(main_widgets.window, "separator22"),
-						editor_prefs.folding);
+	ui_widget_set_visible(main_widgets.window, "menu_fold_all1",
+						  editor_prefs.folding);
+	ui_widget_set_visible(main_widgets.window, "menu_unfold_all1",
+						  editor_prefs.folding);
+	ui_widget_set_visible(main_widgets.window, "separator22",
+						  editor_prefs.folding);
 }
 
 
 /* @include include name or NULL for empty with cursor ready for typing it */
 static void insert_include(GeanyDocument *doc, gint pos, const gchar *include)
 {
-	gint pos_after = -1;
-	gchar *text;
-	
 	g_return_if_fail(doc != NULL);
 	g_return_if_fail(pos == -1 || pos >= 0);
+	
+	gint pos_after = -1;
+	gchar *text;
 	
 	if (pos == -1)
 		pos = sci_get_current_position(doc->editor->sci);
@@ -747,9 +743,6 @@ void ui_create_insert_menu_items(void)
 
 static void insert_date(GeanyDocument *doc, gint pos, const gchar *date_style)
 {
-	const gchar *format = NULL;
-	gchar *time_str;
-	
 	g_return_if_fail(doc != NULL);
 	g_return_if_fail(pos == -1 || pos >= 0);
 	
@@ -762,6 +755,8 @@ static void insert_date(GeanyDocument *doc, gint pos, const gchar *date_style)
 		g_free(ui_prefs.custom_date_format);
 		ui_prefs.custom_date_format = g_strdup("%d.%m.%Y");
 	}
+	
+	const gchar *format = NULL;
 	
 	if (utils_str_equal(_("dd.mm.yyyy"), date_style))
 		format = "%d.%m.%Y";
@@ -789,8 +784,8 @@ static void insert_date(GeanyDocument *doc, gint pos, const gchar *date_style)
 		return;
 	}
 	
-	time_str = utils_get_date_time(format, NULL);
-	if (time_str != NULL)
+	gchar *time_str = utils_get_date_time(format, NULL);
+	if (time_str)
 	{
 		sci_start_undo_action(doc->editor->sci);
 		sci_insert_text(doc->editor->sci, pos, time_str);
@@ -847,7 +842,6 @@ void ui_create_insert_date_menu_items(void)
 	GtkMenu *menu_popup = GTK_MENU(ui_lookup_widget(main_widgets.editor_menu,
 													"insert_date2_menu"));
 	GtkWidget *item;
-	gchar *str;
 	
 	insert_date_items(menu_edit, menu_popup, _("dd.mm.yyyy"));
 	insert_date_items(menu_edit, menu_popup, _("mm.dd.yyyy"));
@@ -871,7 +865,8 @@ void ui_create_insert_date_menu_items(void)
 	gtk_container_add(GTK_CONTAINER(menu_popup), item);
 	gtk_widget_show(item);
 	
-	str = _("_Use Custom Date Format");
+	gchar *str = _("_Use Custom Date Format");
+	
 	item = gtk_menu_item_new_with_mnemonic(str);
 	gtk_container_add(GTK_CONTAINER(menu_edit), item);
 	gtk_widget_show(item);
@@ -897,8 +892,8 @@ void ui_save_buttons_toggle(gboolean enable)
 	if (ui_prefs.allow_always_save)
 		enable = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)) > 0;
 	
-	ui_widget_set_sensitive(widgets.save_buttons[0], enable);
-	ui_widget_set_sensitive(widgets.save_buttons[1], enable);
+	ui_widget_set_sensitive_w(widgets.save_buttons[0], enable);
+	ui_widget_set_sensitive_w(widgets.save_buttons[1], enable);
 	
 	/* save all menu item and tool button */
 	for (guint i = 0; i < documents_array->len; i++)
@@ -910,8 +905,8 @@ void ui_save_buttons_toggle(gboolean enable)
 			break;
 		}
 	}
-	ui_widget_set_sensitive(widgets.save_buttons[2], dirty_tabs);
-	ui_widget_set_sensitive(widgets.save_buttons[3], dirty_tabs);
+	ui_widget_set_sensitive_w(widgets.save_buttons[2], dirty_tabs);
+	ui_widget_set_sensitive_w(widgets.save_buttons[3], dirty_tabs);
 }
 
 
@@ -1015,7 +1010,7 @@ void ui_document_buttons_update(void)
 		if (GTK_IS_ACTION(widget))
 			gtk_action_set_sensitive(GTK_ACTION(widget), enable);
 		else
-			ui_widget_set_sensitive(widget, enable);
+			ui_widget_set_sensitive_w(widget, enable);
 	}
 }
 
@@ -1039,27 +1034,22 @@ void ui_add_document_sensitive(GtkWidget *widget)
 {
 	gboolean enable = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_widgets.notebook)) > 0;
 	
-	ui_widget_set_sensitive(widget, enable);
+	ui_widget_set_sensitive_w(widget, enable);
 	
 	g_ptr_array_add(widgets.document_buttons, widget);
-	g_signal_connect(widget, "destroy",
-					 G_CALLBACK(on_doc_sensitive_widget_destroy), NULL);
+	g_signal_connect(widget, "destroy", G_CALLBACK(on_doc_sensitive_widget_destroy),
+					 NULL);
 }
 
 
 void ui_widget_show_hide(GtkWidget *widget, gboolean show)
 {
-	if (show)
-		gtk_widget_show(widget);
-	else
-		gtk_widget_hide(widget);
+	show ? gtk_widget_show(widget) : gtk_widget_hide(widget);
 }
 
 
 void ui_sidebar_show_hide(void)
 {
-	GtkWidget *widget;
-	
 	/* check that there are no other notebook pages before hiding the sidebar completely
 	 * other pages could be e.g. the file browser plugin */
 	if (!interface_prefs.sidebar_openfiles_visible &&
@@ -1069,12 +1059,12 @@ void ui_sidebar_show_hide(void)
 		ui_prefs.sidebar_visible = FALSE;
 	}
 	
-	widget = ui_lookup_widget(main_widgets.window, "menu_show_sidebar1");
+	GtkWidget *item = ui_lookup_widget(main_widgets.window, "menu_show_sidebar1");
 	if (ui_prefs.sidebar_visible !=
-			gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)))
+			gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(item)))
 	{
 		ignore_callback = TRUE;
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget),
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),
 									   ui_prefs.sidebar_visible);
 		ignore_callback = FALSE;
 	}
@@ -1099,22 +1089,16 @@ void ui_document_show_hide(GeanyDocument *doc)
 	
 	ignore_callback = TRUE;
 	
-	gtk_check_menu_item_set_active(
-			GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-												 "menu_line_wrapping1")),
-			doc->editor->line_wrapping);
+	ui_menu_item_set_active(main_widgets.window, "menu_line_wrapping1",
+							doc->editor->line_wrapping);
 	
-	gtk_check_menu_item_set_active(
-			GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-												 "line_breaking1")),
-			doc->editor->line_breaking);
+	ui_menu_item_set_active(main_widgets.window, "line_breaking1",
+							doc->editor->line_breaking);
 	
 	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(doc->editor);
 	
-	GtkWidget *item = ui_lookup_widget(main_widgets.window,
-									   "menu_use_auto_indentation1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),
-								   doc->editor->auto_indent);
+	ui_menu_item_set_active(main_widgets.window, "menu_use_auto_indentation1",
+							doc->editor->auto_indent);
 	
 	const gchar *widget_name;
 	
@@ -1128,25 +1112,21 @@ void ui_document_show_hide(GeanyDocument *doc)
 		default:
 			widget_name = "tabs_and_spaces1"; break;
 	}
-	item = ui_lookup_widget(main_widgets.window, widget_name);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
 	
 	if (iprefs->width >= 1 && iprefs->width <= 8)
 	{
 		gchar *name = g_strdup_printf("indent_width_%d", iprefs->width);
-		item = ui_lookup_widget(main_widgets.window, name);
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
+		ui_menu_item_set_active(main_widgets.window, name, TRUE);
 		g_free(name);
 	}
 	
-	gtk_check_menu_item_set_active(
-			GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-												 "set_file_readonly1")),
-			doc->readonly);
-	
-	item = ui_lookup_widget(main_widgets.window, "menu_write_unicode_bom1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), doc->has_bom);
-	ui_widget_set_sensitive(item, encodings_is_unicode_charset(doc->encoding));
+	ui_menu_item_set_active(main_widgets.window, "set_file_readonly1",
+							doc->readonly);
+	GtkWidget *item = ui_menu_item_set_active(main_widgets.window,
+											  "menu_write_unicode_bom1",
+											  doc->has_bom);
+	ui_widget_set_sensitive_w(item, encodings_is_unicode_charset(doc->encoding));
 	
 	switch (sci_get_eol_mode(doc->editor->sci))
 	{
@@ -1154,9 +1134,7 @@ void ui_document_show_hide(GeanyDocument *doc)
 		case SC_EOL_LF: widget_name = "lf"; break;
 		default: widget_name = "crlf"; break;
 	}
-	gtk_check_menu_item_set_active(
-			GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window, widget_name)),
-			TRUE);
+	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
 	
 	encodings_select_radio_item(doc->encoding);
 	filetypes_select_radio_item(doc->file_type);
@@ -1173,10 +1151,10 @@ void ui_set_search_entry_background(GtkWidget *widget, gboolean success)
 
 static void recent_create_menu(GeanyRecentFiles *grf)
 {
-	guint i, len;
+	guint len = MIN(file_prefs.mru_length,
+					g_queue_get_length(grf->recent_queue));
 	
-	len = MIN(file_prefs.mru_length, g_queue_get_length(grf->recent_queue));
-	for (i = 0; i < len; i++)
+	for (guint i = 0; i < len; i++)
 	{
 		/* create menu item for the recent files menu in the menu bar */
 		const gchar *filename = g_queue_peek_nth(grf->recent_queue, i);
@@ -1297,10 +1275,7 @@ static void add_recent_file(const gchar *utf8_filename, GeanyRecentFiles *grf,
 void ui_add_recent_document(GeanyDocument *doc)
 {
 	/* what are the groups for actually? */
-	static const gchar *groups[2] = {
-		"geany",
-		NULL
-	};
+	static const gchar *groups[2] = { "geany", NULL };
 	GtkRecentData rdata;
 	
 	/* Prepare the data for gtk_recent_manager_add_full() */
@@ -1329,14 +1304,11 @@ void ui_add_recent_project_file(const gchar *utf8_filename)
 gchar *ui_menu_item_get_text(GtkMenuItem *menu_item)
 {
 	const gchar *text = NULL;
+	GtkWidget *child = gtk_bin_get_child(GTK_BIN(menu_item));
 	
-	if (gtk_bin_get_child(GTK_BIN(menu_item)))
-	{
-		GtkWidget *child = gtk_bin_get_child(GTK_BIN(menu_item));
-		
-		if (GTK_IS_LABEL(child))
-			text = gtk_label_get_text(GTK_LABEL(child));
-	}
+	if (child && GTK_IS_LABEL(child))
+		text = gtk_label_get_text(GTK_LABEL(child));
+	
 	/* GTK owns text so it's much safer to return a copy of
 	 * it in case the memory is reallocated */
 	return g_strdup(text);
@@ -1477,7 +1449,6 @@ static void update_recent_menu(GeanyRecentFiles *grf)
 void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 {
 	guint i;
-	
 	foreach_document(i)
 	{
 		GeanyDocument *doc = documents[i];
@@ -1511,21 +1482,16 @@ void ui_toggle_editor_features(GeanyUIEditorFeatures feature)
 void ui_update_view_editor_menu_items(void)
 {
 	ignore_callback = TRUE;
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-																		"menu_markers_margin1")),
-								   editor_prefs.show_markers_margin);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-																		"menu_linenumber_margin1")),
-								   editor_prefs.show_linenumber_margin);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-																		"menu_show_white_space1")),
-								   editor_prefs.show_white_space);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-																		"menu_show_line_endings1")),
-								   editor_prefs.show_line_endings);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ui_lookup_widget(main_widgets.window,
-																		"menu_show_indentation_guides1")),
-								   editor_prefs.show_indent_guide);
+	ui_menu_item_set_active(main_widgets.window, "menu_markers_margin1",
+							editor_prefs.show_markers_margin);
+	ui_menu_item_set_active(main_widgets.window, "menu_linenumber_margin1",
+							editor_prefs.show_linenumber_margin);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_white_space1",
+							editor_prefs.show_white_space);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_line_endings1",
+							editor_prefs.show_line_endings);
+	ui_menu_item_set_active(main_widgets.window, "menu_show_indentation_guides1",
+							editor_prefs.show_indent_guide);
 	ignore_callback = FALSE;
 }
 
@@ -1543,16 +1509,15 @@ GEANY_API_SYMBOL
 GtkWidget *ui_frame_new_with_alignment(const gchar *label_text,
 									   GtkWidget **alignment)
 {
-	GtkWidget *label, *align;
 	GtkWidget *frame = gtk_frame_new(NULL);
 	
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
 	
-	align = gtk_alignment_new(0.5, 0.5, 1, 1);
+	GtkWidget *align = gtk_alignment_new(0.5, 0.5, 1, 1);
 	gtk_container_add(GTK_CONTAINER(frame), align);
 	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 12, 0);
 	
-	label = ui_label_new_bold(label_text);
+	GtkWidget *label = ui_label_new_bold(label_text);
 	gtk_frame_set_label_widget(GTK_FRAME(frame), label);
 	
 	*alignment = align;
@@ -1567,7 +1532,7 @@ GtkWidget *ui_frame_new_with_alignment(const gchar *label_text,
 GEANY_API_SYMBOL
 GtkWidget *ui_dialog_vbox_new(GtkDialog *dialog)
 {
-	GtkWidget *vbox = gtk_vbox_new(FALSE, 12);	/* need child vbox to set a separate border. */
+	GtkWidget *vbox = gtk_vbox_new(FALSE, 12); /* need child vbox to set a separate border. */
 	
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
@@ -1594,10 +1559,10 @@ void ui_dialog_set_primary_button_order(GtkDialog *dialog, gint response, ...)
 {
 	va_list ap;
 	GtkWidget *action_area = gtk_dialog_get_action_area(dialog);
-	gint position;
 	
 	va_start(ap, response);
-	for (position = 0; response != -1; position++)
+	
+	for (gint position = 0; response != -1; position++)
 	{
 		GtkWidget *child = gtk_dialog_get_widget_for_response(dialog, response);
 		if (child)
@@ -1621,11 +1586,9 @@ void ui_dialog_set_primary_button_order(GtkDialog *dialog, gint response, ...)
 GEANY_API_SYMBOL
 GtkWidget *ui_button_new_with_image(const gchar *stock_id, const gchar *text)
 {
-	GtkWidget *image, *button;
-	
-	button = gtk_button_new_with_mnemonic(text);
+	GtkWidget *button = gtk_button_new_with_mnemonic(text);
 	gtk_widget_show(button);
-	image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image(GTK_BUTTON(button), image);
 	/* note: image is shown by gtk */
 	return button;
@@ -1721,15 +1684,13 @@ static void add_to_size_group(GtkWidget *widget, gpointer size_group)
  * Should be called after all child widgets have been packed. */
 void ui_hbutton_box_copy_layout(GtkButtonBox *master, GtkButtonBox *copy)
 {
-	GtkSizeGroup *size_group;
-	
 	gtk_box_set_spacing(GTK_BOX(copy), 10);
 	gtk_button_box_set_layout(copy, gtk_button_box_get_layout(master));
 	
 	/* now we need to put the widest widget from each button box in a size group,
 	* but we don't know the width before they are drawn, and for different label
 	* translations the widest widget can vary, so we just add all widgets. */
-	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_container_foreach(GTK_CONTAINER(master), add_to_size_group, size_group);
 	gtk_container_foreach(GTK_CONTAINER(copy), add_to_size_group, size_group);
 	g_object_unref(size_group);
@@ -1739,11 +1700,11 @@ void ui_hbutton_box_copy_layout(GtkButtonBox *master, GtkButtonBox *copy)
 static gboolean tree_model_find_text(GtkTreeModel *model, GtkTreeIter *iter,
 									 gint column, const gchar *text)
 {
-	gchar *combo_text;
-	gboolean found = FALSE;
-	
 	if (gtk_tree_model_get_iter_first(model, iter))
 	{
+		gchar *combo_text;
+		gboolean found = FALSE;
+		
 		do
 		{
 			gtk_tree_model_get(model, iter, 0, &combo_text, -1);
@@ -1809,7 +1770,6 @@ void ui_update_tab_status(GeanyDocument *doc)
 {
 	gtk_widget_set_name(doc->priv->tab_label,
 						document_get_status_widget_class(doc));
-	
 	sidebar_openfiles_update(doc);
 }
 
@@ -1895,12 +1855,13 @@ static gboolean ui_tree_view_query_tooltip_cb(GtkWidget *widget, gint x, gint y,
 	GtkTreePath *path;
 	GtkTreeModel *model;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(widget);
-	gint column = GPOINTER_TO_INT(data);
-	gboolean tootlip_set = FALSE;
 	
 	if (!gtk_tree_view_get_tooltip_context(tree_view, &x, &y, keyboard_tip,
 										   &model, &path, &iter))
 		return FALSE;
+	
+	gint column = GPOINTER_TO_INT(data);
+	gboolean tootlip_set = FALSE;
 	
 	gtk_tree_model_get_value(model, &iter, column, &value);
 	
@@ -1943,7 +1904,8 @@ void ui_tree_view_set_tooltip_text_column(GtkTreeView *tree_view, gint column)
 	g_return_if_fail(GTK_IS_TREE_VIEW(tree_view));
 	
 	g_signal_connect(tree_view, "query-tooltip",
-			G_CALLBACK(ui_tree_view_query_tooltip_cb), GINT_TO_POINTER(column));
+					 G_CALLBACK(ui_tree_view_query_tooltip_cb),
+					 GINT_TO_POINTER(column));
 	gtk_widget_set_has_tooltip(GTK_WIDGET(tree_view), TRUE);
 }
 
@@ -1957,9 +1919,7 @@ void ui_tree_view_set_tooltip_text_column(GtkTreeView *tree_view, gint column)
 GEANY_API_SYMBOL
 void ui_widget_modify_font_from_string(GtkWidget *widget, const gchar *str)
 {
-	PangoFontDescription *pfd;
-	
-	pfd = pango_font_description_from_string(str);
+	PangoFontDescription *pfd = pango_font_description_from_string(str);
 	gtk_widget_modify_font(widget, pfd);
 	pango_font_description_free(pfd);
 }
@@ -2035,11 +1995,10 @@ static gchar *run_file_chooser(const gchar *title, GtkFileChooserAction action,
 							GTK_WINDOW(main_widgets.window), action,
 							GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 							GTK_STOCK_OPEN, GTK_RESPONSE_OK, NULL);
-	gchar *locale_path;
-	gchar *ret_path = NULL;
 	
 	gtk_widget_set_name(dialog, "GeanyDialog");
-	locale_path = utils_get_locale_from_utf8(utf8_path);
+	gchar *locale_path = utils_get_locale_from_utf8(utf8_path);
+	
 	if (action == GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER)
 	{
 		if (g_path_is_absolute(locale_path)
@@ -2055,6 +2014,7 @@ static gchar *run_file_chooser(const gchar *title, GtkFileChooserAction action,
 	}
 	g_free(locale_path);
 	
+	gchar *ret_path = NULL;
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK)
 	{
 		gchar *dir_locale = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
@@ -2071,13 +2031,13 @@ static void ui_path_box_open_clicked(GtkButton *button, gpointer user_data)
 {
 	GtkFileChooserAction action = GPOINTER_TO_INT(g_object_get_data(
 													G_OBJECT(button), "action"));
-	GtkEntry *entry = user_data;
-	const gchar *title = g_object_get_data(G_OBJECT(button), "title");
-	gchar *utf8_path = NULL;
-	
 	/* TODO: extend for other actions */
 	g_return_if_fail(action == GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER ||
 					 action == GTK_FILE_CHOOSER_ACTION_OPEN);
+	
+	GtkEntry *entry = user_data;
+	const gchar *title = g_object_get_data(G_OBJECT(button), "title");
+	gchar *utf8_path = NULL;
 	
 	if (title == NULL)
 		title = (action == GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER) ?
@@ -2113,9 +2073,8 @@ static void ui_path_box_open_clicked(GtkButton *button, gpointer user_data)
 }
 
 
-void ui_statusbar_showhide(gboolean state)
-{
-	/* handle statusbar visibility */
+void ui_statusbar_show_hide(gboolean state)
+{	/* handle statusbar visibility */
 	if (state)
 	{
 		gtk_widget_show(ui_widgets.statusbar);
@@ -2136,11 +2095,10 @@ GEANY_API_SYMBOL
 void ui_table_add_row(GtkTable *table, gint row, ...)
 {
 	va_list args;
-	guint i;
 	GtkWidget *widget;
 	
 	va_start(args, row);
-	for (i = 0; (widget = va_arg(args, GtkWidget*), widget != NULL); i++)
+	for (guint i = 0; (widget = va_arg(args, GtkWidget*), widget != NULL); i++)
 	{
 		gint options = (i == 0) ? GTK_FILL : GTK_EXPAND | GTK_FILL;
 		
@@ -2248,8 +2206,7 @@ static void create_config_files_menu(void)
 	
 	widgets.config_files_menu = menu = gtk_menu_new();
 	
-	item = ui_lookup_widget(main_widgets.window, "configuration_files1");
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), menu);
+	ui_menu_item_set_submenu(main_widgets.window, "configuration_files1", menu);
 	
 	item = gtk_menu_item_new_with_mnemonic(_("_Filetype Configuration"));
 	gtk_container_add(GTK_CONTAINER(menu), item);
@@ -2268,9 +2225,8 @@ static void add_stock_icons(const GtkStockItem *items, gsize count)
 {
 	GtkIconFactory *factory = gtk_icon_factory_new();
 	GtkIconSource *source = gtk_icon_source_new();
-	gsize i;
 	
-	for (i = 0; i < count; i++)
+	for (gsize i = 0; i < count; i++)
 	{
 		GtkIconSet *set = gtk_icon_set_new();
 		
@@ -2332,8 +2288,6 @@ void ui_swap_sidebar_pos(void)
 
 static void init_recent_files(void)
 {
-	GtkWidget *toolbar_recent_files_menu;
-	
 	/* add recent files to the File menu */
 	ui_widgets.recent_files_menuitem = ui_lookup_widget(main_widgets.window,
 														"recent_files1");
@@ -2342,7 +2296,7 @@ static void init_recent_files(void)
 							  ui_widgets.recent_files_menu_menubar);
 	
 	/* add recent files to the toolbar Open button */
-	toolbar_recent_files_menu = gtk_menu_new();
+	GtkWidget *toolbar_recent_files_menu = gtk_menu_new();
 	g_object_ref(toolbar_recent_files_menu);
 	geany_menu_button_action_set_menu(GEANY_MENU_BUTTON_ACTION(
 											toolbar_get_action_by_name("Open")),
@@ -2442,9 +2396,9 @@ void ui_init_prefs(void)
  * will have a "gtk-builder-name" stored in the GObject's data list. */
 static const gchar *ui_guess_object_name(GObject *obj)
 {
-	const gchar *name = NULL;
-	
 	g_return_val_if_fail(G_IS_OBJECT(obj), NULL);
+	
+	const gchar *name = NULL;
 	
 	if (GTK_IS_BUILDABLE(obj))
 		name = gtk_buildable_get_name(GTK_BUILDABLE(obj));
@@ -2488,16 +2442,14 @@ GtkWidget *create_window1(void)
 
 static GtkWidget *ui_get_top_parent(GtkWidget *widget)
 {
-	GtkWidget *parent;
-	
 	g_return_val_if_fail(GTK_IS_WIDGET(widget), NULL);
 	
-	for (;;)
+	GtkWidget *parent;
+	
+	while (TRUE)
 	{
-		if (GTK_IS_MENU(widget))
-			parent = gtk_menu_get_attach_widget(GTK_MENU(widget));
-		else
-			parent = gtk_widget_get_parent(widget);
+		parent = GTK_IS_MENU(widget) ? gtk_menu_get_attach_widget(GTK_MENU(widget))
+									 : gtk_widget_get_parent(widget);
 		if (parent == NULL)
 			parent = (GtkWidget *)g_object_get_data(G_OBJECT(widget),
 													"GladeParentKey");
@@ -2588,7 +2540,8 @@ static void load_css_theme(const gchar *fn, guint priority)
 	}
 	
 	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-		GTK_STYLE_PROVIDER(provider), priority);
+											  GTK_STYLE_PROVIDER(provider),
+											  priority);
 	geany_debug("Loaded GTK+ CSS theme '%s'", fn);
 	
 	g_object_unref(provider);
@@ -2598,10 +2551,8 @@ static void load_css_theme(const gchar *fn, guint priority)
 // see setup_gtk2_styles() in libmain.c for GTK+ 2-specific theme initialization
 static void init_css_styles(void)
 {
-	gchar *theme_fn;
-	
 	// load the main geany.css file from system data dir
-	theme_fn = g_build_filename(app->datadir, "geany.css", NULL);
+	gchar *theme_fn = g_build_filename(app->datadir, "geany.css", NULL);
 	load_css_theme(theme_fn, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	g_free(theme_fn);
 	
@@ -2640,8 +2591,7 @@ static void init_css_styles(void)
 
 static void add_css_config_file_item(void)
 {
-	gchar *theme_fn;
-	theme_fn = g_build_filename(app->configdir, "geany.css", NULL);
+	gchar *theme_fn = g_build_filename(app->configdir, "geany.css", NULL);
 	ui_add_config_file_menu_item(theme_fn, NULL, NULL);
 	g_free(theme_fn);
 }
@@ -2758,6 +2708,7 @@ static void on_auto_separator_item_show_hide(GtkWidget *widget,
 		autosep->show_count++;
 	else
 		autosep->show_count--;
+	
 	auto_separator_update(autosep);
 }
 
@@ -2831,27 +2782,16 @@ void ui_widget_set_tooltip_text(GtkWidget *widget, const gchar *text)
 GEANY_API_SYMBOL
 GtkWidget *ui_lookup_widget(GtkWidget *widget, const gchar *widget_name)
 {
-	GtkWidget *parent, *found_widget;
-	
 	g_return_val_if_fail(widget != NULL, NULL);
 	g_return_val_if_fail(widget_name != NULL, NULL);
 	
-	for (;;)
-	{
-		if (GTK_IS_MENU(widget))
-			parent = gtk_menu_get_attach_widget(GTK_MENU(widget));
-		else
-			parent = gtk_widget_get_parent(widget);
-		if (parent == NULL)
-			parent = (GtkWidget *)g_object_get_data(G_OBJECT(widget),
-													"GladeParentKey");
-		if (parent == NULL) break;
-		widget = parent;
-	}
+	widget = ui_get_top_parent(widget);
 	
-	found_widget = (GtkWidget *)g_object_get_data(G_OBJECT(widget), widget_name);
+	GtkWidget *found_widget = (GtkWidget *)g_object_get_data(G_OBJECT(widget),
+															 widget_name);
 	if (G_UNLIKELY(found_widget == NULL))
 		g_warning("Widget not found: %s", widget_name);
+	
 	return found_widget;
 }
 
@@ -2884,7 +2824,6 @@ static GtkWidget *progress_bar_create(void)
 static gboolean progress_bar_pulse(gpointer data)
 {
 	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(main_widgets.progressbar));
-	
 	return TRUE;
 }
 
@@ -2912,8 +2851,7 @@ void ui_progress_bar_start(const gchar *text)
 {
 	g_return_if_fail(progress_bar_timer_id == 0);
 	
-	if (!interface_prefs.statusbar_visible)
-		return;
+	if (!interface_prefs.statusbar_visible) return;
 	
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(main_widgets.progressbar), text);
 	
@@ -2944,8 +2882,6 @@ static gint compare_menu_item_labels(gconstpointer a, gconstpointer b)
 {
 	GtkMenuItem *item_a = GTK_MENU_ITEM(a);
 	GtkMenuItem *item_b = GTK_MENU_ITEM(b);
-	gchar *sa, *sb;
-	gint result;
 	
 	/* put entries with submenus at the end of the menu */
 	if (gtk_menu_item_get_submenu(item_a) &&
@@ -2955,9 +2891,9 @@ static gint compare_menu_item_labels(gconstpointer a, gconstpointer b)
 			 gtk_menu_item_get_submenu(item_b))
 		return -1;
 	
-	sa = ui_menu_item_get_text(item_a);
-	sb = ui_menu_item_get_text(item_b);
-	result = utils_str_casecmp(sa, sb);
+	gchar *sa = ui_menu_item_get_text(item_a);
+	gchar *sb = ui_menu_item_get_text(item_b);
+	gint result = utils_str_casecmp(sa, sb);
 	g_free(sa);
 	g_free(sb);
 	return result;
@@ -2968,16 +2904,14 @@ static gint compare_menu_item_labels(gconstpointer a, gconstpointer b)
 static void ui_menu_sort_by_label(GtkMenu *menu)
 {
 	GList *list = gtk_container_get_children(GTK_CONTAINER(menu));
-	GList *node;
-	gint pos;
-	
 	list = g_list_sort(list, compare_menu_item_labels);
-	pos = 0;
+	
+	GList *node;
+	gint pos = 0;
+	
 	foreach_list(node, list)
-	{
-		menu_reorder_child(menu, node->data, pos);
-		pos++;
-	}
+		menu_reorder_child(menu, node->data, pos++);
+	
 	g_list_free(list);
 }
 
@@ -2999,9 +2933,7 @@ void ui_label_set_markup(GtkLabel *label, const gchar *format, ...)
 
 GtkWidget *ui_label_new_bold(const gchar *text)
 {
-	GtkWidget *label;
-	
-	label = gtk_label_new(NULL);
+	GtkWidget *label = gtk_label_new(NULL);
 	ui_label_set_markup(GTK_LABEL(label), "<b>%s</b>", text);
 	return label;
 }
@@ -3056,9 +2988,8 @@ void ui_menu_add_document_items_sorted(GtkMenu *menu, GeanyDocument *active,
 	sorted_documents = g_ptr_array_sized_new(len);
 	/* copy the documents_array into the new one */
 	foreach_document(i)
-	{
 		g_ptr_array_add(sorted_documents, documents[i]);
-	}
+	
 	if (compare_func == NULL)
 		compare_func = document_compare_by_tab_order;
 	
@@ -3208,7 +3139,6 @@ GdkPixbuf *ui_get_mime_icon(const gchar *mime_type)
 void ui_focus_current_document(void)
 {
 	GeanyDocument *doc = document_get_current();
-	
 	if (doc != NULL) document_grab_focus(doc);
 }
 
@@ -3272,7 +3202,6 @@ gboolean ui_tree_model_iter_any_next(GtkTreeModel *model, GtkTreeIter *iter,
 
 GtkWidget *ui_create_encodings_combo_box(gboolean has_detect, gint default_enc)
 {
-	GtkCellRenderer *renderer;
 	GtkTreeIter iter;
 	GtkWidget *combo = gtk_combo_box_new();
 	GtkTreeStore *store = encodings_encoding_store_new(has_detect);
@@ -3284,7 +3213,7 @@ GtkWidget *ui_create_encodings_combo_box(gboolean has_detect, gint default_enc)
 	if (encodings_encoding_store_get_iter(store, &iter, default_enc))
 		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(combo), &iter);
 	
-	renderer = gtk_cell_renderer_text_new();
+	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), renderer, TRUE);
 	gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(combo), renderer,
 									   encodings_encoding_store_cell_data_func,
@@ -3358,3 +3287,255 @@ void ui_load_color(const gchar *color_name, GdkColor *color)
 	g_free(path);
 #endif
 }
+
+
+// ----------- Wrappers with widget search by name (ui_lookup_widget) ------------
+GtkWidget *ui_setup_open_btn_callback(GtkWidget *parent, const gchar *name,
+									  const gchar *title,
+									  GtkFileChooserAction action, GtkWidget *entry)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	ui_setup_open_button_callback(widget, title, action, GTK_ENTRY(entry));
+	return widget;
+}
+
+GtkWidget *ui_orientable_set_orientation(GtkWidget *parent, const gchar *name,
+										 gint orientation)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(widget), orientation);
+	return widget;
+}
+
+GtkWidget *ui_scrolled_window_set_policy(GtkWidget *parent, const gchar *name,
+										 GtkPolicyType hscrollbar_policy,
+										 GtkPolicyType vscrollbar_policy)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(widget),
+								   hscrollbar_policy, vscrollbar_policy);
+	return widget;
+}
+
+GtkWidget *ui_image_set_from_pixbuf(GtkWidget *parent, const gchar *name,
+									GdkPixbuf *icon)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(widget), icon);
+	return widget;
+}
+
+GtkWidget *ui_menu_item_set_submenu(GtkWidget *parent, const gchar *name,
+									GtkWidget *submenu)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(widget), submenu);
+	return widget;
+}
+
+GtkWidget *ui_expander_set_expanded(GtkWidget *parent, const gchar *name,
+									gboolean expanded)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_expander_set_expanded(GTK_EXPANDER(widget), expanded);
+	return widget;
+}
+
+GtkWidget *ui_color_btn_set_color(GtkWidget *parent, const gchar *name,
+								  const GdkColor *color)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), color);
+	return widget;
+}
+
+GtkWidget *ui_font_btn_set_font(GtkWidget *parent, const gchar *name,
+								const gchar *font_name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_font_button_set_font_name(GTK_FONT_BUTTON(widget), font_name);
+	return widget;
+}
+
+GtkWidget *ui_spin_btn_set_value(GtkWidget *parent, const gchar *name, gint value)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), value);
+	return widget;
+}
+
+GtkWidget *ui_paned_set_position(GtkWidget *parent, const gchar *name, gint position)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_paned_set_position(GTK_PANED(widget), position);
+	return widget;
+}
+
+GtkWidget *ui_entry_set_text(GtkWidget *parent, const gchar *name, const gchar *text)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_entry_set_text(GTK_ENTRY(widget), text);
+	return widget;
+}
+
+GtkWidget *ui_label_set_text(GtkWidget *parent, const gchar *name, const gchar *text)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_label_set_text(GTK_LABEL(widget), text);
+	return widget;
+}
+
+GtkWidget *ui_toggle_btn_set_active(GtkWidget *parent, const gchar *name,
+									gboolean active)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), active);
+	return widget;
+}
+
+GtkWidget *ui_combo_box_set_active(GtkWidget *parent, const gchar *name, gint index)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), index);
+	return widget;
+}
+
+GtkWidget *ui_menu_item_set_active(GtkWidget *parent, const gchar *name,
+								   gboolean active)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), active);
+	return widget;
+}
+
+GtkWidget *ui_widget_set_sensitive(GtkWidget *parent, const gchar *name,
+								   gboolean sensitive)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_widget_set_sensitive(widget, sensitive);
+	return widget;
+}
+
+GtkWidget *ui_widget_set_visible(GtkWidget *parent, const gchar *name,
+								 gboolean visible)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	ui_widget_show_hide(widget, visible);
+	return widget;
+}
+
+GtkWidget *ui_widget_show_all(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_widget_show_all(widget);
+	return widget;
+}
+
+GtkWidget *ui_widget_show(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_widget_show(widget);
+	return widget;
+}
+
+GtkWidget *ui_widget_hide(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_widget_hide(widget);
+	return widget;
+}
+
+GtkWidget *ui_menu_item_activate(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_menu_item_activate(GTK_MENU_ITEM(widget));
+	return widget;
+}
+
+GtkWidget *ui_menu_item_revert_active(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	GtkCheckMenuItem *item = GTK_CHECK_MENU_ITEM(widget);
+	gtk_check_menu_item_set_active(item, !gtk_check_menu_item_get_active(item));
+	return widget;
+}
+
+GtkWidget *ui_box_pack_start(GtkWidget *parent, const gchar *name,
+							 GtkWidget *child, gboolean expand,
+							 gboolean fill, guint padding)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	gtk_box_pack_start(GTK_BOX(widget), child, expand, fill, padding);
+	return widget;
+}
+
+GtkWidget *ui_combo_box_set_active_encoding(GtkWidget *parent, const gchar *name,
+											gint enc)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	ui_encodings_combo_box_set_active_encoding(GTK_COMBO_BOX(widget), enc);
+	return widget;
+}
+
+gboolean ui_toggle_btn_get_active(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+}
+
+gboolean ui_expander_get_expanded(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_expander_get_expanded(GTK_EXPANDER(widget));
+}
+
+gboolean ui_widget_is_sensitive(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_widget_is_sensitive(widget);
+}
+
+gchar *ui_entry_get_text(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+}
+
+gchar *ui_editable_get_chars(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_editable_get_chars(GTK_EDITABLE(widget), 0, -1);
+}
+
+gint ui_combo_box_get_active(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+}
+
+gint ui_spin_button_get_value_as_int(GtkWidget *parent, const gchar *name)
+{
+	GtkSpinButton *widget = GTK_SPIN_BUTTON(ui_lookup_widget(parent, name));
+	/* note: use stash for new code - it updates spin buttons itself */
+	gtk_spin_button_update(widget);
+	return gtk_spin_button_get_value_as_int(widget);
+}
+
+gint ui_combo_box_get_active_encoding(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return ui_encodings_combo_box_get_active_encoding(GTK_COMBO_BOX(widget));
+}
+
+gint ui_paned_get_position(GtkWidget *parent, const gchar *name)
+{
+	GtkWidget *widget = ui_lookup_widget(parent, name);
+	return gtk_paned_get_position(GTK_PANED(widget));
+}
+
+void ui_notebook_set_current_page(GtkNotebook *notebook, GtkWidget *widget)
+{
+	gint page_num = gtk_notebook_page_num(notebook, widget);
+	gtk_notebook_set_current_page(notebook, page_num);
+}
+// -------------------------------------------------------------------------------

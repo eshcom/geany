@@ -77,8 +77,10 @@
 
 #include "stash.h"
 
-#include "support.h" /* only for _("text") */
-#include "utils.h"   /* only for foreach_*, utils_get_setting_*(). Stash should not depend on Geany. */
+#include "support.h"	/* only for _("text") */
+#include "utils.h"		/* only for foreach_*, utils_get_setting_*().
+						   Stash should not depend on Geany. */
+#include "ui_utils.h"	/* only for ui_lookup_widget() */
 
 #include <stdlib.h> /* only for atoi() */
 
@@ -601,44 +603,10 @@ static void handle_combo_box_entry(GtkWidget *widget, StashPref *entry,
 }
 
 
-/* taken from Glade 2.x generated support.c */
-static GtkWidget*
-lookup_widget(GtkWidget *widget, const gchar *widget_name)
-{
-	GtkWidget *parent, *found_widget;
-
-	g_return_val_if_fail(widget != NULL, NULL);
-	g_return_val_if_fail(widget_name != NULL, NULL);
-
-	for (;;)
-	{
-		if (GTK_IS_MENU(widget))
-			parent = gtk_menu_get_attach_widget(GTK_MENU(widget));
-		else
-			parent = gtk_widget_get_parent(widget);
-		if (parent == NULL)
-			parent = (GtkWidget*) g_object_get_data(G_OBJECT(widget), "GladeParentKey");
-		if (parent == NULL)
-			break;
-		widget = parent;
-	}
-
-	found_widget = (GtkWidget*) g_object_get_data(G_OBJECT(widget), widget_name);
-	if (G_UNLIKELY(found_widget == NULL))
-		g_warning("Widget not found: %s", widget_name);
-	return found_widget;
-}
-
-
 static GtkWidget *get_widget(GtkWidget *owner, StashWidgetID widget_id)
 {
-	GtkWidget *widget;
-
-	if (owner)
-		widget = lookup_widget(owner, (const gchar *)widget_id);
-	else
-		widget = (GtkWidget *)widget_id;
-
+	GtkWidget *widget = owner ? ui_lookup_widget(owner, (const gchar *)widget_id)
+							  : (GtkWidget *)widget_id;
 	if (!GTK_IS_WIDGET(widget))
 	{
 		g_warning("Unknown widget in %s()!", G_STRFUNC);

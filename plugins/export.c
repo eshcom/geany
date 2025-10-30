@@ -108,11 +108,12 @@ typedef struct
 	ExportFunc export_func;
 } ExportInfo;
 
-static void on_file_save_dialog_response(GtkDialog *dialog, gint response, gpointer user_data);
+static void on_file_save_dialog_response(GtkDialog *dialog, gint response,
+										 gpointer user_data);
 static void write_html_file(GeanyDocument *doc, const gchar *filename,
-	gboolean use_zoom, gboolean insert_line_numbers);
+							gboolean use_zoom, gboolean insert_line_numbers);
 static void write_latex_file(GeanyDocument *doc, const gchar *filename,
-	gboolean use_zoom, gboolean insert_line_numbers);
+							 gboolean use_zoom, gboolean insert_line_numbers);
 
 
 /* converts a RGB colour into a LaTeX compatible representation, taken from SciTE */
@@ -302,38 +303,34 @@ static gchar *get_date(gint type)
 }
 
 
-static void on_file_save_dialog_response(GtkDialog *dialog, gint response, gpointer user_data)
+static void on_file_save_dialog_response(GtkDialog *dialog, gint response,
+										 gpointer user_data)
 {
 	ExportInfo *exi = user_data;
-
+	
 	if (response == GTK_RESPONSE_ACCEPT && exi != NULL)
 	{
-		gchar *new_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		gchar *utf8_filename;
 		gboolean insert_line_numbers;
 		gboolean use_zoom_level = FALSE;
-
+		
 		if (exi->have_zoom_level_checkbox)
-		{
-			use_zoom_level = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
-				ui_lookup_widget(GTK_WIDGET(dialog), "check_zoom_level")));
-		}
-		insert_line_numbers = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
-				ui_lookup_widget(GTK_WIDGET(dialog), "check_line_numbers")));
-
-		utf8_filename = utils_get_utf8_from_locale(new_filename);
-
+			use_zoom_level = ui_toggle_btn_get_active(GTK_WIDGET(dialog),
+													  "check_zoom_level");
+		insert_line_numbers = ui_toggle_btn_get_active(GTK_WIDGET(dialog),
+													   "check_line_numbers");
+		
+		gchar *new_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		gchar *utf8_filename = utils_get_utf8_from_locale(new_filename);
+		
 		/* check if file exists and ask whether to overwrite or not */
 		if (g_file_test(new_filename, G_FILE_TEST_EXISTS))
 		{
-			if (dialogs_show_question(
-				_("The file '%s' already exists. Do you want to overwrite it?"),
-				utf8_filename) == FALSE)
+			if (!dialogs_show_question(_("The file '%s' already exists. Do you want "
+										 "to overwrite it?"), utf8_filename))
 				return;
 		}
-
+		
 		exi->export_func(exi->doc, new_filename, use_zoom_level, insert_line_numbers);
-
 		g_free(utf8_filename);
 		g_free(new_filename);
 	}
@@ -360,7 +357,7 @@ static gint get_line_number_width(GeanyDocument *doc)
 
 
 static void write_latex_file(GeanyDocument *doc, const gchar *filename,
-	gboolean use_zoom, gboolean insert_line_numbers)
+							 gboolean use_zoom, gboolean insert_line_numbers)
 {
 	GeanyEditor *editor = doc->editor;
 	ScintillaObject *sci = doc->editor->sci;
@@ -560,7 +557,7 @@ static void write_latex_file(GeanyDocument *doc, const gchar *filename,
 
 
 static void write_html_file(GeanyDocument *doc, const gchar *filename,
-	gboolean use_zoom, gboolean insert_line_numbers)
+							gboolean use_zoom, gboolean insert_line_numbers)
 {
 	GeanyEditor *editor = doc->editor;
 	ScintillaObject *sci = doc->editor->sci;

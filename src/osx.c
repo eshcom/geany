@@ -92,12 +92,10 @@ void osx_ui_init(void)
 	GtkWidget *item, *menu;
 	GtkosxApplication *osx_app = gtkosx_application_get();
 	
-	item = ui_lookup_widget(main_widgets.window, "menubar1");
-	gtk_widget_hide(item);
+	item = ui_widget_hide(main_widgets.window, "menubar1");
 	gtkosx_application_set_menu_bar(osx_app, GTK_MENU_SHELL(item));
 	
-	item = ui_lookup_widget(main_widgets.window, "menu_quit1");
-	gtk_widget_hide(item);
+	ui_widget_hide(main_widgets.window, "menu_quit1");
 	
 	item = ui_lookup_widget(main_widgets.window, "menu_info1");
 	gtkosx_application_insert_app_menu_item(osx_app, item, 0);
