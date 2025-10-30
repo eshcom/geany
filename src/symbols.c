@@ -2265,23 +2265,23 @@ static gboolean scopes_and_types_equal(const gchar *pscope, TMTagType ptype,
 	// ptag: scope = Scintilla::__anonf5f3056f0211, name = OmitXidContinue, type = 16, file = CharacterCategory.cxx, line = 3893
 	// stag: scope = Scintilla::anon_namespace_1, name = OmitXidContinue, type = 16, file = CharacterCategory.cxx, line = 3893
 	
-	if (EMPTY(pscope) || EMPTY(sscope))
-		return ptype == stype && g_strcmp0(pscope, sscope) == 0;
+	gboolean is_empty_pscope = EMPTY(pscope);
+	gboolean is_empty_sscope = EMPTY(sscope);
+	if (is_empty_pscope || is_empty_sscope)
+		return is_empty_pscope && is_empty_sscope && ptype == stype;
 	
 	gchar **pfields = g_strsplit(pscope, "__anon", 2);
 	gchar **sfields = g_strsplit(sscope, "anon_", 2);
 	
 	if (ptype == tm_tag_member_t && stype == tm_tag_prototype_t
-		&& g_strv_length(pfields) == 2	// exists "__anon"
-		&& g_strv_length(sfields) == 2)	// exists "anon_"
+		&& g_strv_length(pfields) == 2	// "__anon" exists
+		&& g_strv_length(sfields) == 2)	// "anon_" exists
 		stype = tm_tag_member_t;
 	
-	gboolean scopes_equal = g_strcmp0(pfields[0], sfields[0]) == 0;
-	
+	gboolean scopes_equal = (g_strcmp0(pfields[0], sfields[0]) == 0);
 	g_strfreev(pfields);
 	g_strfreev(sfields);
-	
-	return ptype == stype && scopes_equal;
+	return scopes_equal && ptype == stype;
 }
 
 static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
@@ -2548,8 +2548,12 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 				if (tags->len > 0)
 				{	// current doc contains the required scope (module definition)
 					tag = tags->pdata[0];
-					g_string_append(gscope, tag->scope);
-					g_string_append_c(gscope, '.');
+					
+					if (!EMPTY(tag->scope))
+					{
+						g_string_append(gscope, tag->scope);
+						g_string_append_c(gscope, '.');
+					}
 					g_string_append(gscope, tag->name);
 					
 					if (!g_str_has_suffix(gscope->str, scope))
