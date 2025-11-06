@@ -627,8 +627,8 @@ static void templates_replace_command(GString *text,
 		
 		while (*match != '}' && *match != '\0') match++;
 		
-		wildcard = utils_strndupa(cmd, match - cmd + 1);
-		cmd = utils_strndupa(wildcard + 9, strlen(wildcard) - 10);
+		wildcard = g_strndup(cmd, (gsize)(match - cmd + 1));
+		cmd = g_strndup(wildcard + 9, strlen(wildcard) - 10);
 		
 		gchar *result = run_command(cmd, file_name, file_type, func_name);
 		if (result != NULL)
@@ -638,5 +638,8 @@ static void templates_replace_command(GString *text,
 		}
 		else
 			utils_string_replace_first(text, wildcard, "");
+		
+		g_free(wildcard);
+		g_free(cmd);
 	}
 }

@@ -485,8 +485,8 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	/* TODO: find the real cause for the display problem /
 	 *       if it is GtkTreeView file a bug report */
 	gsize len = strlen(string);
-	gchar *tmp = (len > 1024) ? utils_strndupa(string, 1024)
-							  : utils_strdupa(string);
+	gchar *tmp = (len > 1024) ? g_strndup(string, 1024) : g_strdup(string);
+	
 	gchar *utf8_msg, *utf8_markup;
 	
 	utf8_msg = g_utf8_validate(tmp, -1, NULL)
@@ -506,6 +506,7 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 					   MSG_COL_COLOR, get_color(msg_color),
 					   MSG_COL_STRING, utf8_msg,
 					   MSG_COL_MARKUP, utf8_markup, -1);
+	g_free(tmp);
 	
 	if (utf8_msg != tmp) g_free(utf8_msg);
 	if (utf8_markup != markup) g_free(utf8_markup);
