@@ -433,8 +433,10 @@ gboolean utils_filename_has_prefix(const gchar *path, const gchar *prefix)
 /* esh: optimization for linux: don't use g_strndup and utils_filenamecmp (strcmp),
  * 		use g_str_has_prefix without creating new string */
 #ifdef G_OS_WIN32
-	gchar *head = utils_strndupa(path, strlen(prefix));
-	return utils_str_casecmp(head, prefix) == 0;
+	gchar *head = g_strndup(path, strlen(prefix));
+	gboolean ret = utils_str_casecmp(head, prefix) == 0;
+	g_free(head);
+	return ret;
 #else
 	return g_str_has_prefix(path, prefix);
 #endif

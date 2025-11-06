@@ -2516,10 +2516,10 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		else
 		{
 			const gchar *search = strchr(scope, '.');
-			gchar *alias = (search && search > scope)
-										? utils_strndupa(scope, search - scope)
-										: utils_strdupa(scope);
+			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
+													  : g_strdup(scope);
 			GET_CURR_ALIAS_TAGS(alias);
+			g_free(alias);
 			
 			foreach_ptr_array(tag, i, tags)
 			{

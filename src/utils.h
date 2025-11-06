@@ -64,9 +64,6 @@ G_BEGIN_DECLS
 #define utils_strdupa(str)			\
 	strcpy(g_alloca(strlen(str) + 1), str)
 
-#define utils_strndupa(str, count)	\
-	strncpy(g_alloca(count + 1), str, count)
-
 /* Get a keyfile setting, using the home keyfile if the key exists,
  * otherwise system keyfile. */
 #define utils_get_setting(type, home, sys, group, key, default_val)	\
