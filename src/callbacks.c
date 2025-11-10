@@ -469,8 +469,11 @@ static void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpointer pag
 }
 
 
-static void convert_eol(gint mode)
+static void convert_eol(GtkCheckMenuItem *menuitem, gint mode)
 {
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+		return;
+	
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
 	
@@ -489,28 +492,19 @@ static void convert_eol(gint mode)
 
 static void on_crlf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
-		return;
-	
-	convert_eol(SC_EOL_CRLF);
+	convert_eol(menuitem, SC_EOL_CRLF);
 }
 
 
 static void on_lf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
-		return;
-	
-	convert_eol(SC_EOL_LF);
+	convert_eol(menuitem, SC_EOL_LF);
 }
 
 
 static void on_cr_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
-		return;
-	
-	convert_eol(SC_EOL_CR);
+	convert_eol(menuitem, SC_EOL_CR);
 }
 
 
@@ -1951,11 +1945,12 @@ void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-static void on_indent_width_activate(GtkMenuItem *menuitem, gpointer user_data)
+static void on_indent_width_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback) return;
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+		return;
 	
-	gchar *label = ui_menu_item_get_text(menuitem);
+	gchar *label = ui_menu_item_get_text(GTK_MENU_ITEM(menuitem));
 	gint width = atoi(label);
 	g_free(label);
 	
