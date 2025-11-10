@@ -1080,69 +1080,6 @@ void ui_sidebar_show_hide(void)
 }
 
 
-void ui_document_show_hide(GeanyDocument *doc)
-{
-	g_return_if_fail(doc == NULL || doc->is_valid);
-	
-	if (doc == NULL) doc = document_get_current();
-	if (doc == NULL) return;
-	
-	ignore_callback = TRUE;
-	
-	ui_menu_item_set_active(main_widgets.window, "menu_line_wrapping1",
-							doc->editor->line_wrapping);
-	
-	ui_menu_item_set_active(main_widgets.window, "line_breaking1",
-							doc->editor->line_breaking);
-	
-	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(doc->editor);
-	
-	ui_menu_item_set_active(main_widgets.window, "menu_use_auto_indentation1",
-							doc->editor->auto_indent);
-	
-	const gchar *widget_name;
-	
-	switch (iprefs->type)
-	{
-		case GEANY_INDENT_TYPE_SPACES:
-			widget_name = "spaces1"; break;
-		case GEANY_INDENT_TYPE_TABS:
-			widget_name = "tabs1"; break;
-		case GEANY_INDENT_TYPE_BOTH:
-		default:
-			widget_name = "tabs_and_spaces1"; break;
-	}
-	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
-	
-	if (iprefs->width >= 1 && iprefs->width <= 8)
-	{
-		gchar *name = g_strdup_printf("indent_width_%d", iprefs->width);
-		ui_menu_item_set_active(main_widgets.window, name, TRUE);
-		g_free(name);
-	}
-	
-	ui_menu_item_set_active(main_widgets.window, "set_file_readonly1",
-							doc->readonly);
-	GtkWidget *item = ui_menu_item_set_active(main_widgets.window,
-											  "menu_write_unicode_bom1",
-											  doc->has_bom);
-	ui_widget_set_sensitive_w(item, encodings_is_unicode_charset(doc->encoding));
-	
-	switch (sci_get_eol_mode(doc->editor->sci))
-	{
-		case SC_EOL_CR: widget_name = "cr"; break;
-		case SC_EOL_LF: widget_name = "lf"; break;
-		default: widget_name = "crlf"; break;
-	}
-	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
-	
-	encodings_select_radio_item(doc->encoding);
-	filetypes_select_radio_item(doc->file_type);
-	
-	ignore_callback = FALSE;
-}
-
-
 void ui_set_search_entry_background(GtkWidget *widget, gboolean success)
 {
 	gtk_widget_set_name(widget, success ? NULL : "geany-search-entry-no-match");
@@ -2153,7 +2090,6 @@ static void on_config_file_clicked(GtkWidget *widget, gpointer user_data)
 			sci_set_current_line(doc->editor->sci, 0);
 			document_set_text_changed(doc, FALSE);
 			sci_empty_undo_buffer(doc->editor->sci);
-			ui_document_show_hide(doc); /* update the document menu */
 		}
 		utils_free_pointers(4, utf8_filename, base_name,
 							global_file, global_content, NULL);

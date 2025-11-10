@@ -385,8 +385,6 @@ void ui_document_buttons_update(void);
 
 void ui_sidebar_show_hide(void);
 
-void ui_document_show_hide(GeanyDocument *doc);
-
 void ui_set_search_entry_background(GtkWidget *widget, gboolean success);
 
 
