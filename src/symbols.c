@@ -2929,9 +2929,11 @@ gint symbols_get_current_scope(GeanyDocument *doc, const gchar **tagname)
 }
 
 
-static void on_symbol_tree_sort_clicked(GtkMenuItem *menuitem, gpointer user_data)
+static void on_symbol_tree_sort_clicked(GtkCheckMenuItem *menuitem,
+										gpointer user_data)
 {
-	if (ignore_callback) return;
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+		return;
 	
 	GeanyDocument *doc = document_get_current();
 	if (doc != NULL)
