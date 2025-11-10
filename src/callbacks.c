@@ -36,6 +36,7 @@
 #include "dialogs.h"
 #include "documentprivate.h"
 #include "encodings.h"
+#include "encodingsprivate.h"
 #include "filetypes.h"
 #include "geanyobject.h"
 #include "highlighting.h"
@@ -437,7 +438,6 @@ static void on_notebook1_switch_page_after(GtkNotebook *notebook, gpointer page,
 		ui_set_window_title(doc);
 		ui_update_statusbar(doc, -1);
 		ui_update_popup_reundo_items(doc);
-		ui_document_show_hide(doc); /* update the document menu */
 		build_menu_update(doc);
 		sidebar_update_tag_list(doc, FALSE);
 		document_highlight_tags(doc);
@@ -1739,6 +1739,120 @@ static void on_search1_menu_show(GtkMenu *menu, gpointer user_data)
 }
 
 
+static void on_document1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	ignore_callback = TRUE;
+	
+	ui_menu_item_set_active(main_widgets.window, "menu_line_wrapping1",
+							doc->editor->line_wrapping);
+	
+	ui_menu_item_set_active(main_widgets.window, "line_breaking1",
+							doc->editor->line_breaking);
+	
+	ui_menu_item_set_active(main_widgets.window, "menu_use_auto_indentation1",
+							doc->editor->auto_indent);
+	
+	ui_menu_item_set_active(main_widgets.window, "set_file_readonly1",
+							doc->readonly);
+	GtkWidget *item = ui_menu_item_set_active(main_widgets.window,
+											  "menu_write_unicode_bom1",
+											  doc->has_bom);
+	ui_widget_set_sensitive_w(item, encodings_is_unicode_charset(doc->encoding));
+	
+	ignore_callback = FALSE;
+}
+
+
+static void on_filetype1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	ignore_callback = TRUE;
+	filetypes_select_radio_item(doc->file_type);
+	ignore_callback = FALSE;
+}
+
+
+static void on_encoding1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	ignore_callback = TRUE;
+	encodings_select_radio_item(doc->encoding);
+	ignore_callback = FALSE;
+}
+
+
+static void on_indent_type1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(doc->editor);
+	const gchar *widget_name;
+	
+	switch (iprefs->type)
+	{
+		case GEANY_INDENT_TYPE_SPACES:
+			widget_name = "spaces1"; break;
+		case GEANY_INDENT_TYPE_TABS:
+			widget_name = "tabs1"; break;
+		case GEANY_INDENT_TYPE_BOTH:
+		default:
+			widget_name = "tabs_and_spaces1"; break;
+	}
+	
+	ignore_callback = TRUE;
+	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
+	ignore_callback = FALSE;
+}
+
+
+static void on_indent_width1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	const GeanyIndentPrefs *iprefs = editor_get_indent_prefs(doc->editor);
+	
+	if (iprefs->width >= 1 && iprefs->width <= 8)
+	{
+		ignore_callback = TRUE;
+		
+		gchar *name = g_strdup_printf("indent_width_%d", iprefs->width);
+		ui_menu_item_set_active(main_widgets.window, name, TRUE);
+		g_free(name);
+		
+		ignore_callback = FALSE;
+	}
+}
+
+
+static void on_line_endings1_menu_show(GtkMenu *menu, gpointer user_data)
+{
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	const gchar *widget_name;
+	
+	switch (sci_get_eol_mode(doc->editor->sci))
+	{
+		case SC_EOL_CR: widget_name = "cr"; break;
+		case SC_EOL_LF: widget_name = "lf"; break;
+		default: widget_name = "crlf"; break;
+	}
+	
+	ignore_callback = TRUE;
+	ui_menu_item_set_active(main_widgets.window, widget_name, TRUE);
+	ignore_callback = FALSE;
+}
+
+
 /* simple implementation (vs. close all which doesn't close documents if cancelled),
  * if user_data is set, it is the GeanyDocument to keep */
 void on_close_other_documents1_activate(GtkMenuItem *menuitem, gpointer user_data)
@@ -1968,7 +2082,6 @@ static void on_reset_indentation1_activate(GtkMenuItem *menuitem,
 		document_apply_indent_settings(documents[i]);
 	
 	ui_update_statusbar(NULL, -1);
-	ui_document_show_hide(NULL);
 }
 
 
@@ -1988,7 +2101,6 @@ static void on_detect_type_from_file_activate(GtkMenuItem *menuitem,
 	if (doc != NULL && document_detect_indent_type(doc, &type))
 	{
 		editor_set_indent_type(doc->editor, type);
-		ui_document_show_hide(doc);
 		ui_update_statusbar(doc, -1);
 	}
 }
@@ -2013,10 +2125,7 @@ static void on_detect_width_from_file_activate(GtkMenuItem *menuitem,
 	gint width;
 	
 	if (doc != NULL && document_detect_indent_width(doc, &width))
-	{
 		editor_set_indent_width(doc->editor, width);
-		ui_document_show_hide(doc);
-	}
 }
 
 

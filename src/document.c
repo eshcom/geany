@@ -883,7 +883,6 @@ GeanyDocument *document_new_file(const gchar *utf8_filename, GeanyFiletype *ft,
 	ui_set_window_title(doc);
 	build_menu_update(doc);
 	document_set_text_changed(doc, FALSE);
-	ui_document_show_hide(doc); /* update the document menu */
 	
 	sci_set_line_numbers(doc->editor->sci, editor_prefs.show_linenumber_margin);
 	/* bring it in front, jump to the start and grab the focus */
@@ -1501,7 +1500,6 @@ GeanyDocument *document_open_file_full(GeanyDocument *doc, const gchar *filename
 			document_apply_indent_settings(doc);
 		
 		document_set_text_changed(doc, FALSE);	/* also updates tab state */
-		ui_document_show_hide(doc);	/* update the document menu */
 		
 		/* finally add current file to recent files menu, 
 		 * but not the files from the last session */
@@ -2882,13 +2880,11 @@ void document_set_filetype(GeanyDocument *doc, GeanyFiletype *type)
 		/* assume that if previous filetype was none and the settings
 		 * are the default ones, this is the first time the filetype
 		 * is carefully set, so we should apply indent settings */
-		if ((!old_ft || old_ft->id == GEANY_FILETYPES_NONE) &&
-			doc->editor->indent_type == iprefs->type &&
-			doc->editor->indent_width == iprefs->width)
-		{
+		if ((!old_ft || old_ft->id == GEANY_FILETYPES_NONE)
+			&& doc->editor->indent_type == iprefs->type
+			&& doc->editor->indent_width == iprefs->width)
 			document_apply_indent_settings(doc);
-			ui_document_show_hide(doc);
-		}
+		
 		sidebar_openfiles_update(doc); /* to update the icon */
 		g_signal_emit_by_name(geany_object, "document-filetype-set",
 							  doc, old_ft);
@@ -3071,7 +3067,6 @@ void document_undo(GeanyDocument *doc)
 				
 				doc->has_bom = GPOINTER_TO_INT(action->data);
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				break;
 			}
 			case UNDO_ENCODING:
@@ -3083,7 +3078,6 @@ void document_undo(GeanyDocument *doc)
 				g_free(action->data);
 				
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				break;
 			}
 			case UNDO_EOL:
@@ -3096,7 +3090,6 @@ void document_undo(GeanyDocument *doc)
 				sci_set_eol_mode(doc->editor->sci, GPOINTER_TO_INT(action->data));
 				
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				
 				/* When undoing, UNDO_EOL is always followed by UNDO_SCINTILLA
 				 * which undos the line endings in the editor and should be
@@ -3121,9 +3114,8 @@ void document_undo(GeanyDocument *doc)
 				
 				/* Restore the previous EOL mode. */
 				sci_set_eol_mode(doc->editor->sci, eol_mode);
-				/* This might affect the status bar and document menu, so update them. */
+				/* This might affect the status bar, so update it. */
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				
 				document_redo_add(doc, UNDO_RELOAD, data);
 				break;
@@ -3181,33 +3173,27 @@ void document_redo(GeanyDocument *doc)
 			{
 				document_undo_add_internal(doc, UNDO_BOM,
 										   GINT_TO_POINTER(doc->has_bom));
-				
 				doc->has_bom = GPOINTER_TO_INT(action->data);
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				break;
 			}
 			case UNDO_ENCODING:
 			{
 				document_undo_add_internal(doc, UNDO_ENCODING,
 										   g_strdup(doc->encoding));
-				
 				document_set_encoding(doc, (const gchar *)action->data);
 				g_free(action->data);
 				
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				break;
 			}
 			case UNDO_EOL:
 			{
 				document_undo_add_internal(doc, UNDO_EOL,
 										   GINT_TO_POINTER(sci_get_eol_mode(doc->editor->sci)));
-				
 				sci_set_eol_mode(doc->editor->sci, GPOINTER_TO_INT(action->data));
 				
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				break;
 			}
 			case UNDO_RELOAD:
@@ -3225,9 +3211,8 @@ void document_redo(GeanyDocument *doc)
 				
 				/* Restore the previous EOL mode. */
 				sci_set_eol_mode(doc->editor->sci, eol_mode);
-				/* This might affect the status bar and document menu, so update them. */
+				/* This might affect the status bar, so update it. */
 				ui_update_statusbar(doc, -1);
-				ui_document_show_hide(doc);
 				
 				document_undo_add_internal(doc, UNDO_RELOAD, data);
 				break;
@@ -3409,8 +3394,6 @@ GeanyDocument *document_clone(GeanyDocument *old_doc)
 	sci_set_lines_wrapped(doc->editor->sci, doc->editor->line_wrapping);
 	sci_set_readonly(doc->editor->sci, doc->readonly);
 	
-	/* update ui */
-	ui_document_show_hide(doc);
 	return doc;
 }
 

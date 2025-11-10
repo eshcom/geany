@@ -1175,7 +1175,6 @@ static void on_prefs_dialog_response(GtkDialog *dialog, gint response,
 					editor_unfold_all(documents[i]->editor);
 			}
 		}
-		ui_document_show_hide(NULL);
 		ui_update_view_editor_menu_items();
 		
 		/* various preferences */

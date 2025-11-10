@@ -2740,11 +2740,9 @@ static gboolean cb_func_document_action(guint key_id)
 			break;
 		case GEANY_KEYS_DOCUMENT_LINEBREAK:
 			on_line_breaking1_activate(NULL, NULL);
-			ui_document_show_hide(doc);
 			break;
 		case GEANY_KEYS_DOCUMENT_LINEWRAP:
 			on_line_wrapping1_toggled(NULL, NULL);
-			ui_document_show_hide(doc);
 			break;
 		case GEANY_KEYS_DOCUMENT_CLONE:
 			document_clone(doc);

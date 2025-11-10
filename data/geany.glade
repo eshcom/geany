@@ -7636,6 +7636,7 @@
                     <child type="submenu">
                       <object class="GtkMenu" id="document1_menu">
                         <property name="can_focus">False</property>
+                        <signal name="show" handler="on_document1_menu_show" swapped="no"/>
                         <child>
                           <object class="GtkCheckMenuItem" id="menu_line_wrapping1">
                             <property name="visible">True</property>
@@ -7674,6 +7675,7 @@
                             <child type="submenu">
                               <object class="GtkMenu" id="indent_type1_menu">
                                 <property name="can_focus">False</property>
+                                <signal name="show" handler="on_indent_type1_menu_show" swapped="no"/>
                                 <child>
                                   <object class="GtkMenuItem" id="detect_type_from_file">
                                     <property name="visible">True</property>
@@ -7732,6 +7734,7 @@
                             <child type="submenu">
                               <object class="GtkMenu" id="indent_width1_menu">
                                 <property name="can_focus">False</property>
+                                <signal name="show" handler="on_indent_width1_menu_show" swapped="no"/>
                                 <child>
                                   <object class="GtkMenuItem" id="detect_width_from_file">
                                     <property name="visible">True</property>
@@ -7870,6 +7873,7 @@
                             <child type="submenu">
                               <object class="GtkMenu" id="set_filetype1_menu">
                                 <property name="can_focus">False</property>
+                                <signal name="show" handler="on_filetype1_menu_show" swapped="no"/>
                                 <child>
                                   <object class="GtkMenuItem" id="invisible1">
                                     <property name="can_focus">False</property>
@@ -7890,6 +7894,7 @@
                             <child type="submenu">
                               <object class="GtkMenu" id="set_encoding1_menu">
                                 <property name="can_focus">False</property>
+                                <signal name="show" handler="on_encoding1_menu_show" swapped="no"/>
                                 <child>
                                   <object class="GtkMenuItem" id="invisible6">
                                     <property name="can_focus">False</property>
@@ -7910,6 +7915,7 @@
                             <child type="submenu">
                               <object class="GtkMenu" id="menu_line_endings1_menu">
                                 <property name="can_focus">False</property>
+                                <signal name="show" handler="on_line_endings1_menu_show" swapped="no"/>
                                 <child>
                                   <object class="GtkRadioMenuItem" id="crlf">
                                     <property name="visible">True</property>
