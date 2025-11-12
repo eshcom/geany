@@ -184,6 +184,9 @@ void on_send_selection_to_vte1_activate(GtkMenuItem *menuitem, gpointer user_dat
 
 void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data);
 
+void on_filetype_activate(GtkCheckMenuItem *menuitem, gpointer user_data);
+void on_encoding_activate(GtkCheckMenuItem *menuitem, gpointer user_data);
+
 G_END_DECLS
 
 #endif /* GEANY_CALLBACKS_H */

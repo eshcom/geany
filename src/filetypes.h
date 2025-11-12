@@ -216,7 +216,7 @@ void filetypes_load_config(guint ft_id, gboolean reload);
 
 void filetypes_save_commands(GeanyFiletype *ft);
 
-void filetypes_select_radio_item(const GeanyFiletype *ft);
+GtkWidget *filetypes_get_radio_item(const GeanyFiletype *ft);
 
 GtkFileFilter *filetypes_create_file_filter(const GeanyFiletype *ft);
 
