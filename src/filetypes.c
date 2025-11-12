@@ -34,7 +34,7 @@
 #include "filetypes.h"
 
 #include "app.h"
-#include "callbacks.h" /* for on_filetype_activate */
+#include "callbacks.h" /* for on_filetype_toggled */
 #include "document.h"
 #include "filetypesprivate.h"
 #include "geany.h"
@@ -783,15 +783,12 @@ GtkWidget *filetypes_get_radio_item(const GeanyFiletype *ft)
 
 static void create_radio_menu_item(GtkWidget *menu, GeanyFiletype *ftype)
 {
-	static GSList *group = NULL;
-	GtkWidget *item;
-	
-	item = gtk_radio_menu_item_new_with_label(group, ftype->title);
-	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(item));
+	GtkWidget *item = gtk_check_menu_item_new_with_label(ftype->title);
+	gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(item), TRUE);
 	ftype->priv->menu_item = item;
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
-	g_signal_connect(item, "activate", G_CALLBACK(on_filetype_activate),
+	g_signal_connect(item, "toggled", G_CALLBACK(on_filetype_toggled),
 					 (gpointer)ftype);
 }
 

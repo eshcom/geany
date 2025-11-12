@@ -80,6 +80,44 @@
 /*static gboolean switch_tv_notebook_page = FALSE; */
 
 
+/* the menu with GtkRadioMenuItem elements incorrectly displays the currently active element,
+ * so switched from GtkRadioMenuItem to GtkCheckMenuItem with the addition of own logic for
+ * switching menu elements
+ */
+GtkCheckMenuItem *curr_filetype_menuitem = NULL;
+GtkCheckMenuItem *curr_encoding_menuitem = NULL;
+GtkCheckMenuItem *curr_indent_type_menuitem = NULL;
+GtkCheckMenuItem *curr_indent_menuitem = NULL;
+GtkCheckMenuItem *curr_eol_menuitem = NULL;
+gboolean internal_ignore = FALSE;
+
+static gboolean check_toggled_menuitem(GtkCheckMenuItem *new_menuitem,
+									   GtkCheckMenuItem **curr_menuitem)
+{
+	if (internal_ignore) return FALSE;
+	
+	if (new_menuitem == *curr_menuitem)
+	{
+		if (!gtk_check_menu_item_get_active(new_menuitem))
+		{
+			internal_ignore = TRUE;
+			gtk_check_menu_item_set_active(new_menuitem, TRUE);
+			internal_ignore = FALSE;
+		}
+		return FALSE;
+	}
+	else if (*curr_menuitem)
+	{
+		internal_ignore = TRUE;
+		gtk_check_menu_item_set_active(*curr_menuitem, FALSE);
+		internal_ignore = FALSE;
+	}
+	
+	*curr_menuitem = new_menuitem;
+	return TRUE;
+}
+
+
 /* wrapper function to abort exit process if cancel button is pressed */
 static gboolean on_window_delete_event(GtkWidget *widget, GdkEvent *event,
 									   gpointer gdata)
@@ -471,8 +509,10 @@ static void on_tv_notebook_switch_page_after(GtkNotebook *notebook, gpointer pag
 
 static void convert_eol(GtkCheckMenuItem *menuitem, gint mode)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+	if (!check_toggled_menuitem(menuitem, &curr_eol_menuitem))
 		return;
+	
+	if (ignore_callback) return;
 	
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
@@ -490,19 +530,19 @@ static void convert_eol(GtkCheckMenuItem *menuitem, gint mode)
 }
 
 
-static void on_crlf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_crlf_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	convert_eol(menuitem, SC_EOL_CRLF);
 }
 
 
-static void on_lf_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_lf_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	convert_eol(menuitem, SC_EOL_LF);
 }
 
 
-static void on_cr_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_cr_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	convert_eol(menuitem, SC_EOL_CR);
 }
@@ -1637,8 +1677,10 @@ gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event,
 
 static void set_indent_type(GtkCheckMenuItem *menuitem, GeanyIndentType type)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+	if (!check_toggled_menuitem(menuitem, &curr_indent_type_menuitem))
 		return;
+	
+	if (ignore_callback) return;
 	
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
@@ -1648,20 +1690,20 @@ static void set_indent_type(GtkCheckMenuItem *menuitem, GeanyIndentType type)
 }
 
 
-static void on_tabs1_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_tabs1_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	set_indent_type(menuitem, GEANY_INDENT_TYPE_TABS);
 }
 
 
-static void on_spaces1_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_spaces1_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
 	set_indent_type(menuitem, GEANY_INDENT_TYPE_SPACES);
 }
 
 
-static void on_tabs_and_spaces1_activate(GtkCheckMenuItem *menuitem,
-										 gpointer user_data)
+static void on_tabs_and_spaces1_toggled(GtkCheckMenuItem *menuitem,
+										gpointer user_data)
 {
 	set_indent_type(menuitem, GEANY_INDENT_TYPE_BOTH);
 }
@@ -2061,10 +2103,12 @@ void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-void on_filetype_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+void on_filetype_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+	if (!check_toggled_menuitem(menuitem, &curr_filetype_menuitem))
 		return;
+	
+	if (ignore_callback) return;
 	
 	GeanyDocument *doc = document_get_current();
 	if (!doc) return;
@@ -2073,10 +2117,12 @@ void on_filetype_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 }
 
 
-void on_encoding_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+void on_encoding_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+	if (!check_toggled_menuitem(menuitem, &curr_encoding_menuitem))
 		return;
+	
+	if (ignore_callback) return;
 	
 	GeanyDocument *doc = document_get_current();
 	const gchar *charset = user_data;
@@ -2094,10 +2140,12 @@ void on_encoding_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
 }
 
 
-static void on_indent_width_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+static void on_indent_width_toggled(GtkCheckMenuItem *menuitem, gpointer user_data)
 {
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+	if (!check_toggled_menuitem(menuitem, &curr_indent_menuitem))
 		return;
+	
+	if (ignore_callback) return;
 	
 	gchar *label = ui_menu_item_get_text(GTK_MENU_ITEM(menuitem));
 	gint width = atoi(label);

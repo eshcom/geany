@@ -7692,33 +7692,33 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="tabs1">
+                                  <object class="GtkCheckMenuItem" id="tabs1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_Tabs</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
-                                    <signal name="activate" handler="on_tabs1_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_tabs1_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="spaces1">
+                                  <object class="GtkCheckMenuItem" id="spaces1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_Spaces</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">tabs1</property>
-                                    <signal name="activate" handler="on_spaces1_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_spaces1_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="tabs_and_spaces1">
+                                  <object class="GtkCheckMenuItem" id="tabs_and_spaces1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">T_abs and Spaces</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">tabs1</property>
-                                    <signal name="activate" handler="on_tabs_and_spaces1_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_tabs_and_spaces1_toggled" swapped="no"/>
                                   </object>
                                 </child>
                               </object>
@@ -7751,83 +7751,83 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_1">
+                                  <object class="GtkCheckMenuItem" id="indent_width_1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_1</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_2">
+                                  <object class="GtkCheckMenuItem" id="indent_width_2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_2</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_3">
+                                  <object class="GtkCheckMenuItem" id="indent_width_3">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_3</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_4">
+                                  <object class="GtkCheckMenuItem" id="indent_width_4">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_4</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_5">
+                                  <object class="GtkCheckMenuItem" id="indent_width_5">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_5</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_6">
+                                  <object class="GtkCheckMenuItem" id="indent_width_6">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_6</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_7">
+                                  <object class="GtkCheckMenuItem" id="indent_width_7">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_7</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="indent_width_8">
+                                  <object class="GtkCheckMenuItem" id="indent_width_8">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_8</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">indent_width_1</property>
-                                    <signal name="activate" handler="on_indent_width_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_indent_width_toggled" swapped="no"/>
                                   </object>
                                 </child>
                               </object>
@@ -7917,33 +7917,33 @@
                                 <property name="can_focus">False</property>
                                 <signal name="show" handler="on_line_endings1_menu_show" swapped="no"/>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="crlf">
+                                  <object class="GtkCheckMenuItem" id="crlf">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Convert and Set to _CR/LF (Windows)</property>
                                     <property name="use_underline">True</property>
-                                    <signal name="activate" handler="on_crlf_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_crlf_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="lf">
+                                  <object class="GtkCheckMenuItem" id="lf">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Convert and Set to _LF (Unix)</property>
                                     <property name="use_underline">True</property>
-                                    <property name="active">True</property>
-                                    <property name="group">crlf</property>
-                                    <signal name="activate" handler="on_lf_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_lf_toggled" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioMenuItem" id="cr">
+                                  <object class="GtkCheckMenuItem" id="cr">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Convert and Set to CR (Classic _Mac)</property>
                                     <property name="use_underline">True</property>
-                                    <property name="group">crlf</property>
-                                    <signal name="activate" handler="on_cr_activate" swapped="no"/>
+                                    <property name="draw-as-radio">True</property>
+                                    <signal name="toggled" handler="on_cr_toggled" swapped="no"/>
                                   </object>
                                 </child>
                               </object>

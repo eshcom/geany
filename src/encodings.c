@@ -37,7 +37,7 @@
 #include "encodingsprivate.h"
 
 #include "app.h"
-#include "callbacks.h" /* for on_encoding_activate */
+#include "callbacks.h" /* for on_encoding_toggled */
 #include "documentprivate.h"
 #include "support.h"
 #include "ui_utils.h"
@@ -390,7 +390,7 @@ void encodings_init(void)
 	menu[1] = ui_lookup_widget(main_widgets.window, "menu_reload_as1_menu");
 	
 	GCallback cb_func[2];
-	cb_func[0] = G_CALLBACK(on_encoding_activate);
+	cb_func[0] = G_CALLBACK(on_encoding_toggled);
 	cb_func[1] = G_CALLBACK(encodings_reload_radio_item_activate);
 	
 	for (guint i = 0; i < G_N_ELEMENTS(encodings); i++)
@@ -398,7 +398,6 @@ void encodings_init(void)
 	
 	for (guint k = 0; k < 2; k++)
 	{
-		GSList *group = NULL;
 		GtkWidget *submenus[GEANY_ENCODING_GROUPS_MAX];
 		gint orders[GEANY_ENCODING_GROUPS_MAX] = { 0 };
 		guint n_added = 0;
@@ -426,19 +425,25 @@ void encodings_init(void)
 				{
 					GtkWidget *item;
 					gchar *label = encodings_to_string(&encodings[i]);
+					const gchar *signal;
 					
 					if (k == 0) /* Set Encoding menu */
 					{
-						item = gtk_radio_menu_item_new_with_label(group, label);
-						group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(item));
+						item = gtk_check_menu_item_new_with_label(label);
+						gtk_check_menu_item_set_draw_as_radio(
+												GTK_CHECK_MENU_ITEM(item), TRUE);
 						radio_items[i] = item;
+						signal = "toggled";
 					}
 					else
+					{
 						item = gtk_menu_item_new_with_label(label);
+						signal = "activate";
+					}
 					
 					gtk_widget_show(item);
 					gtk_container_add(GTK_CONTAINER(submenus[encodings[i].group]), item);
-					g_signal_connect(item, "activate", cb_func[k],
+					g_signal_connect(item, signal, cb_func[k],
 									 (gpointer)encodings[i].charset);
 					g_free(label);
 					
