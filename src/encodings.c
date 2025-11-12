@@ -37,7 +37,7 @@
 #include "encodingsprivate.h"
 
 #include "app.h"
-#include "callbacks.h"
+#include "callbacks.h" /* for on_encoding_activate */
 #include "documentprivate.h"
 #include "support.h"
 #include "ui_utils.h"
@@ -279,9 +279,9 @@ const gchar *encodings_get_charset(const GeanyEncoding *enc)
 static GtkWidget *radio_items[GEANY_ENCODINGS_MAX];
 
 
-void encodings_select_radio_item(const gchar *charset)
+GtkWidget *encodings_get_radio_item(const gchar *charset)
 {
-	g_return_if_fail(charset != NULL);
+	g_return_val_if_fail(charset != NULL, radio_items[GEANY_ENCODING_UTF_8]);
 	
 	gint i = 0;
 	for (; i < GEANY_ENCODINGS_MAX; i++)
@@ -292,8 +292,7 @@ void encodings_select_radio_item(const gchar *charset)
 	if (i == GEANY_ENCODINGS_MAX)
 		i = GEANY_ENCODING_UTF_8; /* fallback to UTF-8 */
 	
-	/* ignore_callback has to be set by the caller */
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(radio_items[i]), TRUE);
+	return radio_items[i];
 }
 
 
@@ -341,29 +340,8 @@ static gchar *regex_match(GRegex *preg, const gchar *buffer, gsize size)
 }
 
 
-static void encodings_radio_item_change_cb(GtkCheckMenuItem *menuitem,
-										   gpointer user_data)
-{
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
-		return;
-	
-	GeanyDocument *doc = document_get_current();
-	const gchar *charset = user_data;
-	
-	if (!doc || !charset || utils_str_equal(charset, doc->encoding))
-		return;
-	
-	if (doc->readonly)
-	{
-		utils_beep();
-		return;
-	}
-	document_undo_add(doc, UNDO_ENCODING, g_strdup(doc->encoding));
-	document_set_encoding(doc, charset);
-}
-
-static void encodings_reload_radio_item_change_cb(GtkMenuItem *menuitem,
-												  gpointer user_data)
+static void encodings_reload_radio_item_activate(GtkMenuItem *menuitem,
+												 gpointer user_data)
 {
 	GeanyDocument *doc = document_get_current();
 	g_return_if_fail(doc != NULL);
@@ -412,8 +390,8 @@ void encodings_init(void)
 	menu[1] = ui_lookup_widget(main_widgets.window, "menu_reload_as1_menu");
 	
 	GCallback cb_func[2];
-	cb_func[0] = G_CALLBACK(encodings_radio_item_change_cb);
-	cb_func[1] = G_CALLBACK(encodings_reload_radio_item_change_cb);
+	cb_func[0] = G_CALLBACK(on_encoding_activate);
+	cb_func[1] = G_CALLBACK(encodings_reload_radio_item_activate);
 	
 	for (guint i = 0; i < G_N_ELEMENTS(encodings); i++)
 		group_sizes[encodings[i].group]++;

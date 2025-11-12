@@ -34,7 +34,7 @@
 #include "filetypes.h"
 
 #include "app.h"
-#include "callbacks.h" /* FIXME: for ignore_callback */
+#include "callbacks.h" /* for on_filetype_activate */
 #include "document.h"
 #include "filetypesprivate.h"
 #include "geany.h"
@@ -773,25 +773,11 @@ GeanyFiletype *filetypes_detect_from_file(const gchar *utf8_filename)
 #endif
 
 
-void filetypes_select_radio_item(const GeanyFiletype *ft)
+GtkWidget *filetypes_get_radio_item(const GeanyFiletype *ft)
 {
-	/* ignore_callback has to be set by the caller */
-	g_return_if_fail(ignore_callback);
+	if (!ft) ft = filetypes[GEANY_FILETYPES_NONE];
 	
-	if (ft == NULL) ft = filetypes[GEANY_FILETYPES_NONE];
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ft->priv->menu_item), TRUE);
-}
-
-
-static void on_filetype_change(GtkCheckMenuItem *menuitem, gpointer user_data)
-{
-	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
-		return;
-	
-	GeanyDocument *doc = document_get_current();
-	if (!doc) return;
-	
-	document_set_filetype(doc, (GeanyFiletype *)user_data);
+	return ft->priv->menu_item;
 }
 
 
@@ -805,7 +791,7 @@ static void create_radio_menu_item(GtkWidget *menu, GeanyFiletype *ftype)
 	ftype->priv->menu_item = item;
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(menu), item);
-	g_signal_connect(item, "activate", G_CALLBACK(on_filetype_change),
+	g_signal_connect(item, "activate", G_CALLBACK(on_filetype_activate),
 					 (gpointer)ftype);
 }
 

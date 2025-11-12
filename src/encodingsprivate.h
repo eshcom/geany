@@ -55,7 +55,7 @@ const GeanyEncoding *encodings_get_from_index(gint idx);
 gchar *encodings_to_string(const GeanyEncoding *enc);
 const gchar *encodings_get_charset(const GeanyEncoding *enc);
 
-void encodings_select_radio_item(const gchar *charset);
+GtkWidget *encodings_get_radio_item(const gchar *charset);
 
 void encodings_init(void);
 void encodings_finalize(void);

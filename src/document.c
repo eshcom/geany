@@ -30,10 +30,8 @@
 #include "document.h"
 
 #include "app.h"
-#include "callbacks.h" /* for ignore_callback */
 #include "dialogs.h"
 #include "documentprivate.h"
-#include "encodings.h"
 #include "encodingsprivate.h"
 #include "filetypesprivate.h"
 #include "geany.h" /* FIXME: why is this needed for DOC_FILENAME()? should come from documentprivate.h/document.h */
@@ -1859,14 +1857,7 @@ gboolean document_save_file_as(GeanyDocument *doc, const gchar *utf8_fname)
 	if (doc->file_type->id == GEANY_FILETYPES_NONE)
 	{
 		GeanyFiletype *ft = filetypes_detect_from_document(doc);
-		
 		document_set_filetype(doc, ft);
-		if (document_get_current() == doc)
-		{
-			ignore_callback = TRUE;
-			filetypes_select_radio_item(doc->file_type);
-			ignore_callback = FALSE;
-		}
 	}
 	
 	if (new_file)

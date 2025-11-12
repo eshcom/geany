@@ -1772,7 +1772,8 @@ static void on_filetype1_menu_show(GtkMenu *menu, gpointer user_data)
 	if (!doc) return;
 	
 	ignore_callback = TRUE;
-	filetypes_select_radio_item(doc->file_type);
+	GtkWidget *item = filetypes_get_radio_item(doc->file_type);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	ignore_callback = FALSE;
 }
 
@@ -1783,7 +1784,8 @@ static void on_encoding1_menu_show(GtkMenu *menu, gpointer user_data)
 	if (!doc) return;
 	
 	ignore_callback = TRUE;
-	encodings_select_radio_item(doc->encoding);
+	GtkWidget *item = encodings_get_radio_item(doc->encoding);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	ignore_callback = FALSE;
 }
 
@@ -2056,6 +2058,39 @@ void on_plugin_preferences1_activate(GtkMenuItem *menuitem, gpointer user_data)
 #ifdef HAVE_PLUGINS
 	plugin_show_configure(NULL);
 #endif
+}
+
+
+void on_filetype_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+{
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+		return;
+	
+	GeanyDocument *doc = document_get_current();
+	if (!doc) return;
+	
+	document_set_filetype(doc, (GeanyFiletype *)user_data);
+}
+
+
+void on_encoding_activate(GtkCheckMenuItem *menuitem, gpointer user_data)
+{
+	if (ignore_callback || !gtk_check_menu_item_get_active(menuitem))
+		return;
+	
+	GeanyDocument *doc = document_get_current();
+	const gchar *charset = user_data;
+	
+	if (!doc || !charset || utils_str_equal(charset, doc->encoding))
+		return;
+	
+	if (doc->readonly)
+	{
+		utils_beep();
+		return;
+	}
+	document_undo_add(doc, UNDO_ENCODING, g_strdup(doc->encoding));
+	document_set_encoding(doc, charset);
 }
 
 
