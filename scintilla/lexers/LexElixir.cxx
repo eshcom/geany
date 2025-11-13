@@ -1404,8 +1404,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_UNKNOWN);
 				SKIP_NEXT_SPACES
 				
-				if (IsUpper(sc.chNext) || strchr("{_", sc.chNext)
-					|| styler.Match(sc.currentPos + 1, "unquote")) {
+				if (IsAlphaWordChar(sc.chNext) || sc.chNext == '{') {
 					sc.ChangeState(SCE_ELIXIR_MAP_OPER);
 				}
 			} else if (sc.ch == '@') {

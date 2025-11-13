@@ -211,6 +211,11 @@ defmodule Df.UseCases.UserAction do
     map = %{erlang: 123}
     map = %{any: 123}
     map = %{any:123}  # error expression (space required)
+    
+    var = Component
+    struct = %var{}
+    struct = %Component{}
+    struct = %__MODULE__{}
 
     Enum.any?(params[:privileges] || [], &(&1.test in del_privileges))
     Enum.map(roles, &%{&1 | roles_privileges: get_roles_privileges(&1.id)})
