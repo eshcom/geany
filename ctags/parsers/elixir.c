@@ -59,12 +59,22 @@ struct nlUserData {
 	(!(ptr) || !*(ptr))
 
 #define FREE_SCOPE(scope)				\
+{										\
 	free(scope.displayName);			\
-	free(scope.name);
+	free(scope.name);					\
+}
 
 #define SET_SCOPE_NAME(scope, newName)	\
+{										\
 	free(scope.name);					\
-	scope.name = newName;
+	scope.name = newName;				\
+}
+
+#define FREE_ALIAS_MODULE				\
+{										\
+	vStringDelete(vAliasModule);		\
+	vAliasModule = NULL;				\
+}
 
 #define SCOPE_SEPARATOR '.'
 
@@ -72,6 +82,7 @@ struct nlUserData {
 #define U_LITERAL_PREFIX "SCRWNUDT"
 
 static ptrArray *stringStack = NULL;
+static vString *vAliasModule = NULL;
 
 typedef struct {
 	char *name;
@@ -449,17 +460,65 @@ static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind k
 	return cp;
 }
 
-#define DEFINE_ALIAS_MODULE(exclude_count)									\
-	vString *vModule;														\
-	if (strncmp(ident, "__MODULE__", 10) == 0)								\
-	{																		\
-		vModule = vStringNewInit(currScope.name);							\
-		const char *suffix = strchr(ident, SCOPE_SEPARATOR);				\
-		if (suffix && suffix[1])											\
-			vStringNCatS(vModule, suffix, strlen(suffix) - exclude_count);	\
-	}																		\
-	else																	\
-		vModule = vStringNewNInit(ident, len - exclude_count);
+#define DEFINE_ALIAS_MODULE(exclude_count)										\
+	if (strncmp(ident, "__MODULE__", 10) == 0)									\
+	{																			\
+		vAliasModule = vStringNewInit(currScope.name);							\
+		const char *suffix = strchr(ident, SCOPE_SEPARATOR);					\
+		if (suffix && suffix[1])												\
+			vStringNCatS(vAliasModule, suffix, strlen(suffix) - exclude_count);	\
+	}																			\
+	else																		\
+		vAliasModule = vStringNewNInit(ident, len - exclude_count);
+
+static const unsigned char *parseGrpAliasTag(const unsigned char *cp)
+{
+	for (; *cp; cp++)
+	{
+		cp = skipSpace(cp);
+		if (isupper(*cp))
+		{
+			vString *const vAlias = vStringNew();
+			cp = parseIdentifier(cp, vAlias);
+			cp = skipSpace(cp);
+			
+			if (vStringLength(vAlias) > 0)
+			{
+				vString *const vFullModule = vStringNewCopy(vAliasModule);
+				if (vStringLength(vFullModule) > 0)
+					vStringPut(vFullModule, SCOPE_SEPARATOR);
+				vStringCat(vFullModule, vAlias);
+				
+				const char *alias = vStringValue(vAlias);
+				const char *search = strrchr(alias, SCOPE_SEPARATOR);
+				
+				// if SCOPE_SEPARATOR is found and there is something else after it
+				// and there is something else before it
+				if (search && search[1] && search > alias)
+					search++; // skip SCOPE_SEPARATOR
+				else
+					search = alias;
+				
+				Scope currScope = getCurrentScope();
+				makeTag(search, K_SPECIAL, true, currScope,
+						vStringValue(vFullModule), search);
+				vStringDelete(vFullModule);
+				FREE_SCOPE(currScope);
+			}
+			vStringDelete(vAlias);
+		}
+		
+		if (!*cp)
+			break;
+		else if (*cp != ',')
+		{
+			FREE_ALIAS_MODULE;
+			if (*cp == '}') cp++;
+			break;
+		}
+	}
+	return cp;
+}
 
 static const unsigned char *parseAliasTag(const unsigned char *cp)
 {
@@ -476,48 +535,7 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 		if (ident[len - 1] == SCOPE_SEPARATOR && *cp == '{')
 		{	// alias Sayings.{Greetings, Farewells, Parent.Child}
 			DEFINE_ALIAS_MODULE(1);
-			
-			while (*(++cp))
-			{
-				cp = skipSpace(cp);
-				if (isupper(*cp))
-				{
-					vString *const vAlias = vStringNew();
-					cp = parseIdentifier(cp, vAlias);
-					
-					if (vStringLength(vAlias) > 0)
-					{
-						vString *const vFullModule = vStringNewCopy(vModule);
-						if (vStringLength(vFullModule) > 0)
-							vStringPut(vFullModule, SCOPE_SEPARATOR);
-						vStringCat(vFullModule, vAlias);
-						
-						const char *alias = vStringValue(vAlias);
-						const char *search = strrchr(alias, SCOPE_SEPARATOR);
-						
-						// if SCOPE_SEPARATOR is found and there is something else after it
-						// and there is something else before it
-						if (search && search[1] && search > alias)
-							search++; // skip SCOPE_SEPARATOR
-						else
-							search = alias;
-						
-						makeTag(search, K_SPECIAL, true, currScope,
-								vStringValue(vFullModule), search);
-						vStringDelete(vFullModule);
-					}
-					vStringDelete(vAlias);
-					if (!*cp) break;
-				}
-				else if (*cp == ',')
-					continue;
-				else if (*cp == '}')
-				{
-					cp++;
-					break;
-				}
-			}
-			vStringDelete(vModule);
+			cp = parseGrpAliasTag(++cp);
 		}
 		else if (*cp == ',')
 		{	// alias Df.Repo.Users.Storage, as: UsersStorage
@@ -537,8 +555,8 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 						DEFINE_ALIAS_MODULE(0);
 						const char *alias = vStringValue(vAlias);
 						makeTag(alias, K_SPECIAL, true, currScope,
-								vStringValue(vModule), alias);
-						vStringDelete(vModule);
+								vStringValue(vAliasModule), alias);
+						FREE_ALIAS_MODULE;
 					}
 					vStringDelete(vAlias);
 				}
@@ -554,9 +572,9 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 			{
 				DEFINE_ALIAS_MODULE(0);
 				search++; // skip SCOPE_SEPARATOR
-				makeTag(search, K_SPECIAL, true, currScope, vStringValue(vModule),
-						search);
-				vStringDelete(vModule);
+				makeTag(search, K_SPECIAL, true, currScope,
+						vStringValue(vAliasModule), search);
+				FREE_ALIAS_MODULE;
 			}
 		}
 		FREE_SCOPE(currScope);
@@ -660,6 +678,8 @@ static void findElixirTags(void)
 	stringStack = ptrArrayNew(NULL);
 	nesting = nestingLevelsNew(sizeof(struct nlUserData));
 	
+	if (vAliasModule) FREE_ALIAS_MODULE;
+	
 	const unsigned char *line;
 	
 	while ((line = readLineFromInputFile()) != NULL)
@@ -670,6 +690,11 @@ static void findElixirTags(void)
 		{
 			checkMultilineString(cp);
 			continue;
+		}
+		else if (vAliasModule)
+		{
+			cp = parseGrpAliasTag(cp);
+			if (vAliasModule) continue;
 		}
 		else if (islower(*cp) || *cp == '@')
 			cp = parseKeyword(cp, cp - line);
