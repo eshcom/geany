@@ -768,3 +768,10 @@ defprotocol Test1.Test2 do
 	
 	def fn1(), do: :ok
 end
+
+alias OpenApiSpex.Cast.{
+  Integer,
+  Number
+}
+
+def fun1(), do: Number.cast("123")
