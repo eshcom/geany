@@ -310,40 +310,45 @@ static const unsigned char *parseIdentifier(const unsigned char *cp,
 	return cp;
 }
 
-#define MAKE_TAG_FULLNAME(ident)									\
-	vString *const vFullName = vStringNew();						\
-	const char *search = strchr(ident, SCOPE_SEPARATOR);			\
-	char *prefix;													\
-	if (search && search[1] && search > ident)						\
-	{																\
-		prefix = strndup(ident, search - ident);					\
-		search++; /* skip SCOPE_SEPARATOR */						\
-	}																\
-	else															\
-	{																\
-		prefix = strdup(ident);										\
-		search = ident;												\
-	}																\
-	for (size_t i = 0; i < countEntryInCorkQueue(); i++)			\
-	{																\
-		const tagEntryInfo *tag = getEntryInCorkQueue(i);			\
-		if (tag && tag->kindIndex == K_SPECIAL &&					\
-			strcmp(tag->name, prefix) == 0)							\
-		{															\
-			const char *module = tag->extensionFields.inheritance;	\
-			if (!EMPTY(module))										\
-				vStringCatS(vFullName, module);						\
-			break;													\
-		}															\
-	}																\
-	if (vStringLength(vFullName) == 0)								\
-		vStringCatS(vFullName, ident);								\
-	else if (search > ident)										\
-	{																\
-		vStringPut(vFullName, SCOPE_SEPARATOR);						\
-		vStringCatS(vFullName, search);								\
-	}																\
+static vString *makeTagFullname(const char *ident)
+{
+	vString *const vFullName = vStringNew();
+	const char *search = strchr(ident, SCOPE_SEPARATOR);
+	char *prefix;
+	
+	if (search && search[1] && search > ident)
+	{
+		prefix = strndup(ident, search - ident);
+		search++; // skip SCOPE_SEPARATOR
+	}
+	else
+	{
+		prefix = strdup(ident);
+		search = ident;
+	}
+	
+	for (size_t i = 0; i < countEntryInCorkQueue(); i++)
+	{
+		const tagEntryInfo *tag = getEntryInCorkQueue(i);
+		if (tag && tag->kindIndex == K_SPECIAL &&
+			strcmp(tag->name, prefix) == 0)
+		{
+			const char *module = tag->extensionFields.inheritance;
+			if (!EMPTY(module))
+				vStringCatS(vFullName, module);
+			break;
+		}
+	}
+	if (vStringLength(vFullName) == 0)
+		vStringCatS(vFullName, ident);
+	else if (search > ident)
+	{
+		vStringPut(vFullName, SCOPE_SEPARATOR);
+		vStringCatS(vFullName, search);
+	}
 	free(prefix);
+	return vFullName;
+}
 
 static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind kind,
 										   bool private, int indent)
@@ -353,7 +358,7 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 	
 	if (vStringLength(identifier) > 0)
 	{
-		const char *ident = vStringValue(identifier);
+		const char *const ident = vStringValue(identifier);
 		Scope currScope = getCurrentScope();
 		int r;
 		
@@ -382,8 +387,9 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 		}
 		else if (kind == K_IMPL)
 		{
-			MAKE_TAG_FULLNAME(ident);
-			const char *fullName = vStringValue(vFullName);
+			vString *const vFullName = makeTagFullname(ident);
+			const char *const fullName = vStringValue(vFullName);
+			const char *search;
 			char *scope = NULL;
 			
 			if (strcmp(fullName, "unquote") == 0)
@@ -428,7 +434,6 @@ static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind k
 	
 	if (vStringLength(identifier) > 0)
 	{
-		const char *ident;
 		char *module = NULL;
 		
 		if (delegate)
@@ -443,7 +448,7 @@ static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind k
 				
 				if (vStringLength(vIdent) > 0)
 				{
-					MAKE_TAG_FULLNAME(vStringValue(vIdent));
+					vString *const vFullName = makeTagFullname(vStringValue(vIdent));
 					module = strdup(vStringValue(vFullName));
 					vStringDelete(vFullName);
 				}
@@ -451,7 +456,7 @@ static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind k
 			}
 		}
 		Scope currScope = getCurrentScope();
-		ident = vStringValue(identifier);
+		const char *ident = vStringValue(identifier);
 		makeTag(ident, kind, private, currScope, module, ident);
 		FREE_SCOPE(currScope);
 		free(module);
@@ -590,11 +595,11 @@ static const unsigned char *parseUseTag(const unsigned char *cp)
 	
 	if (vStringLength(identifier) > 0)
 	{
-		MAKE_TAG_FULLNAME(vStringValue(identifier));
 		Scope currScope = getCurrentScope();
+		vString *const vFullName = makeTagFullname(vStringValue(identifier));
 		makeTag("<use>", K_SPECIAL, true, currScope, vStringValue(vFullName), "<use>");
-		FREE_SCOPE(currScope);
 		vStringDelete(vFullName);
+		FREE_SCOPE(currScope);
 	}
 	vStringDelete(identifier);
 	return cp;
