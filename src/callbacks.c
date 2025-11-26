@@ -1398,135 +1398,134 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 	editor_get_custom_words(doc->editor, ':', &sel, wc, &sel2, wc2); // esh: it is
 	SETPTR(sel, utils_get_locale_from_utf8(sel));
 	
-	if (sel != NULL)
-	{
-		gchar *filename = NULL;
+	if (!sel) return;
+	
+	gchar *filename = NULL;
+	
+	if (g_path_is_absolute(sel))
+		filename = g_strdup(sel);
+	else
+	{	/* relative filename, add the path of the current file */
+		gchar *path = utils_get_current_file_dir_utf8();
+		SETPTR(path, utils_get_locale_from_utf8(path));
+		if (!path) path = g_get_current_dir();
 		
-		if (g_path_is_absolute(sel))
-			filename = g_strdup(sel);
-		else
-		{	/* relative filename, add the path of the current file */
-			gchar *path = utils_get_current_file_dir_utf8();
-			SETPTR(path, utils_get_locale_from_utf8(path));
-			if (!path) path = g_get_current_dir();
+		filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
+		
+		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+		{
+			gboolean currpath_match_proj = FALSE;
 			
-			filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
-			
-			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			gchar *base_path = project_get_base_path();
+			if (base_path)
 			{
-				gboolean currpath_match_proj = FALSE;
+				SETPTR(base_path, utils_get_locale_from_utf8(base_path));
 				
-				gchar *base_path = project_get_base_path();
-				if (base_path)
-				{
-					SETPTR(base_path, utils_get_locale_from_utf8(base_path));
-					
-					gint match = utils_match_dirs(path, base_path);
-					if (match == MATCH_DIRS_PREF_2)
-					{	// navigate from path to base_path
-						gchar *tpath = g_strdup(path);
-						while (TRUE)
-						{
-							SETPTR(tpath, g_path_get_dirname(tpath));
-							SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-														  tpath, sel, NULL));
-							if (utils_match_dirs(tpath, base_path) == MATCH_DIRS_FULL
-								|| g_file_test(filename, G_FILE_TEST_EXISTS))
-								break;
-						}
-						g_free(tpath);
-						currpath_match_proj = TRUE;
-					}
-					else if (match == MATCH_DIRS_FULL)
-						currpath_match_proj = TRUE;
-					else // try the project's base path
-						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-													  base_path, sel, NULL));
-					
-					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-					{	// try <base_path>/<base_name>/<sel>, example:
-						// open path "ui/log.py", real path "rabbitvcs/rabbitvcs/ui/log.py"
-						gchar *base_name = g_path_get_basename(base_path);
-						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-													  base_name, sel, NULL));
-						g_free(base_name);
-					}
-					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-					{	// try <base_path>/main/<sel>
-						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-													  "main", sel, NULL));
-					}
-					if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-					{	// try <base_path>/lib/<sel>
-						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-													  "lib", sel, NULL));
-					}
-					g_free(base_path);
-				}
-				
-				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-				{	// try ../main/<sel>
-					gchar *parent_dir = g_path_get_dirname(path);
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
-												  "main", sel, NULL));
-					g_free(parent_dir);
-				}
-				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-				{	// try ../lib/<sel>
-					gchar *parent_dir = g_path_get_dirname(path);
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
-												  "lib", sel, NULL));
-					g_free(parent_dir);
-				}
-				if (!currpath_match_proj &&
-					!g_file_test(filename, G_FILE_TEST_EXISTS))
-				{	// navigate from path to parent dir: level(path) - 2
-					gint level = 2;
-					while (level > 0 && !utils_str_equal(path, G_DIR_SEPARATOR_S))
+				gint match = utils_match_dirs(path, base_path);
+				if (match == MATCH_DIRS_PREF_2)
+				{	// navigate from path to base_path
+					gchar *tpath = g_strdup(path);
+					while (TRUE)
 					{
-						SETPTR(path, g_path_get_dirname(path));
+						SETPTR(tpath, g_path_get_dirname(tpath));
 						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-													  path, sel, NULL));
-						if (g_file_test(filename, G_FILE_TEST_EXISTS))
+													  tpath, sel, NULL));
+						if (utils_match_dirs(tpath, base_path) == MATCH_DIRS_FULL
+							|| g_file_test(filename, G_FILE_TEST_EXISTS))
 							break;
-						level--;
 					}
+					g_free(tpath);
+					currpath_match_proj = TRUE;
+				}
+				else if (match == MATCH_DIRS_FULL)
+					currpath_match_proj = TRUE;
+				else // try the project's base path
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+												  base_path, sel, NULL));
+				
+				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// try <base_path>/<base_name>/<sel>, example:
+					// open path "ui/log.py", real path "rabbitvcs/rabbitvcs/ui/log.py"
+					gchar *base_name = g_path_get_basename(base_path);
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+												  base_name, sel, NULL));
+					g_free(base_name);
+				}
+				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// try <base_path>/main/<sel>
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+												  "main", sel, NULL));
+				}
+				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+				{	// try <base_path>/lib/<sel>
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
+												  "lib", sel, NULL));
+				}
+				g_free(base_path);
+			}
+			
+			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			{	// try ../main/<sel>
+				gchar *parent_dir = g_path_get_dirname(path);
+				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
+											  "main", sel, NULL));
+				g_free(parent_dir);
+			}
+			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			{	// try ../lib/<sel>
+				gchar *parent_dir = g_path_get_dirname(path);
+				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
+											  "lib", sel, NULL));
+				g_free(parent_dir);
+			}
+			if (!currpath_match_proj &&
+				!g_file_test(filename, G_FILE_TEST_EXISTS))
+			{	// navigate from path to parent dir: level(path) - 2
+				gint level = 2;
+				while (level > 0 && !utils_str_equal(path, G_DIR_SEPARATOR_S))
+				{
+					SETPTR(path, g_path_get_dirname(path));
+					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+												  path, sel, NULL));
+					if (g_file_test(filename, G_FILE_TEST_EXISTS))
+						break;
+					level--;
 				}
 			}
-			g_free(path);
-			
-#ifdef G_OS_UNIX
-			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-											  "/usr/local/include", sel, NULL));
-			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-											  "/usr/include", sel, NULL));
-#endif
 		}
+		g_free(path);
 		
-		if (g_file_test(filename, G_FILE_TEST_EXISTS))
-		{
-			GeanyDocument *new_doc = document_open_file(filename, FALSE, NULL, NULL);
-			//~ esh: call editor_goto_line
-			if (sel2 != NULL)
-			{
-				gint line_no, offset;
-				get_line_and_offset_from_text(sel2, &line_no, &offset);
-				if (!editor_goto_line(new_doc->editor, line_no, offset))
-					utils_beep();
-			}
-		}
-		else
-		{
-			SETPTR(sel, utils_get_utf8_from_locale(sel));
-			ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open file %s "
-													  "(File not found)"), sel);
-		}
-		g_free(filename);
-		g_free(sel);
-		g_free(sel2);
+#ifdef G_OS_UNIX
+		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+										  "/usr/local/include", sel, NULL));
+		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+										  "/usr/include", sel, NULL));
+#endif
 	}
+	
+	if (g_file_test(filename, G_FILE_TEST_EXISTS))
+	{
+		GeanyDocument *new_doc = document_open_file(filename, FALSE, NULL, NULL);
+		//~ esh: call editor_goto_line
+		if (sel2 != NULL)
+		{
+			gint line_no, offset;
+			get_line_and_offset_from_text(sel2, &line_no, &offset);
+			if (!editor_goto_line(new_doc->editor, line_no, offset))
+				utils_beep();
+		}
+	}
+	else
+	{
+		SETPTR(sel, utils_get_utf8_from_locale(sel));
+		ui_set_statusbar_color(TRUE, COLOR_RED, _("Could not open file %s "
+												  "(File not found)"), sel);
+	}
+	g_free(filename);
+	g_free(sel);
+	g_free(sel2);
 }
 
 

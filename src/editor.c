@@ -1818,55 +1818,96 @@ static void read_word_quoted(gchar *chunk, gint *startword, gint *endword,
 }
 
 
-#define SKIP_WHITESPACES_BACKWARD												\
-	if (chunk) {																\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos > 0 && strchr(" \t", chunk[pos - 1]))					\
-				pos--;															\
-		else																	\
-			while (pos > 0 && isspace(chunk[pos - 1]))							\
-				pos--;															\
-	} else {																	\
-		gint lexer = sci_get_lexer(sci);										\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos > 0 && (strchr(" \t", sci_get_char_at(sci, pos - 1)) ||	\
-								highlighting_is_comment_style(lexer,			\
-											sci_get_style_at(sci, pos - 1))))	\
-				pos--;															\
-		else																	\
-			while (pos > 0 && (isspace(sci_get_char_at(sci, pos - 1)) ||		\
-								highlighting_is_comment_style(lexer,			\
-											sci_get_style_at(sci, pos - 1))))	\
-				pos--;															\
-	}
-
-#define SKIP_WHITESPACES_FORWARD												\
-	if (chunk) {																\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos < limit && strchr(" \t", chunk[pos]))					\
-				pos++;															\
-		else																	\
-			while (pos < limit && isspace(chunk[pos]))							\
-				pos++;															\
-	} else {																	\
-		gint lexer = sci_get_lexer(sci);										\
-		if (lang == TM_PARSER_PYTHON)											\
-			while (pos < limit && (strchr(" \t", sci_get_char_at(sci, pos)) ||	\
-									highlighting_is_comment_style(lexer,		\
-												sci_get_style_at(sci, pos))))	\
-				pos++;															\
-		else																	\
-			while (pos < limit && (isspace(sci_get_char_at(sci, pos)) ||		\
-									highlighting_is_comment_style(lexer,		\
-												sci_get_style_at(sci, pos))))	\
-				pos++;															\
-	}
-
-static gchar *find_prefix(ScintillaObject *sci, gchar *chunk,
-						  gint *p_pos, TMParserType lang)
+static gint skip_whitespaces_backward(ScintillaObject *sci, gchar *chunk, gint pos,
+									  TMParserType lang, gboolean is_comment_style)
 {
-	gint pos = *p_pos;
-	SKIP_WHITESPACES_BACKWARD
+	if (chunk) {
+		if (lang == TM_PARSER_PYTHON)
+			while (pos > 0 && strchr(" \t", chunk[pos - 1]))
+				pos--;
+		else
+			while (pos > 0 && isspace(chunk[pos - 1]))
+				pos--;
+	} else {
+		gint lexer = sci_get_lexer(sci);
+		
+		if (is_comment_style)
+		{
+			if (lang == TM_PARSER_PYTHON)
+				while (pos > 0 && strchr(" \t", sci_get_char_at(sci, pos - 1)) &&
+					   highlighting_is_comment_style(lexer, sci_get_style_at(sci, pos - 1)))
+					pos--;
+			else
+				while (pos > 0 && isspace(sci_get_char_at(sci, pos - 1)) &&
+					   highlighting_is_comment_style(lexer, sci_get_style_at(sci, pos - 1)))
+					pos--;
+		}
+		else
+		{
+			if (lang == TM_PARSER_PYTHON)
+				while (pos > 0 && (strchr(" \t", sci_get_char_at(sci, pos - 1)) ||
+								   highlighting_is_comment_style(lexer,
+													sci_get_style_at(sci, pos - 1))))
+					pos--;
+			else
+				while (pos > 0 && (isspace(sci_get_char_at(sci, pos - 1)) ||
+								   highlighting_is_comment_style(lexer,
+													sci_get_style_at(sci, pos - 1))))
+					pos--;
+		}
+	}
+	return pos;
+}
+
+static gint skip_whitespaces_forward(ScintillaObject *sci, gchar *chunk,
+									 gint pos, gint limit, TMParserType lang,
+									 gboolean is_comment_style)
+{
+	if (chunk) {
+		if (lang == TM_PARSER_PYTHON)
+			while (pos < limit && strchr(" \t", chunk[pos]))
+				pos++;
+		else
+			while (pos < limit && isspace(chunk[pos]))
+				pos++;
+	} else {
+		gint lexer = sci_get_lexer(sci);
+		
+		if (is_comment_style)
+		{
+			limit--;
+			
+			if (lang == TM_PARSER_PYTHON)
+				while (pos < limit && strchr(" \t", sci_get_char_at(sci, pos)) &&
+					   highlighting_is_comment_style(lexer, sci_get_style_at(sci, pos + 1)))
+					pos++;
+			else
+				while (pos < limit && isspace(sci_get_char_at(sci, pos)) &&
+					   highlighting_is_comment_style(lexer, sci_get_style_at(sci, pos + 1)))
+					pos++;
+		}
+		else
+		{
+			if (lang == TM_PARSER_PYTHON)
+				while (pos < limit && (strchr(" \t", sci_get_char_at(sci, pos)) ||
+									   highlighting_is_comment_style(lexer,
+														sci_get_style_at(sci, pos))))
+					pos++;
+			else
+				while (pos < limit && (isspace(sci_get_char_at(sci, pos)) ||
+									   highlighting_is_comment_style(lexer,
+														sci_get_style_at(sci, pos))))
+					pos++;
+		}
+	}
+	return pos;
+}
+
+
+static gchar *find_prefix(ScintillaObject *sci, gchar *chunk, gint *p_pos,
+						  TMParserType lang, gboolean is_comment_style)
+{
+	gint pos = skip_whitespaces_backward(sci, chunk, *p_pos, lang, is_comment_style);
 	gint prefix_start = pos;
 	
 	while (prefix_start > 0)
@@ -1892,12 +1933,11 @@ static gchar *find_prefix(ScintillaObject *sci, gchar *chunk,
 	return prefix;
 }
 
-static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
-						  gint pos, gint limit, TMParserType lang)
+static gchar *find_suffix(ScintillaObject *sci, gchar *chunk, gint pos, gint limit,
+						  TMParserType lang, gboolean is_comment_style)
 {
-	SKIP_WHITESPACES_FORWARD
-	gint suffix_end = pos;
-	
+	gint suffix_end = pos = skip_whitespaces_forward(sci, chunk, pos, limit,
+													 lang, is_comment_style);
 	while (suffix_end < limit)
 	{
 		gchar c = chunk ? chunk[suffix_end] : sci_get_char_at(sci, suffix_end);
@@ -1922,7 +1962,8 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk,
 
 static ScopeBound find_next_scope(GeanyEditor *editor, gchar *chunk,
 								  gint pos, const gchar *context_sep,
-								  gchar *scope, gsize scopelen, const gchar *wc)
+								  gchar *scope, gsize scopelen, const gchar *wc,
+								  gboolean is_comment_style)
 {
 	ScintillaObject *sci = editor->sci;
 	TMParserType lang = editor->document->file_type->lang;
@@ -1930,13 +1971,12 @@ static ScopeBound find_next_scope(GeanyEditor *editor, gchar *chunk,
 	
 	*scope = '\0';
 	
-	SKIP_WHITESPACES_BACKWARD
+	pos = skip_whitespaces_backward(sci, chunk, pos, lang, is_comment_style);
 	
 	if (pos > 0 && match_last_chars(sci, chunk, pos, context_sep))
 	{
-		pos -= strlen(context_sep);
-		SKIP_WHITESPACES_BACKWARD
-		
+		pos = skip_whitespaces_backward(sci, chunk, pos - strlen(context_sep),
+										lang, is_comment_style);
 		if (pos > 0)
 		{
 			gboolean brackets = FALSE;
@@ -1946,7 +1986,8 @@ static ScopeBound find_next_scope(GeanyEditor *editor, gchar *chunk,
 			{
 				brackets = TRUE;
 				pos = find_start_bracket(sci, chunk, pos - 2);
-				SKIP_WHITESPACES_BACKWARD
+				pos = skip_whitespaces_backward(sci, chunk, pos, lang,
+												is_comment_style);
 			}
 			if (pos > 0)
 			{	// scope search:
@@ -1980,6 +2021,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 	
 	WordBound wordbound;
 	gint limit;
+	gboolean is_comment_style = FALSE;
 	
 	if (chunk)
 	{
@@ -1996,10 +2038,14 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 			else if (chunk[pos - 1] == ')')
 				pos = find_start_bracket(sci, chunk, pos - 2);
 		}
-		SKIP_WHITESPACES_BACKWARD
+		pos = skip_whitespaces_backward(sci, chunk, pos, lang, is_comment_style);
 	}
 	else
+	{
 		limit = sci_get_length(sci);
+		is_comment_style = highlighting_is_comment_style(sci_get_lexer(sci),
+														 sci_get_style_at(sci, pos));
+	}
 	
 	*scope = '\0';
 	
@@ -2012,9 +2058,9 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 	pos = wordbound.start;
 	
 	// esh: define the type ----------------------------------
-	gchar *word_prefix = find_prefix(sci, chunk, &pos, lang);
-	gchar *word_suffix = find_suffix(sci, chunk, wordbound.end, limit, lang);
-	
+	gchar *word_prefix = find_prefix(sci, chunk, &pos, lang, is_comment_style);
+	gchar *word_suffix = find_suffix(sci, chunk, wordbound.end, limit, lang,
+									 is_comment_style);
 	tm_parser_define_type(type, lang, word_prefix, word_suffix);
 	
 	ui_set_statusbar(TRUE, "!word! prefix: '%s', suffix: '%s', type: %d",
@@ -2038,7 +2084,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 			while (TRUE)
 			{
 				tmp_bound = find_next_scope(editor, chunk, pos, context_sep,
-											tmp_scope, scopelen, wc);
+											tmp_scope, scopelen, wc, is_comment_style);
 				if (*tmp_scope == '\0') break;
 				
 				if (lang == TM_PARSER_ELIXIR)
@@ -2061,7 +2107,8 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 			{
 				pos = scopebound.bound.start;
 				
-				gchar *scope_prefix = find_prefix(sci, chunk, &pos, lang);
+				gchar *scope_prefix = find_prefix(sci, chunk, &pos, lang,
+												  is_comment_style);
 				tm_parser_define_scope(scope, scopelen, scope_parts_cnt, lang,
 									   scope_prefix, NULL, scopebound.brackets);
 				g_free(scope_prefix);
@@ -2089,44 +2136,47 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar sep
 	
 	WordBound wordbound;
 	gint limit, pos;
+	gboolean is_comment_style = FALSE;
+	
+	*word1 = '\0';
+	*word2 = '\0';
 	
 	if (chunk)
 	{
 		limit = strlen(chunk);
-		pos = 0;
-		SKIP_WHITESPACES_FORWARD
+		pos = skip_whitespaces_forward(sci, chunk, 0, limit, lang, is_comment_style);
 	}
 	else
 	{
 		limit = sci_get_length(sci);
-		pos = -1;
+		pos = sci_get_current_position(sci);
+		is_comment_style = highlighting_is_comment_style(sci_get_lexer(sci),
+														 sci_get_style_at(sci, pos));
 	}
+	if (pos >= limit) return;
 	
 	// word1 search:
 	wordbound = chunk ? read_word(chunk, pos, word1, wordlen1, wc1, FALSE, lang)
 					  : read_current_word(editor, pos, word1, wordlen1, wc1, FALSE);
 	
-	if (wordbound.start != wordbound.end)
+	if (wordbound.start == wordbound.end) return;
+	
+	pos = skip_whitespaces_forward(sci, chunk, wordbound.end, limit,
+								   lang, is_comment_style);
+	if (pos >= limit) return;
+	
+	gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
+	
+	if (c == separator)
 	{
-		pos = wordbound.end;
-		SKIP_WHITESPACES_FORWARD
+		pos = skip_whitespaces_forward(sci, chunk, ++pos, limit,
+									   lang, is_comment_style);
+		if (pos >= limit) return;
 		
-		gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
-		
-		if (pos < limit && c == separator)
-		{
-			pos++;
-			SKIP_WHITESPACES_FORWARD
-			
-			if (pos < limit)
-			{	// word2 search:
-				chunk ? read_word(chunk, pos, word2, wordlen2, wc2, FALSE, lang)
-					  : read_current_word(editor, pos, word2, wordlen2, wc2, FALSE);
-				return;
-			}
-		}
+		// word2 search:
+		chunk ? read_word(chunk, pos, word2, wordlen2, wc2, FALSE, lang)
+			  : read_current_word(editor, pos, word2, wordlen2, wc2, FALSE);
 	}
-	*word2 = '\0';
 }
 
 
