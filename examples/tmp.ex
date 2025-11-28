@@ -372,6 +372,9 @@ defmodule MyRouter do
     assert or 1 == 2
     assert and 1 == 2
     
+    assert = %{a: 1}
+    b = assert[:a]
+    
     execute "select 1"
     
     execute = %{}

@@ -627,28 +627,20 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	}
 
 #define CHECK_LIB_MACROS													\
-	if (sc.Match('!', '=') || sc.Match(':', ':') ||							\
+	if (!IsSpace(sc.chPrev) ||												\
+		sc.Match('!', '=') || sc.Match(':', ':') ||							\
 		MatchWord(sc.currentPos, styler, "and") ||							\
 		MatchWord(sc.currentPos, styler, "or") ||							\
 		MatchWord(sc.currentPos, styler, "in") ||							\
 		MatchWord(sc.currentPos, styler, "not in")) {						\
 		/* do not change the state */										\
-	} else if ((!IsOperator(sc.ch) || sc.Match('<', '<')					\
-				|| strchr("{[%:~^!?", sc.ch))								\
+	} else if ((IsAlnumWordChar(sc.ch) || sc.Match('<', '<')				\
+				|| strchr("{[%@:~\"'^!?", sc.ch))							\
 			   && !exclLibMacros.InList(ident) && libMacros.InList(ident)) {\
-		/* { - tuple, [ - list, % - map/struct, : - atom, ~ - string,
-		 * << - binary string, ^ - pin oper, ! - not oper
-		 * ? - char */														\
-		if ((strcmp(ident, "channel") == 0 && sc.ch != '"') ||				\
-			(strcmp(ident, "socket") == 0 && sc.ch != '"') ||				\
-			(strcmp(ident, "schema") == 0 && sc.ch != '"') ||				\
-			(strcmp(ident, "execute") == 0 && sc.ch != '"') ||				\
-			(strcmp(ident, "config") == 0 && sc.ch != ':') ||				\
-			(strcmp(ident, "field") == 0 && sc.ch != ':')) {				\
-			/* do not change the state */									\
-		} else {															\
-			sc.ChangeState(SCE_ELIXIR_LIB_MACRO);							\
-		}																	\
+		/* { - tuple, [ - list, % - map/struct, @ - attribute, : - atom,
+		 * ~ - string, " - string, ' - charlist, << - binary string,
+		 * ^ - pin oper, ! - "not" oper ? - char */							\
+		sc.ChangeState(SCE_ELIXIR_LIB_MACRO);								\
 	}
 
 #define SET_LITERAL_STATE													\
