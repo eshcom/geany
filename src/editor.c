@@ -1960,6 +1960,18 @@ static gchar *find_suffix(ScintillaObject *sci, gchar *chunk, gint pos, gint lim
 }
 
 
+static gboolean define_comment_style(ScintillaObject *sci, gint pos)
+{
+	gint line = sci_get_line_from_position(sci, pos);
+	gint line_end = sci_get_line_end_position(sci, line);
+	
+	if (pos > 0 && pos == line_end) pos--;
+	
+	return highlighting_is_comment_style(sci_get_lexer(sci),
+										 sci_get_style_at(sci, pos));
+}
+
+
 static ScopeBound find_next_scope(GeanyEditor *editor, gchar *chunk,
 								  gint pos, const gchar *context_sep,
 								  gchar *scope, gsize scopelen, const gchar *wc,
@@ -2043,8 +2055,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 	else
 	{
 		limit = sci_get_length(sci);
-		is_comment_style = highlighting_is_comment_style(sci_get_lexer(sci),
-														 sci_get_style_at(sci, pos));
+		is_comment_style = define_comment_style(sci, pos);
 	}
 	
 	*scope = '\0';
@@ -2150,32 +2161,68 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar sep
 	{
 		limit = sci_get_length(sci);
 		pos = sci_get_current_position(sci);
-		is_comment_style = highlighting_is_comment_style(sci_get_lexer(sci),
-														 sci_get_style_at(sci, pos));
+		is_comment_style = define_comment_style(sci, pos);
 	}
 	if (pos >= limit) return;
+	
+	gint orig_pos = pos;
 	
 	// word1 search:
 	wordbound = chunk ? read_word(chunk, pos, word1, wordlen1, wc1, FALSE, lang)
 					  : read_current_word(editor, pos, word1, wordlen1, wc1, FALSE);
 	
+	if (wordbound.start != wordbound.end)
+	{
+		pos = skip_whitespaces_forward(sci, chunk, wordbound.end, limit,
+									   lang, is_comment_style);
+		if (pos < limit)
+		{
+			gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
+			
+			if (c == separator)
+			{
+				pos = skip_whitespaces_forward(sci, chunk, ++pos, limit,
+											   lang, is_comment_style);
+				if (pos >= limit) return;
+				
+				// word2 search:
+				chunk ? read_word(chunk, pos, word2, wordlen2, wc2, FALSE, lang)
+					  : read_current_word(editor, pos, word2, wordlen2, wc2, FALSE);
+				return;
+			}
+		}
+	}
+	
+	// try to go back
+	pos = orig_pos;
+	
+	// word2 search:
+	gchar *_word2 = g_alloca(wordlen2);
+	wordbound = chunk ? read_word(chunk, pos, _word2, wordlen2, wc2, FALSE, lang)
+					  : read_current_word(editor, pos, _word2, wordlen2, wc2, FALSE);
+	
 	if (wordbound.start == wordbound.end) return;
 	
-	pos = skip_whitespaces_forward(sci, chunk, wordbound.end, limit,
-								   lang, is_comment_style);
-	if (pos >= limit) return;
+	pos = skip_whitespaces_backward(sci, chunk, wordbound.start, lang,
+									is_comment_style);
+	if (pos <= 0) return;
 	
-	gchar c = chunk ? chunk[pos] : sci_get_char_at(sci, pos);
+	gchar c = chunk ? chunk[--pos] : sci_get_char_at(sci, --pos);
 	
 	if (c == separator)
 	{
-		pos = skip_whitespaces_forward(sci, chunk, ++pos, limit,
-									   lang, is_comment_style);
-		if (pos >= limit) return;
+		pos = skip_whitespaces_backward(sci, chunk, pos, lang, is_comment_style);
+		if (pos <= 0) return;
 		
-		// word2 search:
-		chunk ? read_word(chunk, pos, word2, wordlen2, wc2, FALSE, lang)
-			  : read_current_word(editor, pos, word2, wordlen2, wc2, FALSE);
+		// word1 search:
+		gchar *_word1 = g_alloca(wordlen1);
+		wordbound = chunk ? read_word(chunk, pos, _word1, wordlen1, wc1, FALSE, lang)
+						  : read_current_word(editor, pos, _word1, wordlen1, wc1, FALSE);
+		
+		if (wordbound.start == wordbound.end) return;
+		
+		strcpy(word1, _word1);
+		strcpy(word2, _word2);
 	}
 }
 
