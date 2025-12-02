@@ -2290,41 +2290,41 @@ static const gchar *fixedkey="xx_xx_xx";
 static void build_load_menu_grp(GKeyFile *config, GeanyBuildCommand **dst, gint grp,
 								gchar *prefix, gboolean loc)
 {
-	guint cmd;
-	gsize prefixlen; /* NOTE prefixlen used in macros above */
-	GeanyBuildCommand *dstcmd;
-	gchar *key;
 	static gchar cmdbuf[4] = "  ";
-
+	
 	if (*dst == NULL)
 		*dst = g_new0(GeanyBuildCommand, build_groups_count[grp]);
-	dstcmd = *dst;
-	prefixlen = prefix == NULL ? 0 : strlen(prefix);
-	key = g_strconcat(prefix == NULL ? "" : prefix, fixedkey, NULL);
-	for (cmd = 0; cmd < build_groups_count[grp]; ++cmd)
+	
+	GeanyBuildCommand *dstcmd = *dst;
+	
+	/* NOTE: prefixlen used in macros above */
+	gsize prefixlen = prefix ? strlen(prefix) : 0;
+	gchar *key = g_strconcat(prefix ? prefix : "", fixedkey, NULL);
+	
+	for (guint cmd = 0; cmd < build_groups_count[grp]; ++cmd)
 	{
-		gchar *label;
-		if (cmd >= 100)
-			break; /* ensure no buffer overflow */
+		if (cmd >= 100) break; // ensure no buffer overflow
+		
 		sprintf(cmdbuf, "%02u", cmd);
 		set_key_grp(key, groups[grp]);
 		set_key_cmd(key, cmdbuf);
 		set_key_fld(key, "LB");
-		//~ esh: changed logic for setting label (loc param is not needed)
+		
+		// esh: changed logic for setting label (loc param is not needed)
 		//~ label = loc ? g_key_file_get_locale_string(config, build_grp_name, key, NULL, NULL):
 					  //~ g_key_file_get_string(config, build_grp_name, key, NULL);
-		label = g_key_file_get_locale_string(config, build_grp_name, key, NULL, NULL);
-		//~ esh: -------------
-		if (label != NULL)
+		gchar *label = g_key_file_get_locale_string(config, build_grp_name, key,
+													NULL, NULL);
+		if (label)
 		{
 			dstcmd[cmd].exists = TRUE;
 			SETPTR(dstcmd[cmd].label, label);
 			set_key_fld(key,"CM");
 			SETPTR(dstcmd[cmd].command,
-					g_key_file_get_string(config, build_grp_name, key, NULL));
+				   g_key_file_get_string(config, build_grp_name, key, NULL));
 			set_key_fld(key,"WD");
 			SETPTR(dstcmd[cmd].working_dir,
-					g_key_file_get_string(config, build_grp_name, key, NULL));
+				   g_key_file_get_string(config, build_grp_name, key, NULL));
 		}
 		else dstcmd[cmd].exists = FALSE;
 	}

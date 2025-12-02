@@ -972,10 +972,9 @@ static void parse_file_line(ParseData *data, gchar **filename, gint *line)
 		return;
 	}
 	
-	//~ esh: exclude phrases from the error line,
-	//~ example:
-	//~ In file included from document.h:31:0,
-	//~ 				 from msgwindow.h:24,
+	// esh: exclude phrases from the error line, example:
+	//		In file included from document.h:31:0,
+	//						 from msgwindow.h:24,
 	gchar *field = fields[data->file_idx];
 	gchar *fname = field + strlen(field) - 1;
 	while (fname > field && *(fname - 1) != ' ')
@@ -1123,11 +1122,10 @@ static void parse_compiler_error_line(const gchar *string,
 		/* All GNU gcc-like error messages */
 		case GEANY_FILETYPES_C:
 		case GEANY_FILETYPES_CPP:
-			//~ esh: there can be one colon and, accordingly, two fields
-			//~ example:
-			//~ In file included from document.h:31:0,
-							 //~ from msgwindow.h:24,
-							 //~ from msgwindow.c:33:
+			// esh: there can be one colon and, accordingly, two fields, example:
+			//		In file included from document.h:31:0,
+			//						 from msgwindow.h:24,
+			//						 from msgwindow.c:33:
 			if (strstr(string, "libtool --mode=link") == NULL)
 			{
 				data.pattern = ":";

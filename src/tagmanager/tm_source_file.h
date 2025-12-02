@@ -40,7 +40,7 @@ typedef struct TMSourceFile
 GType tm_source_file_get_type(void);
 
 TMSourceFile *tm_source_file_new(const char *file_name, const char *name);
-//~ esh: for init_tag_from_file_ctags
+// esh: for init_tag_from_file_ctags
 TMSourceFile *tm_source_file_new_prj(const char *file_name,
 									 const char *source_path);
 

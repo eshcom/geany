@@ -1000,7 +1000,7 @@ gboolean project_load_file(const gchar *locale_file_name,
 		ui_add_recent_project_file(utf8_filename);
 		g_free(utf8_filename);
 		
-		//~ esh: load tags file
+		// esh: load tags file
 		if (app->project->priv->load_tags_file_on_open)
 			project_load_tags();
 		
@@ -1064,8 +1064,8 @@ static gboolean load_config(const gchar *filename, gboolean save_default_session
 		document_close_all();
 		/* read session files so they can be opened with configuration_open_files() */
 		configuration_load_session_files(config, FALSE);
-		//~ esh: set vte_info.dir - the terminal path will be set after
-		//~		 starting the terminal process (see vte/on_startup_complete)
+		// esh: set vte_info.dir - the terminal path will be set after
+		//		starting the terminal process (see vte/on_startup_complete)
 		configuration_set_vte_info_dir(config);
 	}
 	g_signal_emit_by_name(geany_object, "project-open", config);
@@ -1151,7 +1151,7 @@ void project_write_config(void)
  * base path if it is absolute or it is built out of project file name's dir and base_path.
  * If there is no project or project's base_path is invalid, NULL will be returned.
  * The returned string should be freed when no longer needed. */
-//~ esh: added GEANY_API_SYMBOL - for geanyctags plugin
+// esh: added GEANY_API_SYMBOL - for geanyctags plugin
 GEANY_API_SYMBOL
 gchar *project_get_base_path(void)
 {
@@ -1177,7 +1177,7 @@ gchar *project_get_base_path(void)
 }
 
 
-//~ esh: also for geanyctags plugin
+// esh: also for geanyctags plugin
 GEANY_API_SYMBOL
 gchar *project_get_tags_file(void)
 {
@@ -1192,7 +1192,7 @@ gchar *project_get_tags_file(void)
 }
 
 
-//~ esh: also for geanyctags plugin
+// esh: also for geanyctags plugin
 GEANY_API_SYMBOL
 void project_load_tags_file(const gchar *tags_file,
 							const gchar *source_path)

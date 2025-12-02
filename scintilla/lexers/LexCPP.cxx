@@ -1000,7 +1000,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	
 	const Sci_PositionU endPos = startPos + length;
 	
-	//~ esh: before debugging, you need to start viewing logs with the command `journalctl -f`
+	// esh: before debugging, you need to start viewing logs with the command `journalctl -f`
 	//~ printf("!!!Lex: currLine = %li, currChar = '%c', lastChar = '%c', "
 				//~ "initStyle = %i, startPos = %li, length = %li\n",
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],

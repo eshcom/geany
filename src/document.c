@@ -717,7 +717,7 @@ static gboolean remove_page(guint page_num)
 	g_signal_emit_by_name(geany_object, "document-close", doc);
 	
 	/* Checking real_path makes it likely the file exists on disk */
-	if (!main_status.closing_all && doc->real_path != NULL)
+	if (!main_status.closing_all && doc->real_path)
 		ui_add_recent_document(doc);
 	
 	g_datalist_clear(&doc->priv->data);
@@ -1171,9 +1171,9 @@ gboolean document_detect_indent_type(GeanyDocument *doc, GeanyIndentType *type_)
 
 
 /* Detect the indent width based on counting the leading indent characters for each line.
- * Returns whether detection succeeded, and the detected width in *width_ upon success */
+ * Returns whether detection succeeded, and the detected width in *p_width upon success */
 static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
-									gint *width_)
+									gint *p_width)
 {
 	/* can't easily detect the supposed width of a tab, guess the default is OK */
 	if (type == GEANY_INDENT_TYPE_TABS) return FALSE;
@@ -1207,9 +1207,7 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 		if (width < 2) continue;
 		
 		for (i = G_N_ELEMENTS(widths) - 1; i >= 0; i--)
-		{
 			if ((width % (i + 2)) == 0) widths[i]++;
-		}
 	}
 	
 	gint count = 0;
@@ -1226,7 +1224,7 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 	
 	if (count == 0) return FALSE;
 	
-	*width_ = width;
+	*p_width = width;
 	return TRUE;
 }
 
@@ -2244,7 +2242,7 @@ gboolean document_save_file(GeanyDocument *doc, gboolean force)
 		ui_update_statusbar(doc, -1);
 		
 #ifdef HAVE_VTE
-		vte_cwd((doc->real_path != NULL) ? doc->real_path : doc->file_name, FALSE);
+		vte_cwd(doc->real_path ? doc->real_path : doc->file_name, FALSE);
 #endif
 	}
 	g_free(locale_filename);

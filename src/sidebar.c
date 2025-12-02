@@ -743,7 +743,7 @@ static void create_openfiles_popup_menu(void)
 					 GINT_TO_POINTER(OPENFILES_ACTION_RELOAD));
 	doc_items.reload = item;
 	
-	//~ esh: added new menu items
+	// esh: added new menu items
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(openfiles_popup_menu), item);
@@ -763,7 +763,7 @@ static void create_openfiles_popup_menu(void)
 					 G_CALLBACK(on_openfiles_document_action),
 					 GINT_TO_POINTER(OPENFILES_ACTION_COPY_FULLPATH));
 	doc_items.copy_fullpath = item;
-	//~ esh: --------------------
+	// esh: --------------------
 	
 	item = gtk_separator_menu_item_new();
 	gtk_widget_show(item);
@@ -1149,10 +1149,10 @@ static void documents_menu_update(GtkTreeSelection *selection)
 	gtk_widget_set_sensitive(doc_items.save, (doc && doc->real_path) || path);
 	gtk_widget_set_sensitive(doc_items.reload, doc && doc->real_path);
 	gtk_widget_set_sensitive(doc_items.find_in_files, sel);
-	//~ esh: set sensitive for new items
+	// esh: set sensitive for new items
 	gtk_widget_set_sensitive(doc_items.copy_name, (doc && doc->real_path) || path);
 	gtk_widget_set_sensitive(doc_items.copy_fullpath, (doc && doc->real_path) || path);
-	//~ esh: ---------------------------
+	// esh: ---------------------------
 	g_free(shortname);
 	
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(doc_items.show_paths),

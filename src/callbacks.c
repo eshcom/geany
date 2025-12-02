@@ -483,8 +483,7 @@ static void on_notebook1_switch_page_after(GtkNotebook *notebook, gpointer page,
 		document_check_disk_status(doc, TRUE);
 		
 #ifdef HAVE_VTE
-		vte_cwd((doc->real_path != NULL) ? doc->real_path
-										 : doc->file_name, FALSE);
+		vte_cwd(doc->real_path ? doc->real_path : doc->file_name, FALSE);
 #endif
 		g_signal_emit_by_name(geany_object, "document-activate", doc);
 	}
@@ -1508,7 +1507,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 	if (g_file_test(filename, G_FILE_TEST_EXISTS))
 	{
 		GeanyDocument *new_doc = document_open_file(filename, FALSE, NULL, NULL);
-		//~ esh: call editor_goto_line
+		// esh: call editor_goto_line
 		if (sel2 != NULL)
 		{
 			gint line_no, offset;

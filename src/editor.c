@@ -4900,7 +4900,7 @@ void editor_replace_tabs(GeanyEditor *editor, gboolean ignore_selection)
 	}
 	sci_set_selection(editor->sci, anchor_pos, caret_pos);
 	
-	//~ esh: set type/width indent
+	// esh: set type/width indent
 	if (!has_selection)
 		editor_set_indent_type(editor, GEANY_INDENT_TYPE_SPACES);
 	
@@ -4975,7 +4975,7 @@ void editor_replace_spaces(GeanyEditor *editor, gboolean ignore_selection)
 	}
 	sci_set_selection(editor->sci, anchor_pos, caret_pos);
 	
-	//~ esh: set type/width indent
+	// esh: set type/width indent
 	if (!has_selection)
 		editor_set_indent(editor, GEANY_INDENT_TYPE_TABS, tab_len);
 	

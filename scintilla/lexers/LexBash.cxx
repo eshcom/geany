@@ -435,7 +435,7 @@ void SCI_METHOD LexerBash::Lex(Sci_PositionU startPos, Sci_Position length,
 	Sci_Position ln = styler.GetLine(startPos);
 	if (ln > 0 && startPos == static_cast<Sci_PositionU>(styler.LineStart(ln)))
 		ln--;
-	for (;;) {
+	while (true) {
 		startPos = styler.LineStart(ln);
 		if (ln == 0 || styler.GetLineState(ln) == BASH_CMD_START)
 			break;
