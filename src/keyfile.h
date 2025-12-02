@@ -18,7 +18,6 @@
  *      51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 #ifndef GEANY_KEYFILE_H
 #define GEANY_KEYFILE_H 1
 
@@ -40,7 +39,7 @@ struct StashGroup;
 void configuration_add_pref_group(struct StashGroup *group, gboolean for_prefs_dialog);
 
 void configuration_add_various_pref_group(struct StashGroup *group,
-	const gchar *prefix);
+										  const gchar *prefix);
 
 void configuration_save(gboolean project_open);
 
@@ -59,8 +58,8 @@ void configuration_set_vte_info_dir(GKeyFile *config);
 
 void configuration_save_session_files(GKeyFile *config);
 
-/* set some settings which are already read from the config file, but need other things, like the
- * realisation of the main window */
+/* set some settings which are already read from the config file,
+ * but need other things, like the realisation of the main window */
 void configuration_apply_settings(void);
 
 void history_save();

@@ -1156,7 +1156,7 @@ void search_show_find_in_files_dialog_full(const gchar *text, const gchar *dir)
 	{
 		const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
 		
-		//~ esh: added check new param use_current_proj_dir
+		// esh: added check new param use_current_proj_dir
 		if (search_prefs.use_current_proj_dir && project_base_path)
 		{
 			gint match = utils_match_dirs(entry_text, project_base_path);

@@ -104,7 +104,7 @@ static inline bool IsStringStyle(int style) {
 			style == SCE_CSS_ESCAPESEQUENCE);
 }
 
-//~ esh: CheckSubVar func
+// esh: CheckSubVar func
 static inline bool CheckSubVar(StyleContext &sc, bool *isSubVar,
 							   int *beforeSubVarState) {
 	if (sc.Match('#', '{')) {

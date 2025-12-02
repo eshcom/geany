@@ -52,7 +52,7 @@ const TMWorkspace *tm_get_workspace(void);
 
 gboolean tm_workspace_load_global_tags(const char *tags_file, TMParserType mode);
 
-//~ esh: for symbols.c/goto_tag, also for geanyctags plugin
+// esh: for symbols.c/goto_tag, also for geanyctags plugin
 gboolean tm_workspace_load_project_tags(const char *tags_file,
 										const char *source_path,
 										gboolean load_typenames);
@@ -63,7 +63,7 @@ gboolean tm_workspace_create_global_tags(const char *pre_process, const char **i
 
 GPtrArray *tm_workspace_find(const char *name, const char *scope, TMTagType type,
 							 TMTagAttrType *attrs, TMParserType lang);
-//~ esh: for symbols.c/goto_tag
+// esh: for symbols.c/goto_tag
 GPtrArray *tm_workspace_find_prj(const char *name, const char *scope,
 								 TMTagType type, TMParserType lang);
 

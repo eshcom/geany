@@ -2458,7 +2458,7 @@ gchar *utils_get_real_path(const gchar *file_name)
 }
 
 
-//~ esh: using extensions_hash for optimization
+// esh: using extensions_hash for optimization
 static GHashTable *extensions_hash = NULL;
 
 void extensions_free(void)
@@ -2470,7 +2470,7 @@ void extensions_free(void)
 	}
 }
 
-//~ esh: for tm_source_file_new_prj
+// esh: for tm_source_file_new_prj
 TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 {
 	g_return_val_if_fail(file_name != NULL, TM_PARSER_NONE);
@@ -2497,9 +2497,9 @@ TMParserType utils_detect_lang_from_extension(const gchar *file_name)
 	return ft->lang;
 }
 
-//~ esh: very efficient algorithm for comparing dirs:
-//~      1. one-pass scheme;
-//~      2. does not require the creation of additional vars
+// esh: very efficient algorithm for comparing dirs:
+//		1. one-pass scheme;
+//		2. does not require the creation of additional vars
 GEANY_API_SYMBOL
 gint utils_match_dirs(const gchar *dir1, const gchar *dir2)
 {

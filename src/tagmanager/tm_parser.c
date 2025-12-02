@@ -902,7 +902,7 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 
 gboolean tm_parser_strict_scope(TMParserType lang)
 {
-	//~ esh: add langs to exclude here as needed
+	// esh: add langs to exclude here as needed
 	switch (lang)
 	{
 		case TM_PARSER_NONE:

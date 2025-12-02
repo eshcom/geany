@@ -222,9 +222,9 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len);
 
 gboolean utils_parse_color(const gchar *spec, GdkColor *color);
 
-//~ esh: to free extensions_hash
+// esh: to free extensions_hash
 void extensions_free(void);
-//~ esh: for tm_source_file_new_prj
+// esh: for tm_source_file_new_prj
 TMParserType utils_detect_lang_from_extension(const gchar *file_name);
 
 enum

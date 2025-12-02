@@ -2362,9 +2362,9 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 			if (last_tag != NULL && last_tag->file == tmtag->file &&
 				last_tag->type != tm_tag_typedef_t && tmtag->type == tm_tag_typedef_t)
 			{
-				// esh: fixed goto tm_tag_typedef_t tag for Erlang lang
-				// example: server_config.hrl (goto sort_index typedef):
-				//          position = undefined :: sort_index()
+				// esh: fixed goto tm_tag_typedef_t tag for Erlang lang, example:
+				//			server_config.hrl (goto sort_index typedef):
+				//			position = undefined :: sort_index()
 				if (last_tag == current_tag ||
 					(lang == TM_PARSER_ERLANG && !current_tag))
 					g_ptr_array_add(filtered_tags, tmtag);

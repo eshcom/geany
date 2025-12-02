@@ -2010,7 +2010,7 @@ Sci::Position Document::FindText(Sci::Position minPos, Sci::Position maxPos,
 				Sci::Position posIndexDocument = pos;
 				size_t indexSearch = 0;
 				bool characterMatches = true;
-				for (;;) {
+				while (true) {
 					const unsigned char leadByte = cb.UCharAt(posIndexDocument);
 					bytes[0] = leadByte;
 					int widthChar = 1;

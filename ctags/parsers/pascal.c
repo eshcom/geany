@@ -53,12 +53,12 @@ static void createPascalTag (tagEntryInfo* const tag,
 		/* TODO: Passing NULL as name makes an assertion behind initTagEntry failure */
 		/* initTagEntry (tag, NULL, NULL); */
 		
-		//~ esh: if we do not set NULL, then we will catch the error:
-		//~ 		Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
-		//~ 		0x00007ffff7b0b51f in makeTagEntry (tag=tag@entry=0x7fffffffd200) at main/entry.c:1255
-		//~ 		1255		if (tag->name [0] == '\0' && (!tag->placeholder))
-		//~ because the check (tag->name != NULL) passed,
-		//~ but check (tag->name [0] == '\0') failed (crashed geany)
+		// esh: if we do not set NULL, then we will catch the error:
+		//			Thread 1 "geany" received signal SIGSEGV, Segmentation fault.
+		//			0x00007ffff7b0b51f in makeTagEntry (tag=tag@entry=0x7fffffffd200) at main/entry.c:1255
+		//			1255		if (tag->name [0] == '\0' && (!tag->placeholder))
+		//		because the check (tag->name != NULL) passed,
+		//		but check (tag->name [0] == '\0') failed (crashed geany)
 		tag->name = NULL;
 	}
 }

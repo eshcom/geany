@@ -152,7 +152,7 @@ static void set_statusbar(const gchar *text, gint text_color, gboolean allow_ove
 		gtk_statusbar_push(GTK_STATUSBAR(ui_widgets.statusbar), id, text);
 		last_time = timeval.tv_sec;
 		
-		//~ esh: set statusbar text color
+		// esh: set statusbar text color
 		const GdkColor *color = get_color(text_color);
 		gtk_widget_modify_fg(GTK_STATUSBAR(ui_widgets.statusbar)->label, GTK_STATE_NORMAL, color);
 	}
@@ -161,7 +161,7 @@ static void set_statusbar(const gchar *text, gint text_color, gboolean allow_ove
 		gtk_statusbar_pop(GTK_STATUSBAR(ui_widgets.statusbar), id);
 		gtk_statusbar_push(GTK_STATUSBAR(ui_widgets.statusbar), id, text);
 		
-		//~ esh: set statusbar text color
+		// esh: set statusbar text color
 		const GdkColor *color = get_color(text_color);
 		gtk_widget_modify_fg(GTK_STATUSBAR(ui_widgets.statusbar)->label, GTK_STATE_NORMAL, color);
 	}
@@ -396,7 +396,7 @@ void ui_set_window_title(GeanyDocument *doc)
 	GString *str = g_string_new(NULL);
 	GeanyProject *project = app->project;
 	
-	//~ esh: changed the logic for generating the title of the main window
+	// esh: changed the logic for generating the title of the main window
 	if (cl_options.new_instance)
 		g_string_append(str, _("(new instance) "));
 	

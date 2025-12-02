@@ -495,7 +495,7 @@ static GeanyFiletype *detect_filetype_conf_file(const gchar *utf8_filename)
 #endif
 	SETPTR(lfn, utils_get_locale_from_utf8(lfn));
 	
-	//~ esh: detect conf-file by parent dir of utf8_filename
+	// esh: detect conf-file by parent dir of utf8_filename
 	gchar *path = g_path_get_dirname(utf8_filename);
 	gboolean found = g_str_has_suffix(path, GEANY_FILEDEFS_SUBDIR);
 	

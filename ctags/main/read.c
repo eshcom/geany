@@ -706,7 +706,7 @@ static vString *iFileGetLine (void)
 	str = vStringValue (File.line);
 	size = vStringSize (File.line);
 
-	for (;;)
+	while (true)
 	{
 		bool newLine;
 		bool eof;
