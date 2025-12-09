@@ -17,6 +17,8 @@ lib_macro=identifier_1
 # style for lib_macros keywords with opening parenthesis
 lib_func=identifier_1
 operator=operator
+eex_oper=operator
+pin_oper=operator
 map_oper=operator
 capture_oper=operator
 function=function
