@@ -607,6 +607,8 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_LIB_MACRO,			"lib_macro",		FALSE },
 	{ SCE_ELIXIR_LIB_FUNC,			"lib_func",			FALSE },
 	{ SCE_ELIXIR_OPERATOR,			"operator",			FALSE },
+	{ SCE_ELIXIR_EEX_OPER,			"eex_oper",			FALSE },
+	{ SCE_ELIXIR_PIN_OPER,			"pin_oper",			FALSE },
 	{ SCE_ELIXIR_MAP_OPER,			"map_oper",			FALSE },
 	{ SCE_ELIXIR_CAPTURE_OPER,		"capture_oper",		FALSE },
 	{ SCE_ELIXIR_FUNCTION,			"function",			FALSE },
