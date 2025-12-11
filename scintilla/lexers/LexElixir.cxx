@@ -636,7 +636,9 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		MatchWord(sc.currentPos, styler, "and") ||							\
 		MatchWord(sc.currentPos, styler, "or") ||							\
 		MatchWord(sc.currentPos, styler, "in") ||							\
-		MatchWord(sc.currentPos, styler, "not in")) {						\
+		MatchWord(sc.currentPos, styler, "not in") ||						\
+		MatchWord(sc.currentPos, styler, "when") ||							\
+		MatchWord(sc.currentPos, styler, "end")) {							\
 		/* do not change the state */										\
 	} else if ((IsAlnumWordChar(sc.ch) || sc.Match('<', '<')				\
 				|| strchr("{[%@:~\"'^!?", sc.ch))							\
