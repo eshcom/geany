@@ -2091,12 +2091,15 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 			ScopeBound tmp_bound, scopebound;
 			guint scope_parts_cnt = 0;
 			GString *gscope = g_string_new(NULL);
+			gboolean brackets = FALSE;
 			
 			while (TRUE)
 			{
 				tmp_bound = find_next_scope(editor, chunk, pos, context_sep,
 											tmp_scope, scopelen, wc, is_comment_style);
 				if (*tmp_scope == '\0') break;
+				
+				if (tmp_bound.brackets) brackets = TRUE;
 				
 				if (lang == TM_PARSER_ELIXIR)
 				{	// collect a full scope for these langs
@@ -2121,7 +2124,7 @@ void editor_find_word_and_scope(GeanyEditor *editor, gint pos, gchar *chunk,
 				gchar *scope_prefix = find_prefix(sci, chunk, &pos, lang,
 												  is_comment_style);
 				tm_parser_define_scope(scope, scopelen, scope_parts_cnt, lang,
-									   scope_prefix, NULL, scopebound.brackets);
+									   scope_prefix, NULL, brackets);
 				g_free(scope_prefix);
 				g_free(word_prefix);
 				return;
