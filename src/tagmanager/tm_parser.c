@@ -729,7 +729,7 @@ void tm_parser_verify_type_mappings(void)
 				g_error("Tag type '%c' found in ctags but not in TM for %s",
 						kinds[i], ctagsGetLangName(lang));
 			
-			presence_map[(unsigned char) map->entries[i].kind]++;
+			presence_map[(unsigned char)map->entries[i].kind]++;
 		}
 		
 		for (guint i = 0; i < sizeof(presence_map); i++)
@@ -875,6 +875,11 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 				//		scope "module" is a variable containing a module
 				// __MODULE__.get_validation_module_for_file(path)
 				//		scope "__MODULE__" is a macro containing a module
+				g_strlcpy(scope, "*", scopelen);
+			else if (*scope != '\0' && brackets)
+				// any scope, examples:
+				// __MODULE__.module().handle_message(message, context)
+				//		scope "module" is a function that returns a module
 				g_strlcpy(scope, "*", scopelen);
 			else if (*scope == '\0' && g_strcmp0(suffix, ".") == 0)
 				// scope is not specified, but the separator is there
