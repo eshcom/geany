@@ -1468,29 +1468,31 @@ void configuration_open_files(void)
 	/* necessary to set it to TRUE for project session support */
 	main_status.opening_session_files = TRUE;
 	
-	gint i = file_prefs.tab_order_ltr ? 0 : (session_files->len - 1);
-	while (TRUE)
+	if (session_files->len > 0)
 	{
-		gchar **tmp = g_ptr_array_index(session_files, i);
-		guint len;
-		
-		if (tmp && (len = g_strv_length(tmp)) >= 8)
+		gint i = file_prefs.tab_order_ltr ? 0 : (session_files->len - 1);
+		while (TRUE)
 		{
-			if (!open_session_file(tmp, len))
-				failure = TRUE;
-		}
-		g_strfreev(tmp);
-		
-		if (file_prefs.tab_order_ltr)
-		{
-			if (++i >= (gint)session_files->len) break;
-		}
-		else
-		{
-			if (--i < 0) break;
+			gchar **tmp = g_ptr_array_index(session_files, i);
+			guint len;
+			
+			if (tmp && (len = g_strv_length(tmp)) >= 8)
+			{
+				if (!open_session_file(tmp, len))
+					failure = TRUE;
+			}
+			g_strfreev(tmp);
+			
+			if (file_prefs.tab_order_ltr)
+			{
+				if (++i >= (gint)session_files->len) break;
+			}
+			else
+			{
+				if (--i < 0) break;
+			}
 		}
 	}
-	
 	g_ptr_array_free(session_files, TRUE);
 	session_files = NULL;
 	
