@@ -43,6 +43,7 @@
 #include "toolbar.h"
 #include "ui_utils.h"
 #include "utils.h"
+#include "glibcompat.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -1912,7 +1913,7 @@ static gboolean pattern_list_match(GSList *patterns, const gchar *str)
 	
 	foreach_slist(item, patterns)
 	{
-		if (g_pattern_match_string(item->data, str))
+		if (g_pattern_spec_match_string(item->data, str))
 			return TRUE;
 	}
 	return FALSE;

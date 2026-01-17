@@ -44,6 +44,7 @@ geany_include_HEADERS = \
 	filetypes.h \
 	geany.h \
 	gtkcompat.h \
+	glibcompat.h \
 	highlighting.h \
 	keybindings.h \
 	main.h \

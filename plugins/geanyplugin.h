@@ -62,5 +62,6 @@
 #include "utils.h"
 
 #include "gtkcompat.h"
+#include "glibcompat.h"
 
 #endif

@@ -24,12 +24,13 @@
 #define GTK_COMPAT_H 1
 
 #include <gtk/gtk.h>
+
 #if GTK_CHECK_VERSION(3, 0, 0)
 #	include <gdk/gdkkeysyms-compat.h>
 #endif
 
-G_BEGIN_DECLS
 
+G_BEGIN_DECLS
 
 /* GtkComboBoxText */
 /* This is actually available in GTK 2.24, but we expose GtkComboBoxText in the
@@ -37,7 +38,7 @@ G_BEGIN_DECLS
  * should probably be harmless since it's only a derivated type).  However, since
  * a plugin needs to be rebuilt and tuned to work with GTK3 we don't mind that
  * a type changes between the GTK2 and GTK3 version */
-#if ! GTK_CHECK_VERSION(3, 0, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 /* undef those not to get warnings about redefinitions under GTK 2.24 */
 #	undef GTK_COMBO_BOX_TEXT
 #	undef GTK_COMBO_BOX_TEXT_CLASS
@@ -63,7 +64,7 @@ G_BEGIN_DECLS
 #endif
 
 /* GtkWidget */
-#if ! GTK_CHECK_VERSION(3, 0, 0)
+#if !GTK_CHECK_VERSION(3, 0, 0)
 #	define gtk_widget_get_allocated_height(widget)	(((GtkWidget *) (widget))->allocation.height)
 #	define gtk_widget_get_allocated_width(widget)	(((GtkWidget *) (widget))->allocation.width)
 #endif
@@ -96,7 +97,6 @@ G_BEGIN_DECLS
 #	define gtk_vscrollbar_new(adj)	gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, (adj))
 #	define gtk_hscrollbar_new(adj)	gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, (adj))
 #endif
-
 
 G_END_DECLS
 
