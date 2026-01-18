@@ -1,3 +1,6 @@
+#include <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
+
 int main()
 {
 	const double RENT = 3852.99;

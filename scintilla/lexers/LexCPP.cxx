@@ -1558,7 +1558,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				if (sc.atLineEnd) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
-				} else if (sc.Match("include")) {
+				} else if (sc.Match("include") || sc.Match("import")) {
 					isIncludePreprocessor = true;
 				} else if (options.trackPreprocessor) {
 					// If #if is nested too deeply (>31 levels) the active/inactive appearance
