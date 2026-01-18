@@ -1497,6 +1497,9 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 #ifdef G_OS_UNIX
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
+										  "/usr/local/include/geany", sel, NULL));
+		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
 										  "/usr/local/include", sel, NULL));
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
