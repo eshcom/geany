@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc uaf.c -fsanitize=address -static-libasan -g -o uaf.o
+
+./uaf.o

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc leak.c -fsanitize=address -static-libasan -g -o leak.o
+
+./leak.o
