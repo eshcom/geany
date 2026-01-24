@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc overflow.c -fsanitize=address -static-libasan -g -o overflow.o
+
+./overflow.o
