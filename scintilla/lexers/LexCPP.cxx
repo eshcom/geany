@@ -105,16 +105,18 @@ bool OnlySpaceOrTab(const std::string &s) noexcept {
 
 bool IsAMacroWord(const char *s) noexcept {
 	if (strcmp(s, "_") == 0 || (*s == '_' && *(s + 1) == '_') ||
-		(*s == '_' && isupper(*(s + 1))))
+		(*s == '_' && IsUpper(*(s + 1))))
 		return true;
 	
 	bool upper_exists = false;
 	
 	while (*s) {
-		if (islower(*s))
+		if (IsLower(*s))
 			return false;
-		else if (isupper(*s))
+		else if (IsUpper(*s))
 			upper_exists = true;
+		else if (upper_exists && *s == '_')
+			break;
 		s++;
 	}
 	

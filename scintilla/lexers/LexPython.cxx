@@ -253,10 +253,12 @@ inline bool IsAConstWord(const char *s) {
 	bool upper_exists = false;
 	
 	while (*s) {
-		if (islower(*s))
+		if (IsLower(*s))
 			return false;
-		else if (isupper(*s))
+		else if (IsUpper(*s))
 			upper_exists = true;
+		else if (upper_exists && *s == '_')
+			break;
 		s++;
 	}
 	return upper_exists;
