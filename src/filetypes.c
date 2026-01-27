@@ -50,7 +50,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 #include <glib/gstdio.h>
 
 #define GEANY_FILETYPE_SEARCH_LINES 2 /* lines of file to search for filetype */
@@ -614,20 +614,39 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 			{ "node",	GEANY_FILETYPES_JS },
 			{ "rust",	GEANY_FILETYPES_RUST }
 		};
-		gchar *tmp = g_path_get_basename(line + 2);
-		gchar *basename_interpreter = tmp;
 		
-		if (g_str_has_prefix(tmp, "env "))
-		{	/* skip "env" and read the following interpreter */
-			basename_interpreter += 4;
-		}
+		const gchar *start = line + 2;
+		const gchar *end = start;
+		while (*end && !isspace(*end)) end++;
 		
-		for (guint i = 0; !ft && i < G_N_ELEMENTS(intepreter_map); i++)
+		if (start < end)
 		{
-			if (g_str_has_prefix(basename_interpreter, intepreter_map[i].name))
-				ft = filetypes[intepreter_map[i].filetype];
+			gchar *path = g_strndup(start, end - start);
+			gchar *interpreter = g_path_get_basename(path);
+			g_free(path);
+			
+			if (g_strcmp0(interpreter, "env") == 0)
+			{	/* skip "env" and read the following interpreter */
+				start = end;
+				while (*start && isspace(*start)) start++;
+				
+				end = start;
+				while (*end && !isspace(*end)) end++;
+				
+				if (start < end)
+					SETPTR(interpreter, g_strndup(start, end - start));
+			}
+			
+			for (guint i = 0; i < G_N_ELEMENTS(intepreter_map); i++)
+			{
+				if (g_str_has_prefix(interpreter, intepreter_map[i].name))
+				{
+					ft = filetypes[intepreter_map[i].filetype];
+					break;
+				}
+			}
+			g_free(interpreter);
 		}
-		g_free(tmp);
 	}
 	/* detect HTML files */
 	if (g_str_has_prefix(line, "<!DOCTYPE html") ||
