@@ -617,6 +617,11 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 		else if (sc.chNext == '}')											\
 			sc.Forward();
 
+#define MOVE_INDEX_TO_NONSPACE												\
+	Sci_PositionU i = sc.currentPos;										\
+	while (i < endPos && IsSpaceOrTab(styler[i]))							\
+		i++;
+
 #define PROCESS_END_SEQUENCE												\
 	if (sc.ch == '\\') {													\
 		if (IsPySingleQuoteStringState(stringState) &&						\
@@ -646,9 +651,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 																			\
 	} else {																\
 		if (IsPySingleQuoteStringState(stringState)) {						\
-			Sci_PositionU i = sc.currentPos;								\
-			while (i < endPos && IsSpaceOrTab(styler[i]))					\
-				i++;														\
+			MOVE_INDEX_TO_NONSPACE											\
 			if (i == endPos || IsCRLF(styler[i]))							\
 				sc.ChangeState(SCE_P_STRINGEOL);							\
 			else															\
@@ -657,11 +660,6 @@ void LexerPython::ProcessLineEnd(StyleContext &sc,
 			sc.SetState(stringState);										\
 		}																	\
 	}
-
-#define MOVE_INDEX_TO_NONSPACE												\
-	Sci_PositionU i = sc.currentPos;										\
-	while (i < endPos && IsSpaceOrTab(styler[i]))							\
-		i++;
 
 #define PROCESS_LINE_END													\
 	{																		\

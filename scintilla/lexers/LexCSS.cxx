@@ -164,25 +164,21 @@ static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	// esh: Backtrack to previous line in case need to fix its tab whinging (taken from LexPython.cxx)
 	Sci_Position lineCurrent = styler.GetLine(startPos);
-	if (startPos > 0) {
-		if (lineCurrent > 0) {
-			// Look for backslash-continued lines
-			int eolStyle;
-			while (--lineCurrent > 0) {
-				eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
-				if (!IsStringStyle(eolStyle))
-					break;
-			}
-			Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
-			length += (startPos - newStartPos);
-			startPos = newStartPos;
-			initStyle = startPos == 0 ? SCE_CSS_DEFAULT
-									  : styler.StyleAt(startPos - 1);
+	if (startPos > 0 && lineCurrent > 0) {
+		// Look for backslash-continued lines
+		int eolStyle;
+		while (--lineCurrent > 0) {
+			eolStyle = styler.StyleAt(styler.LineStart(lineCurrent) - 1);
+			if (!IsStringStyle(eolStyle))
+				break;
 		}
+		Sci_PositionU newStartPos = styler.LineStart(lineCurrent);
+		length += (startPos - newStartPos);
+		startPos = newStartPos;
+		initStyle = startPos > 0 ? styler.StyleAt(startPos - 1) : SCE_CSS_DEFAULT;
 	}
 	
 	Sci_PositionU endPos = startPos + length;
-	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	int lastState = -1; // before operator

@@ -488,47 +488,48 @@ const char styleSubable[] = {SCE_C_IDENTIFIER, SCE_C_COMMENTDOCKEYWORD, 0};
 LexicalClass lexicalClasses[] = {
 	// Lexer Cpp SCLEX_CPP SCE_C_:
 	0,	"SCE_C_DEFAULT", "default", "White space",
-	1,	"SCE_C_STD_WORD", "keyword", "Standard keywords",
-	2,	"SCE_C_ADD_WORD", "identifier", "Additional keywords",
-	3,	"SCE_C_COM_WORD", "keyword", "Common keywords (eg. TRUE/FALSE/NULL)",
-	4,	"SCE_C_STD_FUNC", "identifier", "Standard library functions",
-	5,	"SCE_C_ADD_FUNC", "identifier", "Additional library functions",
-	6,	"SCE_C_STD_MACRO", "identifier", "Standard library macros",
-	7,	"SCE_C_ADD_MACRO", "identifier", "Additional library macros",
-	8,	"SCE_C_GLB_CLASS", "identifier", "Global classes and typedefs",
-	9,	"SCE_C_ADD_CLASS", "identifier", "Additional library classes",
-	10,	"SCE_C_IDENTIFIER", "identifier", "Identifiers",
-	11,	"SCE_C_CPP_TYPE", "identifier", "Identifiers",
-	12,	"SCE_C_FUNCTION", "identifier", "Function or method name",
-	13,	"SCE_C_MACRO", "identifier", "Macro name",
-	14,	"SCE_C_PREPROC", "preprocessor", "Preprocessor",
-	15,	"SCE_C_OPERATOR", "operator", "Operators",
-	16,	"SCE_C_NUMBER", "literal numeric", "Number",
-	17,	"SCE_C_STRING", "literal string", "Double quoted string",
-	18,	"SCE_C_STRINGRAW", "literal string multiline raw", "Raw strings for C++0x",
-	19,	"SCE_C_STRINGEOL", "error literal string", "End of line where string is not closed",
-	20,	"SCE_C_CHARACTER", "literal string character", "Character or single quoted string",
-	21,	"SCE_C_ESCAPESEQ", "literal string escapesequence", "Escape sequence",
-	22,	"SCE_C_FORMATSEQ", "literal string formatsequence", "Format sequence",
-	23,	"SCE_C_USERLITERAL", "literal", "User defined literals",
-	24,	"SCE_C_UUID", "literal uuid", "UUIDs (only in IDL)",
-	25,	"SCE_C_REGEX", "literal regex", "Regular expressions for JavaScript",
-	26,	"SCE_C_VERBATIM", "literal string multiline raw", "Verbatim strings for C#",
-	27,	"SCE_C_TRIPLEVERBATIM", "literal string multiline raw", "Triple-quoted strings for Vala",
-	28,	"SCE_C_JSONKEYSTRING", "literal string", "Double quoted string for JSON-key",
-	29,	"SCE_C_HASHQUOTEDSTRING", "literal string", "Hash-quoted strings for Pike",
-	30,	"SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
-	31,	"SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	40,	"SCE_C_BACKSLASH_WRONG", "wrong line continuation", "Wrong line continuation",
-	41,	"SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
-	42,	"SCE_C_COMMENT", "comment", "Comment: /* */.",
-	43,	"SCE_C_COMMENTDOC", "comment documentation", "Doc comment: block comments beginning with /** or /*!",
-	44,	"SCE_C_COMMENTDOCKEYWORD", "comment documentation keyword", "Comment keyword",
-	45,	"SCE_C_COMMENTDOCKEYWORDERROR", "error comment documentation keyword", "Comment keyword error",
-	46,	"SCE_C_COMMENTLINE", "comment line", "Line Comment: //.",
-	47,	"SCE_C_COMMENTLINEDOC", "comment documentation line", "Doc Comment Line: line comments beginning with /// or //!.",
-	48,	"SCE_C_PREPROCCOMMENT", "comment preprocessor", "Preprocessor stream comment",
-	49,	"SCE_C_PREPROCCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
+	1,	"SCE_C_UNKNOWN", "erroneous expression", "Erroneous expression",
+	2,	"SCE_C_STD_WORD", "keyword", "Standard keywords",
+	3,	"SCE_C_ADD_WORD", "identifier", "Additional keywords",
+	4,	"SCE_C_COM_WORD", "keyword", "Common keywords (eg. TRUE/FALSE/NULL)",
+	5,	"SCE_C_STD_FUNC", "identifier", "Standard library functions",
+	6,	"SCE_C_ADD_FUNC", "identifier", "Additional library functions",
+	7,	"SCE_C_STD_MACRO", "identifier", "Standard library macros",
+	8,	"SCE_C_ADD_MACRO", "identifier", "Additional library macros",
+	9,	"SCE_C_GLB_CLASS", "identifier", "Global classes and typedefs",
+	10,	"SCE_C_ADD_CLASS", "identifier", "Additional library classes",
+	11,	"SCE_C_IDENTIFIER", "identifier", "Identifiers",
+	12,	"SCE_C_CPP_TYPE", "identifier", "Identifiers",
+	13,	"SCE_C_FUNCTION", "identifier", "Function or method name",
+	14,	"SCE_C_MACRO", "identifier", "Macro name",
+	15,	"SCE_C_PREPROC", "preprocessor", "Preprocessor",
+	16,	"SCE_C_OPERATOR", "operator", "Operators",
+	17,	"SCE_C_NUMBER", "literal numeric", "Number",
+	18,	"SCE_C_STRING", "literal string", "Double quoted string",
+	19,	"SCE_C_STRINGRAW", "literal string multiline raw", "Raw strings for C++0x",
+	20,	"SCE_C_STRINGEOL", "error literal string", "End of line where string is not closed",
+	21,	"SCE_C_CHARACTER", "literal string character", "Character or single quoted string",
+	22,	"SCE_C_ESCAPESEQ", "literal string escapesequence", "Escape sequence",
+	23,	"SCE_C_FORMATSEQ", "literal string formatsequence", "Format sequence",
+	24,	"SCE_C_USERLITERAL", "literal", "User defined literals",
+	25,	"SCE_C_UUID", "literal uuid", "UUIDs (only in IDL)",
+	26,	"SCE_C_REGEX", "literal regex", "Regular expressions for JavaScript",
+	27,	"SCE_C_VERBATIM", "literal string multiline raw", "Verbatim strings for C#",
+	28,	"SCE_C_TRIPLEVERBATIM", "literal string multiline raw", "Triple-quoted strings for Vala",
+	29,	"SCE_C_JSONKEYSTRING", "literal string", "Double quoted string for JSON-key",
+	30,	"SCE_C_HASHQUOTEDSTRING", "literal string", "Hash-quoted strings for Pike",
+	31,	"SCE_C_STRING_CONTINUED", "literal string", "String continuation symbol",
+	40,	"SCE_C_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	41,	"SCE_C_BACKSLASH_WRONG", "wrong line continuation", "Wrong line continuation",
+	42,	"SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
+	43,	"SCE_C_COMMENT", "comment", "Comment: /* */.",
+	44,	"SCE_C_COMMENTDOC", "comment documentation", "Doc comment: block comments beginning with /** or /*!",
+	45,	"SCE_C_COMMENTDOCKEYWORD", "comment documentation keyword", "Comment keyword",
+	46,	"SCE_C_COMMENTDOCKEYWORDERROR", "error comment documentation keyword", "Comment keyword error",
+	47,	"SCE_C_COMMENTLINE", "comment line", "Line Comment: //.",
+	48,	"SCE_C_COMMENTLINEDOC", "comment documentation line", "Doc Comment Line: line comments beginning with /// or //!.",
+	49,	"SCE_C_PREPROCCOMMENT", "comment preprocessor", "Preprocessor stream comment",
+	50,	"SCE_C_PREPROCCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
 };
 
 }
@@ -829,11 +830,6 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 }
 
 
-#define MOVE_INDEX_TO_NONSPACE										\
-	Sci_PositionU i = sc.currentPos;								\
-	while (i < endPos && IsSpaceOrTab(styler[i]))					\
-		i++;
-
 #define CHECK_ESCAPE_FORMAT_SEQ										\
 	} else if (sc.ch == '\\') {										\
 		if (options.escapeSequence) {								\
@@ -867,7 +863,9 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	CHECK_ESCAPE_FORMAT_SEQ													\
 																			\
 	} else {																\
-		MOVE_INDEX_TO_NONSPACE												\
+		Sci_PositionU i = sc.currentPos;									\
+		while (i < endPos && IsSpaceOrTab(styler[i]))						\
+			i++;															\
 		if (i == endPos || IsCRLF(styler[i]))								\
 			sc.ChangeState(SCE_C_STRINGEOL|activitySet);					\
 		else																\
@@ -915,20 +913,44 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool inRERange = false;
 	bool seenDocKeyBrace = false;
 	
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	const Sci_PositionU endPos = startPos + length;
+	
+	// esh: backtrack to previous line in case need to fix highlighting
+	// 		of a function whose parameters are on the next line
+	if (startPos > 0 && lineCurrent > 0) {
+		Sci_Position back = startPos;
+		while (--back && IsSpace(styler[back]));
+		
+		int style = MaskActive(styler.StyleAt(back));
+		if (style == SCE_C_IDENTIFIER
+			|| style == SCE_C_STD_FUNC
+			|| style == SCE_C_ADD_FUNC
+			|| style == SCE_C_FUNCTION
+			|| style == SCE_C_COM_WORD
+			|| style == SCE_C_ADD_WORD) {
+			Sci_Position line = styler.GetLine(back);
+			if (line < lineCurrent) {
+				lineCurrent = line;
+				startPos = styler.LineStart(lineCurrent);
+				length = endPos - startPos;
+				initStyle = startPos > 0 ? styler.StyleAt(startPos - 1)
+										 : SCE_C_DEFAULT;
+			}
+		}
+	}
+	
 	// esh: define lastOper/lastOperPrev for SCE_C_STD_FUNC highlighting
 	int lastOper = ' ', lastOperPrev = ' ';
 	if (startPos > 0) {
 		Sci_Position back = startPos;
-		while (--back) {
-			if (IsSpace(styler[back])) {
-				continue;
-			} else if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
-				lastOper = styler[back--];
-				if (back && MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
-					lastOperPrev = styler[back];
-				}
+		while (--back && IsSpace(styler[back]));
+		
+		if (back && MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
+			lastOper = styler[back--];
+			if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
+				lastOperPrev = styler[back];
 			}
-			break;
 		}
 	}
 	
@@ -937,7 +959,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 	if (options.jsonKeyStrings && startPos > 0) {
 		Sci_Position back = startPos;
 		int foundOper;
-		while (--back)
+		while (--back) {
 			if (MaskActive(styler.StyleAt(back)) == SCE_C_OPERATOR) {
 				foundOper = styler.SafeGetCharAt(back);
 				if (foundOper == ',') {
@@ -950,9 +972,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					break;
 				}
 			}
+		}
 	}
-	
-	Sci_Position lineCurrent = styler.GetLine(startPos);
 	
 	// Set continuationLine if last character of previous line is '\'
 	if (lineCurrent > 0) {
@@ -999,8 +1020,6 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 			chPrevNonWhite = styler.SafeGetCharAt(back);
 		}
 	}
-	
-	const Sci_PositionU endPos = startPos + length;
 	
 	// esh: before debugging, you need to start viewing logs with the command `journalctl -f`
 	//~ printf("!!!Lex: currLine = %li, currChar = '%c', lastChar = '%c', "
@@ -1149,13 +1168,37 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else {
 						sc.GetCurrentLowered(s, sizeof(s));
 					}
-					MOVE_INDEX_TO_NONSPACE
+					
+					/*
+					consider this as a function:
+						plugin_set_key_group
+							(plugin, "Line Operations", G_N_ELEMENTS(menu_items));
+					
+					consider this as a non-function:
+						plugin_set_key_group
+							
+							(plugin, "Line Operations", G_N_ELEMENTS(menu_items));
+					
+					The "defined" preproc-keyword and the parentheses must be
+					on the same line, but there may be spaces or tabs between them.
+					*/
+					Sci_PositionU i = sc.currentPos;
+					while (i < endPos && IsSpaceOrTab(styler[i])) i++;
+					bool preprocBracket = (styler.SafeGetCharAt(i) == '(');
+					
+					if (i < endPos) {
+						if (styler.Match(i, "\r\n")) i += 2;
+						else if (styler[i] == '\n') i++;
+					}
+					while (i < endPos && IsSpaceOrTab(styler[i])) i++;
+					bool funcBracket = (styler.SafeGetCharAt(i) == '(');
+					
 					if (stdWords.InList(s)) {
 						lastWordWasUUID = strcmp(s, "uuid") == 0;
 						sc.ChangeState(SCE_C_STD_WORD|activitySet);
-					} else if (styler[i] != '(' && comWords.InList(s)) {
+					} else if (!funcBracket && comWords.InList(s)) {
 						sc.ChangeState(SCE_C_COM_WORD|activitySet);
-					} else if (styler[i] != '(' && addWords.InList(s)) {
+					} else if (!funcBracket && addWords.InList(s)) {
 						sc.ChangeState(SCE_C_ADD_WORD|activitySet);
 					} else if (glbClasses.InList(s)) {
 						sc.ChangeState(SCE_C_GLB_CLASS|activitySet);
@@ -1168,14 +1211,18 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 					} else if (IsAMacroWord(s)) {
 						sc.ChangeState(SCE_C_MACRO|activitySet);
 						
-					} else if (styler[i] == '(') {
+					} else if (isCondPreprocessor && strcmp(s, "defined") == 0) {
+						if (preprocBracket) {
+							sc.ChangeState(SCE_C_PREPROC|activitySet);
+						} else {
+							sc.ChangeState(SCE_C_UNKNOWN|activitySet);
+						}
+					} else if (funcBracket) {
 						if (!(lastOperPrev == ':' && lastOper == ':')
 							&& lastOper != '.' && stdFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_STD_FUNC|activitySet);
 						} else if (addFuncs.InList(s)) {
 							sc.ChangeState(SCE_C_ADD_FUNC|activitySet);
-						} else if (isCondPreprocessor && strcmp(s, "defined") == 0) {
-							sc.ChangeState(SCE_C_PREPROC|activitySet);
 						} else {
 							sc.ChangeState(SCE_C_FUNCTION|activitySet);
 						}
@@ -1377,6 +1424,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length,
 				PROCESS_END_SEQUENCE
 				break;
 				
+			case SCE_C_UNKNOWN:
 			case SCE_C_STRINGEOL:
 			case SCE_C_BACKSLASH_WRONG:
 				if (sc.atLineStart) {

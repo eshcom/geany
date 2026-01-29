@@ -2,6 +2,7 @@
 [styling]
 # Edit these in the colorscheme .conf file instead
 default=default
+unknown=default
 std_word=keyword_1
 add_word=keyword_2
 com_word=keyword_1

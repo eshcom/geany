@@ -193,7 +193,7 @@ static void ColourisePropsDoc(Sci_PositionU startPos, Sci_Position length,
 			length += (startPos - newStartPos);
 			startPos = newStartPos;
 		}
-		initStyle = startPos == 0 ? SCE_PROPS_DEFAULT : styler.StyleAt(startPos - 1);
+		initStyle = startPos > 0 ? styler.StyleAt(startPos - 1) : SCE_PROPS_DEFAULT;
 	}
 	
 	const Sci_PositionU endPos = startPos + length;
