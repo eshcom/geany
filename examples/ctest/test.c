@@ -871,8 +871,20 @@ void run_test_case18()
 	
 }
 
+#define FLAG1 1
+
+// The "defined" preproc-keyword and the parentheses must be
+// on the same line, but there may be spaces or tabs between them.
+#if defined 	 (FLAG1)
+	#define FLAG2 11
+#else
+	#define FLAG2 22
+#endif
+
 int main(void)
 {
+	//~ printf("flag: %d\n", FLAG2);
+	
 	run_test_case18();
 	printf("OK\n");
 	return 0;

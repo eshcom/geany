@@ -232,6 +232,7 @@ static const HLKeyword highlighting_keywords_BATCH[] =
 static const HLStyle highlighting_styles_C[] =
 {
 	{ SCE_C_DEFAULT,				"default",					FALSE },
+	{ SCE_C_UNKNOWN,				"unknown",					FALSE },
 	{ SCE_C_STD_WORD,				"std_word",					FALSE },
 	{ SCE_C_ADD_WORD,				"add_word",					FALSE },
 	{ SCE_C_COM_WORD,				"com_word",					FALSE },

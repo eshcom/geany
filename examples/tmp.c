@@ -315,3 +315,23 @@ size_t length = end ? end - file->line.buffer
 size_t length = (buff).strlen();
 size_t length = buff.strlen();
 size_t length = std::strlen(s);
+
+// consider this as a function:
+plugin_set_key_group
+	(plugin, "Line Operations", G_N_ELEMENTS(menu_items));
+
+// consider this as a non-function:
+plugin_set_key_group
+
+	(plugin, "Line Operations", G_N_ELEMENTS(menu_items));
+
+// valid:
+#if defined 	 (FLAG1)
+	#define FLAG2 1
+#endif
+
+// invalid:
+#if defined
+				 (FLAG1)
+	#define FLAG2 1
+#endif
