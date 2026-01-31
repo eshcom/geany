@@ -881,11 +881,28 @@ void run_test_case18()
 	#define FLAG2 22
 #endif
 
+void run_test_case19()
+{
+	printf("flag: %d\n", FLAG2);
+}
+
+void run_test_case20()
+{
+	gpointer p1 = NULL;
+	gpointer p2 = GINT_TO_POINTER(0);
+	gpointer p3 = GINT_TO_POINTER(1);
+	printf("p1: %p, p2: %p, p3: %p, \n", p1, p2, p3);
+	
+	gint is_ctrl1 = GPOINTER_TO_INT(p1);
+	gint is_ctrl2 = GPOINTER_TO_INT(p2);
+	gint is_ctrl3 = GPOINTER_TO_INT(p3);
+	printf("ctrl1: %d, ctrl2: %d, ctrl3: %d, \n", is_ctrl1, is_ctrl2, is_ctrl3);
+}
+
 int main(void)
 {
-	//~ printf("flag: %d\n", FLAG2);
+	run_test_case20();
 	
-	run_test_case18();
 	printf("OK\n");
 	return 0;
 }

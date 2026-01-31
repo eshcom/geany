@@ -3475,3 +3475,324 @@ void ui_notebook_set_current_page(GtkNotebook *notebook, GtkWidget *widget)
 	gtk_notebook_set_current_page(notebook, page_num);
 }
 // -------------------------------------------------------------------------------
+
+enum
+{
+	NONE_SEARCH,
+	L_WORD_SEARCH,
+	R_WORD_SEARCH,
+	LR_WORD_SEARCH,
+	L_NONWORD_SEARCH,
+	R_NONWORD_SEARCH,
+	LR_NONWORD_SEARCH,
+	L_NONSPACE_SEARCH,
+	R_NONSPACE_SEARCH,
+	LR_NONSPACE_SEARCH
+};
+
+enum
+{
+	NONE_KEY,
+	CTRL_KEY,
+	CTRL_ALT_KEY
+};
+
+inline gboolean is_word_char(gunichar ch, gboolean is_wordext)
+{
+	if (is_wordext)
+		return (g_unichar_isalnum(ch) || ch == '_' || ch == '-'
+									  || ch == '.' || ch == '*');
+	else
+		return (g_unichar_isalnum(ch) || ch == '_');
+}
+inline gboolean is_word_break(gunichar ch, gboolean is_wordext)
+{
+	return !is_word_char(ch, is_wordext);
+}
+
+static GtkTextCharPredicate get_pred(gint stype, gboolean is_wordext)
+{
+	gboolean pred_word_char(gunichar ch, gpointer user_data)
+	{
+		return is_word_char(ch, FALSE);
+	}
+	gboolean pred_word_break(gunichar ch, gpointer user_data)
+	{
+		return is_word_break(ch, FALSE);
+	}
+	gboolean pred_wordext_char(gunichar ch, gpointer user_data)
+	{
+		return is_word_char(ch, TRUE);
+	}
+	gboolean pred_wordext_break(gunichar ch, gpointer user_data)
+	{
+		return is_word_break(ch, TRUE);
+	}
+	gboolean pred_space_char(gunichar ch, gpointer user_data)
+	{
+		return g_unichar_isspace(ch);
+	}
+	
+	GtkTextCharPredicate pred;
+	
+	switch (stype)
+	{
+		case R_WORD_SEARCH:
+		case L_WORD_SEARCH:
+		case LR_WORD_SEARCH:
+			pred = is_wordext ? pred_wordext_break : pred_word_break;
+			break;
+		case R_NONWORD_SEARCH:
+		case L_NONWORD_SEARCH:
+		case LR_NONWORD_SEARCH:
+			pred = is_wordext ? pred_wordext_char : pred_word_char;
+			break;
+		default:
+			pred = pred_space_char;
+			break;
+	}
+	return pred;
+}
+
+static void check_and_select_range(GtkTextBuffer *textbuffer,
+								   GtkTextIter *cur_start, GtkTextIter *cur_end,
+								   GtkTextIter *new_start, GtkTextIter *new_end)
+{
+	if (!gtk_text_iter_equal(cur_start, new_start)
+		|| !gtk_text_iter_equal(cur_end, new_end))
+		gtk_text_buffer_select_range(textbuffer, new_start, new_end);
+}
+
+static void move_cursor(GtkTextBuffer *textbuffer, gboolean is_selected,
+						GtkTextIter *cur_start, GtkTextIter *cur_end)
+{
+	GdkEvent *event = gtk_get_current_event();
+	if (!event) return;
+	
+	if (event->type != GDK_KEY_PRESS)
+	{
+		gdk_event_free(event);
+		return;
+	}
+	
+	GdkEventButton *button_event = (GdkEventButton *)event;
+	if (button_event->state == 113)			// move left
+	{
+		GtkTextCharPredicate pred = get_pred(L_WORD_SEARCH, FALSE);
+		GtkTextIter left_lim;
+		gtk_text_buffer_get_iter_at_line(textbuffer, &left_lim,
+										 gtk_text_iter_get_line(cur_start));
+		gtk_text_iter_backward_find_char(cur_start, pred, NULL, &left_lim);
+		if (pred(gtk_text_iter_get_char(cur_start), NULL))
+			gtk_text_iter_forward_char(cur_start);
+		if (is_selected)
+			gtk_text_buffer_move_mark_by_name(textbuffer, "insert", cur_start);
+		else
+			gtk_text_buffer_place_cursor(textbuffer, cur_start);
+	}
+	else if (button_event->state == 114)	// move right
+	{
+		GtkTextCharPredicate pred = get_pred(R_WORD_SEARCH, FALSE);
+		if (!pred(gtk_text_iter_get_char(cur_end), NULL))
+		{
+			GtkTextIter right_lim = *cur_end;
+			gtk_text_iter_forward_to_line_end(&right_lim);
+			gtk_text_iter_forward_find_char(cur_end, pred, NULL, &right_lim);
+			if (is_selected)
+				gtk_text_buffer_move_mark_by_name(textbuffer, "insert", cur_end);
+			else
+				gtk_text_buffer_place_cursor(textbuffer, cur_end);
+		}
+	}
+	gdk_event_free(event);
+}
+
+static void on_textbuffer_markset(GtkTextBuffer *textbuffer, GtkTextIter *iter,
+								  GtkTextMark *mark, gpointer user_data)
+{
+	const gchar *mark_name = gtk_text_mark_get_name(mark);
+	
+	GtkTextIter cur_start, cur_end;
+	gboolean is_selected = gtk_text_buffer_get_selection_bounds(textbuffer,
+																&cur_start, &cur_end);
+	if (g_strcmp0(mark_name, "insert") == 0)
+	{
+		if (!is_selected)
+		{
+			GtkTextIter *cur_iter = g_object_get_data(G_OBJECT(textbuffer),
+													  "cur_iter");
+			if (cur_iter) gtk_text_iter_free(cur_iter);
+			
+			g_object_set_data(G_OBJECT(textbuffer), "cur_iter",
+							  gtk_text_iter_copy(iter));
+		}
+	}
+	else if (g_strcmp0(mark_name, "selection_bound") == 0) // selected by mouse
+	{
+		// if no selection -> return
+		if (!is_selected)
+			return;
+		// if select-all -> return
+		if (gtk_text_iter_is_start(&cur_start) && gtk_text_iter_is_end(&cur_end))
+			return;
+		
+		// if no cur_iter -> return (just in case)
+		GtkTextIter *cur_iter = g_object_get_data(G_OBJECT(textbuffer), "cur_iter");
+		if (!cur_iter)
+			return;
+		
+		// GDK_3BUTTON_PRESS (triple-click) -> select full line (default behavior -> so exit)
+		GdkEvent *event = gtk_get_current_event();
+		if (event && event->type == GDK_3BUTTON_PRESS)
+		{
+			gdk_event_free(event);
+			return;
+		}
+		
+		gint mod_key = NONE_KEY;
+		if (event)
+		{
+			GdkEventButton *button_event = (GdkEventButton *)event;
+			switch (button_event->state & GEANY_CTRL_ALT_MOD_MASK)
+			{
+				case GEANY_PRIMARY_MOD_MASK:
+					mod_key = CTRL_KEY;
+					break;
+				case GEANY_CTRL_ALT_MOD_MASK:
+					mod_key = CTRL_ALT_KEY;
+					break;
+			}
+			gdk_event_free(event);
+		}
+		
+		GtkTextIter pre_iter = *cur_iter;
+		gtk_text_iter_backward_char(&pre_iter);
+		
+		GtkTextIter left_lim;
+		gtk_text_buffer_get_iter_at_line(textbuffer, &left_lim,
+										 gtk_text_iter_get_line(cur_iter));
+		GtkTextIter right_lim = left_lim;
+		gtk_text_iter_forward_to_line_end(&right_lim);
+		
+		gint search_type = NONE_SEARCH;
+		
+		// calc search_type (with ctrl+alt key pressed)
+		// (select non-space sequence)
+		if (mod_key == CTRL_ALT_KEY)
+		{
+			if (gtk_text_iter_starts_line(cur_iter))
+				search_type = R_NONSPACE_SEARCH;
+				
+			else if (gtk_text_iter_ends_line(cur_iter))
+				search_type = L_NONSPACE_SEARCH;
+				
+			else if (!g_unichar_isspace(gtk_text_iter_get_char(cur_iter))
+					 && g_unichar_isspace(gtk_text_iter_get_char(&pre_iter)))
+				search_type = R_NONSPACE_SEARCH;
+				
+			else if (g_unichar_isspace(gtk_text_iter_get_char(cur_iter))
+					 && !g_unichar_isspace(gtk_text_iter_get_char(&pre_iter)))
+				search_type = L_NONSPACE_SEARCH;
+				
+			else if (!g_unichar_isspace(gtk_text_iter_get_char(cur_iter))
+					 && !g_unichar_isspace(gtk_text_iter_get_char(&pre_iter)))
+				search_type = LR_NONSPACE_SEARCH;
+		}
+		
+		gboolean is_wordext = (mod_key == CTRL_KEY); // extended word
+		
+		// calc search_type
+		if (search_type == NONE_SEARCH)
+		{
+			if (gtk_text_iter_starts_line(cur_iter))
+				search_type = is_word_char(gtk_text_iter_get_char(cur_iter), is_wordext)
+									? R_WORD_SEARCH : R_NONWORD_SEARCH;
+			else if (gtk_text_iter_ends_line(cur_iter))
+				search_type = is_word_char(gtk_text_iter_get_char(&pre_iter), is_wordext)
+									? L_WORD_SEARCH : L_NONWORD_SEARCH;
+			else if (is_word_char(gtk_text_iter_get_char(cur_iter), is_wordext)
+					 && is_word_break(gtk_text_iter_get_char(&pre_iter), is_wordext))
+				search_type = R_WORD_SEARCH;
+				
+			else if (is_word_break(gtk_text_iter_get_char(cur_iter), is_wordext)
+					 && is_word_char(gtk_text_iter_get_char(&pre_iter), is_wordext))
+				search_type = L_WORD_SEARCH;
+				
+			else if (is_word_char(gtk_text_iter_get_char(cur_iter), is_wordext))
+				search_type = LR_WORD_SEARCH;
+			else
+				search_type = LR_NONWORD_SEARCH;
+		}
+		
+		// apply search_type
+		GtkTextIter *new_start, *new_end;
+		GtkTextCharPredicate pred = get_pred(search_type, is_wordext);
+		
+		if (search_type == R_WORD_SEARCH || search_type == R_NONWORD_SEARCH)
+		{	// right search
+			GtkTextIter new_end = *cur_iter;
+			gtk_text_iter_forward_find_char(&new_end, pred, NULL, &right_lim);
+			check_and_select_range(textbuffer, &cur_start, &cur_end, cur_iter, &new_end);
+		}
+		else if (search_type == L_WORD_SEARCH || search_type == L_NONWORD_SEARCH)
+		{	// left search
+			GtkTextIter new_start = *cur_iter;
+			gtk_text_iter_backward_find_char(&new_start, pred, NULL, &left_lim);
+			if (pred(gtk_text_iter_get_char(&new_start), NULL))
+				gtk_text_iter_forward_char(&new_start);
+			check_and_select_range(textbuffer, &cur_start, &cur_end, &new_start, cur_iter);
+		}
+		else
+		{	// left/right search
+			GtkTextIter new_start = *cur_iter;
+			gtk_text_iter_backward_find_char(&new_start, pred, NULL, &left_lim);
+			if (pred(gtk_text_iter_get_char(&new_start), NULL))
+				gtk_text_iter_forward_char(&new_start);
+			GtkTextIter new_end = *cur_iter;
+			gtk_text_iter_forward_find_char(&new_end, pred, NULL, &right_lim);
+			check_and_select_range(textbuffer, &cur_start, &cur_end, &new_start, &new_end);
+		}
+	}
+	else
+	{
+		if (is_selected)	// selected by hotkeys
+		{
+			// if select-all -> return
+			if (gtk_text_iter_is_start(&cur_start) && gtk_text_iter_is_end(&cur_end))
+				return;
+		}
+		else				// moving the cursor by hotkeys
+		{
+			// if ctrl is not pressed -> return
+			gint is_ctrl = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(textbuffer),
+															 "is_ctrl"));
+			if (!is_ctrl) return;
+		}
+		move_cursor(textbuffer, is_selected, &cur_start, &cur_end);
+	}
+}
+
+static gboolean on_textview_key_press(GtkWidget *widget, GdkEventKey *event,
+									  gpointer user_data)
+{
+	if (event->state & GEANY_PRIMARY_MOD_MASK)
+	{
+		GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
+		g_object_set_data(G_OBJECT(textbuffer), "is_ctrl", user_data);
+	}
+	return FALSE;
+}
+
+// esh: for expand selection range with "_"/"-" chars in GtkTextBuffer
+GEANY_API_SYMBOL
+void ui_textview_set_custom_selection_handlers(GtkWidget *widget)
+{
+	g_signal_connect(widget, "key-press-event",
+					 G_CALLBACK(on_textview_key_press), GINT_TO_POINTER(1));
+	g_signal_connect(widget, "key-release-event",
+					 G_CALLBACK(on_textview_key_press), GINT_TO_POINTER(0));
+	
+	// for a custom selection algorithm
+	GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
+	g_signal_connect(textbuffer, "mark-set", G_CALLBACK(on_textbuffer_markset), NULL);
+}

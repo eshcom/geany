@@ -36,6 +36,9 @@ G_BEGIN_DECLS
 #define GEANY_PRIMARY_MOD_MASK GDK_CONTROL_MASK
 #endif
 
+#define GEANY_CTRL_SHIFT_MOD_MASK (GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK)
+#define GEANY_CTRL_ALT_MOD_MASK (GEANY_PRIMARY_MOD_MASK | GDK_MOD1_MASK)
+
 /** A collection of keybindings grouped together. */
 typedef struct GeanyKeyGroup GeanyKeyGroup;
 typedef struct GeanyKeyBinding GeanyKeyBinding;
