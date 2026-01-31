@@ -2407,7 +2407,7 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 					g_ptr_array_free(use_tags, TRUE);
 				}
 			}
-			filter_tags_check(&filtered_tags, &new_tags, TRUE);
+			filter_tags_check(&filtered_tags, &new_tags, tm_parser_strict_scope(lang));
 		}
 	}
 	
