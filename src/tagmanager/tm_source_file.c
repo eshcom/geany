@@ -420,14 +420,12 @@ static gboolean init_tag_from_file_ctags(TMTag *tag, FILE *fp,
 	{
 		gchar c = *p;
 		for (++p; *p && *p != c; p++)
-		{
-			if (*p == '\\' && p[1])
-				p++;
-		}
+			if (*p == '\\' && p[1]) p++;
 	}
 	else /* assume a line */
 		tag->line = atol(p);
 	tab = strstr(p, ";\"");
+	
 	/* read extension fields */
 	if (tab)
 	{

@@ -18,11 +18,12 @@
  *      51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "tm_parser.h"
-#include "ctags-api.h"
-
 #include <string.h>
 #include <ctype.h>
+
+#include "tm_parser.h"
+#include "ctags-api.h"
+#include "../utils.h"
 
 
 typedef struct
@@ -999,14 +1000,14 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_function_t);
 			else if (g_strcmp0(suffix, "(") == 0)
 			{
-				if (prefix == NULL || *prefix == '\0')
+				if (EMPTY(prefix))
 					*type = tm_tag_function_t | tm_tag_class_t;
 				else if (g_strcmp0(prefix, ".") == 0)
-					*type = tm_tag_function_t | tm_tag_method_t;
+					*type = tm_tag_function_t | tm_tag_class_t | tm_tag_method_t;
 				else
 					*type = tm_tag_max_t & ~tm_tag_externvar_t;
 			}
-			else if (prefix == NULL || *prefix == '\0')
+			else if (EMPTY(prefix))
 				*type = tm_tag_max_t & ~(tm_tag_method_t | tm_tag_member_t);
 			break;
 		
