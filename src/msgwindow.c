@@ -155,6 +155,9 @@ void msgwin_init(void)
 	g_signal_connect(msgwindow.scribble, "populate-popup",
 					 G_CALLBACK(on_scribble_populate), NULL);
 	
+	// esh: for a custom selection algorithm
+	ui_textview_set_custom_selection_handlers(msgwindow.scribble);
+	
 	utils_parse_color(gui_prefs.compiler_error_color, &color_error);
 	utils_parse_color(gui_prefs.compiler_context_color, &color_context);
 	utils_parse_color(gui_prefs.compiler_message_color, &color_message);

@@ -201,6 +201,7 @@ gint ui_spin_button_get_value_as_int(GtkWidget *parent, const gchar *name);
 gint ui_combo_box_get_active_encoding(GtkWidget *parent, const gchar *name);
 gint ui_paned_get_position(GtkWidget *parent, const gchar *name);
 void ui_notebook_set_current_page(GtkNotebook *notebook, GtkWidget *widget);
+void ui_textview_set_custom_selection_handlers(GtkWidget *widget);
 // -------------------------------------------------------------------------------
 
 
