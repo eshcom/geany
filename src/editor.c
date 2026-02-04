@@ -329,7 +329,7 @@ static gboolean on_editor_button_press_event(GtkWidget *widget,
 			gint ss = sci_get_selection_start(editor->sci);
 			sci_set_selection_end(editor->sci, ss);
 		}
-		if (event->type == GDK_BUTTON_PRESS && state == GEANY_PRIMARY_MOD_MASK)
+		if (event->type == GDK_BUTTON_PRESS && state == GEANY_CTRL_MOD_MASK)
 		{
 			sci_set_current_position(editor->sci, editor_info.click_pos, FALSE);
 			

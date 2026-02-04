@@ -845,8 +845,8 @@ static GtkWidget *vte_create_popup_menu(void)
 	gtk_window_add_accel_group(GTK_WINDOW(main_widgets.window), accel_group);
 	
 	GdkModifierType mods;
-	mods = vc->enable_bash_keys ? GEANY_PRIMARY_MOD_MASK | GDK_SHIFT_MASK
-								: GEANY_PRIMARY_MOD_MASK;
+	mods = vc->enable_bash_keys ? GEANY_CTRL_MOD_MASK | GDK_SHIFT_MASK
+								: GEANY_CTRL_MOD_MASK;
 	
 	item = gtk_image_menu_item_new_from_stock(GTK_STOCK_COPY, NULL);
 	gtk_widget_add_accelerator(item, "activate", accel_group,

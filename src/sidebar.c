@@ -993,7 +993,7 @@ static gboolean taglist_go_to_selection(GtkTreeSelection *selection,
 			{
 				navqueue_goto_line(doc, doc, line);
 				state = keybindings_get_modifiers(state);
-				if (keyval != GDK_space && !(state & GEANY_PRIMARY_MOD_MASK))
+				if (keyval != GDK_space && !(state & GEANY_CTRL_MOD_MASK))
 					change_focus_to_editor(doc, NULL);
 				else
 					handled = FALSE;

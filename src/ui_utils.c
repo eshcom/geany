@@ -3655,7 +3655,7 @@ static void on_textbuffer_markset(GtkTextBuffer *textbuffer, GtkTextIter *iter,
 			GdkEventButton *button_event = (GdkEventButton *)event;
 			switch (button_event->state & GEANY_CTRL_ALT_MOD_MASK)
 			{
-				case GEANY_PRIMARY_MOD_MASK:
+				case GEANY_CTRL_MOD_MASK:
 					mod_key = CTRL_KEY;
 					break;
 				case GEANY_CTRL_ALT_MOD_MASK:
@@ -3775,7 +3775,7 @@ static void on_textbuffer_markset(GtkTextBuffer *textbuffer, GtkTextIter *iter,
 static gboolean on_textview_key_press(GtkWidget *widget, GdkEventKey *event,
 									  gpointer user_data)
 {
-	if (event->state & GEANY_PRIMARY_MOD_MASK)
+	if (event->state & GEANY_CTRL_MOD_MASK)
 	{
 		GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
 		g_object_set_data(G_OBJECT(textbuffer), "is_ctrl", user_data);
