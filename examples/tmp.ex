@@ -778,3 +778,22 @@ alias OpenApiSpex.Cast.{
 }
 
 def fun1(), do: Number.cast("123")
+
+case response do
+  %HTTP.Response{} = response -> {:ok, response}
+  error -> {:error, error}
+end
+
+if response, do: :ok
+
+setup do
+  %{cnt: ExPression.default_validator_context()}
+end
+
+test "test 1" do
+  :ok
+end
+
+test "test 2" do
+  :ok
+end

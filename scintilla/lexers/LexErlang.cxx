@@ -256,8 +256,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 	} else if (startPos > 0) {
 		// esh: define last_state, last_oper
 		Sci_Position back = startPos;
-		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)))
-			;
+		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)));
 		last_state = styler.StyleAt(back);
 		if (last_state == SCE_ERLANG_OPERATOR) {
 			last_oper = styler[back];
