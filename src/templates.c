@@ -99,14 +99,12 @@ static gchar *read_file(const gchar *locale_fname)
 
 static void read_template(const gchar *name, gint id)
 {
-	gchar *fname = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-								GEANY_TEMPLATES_SUBDIR, name, NULL);
-	
+	gchar *fname = g_build_filename(app->configdir, GEANY_TEMPLATES_SUBDIR,
+									name, NULL);
 	/* try system if user template doesn't exist */
 	if (!g_file_test(fname, G_FILE_TEST_EXISTS))
-		SETPTR(fname, g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-								   GEANY_TEMPLATES_SUBDIR, name, NULL));
-	
+		SETPTR(fname, g_build_filename(app->datadir, GEANY_TEMPLATES_SUBDIR,
+									   name, NULL));
 	templates[id] = read_file(fname);
 	g_free(fname);
 }
@@ -206,15 +204,15 @@ static void on_new_with_file_template(GtkMenuItem *menuitem,
 	
 	/* fname is just the basename from the menu item,
 	 * so prepend the custom files path */
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-							   GEANY_TEMPLATES_SUBDIR, "files", fname, NULL);
-	
+	gchar *path = g_build_filename(app->configdir, GEANY_TEMPLATES_SUBDIR,
+								   "files", fname, NULL);
 	gchar *template = get_template_from_file(path, new_filename, ft);
+	
 	if (!template)
 	{	/* try the system path */
 		g_free(path);
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-							GEANY_TEMPLATES_SUBDIR, "files", fname, NULL);
+		path = g_build_filename(app->datadir, GEANY_TEMPLATES_SUBDIR,
+								"files", fname, NULL);
 		template = get_template_from_file(path, new_filename, ft);
 	}
 	if (template)

@@ -513,13 +513,10 @@ static void load_named_styles(GKeyFile *config, GKeyFile *config_home)
 											 g_free, g_free);
 	if (!EMPTY(scheme))
 	{
-		gchar *path, *path_home;
-		
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-							GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
-		path_home = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-								 GEANY_COLORSCHEMES_SUBDIR, scheme, NULL);
-		
+		gchar *path = g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR,
+									   scheme, NULL);
+		gchar *path_home = g_build_filename(app->configdir, GEANY_COLORSCHEMES_SUBDIR,
+											scheme, NULL);
 		if (g_file_test(path, G_FILE_TEST_EXISTS) ||
 			g_file_test(path_home, G_FILE_TEST_EXISTS))
 		{
@@ -1306,7 +1303,6 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gchar *fname;
-	gchar *path;
 	
 	if (!gtk_tree_selection_get_selected(treesel, &model, &iter))
 		return;
@@ -1324,14 +1320,12 @@ static void on_color_scheme_changed(GtkTreeSelection *treesel, gpointer dummy)
 	
 	/* fname is just the basename from the menu item,
 	 * so prepend the custom files path */
-	path = g_build_path(G_DIR_SEPARATOR_S, app->configdir,
-						GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+	gchar *path = g_build_filename(app->configdir, GEANY_COLORSCHEMES_SUBDIR,
+								   fname, NULL);
 	if (!g_file_test(path, G_FILE_TEST_EXISTS))
-	{
-		/* try the system path */
-		g_free(path);
-		path = g_build_path(G_DIR_SEPARATOR_S, app->datadir,
-							GEANY_COLORSCHEMES_SUBDIR, fname, NULL);
+	{	/* try the system path */
+		SETPTR(path, g_build_filename(app->datadir, GEANY_COLORSCHEMES_SUBDIR,
+									  fname, NULL));
 	}
 	if (g_file_test(path, G_FILE_TEST_EXISTS))
 	{

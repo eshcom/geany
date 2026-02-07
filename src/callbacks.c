@@ -1387,7 +1387,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 #ifdef G_OS_WIN32
 	wc = GEANY_WORDCHARS "./-" "\\";
 #else
-	wc = GEANY_WORDCHARS "./-";
+	wc = GEANY_WORDCHARS "./-~";
 #endif
 	
 	gchar *sel2 = NULL;
@@ -1403,13 +1403,15 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 	
 	if (g_path_is_absolute(sel))
 		filename = g_strdup(sel);
+	else if (*sel  == '~')
+		filename = g_build_filename(g_get_home_dir(), sel + 1, NULL);
 	else
 	{	/* relative filename, add the path of the current file */
 		gchar *path = utils_get_current_file_dir_utf8();
 		SETPTR(path, utils_get_locale_from_utf8(path));
 		if (!path) path = g_get_current_dir();
 		
-		filename = g_build_path(G_DIR_SEPARATOR_S, path, sel, NULL);
+		filename = g_build_filename(path, sel, NULL);
 		
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 		{
@@ -1427,8 +1429,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 					while (TRUE)
 					{
 						SETPTR(tpath, g_path_get_dirname(tpath));
-						SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-													  tpath, sel, NULL));
+						SETPTR(filename, g_build_filename(tpath, sel, NULL));
 						if (utils_match_dirs(tpath, base_path) == MATCH_DIRS_FULL
 							|| g_file_test(filename, G_FILE_TEST_EXISTS))
 							break;
@@ -1439,26 +1440,22 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 				else if (match == MATCH_DIRS_FULL)
 					currpath_match_proj = TRUE;
 				else // try the project's base path
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-												  base_path, sel, NULL));
+					SETPTR(filename, g_build_filename(base_path, sel, NULL));
 				
 				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 				{	// try <base_path>/<base_name>/<sel>, example:
 					// open path "ui/log.py", real path "rabbitvcs/rabbitvcs/ui/log.py"
 					gchar *base_name = g_path_get_basename(base_path);
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-												  base_name, sel, NULL));
+					SETPTR(filename, g_build_filename(base_path, base_name, sel, NULL));
 					g_free(base_name);
 				}
 				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 				{	// try <base_path>/main/<sel>
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-												  "main", sel, NULL));
+					SETPTR(filename, g_build_filename(base_path, "main", sel, NULL));
 				}
 				if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 				{	// try <base_path>/lib/<sel>
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, base_path,
-												  "lib", sel, NULL));
+					SETPTR(filename, g_build_filename(base_path, "lib", sel, NULL));
 				}
 				g_free(base_path);
 			}
@@ -1466,15 +1463,13 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 			{	// try ../main/<sel>
 				gchar *parent_dir = g_path_get_dirname(path);
-				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
-											  "main", sel, NULL));
+				SETPTR(filename, g_build_filename(parent_dir, "main", sel, NULL));
 				g_free(parent_dir);
 			}
 			if (!g_file_test(filename, G_FILE_TEST_EXISTS))
 			{	// try ../lib/<sel>
 				gchar *parent_dir = g_path_get_dirname(path);
-				SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S, parent_dir,
-											  "lib", sel, NULL));
+				SETPTR(filename, g_build_filename(parent_dir, "lib", sel, NULL));
 				g_free(parent_dir);
 			}
 			if (!currpath_match_proj &&
@@ -1484,8 +1479,7 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 				while (level > 0 && !utils_str_equal(path, G_DIR_SEPARATOR_S))
 				{
 					SETPTR(path, g_path_get_dirname(path));
-					SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-												  path, sel, NULL));
+					SETPTR(filename, g_build_filename(path, sel, NULL));
 					if (g_file_test(filename, G_FILE_TEST_EXISTS))
 						break;
 					level--;
@@ -1496,14 +1490,11 @@ void on_menu_open_selected_file1_activate(GtkMenuItem *menuitem,
 		
 #ifdef G_OS_UNIX
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-										  "/usr/local/include/geany", sel, NULL));
+			SETPTR(filename, g_build_filename("/usr/local/include/geany", sel, NULL));
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-										  "/usr/local/include", sel, NULL));
+			SETPTR(filename, g_build_filename("/usr/local/include", sel, NULL));
 		if (!g_file_test(filename, G_FILE_TEST_EXISTS))
-			SETPTR(filename, g_build_path(G_DIR_SEPARATOR_S,
-										  "/usr/include", sel, NULL));
+			SETPTR(filename, g_build_filename("/usr/include", sel, NULL));
 #endif
 	}
 	
