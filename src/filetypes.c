@@ -616,6 +616,8 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 		};
 		
 		const gchar *start = line + 2;
+		while (*start == ' ' || *start == '\t') start++;
+		
 		const gchar *end = start;
 		while (*end && !isspace(*end)) end++;
 		
