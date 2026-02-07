@@ -825,7 +825,7 @@ static gboolean goto_compiler_file_line(const gchar *fname, gint line,
 			 * from the message window */
 			SETPTR(cur_dir, utils_get_locale_from_utf8(cur_dir));
 			gchar *name = g_path_get_basename(filename);
-			SETPTR(name, g_build_path(G_DIR_SEPARATOR_S, cur_dir, name, NULL));
+			SETPTR(name, g_build_filename(cur_dir, name, NULL));
 			g_free(cur_dir);
 			
 			if (g_file_test(name, G_FILE_TEST_EXISTS))

@@ -1432,8 +1432,7 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 	
 	foreach_dir(filename, dir)
 	{
-		list = g_slist_prepend(list, full_path ? g_build_path(G_DIR_SEPARATOR_S,
-															  path, filename, NULL)
+		list = g_slist_prepend(list, full_path ? g_build_filename(path, filename, NULL)
 											   : g_strdup(filename));
 	}
 	g_dir_close(dir);
@@ -1919,13 +1918,13 @@ gchar *utils_str_remove_chars(gchar *string, const gchar *chars)
  * no duplicates from user and system config */
 GSList *utils_get_config_files(const gchar *subdir)
 {
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, app->configdir, subdir, NULL);
+	gchar *path = g_build_filename(app->configdir, subdir, NULL);
 	GSList *list = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	GSList *syslist, *node;
 	
 	if (!list) utils_mkdir(path, FALSE);
 	
-	SETPTR(path, g_build_path(G_DIR_SEPARATOR_S, app->datadir, subdir, NULL));
+	SETPTR(path, g_build_filename(app->datadir, subdir, NULL));
 	syslist = utils_get_file_list_full(path, FALSE, FALSE, NULL);
 	
 	/* merge lists */
