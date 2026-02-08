@@ -837,7 +837,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		if (last_state == SCE_ELIXIR_STD_WORD) {
 			while (back > 0 && styler.StyleAt(back - 1) == SCE_ELIXIR_STD_WORD)
 				back--;
-			if (styler.Match(back, "end"))
+			if (styler.Match(back, "do") || styler.Match(back, "end"))
 				last_state = SCE_ELIXIR_DEFAULT;
 		}
 	}
@@ -1347,8 +1347,9 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				module_type = NONE_MODULE;
 				last_state = (sc.state == SCE_ELIXIR_STD_WORD &&
-							  strcmp(ident, "end") == 0) ? SCE_ELIXIR_DEFAULT
-														 : sc.state;
+							  (strcmp(ident, "do") == 0 ||
+							   strcmp(ident, "end") == 0)) ? SCE_ELIXIR_DEFAULT
+														   : sc.state;
 				sc.SetState(SCE_ELIXIR_DEFAULT);
 			} break;
 			

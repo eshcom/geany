@@ -791,9 +791,9 @@ setup do
 end
 
 test "test 1" do
-  :ok
+  assert %{"admin" => ["Гость"]} == Keycloak.roles_mapping_function("admin=Гость")
 end
 
 test "test 2" do
-  :ok
+  refute is_nil(:ok)
 end
