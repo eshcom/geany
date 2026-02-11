@@ -1732,8 +1732,8 @@ static WordBound read_word(gchar *chunk, gint pos, gchar *word, gsize wordlen,
 	
 	if (!stem)
 	{
-		while (chunk[endword] != 0 && (strchr(wc, chunk[endword]) ||
-									   !IS_ASCII(chunk[endword])))
+		while (chunk[endword] != '\0' && (strchr(wc, chunk[endword]) ||
+										  !IS_ASCII(chunk[endword])))
 			endword++;
 		
 		if (lang == TM_PARSER_ELIXIR)
@@ -2166,7 +2166,6 @@ void editor_find_custom_words(GeanyEditor *editor, gchar *chunk, const gchar sep
 		pos = sci_get_current_position(sci);
 		is_comment_style = define_comment_style(sci, pos);
 	}
-	if (pos >= limit) return;
 	
 	gint orig_pos = pos;
 	
