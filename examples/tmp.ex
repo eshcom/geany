@@ -374,6 +374,7 @@ defmodule MyRouter do
     
     assert = %{a: 1}
     b = assert[:a]
+    {:a, _} = assert
     
     execute "select 1"
     
@@ -796,4 +797,9 @@ end
 
 test "test 2" do
   refute is_nil(:ok)
+end
+
+case mock_struct do
+  %^mock_module{} -> true
+  _ -> false
 end
