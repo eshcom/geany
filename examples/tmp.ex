@@ -811,3 +811,13 @@ alias MyRouter.Tmp.Test1
 def new2() do
   Test1.test_import()
 end
+
+# ------------------------------
+
+alias OpenApiSpex.New123
+alias Test12345.New123
+New123.test_fun() # highlight as Test12345
+
+alias Test12345.New456
+alias OpenApiSpex.New456
+New456.test_fun() # highlight as OpenApiSpex
