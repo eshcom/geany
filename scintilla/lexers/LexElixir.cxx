@@ -569,14 +569,22 @@ const char *LexerElixir::InsertAlias(const char *alias) {
 }
 
 const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) {
-	std::map<Sci_Position, ModuleAliases>::iterator mIter =
-		moduleAliasesAtEol.begin();
-	for (; mIter != moduleAliasesAtEol.end(); mIter = std::next(mIter)) {
-		if (mIter->first <= currentLine) {
-			std::map<std::string, std::string>::iterator aIter =
-				mIter->second.aliases.find(alias);
-			if (aIter != mIter->second.aliases.end())
-				return aIter->second.c_str();
+	if (!moduleAliasesAtEol.empty()) {
+		std::map<Sci_Position, ModuleAliases>::iterator mIter =
+			std::prev(moduleAliasesAtEol.end());
+		
+		while (true) {
+			if (mIter->first <= currentLine) {
+				std::map<std::string, std::string>::iterator aIter =
+					mIter->second.aliases.find(alias);
+				if (aIter != mIter->second.aliases.end())
+					return aIter->second.c_str();
+			}
+			
+			if (mIter == moduleAliasesAtEol.begin())
+				break;
+			else
+				mIter = std::prev(mIter);
 		}
 	}
 	return alias;
@@ -1233,6 +1241,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					last_state = sc.state;
 					sc.SetState(SCE_ELIXIR_DEFAULT);
 				}
+				// clean it only after working with the module,
+				// since the module may contain tmpAlias
 				free(tmpAlias);
 			} break;
 			
