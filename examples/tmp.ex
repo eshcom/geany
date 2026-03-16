@@ -803,3 +803,11 @@ case mock_struct do
   %^mock_module{} -> true
   _ -> false
 end
+
+# ------------------------------
+
+alias MyRouter.Non.Test1
+alias MyRouter.Tmp.Test1
+def new2() do
+  Test1.test_import()
+end

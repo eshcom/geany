@@ -2465,10 +2465,17 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 }
 
 
-#define GET_CURR_ALIAS_TAGS(name)												\
+#define FIND_ALIAS_TAG(name)													\
 	GPtrArray *tags = tm_workspace_find(name, NULL, tm_tag_other_t, NULL, lang);\
 	GPtrArray *new_tags = filter_tags_by_file_strict(tags, curr_doc->tm_file);	\
-	filter_tags_check(&tags, &new_tags, TRUE);
+	filter_tags_check(&tags, &new_tags, TRUE);									\
+	foreach_ptr_array(tag, i, tags)												\
+	{																			\
+		if (tag->line <= curr_line)												\
+			if (!found_tag || found_tag->line < tag->line)						\
+				found_tag = tag;												\
+	}																			\
+	g_ptr_array_free(tags, TRUE);
 
 
 static gboolean goto_tag(const gchar *name, const gchar *scope,
@@ -2479,7 +2486,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	guint curr_line = sci_get_current_line(curr_doc->editor->sci) + 1;
 	GString *gscope = g_string_new(NULL);
 	TMTagType tag_types = tm_tag_max_t;
-	TMTag *tag;
+	TMTag *tag, *found_tag = NULL;
 	guint i;
 	
 	if (lang == TM_PARSER_ELIXIR)
@@ -2488,48 +2495,38 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		
 		if (EMPTY(scope))
 		{
-			GET_CURR_ALIAS_TAGS(name);
+			FIND_ALIAS_TAG(name);
 			
-			foreach_ptr_array(tag, i, tags)
+			if (found_tag)
 			{
-				if (tag->line <= curr_line)
+				const gchar *module = found_tag->inheritance;
+				const gchar *search = strrchr(module, '.');
+				if (search)
 				{
-					const gchar *module = tag->inheritance;
-					const gchar *search = strrchr(module, '.');
-					if (search)
-					{
-						if (search > module)	// there is something else before dot
-							g_string_append_len(gscope, module, search - module);
-						
-						if (search[1])			// there is something else after dot
-							name = search + 1;	// skip dot
-					}
-					else
-						name = module;
-					break;
+					if (search > module)	// there is something else before dot
+						g_string_append_len(gscope, module, search - module);
+					
+					if (search[1])			// there is something else after dot
+						name = search + 1;	// skip dot
 				}
+				else
+					name = module;
 			}
-			g_ptr_array_free(tags, TRUE);
 		}
 		else
 		{
 			const gchar *search = strchr(scope, '.');
 			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
 													  : g_strdup(scope);
-			GET_CURR_ALIAS_TAGS(alias);
+			FIND_ALIAS_TAG(alias);
 			g_free(alias);
 			
-			foreach_ptr_array(tag, i, tags)
+			if (found_tag)
 			{
-				if (tag->line <= curr_line)
-				{
-					g_string_append(gscope, tag->inheritance);
-					if (search && search[1])
-						g_string_append(gscope, search);
-					break;
-				}
+				g_string_append(gscope, found_tag->inheritance);
+				if (search && search[1])
+					g_string_append(gscope, search);
 			}
-			g_ptr_array_free(tags, TRUE);
 			
 			if (gscope->len == 0) // alias not found
 			{	// try to find a scope (module definition) in the current doc
