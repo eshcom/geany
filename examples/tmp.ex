@@ -42,13 +42,22 @@ defmodule Df.UseCases.UserAction do
   defmodule MyBehaviour do
     @callback vital_fun() :: any()
     @callback non_vital_fun() :: any
-    @macrocallback non_vital_macro(arg :: any)) :: Macro.t
+    @macrocallback vital_macro(arg :: any) :: Macro.t()
+    @macrocallback non_vital_macro(arg :: any) :: Macro.t
+    @macrocallback vital_macro2(arg :: Macro.t()) :: t()
+    @macrocallback non_vital_macro2(arg :: Macro.t) :: t
     @optional_callbacks non_vital_fun: 0, non_vital_macro: 1
+
+    @type mocks_type() :: Df.Testing.Mocks.t() | Df.Diagram.Mocks.t()
+
+    @spec put(Diagram.t(), mocks_type()) :: :ok
+    @spec get(Diagram.t()) :: mocks_type() | nil
 
     def alias() do
       true
     end
   end
+
 
   alias __MODULE__.{MyBehaviour}
   alias __MODULE__.MyBehaviour
@@ -76,7 +85,7 @@ defmodule Df.UseCases.UserAction do
       def action_description do
         @moduledoc
         |> String.split("\n")
-        |> List.first()
+        |> List.first
       end
     end
   end
@@ -407,6 +416,7 @@ defmodule MyRouter do
     for i <- params.first..params.last do
       i
     end
+    |> List.wrap
     |> Enum.map(fn el -> el * a end)
     |> Enum.sum()
     |> round

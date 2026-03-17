@@ -116,8 +116,6 @@ typedef enum {
 	DEFNAME_STATE,		// def, defp, defmacro, defmacrop, ...
 	TYPEDEF_STATE,		// @type, @spec, @callback, @macrocallback
 	PIPEOPER_STATE,		// |>
-	TYPEOPER_STATE,		// ::
-	DOTOPER_STATE,		// . example: Struct.field, Module.func()
 	ALIAS_STATE,
 	ALIAS_AS_STATE,
 	ALIAS_GRP_STATE
@@ -747,9 +745,16 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	}
 
 #define PREPARE_OPER_STATE														\
-	if (ident_state != ALIAS_AS_STATE && ident_state != ALIAS_GRP_STATE)		\
+	if (ident_state != PIPEOPER_STATE && ident_state != ALIAS_AS_STATE			\
+									  && ident_state != ALIAS_GRP_STATE)		\
 		ident_state = NONE_STATE;												\
 	assign_to_strfield = false;
+
+#define IS_PIPEOPER_FUNC														\
+	(ident_state == PIPEOPER_STATE && sc.ch != '.')
+
+#define IS_TYPE_FUNC															\
+	(maybe_typefunc && sc.ch != ':')
 
 
 void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
@@ -896,6 +901,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 	}
 	
+	bool is_dot_oper = false; // example: Struct.field, Module.func()
+	
 	// Set up state stack from last line and remove any subsequent string at eol states
 	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator ssIter;
 	ssIter = stringStateAtEol.find(sc.currentLine - 1);
@@ -925,8 +932,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			sc.SetState(expState.state);
 			closing_char = expState.closingChar;
 			canbe_interpolate = true;
-		} else if (sc.atLineStart && ident_state == DOTOPER_STATE) {
-			ident_state = NONE_STATE;
 		}
 		
 		CHECK_LINE_END
@@ -1301,14 +1306,15 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_ELIXIR_DEFNAME);
 				} else {
 					SKIP_SPACES
-					if (ident_state == DOTOPER_STATE) { // using field/method of module
-						if (sc.ch == '(') {
+					if (is_dot_oper) { // using field/method of module
+						if (sc.ch == '(' || IS_PIPEOPER_FUNC || IS_TYPE_FUNC) {
 							CHANGE_STATE_BY_MODULE
 						} else if (sc.ch == '/') {
 							MOVE_INDEX_TO_NONSPACE
 							if (IsDigit(styler[i]))
 								CHANGE_STATE_BY_MODULE
 						}
+						is_dot_oper = false;
 					} else if (stdWords.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_WORD);
 					} else if ((IsUpper(sc.ch) || sc.Match('_', '_') ||
@@ -1319,14 +1325,10 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ELIXIR_STD_ATOM);
 					} else if (stdMacros.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_MACRO);
-					} else if (ident_state == TYPEOPER_STATE) {
-						sc.ChangeState(strcmp(ident, "t") == 0 ? SCE_ELIXIR_FUNCTION
-															   : SCE_ELIXIR_TYPE_FUNC);
-					} else if (maybe_typefunc && sc.ch != ':'
-							   && typeFuncs.InList(ident)) {
-						sc.ChangeState(SCE_ELIXIR_TYPE_FUNC);
-					} else if (sc.ch == '(' || (ident_state == PIPEOPER_STATE
-												&& sc.ch != '.')) {
+					} else if (IS_TYPE_FUNC) {
+						sc.ChangeState(typeFuncs.InList(ident) ? SCE_ELIXIR_TYPE_FUNC
+															   : SCE_ELIXIR_FUNCTION);
+					} else if (sc.ch == '(' || IS_PIPEOPER_FUNC) {
 						CHANGE_STATE_BY_FUNCLIST
 					} else if (sc.ch == '/') {
 						MOVE_INDEX_TO_NONSPACE
@@ -1504,9 +1506,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 			} else if (IsUpper(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_MODULE);
-				if (ident_state == DOTOPER_STATE) {
-					ident_state = NONE_STATE;
-				}
+				is_dot_oper = false;
+				
 			} else if (IsLower(sc.ch) || sc.ch == '_') {
 				sc.SetState(SCE_ELIXIR_IDENTIFIER);
 				
@@ -1538,16 +1539,14 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match('=', '~') || sc.Match('.', '.')) {
+				} else if (sc.Match('=', '~') || sc.Match('.', '.')
+											  || sc.Match(':', ':')) {
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
 					sc.Forward();
-				} else if (sc.Match(':', ':')) {
-					ident_state = TYPEOPER_STATE;
-					sc.Forward();
 				} else if (sc.ch == '.') {
-					ident_state = DOTOPER_STATE;
+					is_dot_oper = true;
 				} else if (sc.ch == '{' && currentStringExp != NULL) {
 					currentStringExp->nestingCount++;
 				} else if (sc.ch == '}' && currentStringExp != NULL) {
