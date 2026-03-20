@@ -29,6 +29,7 @@ typedef struct {
 	char kindLetter;
 	bool isFileScope;
 	unsigned long lineNumber;
+	unsigned long endLineNumber;
 	int lang;
 } ctagsTag;
 

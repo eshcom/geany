@@ -94,6 +94,7 @@ typedef struct TMTag
 	/** These are tag attributes */
 	TMSourceFile *file; /**< File in which the tag occurs; NULL for global tags */
 	gulong line; /**< Line number of the tag */
+	gulong endLine; /**< Line number of the end of the tag code block */
 	gboolean local; /**< Is the tag of local scope */
 	guint pointerOrder;
 	char *arglist; /**< Argument list (functions/prototypes/macros) */
