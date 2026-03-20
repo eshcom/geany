@@ -202,6 +202,7 @@ static gboolean init_tag(TMTag *tag, TMSourceFile *file,
 	tag->local = tag_entry->isFileScope;
 	tag->pointerOrder = 0;	/* backward compatibility (use var_type instead) */
 	tag->line = tag_entry->lineNumber;
+	tag->endLine = tag_entry->endLineNumber;
 	
 	if (tag_entry->displayName != NULL && tag_entry->displayName[0] != 0)
 		tag->displayName = g_strdup(tag_entry->displayName);

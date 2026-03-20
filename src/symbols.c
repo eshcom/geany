@@ -2465,18 +2465,34 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 }
 
 
-#define FIND_ALIAS_TAG(name)													\
-	GPtrArray *tags = tm_workspace_find(name, NULL, tm_tag_other_t, NULL, lang);\
-	GPtrArray *new_tags = filter_tags_by_file_strict(tags, curr_doc->tm_file);	\
-	filter_tags_check(&tags, &new_tags, TRUE);									\
-	foreach_ptr_array(tag, i, tags)												\
-	{																			\
-		if (tag->line <= curr_line)												\
-			if (!found_tag || found_tag->line < tag->line)						\
-				found_tag = tag;												\
-	}																			\
-	g_ptr_array_free(tags, TRUE);
+#define FIND_MODULE_TAG(module)												\
+	found_tag = NULL;														\
+	if (curr_doc->tm_file && curr_doc->tm_file->tags_array)					\
+	{																		\
+		for (i = 0; i < curr_doc->tm_file->tags_array->len; ++i)			\
+		{																	\
+			tag = TM_TAG(curr_doc->tm_file->tags_array->pdata[i]);			\
+			if (tag->line <= curr_line && tag->type == tm_tag_namespace_t	\
+				&& (!found_tag || found_tag->line < tag->line))				\
+				if ((module && g_strcmp0(tag->name, module) == 0) ||		\
+					(!module && curr_line <= tag->endLine)) /* __MODULE__ */\
+					found_tag = tag;										\
+		}																	\
+	}
 
+#define FIND_ALIAS_TAG(alias)												\
+	found_tag = NULL;														\
+	if (curr_doc->tm_file && curr_doc->tm_file->tags_array)					\
+	{																		\
+		for (i = 0; i < curr_doc->tm_file->tags_array->len; ++i)			\
+		{																	\
+			tag = TM_TAG(curr_doc->tm_file->tags_array->pdata[i]);			\
+			if (tag->line <= curr_line && tag->type == tm_tag_other_t		\
+				&& (!found_tag || found_tag->line < tag->line))				\
+				if (g_strcmp0(tag->name, alias) == 0)						\
+					found_tag = tag;										\
+		}																	\
+	}
 
 static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
@@ -2486,14 +2502,28 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	guint curr_line = sci_get_current_line(curr_doc->editor->sci) + 1;
 	GString *gscope = g_string_new(NULL);
 	TMTagType tag_types = tm_tag_max_t;
-	TMTag *tag, *found_tag = NULL;
+	TMTag *tag, *found_tag;
 	guint i;
 	
 	if (lang == TM_PARSER_ELIXIR)
 	{
 		tag_types &= ~tm_tag_other_t; // exclude aliases
 		
-		if (EMPTY(scope))
+		if (g_strcmp0(name, "__MODULE__") == 0)
+		{
+			FIND_MODULE_TAG(NULL);
+			
+			if (found_tag)
+			{
+				scope = found_tag->scope;
+				name = found_tag->name;
+			}
+			else
+				scope = NULL;
+			
+			tag_types = tm_tag_namespace_t;
+		}
+		else if (EMPTY(scope))
 		{
 			FIND_ALIAS_TAG(name);
 			
@@ -2536,25 +2566,20 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 				else
 					search = scope;
 				
-				tags = tm_workspace_find(search, NULL, tm_tag_namespace_t, NULL, lang);
-				new_tags = filter_tags_by_file_strict(tags, curr_doc->tm_file);
-				filter_tags_check(&tags, &new_tags, TRUE);
+				FIND_MODULE_TAG(search);
 				
-				if (tags->len > 0)
+				if (found_tag)
 				{	// current doc contains the required scope (module definition)
-					tag = tags->pdata[0];
-					
-					if (!EMPTY(tag->scope))
+					if (!EMPTY(found_tag->scope))
 					{
-						g_string_append(gscope, tag->scope);
+						g_string_append(gscope, found_tag->scope);
 						g_string_append_c(gscope, '.');
 					}
-					g_string_append(gscope, tag->name);
+					g_string_append(gscope, found_tag->name);
 					
 					if (!g_str_has_suffix(gscope->str, scope))
 						g_string_truncate(gscope, 0);
 				}
-				g_ptr_array_free(tags, TRUE);
 			}
 		}
 	}

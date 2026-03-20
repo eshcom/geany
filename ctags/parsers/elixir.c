@@ -672,7 +672,11 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		NestingLevel *nl = nestingLevelsGetCurrent(nesting);
 		
 		if (nl && EX_NL_INDENTATION(nl) == indent)
+		{
+			tagEntryInfo *tag = getEntryOfNestingLevel(nl);
+			tag->extensionFields.endLine = getInputLineNumber();
 			nestingLevelsPop(nesting);
+		}
 	}
 	vStringDelete(keyword);
 	return cp;
