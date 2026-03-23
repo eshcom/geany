@@ -2072,7 +2072,8 @@ static gint compare_tags_by_name_line(gconstpointer ptr1, gconstpointer ptr2)
 	TMTag *t1 = *((TMTag **) ptr1);
 	TMTag *t2 = *((TMTag **) ptr2);
 	
-	gint res = g_strcmp0(t1->file->short_name, t2->file->short_name);
+	// esh: short_name -> file_name (compare full paths)
+	gint res = g_strcmp0(t1->file->file_name, t2->file->file_name);
 	if (res != 0) return res;
 	return t1->line - t2->line;
 }
@@ -2082,6 +2083,15 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 {
 	TMTag *tag;
 	guint i;
+	
+	if (doc->file_type->lang == TM_PARSER_ELIXIR)
+	{	/* first check if we have a protocol tag */
+		foreach_ptr_array(tag, i, tags)
+		{
+			if (tag->type == tm_tag_interface_t)
+				return tag;
+		}
+	}
 	
 	/* first check if we have a tag in the current file */
 	foreach_ptr_array(tag, i, tags)
@@ -2105,13 +2115,10 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 	foreach_ptr_array(tag, i, tags)
 	{
 		gchar *dir = g_path_get_dirname(doc->real_path);
-		
-		if (g_str_has_prefix(tag->file->file_name, dir))
-		{
-			g_free(dir);
-			return tag;
-		}
+		gboolean has_prefix = g_str_has_prefix(tag->file->file_name, dir);
 		g_free(dir);
+		
+		if (has_prefix) return tag;
 	}
 	
 	return NULL;

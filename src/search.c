@@ -1842,12 +1842,12 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	if (search_text == NULL)
 		search_text = g_strdup(utf8_search_text);
 	
-	gchar **argv, **argv_prefix = g_new(gchar*, 3);
+	gchar **argv, **argv_prefix = g_new(gchar *, 3);
 	argv_prefix[0] = search_text;
 	gchar *dir = utils_get_locale_from_utf8(utf8_dir);
 	
-	/* finally add the arguments(files to be searched) */
-	if (settings.fif_recursive)	/* recursive option set */
+	/* finally add the arguments (files to be searched) */
+	if (settings.fif_recursive) /* recursive option set */
 	{	/* Use '.' so we get relative paths in the output */
 		argv_prefix[1] = g_strdup(".");
 		argv_prefix[2] = NULL;
@@ -1856,7 +1856,7 @@ static gboolean search_find_in_files(const gchar *utf8_search_text,
 	else
 	{
 		argv_prefix[1] = NULL;
-		argv = search_get_argv((const gchar**)argv_prefix, dir);
+		argv = search_get_argv((const gchar **)argv_prefix, dir);
 		g_strfreev(argv_prefix);
 		
 		if (argv == NULL)	/* no files */
@@ -1942,8 +1942,8 @@ static gchar **search_get_argv(const gchar **argv_prefix, const gchar *dir)
 	if (list == NULL)
 		return NULL;
 	
-	guint i, j, prefix_len = g_strv_length((gchar**)argv_prefix);
-	gchar **argv = g_new(gchar*, prefix_len + list_len + 1);
+	guint i, j, prefix_len = g_strv_length((gchar **)argv_prefix);
+	gchar **argv = g_new(gchar *, prefix_len + list_len + 1);
 	
 	for (i = 0, j = 0; i < prefix_len; i++)
 	{
