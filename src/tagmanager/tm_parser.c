@@ -869,13 +869,13 @@ void tm_parser_define_scope(gchar *scope, gsize scopelen, guint scope_parts_cnt,
 			break;
 		
 		case TM_PARSER_ELIXIR:
-			if (scope_parts_cnt == 1 &&
-				(islower(*scope) || g_str_has_prefix(scope, "__")))
+			if (islower(*scope) || (g_str_has_prefix(scope, "__") &&
+									!g_str_has_prefix(scope, "__MODULE__")))
 				// any scope, examples:
 				// module.handle_special(token.path, mode, context)
 				//		scope "module" is a variable containing a module
-				// __MODULE__.get_validation_module_for_file(path)
-				//		scope "__MODULE__" is a macro containing a module
+				// __MACRO__.get_validation_module_for_file(path)
+				//		scope "__MACRO__" is a macro containing a module
 				g_strlcpy(scope, "*", scopelen);
 			else if (*scope != '\0' && brackets)
 				// any scope, examples:

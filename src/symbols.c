@@ -2555,15 +2555,34 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 			const gchar *search = strchr(scope, '.');
 			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
 													  : g_strdup(scope);
-			FIND_ALIAS_TAG(alias);
-			g_free(alias);
-			
-			if (found_tag)
+			if (g_strcmp0(alias, "__MODULE__") == 0)
 			{
-				g_string_append(gscope, found_tag->inheritance);
-				if (search && search[1])
-					g_string_append(gscope, search);
+				FIND_MODULE_TAG(NULL);
+				
+				if (found_tag)
+				{
+					if (!EMPTY(found_tag->scope))
+					{
+						g_string_append(gscope, found_tag->scope);
+						g_string_append_c(gscope, '.');
+					}
+					g_string_append(gscope, found_tag->name);
+					if (search && search[1])
+						g_string_append(gscope, search);
+				}
 			}
+			else
+			{
+				FIND_ALIAS_TAG(alias);
+				
+				if (found_tag)
+				{
+					g_string_append(gscope, found_tag->inheritance);
+					if (search && search[1])
+						g_string_append(gscope, search);
+				}
+			}
+			g_free(alias);
 			
 			if (gscope->len == 0) // alias not found
 			{	// try to find a scope (module definition) in the current doc
