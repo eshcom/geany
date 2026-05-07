@@ -1528,6 +1528,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				PREPARE_OPER_STATE
 				
+				is_dot_oper = (sc.ch == '.');
+				
 				if (sc.ch == '&') {
 					sc.chNext == '&' ? sc.Forward()
 									 : sc.ChangeState(SCE_ELIXIR_CAPTURE_OPER);
@@ -1545,8 +1547,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
 					sc.Forward();
-				} else if (sc.ch == '.') {
-					is_dot_oper = true;
 				} else if (sc.ch == '{' && currentStringExp != NULL) {
 					currentStringExp->nestingCount++;
 				} else if (sc.ch == '}' && currentStringExp != NULL) {
