@@ -831,3 +831,9 @@ New123.test_fun() # highlight as Test12345
 alias Test12345.New456
 alias OpenApiSpex.New456
 New456.test_fun() # highlight as OpenApiSpex
+
+# ------------------------------
+
+def send(console, func) when is_function(func, 0) do
+  __MODULE__.send(console, func.())
+end
