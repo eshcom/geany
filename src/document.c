@@ -1202,7 +1202,9 @@ static gboolean detect_indent_width(GeanyEditor *editor, GeanyIndentType type,
 		width = sci_get_line_indentation(sci, line);
 		/* most code will have indent total <= 24, otherwise
 		 * it's more likely to be alignment than indentation */
-		if (width > 24) continue;
+		// esh: changed the maximum indent width value from 24 to 12
+		//		(to correct the function's operation in exs-files)
+		if (width > 12) continue;
 		/* < 2 is no indentation */
 		if (width < 2) continue;
 		
