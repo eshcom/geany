@@ -631,6 +631,8 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		cp = parseMemberTag(cp, K_FUNCTION, true, false);
 	else if (strcmp(kwval, "defmemo") == 0)
 		cp = parseMemberTag(cp, K_FUNCTION, false, false);
+	else if (strncmp(kwval, "def", 3) == 0) // def... - user-defined macro
+		cp = parseMemberTag(cp, K_FUNCTION, false, false);
 	else if (strcmp(kwval, "@typep") == 0)
 		cp = parseMemberTag(cp, K_TYPE, true, false);
 	else if (strcmp(kwval, "@type") == 0 || strcmp(kwval, "@opaque") == 0)
