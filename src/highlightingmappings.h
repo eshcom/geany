@@ -607,6 +607,7 @@ static const HLStyle highlighting_styles_ELIXIR[] =
 	{ SCE_ELIXIR_TYPE_FUNC,			"type_func",		FALSE },
 	{ SCE_ELIXIR_LIB_MACRO,			"lib_macro",		FALSE },
 	{ SCE_ELIXIR_LIB_FUNC,			"lib_func",			FALSE },
+	{ SCE_ELIXIR_USR_WORD,			"usr_word",			FALSE },
 	{ SCE_ELIXIR_OPERATOR,			"operator",			FALSE },
 	{ SCE_ELIXIR_EEX_OPER,			"eex_oper",			FALSE },
 	{ SCE_ELIXIR_PIN_OPER,			"pin_oper",			FALSE },
@@ -657,7 +658,8 @@ static const HLKeyword highlighting_keywords_ELIXIR[] =
 	{ 9,  "type_funcs",			FALSE },
 	{ 10, "lib_macros",			FALSE },
 	{ 11, "exclude_lib_macros",	FALSE },
-	{ 12, "exclude_lib_funcs",	FALSE }
+	{ 12, "exclude_lib_funcs",	FALSE },
+	{ 13, "usr_words",			FALSE }
 };
 #define highlighting_properties_ELIXIR	EMPTY_PROPERTIES
 
