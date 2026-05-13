@@ -1237,7 +1237,7 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 			break;
 		
 		case SCLEX_ELIXIR:
-			keyword_idx = 13;
+			keyword_idx = 14;
 			break;
 		
 		case SCLEX_BASH:

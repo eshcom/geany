@@ -147,9 +147,19 @@ static inline bool IsOperatorStyle(int style) {
 			style == SCE_ELIXIR_LINE_CONTINUED);
 }
 
-static inline bool IsStdWordOrAttrStyle(int style) {
+static inline bool IsFoldingStyle(int style) {
+	return (style == SCE_ELIXIR_STD_WORD ||
+			style == SCE_ELIXIR_USR_WORD);
+}
+
+static inline bool IsKeywordStyle(int style) {
 	return (style == SCE_ELIXIR_STD_WORD ||
 			style == SCE_ELIXIR_ADD_WORD ||
+			style == SCE_ELIXIR_USR_WORD);
+}
+
+static inline bool IsStdWordOrAttrStyle(int style) {
+	return (IsKeywordStyle(style) ||
 			style == SCE_ELIXIR_STD_MODULE_ATTR);
 }
 
@@ -238,11 +248,11 @@ SingleStringExpState PopFromStateStack(std::vector<SingleStringExpState> &stack,
 bool MatchWord(Sci_Position pos, Accessor &styler, const char *s) {
 	int i = 0;
 	for (; *s; i++) {
-		if (*s != styler.SafeGetCharAt(pos+i))
+		if (*s != styler.SafeGetCharAt(pos + i))
 			return false;
 		s++;
 	}
-	return !IsAlnumWordChar(styler.SafeGetCharAt(pos+i));
+	return !IsAlnumWordChar(styler.SafeGetCharAt(pos + i));
 }
 
 bool IsQuotedField(Sci_Position pos, Sci_PositionU endPos, Accessor &styler) {
@@ -320,41 +330,42 @@ LexicalClass lexicalClasses[] = {
 	11,	"SCE_ELIXIR_TYPE_FUNC", "identifier", "Built-in type functions",
 	12,	"SCE_ELIXIR_LIB_MACRO", "identifier", "Lib macros (Bureaucrat/Ecto/ExMachina/ExUnit/Phoenix/Plug/...)",
 	13,	"SCE_ELIXIR_LIB_FUNC", "identifier", "Lib functions",
-	14,	"SCE_ELIXIR_OPERATOR", "operator", "Operators",
-	15,	"SCE_ELIXIR_EEX_OPER", "operator", "EEx-operator",
-	16,	"SCE_ELIXIR_PIN_OPER", "operator", "^-operator",
-	17,	"SCE_ELIXIR_MAP_OPER", "operator", "%-operator",
-	18,	"SCE_ELIXIR_CAPTURE_OPER", "operator", "&-operator",
-	19,	"SCE_ELIXIR_FUNCTION", "identifier", "Functions",
-	20,	"SCE_ELIXIR_DEFNAME", "identifier", "Object name definition",
-	21,	"SCE_ELIXIR_MODULE", "identifier", "Modules",
-	22,	"SCE_ELIXIR_MODULE_ATTR", "preprocessor", "Module attributes",
-	23,	"SCE_ELIXIR_ERL_MODULE", "identifier", "Erlang modules",
-	24,	"SCE_ELIXIR_IDENTIFIER", "identifier", "Other identifiers",
-	25,	"SCE_ELIXIR_ATOM", "identifier", "Atoms",
-	26,	"SCE_ELIXIR_NODE", "identifier", "Nodes",
-	27,	"SCE_ELIXIR_FIELD", "identifier", "Field name of map/struct",
-	28,	"SCE_ELIXIR_NUMBER", "numeric", "Number",
-	29,	"SCE_ELIXIR_TRIPLE", "string", "Triple-quote string",
-	30,	"SCE_ELIXIR_TRIPLEVAL", "string", "Triple-quote string used as the value of the map-field",
-	31,	"SCE_ELIXIR_STRING", "string", "String",
-	40,	"SCE_ELIXIR_STRINGVAL", "string", "String used as the value of the map-field",
-	41,	"SCE_ELIXIR_CHARSTR", "string", "Charstring",
-	42,	"SCE_ELIXIR_CHARSTRVAL", "string", "Charstring used as the value of the map-field",
-	43,	"SCE_ELIXIR_LITERAL", "literal string", "Literal string (with prefix ~)",
-	44,	"SCE_ELIXIR_LITERALVAL", "literal string", "Literal string used as the value of the map-field",
-	45,	"SCE_ELIXIR_LITERALTRIPLE", "literal string", "Triple-quote literal string",
-	46,	"SCE_ELIXIR_LITERALTRIPLEVAL", "literal string", "Triple-quote literal string used as the value of the map-field",
-	47,	"SCE_ELIXIR_CHARACTER", "character", "Single character",
-	48,	"SCE_ELIXIR_ESCAPESEQ", "string escapesequence", "Escape sequence",
-	49,	"SCE_ELIXIR_FORMATSEQ", "string formatsequence", "Format sequence",
-	50,	"SCE_ELIXIR_STRING_SUBOPER", "operator", "#{}-operator inside string",
-	51,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
-	52,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
-	53,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
-	54,	"SCE_ELIXIR_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	55,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
-	56,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
+	14,	"SCE_ELIXIR_USR_WORD", "identifier", "User-defined keywords",
+	15,	"SCE_ELIXIR_OPERATOR", "operator", "Operators",
+	16,	"SCE_ELIXIR_EEX_OPER", "operator", "EEx-operator",
+	17,	"SCE_ELIXIR_PIN_OPER", "operator", "^-operator",
+	18,	"SCE_ELIXIR_MAP_OPER", "operator", "%-operator",
+	19,	"SCE_ELIXIR_CAPTURE_OPER", "operator", "&-operator",
+	20,	"SCE_ELIXIR_FUNCTION", "identifier", "Functions",
+	21,	"SCE_ELIXIR_DEFNAME", "identifier", "Object name definition",
+	22,	"SCE_ELIXIR_MODULE", "identifier", "Modules",
+	23,	"SCE_ELIXIR_MODULE_ATTR", "preprocessor", "Module attributes",
+	24,	"SCE_ELIXIR_ERL_MODULE", "identifier", "Erlang modules",
+	25,	"SCE_ELIXIR_IDENTIFIER", "identifier", "Other identifiers",
+	26,	"SCE_ELIXIR_ATOM", "identifier", "Atoms",
+	27,	"SCE_ELIXIR_NODE", "identifier", "Nodes",
+	28,	"SCE_ELIXIR_FIELD", "identifier", "Field name of map/struct",
+	29,	"SCE_ELIXIR_NUMBER", "numeric", "Number",
+	30,	"SCE_ELIXIR_TRIPLE", "string", "Triple-quote string",
+	31,	"SCE_ELIXIR_TRIPLEVAL", "string", "Triple-quote string used as the value of the map-field",
+	40,	"SCE_ELIXIR_STRING", "string", "String",
+	41,	"SCE_ELIXIR_STRINGVAL", "string", "String used as the value of the map-field",
+	42,	"SCE_ELIXIR_CHARSTR", "string", "Charstring",
+	43,	"SCE_ELIXIR_CHARSTRVAL", "string", "Charstring used as the value of the map-field",
+	44,	"SCE_ELIXIR_LITERAL", "literal string", "Literal string (with prefix ~)",
+	45,	"SCE_ELIXIR_LITERALVAL", "literal string", "Literal string used as the value of the map-field",
+	46,	"SCE_ELIXIR_LITERALTRIPLE", "literal string", "Triple-quote literal string",
+	47,	"SCE_ELIXIR_LITERALTRIPLEVAL", "literal string", "Triple-quote literal string used as the value of the map-field",
+	48,	"SCE_ELIXIR_CHARACTER", "character", "Single character",
+	49,	"SCE_ELIXIR_ESCAPESEQ", "string escapesequence", "Escape sequence",
+	50,	"SCE_ELIXIR_FORMATSEQ", "string formatsequence", "Format sequence",
+	51,	"SCE_ELIXIR_STRING_SUBOPER", "operator", "#{}-operator inside string",
+	52,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
+	53,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
+	54,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
+	55,	"SCE_ELIXIR_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	56,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
+	57,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
 };
 
 }
@@ -373,6 +384,7 @@ class LexerElixir : public DefaultLexer {
 	WordList libMacros;
 	WordList exclLibMacros;
 	WordList exclLibFuncs;
+	WordList usrWords;
 	WordList taskMarkers;
 	OptionsElixir options;
 	OptionSetElixir osElixir;
@@ -509,6 +521,9 @@ Sci_Position SCI_METHOD LexerElixir::WordListSet(int n, const char *wl) {
 		wordListN = &exclLibFuncs;
 		break;
 	case 13:
+		wordListN = &usrWords;
+		break;
+	case 14:
 		wordListN = &taskMarkers;
 		break;
 	}
@@ -637,9 +652,7 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	}
 
 #define CHECK_LIB_MACROS														\
-	if (last_state == SCE_ELIXIR_STD_WORD ||									\
-		last_state == SCE_ELIXIR_ADD_WORD ||									\
-		!IsSpace(sc.chPrev) ||													\
+	if (IsKeywordStyle(last_state) || !IsSpace(sc.chPrev) ||					\
 		sc.Match('!', '=') || sc.Match(':', ':') ||								\
 		MatchWord(sc.currentPos, styler, "and") ||								\
 		MatchWord(sc.currentPos, styler, "or") ||								\
@@ -1326,6 +1339,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ELIXIR_STD_ATOM);
 					} else if (stdMacros.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_STD_MACRO);
+					} else if (usrWords.InList(ident)) {
+						sc.ChangeState(SCE_ELIXIR_USR_WORD);
 					} else if (IS_TYPE_FUNC) {
 						sc.ChangeState(typeFuncs.InList(ident) ? SCE_ELIXIR_TYPE_FUNC
 															   : SCE_ELIXIR_FUNCTION);
@@ -1348,14 +1363,16 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						strcmp(ident, "defmemo") == 0 ||
 						strcmp(ident, "defmemop") == 0))
 					ident_state = DEFNAME_STATE;
+				else if (sc.state == SCE_ELIXIR_USR_WORD
+						 && strncmp(ident, "def", 3) == 0)
+					ident_state = DEFNAME_STATE;
 				else if (sc.state == SCE_ELIXIR_ADD_WORD
 						 && strcmp(ident, "alias") == 0)
 					ident_state = ALIAS_STATE;
 				else if (ident_state != ALIAS_AS_STATE)
 					ident_state = NONE_STATE;
 				
-				if (sc.state == SCE_ELIXIR_STD_WORD
-					|| sc.state == SCE_ELIXIR_ADD_WORD)
+				if (IsKeywordStyle(sc.state))
 					maybe_typefunc = false;
 				
 				module_type = NONE_MODULE;
@@ -1607,17 +1624,13 @@ void SCI_METHOD LexerElixir::Fold(Sci_PositionU startPos, Sci_Position length,
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
 		
-		if (stylePrev != SCE_ELIXIR_STD_WORD
-			&& style == SCE_ELIXIR_STD_WORD) {
+		if (!IsFoldingStyle(stylePrev) && IsFoldingStyle(style)) {
 			keyword_start = i;
 		}
 		// Fold on keywords
-		if (stylePrev == SCE_ELIXIR_STD_WORD
-			&& style != SCE_ELIXIR_STD_WORD
-			&& style != SCE_ELIXIR_ATOM
-		) {
-			currentLevel += ClassifyElixirFoldPoint(styler,
-													styleNext,
+		if (IsFoldingStyle(stylePrev) && !IsFoldingStyle(style)
+			&& style != SCE_ELIXIR_ATOM) {
+			currentLevel += ClassifyElixirFoldPoint(styler, styleNext,
 													keyword_start);
 		}
 		// Fold on comments
