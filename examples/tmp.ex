@@ -837,3 +837,11 @@ New456.test_fun() # highlight as OpenApiSpex
 def send(console, func) when is_function(func, 0) do
   __MODULE__.send(console, func.())
 end
+
+# ------------------------------
+
+@type path :: String.t()
+@type t :: %{path => PathItem.t()}
+
+@typep operation_id :: String.t()
+@typep verb :: atom

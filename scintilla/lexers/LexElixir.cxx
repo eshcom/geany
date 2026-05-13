@@ -1265,6 +1265,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					
 					if (strcmp(ident, "@spec") == 0 ||
 						strcmp(ident, "@type") == 0 ||
+						strcmp(ident, "@typep") == 0 ||
 						strcmp(ident, "@callback") == 0 ||
 						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
