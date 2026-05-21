@@ -426,8 +426,8 @@ static const unsigned char *parseStructTag(const unsigned char *cp, elixirKind k
 	return cp;
 }
 
-static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind kind,
-										   bool private, bool delegate)
+static const unsigned char *parseMemberTag(const unsigned char *cp,
+										   elixirKind kind, bool private)
 {
 	vString *const identifier = vStringNew();
 	cp = parseIdentifier(cp, identifier);
@@ -436,7 +436,7 @@ static const unsigned char *parseMemberTag(const unsigned char *cp, elixirKind k
 	{
 		char *module = NULL;
 		
-		if (delegate)
+		if (kind == K_DELEGATE)
 		{
 			const unsigned char *search = (const unsigned char *)
 											strstr((const char *)cp, "to:");
@@ -621,22 +621,28 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 		cp = parseStructTag(cp, K_MACRO, true, indent);
 	else if (strcmp(kwval, "defimpl") == 0)
 		cp = parseStructTag(cp, K_IMPL, false, indent);
+	else if (strcmp(kwval, "defstruct") == 0)
+		/* skip */;
+	else if (strcmp(kwval, "defexception") == 0)
+		/* skip */;
+	else if (strcmp(kwval, "defoverridable") == 0)
+		/* skip */;
 	else if (strcmp(kwval, "defdelegate") == 0)
-		cp = parseMemberTag(cp, K_DELEGATE, false, true);
+		cp = parseMemberTag(cp, K_DELEGATE, false);
 	else if (strcmp(kwval, "defp") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, true, false);
+		cp = parseMemberTag(cp, K_FUNCTION, true);
 	else if (strcmp(kwval, "def") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, false, false);
+		cp = parseMemberTag(cp, K_FUNCTION, false);
 	else if (strcmp(kwval, "defmemop") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, true, false);
+		cp = parseMemberTag(cp, K_FUNCTION, true);
 	else if (strcmp(kwval, "defmemo") == 0)
-		cp = parseMemberTag(cp, K_FUNCTION, false, false);
+		cp = parseMemberTag(cp, K_FUNCTION, false);
 	else if (strncmp(kwval, "def", 3) == 0) // def... - user-defined keyword
-		cp = parseMemberTag(cp, K_FUNCTION, false, false);
+		cp = parseMemberTag(cp, K_FUNCTION, false);
 	else if (strcmp(kwval, "@typep") == 0)
-		cp = parseMemberTag(cp, K_TYPE, true, false);
+		cp = parseMemberTag(cp, K_TYPE, true);
 	else if (strcmp(kwval, "@type") == 0 || strcmp(kwval, "@opaque") == 0)
-		cp = parseMemberTag(cp, K_TYPE, false, false);
+		cp = parseMemberTag(cp, K_TYPE, false);
 	else if (strcmp(kwval, "@after_compile") == 0 ||
 			 strcmp(kwval, "@before_compile") == 0 ||
 			 strcmp(kwval, "@behaviour") == 0 ||
