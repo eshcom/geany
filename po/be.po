@@ -5018,7 +5018,7 @@ msgid "Functions / Procedures"
 msgstr "Функцыі / Працэдуры"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Пераменныя / Сігналы"
 
 #: ../src/symbols.c:737

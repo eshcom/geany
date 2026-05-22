@@ -5022,7 +5022,7 @@ msgid "Functions / Procedures"
 msgstr "Funções/Procedimentos"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Variáveis/Sinais"
 
 #: ../src/symbols.c:737

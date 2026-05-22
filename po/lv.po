@@ -5004,7 +5004,7 @@ msgid "Functions / Procedures"
 msgstr "Funkcijas / procedūras"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Mainīgie / signāli"
 
 #: ../src/symbols.c:737

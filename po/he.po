@@ -4921,7 +4921,7 @@ msgid "Functions / Procedures"
 msgstr "פונקציות/שגרות"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "משתנים/אותות"
 
 #: ../src/symbols.c:737

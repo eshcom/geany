@@ -5027,7 +5027,7 @@ msgid "Functions / Procedures"
 msgstr "Függvények / Eljárások"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Változók / Jelek"
 
 #: ../src/symbols.c:737

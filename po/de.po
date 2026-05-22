@@ -5076,7 +5076,7 @@ msgid "Functions / Procedures"
 msgstr "Funktionen/Prozeduren"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Variablen/Signale"
 
 #: ../src/symbols.c:737

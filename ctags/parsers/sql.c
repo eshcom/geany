@@ -223,7 +223,7 @@ static kindDefinition SqlKinds [] = {
 	{ true,  'n', "synonym",	  "synonyms"			   },
 	{ true,  'x', "mltable",	  "MobiLink Table Scripts" },
 	{ true,  'y', "mlconn",		  "MobiLink Conn Scripts"  },
-	{ true,  'z', "mlprop",		  "MobiLink Properties "   }
+	{ true,  'z', "mlprop",		  "MobiLink Properties"    }
 };
 
 static const keywordTable SqlKeywordTable [] = {

@@ -4947,7 +4947,7 @@ msgid "Functions / Procedures"
 msgstr "関数/手続き"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "変数/シグナル"
 
 #: ../src/symbols.c:737

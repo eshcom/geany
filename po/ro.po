@@ -5208,7 +5208,7 @@ msgstr "Proprietăți"
 
 #: ../src/symbols.c:736
 #, fuzzy
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Variabile"
 
 #: ../src/symbols.c:737

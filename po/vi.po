@@ -5135,7 +5135,7 @@ msgstr "Thủ tục"
 
 #: ../src/symbols.c:736
 #, fuzzy
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Biến"
 
 #: ../src/symbols.c:737
