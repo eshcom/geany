@@ -5073,7 +5073,7 @@ msgid "Functions / Procedures"
 msgstr "Συναρτήσεις / Διεργασίες"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Μεταβλητές / Σινιάλα"
 
 #: ../src/symbols.c:737

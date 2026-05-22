@@ -5039,7 +5039,7 @@ msgid "Functions / Procedures"
 msgstr "Funkce / Procedury"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Proměnné / Signály"
 
 #: ../src/symbols.c:737

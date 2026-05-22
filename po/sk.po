@@ -4984,7 +4984,7 @@ msgid "Functions / Procedures"
 msgstr "Funkcie / Procedúry"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Premenné / Signály"
 
 #: ../src/symbols.c:737

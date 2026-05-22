@@ -5084,7 +5084,7 @@ msgstr "Funkcije / Procedure"
 # &(tv_iters.tag_member), _("Members"),
 # &(tv_iters.tag_macro), _("Macros"),
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Spremenljivke / Signali"
 
 #: ../src/symbols.c:737

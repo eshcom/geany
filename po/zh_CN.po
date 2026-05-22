@@ -4838,7 +4838,7 @@ msgid "Functions / Procedures"
 msgstr "函数 / 过程"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "变量 / 信号"
 
 #: ../src/symbols.c:737

@@ -45,9 +45,9 @@ typedef enum {
 static kindDefinition PythonKinds[] = {
 	{true, 'c', "class",    "classes"},
 	{true, 'f', "function", "functions"},
-	{true, 'm', "member",   "class members"},
+	{true, 'm', "member",   "class members/methods"},
 	{true, 'v', "variable", "variables"},
-	{true, 'x', "unknown", "name referring a classe/variable/function/module defined in other module"}
+	{true, 'x', "unknown", "name referring a class/variable/function/module defined in other module"}
 };
 
 typedef enum {

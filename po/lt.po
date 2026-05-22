@@ -4977,7 +4977,7 @@ msgid "Functions / Procedures"
 msgstr "Funkcijos / Procedūros"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Kintamieji / Signalai"
 
 #: ../src/symbols.c:737

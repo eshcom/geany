@@ -4978,7 +4978,7 @@ msgid "Functions / Procedures"
 msgstr "Fonksiyonlar / Prosedürler"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Değişkenler / Sinyaller"
 
 #: ../src/symbols.c:737

@@ -4875,7 +4875,7 @@ msgid "Functions / Procedures"
 msgstr "Funtzioak / Prozedurak"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "Aldagaiak / Seinaleak"
 
 #: ../src/symbols.c:737

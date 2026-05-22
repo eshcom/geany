@@ -519,31 +519,25 @@ static void add_top_level_items(GeanyDocument *doc)
 	switch (ft_id)
 	{
 		case GEANY_FILETYPES_DIFF:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Files"), ICON_NONE, NULL);
+				&tv_iters.tag_function, _("Files"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_DOCBOOK:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Chapter"), ICON_NONE,
-				&(tv_iters.tag_class), _("Section"), ICON_NONE,
-				&(tv_iters.tag_member), _("Sect1"), ICON_NONE,
-				&(tv_iters.tag_macro), _("Sect2"), ICON_NONE,
-				&(tv_iters.tag_variable), _("Sect3"), ICON_NONE,
-				&(tv_iters.tag_struct), _("Appendix"), ICON_NONE,
-				&(tv_iters.tag_other), _("Other"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_function, _("Chapter"), ICON_NONE,
+				&tv_iters.tag_class, _("Section"), ICON_NONE,
+				&tv_iters.tag_member, _("Sect1"), ICON_NONE,
+				&tv_iters.tag_macro, _("Sect2"), ICON_NONE,
+				&tv_iters.tag_variable, _("Sect3"), ICON_NONE,
+				&tv_iters.tag_struct, _("Appendix"), ICON_NONE,
+				&tv_iters.tag_other, _("Other"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_HASKELL:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Module"), ICON_NAMESPACE,
 				&tv_iters.tag_type, _("Types"), ICON_TYPE,
 				&tv_iters.tag_macro, _("Type constructors"), ICON_STRUCT,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD, NULL);
 			break;
 		case GEANY_FILETYPES_COBOL:
 			tag_list_add_groups(tag_store,
@@ -554,355 +548,274 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_macro, _("Paragraph"), ICON_OTHER,
 				&tv_iters.tag_struct, _("Group"), ICON_STRUCT,
 				&tv_iters.tag_variable, _("Data"), ICON_VAR,
-				&tv_iters.tag_externvar, _("Copies"), ICON_NAMESPACE,
-				NULL);
+				&tv_iters.tag_externvar, _("Copies"), ICON_NAMESPACE, NULL);
 			break;
 		case GEANY_FILETYPES_CONF:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Sections"), ICON_OTHER,
-				&tv_iters.tag_macro, _("Keys"), ICON_VAR,
-				NULL);
+				&tv_iters.tag_macro, _("Keys"), ICON_VAR, NULL);
 			break;
 		case GEANY_FILETYPES_NSIS:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Sections"), ICON_OTHER,
 				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				NULL);
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR, NULL);
 			break;
 		case GEANY_FILETYPES_LATEX:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Command"), ICON_NONE,
-				&(tv_iters.tag_class), _("Environment"), ICON_NONE,
-				&(tv_iters.tag_member), _("Section"), ICON_NONE,
-				&(tv_iters.tag_macro), _("Subsection"), ICON_NONE,
-				&(tv_iters.tag_variable), _("Subsubsection"), ICON_NONE,
-				&(tv_iters.tag_struct), _("Label"), ICON_NONE,
-				&(tv_iters.tag_namespace), _("Chapter"), ICON_NONE,
-				&(tv_iters.tag_other), _("Other"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_function, _("Command"), ICON_NONE,
+				&tv_iters.tag_class, _("Environment"), ICON_NONE,
+				&tv_iters.tag_member, _("Section"), ICON_NONE,
+				&tv_iters.tag_macro, _("Subsection"), ICON_NONE,
+				&tv_iters.tag_variable, _("Subsubsection"), ICON_NONE,
+				&tv_iters.tag_struct, _("Label"), ICON_NONE,
+				&tv_iters.tag_namespace, _("Chapter"), ICON_NONE,
+				&tv_iters.tag_other, _("Other"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_MATLAB:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_struct), _("Structures"), ICON_STRUCT,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_ABAQUS:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_class), _("Parts"), ICON_NONE,
-				&(tv_iters.tag_member), _("Assembly"), ICON_NONE,
-				&(tv_iters.tag_namespace), _("Steps"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_class, _("Parts"), ICON_NONE,
+				&tv_iters.tag_member, _("Assembly"), ICON_NONE,
+				&tv_iters.tag_namespace, _("Steps"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_R:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_other), _("Other"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_other, _("Other"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_RUST:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Modules"), ICON_NAMESPACE,
-				&(tv_iters.tag_struct), _("Structures"), ICON_STRUCT,
-				&(tv_iters.tag_interface), _("Traits"), ICON_CLASS,
-				&(tv_iters.tag_class), _("Implementations"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_TYPE,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_macro), _("Macros"), ICON_MACRO,
-				&(tv_iters.tag_member), _("Methods"), ICON_MEMBER,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,
+				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
+				&tv_iters.tag_interface, _("Traits"), ICON_CLASS,
+				&tv_iters.tag_class, _("Implementations"), ICON_CLASS,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,
+				&tv_iters.tag_member, _("Methods"), ICON_MEMBER,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_GO:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
-				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
+				&tv_iters.tag_type, _("Types"), ICON_TYPE,
+				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_member, _("Members"), ICON_MEMBER,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_PERL:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_macro), _("Labels"), ICON_NONE,
-				&(tv_iters.tag_type), _("Constants"), ICON_NONE,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_macro, _("Labels"), ICON_NONE,
+				&tv_iters.tag_type, _("Constants"), ICON_NONE,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_PHP:
 		case GEANY_FILETYPES_ZEPHIR:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Namespaces"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_struct), _("Traits"), ICON_STRUCT,
-				NULL);
+				&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_struct, _("Traits"), ICON_STRUCT, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_HTML:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Functions"), ICON_NONE,
-				&(tv_iters.tag_member), _("Anchors"), ICON_NONE,
-				&(tv_iters.tag_namespace), _("H1 Headings"), ICON_NONE,
-				&(tv_iters.tag_class), _("H2 Headings"), ICON_NONE,
-				&(tv_iters.tag_variable), _("H3 Headings"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_NONE,
+				&tv_iters.tag_member, _("Anchors"), ICON_NONE,
+				&tv_iters.tag_namespace, _("H1 Headings"), ICON_NONE,
+				&tv_iters.tag_class, _("H2 Headings"), ICON_NONE,
+				&tv_iters.tag_variable, _("H3 Headings"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_CSS:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_variable), _("ID Selectors"), ICON_VAR,
-				&(tv_iters.tag_struct), _("Type Selectors"), ICON_STRUCT, NULL);
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_variable, _("ID Selectors"), ICON_VAR,
+				&tv_iters.tag_struct, _("Type Selectors"), ICON_STRUCT, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_REST:
 		case GEANY_FILETYPES_TXT2TAGS:
 		case GEANY_FILETYPES_ABC:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Chapter"), ICON_NONE,
-				&(tv_iters.tag_member), _("Section"), ICON_NONE,
-				&(tv_iters.tag_macro), _("Subsection"), ICON_NONE,
-				&(tv_iters.tag_variable), _("Subsubsection"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_namespace, _("Chapter"), ICON_NONE,
+				&tv_iters.tag_member, _("Section"), ICON_NONE,
+				&tv_iters.tag_macro, _("Subsection"), ICON_NONE,
+				&tv_iters.tag_variable, _("Subsubsection"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_ASCIIDOC:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Document"), ICON_NONE,
-				&(tv_iters.tag_member), _("Section Level 1"), ICON_NONE,
-				&(tv_iters.tag_macro), _("Section Level 2"), ICON_NONE,
-				&(tv_iters.tag_variable), _("Section Level 3"), ICON_NONE,
-				&(tv_iters.tag_struct), _("Section Level 4"), ICON_NONE,
-				NULL);
+				&tv_iters.tag_namespace, _("Document"), ICON_NONE,
+				&tv_iters.tag_member, _("Section Level 1"), ICON_NONE,
+				&tv_iters.tag_macro, _("Section Level 2"), ICON_NONE,
+				&tv_iters.tag_variable, _("Section Level 3"), ICON_NONE,
+				&tv_iters.tag_struct, _("Section Level 4"), ICON_NONE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_RUBY:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Modules"), ICON_NAMESPACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_member), _("Singletons"), ICON_STRUCT,
-				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
-				NULL);
+				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_member, _("Singletons"), ICON_STRUCT,
+				&tv_iters.tag_function, _("Methods"), ICON_METHOD, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_TCL:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Namespaces"), ICON_NAMESPACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_member), _("Methods"), ICON_METHOD,
-				&(tv_iters.tag_function), _("Procedures"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_member, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_function, _("Procedures"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_PYTHON:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_member), _("Methods"), ICON_MACRO,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_externvar), _("Imports"), ICON_IMPORT,
-				NULL);
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_member, _("Methods"), ICON_MACRO,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_externvar, _("Imports"), ICON_IMPORT, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_VHDL:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_class), _("Entities"), ICON_CLASS,
-				&(tv_iters.tag_struct), _("Architectures"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
-				&(tv_iters.tag_function), _("Functions / Procedures"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables / Signals"), ICON_VAR,
-				&(tv_iters.tag_member), _("Processes / Blocks / Components"), ICON_MEMBER,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
+				&tv_iters.tag_class, _("Entities"), ICON_CLASS,
+				&tv_iters.tag_struct, _("Architectures"), ICON_STRUCT,
+				&tv_iters.tag_type, _("Types"), ICON_TYPE,
+				&tv_iters.tag_function, _("Functions / Procedures"), ICON_METHOD,
+				&tv_iters.tag_variable, _("Constants / Variables / Signals"), ICON_VAR,
+				&tv_iters.tag_member, _("Processes / Blocks / Components"), ICON_MEMBER,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_VERILOG:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_type), _("Events"), ICON_MACRO,
-				&(tv_iters.tag_class), _("Modules"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Functions / Tasks"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_type, _("Events"), ICON_MACRO,
+				&tv_iters.tag_class, _("Modules"), ICON_CLASS,
+				&tv_iters.tag_function, _("Functions / Tasks"), ICON_METHOD,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_JAVA:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
-				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
-				&(tv_iters.tag_type), _("Enums"), ICON_TYPE,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_function, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_member, _("Members"), ICON_MEMBER,
+				&tv_iters.tag_type, _("Enums"), ICON_TYPE,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_AS:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_externvar), _("Imports"), ICON_IMPORT,
-				&(tv_iters.tag_namespace), _("Package"), ICON_NAMESPACE,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_member), _("Properties"), ICON_MEMBER,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_externvar, _("Imports"), ICON_IMPORT,
+				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_member, _("Properties"), ICON_MEMBER,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_HAXE:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_function), _("Methods"), ICON_METHOD,
-				&(tv_iters.tag_type), _("Types"), ICON_TYPE,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_function, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_type, _("Types"), ICON_TYPE,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_BASIC:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_macro), _("Constants"), ICON_MACRO,
-				&(tv_iters.tag_struct), _("Types"), ICON_TYPE,
-				&(tv_iters.tag_namespace), _("Labels"), ICON_MEMBER,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
+				&tv_iters.tag_struct, _("Types"), ICON_TYPE,
+				&tv_iters.tag_namespace, _("Labels"), ICON_MEMBER,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_F77:
 		case GEANY_FILETYPES_FORTRAN:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Module"), ICON_CLASS,
-				&(tv_iters.tag_struct), _("Programs"), ICON_CLASS,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_function), _("Functions / Subroutines"), ICON_METHOD,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_class), _("Types"), ICON_TYPE,
-				&(tv_iters.tag_member), _("Components"), ICON_MEMBER,
-				&(tv_iters.tag_macro), _("Blocks"), ICON_MEMBER,
-				&(tv_iters.tag_type), _("Enums"), ICON_STRUCT,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				NULL);
+				&tv_iters.tag_namespace, _("Module"), ICON_CLASS,
+				&tv_iters.tag_struct, _("Programs"), ICON_CLASS,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_function, _("Functions / Subroutines"), ICON_METHOD,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_class, _("Types"), ICON_TYPE,
+				&tv_iters.tag_member, _("Components"), ICON_MEMBER,
+				&tv_iters.tag_macro, _("Blocks"), ICON_MEMBER,
+				&tv_iters.tag_type, _("Enums"), ICON_STRUCT,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_ASM:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_namespace), _("Labels"), ICON_NAMESPACE,
-				&(tv_iters.tag_function), _("Macros"), ICON_METHOD,
-				&(tv_iters.tag_macro), _("Defines"), ICON_MACRO,
-				&(tv_iters.tag_struct), _("Types"), ICON_TYPE,
-				NULL);
+				&tv_iters.tag_namespace, _("Labels"), ICON_NAMESPACE,
+				&tv_iters.tag_function, _("Macros"), ICON_METHOD,
+				&tv_iters.tag_macro, _("Defines"), ICON_MACRO,
+				&tv_iters.tag_struct, _("Types"), ICON_TYPE, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_MAKE:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_function, _("Targets"), ICON_METHOD,
-				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,
-				NULL);
+				&tv_iters.tag_macro, _("Macros"), ICON_MACRO, NULL);
 			break;
 		case GEANY_FILETYPES_SQL:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_namespace), _("Procedures"), ICON_NAMESPACE,
-				&(tv_iters.tag_struct), _("Indexes"), ICON_STRUCT,
-				&(tv_iters.tag_class), _("Tables"), ICON_CLASS,
-				&(tv_iters.tag_macro), _("Triggers"), ICON_MACRO,
-				&(tv_iters.tag_member), _("Views"), ICON_VIEW,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_namespace, _("Procedures"), ICON_NAMESPACE,
+				&tv_iters.tag_struct, _("Indexes"), ICON_STRUCT,
+				&tv_iters.tag_class, _("Tables"), ICON_CLASS,
+				&tv_iters.tag_macro, _("Triggers"), ICON_MACRO,
+				&tv_iters.tag_member, _("Views"), ICON_VIEW,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER,
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_ELIXIR:
-		{
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_variable), _("Attributes"), ICON_VAR,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_type), _("Type constructors"), ICON_TYPE,
-				&(tv_iters.tag_namespace), _("Modules"), ICON_NAMESPACE,
-				&(tv_iters.tag_macro), _("Macros"), ICON_MACRO,
-				&(tv_iters.tag_interface), _("Protocols"), ICON_INTERFACE,
-				&(tv_iters.tag_struct), _("Implementations"), ICON_STRUCT,
-				NULL);
+				&tv_iters.tag_variable, _("Attributes"), ICON_VAR,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_type, _("Type constructors"), ICON_TYPE,
+				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,
+				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,
+				&tv_iters.tag_interface, _("Protocols"), ICON_INTERFACE,
+				&tv_iters.tag_struct, _("Implementations"), ICON_STRUCT, NULL);
 			break;
-		}
 		case GEANY_FILETYPES_D:
 		default:
-		{
 			if (ft_id == GEANY_FILETYPES_D)
 				tag_list_add_groups(tag_store,
-					&(tv_iters.tag_namespace), _("Module"), ICON_NONE, NULL);
+					&tv_iters.tag_namespace, _("Module"), ICON_NONE, NULL);
 			else
 				tag_list_add_groups(tag_store,
-					&(tv_iters.tag_namespace), _("Namespaces"), ICON_NAMESPACE, NULL);
+					&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE, NULL);
 			
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_class), _("Classes"), ICON_CLASS,
-				&(tv_iters.tag_interface), _("Interfaces"), ICON_INTERFACE,
-				&(tv_iters.tag_function), _("Functions"), ICON_METHOD,
-				&(tv_iters.tag_member), _("Members"), ICON_MEMBER,
-				&(tv_iters.tag_struct), _("Structs"), ICON_STRUCT,
-				&(tv_iters.tag_type), _("Typedefs / Enums"), ICON_TYPE,
-				NULL);
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
+				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_member, _("Members"), ICON_MEMBER,
+				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
+				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE, NULL);
 			
 			if (ft_id != GEANY_FILETYPES_D)
 				tag_list_add_groups(tag_store,
-					&(tv_iters.tag_macro), _("Macros"), ICON_MACRO, NULL);
+					&tv_iters.tag_macro, _("Macros"), ICON_MACRO, NULL);
 			
 			tag_list_add_groups(tag_store,
-				&(tv_iters.tag_variable), _("Variables"), ICON_VAR,
-				&(tv_iters.tag_externvar), _("Extern Variables"), ICON_VAR,
-				&(tv_iters.tag_other), _("Other"), ICON_OTHER, NULL);
-		}
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
+				&tv_iters.tag_externvar, _("Extern Variables"), ICON_VAR,
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 	}
 }
 
@@ -918,10 +831,9 @@ static void hide_empty_rows(GtkTreeStore *store)
 	
 	while (cont)
 	{
-		if (!gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter))
-			cont = gtk_tree_store_remove(store, &iter);
-		else
-			cont = gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
+		cont = gtk_tree_model_iter_has_child(GTK_TREE_MODEL(store), &iter)
+					? gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)
+					: gtk_tree_store_remove(store, &iter);
 	}
 }
 
@@ -1009,48 +921,38 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 		case tm_tag_function_t:
 			iter = &tv_iters.tag_function;
 			break;
-			
+		case tm_tag_variable_t:
+			iter = &tv_iters.tag_variable;
+			break;
 		case tm_tag_externvar_t:
 			iter = &tv_iters.tag_externvar;
 			break;
-			
 		case tm_tag_macro_t:
 		case tm_tag_macro_with_arg_t:
 			iter = &tv_iters.tag_macro;
 			break;
-			
 		case tm_tag_class_t:
 			iter = &tv_iters.tag_class;
 			break;
-			
 		case tm_tag_member_t:
 		case tm_tag_field_t:
 			iter = &tv_iters.tag_member;
 			break;
-			
-		case tm_tag_typedef_t:
 		case tm_tag_enum_t:
+		case tm_tag_typedef_t:
 			iter = &tv_iters.tag_type;
 			break;
-			
 		case tm_tag_union_t:
 		case tm_tag_struct_t:
 			iter = &tv_iters.tag_struct;
 			break;
-			
+		case tm_tag_package_t:
+		case tm_tag_namespace_t:
+			iter = &tv_iters.tag_namespace;
+			break;
 		case tm_tag_interface_t:
 			iter = &tv_iters.tag_interface;
 			break;
-			
-		case tm_tag_variable_t:
-			iter = &tv_iters.tag_variable;
-			break;
-			
-		case tm_tag_namespace_t:
-		case tm_tag_package_t:
-			iter = &tv_iters.tag_namespace;
-			break;
-			
 		default:
 			iter = &tv_iters.tag_other;
 	}
@@ -1862,14 +1764,14 @@ static guint get_tag_class(const TMTag *tag)
 		case tm_tag_member_t:
 		case tm_tag_field_t:
 			return ICON_MEMBER;
-		case tm_tag_union_t:
-		case tm_tag_struct_t:
-			return ICON_STRUCT;
 		case tm_tag_enum_t:
 		case tm_tag_typedef_t:
 			return ICON_TYPE;
-		case tm_tag_namespace_t:
+		case tm_tag_union_t:
+		case tm_tag_struct_t:
+			return ICON_STRUCT;
 		case tm_tag_package_t:
+		case tm_tag_namespace_t:
 			return ICON_NAMESPACE;
 		case tm_tag_interface_t:
 			return ICON_INTERFACE;

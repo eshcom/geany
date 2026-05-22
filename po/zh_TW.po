@@ -4854,7 +4854,7 @@ msgid "Functions / Procedures"
 msgstr "函式/程序"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
+msgid "Constants / Variables / Signals"
 msgstr "變數/信號"
 
 #: ../src/symbols.c:737

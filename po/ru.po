@@ -5013,8 +5013,8 @@ msgid "Functions / Procedures"
 msgstr "Функции / Процедуры"
 
 #: ../src/symbols.c:736
-msgid "Variables / Signals"
-msgstr "Переменные / Сигналы"
+msgid "Constants / Variables / Signals"
+msgstr "Константы / Переменные / Сигналы"
 
 #: ../src/symbols.c:737
 msgid "Processes / Blocks / Components"
