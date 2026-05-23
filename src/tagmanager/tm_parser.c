@@ -68,7 +68,7 @@ static TMParserMapEntry map_C[] = {
 
 static TMParserMapEntry map_JAVA[] = {
 	{'c', tm_tag_class_t},		// classes
-	{'f', tm_tag_field_t},		// fields
+	{'f', tm_tag_member_t},		// fields
 	{'i', tm_tag_interface_t},	// interfaces
 	{'m', tm_tag_method_t},		// methods
 	{'p', tm_tag_package_t},	// packages
@@ -83,7 +83,7 @@ static TMParserMapEntry map_MAKEFILE[] = {
 
 static TMParserMapEntry map_PASCAL[] = {
 	{'f', tm_tag_function_t},	// functions
-	{'p', tm_tag_function_t},	// procedures
+	{'p', tm_tag_method_t},		// procedures
 };
 
 static TMParserMapEntry map_PERL[] = {
@@ -179,12 +179,15 @@ static TMParserMapEntry map_DOCBOOK[] = {
 static TMParserMapEntry map_ELIXIR[] = {
 	{'m', tm_tag_namespace_t},	// modules
 	{'p', tm_tag_interface_t},	// protocols
-	{'i', tm_tag_struct_t},		// protocol implementations
+	{'i', tm_tag_union_t},		// protocol implementations
 	{'a', tm_tag_variable_t},	// module attributes
-	{'f', tm_tag_function_t},	// functions
-	{'d', tm_tag_function_t},	// delegates
+	{'f', tm_tag_method_t},		// functions
+	{'d', tm_tag_prototype_t},	// delegates
+	{'F', tm_tag_function_t},	// protocol functions
 	{'M', tm_tag_macro_t},		// macros
 	{'t', tm_tag_typedef_t},	// type definitions
+	{'S', tm_tag_struct_t},		// structures / exceptions
+	{'o', tm_tag_field_t},		// other definitions (test, scope, etc.)
 	{'s', tm_tag_other_t},		// special definitions (alias, use, etc.)
 };
 
@@ -211,7 +214,7 @@ static TMParserMapEntry map_RUBY[] = {
 
 static TMParserMapEntry map_TCL[] = {
 	{'c', tm_tag_class_t},		// classes
-	{'m', tm_tag_member_t},		// methods
+	{'m', tm_tag_method_t},		// methods
 	{'p', tm_tag_function_t},	// procedures
 	{'n', tm_tag_namespace_t},	// modules
 };
@@ -248,14 +251,14 @@ static TMParserMapEntry map_VHDL[] = {
 	{'a', tm_tag_undef_t},		// attributes
 	{'s', tm_tag_variable_t},	// signals
 	{'f', tm_tag_function_t},	// functions
-	{'p', tm_tag_function_t},	// procedure
-	{'k', tm_tag_member_t},		// components
+	{'p', tm_tag_method_t},		// procedure
+	{'k', tm_tag_union_t},		// components
 	{'l', tm_tag_namespace_t},	// packages
 	{'m', tm_tag_member_t},		// process
 	{'n', tm_tag_class_t},		// entity
 	{'o', tm_tag_struct_t},		// architecture
 	{'u', tm_tag_undef_t},		// ports
-	{'b', tm_tag_member_t},		// blocks
+	{'b', tm_tag_field_t},		// blocks
 	{'A', tm_tag_typedef_t},	// alias
 };
 
@@ -286,7 +289,7 @@ static TMParserMapEntry map_CSHARP[] = {
 	{'d', tm_tag_macro_t},		// macro definitions
 	{'e', tm_tag_enumerator_t},	// enumerators (values inside an enumeration)
 	{'E', tm_tag_undef_t},		// events
-	{'f', tm_tag_field_t},		// fields
+	{'f', tm_tag_member_t},		// fields
 	{'g', tm_tag_enum_t},		// enumeration names
 	{'i', tm_tag_interface_t},	// interfaces
 	{'l', tm_tag_undef_t},		// local variables
@@ -301,7 +304,7 @@ static TMParserMapEntry map_FREEBASIC[] = {
 	{'c', tm_tag_macro_t},		// constants
 	{'f', tm_tag_function_t},	// functions
 	{'l', tm_tag_namespace_t},	// labels
-	{'t', tm_tag_struct_t},		// types
+	{'t', tm_tag_typedef_t},	// types
 	{'v', tm_tag_variable_t},	// variables
 	{'g', tm_tag_externvar_t},	// enumerations
 };
@@ -371,7 +374,7 @@ static TMParserMapEntry map_VALA[] = {
 	{'c', tm_tag_class_t},		// classes
 	{'d', tm_tag_macro_t},		// macro definitions
 	{'e', tm_tag_enumerator_t},	// enumerators (values inside an enumeration)
-	{'f', tm_tag_field_t},		// fields
+	{'f', tm_tag_member_t},		// fields
 	{'g', tm_tag_enum_t},		// enumeration names
 	{'i', tm_tag_interface_t},	// interfaces
 	{'l', tm_tag_undef_t},		// local variables
@@ -428,12 +431,12 @@ static TMParserMapEntry map_VERILOG[] = {
 	{'n', tm_tag_variable_t},	// net data types
 	{'p', tm_tag_variable_t},	// ports
 	{'r', tm_tag_variable_t},	// register data types
-	{'t', tm_tag_function_t},	// tasks
+	{'t', tm_tag_method_t},		// tasks
 };
 
 static TMParserMapEntry map_R[] = {
 	{'f', tm_tag_function_t},	// functions
-	{'l', tm_tag_other_t},		// libraries
+	{'l', tm_tag_union_t},		// libraries
 	{'s', tm_tag_other_t},		// sources
 };
 
@@ -455,7 +458,7 @@ static TMParserMapEntry map_OBJC[] = {
 	{'m', tm_tag_method_t},		// Object's method
 	{'c', tm_tag_class_t},		// Class's method
 	{'v', tm_tag_variable_t},	// Global variable
-	{'F', tm_tag_field_t},		// Object field
+	{'F', tm_tag_member_t},		// Object field
 	{'f', tm_tag_function_t},	// A function
 	{'p', tm_tag_undef_t},		// A property
 	{'t', tm_tag_typedef_t},	// A type alias
@@ -931,6 +934,17 @@ gboolean tm_parser_filter_by_file(TMParserType lang, const gchar *scope)
 	}
 }
 
+TMTagType tm_parser_get_exclude_type(TMParserType lang)
+{
+	switch (lang)
+	{
+		case TM_PARSER_ELIXIR:
+			return tm_tag_field_t | tm_tag_other_t; // test, scope, alias, use, etc.
+		default:
+			return tm_tag_undef_t;
+	}
+}
+
 TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type)
 {
 	switch (lang)
@@ -1020,11 +1034,11 @@ void tm_parser_define_type(TMTagType *type, TMParserType lang,
 		
 		case TM_PARSER_ELIXIR:
 			if (g_strcmp0(suffix, "(") == 0)
-				*type = tm_tag_function_t | tm_tag_macro_t | tm_tag_typedef_t;
+				*type = tm_tag_function_t | tm_tag_method_t |
+						tm_tag_prototype_t | tm_tag_macro_t |
+						tm_tag_typedef_t;
 			else
-				*type = tm_tag_max_t;
-			
-			*type &= ~tm_tag_other_t; // exclude aliases
+				*type = tm_tag_max_t & ~tm_parser_get_exclude_type(lang);
 			break;
 		
 		default:

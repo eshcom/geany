@@ -18,6 +18,8 @@ defmodule Df.UseCases.UserAction do
 
   Feature.__using__(option: :value)
 
+  defstruct [:id, :name]
+  
   "field7" => "string-field stringval"
   @doc """     string-field stringval
   В данном #{:atom_unquoted} колбэке реализуется логика действия пользователя.
