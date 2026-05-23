@@ -86,6 +86,9 @@ static const TMTagType tm_forward_types = tm_tag_prototype_t |
 enum
 {
 	ICON_CLASS,
+	ICON_ENUM,
+	ICON_FIELD,
+	ICON_FUNCTION,
 	ICON_IMPORT,
 	ICON_INTERFACE,
 	ICON_MACRO,
@@ -93,8 +96,10 @@ enum
 	ICON_METHOD,
 	ICON_NAMESPACE,
 	ICON_OTHER,
+	ICON_PROTOTYPE,
 	ICON_STRUCT,
 	ICON_TYPE,
+	ICON_UNION,
 	ICON_VAR,
 	ICON_VIEW,
 	ICON_NONE,
@@ -108,6 +113,9 @@ static struct
 }
 symbols_icons[N_ICONS] = {
 	[ICON_CLASS]		= { "classviewer-class", NULL },
+	[ICON_ENUM]			= { "classviewer-enum", NULL },
+	[ICON_FIELD]		= { "classviewer-field", NULL },
+	[ICON_FUNCTION]		= { "classviewer-function", NULL },
 	[ICON_IMPORT]		= { "classviewer-import", NULL },
 	[ICON_INTERFACE]	= { "classviewer-interface", NULL },
 	[ICON_MACRO]		= { "classviewer-macro", NULL },
@@ -115,8 +123,10 @@ symbols_icons[N_ICONS] = {
 	[ICON_METHOD]		= { "classviewer-method", NULL },
 	[ICON_NAMESPACE]	= { "classviewer-namespace", NULL },
 	[ICON_OTHER]		= { "classviewer-other", NULL },
+	[ICON_PROTOTYPE]	= { "classviewer-prototype", NULL },
 	[ICON_STRUCT]		= { "classviewer-struct", NULL },
 	[ICON_TYPE]			= { "classviewer-type", NULL },
+	[ICON_UNION]		= { "classviewer-union", NULL },
 	[ICON_VAR]			= { "classviewer-var", NULL },
 	[ICON_VIEW]			= { "classviewer-view", NULL },
 };
@@ -395,16 +405,21 @@ static GList *get_tag_list(GeanyDocument *doc, TMTagType tag_types)
 
 struct TreeviewSymbols
 {
+	GtkTreeIter tag_prototype;
 	GtkTreeIter tag_function;
+	GtkTreeIter tag_method;
 	GtkTreeIter tag_class;
 	GtkTreeIter tag_macro;
 	GtkTreeIter tag_member;
+	GtkTreeIter tag_field;
 	GtkTreeIter tag_variable;
 	GtkTreeIter tag_externvar;
 	GtkTreeIter tag_namespace;
 	GtkTreeIter tag_struct;
+	GtkTreeIter tag_union;
 	GtkTreeIter tag_interface;
 	GtkTreeIter tag_type;
+	GtkTreeIter tag_enum;
 	GtkTreeIter tag_other;
 } tv_iters;
 
@@ -414,16 +429,21 @@ static void init_tag_iters(void)
 	/* init all GtkTreeIters with -1 to make them invalid
 	 * to avoid crashes when switching between filetypes
 	 * (e.g. config file to Python crashes Geany without this) */
+	tv_iters.tag_prototype.stamp = -1;
 	tv_iters.tag_function.stamp = -1;
+	tv_iters.tag_method.stamp = -1;
 	tv_iters.tag_class.stamp = -1;
 	tv_iters.tag_member.stamp = -1;
+	tv_iters.tag_field.stamp = -1;
 	tv_iters.tag_macro.stamp = -1;
 	tv_iters.tag_variable.stamp = -1;
 	tv_iters.tag_externvar.stamp = -1;
 	tv_iters.tag_namespace.stamp = -1;
 	tv_iters.tag_struct.stamp = -1;
+	tv_iters.tag_union.stamp = -1;
 	tv_iters.tag_interface.stamp = -1;
 	tv_iters.tag_type.stamp = -1;
+	tv_iters.tag_enum.stamp = -1;
 	tv_iters.tag_other.stamp = -1;
 }
 
@@ -537,7 +557,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Module"), ICON_NAMESPACE,
 				&tv_iters.tag_type, _("Types"), ICON_TYPE,
 				&tv_iters.tag_macro, _("Type constructors"), ICON_STRUCT,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD, NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION, NULL);
 			break;
 		case GEANY_FILETYPES_COBOL:
 			tag_list_add_groups(tag_store,
@@ -558,7 +578,7 @@ static void add_top_level_items(GeanyDocument *doc)
 		case GEANY_FILETYPES_NSIS:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Sections"), ICON_OTHER,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR, NULL);
 			break;
 		case GEANY_FILETYPES_LATEX:
@@ -574,7 +594,7 @@ static void add_top_level_items(GeanyDocument *doc)
 			break;
 		case GEANY_FILETYPES_MATLAB:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT, NULL);
 			break;
 		case GEANY_FILETYPES_ABAQUS:
@@ -585,8 +605,9 @@ static void add_top_level_items(GeanyDocument *doc)
 			break;
 		case GEANY_FILETYPES_R:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&tv_iters.tag_other, _("Other"), ICON_NONE, NULL);
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
+				&tv_iters.tag_union, _("Libraries"), ICON_UNION,
+				&tv_iters.tag_other, _("Sources"), ICON_OTHER, NULL);
 			break;
 		case GEANY_FILETYPES_RUST:
 			tag_list_add_groups(tag_store,
@@ -594,17 +615,18 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
 				&tv_iters.tag_interface, _("Traits"), ICON_CLASS,
 				&tv_iters.tag_class, _("Implementations"), ICON_CLASS,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
+				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE,	// tm_tag_enum_t, tm_tag_typedef_t
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,
-				&tv_iters.tag_member, _("Methods"), ICON_MEMBER,
-				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_field, _("Structure fields"), ICON_FIELD,
+				&tv_iters.tag_enum, _("Enumerators"), ICON_ENUM, NULL);	// tm_tag_enumerator_t
 			break;
 		case GEANY_FILETYPES_GO:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
 				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
 				&tv_iters.tag_type, _("Types"), ICON_TYPE,
@@ -616,7 +638,8 @@ static void add_top_level_items(GeanyDocument *doc)
 		case GEANY_FILETYPES_PERL:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_prototype, _("Prototypes"), ICON_PROTOTYPE,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_macro, _("Labels"), ICON_NONE,
 				&tv_iters.tag_type, _("Constants"), ICON_NONE,
 				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
@@ -627,7 +650,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_struct, _("Traits"), ICON_STRUCT, NULL);
@@ -668,22 +691,22 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
 				&tv_iters.tag_member, _("Singletons"), ICON_STRUCT,
-				&tv_iters.tag_function, _("Methods"), ICON_METHOD, NULL);
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD, NULL);
 			break;
 		case GEANY_FILETYPES_TCL:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_member, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,
 				&tv_iters.tag_function, _("Procedures"), ICON_OTHER, NULL);
 			break;
 		case GEANY_FILETYPES_PYTHON:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_member, _("Methods"), ICON_MACRO,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
-				&tv_iters.tag_externvar, _("Imports"), ICON_IMPORT, NULL);
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,				// tm_tag_class_t
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,			// tm_tag_method_t
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,		// tm_tag_function_t
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,			// tm_tag_variable_t
+				&tv_iters.tag_externvar, _("Imports"), ICON_IMPORT, NULL);	// tm_tag_externvar_t
 			break;
 		case GEANY_FILETYPES_VHDL:
 			tag_list_add_groups(tag_store,
@@ -691,16 +714,20 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_class, _("Entities"), ICON_CLASS,
 				&tv_iters.tag_struct, _("Architectures"), ICON_STRUCT,
 				&tv_iters.tag_type, _("Types"), ICON_TYPE,
-				&tv_iters.tag_function, _("Functions / Procedures"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
+				&tv_iters.tag_method, _("Procedures"), ICON_METHOD,
 				&tv_iters.tag_variable, _("Constants / Variables / Signals"), ICON_VAR,
-				&tv_iters.tag_member, _("Processes / Blocks / Components"), ICON_MEMBER,
+				&tv_iters.tag_union, _("Components"), ICON_UNION,
+				&tv_iters.tag_field, _("Blocks"), ICON_FIELD,
+				&tv_iters.tag_member, _("Processes"), ICON_MEMBER,
 				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
 		case GEANY_FILETYPES_VERILOG:
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_type, _("Events"), ICON_MACRO,
 				&tv_iters.tag_class, _("Modules"), ICON_CLASS,
-				&tv_iters.tag_function, _("Functions / Tasks"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
+				&tv_iters.tag_method, _("Tasks"), ICON_METHOD,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
@@ -709,10 +736,10 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_function, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,
 				&tv_iters.tag_member, _("Members"), ICON_MEMBER,
-				&tv_iters.tag_type, _("Enums"), ICON_TYPE,
-				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
+				&tv_iters.tag_type, _("Enums"), ICON_TYPE,				// tm_tag_enum_t
+				&tv_iters.tag_enum, _("Enumerators"), ICON_ENUM, NULL);	// tm_tag_enumerator_t
 			break;
 		case GEANY_FILETYPES_AS:
 			tag_list_add_groups(tag_store,
@@ -720,7 +747,7 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Package"), ICON_NAMESPACE,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_member, _("Properties"), ICON_MEMBER,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
@@ -730,19 +757,19 @@ static void add_top_level_items(GeanyDocument *doc)
 			tag_list_add_groups(tag_store,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
 				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_function, _("Methods"), ICON_METHOD,
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,
 				&tv_iters.tag_type, _("Types"), ICON_TYPE,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
 			break;
 		case GEANY_FILETYPES_BASIC:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_macro, _("Constants"), ICON_MACRO,
-				&tv_iters.tag_struct, _("Types"), ICON_TYPE,
+				&tv_iters.tag_type, _("Types"), ICON_TYPE,
 				&tv_iters.tag_namespace, _("Labels"), ICON_MEMBER,
-				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
+				&tv_iters.tag_externvar, _("Enums"), ICON_VAR, NULL);
 			break;
 		case GEANY_FILETYPES_F77:
 		case GEANY_FILETYPES_FORTRAN:
@@ -750,13 +777,15 @@ static void add_top_level_items(GeanyDocument *doc)
 				&tv_iters.tag_namespace, _("Module"), ICON_CLASS,
 				&tv_iters.tag_struct, _("Programs"), ICON_CLASS,
 				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
-				&tv_iters.tag_function, _("Functions / Subroutines"), ICON_METHOD,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
+				&tv_iters.tag_method, _("Subroutines"), ICON_METHOD,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
 				&tv_iters.tag_class, _("Types"), ICON_TYPE,
 				&tv_iters.tag_member, _("Components"), ICON_MEMBER,
 				&tv_iters.tag_macro, _("Blocks"), ICON_MEMBER,
-				&tv_iters.tag_type, _("Enums"), ICON_STRUCT,
-				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
+				&tv_iters.tag_type, _("Enums"), ICON_STRUCT,			// tm_tag_enum_t
+				&tv_iters.tag_enum, _("Enumerators"), ICON_ENUM,		// tm_tag_enumerator_t
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);		// tm_tag_undef_t
 			break;
 		case GEANY_FILETYPES_ASM:
 			tag_list_add_groups(tag_store,
@@ -772,50 +801,60 @@ static void add_top_level_items(GeanyDocument *doc)
 			break;
 		case GEANY_FILETYPES_SQL:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
+				&tv_iters.tag_prototype, _("Prototypes"), ICON_PROTOTYPE,
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,
 				&tv_iters.tag_namespace, _("Procedures"), ICON_NAMESPACE,
 				&tv_iters.tag_struct, _("Indexes"), ICON_STRUCT,
 				&tv_iters.tag_class, _("Tables"), ICON_CLASS,
 				&tv_iters.tag_macro, _("Triggers"), ICON_MACRO,
+				&tv_iters.tag_field, _("Record fields"), ICON_FIELD,
 				&tv_iters.tag_member, _("Views"), ICON_VIEW,
 				&tv_iters.tag_other, _("Other"), ICON_OTHER,
 				&tv_iters.tag_variable, _("Variables"), ICON_VAR, NULL);
 			break;
 		case GEANY_FILETYPES_ELIXIR:
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_variable, _("Attributes"), ICON_VAR,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&tv_iters.tag_type, _("Type constructors"), ICON_TYPE,
-				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,
-				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,
-				&tv_iters.tag_interface, _("Protocols"), ICON_INTERFACE,
-				&tv_iters.tag_struct, _("Implementations"), ICON_STRUCT, NULL);
+				&tv_iters.tag_variable, _("Attributes"), ICON_VAR,				// tm_tag_variable_t
+				&tv_iters.tag_prototype, _("Delegates"), ICON_PROTOTYPE,		// tm_tag_prototype_t
+				&tv_iters.tag_function, _("Protocol functions"), ICON_FUNCTION,	// tm_tag_function_t
+				&tv_iters.tag_method, _("Functions"), ICON_METHOD,				// tm_tag_method_t
+				&tv_iters.tag_type, _("Type constructors"), ICON_TYPE,			// tm_tag_typedef_t
+				&tv_iters.tag_namespace, _("Modules"), ICON_NAMESPACE,			// tm_tag_namespace_t
+				&tv_iters.tag_macro, _("Macros"), ICON_MACRO,					// tm_tag_macro_t
+				&tv_iters.tag_interface, _("Protocols"), ICON_INTERFACE,		// tm_tag_interface_t
+				&tv_iters.tag_union, _("Implementations"), ICON_UNION,			// tm_tag_union_t
+				&tv_iters.tag_struct, _("Structures / Exceptions"), ICON_STRUCT,// tm_tag_struct_t
+				&tv_iters.tag_field, _("Other"), ICON_OTHER, NULL);				// tm_tag_other_t
 			break;
 		case GEANY_FILETYPES_D:
 		default:
 			if (ft_id == GEANY_FILETYPES_D)
 				tag_list_add_groups(tag_store,
-					&tv_iters.tag_namespace, _("Module"), ICON_NONE, NULL);
+					&tv_iters.tag_namespace, _("Module"), ICON_NONE, NULL);	// tm_tag_package_t, tm_tag_namespace_t
 			else
-				tag_list_add_groups(tag_store,
+				tag_list_add_groups(tag_store,								// tm_tag_package_t, tm_tag_namespace_t
 					&tv_iters.tag_namespace, _("Namespaces"), ICON_NAMESPACE, NULL);
 			
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_class, _("Classes"), ICON_CLASS,
-				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,
-				&tv_iters.tag_function, _("Functions"), ICON_METHOD,
-				&tv_iters.tag_member, _("Members"), ICON_MEMBER,
-				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,
-				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE, NULL);
+				&tv_iters.tag_class, _("Classes"), ICON_CLASS,				// tm_tag_class_t
+				&tv_iters.tag_interface, _("Interfaces"), ICON_INTERFACE,	// tm_tag_interface_t
+				&tv_iters.tag_prototype, _("Prototypes"), ICON_PROTOTYPE,	// tm_tag_prototype_t
+				&tv_iters.tag_function, _("Functions"), ICON_FUNCTION,		// tm_tag_function_t
+				&tv_iters.tag_method, _("Methods"), ICON_METHOD,			// tm_tag_method_t
+				&tv_iters.tag_member, _("Members"), ICON_MEMBER,			// tm_tag_member_t
+				&tv_iters.tag_struct, _("Structures"), ICON_STRUCT,			// tm_tag_struct_t
+				&tv_iters.tag_union, _("Unions"), ICON_UNION,				// tm_tag_union_t
+				&tv_iters.tag_type, _("Typedefs / Enums"), ICON_TYPE, NULL);// tm_tag_enum_t, tm_tag_typedef_t
 			
 			if (ft_id != GEANY_FILETYPES_D)
 				tag_list_add_groups(tag_store,
-					&tv_iters.tag_macro, _("Macros"), ICON_MACRO, NULL);
+					&tv_iters.tag_macro, _("Macros"), ICON_MACRO, NULL);	// tm_tag_macro_t, tm_tag_macro_with_arg_t
 			
 			tag_list_add_groups(tag_store,
-				&tv_iters.tag_variable, _("Variables"), ICON_VAR,
-				&tv_iters.tag_externvar, _("Extern Variables"), ICON_VAR,
-				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);
+				&tv_iters.tag_variable, _("Variables"), ICON_VAR,			// tm_tag_variable_t
+				&tv_iters.tag_externvar, _("Extern Variables"), ICON_VAR,	// tm_tag_externvar_t
+				&tv_iters.tag_enum, _("Enumerators"), ICON_ENUM,			// tm_tag_enumerator_t
+				&tv_iters.tag_other, _("Other"), ICON_OTHER, NULL);			// tm_tag_undef_t, tm_tag_file_t, tm_tag_other_t
 	}
 }
 
@@ -917,7 +956,11 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 	switch (tag_type)
 	{
 		case tm_tag_prototype_t:
+			iter = &tv_iters.tag_prototype;
+			break;
 		case tm_tag_method_t:
+			iter = &tv_iters.tag_method;
+			break;
 		case tm_tag_function_t:
 			iter = &tv_iters.tag_function;
 			break;
@@ -927,6 +970,9 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 		case tm_tag_externvar_t:
 			iter = &tv_iters.tag_externvar;
 			break;
+		case tm_tag_enumerator_t:
+			iter = &tv_iters.tag_enum;
+			break;
 		case tm_tag_macro_t:
 		case tm_tag_macro_with_arg_t:
 			iter = &tv_iters.tag_macro;
@@ -935,14 +981,18 @@ static GtkTreeIter *get_tag_type_iter(TMTagType tag_type)
 			iter = &tv_iters.tag_class;
 			break;
 		case tm_tag_member_t:
-		case tm_tag_field_t:
 			iter = &tv_iters.tag_member;
+			break;
+		case tm_tag_field_t:
+			iter = &tv_iters.tag_field;
 			break;
 		case tm_tag_enum_t:
 		case tm_tag_typedef_t:
 			iter = &tv_iters.tag_type;
 			break;
 		case tm_tag_union_t:
+			iter = &tv_iters.tag_union;
+			break;
 		case tm_tag_struct_t:
 			iter = &tv_iters.tag_struct;
 			break;
@@ -1749,25 +1799,30 @@ static guint get_tag_class(const TMTag *tag)
 	switch (tag->type)
 	{
 		case tm_tag_prototype_t:
+			return ICON_PROTOTYPE;
 		case tm_tag_method_t:
-		case tm_tag_function_t:
 			return ICON_METHOD;
+		case tm_tag_function_t:
+			return ICON_FUNCTION;
 		case tm_tag_variable_t:
 		case tm_tag_externvar_t:
-		case tm_tag_enumerator_t:
 			return ICON_VAR;
+		case tm_tag_enumerator_t:
+			return ICON_ENUM;
 		case tm_tag_macro_t:
 		case tm_tag_macro_with_arg_t:
 			return ICON_MACRO;
 		case tm_tag_class_t:
 			return ICON_CLASS;
 		case tm_tag_member_t:
-		case tm_tag_field_t:
 			return ICON_MEMBER;
+		case tm_tag_field_t:
+			return ICON_FIELD;
 		case tm_tag_enum_t:
 		case tm_tag_typedef_t:
 			return ICON_TYPE;
 		case tm_tag_union_t:
+			return ICON_UNION;
 		case tm_tag_struct_t:
 			return ICON_STRUCT;
 		case tm_tag_package_t:
@@ -2416,7 +2471,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	
 	if (lang == TM_PARSER_ELIXIR)
 	{
-		tag_types &= ~tm_tag_other_t; // exclude aliases
+		tag_types &= ~tm_parser_get_exclude_type(lang);
 		
 		if (g_strcmp0(name, "__MODULE__") == 0)
 		{

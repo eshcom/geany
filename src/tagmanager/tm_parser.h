@@ -123,6 +123,7 @@ gchar tm_parser_get_tag_kind(TMTagType type, TMParserType lang);
 TMTagType tm_parser_get_subparser_type(TMParserType lang, TMParserType sublang,
 									   TMTagType type);
 
+TMTagType tm_parser_get_exclude_type(TMParserType lang);
 TMTagType tm_parser_get_filter_type(TMParserType lang, TMTagType type);
 
 const gchar *tm_parser_context_separator(TMParserType lang);
