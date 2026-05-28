@@ -682,7 +682,7 @@ static const unsigned char *parseAliasTag(const unsigned char *cp)
 	return cp;
 }
 
-static const unsigned char *parseUseTag(const unsigned char *cp)
+static const unsigned char *parseSpecialTag(const unsigned char *cp, const char *name)
 {
 	vString *const identifier = vStringNew();
 	cp = parseIdentifier(cp, identifier);
@@ -691,7 +691,7 @@ static const unsigned char *parseUseTag(const unsigned char *cp)
 	{
 		Scope currScope = getCurrentScope();
 		vString *const vFullName = makeTagFullname(vStringValue(identifier));
-		makeTag("<use>", K_SPECIAL, true, currScope, vStringValue(vFullName), "<use>");
+		makeTag(name, K_SPECIAL, true, currScope, vStringValue(vFullName), name);
 		vStringDelete(vFullName);
 		FREE_SCOPE(currScope);
 	}
@@ -772,7 +772,9 @@ static const unsigned char *parseKeyword(const unsigned char *cp, int indent)
 	else if (strcmp(kwval, "alias") == 0)
 		cp = parseAliasTag(cp);
 	else if (strcmp(kwval, "use") == 0)
-		cp = parseUseTag(cp);
+		cp = parseSpecialTag(cp, "<use>");
+	else if (strcmp(kwval, "import") == 0)
+		cp = parseSpecialTag(cp, "<import>");
 	else if (*kwval == '@' && kwval[1] && *cp &&
 			 (isalnum(*cp) || strchr("\"{[(%:~_", *cp)))
 		cp = parseSimpleTag(cp, K_ATTRIBUTE, true, kwval);
