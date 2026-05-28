@@ -1559,8 +1559,10 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match('=', '~') || sc.Match('.', '.')
-											  || sc.Match(':', ':')) {
+				} else if (sc.Match('=', '~') || sc.Match(':', ':')) {
+					sc.Forward();
+				} else if (sc.Match('.', '.')) { // range, example: 1..10
+					is_dot_oper = false;
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
