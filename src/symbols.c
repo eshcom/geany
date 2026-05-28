@@ -2085,48 +2085,49 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 static GPtrArray *filter_tags_by_scope(const GPtrArray *tags, const gchar *scope,
 									   TMParserType lang)
 {
-	const gchar *context_sep = tm_parser_context_separator(lang);
-	GPtrArray *filtered_tags = g_ptr_array_new();
-	
+	GPtrArray *filtered_tags = NULL;
 	TMTag *tmtag;
 	guint i;
-	foreach_ptr_array(tmtag, i, tags)
+	
+	if (!utils_str_equal(scope, "*"))
 	{
-		if (EMPTY(tmtag->scope)) continue;
+		const gchar *context_sep = tm_parser_context_separator(lang);
+		filtered_tags = g_ptr_array_new();
 		
-		if (lang == TM_PARSER_ELIXIR)
+		foreach_ptr_array(tmtag, i, tags)
 		{
-			if (utils_str_equal(tmtag->scope, scope))
-				g_ptr_array_add(filtered_tags, tmtag);
-		}
-		else
-		{	// example: goto tag "setDigits" in "CharacterSet::setDigits",
-			// found tag "setDigits" with scope: Scintilla::CharacterSet::setBase
-			gchar **item, **items = g_strsplit(tmtag->scope, context_sep, 0);
-			foreach_strv(item, items)
+			if (EMPTY(tmtag->scope)) continue;
+			
+			if (lang == TM_PARSER_ELIXIR)
 			{
-				if (**item && utils_str_equal(*item, scope))
-				{
+				if (utils_str_equal(tmtag->scope, scope))
 					g_ptr_array_add(filtered_tags, tmtag);
-					break;
-				}
 			}
-			g_strfreev(items);
+			else
+			{	// example: goto tag "setDigits" in "CharacterSet::setDigits",
+				// found tag "setDigits" with scope: Scintilla::CharacterSet::setBase
+				gchar **item, **items = g_strsplit(tmtag->scope, context_sep, 0);
+				foreach_strv(item, items)
+				{
+					if (**item && utils_str_equal(*item, scope))
+					{
+						g_ptr_array_add(filtered_tags, tmtag);
+						break;
+					}
+				}
+				g_strfreev(items);
+			}
 		}
 	}
-	return filtered_tags;
-}
-
-static GPtrArray *filter_tags_by_filled_scope(const GPtrArray *tags)
-{
-	GPtrArray *filtered_tags = g_ptr_array_new();
-	
-	TMTag *tmtag;
-	guint i;
-	foreach_ptr_array(tmtag, i, tags)
+	else if (tm_parser_strict_scope(lang)) // also scope = "*"
 	{
-		if (!EMPTY(tmtag->scope))
-			g_ptr_array_add(filtered_tags, tmtag);
+		filtered_tags = g_ptr_array_new();
+		
+		foreach_ptr_array(tmtag, i, tags)
+		{
+			if (!EMPTY(tmtag->scope))
+				g_ptr_array_add(filtered_tags, tmtag);
+		}
 	}
 	return filtered_tags;
 }
@@ -2290,19 +2291,78 @@ static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
 }
 
 
-#define FILTER_TAGS_BY_SCOPE													\
-	if (g_strcmp0(scope, "*") != 0)												\
-		new_tags = filter_tags_by_scope(filtered_tags, scope, lang);			\
-	else if (tm_parser_strict_scope(lang))										\
-		/* also scope = "*" */													\
-		new_tags = filter_tags_by_filled_scope(filtered_tags);					\
-	else																		\
-		new_tags = NULL;
+static TMTag *find_elixir_module_tag(TMSourceFile *curr_file, guint curr_line,
+									 const gchar *module)
+{
+	TMTag *tag, *found_tag = NULL;
+	
+	if (curr_file && curr_file->tags_array)
+	{
+		for (guint i = 0; i < curr_file->tags_array->len; ++i)
+		{
+			tag = TM_TAG(curr_file->tags_array->pdata[i]);
+			if (tag->line <= curr_line && tag->type == tm_tag_namespace_t
+				&& (!found_tag || found_tag->line < tag->line))
+				if ((module && utils_str_equal(tag->name, module)) ||
+					(!module && curr_line <= tag->endLine)) // __MODULE__
+					found_tag = tag;
+		}
+	}
+	return found_tag;
+}
+
+static void set_elixir_module_name(GString *module_name, TMTag *module_tag)
+{
+	if (!EMPTY(module_tag->scope))
+	{
+		g_string_append(module_name, module_tag->scope);
+		g_string_append_c(module_name, '.');
+	}
+	g_string_append(module_name, module_tag->name);
+}
+
+static gchar *find_elixir_module_name(TMSourceFile *curr_file, guint curr_line)
+{
+	TMTag *module_tag = find_elixir_module_tag(curr_file, curr_line, NULL);
+	if (module_tag)
+	{
+		GString *gname = g_string_new(NULL);
+		set_elixir_module_name(gname, module_tag);
+		return g_string_free(gname, FALSE);
+	}
+	return NULL;
+}
+
+static TMTag *find_elixir_alias_tag(TMSourceFile *curr_file, guint curr_line,
+									const gchar *alias)
+{
+	TMTag *tag, *found_tag = NULL;
+	
+	if (curr_file && curr_file->tags_array)
+	{
+		gchar *module_name = find_elixir_module_name(curr_file, curr_line);
+		size_t module_name_len = module_name ? strlen(module_name) : 0;
+		
+		for (guint i = 0; i < curr_file->tags_array->len; ++i)
+		{
+			tag = TM_TAG(curr_file->tags_array->pdata[i]);
+			if (tag->line <= curr_line && tag->type == tm_tag_other_t
+				&& (!found_tag || found_tag->line < tag->line))
+				if (utils_str_equal(tag->name, alias))
+				{
+					size_t alias_scope_len = tag->scope ? strlen(tag->scope) : 0;
+					if (alias_scope_len <= module_name_len)
+						found_tag = tag;
+				}
+		}
+	}
+	return found_tag;
+}
 
 
 static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
-							  TMSourceFile *current_file, const gchar *scope,
-							  TMTagType type, TMParserType lang,
+							  TMSourceFile *current_file, guint current_line,
+							  const gchar *scope, TMTagType type, TMParserType lang,
 							  gboolean definition)
 {
 	GPtrArray *filtered_tags = g_ptr_array_new();
@@ -2344,19 +2404,19 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 	
 	if (filtered_tags->len > 0 && definition && !EMPTY(scope))
 	{
-		FILTER_TAGS_BY_SCOPE
-		
+		new_tags = filter_tags_by_scope(filtered_tags, scope, lang);
 		if (new_tags)
 		{
 			if (lang == TM_PARSER_ELIXIR)
 			{
 				if (new_tags->len == 1)
 				{
-					tmtag = new_tags->pdata[0];
+					tmtag = TM_TAG(new_tags->pdata[0]);
 					if (!EMPTY(tmtag->inheritance)) // is a delegate
 					{
 						scope = tmtag->inheritance;
-						FILTER_TAGS_BY_SCOPE
+						g_ptr_array_free(new_tags, TRUE);
+						new_tags = filter_tags_by_scope(filtered_tags, scope, lang);
 					}
 				}
 				else if (new_tags->len == 0)
@@ -2365,8 +2425,20 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 														 tm_tag_other_t, lang);
 					if (use_tags->len > 0)
 					{
-						scope = TM_TAG(use_tags->pdata[0])->inheritance;
-						FILTER_TAGS_BY_SCOPE
+						foreach_ptr_array(tmtag, i, filtered_tags)
+						{
+							if (EMPTY(tmtag->scope)) continue;
+							
+							for (guint j = 0; j < use_tags->len; ++j)
+							{
+								if (utils_str_equal(tmtag->scope,
+													TM_TAG(use_tags->pdata[j])->inheritance))
+								{
+									g_ptr_array_add(new_tags, tmtag);
+									break;
+								}
+							}
+						}
 					}
 					g_ptr_array_free(use_tags, TRUE);
 				}
@@ -2379,6 +2451,65 @@ static GPtrArray *filter_tags(GPtrArray *tags, TMTag *current_tag,
 	{
 		new_tags = filter_tags_by_type(filtered_tags, type);
 		filter_tags_check(&filtered_tags, &new_tags, TRUE);
+	}
+	
+	if (filtered_tags->len > 1 && definition && EMPTY(scope) &&
+		current_file && current_file->tags_array && lang == TM_PARSER_ELIXIR)
+	{
+		gchar *module_name = find_elixir_module_name(current_file, current_line);
+		size_t module_name_len = module_name ? strlen(module_name) : 0;
+		
+		GPtrArray *spec_tags = g_ptr_array_new();
+		foreach_ptr_array(tmtag, i, current_file->tags_array)
+		{
+			if (tmtag->type == tm_tag_other_t)
+			{
+				if (utils_str_equal(tmtag->name, "<use>")
+					&& utils_str_equal(tmtag->scope, module_name))
+					g_ptr_array_add(spec_tags, tmtag);
+				else if (utils_str_equal(tmtag->name, "<import>")
+						 && tmtag->line <= current_line)
+				{
+					size_t import_scope_len = tmtag->scope ? strlen(tmtag->scope) : 0;
+					if (import_scope_len <= module_name_len)
+					{
+						g_ptr_array_add(spec_tags, tmtag);
+						
+						GPtrArray *use_tags = wrap_find_tags("<use>", tmtag->inheritance,
+															 tm_tag_other_t, lang);
+						for (guint j = 0; j < use_tags->len; ++j)
+							g_ptr_array_add(spec_tags, use_tags->pdata[j]);
+						
+						g_ptr_array_free(use_tags, TRUE);
+					}
+				}
+			}
+		}
+		
+		new_tags = g_ptr_array_new();
+		
+		foreach_ptr_array(tmtag, i, filtered_tags)
+		{
+			if (utils_str_equal(tmtag->scope, module_name))
+				g_ptr_array_add(new_tags, tmtag);
+			else
+			{
+				for (guint j = 0; j < spec_tags->len; ++j)
+				{
+					TMTag *spec_tag = TM_TAG(spec_tags->pdata[j]);
+					if (utils_str_equal(tmtag->scope, spec_tag->inheritance))
+					{
+						g_ptr_array_add(new_tags, tmtag);
+						break;
+					}
+				}
+			}
+		}
+		if (new_tags->len > 1) scope = "*"; // not filter by file
+		
+		filter_tags_check(&filtered_tags, &new_tags, FALSE);
+		g_ptr_array_free(spec_tags, TRUE);
+		g_free(module_name);
 	}
 	
 	if (filtered_tags->len > 1 && current_file &&
@@ -2417,46 +2548,17 @@ static GPtrArray *wrap_filter_tags(TMSourceFile *current_file, guint current_lin
 		definition = current_tag->type & tm_forward_types;
 	
 	GPtrArray *filtered_tags = filter_tags(tags, current_tag, current_file,
-										   scope, type, lang, definition);
+										   current_line, scope, type, lang, definition);
 	if (filtered_tags->len == 0)
 	{	/* if we didn't find anything, try again with the opposite type */
 		g_ptr_array_free(filtered_tags, TRUE);
 		filtered_tags = filter_tags(tags, current_tag, current_file,
-									scope, type, lang, !definition);
+									current_line, scope, type, lang, !definition);
 	}
 	g_ptr_array_free(tags, TRUE);
 	return filtered_tags;
 }
 
-
-#define FIND_MODULE_TAG(module)												\
-	found_tag = NULL;														\
-	if (curr_doc->tm_file && curr_doc->tm_file->tags_array)					\
-	{																		\
-		for (i = 0; i < curr_doc->tm_file->tags_array->len; ++i)			\
-		{																	\
-			tag = TM_TAG(curr_doc->tm_file->tags_array->pdata[i]);			\
-			if (tag->line <= curr_line && tag->type == tm_tag_namespace_t	\
-				&& (!found_tag || found_tag->line < tag->line))				\
-				if ((module && g_strcmp0(tag->name, module) == 0) ||		\
-					(!module && curr_line <= tag->endLine)) /* __MODULE__ */\
-					found_tag = tag;										\
-		}																	\
-	}
-
-#define FIND_ALIAS_TAG(alias)												\
-	found_tag = NULL;														\
-	if (curr_doc->tm_file && curr_doc->tm_file->tags_array)					\
-	{																		\
-		for (i = 0; i < curr_doc->tm_file->tags_array->len; ++i)			\
-		{																	\
-			tag = TM_TAG(curr_doc->tm_file->tags_array->pdata[i]);			\
-			if (tag->line <= curr_line && tag->type == tm_tag_other_t		\
-				&& (!found_tag || found_tag->line < tag->line))				\
-				if (g_strcmp0(tag->name, alias) == 0)						\
-					found_tag = tag;										\
-		}																	\
-	}
 
 static gboolean goto_tag(const gchar *name, const gchar *scope,
 						 TMTagType type, gboolean definition)
@@ -2475,8 +2577,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		
 		if (g_strcmp0(name, "__MODULE__") == 0)
 		{
-			FIND_MODULE_TAG(NULL);
-			
+			found_tag = find_elixir_module_tag(curr_doc->tm_file, curr_line, NULL);
 			if (found_tag)
 			{
 				scope = found_tag->scope;
@@ -2489,8 +2590,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 		}
 		else if (EMPTY(scope))
 		{
-			FIND_ALIAS_TAG(name);
-			
+			found_tag = find_elixir_alias_tag(curr_doc->tm_file, curr_line, name);
 			if (found_tag)
 			{
 				const gchar *module = found_tag->inheritance;
@@ -2514,24 +2614,17 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 													  : g_strdup(scope);
 			if (g_strcmp0(alias, "__MODULE__") == 0)
 			{
-				FIND_MODULE_TAG(NULL);
-				
+				found_tag = find_elixir_module_tag(curr_doc->tm_file, curr_line, NULL);
 				if (found_tag)
 				{
-					if (!EMPTY(found_tag->scope))
-					{
-						g_string_append(gscope, found_tag->scope);
-						g_string_append_c(gscope, '.');
-					}
-					g_string_append(gscope, found_tag->name);
+					set_elixir_module_name(gscope, found_tag);
 					if (search && search[1])
 						g_string_append(gscope, search);
 				}
 			}
 			else
 			{
-				FIND_ALIAS_TAG(alias);
-				
+				found_tag = find_elixir_alias_tag(curr_doc->tm_file, curr_line, alias);
 				if (found_tag)
 				{
 					g_string_append(gscope, found_tag->inheritance);
@@ -2549,17 +2642,10 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 				else
 					search = scope;
 				
-				FIND_MODULE_TAG(search);
-				
+				found_tag = find_elixir_module_tag(curr_doc->tm_file, curr_line, search);
 				if (found_tag)
 				{	// current doc contains the required scope (module definition)
-					if (!EMPTY(found_tag->scope))
-					{
-						g_string_append(gscope, found_tag->scope);
-						g_string_append_c(gscope, '.');
-					}
-					g_string_append(gscope, found_tag->name);
-					
+					set_elixir_module_name(gscope, found_tag);
 					if (!g_str_has_suffix(gscope->str, scope))
 						g_string_truncate(gscope, 0);
 				}
