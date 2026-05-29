@@ -222,10 +222,7 @@ gchar **utils_strv_shorten_file_list(gchar **file_names, gssize file_names_len);
 
 gboolean utils_parse_color(const gchar *spec, GdkColor *color);
 
-// esh: to free extensions_hash
-void extensions_free(void);
-// esh: for tm_source_file_new_prj
-TMParserType utils_detect_lang_from_extension(const gchar *file_name);
+gchar *utils_collate_key_for_filename(const gchar *str, gssize len);
 
 enum
 {
@@ -375,6 +372,11 @@ gchar *utils_get_user_config_dir(void);
 const gchar *utils_resource_dir(GeanyResourceDirType type);
 
 void utils_start_new_geany_instance(const gchar *doc_path);
+
+// esh: to free extensions_hash
+void extensions_free(void);
+// esh: for tm_source_file_new_prj
+TMParserType utils_detect_lang_from_extension(const gchar *file_name);
 
 #endif /* GEANY_PRIVATE */
 

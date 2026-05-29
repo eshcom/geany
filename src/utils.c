@@ -2566,3 +2566,135 @@ void utils_add_short_home_dir(GString *str, const gchar *dirname)
 	else
 		g_string_append(str, dirname);
 }
+
+#define COLLATION_SENTINEL "\1\1\1"
+
+// esh: based on glib/g_utf8_collate_key_for_filename func
+//		g_utf8_collate_key_for_filename sorts like this:
+//			diff.py
+//			__init__.py
+//			log.py
+//		utils_collate_key_for_filename sorts like this:
+//			__init__.py
+//			diff.py
+//			log.py
+GEANY_API_SYMBOL
+gchar *utils_collate_key_for_filename(const gchar *str, gssize len)
+{
+	const gchar *p, *prev, *end;
+	gchar *collate_key;
+	gint digits;
+	gint leading_zeros;
+	
+	if (len < 0) len = strlen(str);
+	
+	GString *result = g_string_sized_new(len * 2);
+	GString *append = g_string_sized_new(0);
+	
+	end = str + len;
+	
+	/* No need to use utf8 functions, since we're only looking for ascii chars */
+	for (prev = p = str; p < end; p++)
+	{
+		switch (*p)
+		{
+			case '.':
+			case '_':
+				if (prev != p) 
+				{
+					collate_key = g_utf8_collate_key(prev, p - prev);
+					g_string_append(result, collate_key);
+					g_free(collate_key);
+				}
+				g_string_append(result, COLLATION_SENTINEL "\1");
+				
+				/* skip the dot */
+				prev = p + 1;
+				break;
+				
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				if (prev != p) 
+				{
+					collate_key = g_utf8_collate_key(prev, p - prev);
+					g_string_append(result, collate_key);
+					g_free(collate_key);
+				}
+				g_string_append(result, COLLATION_SENTINEL "\2");
+				
+				prev = p;
+				
+				/* write d-1 colons */
+				if (*p == '0')
+				{
+					leading_zeros = 1;
+					digits = 0;
+				}
+				else
+				{
+					leading_zeros = 0;
+					digits = 1;
+				}
+				
+				while (++p < end)
+				{
+					if (*p == '0' && !digits)
+						++leading_zeros;
+					else if (g_ascii_isdigit(*p))
+						++digits;
+					else
+					{	/* count an all-zero sequence as one digit plus leading zeros */
+						if (!digits)
+						{
+							++digits;
+							--leading_zeros;
+						}        
+						break;
+					}
+				}
+				
+				while (digits > 1)
+				{
+					g_string_append_c(result, ':');
+					--digits;
+				}
+				
+				if (leading_zeros > 0)
+				{
+					g_string_append_c(append, (char)leading_zeros);
+					prev += leading_zeros;
+				}
+				
+				/* write the number itself */
+				g_string_append_len(result, prev, p - prev);
+				
+				prev = p;
+				--p; /* go one step back to avoid disturbing outer loop */
+				break;
+				
+			default:
+				/* other characters just accumulate */
+				break;
+		}
+	}
+	
+	if (prev != p) 
+	{
+		collate_key = g_utf8_collate_key(prev, p - prev);
+		g_string_append(result, collate_key);
+		g_free(collate_key);
+	}
+	
+	g_string_append(result, append->str);
+	g_string_free(append, TRUE);
+	
+	return g_string_free(result, FALSE);
+}
