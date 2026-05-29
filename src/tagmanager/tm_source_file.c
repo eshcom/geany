@@ -682,7 +682,7 @@ static void update_python_arglist(const TMTag *tag,
 	/* going in reverse order because the tag was added recently */
 	for (guint i = current_source_file->tags_array->len; i > 0; i--)
 	{
-		TMTag *prev_tag = (TMTag *)current_source_file->tags_array->pdata[i - 1];
+		TMTag *prev_tag = TM_TAG(current_source_file->tags_array->pdata[i - 1]);
 		if (g_strcmp0(prev_tag->name, parent_tag_name) == 0)
 		{
 			g_free(prev_tag->arglist);

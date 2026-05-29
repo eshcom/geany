@@ -627,7 +627,7 @@ static GeanyFiletype *find_shebang(const gchar *utf8_filename,
 			gchar *interpreter = g_path_get_basename(path);
 			g_free(path);
 			
-			if (g_strcmp0(interpreter, "env") == 0)
+			if (utils_str_equal(interpreter, "env"))
 			{	/* skip "env" and read the following interpreter */
 				start = end;
 				while (*start && isspace(*start)) start++;

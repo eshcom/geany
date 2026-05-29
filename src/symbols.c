@@ -2053,7 +2053,7 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 	/* first check if we have a tag in the current file */
 	foreach_ptr_array(tag, i, tags)
 	{
-		if (g_strcmp0(doc->real_path, tag->file->file_name) == 0)
+		if (utils_str_equal(doc->real_path, tag->file->file_name))
 			return tag;
 	}
 	
@@ -2063,7 +2063,7 @@ static TMTag *find_best_goto_tag(GeanyDocument *doc, GPtrArray *tags)
 		guint j;
 		foreach_document(j)
 		{
-			if (g_strcmp0(documents[j]->real_path, tag->file->file_name) == 0)
+			if (utils_str_equal(documents[j]->real_path, tag->file->file_name))
 				return tag;
 		}
 	}
@@ -2241,7 +2241,7 @@ static gboolean scopes_and_types_equal(const gchar *pscope, TMTagType ptype,
 		&& g_strv_length(sfields) == 2)	// "anon_" exists
 		stype = tm_tag_member_t;
 	
-	gboolean scopes_equal = (g_strcmp0(pfields[0], sfields[0]) == 0);
+	gboolean scopes_equal = utils_str_equal(pfields[0], sfields[0]);
 	g_strfreev(pfields);
 	g_strfreev(sfields);
 	return scopes_equal && ptype == stype;
@@ -2270,15 +2270,13 @@ static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
 	{
 		gboolean equal = FALSE;
 		
-		for (guint j = 0; j < tags_len; j++)
+		for (guint j = 0; j < tags_len; ++j)
 		{
 			TMTag *tag = g_ptr_array_index(tags, j);
 			
-			if (scopes_and_types_equal(ptag->scope, ptag->type,
-										tag->scope, tag->type)
-				&& g_strcmp0(ptag->name, tag->name) == 0
-				&& g_strcmp0(ptag->file->file_name,
-							 tag->file->file_name) == 0)
+			if (scopes_and_types_equal(ptag->scope, ptag->type, tag->scope, tag->type)
+				&& utils_str_equal(ptag->name, tag->name)
+				&& utils_str_equal(ptag->file->file_name, tag->file->file_name))
 			{
 				equal = TRUE;
 				break;
@@ -2575,7 +2573,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	{
 		tag_types &= ~tm_parser_get_exclude_type(lang);
 		
-		if (g_strcmp0(name, "__MODULE__") == 0)
+		if (utils_str_equal(name, "__MODULE__"))
 		{
 			found_tag = find_elixir_module_tag(curr_doc->tm_file, curr_line, NULL);
 			if (found_tag)
@@ -2612,7 +2610,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 			const gchar *search = strchr(scope, '.');
 			gchar *alias = (search && search > scope) ? g_strndup(scope, search - scope)
 													  : g_strdup(scope);
-			if (g_strcmp0(alias, "__MODULE__") == 0)
+			if (utils_str_equal(alias, "__MODULE__"))
 			{
 				found_tag = find_elixir_module_tag(curr_doc->tm_file, curr_line, NULL);
 				if (found_tag)
@@ -2666,7 +2664,7 @@ static gboolean goto_tag(const gchar *name, const gchar *scope,
 	
 	if (tags->len == 1)
 	{
-		tag = tags->pdata[0];
+		tag = TM_TAG(tags->pdata[0]);
 		GeanyDocument *new_doc = document_find_by_real_path(tag->file->file_name);
 		if (!new_doc) // not found in opened document, should open
 			new_doc = document_open_file(tag->file->file_name, FALSE, NULL, NULL);

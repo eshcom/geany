@@ -624,6 +624,8 @@ gchar *utils_str_middle_truncate(const gchar *string, guint truncate_length)
  *  @c NULL-safe string comparison. Returns @c TRUE if both @a a and @a b are @c NULL
  *  or if @a a and @a b refer to valid strings which are equal.
  *
+ *  esh: is an analog of the g_strcmp0() function, but returns a boolean value
+ *
  *  @param a @nullable Pointer to first string or @c NULL.
  *  @param b @nullable Pointer to second string or @c NULL.
  *

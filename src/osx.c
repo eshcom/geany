@@ -41,9 +41,9 @@ static gboolean open_project_idle(gchar *locale_path)
 {
 	gchar *utf8_path = utils_get_utf8_from_locale(locale_path);
 	
-	gboolean save_default_session = app->project == NULL;
-	if (app->project == NULL ||
-		(g_strcmp0(utf8_path, app->project->file_name) != 0 && project_ask_close()))
+	gboolean save_default_session = (app->project == NULL);
+	if (!app->project || (!utils_str_equal(utf8_path, app->project->file_name)
+							&& project_ask_close()))
 		project_load_file_with_session(locale_path, save_default_session);
 	
 	g_free(utf8_path);
