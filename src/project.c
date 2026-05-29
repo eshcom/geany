@@ -308,7 +308,7 @@ void project_open(void)
 {
 	const gchar *dir = local_prefs.project_file_path;
 	
-	gboolean save_default_session = app->project == NULL;
+	gboolean save_default_session = (app->project == NULL);
 	if (!project_ask_close()) return;
 	
 #ifdef G_OS_WIN32

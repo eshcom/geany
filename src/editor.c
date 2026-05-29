@@ -625,7 +625,7 @@ static void show_tags_list(GeanyEditor *editor, const GPtrArray *tags,
 		
 		for (guint j = 0; j < tags->len; ++j)
 		{
-			TMTag *tag = tags->pdata[j];
+			TMTag *tag = TM_TAG(tags->pdata[j]);
 			
 			if (j > 0)
 				g_string_append_c(words, '\n');

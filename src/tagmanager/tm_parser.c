@@ -928,7 +928,7 @@ gboolean tm_parser_filter_by_file(TMParserType lang, const gchar *scope)
 	switch (lang)
 	{
 		case TM_PARSER_ELIXIR:
-			return !(scope && *scope); // filter by file only if scope is not specified
+			return EMPTY(scope); // filter by file only if scope is not specified
 		default:
 			return (g_strcmp0(scope, "*") != 0);
 	}

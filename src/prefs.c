@@ -360,7 +360,7 @@ void prefs_kb_search_name(const gchar *search)
 		gchar *name;
 
 		gtk_tree_model_get(model, &iter, KB_TREE_ACTION, &name, -1);
-		if (g_strcmp0(name, search) == 0)
+		if (utils_str_equal(name, search))
 		{
 			GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
 			gtk_tree_view_scroll_to_cell(kbdata->tree, path, NULL, TRUE, .0f, .0f);

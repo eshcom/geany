@@ -1170,7 +1170,7 @@ static void recent_project_activate_cb(GtkMenuItem *menuitem,
 	gchar *utf8_filename = ui_menu_item_get_text(menuitem);
 	gchar *locale_filename = utils_get_locale_from_utf8(utf8_filename);
 	
-	gboolean save_default_session = app->project == NULL;
+	gboolean save_default_session = (app->project == NULL);
 	if (project_ask_close() && project_load_file_with_session(locale_filename,
 															  save_default_session))
 		recent_file_loaded(utf8_filename, recent_get_recent_projects());
@@ -1278,7 +1278,7 @@ void ui_update_recent_project_menu(void)
 		if (app->project)
 		{
 			const gchar *filename = gtk_menu_item_get_label(item->data);
-			sensitive = g_strcmp0(app->project->file_name, filename) != 0;
+			sensitive = !utils_str_equal(app->project->file_name, filename);
 		}
 		gtk_widget_set_sensitive(item->data, sensitive);
 	}
@@ -3615,7 +3615,7 @@ static void on_textbuffer_markset(GtkTextBuffer *textbuffer, GtkTextIter *iter,
 	GtkTextIter cur_start, cur_end;
 	gboolean is_selected = gtk_text_buffer_get_selection_bounds(textbuffer,
 																&cur_start, &cur_end);
-	if (g_strcmp0(mark_name, "insert") == 0)
+	if (utils_str_equal(mark_name, "insert"))
 	{
 		if (!is_selected)
 		{
@@ -3627,7 +3627,7 @@ static void on_textbuffer_markset(GtkTextBuffer *textbuffer, GtkTextIter *iter,
 							  gtk_text_iter_copy(iter));
 		}
 	}
-	else if (g_strcmp0(mark_name, "selection_bound") == 0) // selected by mouse
+	else if (utils_str_equal(mark_name, "selection_bound")) // selected by mouse
 	{
 		// if no selection -> return
 		if (!is_selected)
