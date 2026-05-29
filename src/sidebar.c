@@ -493,7 +493,15 @@ void sidebar_openfiles_add(GeanyDocument *doc)
 	
 	const GdkColor *color = document_get_status_color(doc);
 	gchar *basename = g_path_get_basename(DOC_FILENAME(doc));
-	gchar *sortkey = g_utf8_collate_key_for_filename(basename, -1);
+	// esh: g_utf8_collate_key_for_filename sorts like this:
+	//			diff.py
+	//			__init__.py
+	//			log.py
+	//		utils_collate_key_for_filename sorts like this:
+	//			__init__.py
+	//			diff.py
+	//			log.py
+	gchar *sortkey = utils_collate_key_for_filename(basename, -1);
 	
 	gtk_tree_store_set(store_openfiles, iter,
 		DOCUMENTS_ICON, (doc->file_type && doc->file_type->icon) ?
