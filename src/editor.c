@@ -282,8 +282,7 @@ void editor_snippets_init(void)
 	/* check for old autocomplete.conf files (backwards compatibility) */
 	if (!g_file_test(userconfigfile, G_FILE_TEST_IS_REGULAR))
 		SETPTR(userconfigfile, g_build_filename(app->configdir,
-			   "autocomplete.conf", NULL));
-	
+												"autocomplete.conf", NULL));
 	/* load the actual config files */
 	g_key_file_load_from_file(sysconfig, sysconfigfile, G_KEY_FILE_NONE, NULL);
 	g_key_file_load_from_file(userconfig, userconfigfile, G_KEY_FILE_NONE, NULL);

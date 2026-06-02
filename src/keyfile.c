@@ -1376,7 +1376,6 @@ void configuration_reload_default_session(void)
 	g_free(configfile);
 	
 	configuration_load_session_files(config, FALSE);
-	
 	g_key_file_free(config);
 }
 

@@ -174,8 +174,7 @@ static void get_keyfile_keywords(GKeyFile *config, GKeyFile *configh,
 static void get_keyfile_wordchars(GKeyFile *config, GKeyFile *configh,
 								  gchar **wordchars, const gchar *default_wordchars)
 {
-	*wordchars = utils_get_setting(string, configh, config,
-								   "settings", "wordchars",
+	*wordchars = utils_get_setting(string, configh, config, "settings", "wordchars",
 								   default_wordchars);
 }
 
@@ -203,10 +202,8 @@ static gboolean read_named_style(const gchar *named_style, GeanyLexerStyle *styl
 	if (cs)
 	{
 		*style = *cs;
-		if (bold)
-			style->bold = !style->bold;
-		if (italic)
-			style->italic = !style->italic;
+		if (bold) style->bold = !style->bold;
+		if (italic) style->italic = !style->italic;
 	}
 	else
 		*style = gsd_default;
@@ -223,12 +220,10 @@ static void parse_color(GKeyFile *kf, const gchar *str, gint *clr)
 {
 	g_return_if_fail(clr != NULL);
 	
-	if (G_UNLIKELY(EMPTY(str)))
-		return;
+	if (G_UNLIKELY(EMPTY(str))) return;
 	
 	gchar *named_color = g_key_file_get_string(kf, "named_colors", str, NULL);
-	if (named_color)
-		str = named_color;
+	if (named_color) str = named_color;
 	
 	gint c = utils_parse_color_to_bgr(str);
 	if (c == -1)
@@ -248,9 +243,7 @@ static void parse_keyfile_style(GKeyFile *kf, gchar **list,
 	g_return_if_fail(style);
 	
 	*style = *default_style;
-	
-	if (!list)
-		return;
+	if (!list) return;
 	
 	gsize len = g_strv_length(list);
 	if (len == 0)
@@ -305,12 +298,10 @@ static void get_keyfile_style(GKeyFile *config, GKeyFile *configh,
 	g_return_if_fail(key_name);
 	g_return_if_fail(style);
 	
-	list = g_key_file_get_string_list(configh, "styling",
-									  key_name, &len, NULL);
+	list = g_key_file_get_string_list(configh, "styling", key_name, &len, NULL);
 	if (list == NULL)
 	{
-		list = g_key_file_get_string_list(config, "styling",
-										  key_name, &len, NULL);
+		list = g_key_file_get_string_list(config, "styling", key_name, &len, NULL);
 		parse_keyfile_style(config, list, &gsd_default, style);
 	}
 	else
@@ -325,8 +316,7 @@ static void convert_int(const gchar *int_str, gint *val)
 	gchar *end;
 	gint v = strtol(int_str, &end, 10);
 	
-	if (int_str != end)
-		*val = v;
+	if (int_str != end) *val = v;
 }
 
 
@@ -351,8 +341,7 @@ static void get_keyfile_int(GKeyFile *config, GKeyFile *configh,
 		list = g_key_file_get_string_list(config, section, key, &len, NULL);
 	
 	*style = def;
-	if (!list)
-		return;
+	if (!list) return;
 	
 	if (list[0])
 	{
@@ -372,12 +361,10 @@ static void get_keyfile_ints(GKeyFile *config, GKeyFile *configh,
 {
 	GeanyLexerStyle tmp_style;
 	
-	get_keyfile_int(config, configh, section, key, fdefault_val,
-					sdefault_val, &tmp_style);
-	if (first)
-		*first = tmp_style.foreground;
-	if (second)
-		*second = tmp_style.background;
+	get_keyfile_int(config, configh, section, key, fdefault_val, sdefault_val,
+					&tmp_style);
+	if (first) *first = tmp_style.foreground;
+	if (second) *second = tmp_style.background;
 }
 
 
@@ -472,15 +459,13 @@ static void get_named_styles(GKeyFile *config)
 	gchar **keys = g_key_file_get_keys(config, group, NULL, NULL);
 	gchar **ptr = keys;
 	
-	if (!ptr)
-		return;
+	if (!ptr) return;
 	
 	while (1)
 	{
 		const gchar *key = *ptr;
 		
-		if (!key)
-			break;
+		if (!key) break;
 		
 		/* don't replace already read default style with system one */
 		if (!g_str_equal(key, "default"))
@@ -495,7 +480,6 @@ static void get_named_styles(GKeyFile *config)
 static GKeyFile *utils_key_file_new(const gchar *filename)
 {
 	GKeyFile *config = g_key_file_new();
-	
 	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	return config;
 }
@@ -866,9 +850,8 @@ static void merge_type_keywords(ScintillaObject *sci, guint ft_id,
 								guint keyword_idx)
 {
 	const gchar *user_words = style_sets[ft_id].keywords[keyword_idx];
-	GString *s;
+	GString *s = symbols_find_typenames_as_string(filetypes[ft_id]->lang, TRUE);
 	
-	s = symbols_find_typenames_as_string(filetypes[ft_id]->lang, TRUE);
 	if (G_UNLIKELY(s == NULL))
 		s = g_string_sized_new(200);
 	else
@@ -970,8 +953,7 @@ static void get_key_values(GKeyFile *config, const gchar *group,
 	while (*keys)
 	{
 		gchar *str = g_key_file_get_string(config, group, *keys, NULL);
-		if (str)
-			SETPTR(*values, str);
+		if (str) SETPTR(*values, str);
 		
 		keys++;
 		values++;
@@ -1416,8 +1398,7 @@ static gboolean add_color_scheme_items(GtkListStore *store,
 {
 	GSList *list, *node;
 	
-	add_color_scheme_item(store, _("Default"), _("Default"),
-						  NULL, current_iter);
+	add_color_scheme_item(store, _("Default"), _("Default"), NULL, current_iter);
 	list = utils_get_config_files(GEANY_COLORSCHEMES_SUBDIR);
 	
 	foreach_slist(node, list)
@@ -1445,8 +1426,8 @@ static void on_color_scheme_dialog_response(GtkWidget *dialog, gint response,
 void highlighting_show_color_scheme_dialog(void)
 {
 	static GtkWidget *dialog = NULL;
-	GtkListStore *store = gtk_list_store_new(SCHEME_COLUMNS,
-											 G_TYPE_STRING, G_TYPE_STRING);
+	GtkListStore *store = gtk_list_store_new(SCHEME_COLUMNS, G_TYPE_STRING,
+											 G_TYPE_STRING);
 	GtkCellRenderer *text_renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *treesel;
@@ -1483,8 +1464,7 @@ void highlighting_show_color_scheme_dialog(void)
 	g_signal_connect(treesel, "changed", G_CALLBACK(on_color_scheme_changed), NULL);
 	
 	/* old dialog may still be showing */
-	if (dialog)
-		gtk_widget_destroy(dialog);
+	if (dialog) gtk_widget_destroy(dialog);
 	
 	dialog = gtk_dialog_new_with_buttons(_("Color Schemes"),
 					GTK_WINDOW(main_widgets.window),
