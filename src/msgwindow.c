@@ -320,6 +320,22 @@ static void prepare_compiler_tree_view(void)
 					 G_CALLBACK(on_msg_tree_selection_changed), NULL);*/
 }
 
+
+#define MSGWIN_MAX_LEN 1024
+
+/* work around a strange problem when adding very long
+ * lines(greater than 4000 bytes) cut the string to a maximum
+ * of MSGWIN_MAX_LEN bytes and discard the rest */
+/* TODO: find the real cause for the display problem /
+ *       if it is GtkTreeView file a bug report */
+gchar *msgwin_reduce_string(const gchar *string)
+{
+	gsize len = strlen(string);
+	return (len > MSGWIN_MAX_LEN) ? g_strndup(string, MSGWIN_MAX_LEN)
+								  : g_strdup(string);
+}
+
+
 const GdkColor *get_color(gint msg_color)
 {
 	switch (msg_color)
@@ -479,24 +495,22 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 	if (!ui_prefs.msgwindow_visible)
 		msgwin_show_hide(TRUE);
 	
-	/* work around a strange problem when adding very long
-	 * lines(greater than 4000 bytes) cut the string to a maximum
-	 * of 1024 bytes and discard the rest */
-	/* TODO: find the real cause for the display problem /
-	 *       if it is GtkTreeView file a bug report */
-	gsize len = strlen(string);
-	gchar *tmp = (len > 1024) ? g_strndup(string, 1024) : g_strdup(string);
+	gchar *utf8_string, *utf8_markup, *reduce = NULL;
 	
-	gchar *utf8_msg, *utf8_markup;
-	
-	utf8_msg = g_utf8_validate(tmp, -1, NULL)
-					? tmp : utils_get_utf8_from_locale(tmp);
-	
-	if (!markup)
-		utf8_markup = g_markup_escape_text(utf8_msg, -1);
-	else
+	if (markup)
+	{
+		utf8_string = g_utf8_validate(string, -1, NULL)
+						? (gchar *)string : utils_get_utf8_from_locale(string);
 		utf8_markup = g_utf8_validate(markup, -1, NULL)
 						? (gchar *)markup : utils_get_utf8_from_locale(markup);
+	}
+	else
+	{
+		reduce = msgwin_reduce_string(string);
+		utf8_string = g_utf8_validate(reduce, -1, NULL)
+						? reduce : utils_get_utf8_from_locale(reduce);
+		utf8_markup = g_markup_escape_text(utf8_string, -1);
+	}
 	
 	GtkTreeIter iter;
 	gtk_list_store_append(msgwindow.store_msg, &iter);
@@ -504,12 +518,12 @@ void msgwin_msg_add_string(gint msg_color, gint line, GeanyDocument *doc,
 					   MSG_COL_LINE, line,
 					   MSG_COL_DOC_ID, doc ? doc->id : 0,
 					   MSG_COL_COLOR, get_color(msg_color),
-					   MSG_COL_STRING, utf8_msg,
+					   MSG_COL_STRING, utf8_string,
 					   MSG_COL_MARKUP, utf8_markup, -1);
-	g_free(tmp);
 	
-	if (utf8_msg != tmp) g_free(utf8_msg);
+	if (utf8_string != string && utf8_string != reduce) g_free(utf8_string);
 	if (utf8_markup != markup) g_free(utf8_markup);
+	if (reduce) g_free(reduce);
 }
 
 
