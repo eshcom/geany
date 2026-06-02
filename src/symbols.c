@@ -328,30 +328,31 @@ const gchar *symbols_get_context_separator(gint ft_id)
 }
 
 
-/* sort by name, then line */
-static gint compare_symbol(const TMTag *tag_a, const TMTag *tag_b)
+static inline gint compare_symbol(const gchar *field_a, const gchar *field_b)
 {
-	if (tag_a == NULL || tag_b == NULL)
-		return 0;
-	
-	const gchar *name_a = get_tag_name(tag_a);
-	const gchar *name_b = get_tag_name(tag_b);
-	
-	if (name_a == NULL)
-		return -(name_a != name_b);
-	
-	if (name_b == NULL)
-		return name_a != name_b;
-	
-	gint ret = strcmp(name_a, name_b);
-	if (ret == 0)
-		return tag_a->line - tag_b->line;
-	
-	return ret;
+	if (field_a == NULL)
+		return -(field_a != field_b);
+	else if (field_b == NULL)
+		return field_a != field_b;
+	else
+		return strcmp(field_a, field_b);
 }
 
+/* sort by type, name, line */
+static gint compare_symbol_names(const TMTag *tag_a, const TMTag *tag_b)
+{
+	if (tag_a == NULL || tag_b == NULL) return 0;
+	
+	gint ret = tag_a->type - tag_b->type;
+	if (ret != 0) return ret;
+	
+	ret = compare_symbol(get_tag_name(tag_a), get_tag_name(tag_b));
+	if (ret != 0) return ret;
+	
+	return tag_a->line - tag_b->line;
+}
 
-/* sort by line, then scope */
+/* sort by scope, line */
 static gint compare_symbol_lines(gconstpointer a, gconstpointer b)
 {
 	if (a == NULL || b == NULL) return 0;
@@ -359,20 +360,10 @@ static gint compare_symbol_lines(gconstpointer a, gconstpointer b)
 	const TMTag *tag_a = TM_TAG(a);
 	const TMTag *tag_b = TM_TAG(b);
 	
-	gint ret = tag_a->line - tag_b->line;
-	if (ret == 0)
-	{
-		const gchar *scope_a = get_tag_scope(tag_a);
-		const gchar *scope_b = get_tag_scope(tag_b);
-		
-		if (scope_a == NULL)
-			return -(scope_a != scope_b);
-		if (scope_b == NULL)
-			return scope_a != scope_b;
-		else
-			return strcmp(scope_a, scope_b);
-	}
-	return ret;
+	gint ret = compare_symbol(get_tag_scope(tag_a), get_tag_scope(tag_b));
+	if (ret != 0) return ret;
+	
+	return tag_a->line - tag_b->line;
 }
 
 
@@ -1495,7 +1486,7 @@ static gint tree_sort_func(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
 	if (tag_a && !tag_has_missing_parent(tag_a, GTK_TREE_STORE(model), a) &&
 		tag_b && !tag_has_missing_parent(tag_b, GTK_TREE_STORE(model), b))
 	{
-		cmp = sort_by_name ? compare_symbol(tag_a, tag_b)
+		cmp = sort_by_name ? compare_symbol_names(tag_a, tag_b)
 						   : compare_symbol_lines(tag_a, tag_b);
 	}
 	else
