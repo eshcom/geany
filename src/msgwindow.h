@@ -127,6 +127,8 @@ void msgwin_parse_compiler_error_line(const gchar *string, const gchar *dir,
 
 gboolean msgwin_goto_messages_file_line(gboolean focus_editor);
 
+gchar *msgwin_reduce_string(const gchar *string);
+
 const GdkColor *get_color(gint msg_color);
 
 #endif /* GEANY_PRIVATE */

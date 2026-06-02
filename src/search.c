@@ -2069,10 +2069,10 @@ static inline void msgwin_msg_add_markup(
 							const gchar *escape_filename, gchar *buffer,
 							gboolean case_sensitive)
 {
-	gchar *string = g_strdup_printf("%s:%d: %s", filename, line, buffer);
-	
-	GString *markup_buffer = get_markup_buffer(search_text, buffer,
-											   case_sensitive);
+	gchar *reduce = msgwin_reduce_string(buffer);
+	gchar *string = g_strdup_printf("%s:%d: %s", filename, line, reduce);
+	GString *markup_buffer = get_markup_buffer(search_text, reduce, case_sensitive);
+	g_free(reduce);
 	
 	gchar *markup = g_strdup_printf("<span color=\"%s\">%s</span>"
 									"<span color=\"%s\">:</span>"
