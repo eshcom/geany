@@ -496,7 +496,6 @@ gdouble utils_scale_round(gdouble val, gdouble factor)
 	val = floor(val * factor + 0.5);
 	val = MAX(val, 0);
 	val = MIN(val, factor);
-	
 	return val;
 }
 
@@ -516,6 +515,26 @@ static gchar *utf8_strdown(const gchar *str)
 		if (down) SETPTR(down, g_utf8_strdown(down, -1));
 	}
 	return down;
+}
+
+
+/* esh: cleverly sorts documents by their short name */
+static gint utils_files_sort_func(const gchar *f1, const gchar *f2)
+{
+	g_return_val_if_fail(f1 != NULL, 1);
+	g_return_val_if_fail(f2 != NULL, -1);
+	
+	gchar *key1 = utils_get_utf8_from_locale(f1);
+	gchar *key2 = utils_get_utf8_from_locale(f2);
+	
+	SETPTR(key1, utils_collate_key_for_filename(key1, -1));
+	SETPTR(key2, utils_collate_key_for_filename(key2, -1));
+	
+	/* compare */
+	gint result = strcmp(key1, key2);
+	g_free(key1);
+	g_free(key2);
+	return result;
 }
 
 
@@ -539,17 +558,15 @@ static gchar *utf8_strdown(const gchar *str)
 GEANY_API_SYMBOL
 gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 {
-	gchar *tmp1, *tmp2;
-	gint result;
-	
 	g_return_val_if_fail(s1 != NULL, 1);
 	g_return_val_if_fail(s2 != NULL, -1);
 	
 	/* ensure strings are UTF-8 and lowercase */
-	tmp1 = utf8_strdown(s1);
+	gchar *tmp1 = utf8_strdown(s1);
 	if (!tmp1)
 		return 1;
-	tmp2 = utf8_strdown(s2);
+	
+	gchar *tmp2 = utf8_strdown(s2);
 	if (!tmp2)
 	{
 		g_free(tmp1);
@@ -557,8 +574,7 @@ gint utils_str_casecmp(const gchar *s1, const gchar *s2)
 	}
 	
 	/* compare */
-	result = strcmp(tmp1, tmp2);
-	
+	gint result = strcmp(tmp1, tmp2);
 	g_free(tmp1);
 	g_free(tmp2);
 	return result;
@@ -1439,8 +1455,9 @@ GSList *utils_get_file_list_full(const gchar *path, gboolean full_path,
 	}
 	g_dir_close(dir);
 	
-	/* sorting last is quicker than on insertion */
-	if (sort) list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
+	// sorting last is quicker than on insertion
+	// esh: utils_str_casecmp -> utils_files_sort_func
+	if (sort) list = g_slist_sort(list, (GCompareFunc)utils_files_sort_func);
 	return list;
 }
 
@@ -1932,7 +1949,9 @@ GSList *utils_get_config_files(const gchar *subdir)
 	/* merge lists */
 	list = g_slist_concat(list, syslist);
 	
-	list = g_slist_sort(list, (GCompareFunc)utils_str_casecmp);
+	// esh: utils_str_casecmp -> utils_files_sort_func
+	list = g_slist_sort(list, (GCompareFunc)utils_files_sort_func);
+	
 	/* remove duplicates (next to each other after sorting) */
 	foreach_slist(node, list)
 	{
