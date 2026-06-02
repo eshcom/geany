@@ -762,7 +762,6 @@ static void init_default_kb(void)
 static void free_key_group(gpointer item)
 {
 	GeanyKeyGroup *group = item;
-	
 	g_ptr_array_free(group->key_items, TRUE);
 	
 	if (group->plugin)
@@ -815,13 +814,12 @@ static void load_kb(GeanyKeyGroup *group, GeanyKeyBinding *kb,
 					gpointer user_data)
 {
 	GKeyFile *config = user_data;
-	gchar *val;
-	guint key;
-	GdkModifierType mods;
+	gchar *val = g_key_file_get_string(config, group->name, kb->name, NULL);
 	
-	val = g_key_file_get_string(config, group->name, kb->name, NULL);
 	if (val != NULL)
 	{
+		guint key;
+		GdkModifierType mods;
 		gtk_accelerator_parse(val, &key, &mods);
 		kb->key = key;
 		kb->mods = mods;
@@ -853,8 +851,7 @@ static void load_user_kb(void)
 	}
 	
 	/* now load user defined keys */
-	if (g_key_file_load_from_file(config, configfile,
-								  G_KEY_FILE_KEEP_COMMENTS, NULL))
+	if (g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL))
 		keybindings_foreach(load_kb, config);
 	
 	g_free(configfile);
@@ -951,9 +948,7 @@ static void set_keyfile_kb(GeanyKeyGroup *group, GeanyKeyBinding *kb,
 						   gpointer user_data)
 {
 	GKeyFile *config = user_data;
-	gchar *val;
-	
-	val = gtk_accelerator_name(kb->key, kb->mods);
+	gchar *val = gtk_accelerator_name(kb->key, kb->mods);
 	g_key_file_set_string(config, group->name, kb->name, val);
 	g_free(val);
 }
@@ -962,16 +957,14 @@ static void set_keyfile_kb(GeanyKeyGroup *group, GeanyKeyBinding *kb,
 /* just write the content of the keys array to the config file */
 void keybindings_write_to_file(void)
 {
-	gchar *configfile = g_build_filename(app->configdir,
-										 "keybindings.conf", NULL);
-	gchar *data;
+	gchar *configfile = g_build_filename(app->configdir, "keybindings.conf", NULL);
 	GKeyFile *config = g_key_file_new();
 	
 	g_key_file_load_from_file(config, configfile, 0, NULL);
 	keybindings_foreach(set_keyfile_kb, config);
 	
 	/* write the file */
-	data = g_key_file_to_data(config, NULL, NULL);
+	gchar *data = g_key_file_to_data(config, NULL, NULL);
 	utils_write_file(configfile, data);
 	
 	g_free(data);
@@ -1006,8 +999,7 @@ static void fill_shortcut_labels_treeview(GtkWidget *tree)
 	GtkListStore *store;
 	GtkTreeIter iter;
 	
-	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING,
-							   PANGO_TYPE_WEIGHT);
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, PANGO_TYPE_WEIGHT);
 	
 	foreach_ptr_array(group, g, keybinding_groups)
 	{
