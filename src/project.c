@@ -1094,7 +1094,7 @@ static gboolean write_config(void)
 	GKeyFile *config = g_key_file_new();
 	/* try to load an existing config to keep manually added comments */
 	gchar *filename = utils_get_locale_from_utf8(p->file_name);
-	g_key_file_load_from_file(config, filename, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(config, filename, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	
 	GSList *node;
 	foreach_slist(node, stash_groups)

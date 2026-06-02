@@ -127,7 +127,7 @@ static gpointer demoproxy_load(GeanyPlugin *proxy, GeanyPlugin *plugin,
 	gboolean result;
 
 	file = g_key_file_new();
-	result = g_key_file_load_from_file(file, filename, 0, NULL);
+	result = g_key_file_load_from_file(file, filename, G_KEY_FILE_NONE, NULL);
 
 	if (result)
 	{

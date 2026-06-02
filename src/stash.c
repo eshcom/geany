@@ -310,7 +310,7 @@ gboolean stash_group_load_from_file(StashGroup *group, const gchar *filename)
 	gboolean ret;
 
 	keyfile = g_key_file_new();
-	ret = g_key_file_load_from_file(keyfile, filename, 0, NULL);
+	ret = g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, NULL);
 	/* even on failure we load settings to apply defaults */
 	stash_group_load_from_key_file(group, keyfile);
 
