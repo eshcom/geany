@@ -750,7 +750,7 @@ void configuration_save(gboolean project_open)
 	GKeyFile *config = g_key_file_new();
 	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
 	
-	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	
 	/* this signal can be used e.g. to prepare any settings
 	 * before Stash code reads them below */
@@ -1329,7 +1329,7 @@ void configuration_save_default_session(void)
 	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
 	GKeyFile *config = g_key_file_new();
 	
-	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	
 	if (cl_options.load_session)
 		configuration_save_session_files(config);
@@ -1349,7 +1349,7 @@ void configuration_clear_default_session(void)
 	gchar *configfile = g_build_filename(app->configdir, "geany.conf", NULL);
 	GKeyFile *config = g_key_file_new();
 	
-	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	
 	if (cl_options.load_session)
 		remove_session_files(config);
@@ -1615,7 +1615,7 @@ void history_save()
 	GKeyFile *config = g_key_file_new();
 	gchar *configfile = g_build_filename(app->configdir, "history.conf", NULL);
 	
-	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	
 	history_save_items(config, FIND_SEARCH_COMBO);
 	history_save_items(config, FIF_SEARCH_COMBO);

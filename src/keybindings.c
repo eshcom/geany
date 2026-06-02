@@ -851,7 +851,7 @@ static void load_user_kb(void)
 	}
 	
 	/* now load user defined keys */
-	if (g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL))
+	if (g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL))
 		keybindings_foreach(load_kb, config);
 	
 	g_free(configfile);
@@ -960,7 +960,7 @@ void keybindings_write_to_file(void)
 	gchar *configfile = g_build_filename(app->configdir, "keybindings.conf", NULL);
 	GKeyFile *config = g_key_file_new();
 	
-	g_key_file_load_from_file(config, configfile, 0, NULL);
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
 	keybindings_foreach(set_keyfile_kb, config);
 	
 	/* write the file */
