@@ -1241,6 +1241,10 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 		case SCLEX_PROPERTIES:
 			keyword_idx = 2;
 			break;
+		
+		case SCLEX_PO:
+			keyword_idx = 1;
+			break;
 	}
 	
 	if (keyword_idx >= 0)
@@ -1581,12 +1585,14 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					/* we don't include any STRING_*_VAR for autocompletion */);
 		
 		case SCLEX_PO:
-			return (style == SCE_PO_MSGCTXT_TEXT ||
-					style == SCE_PO_MSGCTXT_TEXT_EOL ||
-					style == SCE_PO_MSGID_TEXT ||
+			return (style == SCE_PO_MSGID_TEXT ||
 					style == SCE_PO_MSGID_TEXT_EOL ||
 					style == SCE_PO_MSGSTR_TEXT ||
-					style == SCE_PO_MSGSTR_TEXT_EOL);
+					style == SCE_PO_MSGSTR_TEXT_EOL ||
+					style == SCE_PO_MSGCTXT_TEXT ||
+					style == SCE_PO_MSGCTXT_TEXT_EOL ||
+					style == SCE_PO_ESCAPESEQ ||
+					style == SCE_PO_FORMATSEQ);
 		
 		case SCLEX_R:
 			return (style == SCE_R_STRING);
@@ -1828,7 +1834,8 @@ gboolean highlighting_is_comment_style(gint lexer, gint style)
 					style == SCE_PROPS_TASKMARKER);
 		
 		case SCLEX_PO:
-			return (style == SCE_PO_COMMENT ||
+			return (style == SCE_PO_TASKMARKER ||
+					style == SCE_PO_COMMENT ||
 					style == SCE_PO_PROGRAMMER_COMMENT);
 		
 		case SCLEX_LATEX:

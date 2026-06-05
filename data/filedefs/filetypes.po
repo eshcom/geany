@@ -2,11 +2,10 @@
 [styling]
 # Edit these in the colorscheme .conf file instead
 default=default
-comment=comment
-programmer_comment=comment_doc
-reference=comment
-flags=comment
-fuzzy=comment_doc_keyword
+ref_line=comment
+flag_line=comment
+flag_word=comment
+fuzzy_word=comment_doc_keyword
 msgid=keyword_1
 msgid_text=string_1
 msgid_text_eol=string_eol
@@ -16,7 +15,19 @@ msgstr_text_eol=string_eol
 msgctxt=keyword_3
 msgctxt_text=string_1
 msgctxt_text_eol=string_eol
+escapeseq=string_1
+formatseq=string_1
+comment=comment
+programmer_comment=comment_doc
+taskmarker=comment
 error=error
+
+[keywords]
+flag_words=c-format no-c-format
+
+[lexer_properties]
+lexer.po.escape.sequence=0
+lexer.po.format.sequence=0
 
 [settings]
 # default extension used when saving files
