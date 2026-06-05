@@ -1339,11 +1339,10 @@ static const HLKeyword highlighting_keywords_PERL[] =
 static const HLStyle highlighting_styles_PO[] =
 {
 	{ SCE_PO_DEFAULT,				"default",				FALSE },
-	{ SCE_PO_COMMENT,				"comment",				FALSE },
-	{ SCE_PO_PROGRAMMER_COMMENT,	"programmer_comment",	FALSE },
-	{ SCE_PO_REFERENCE,				"reference",			FALSE },
-	{ SCE_PO_FLAGS,					"flags",				FALSE },
-	{ SCE_PO_FUZZY,					"fuzzy",				FALSE },
+	{ SCE_PO_REF_LINE,				"ref_line",				FALSE },
+	{ SCE_PO_FLAG_LINE,				"flag_line",			FALSE },
+	{ SCE_PO_FLAG_WORD,				"flag_word",			FALSE },
+	{ SCE_PO_FUZZY_WORD,			"fuzzy_word",			FALSE },
 	{ SCE_PO_MSGID,					"msgid",				FALSE },
 	{ SCE_PO_MSGID_TEXT,			"msgid_text",			FALSE },
 	{ SCE_PO_MSGID_TEXT_EOL,		"msgid_text_eol",		FALSE },
@@ -1353,9 +1352,17 @@ static const HLStyle highlighting_styles_PO[] =
 	{ SCE_PO_MSGCTXT,				"msgctxt",				FALSE },
 	{ SCE_PO_MSGCTXT_TEXT,			"msgctxt_text",			FALSE },
 	{ SCE_PO_MSGCTXT_TEXT_EOL,		"msgctxt_text_eol",		FALSE },
+	{ SCE_PO_ESCAPESEQ,				"escapeseq",			FALSE },
+	{ SCE_PO_FORMATSEQ,				"formatseq",			FALSE },
+	{ SCE_PO_COMMENT,				"comment",				FALSE },
+	{ SCE_PO_PROGRAMMER_COMMENT,	"programmer_comment",	FALSE },
+	{ SCE_PO_TASKMARKER,			"taskmarker",			FALSE },
 	{ SCE_PO_ERROR,					"error",				FALSE }
 };
-#define highlighting_keywords_PO	EMPTY_KEYWORDS
+static const HLKeyword highlighting_keywords_PO[] =
+{
+	{ 0, "flag_words",	FALSE }
+};
 #define highlighting_properties_PO	EMPTY_PROPERTIES
 
 
