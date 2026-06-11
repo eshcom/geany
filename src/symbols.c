@@ -2253,9 +2253,10 @@ static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
 		return tags;
 	
 	GPtrArray *ptags = tm_workspace_find_prj(name, scope, type, lang);
-	TMTag *ptag;
+	TMTag *ptag, *tag;
 	guint i;
 	guint tags_len = tags->len;
+	const gchar *pfname, *fname;
 	
 	foreach_ptr_array(ptag, i, ptags)
 	{
@@ -2263,11 +2264,13 @@ static GPtrArray *wrap_find_tags(const gchar *name, const gchar *scope,
 		
 		for (guint j = 0; j < tags_len; ++j)
 		{
-			TMTag *tag = g_ptr_array_index(tags, j);
+			tag = g_ptr_array_index(tags, j);
+			pfname = ptag->file ? ptag->file->file_name : NULL;
+			fname = tag->file ? tag->file->file_name : NULL;
 			
 			if (scopes_and_types_equal(ptag->scope, ptag->type, tag->scope, tag->type)
 				&& utils_str_equal(ptag->name, tag->name)
-				&& utils_str_equal(ptag->file->file_name, tag->file->file_name))
+				&& utils_str_equal(pfname, fname))
 			{
 				equal = TRUE;
 				break;
