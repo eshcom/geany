@@ -1745,7 +1745,8 @@ gboolean highlighting_is_string_style(gint lexer, gint style)
 					style == SCE_ELIXIR_CHARACTER ||
 					style == SCE_ELIXIR_ESCAPESEQ ||
 					style == SCE_ELIXIR_FORMATSEQ ||
-					style == SCE_ELIXIR_STRING_SUBOPER);
+					style == SCE_ELIXIR_STRING_SUBOPER ||
+					style == SCE_ELIXIR_STRING_EEXOPER);
 		
 		case SCLEX_ERLANG:
 			return (style == SCE_ERLANG_STRING ||

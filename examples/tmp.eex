@@ -1,0 +1,30 @@
+{
+    "components": {
+        "responses": {},
+        "schemas": {
+            <%= Enum.map_join(@schemas, ",", fn {name, value} -> %>
+                "<%= name %>": <%= value %>
+            <%  end) %>
+        },
+        "securitySchemes": {
+            "authorization": {
+                "type": "http"
+            }
+        }
+    },
+    "info": {
+        "title": "Decision Flow",
+        "version": "<%= Df.version() %>"
+    },
+    "openapi": "3.0.0",
+    "paths": {
+    <%= Enum.map_join(@bps, ",", fn bp -> %>
+        <%= ~s("/api/ide/#{DfWeb.ApiFields.project_url(bp.project)}/bps/call?path=#{bp.path}": {) %>
+            <%= ~s("post": #{EEx.eval_string(@swagger_call_request_template, assigns: [bp: bp, operation_id: "call"])}) %>
+        <%= "}" %>
+    <%  end) %>
+    },
+    "security": [],
+    "servers": [],
+    "tags": []
+}
