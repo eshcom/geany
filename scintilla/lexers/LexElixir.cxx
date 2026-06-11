@@ -360,12 +360,13 @@ LexicalClass lexicalClasses[] = {
 	49,	"SCE_ELIXIR_ESCAPESEQ", "string escapesequence", "Escape sequence",
 	50,	"SCE_ELIXIR_FORMATSEQ", "string formatsequence", "Format sequence",
 	51,	"SCE_ELIXIR_STRING_SUBOPER", "operator", "#{}-operator inside string",
-	52,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
-	53,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
-	54,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
-	55,	"SCE_ELIXIR_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
-	56,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
-	57,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
+	52,	"SCE_ELIXIR_STRING_EEXOPER", "operator", "eex-operators inside string",
+	53,	"SCE_ELIXIR_ATOM_PUNCT", "identifier", "Atoms",
+	54,	"SCE_ELIXIR_ATOM_QUOTED", "identifier", "Quoted atoms",
+	55,	"SCE_ELIXIR_NODE_QUOTED", "comment line", "Quoted nodes",
+	56,	"SCE_ELIXIR_LINE_CONTINUED", "preprocessor", "Line continuation symbol",
+	57,	"SCE_ELIXIR_TASKMARKER", "comment taskmarker", "Task Marker",
+	58,	"SCE_ELIXIR_COMMENT", "comment line", "Comment-line",
 };
 
 }
@@ -687,16 +688,23 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		string_state = sc.state;												\
 	}
 
+#define INIT_INTERPOLATE_STRING(oper_state)										\
+	PushStateToStack(GetSaveStringStyle(sc.state, string_state),				\
+					 closing_char, stringStateStack, currentStringExp);			\
+	sc.SetState(oper_state);													\
+	sc.Forward();																\
+	last_state = SCE_ELIXIR_DEFAULT;											\
+	is_at_symb = true; /* otherwise atoms of the form :'tes#{}t@test'
+						  will be incorrectly highlighted */
+
 #define CHECK_INTERPOLATE_STRING												\
 	} else if (canbe_interpolate && sc.Match('#', '{')) {						\
-		PushStateToStack(GetSaveStringStyle(sc.state, string_state),			\
-						 closing_char, stringStateStack, currentStringExp);		\
-		sc.SetState(SCE_ELIXIR_STRING_SUBOPER);									\
-		sc.Forward();															\
+		INIT_INTERPOLATE_STRING(SCE_ELIXIR_STRING_SUBOPER);						\
 		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);									\
-		last_state = SCE_ELIXIR_DEFAULT;										\
-		is_at_symb = true; /* otherwise atoms of the form :'tes#{}t@test'
-							  will be incorrectly highlighted */
+	} else if (canbe_interpolate && sc.Match('<', '%')) {						\
+		INIT_INTERPOLATE_STRING(SCE_ELIXIR_STRING_EEXOPER);						\
+		if (strchr("=%#", sc.chNext)) sc.Forward();								\
+		sc.ForwardSetState(SCE_ELIXIR_DEFAULT);									\
 
 #define CHECK_ESCAPE_FORMAT_SEQ													\
 	if (sc.ch == '\\') {														\
@@ -812,7 +820,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							 IsNestedStringStyle(backStyle))) {
 				continue;
 				
-			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER && styler[back] == '}') {
+			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER &&
+						styler[back] == '}') {
 				int nestingCount = 1;
 				while (--back) {
 					if (styler.StyleAt(back) == SCE_ELIXIR_STRING_SUBOPER) {
@@ -820,11 +829,25 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							nestingCount++;
 						} else if (styler[back] == '{') {
 							nestingCount--;
-							back--; // skip back { in #{}
+							back--; // skip back '{' in "#{"
 						}
 					}
-					if (nestingCount == 0)
-						break;
+					if (nestingCount == 0) break;
+				}
+				continue;
+				
+			} else if (backStyle == SCE_ELIXIR_STRING_EEXOPER &&
+						styler.Match(back, "%>")) {
+				int nestingCount = 1;
+				while (--back) {
+					if (styler.StyleAt(back) == SCE_ELIXIR_STRING_EEXOPER) {
+						if (styler.Match(back, "%>")) {
+							nestingCount++;
+						} else if (styler.Match(back, "<%")) {
+							nestingCount--;
+						}
+					}
+					if (nestingCount == 0) break;
 				}
 				continue;
 				
@@ -938,7 +961,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	Sci_PositionU lineEndCurr = styler.LineEnd(sc.currentLine);
 	
 	for (; sc.More(); sc.Forward()) {
-		if (sc.state == SCE_ELIXIR_STRING_SUBOPER) {
+		if (sc.state == SCE_ELIXIR_STRING_SUBOPER
+			|| sc.state == SCE_ELIXIR_STRING_EEXOPER) {
 			SingleStringExpState expState =
 					PopFromStateStack(stringStateStack, currentStringExp);
 			
@@ -1467,14 +1491,27 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 			} else if (sc.ch == '?') {
 				sc.SetState(SCE_ELIXIR_CHARACTER);
 				
-			} else if (sc.Match("<%=") || sc.Match("<%%") || sc.Match("<%#")) {
+			} else if (sc.Match('<', '%')) {
 				PREPARE_OPER_STATE
+				if (currentStringExp) {
+					currentStringExp->nestingCount++;
+				}
 				sc.SetState(SCE_ELIXIR_EEX_OPER);
-				sc.Forward(2);
+				sc.Forward();
+				if (strchr("=%#", sc.chNext)) sc.Forward();	
 				
-			} else if (sc.Match('<', '%') || sc.Match('%', '>')) {
+			} else if (sc.Match('%', '>')) {
 				PREPARE_OPER_STATE
-				sc.SetState(SCE_ELIXIR_EEX_OPER);
+				if (currentStringExp) {
+					if (currentStringExp->nestingCount == 0) {
+						sc.SetState(SCE_ELIXIR_STRING_EEXOPER);
+					} else {
+						currentStringExp->nestingCount--;
+						sc.SetState(SCE_ELIXIR_EEX_OPER);
+					}
+				} else {
+					sc.SetState(SCE_ELIXIR_EEX_OPER);
+				}
 				sc.Forward();
 				
 			} else if (sc.ch == '%') {
@@ -1567,9 +1604,9 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
 					sc.Forward();
-				} else if (sc.ch == '{' && currentStringExp != NULL) {
+				} else if (sc.ch == '{' && currentStringExp) {
 					currentStringExp->nestingCount++;
-				} else if (sc.ch == '}' && currentStringExp != NULL) {
+				} else if (sc.ch == '}' && currentStringExp) {
 					if (currentStringExp->nestingCount == 0)
 						sc.ChangeState(SCE_ELIXIR_STRING_SUBOPER);
 					else
