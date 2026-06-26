@@ -4,18 +4,26 @@
 default=default
 comment=comment
 identifier=identifier
-keyword=keyword_1
-number=number_1
+com_word=keyword_1
+type_word=keyword_2
+type_word_str=keyword_2
 reference=function
 document=preprocessor
+operator=operator
+spec_oper=operator
+number=number_1
+doublestring=string_1
+singlestring=string_2
 text=string_1
 error=error
-operator=operator
 
 [keywords]
 # all items must be in one line
-keywords=null true false yes no on off
+com_words=null true false yes no on off
+type_words=array boolean integer number object string
 
+[lexer_properties]
+lexer.yaml.escape.sequence=0
 
 [settings]
 # default extension used when saving files
