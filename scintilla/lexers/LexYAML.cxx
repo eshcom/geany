@@ -25,25 +25,14 @@
 
 using namespace Scintilla;
 
-static const char * const yamlWordListDesc[] = {
-	"Keywords",
+static const char *const yamlWordListDesc[] = {
+	"Common keywords (eg. true/false/null)",
+	"Type keywords (eg. boolean/integer/string)",
 	0
 };
 
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return IsEOL(styler[i], styler.SafeGetCharAt(i + 1));
-}
-
-static unsigned int SpaceCount(char* lineBuffer) {
-	if (lineBuffer == NULL)
-		return 0;
-	
-	char* headBuffer = lineBuffer;
-	
-	while (*headBuffer == ' ')
-		headBuffer++;
-	
-	return static_cast<unsigned int>(headBuffer - lineBuffer);
 }
 
 static bool KeywordAtChar(char* lineBuffer, char* startComment,
@@ -76,8 +65,11 @@ static void ColouriseYAMLLine(
 	Sci_PositionU lengthLine,
 	Sci_PositionU startLine,
 	Sci_PositionU endPos,
-	WordList &keywords,
+	WordList *keywordLists[],
 	Accessor &styler) {
+	
+	WordList &com_words = *keywordLists[0];
+	WordList &type_words = *keywordLists[1];
 	
 	Sci_PositionU i = 0;
 	bool bInQuotes = false;
@@ -174,8 +166,13 @@ static void ColouriseYAMLLine(
 					styler.ColourTo(endPos, SCE_YAML_COMMENT);
 				return;
 			}
-			if (KeywordAtChar(&lineBuffer[i], &lineBuffer[startComment], keywords)) { // Convertible value (true/false, etc.)
-				styler.ColourTo(startLine + startComment - 1, SCE_YAML_KEYWORD);
+			if (KeywordAtChar(&lineBuffer[i], &lineBuffer[startComment], com_words)) { // Convertible value (true/false, etc.)
+				styler.ColourTo(startLine + startComment - 1, SCE_YAML_COM_WORD);
+				if (startComment < lengthLine)
+					styler.ColourTo(endPos, SCE_YAML_COMMENT);
+				return;
+			} else if (KeywordAtChar(&lineBuffer[i], &lineBuffer[startComment], type_words)) {
+				styler.ColourTo(startLine + startComment - 1, SCE_YAML_TYPE_WORD);
 				if (startComment < lengthLine)
 					styler.ColourTo(endPos, SCE_YAML_COMMENT);
 				return;
@@ -205,6 +202,87 @@ static void ColouriseYAMLLine(
 	styler.ColourTo(endPos, SCE_YAML_DEFAULT);
 }
 
+static void ColouriseYAMLDoc2(Sci_PositionU startPos, Sci_Position length,
+							 int, WordList *keywordLists[], Accessor &styler) {
+	// esh: escapesequence highlighting
+	const bool escapeSequence =
+					styler.GetPropertyInt("lexer.yaml.escape.sequence", 0) != 0;
+	EscapeSequence escapeSeq = EscapeSequence();
+	
+	Sci_PositionU endPos = startPos + length;
+	StyleContext sc(startPos, length, initStyle, styler);
+	
+	WordList &com_words = *keywordLists[0];
+	WordList &type_words = *keywordLists[1];
+	
+	Sci_PositionU lineCurrent = styler.GetLine(startPos);
+	
+	bool bInQuotes = false;
+	unsigned int indentAmount = 0;
+	
+	for (; sc.More(); sc.Forward()) {
+		if (sc.atLineStart) {
+			indentAmount = 0;
+			
+			while (sc.More() && !sc.atLineEnd) {
+				if (sc.ch == ' ') {
+					// YAML always uses space, never TABS or anything else
+					indentAmount++;
+					sc.Forward();
+					continue;
+				} else if (sc.ch == '\t') {
+					// if we skipped all spaces, and we are NOT inside a text block, this is wrong
+					sc.SetState(SCE_YAML_ERROR);
+				}
+				break;
+			}
+			
+			if (lineCurrent > 0) {
+				int parentLineState = styler.GetLineState(lineCurrent - 1);
+				
+				if ((parentLineState&YAML_STATE_MASK) == YAML_STATE_TEXT ||
+					(parentLineState&YAML_STATE_MASK) == YAML_STATE_TEXT_PARENT) {
+					unsigned int parentIndentAmount = parentLineState&(~YAML_STATE_MASK);
+					if (indentAmount > parentIndentAmount) {
+						styler.SetLineState(lineCurrent, YAML_STATE_TEXT | parentIndentAmount);
+						sc.SetState(SCE_YAML_TEXT);
+						continue;
+					}
+				}
+			}
+			styler.SetLineState(lineCurrent, 0);
+		}
+		
+		if (sc.atLineEnd) {
+			lineCurrent++;
+			if (sc.state != SCE_YAML_DEFAULT)
+				sc.SetState(SCE_YAML_DEFAULT);
+		}
+		
+		// Determine if the current state should terminate.
+		switch (sc.state) {
+			case SCE_YAML_DOCUMENT:
+				if (!IsSpaceOrTab(sc.ch)) {
+					sc.ChangeState(SCE_YAML_ERROR);
+				}
+				break;
+		}
+		
+		// Determine if a new state should be entered.
+		if (sc.state == SCE_YAML_DEFAULT) {
+			if (sc.atLineStart && (sc.Match("---") || sc.Match("..."))) { // Document marker
+				styler.SetLineState(lineCurrent, YAML_STATE_DOCUMENT);
+				sc.SetState(SCE_YAML_DOCUMENT);
+				sc.Forward(2);
+			} else if (sc.ch == '#') {
+				styler.SetLineState(lineCurrent, YAML_STATE_COMMENT);
+				sc.SetState(SCE_YAML_COMMENT);
+			}
+		}
+	}
+	sc.Complete();
+}
+
 static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 							 int, WordList *keywordLists[], Accessor &styler) {
 	char lineBuffer[4096] = "";
@@ -222,7 +300,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 			// End of line (or of line buffer) met, colourise it
 			lineBuffer[linePos] = '\0';
 			ColouriseYAMLLine(lineBuffer, lineCurrent, linePos, startLine,
-							  i, *keywordLists[0], styler);
+							  i, keywordLists, styler);
 			linePos = 0;
 			startLine = i + 1;
 			lineCurrent++;
@@ -230,7 +308,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 	}
 	if (linePos > 0) {	// Last line does not have ending characters
 		ColouriseYAMLLine(lineBuffer, lineCurrent, linePos, startLine,
-						  startPos + length - 1, *keywordLists[0], styler);
+						  startPos + length - 1, keywordLists, styler);
 	}
 }
 
