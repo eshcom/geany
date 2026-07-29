@@ -1326,9 +1326,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
-						if (ident_state == NONE_STATE ||
-							(ident_state == ALIAS_AS_STATE
-							 && strcmp(ident, "as") == 0)) {
+						if (ident_state == NONE_STATE || ident_state == PIPEOPER_STATE ||
+							(ident_state == ALIAS_AS_STATE && strcmp(ident, "as") == 0)) {
 							sc.ChangeState(SCE_ELIXIR_FIELD);
 						} else {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN);
