@@ -854,3 +854,11 @@ defp context_opts(opts) do
   special_modules = opts |> Kernel.++([Finish])
   [bindings: Keyword.get(opts, :bindings, %{})]
 end
+
+# ------------------------------
+
+if String.length(System.get_env("KAFKA_ENDPOINTS", "")) > 0 do
+  config :df, DfAsync.KafkaEntrypoint, enabled: true
+else
+  config :df, DfAsync.KafkaEntrypoint, enabled: false
+end
