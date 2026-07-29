@@ -35,6 +35,10 @@ static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return IsEOL(styler[i], styler.SafeGetCharAt(i + 1));
 }
 
+static inline char GetClosingChar(int style) {
+	return (style == SCE_YAML_DOUBLESTRING) ? "\"" : "\'"
+}
+
 static bool KeywordAtChar(char* lineBuffer, char* startComment,
 						  const WordList &keywords) {
 	if (lineBuffer == NULL || startComment <= lineBuffer)
@@ -246,6 +250,8 @@ static void ColouriseYAMLDoc2(Sci_PositionU startPos, Sci_Position length,
 					if (indentAmount > parentIndentAmount) {
 						styler.SetLineState(lineCurrent, YAML_STATE_TEXT | parentIndentAmount);
 						sc.SetState(SCE_YAML_TEXT);
+						
+						if (sc.atLineEnd) lineCurrent++;
 						continue;
 					}
 				}
@@ -266,6 +272,21 @@ static void ColouriseYAMLDoc2(Sci_PositionU startPos, Sci_Position length,
 					sc.ChangeState(SCE_YAML_ERROR);
 				}
 				break;
+				
+			case SCE_YAML_DOUBLESTRING:
+			case SCE_YAML_SINGLESTRING:
+				if (sc.ch == '\\') {
+					sc.Forward(); // Skip any character after the backslash
+					
+					if (sc.atLineEnd) {
+						sc.ChangeState(SCE_YAML_ERROR);
+						lineCurrent++;
+					}
+					continue;
+				} else if (sc.ch == GetClosingChar(sc.state)) {
+					sc.ForwardSetState(SCE_YAML_DEFAULT);
+				}
+				break;
 		}
 		
 		// Determine if a new state should be entered.
@@ -274,9 +295,13 @@ static void ColouriseYAMLDoc2(Sci_PositionU startPos, Sci_Position length,
 				styler.SetLineState(lineCurrent, YAML_STATE_DOCUMENT);
 				sc.SetState(SCE_YAML_DOCUMENT);
 				sc.Forward(2);
-			} else if (sc.ch == '#') {
+			} else if (sc.ch == '#' && IsSpace(sc.chPrev)) {
 				styler.SetLineState(lineCurrent, YAML_STATE_COMMENT);
 				sc.SetState(SCE_YAML_COMMENT);
+			} else if (sc.ch == '\"') {
+				sc.SetState(SCE_YAML_DOUBLESTRING);
+			} else if (sc.ch == '\'') {
+				sc.SetState(SCE_YAML_SINGLESTRING);
 			}
 		}
 	}
