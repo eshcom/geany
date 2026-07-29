@@ -847,3 +847,10 @@ end
 
 @typep operation_id :: String.t()
 @typep verb :: atom
+
+# ------------------------------
+
+defp context_opts(opts) do
+  special_modules = opts |> Kernel.++([Finish])
+  [bindings: Keyword.get(opts, :bindings, %{})]
+end
