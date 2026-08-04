@@ -484,7 +484,7 @@ static const unsigned char *parseSimpleTag(const unsigned char *cp,
 	
 	if (kind == K_ATTRIBUTE)
 		makeTag(name, kind, private, currScope, NULL, name);
-	else // K_STRUCT
+	else if (currScope.name) // K_STRUCT
 		makeTag(currScope.name, kind, private, currScope, NULL, currScope.displayName);
 	
 	FREE_SCOPE(currScope);
