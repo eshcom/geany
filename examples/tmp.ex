@@ -862,3 +862,17 @@ if String.length(System.get_env("KAFKA_ENDPOINTS", "")) > 0 do
 else
   config :df, DfAsync.KafkaEntrypoint, enabled: false
 end
+
+# ------------------------------
+
+@encoder Formatter.encoder()
+
+def some_func() do
+  %{
+    time: utc_time(meta),
+    severity: Atom.to_string(level)
+  }
+  |> maybe_put(:event_type, meta[:tag])
+  |> maybe_put(:trace, format_trace(meta))
+  |> @encoder.encode_to_iodata!(encoder_opts)
+end

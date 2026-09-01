@@ -620,6 +620,10 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		lineEndCurr = styler.LineEnd(sc.currentLine + 1);						\
 	}
 
+#define MOVE_BACK_TO_BEGIN_WORD(limit_style)									\
+	while (back > 0 && styler.StyleAt(back - 1) == limit_style)					\
+		back--;
+
 #define MOVE_INDEX_TO_NONSPACE													\
 	Sci_PositionU i = sc.currentPos + 1;										\
 	while (i < endPos && IsSpaceOrTab(styler[i]))								\
@@ -775,7 +779,7 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	(ident_state == PIPEOPER_STATE && sc.ch != '.')
 
 #define IS_TYPE_FUNC															\
-	(maybe_typefunc && sc.ch != ':')
+	((ident_state == TYPEDEF_STATE || is_type_oper) && sc.ch != ':')
 
 
 void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
@@ -799,7 +803,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	int exponent_digits = 0;
 	number_state_t number_state;
 	
-	ident_state_t ident_state = NONE_STATE;
 	module_type_t module_type = NONE_MODULE;
 	
 	char ident[100];
@@ -884,32 +887,44 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		last_state = styler.StyleAt(back);
 		if (last_state == SCE_ELIXIR_STD_WORD) {
-			while (back > 0 && styler.StyleAt(back - 1) == SCE_ELIXIR_STD_WORD)
-				back--;
+			MOVE_BACK_TO_BEGIN_WORD(last_state);
+			
 			if (styler.Match(back, "do") || styler.Match(back, "end")
 				|| styler.Match(back, "else"))
 				last_state = SCE_ELIXIR_DEFAULT;
 		}
 	}
 	
-	bool maybe_typefunc = false;
-	// esh: define maybe_typefunc
+	ident_state_t ident_state = NONE_STATE;
+	// esh: define ident_state
 	if (!IsStdWordOrAttrStyle(initStyle)) {
 		Sci_Position back = startPos;
 		int backStyle;
 		while (--back >= 0) {
 			backStyle = styler.StyleAt(back);
-			if (!IsStdWordOrAttrStyle(backStyle)) {
-				continue;
-				
-			} else if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
+			if (!IsStdWordOrAttrStyle(backStyle)) continue;
+			
+			if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
 				while (back > 0 && styler[back - 1] != '@')
 					back--;
 				
-				maybe_typefunc = (styler.Match(back, "spec") ||
-								  styler.Match(back, "type") ||
-								  styler.Match(back, "callback") ||
-								  styler.Match(back, "macrocallback"));
+				if (styler.Match(back, "spec") || styler.Match(back, "type")
+					|| styler.Match(back, "callback")
+					|| styler.Match(back, "macrocallback"))
+					ident_state = TYPEDEF_STATE;
+				
+			} else if (backStyle == SCE_ELIXIR_STD_WORD ||
+					   backStyle == SCE_ELIXIR_USR_WORD) {
+				MOVE_BACK_TO_BEGIN_WORD(backStyle);
+				
+				if (styler.Match(back, "def"))
+					ident_state = DEFNAME_STATE;
+				
+			} else if (backStyle == SCE_ELIXIR_ADD_WORD) {
+				MOVE_BACK_TO_BEGIN_WORD(backStyle);
+				
+				if (styler.Match(back, "alias"))
+					ident_state = ALIAS_STATE;
 			}
 			break;
 		}
@@ -938,6 +953,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		}
 	}
 	
+	bool is_type_oper = false; // example: @type key() :: atom()
 	bool is_dot_oper = false; // example: Struct.field, Module.func()
 	
 	// Set up state stack from last line and remove any subsequent string at eol states
@@ -1307,10 +1323,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						strcmp(ident, "@callback") == 0 ||
 						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
-						maybe_typefunc = true;
 					} else {
 						ident_state = NONE_STATE;
-						maybe_typefunc = false;
 					}
 				}
 				last_state = sc.state;
@@ -1397,7 +1411,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					ident_state = NONE_STATE;
 				
 				if (IsKeywordStyle(sc.state))
-					maybe_typefunc = false;
+					is_type_oper = false;
 				
 				module_type = NONE_MODULE;
 				last_state = (sc.state == SCE_ELIXIR_STD_WORD &&
@@ -1584,7 +1598,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				PREPARE_OPER_STATE
 				
-				is_dot_oper = (sc.ch == '.');
+				is_type_oper = false;
+				is_dot_oper = false;
 				
 				if (sc.ch == '&') {
 					sc.chNext == '&' ? sc.Forward()
@@ -1597,14 +1612,18 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match('=', '~') || sc.Match(':', ':')) {
+				} else if (sc.Match('=', '~')) {
 					sc.Forward();
 				} else if (sc.Match('.', '.')) { // range, example: 1..10
-					is_dot_oper = false;
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
 					sc.Forward();
+				} else if (sc.Match(':', ':')) {
+					is_type_oper = true;
+					sc.Forward();
+				} else if (sc.ch == '.') {
+					is_dot_oper = true;
 				} else if (sc.ch == '{' && currentStringExp) {
 					currentStringExp->nestingCount++;
 				} else if (sc.ch == '}' && currentStringExp) {
