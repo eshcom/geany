@@ -115,6 +115,7 @@ typedef enum {
 	NONE_STATE,
 	DEFNAME_STATE,		// def, defp, defmacro, defmacrop, ...
 	TYPEDEF_STATE,		// @type, @spec, @callback, @macrocallback
+	TYPEDEF_NEXT_STATE,
 	PIPEOPER_STATE,		// |>
 	ALIAS_STATE,
 	ALIAS_AS_STATE,
@@ -620,6 +621,10 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		lineEndCurr = styler.LineEnd(sc.currentLine + 1);						\
 	}
 
+#define MOVE_BACK_TO_BEGIN_WORD(limit_style)									\
+	while (back > 0 && styler.StyleAt(back - 1) == limit_style)					\
+		back--;
+
 #define MOVE_INDEX_TO_NONSPACE													\
 	Sci_PositionU i = sc.currentPos + 1;										\
 	while (i < endPos && IsSpaceOrTab(styler[i]))								\
@@ -775,7 +780,7 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	(ident_state == PIPEOPER_STATE && sc.ch != '.')
 
 #define IS_TYPE_FUNC															\
-	(maybe_typefunc && sc.ch != ':')
+	(ident_state == TYPEDEF_NEXT_STATE && sc.ch != ':')
 
 
 void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
@@ -799,7 +804,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	int exponent_digits = 0;
 	number_state_t number_state;
 	
-	ident_state_t ident_state = NONE_STATE;
 	module_type_t module_type = NONE_MODULE;
 	
 	char ident[100];
@@ -884,32 +888,44 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		
 		last_state = styler.StyleAt(back);
 		if (last_state == SCE_ELIXIR_STD_WORD) {
-			while (back > 0 && styler.StyleAt(back - 1) == SCE_ELIXIR_STD_WORD)
-				back--;
+			MOVE_BACK_TO_BEGIN_WORD(last_state);
+			
 			if (styler.Match(back, "do") || styler.Match(back, "end")
 				|| styler.Match(back, "else"))
 				last_state = SCE_ELIXIR_DEFAULT;
 		}
 	}
 	
-	bool maybe_typefunc = false;
-	// esh: define maybe_typefunc
+	ident_state_t ident_state = NONE_STATE;
+	// esh: define ident_state
 	if (!IsStdWordOrAttrStyle(initStyle)) {
 		Sci_Position back = startPos;
 		int backStyle;
 		while (--back >= 0) {
 			backStyle = styler.StyleAt(back);
-			if (!IsStdWordOrAttrStyle(backStyle)) {
-				continue;
-				
-			} else if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
+			if (!IsStdWordOrAttrStyle(backStyle)) continue;
+			
+			if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
 				while (back > 0 && styler[back - 1] != '@')
 					back--;
 				
-				maybe_typefunc = (styler.Match(back, "spec") ||
-								  styler.Match(back, "type") ||
-								  styler.Match(back, "callback") ||
-								  styler.Match(back, "macrocallback"));
+				if (styler.Match(back, "spec") || styler.Match(back, "type")
+					|| styler.Match(back, "callback")
+					|| styler.Match(back, "macrocallback"))
+					ident_state = TYPEDEF_NEXT_STATE;
+				
+			} else if (backStyle == SCE_ELIXIR_STD_WORD ||
+					   backStyle == SCE_ELIXIR_USR_WORD) {
+				MOVE_BACK_TO_BEGIN_WORD(backStyle);
+				
+				if (styler.Match(back, "def"))
+					ident_state = DEFNAME_STATE;
+				
+			} else if (backStyle == SCE_ELIXIR_ADD_WORD) {
+				MOVE_BACK_TO_BEGIN_WORD(backStyle);
+				
+				if (styler.Match(back, "alias"))
+					ident_state = ALIAS_STATE;
 			}
 			break;
 		}
@@ -1307,10 +1323,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						strcmp(ident, "@callback") == 0 ||
 						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
-						maybe_typefunc = true;
 					} else {
 						ident_state = NONE_STATE;
-						maybe_typefunc = false;
 					}
 				}
 				last_state = sc.state;
@@ -1328,6 +1342,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
 						if (ident_state == NONE_STATE ||
+							ident_state == TYPEDEF_NEXT_STATE ||
 							(ident_state == ALIAS_AS_STATE && strcmp(ident, "as") == 0)) {
 							sc.ChangeState(SCE_ELIXIR_FIELD);
 						} else {
@@ -1339,10 +1354,11 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.Forward();
 						}
 					}
-				} else if (ident_state == DEFNAME_STATE ||
-						   ident_state == TYPEDEF_STATE) {
+				} else if (ident_state == DEFNAME_STATE) {
 					sc.ChangeState(SCE_ELIXIR_DEFNAME);
-					ident_state = NONE_STATE;
+				} else if (ident_state == TYPEDEF_STATE) {
+					sc.ChangeState(SCE_ELIXIR_DEFNAME);
+					ident_state = TYPEDEF_NEXT_STATE;
 				} else {
 					SKIP_SPACES
 					if (is_dot_oper) { // using field/method of module
@@ -1394,11 +1410,9 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				else if (sc.state == SCE_ELIXIR_ADD_WORD
 						 && strcmp(ident, "alias") == 0)
 					ident_state = ALIAS_STATE;
-				else if (ident_state != ALIAS_AS_STATE)
+				else if (ident_state != ALIAS_AS_STATE &&
+						 ident_state != TYPEDEF_NEXT_STATE)
 					ident_state = NONE_STATE;
-				
-				if (IsKeywordStyle(sc.state))
-					maybe_typefunc = false;
 				
 				module_type = NONE_MODULE;
 				last_state = (sc.state == SCE_ELIXIR_STD_WORD &&
