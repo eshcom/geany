@@ -1327,7 +1327,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
-						if (ident_state == NONE_STATE || ident_state == PIPEOPER_STATE ||
+						if (ident_state == NONE_STATE ||
 							(ident_state == ALIAS_AS_STATE && strcmp(ident, "as") == 0)) {
 							sc.ChangeState(SCE_ELIXIR_FIELD);
 						} else {
@@ -1342,6 +1342,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (ident_state == DEFNAME_STATE ||
 						   ident_state == TYPEDEF_STATE) {
 					sc.ChangeState(SCE_ELIXIR_DEFNAME);
+					ident_state = NONE_STATE;
 				} else {
 					SKIP_SPACES
 					if (is_dot_oper) { // using field/method of module
@@ -1582,9 +1583,15 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				}
 			} else if (IsOperator(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_OPERATOR);
-				PREPARE_OPER_STATE
 				
-				is_dot_oper = (sc.ch == '.');
+				assign_to_strfield = false;
+				
+				if (sc.ch == '.' && sc.chNext != '.') {
+					is_dot_oper = true;
+				} else {
+					is_dot_oper = false;
+					if (ident_state == PIPEOPER_STATE) ident_state = NONE_STATE;
+				}
 				
 				if (sc.ch == '&') {
 					sc.chNext == '&' ? sc.Forward()
@@ -1600,7 +1607,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('=', '~') || sc.Match(':', ':')) {
 					sc.Forward();
 				} else if (sc.Match('.', '.')) { // range, example: 1..10
-					is_dot_oper = false;
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;

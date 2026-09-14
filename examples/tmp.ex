@@ -426,6 +426,8 @@ defmodule MyRouter do
     |> user_fun2
     |> conn()
     |> insert
+    |> some_func(param: 123)
+    |> some_func param: 123
   end
 
   @type t(first, last) :: %Examples{first: first, last: last}
@@ -861,4 +863,11 @@ if String.length(System.get_env("KAFKA_ENDPOINTS", "")) > 0 do
   config :df, DfAsync.KafkaEntrypoint, enabled: true
 else
   config :df, DfAsync.KafkaEntrypoint, enabled: false
+end
+
+# ------------------------------
+
+defp context_opts(opts) do
+  special_modules = opts |> Kernel.++([Finish])
+  global_from_diagram = nil
 end
