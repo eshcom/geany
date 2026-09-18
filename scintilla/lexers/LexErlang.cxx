@@ -241,18 +241,13 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 		while (--back) {
 			backStyle = styler.StyleAt(back);
 			if (backStyle != SCE_ERLANG_ESCAPESEQ) {
-				if (backStyle == SCE_ERLANG_CHARACTER) {
-					is_char_escape = true;
-				} else if (backStyle == SCE_ERLANG_STRING) {
-					is_char_escape = false;
-				} else if (styler[++back] == '$') {
-					is_char_escape = true;
-				} else {
-					is_char_escape = false;
-				}
+				is_char_escape = (backStyle == SCE_ERLANG_CHARACTER);
 				break;
 			}
 		}
+	/* for optimization: when inside SCE_ERLANG_ESCAPESEQ, there is no need
+	 * to determine last_state/last_oper, as they do not affect the highlighting
+	 * of SCE_ERLANG_CHARACTER/SCE_ERLANG_STRING */
 	} else if (startPos > 0) {
 		// esh: define last_state, last_oper
 		Sci_Position back = startPos;

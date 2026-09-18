@@ -803,7 +803,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	module_type_t module_type = NONE_MODULE;
 	
 	char ident[100];
-	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
+	bool is_at_symb = false;	// esh: "at" - is "@" symb (for node)
+	bool is_dot_oper = false;	// example: Struct.field, Module.func()
 	
 	// esh: added string_state for escape/format sequences highlighting
 	int string_state = -1;
@@ -924,21 +925,11 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		while (--back) {
 			backStyle = styler.StyleAt(back);
 			if (backStyle != SCE_ELIXIR_ESCAPESEQ) {
-				if (backStyle == SCE_ELIXIR_CHARACTER) {
-					is_char_escape = true;
-				} else if (IsStringStyle(backStyle)) {
-					is_char_escape = false;
-				} else if (styler[++back] == '?') {
-					is_char_escape = true;
-				} else {
-					is_char_escape = false;
-				}
+				is_char_escape = (backStyle == SCE_ELIXIR_CHARACTER);
 				break;
 			}
 		}
 	}
-	
-	bool is_dot_oper = false; // example: Struct.field, Module.func()
 	
 	// Set up state stack from last line and remove any subsequent string at eol states
 	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator ssIter;

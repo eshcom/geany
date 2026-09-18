@@ -78,6 +78,8 @@ defmodule Df.UseCases.UserAction do
           ssh_id: integer()
         }
 
+  @type t() :: %__MODULE__{query: String.t()}
+
   defmacro __using__(_opts) do
     quote do
       @behaviour Df.UseCases.UserAction
