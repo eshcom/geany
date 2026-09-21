@@ -567,7 +567,7 @@ PositionCacheEntry::PositionCacheEntry() noexcept :
 
 // Copy constructor not currently used, but needed for being element in std::vector.
 PositionCacheEntry::PositionCacheEntry(const PositionCacheEntry &other) :
-	styleNumber(other.styleNumber), len(other.styleNumber), clock(other.styleNumber), positions(nullptr) {
+	styleNumber(other.styleNumber), len(other.len), clock(other.clock), positions(nullptr) {
 	if (other.positions) {
 		const size_t lenData = len + (len / sizeof(XYPOSITION)) + 1;
 		positions.reset(new XYPOSITION[lenData]);
