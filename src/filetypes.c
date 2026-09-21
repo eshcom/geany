@@ -828,10 +828,11 @@ static void filetype_free(gpointer data, G_GNUC_UNUSED gpointer user_data)
 	g_free(ft->comment_close);
 	g_free(ft->comment_single);
 	g_free(ft->context_action_cmd);
-	g_free(ft->priv->filecmds);
-	g_free(ft->priv->ftdefcmds);
-	g_free(ft->priv->execcmds);
 	g_free(ft->error_regex_string);
+	
+	build_command_free(ft->priv->filecmds);
+	build_command_free(ft->priv->ftdefcmds);
+	build_command_free(ft->priv->execcmds);
 	
 	if (ft->icon)
 		g_object_unref(ft->icon);

@@ -2071,12 +2071,20 @@ GtkWidget *build_commands_table(GeanyDocument *doc, GeanyBuildSource dst, BuildT
 
 void build_free_fields(BuildTableData table_data)
 {
-	guint cmdindex;
-
-	for (cmdindex = 0; cmdindex < build_items_count; ++cmdindex)
+	for (guint cmdindex = 0; cmdindex < build_items_count; ++cmdindex)
 		g_free(table_data->rows[cmdindex]);
+	
 	g_free(table_data->rows);
 	g_free(table_data);
+}
+
+
+void build_command_free(GeanyBuildCommand *bc)
+{
+	g_free(bc->label);
+	g_free(bc->command);
+	g_free(bc->working_dir);
+	g_free(bc);
 }
 
 

@@ -144,6 +144,7 @@ GtkWidget *build_commands_table(GeanyDocument *doc, GeanyBuildSource dst, BuildT
 void build_read_project(GeanyFiletype *ft, BuildTableData build_properties);
 
 void build_free_fields(BuildTableData data);
+void build_command_free(GeanyBuildCommand *bc);
 
 /* build response decode assistance function */
 gboolean build_parse_make_dir(const gchar *string, gchar **prefix);
