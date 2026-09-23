@@ -125,3 +125,4 @@ Makefile.in
 a.out
 *.gch
 po/.intltool-merge-cache.lock
+opencode.json

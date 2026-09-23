@@ -38,6 +38,40 @@ using namespace Scintilla;
 
 namespace {
 
+typedef enum {
+	NUMERAL_START,
+	NUMERAL_BASE_VALUE,
+	NUMERAL_FLOAT,
+	NUMERAL_EXPONENT
+} number_state_t;
+
+typedef enum {
+	NONE_STATE,
+	DEFNAME_STATE,		// def, defp, defmacro, defmacrop, ...
+	TYPEDEF_STATE,		// @type, @spec, @callback, @macrocallback
+	TYPEDEF_NEXT_STATE,
+	PIPEOPER_STATE,		// |>
+	ALIAS_STATE,
+	ALIAS_AS_STATE,
+	ALIAS_GRP_STATE
+} ident_state_t;
+
+typedef enum {
+	NONE_MODULE,
+	OTHER_MODULE,
+	KERNEL_MODULE
+} module_type_t;
+
+
+struct LineState {
+	int stringState;
+	char closingChar;
+	bool canbeInterpolate;
+	bool assignToStrField;
+	int lastState;
+	ident_state_t identState;
+};
+
 struct SingleStringExpState {
 	int state;
 	char closingChar;
@@ -84,9 +118,6 @@ struct AtomPunctSequence {
 	}
 };
 
-static inline bool isWordEnd(const int ch) {
-	return (ch == '!' || ch == '?');
-}
 
 static bool isRadix(int radix, int ch) {
 	int digit;
@@ -104,38 +135,13 @@ static bool isRadix(int radix, int ch) {
 	return (digit < radix);
 }
 
-typedef enum {
-	NUMERAL_START,
-	NUMERAL_BASE_VALUE,
-	NUMERAL_FLOAT,
-	NUMERAL_EXPONENT
-} number_state_t;
-
-typedef enum {
-	NONE_STATE,
-	DEFNAME_STATE,		// def, defp, defmacro, defmacrop, ...
-	TYPEDEF_STATE,		// @type, @spec, @callback, @macrocallback
-	PIPEOPER_STATE,		// |>
-	ALIAS_STATE,
-	ALIAS_AS_STATE,
-	ALIAS_GRP_STATE
-} ident_state_t;
-
-typedef enum {
-	NONE_MODULE,
-	OTHER_MODULE,
-	KERNEL_MODULE
-} module_type_t;
+static inline bool isWordEnd(const int ch) {
+	return (ch == '!' || ch == '?');
+}
 
 static inline bool IsCommentStyle(int style) {
 	return (style == SCE_ELIXIR_COMMENT ||
 			style == SCE_ELIXIR_TASKMARKER);
-}
-
-static inline bool IsSpaceEquivStyle(int style) {
-	return (IsCommentStyle(style) ||
-			style == SCE_ELIXIR_DEFAULT ||
-			style == SCE_ELIXIR_LINE_CONTINUED);
 }
 
 static inline bool IsOperatorStyle(int style) {
@@ -158,11 +164,6 @@ static inline bool IsKeywordStyle(int style) {
 			style == SCE_ELIXIR_USR_WORD);
 }
 
-static inline bool IsStdWordOrAttrStyle(int style) {
-	return (IsKeywordStyle(style) ||
-			style == SCE_ELIXIR_STD_MODULE_ATTR);
-}
-
 static inline bool IsStringValStyle(int style) {
 	return (style == SCE_ELIXIR_TRIPLEVAL ||
 			style == SCE_ELIXIR_STRINGVAL ||
@@ -171,22 +172,9 @@ static inline bool IsStringValStyle(int style) {
 			style == SCE_ELIXIR_LITERALTRIPLEVAL);
 }
 
-static inline bool IsStringStyle(int style) {
-	return (IsStringValStyle(style) ||
-			style == SCE_ELIXIR_TRIPLE ||
-			style == SCE_ELIXIR_STRING ||
-			style == SCE_ELIXIR_CHARSTR ||
-			style == SCE_ELIXIR_LITERAL ||
-			style == SCE_ELIXIR_LITERALTRIPLE);
-}
-
-static inline bool IsNestedStringStyle(int style) {
-	return (style == SCE_ELIXIR_ESCAPESEQ ||
-			style == SCE_ELIXIR_FORMATSEQ);
-}
-
 static inline int GetSaveStringStyle(int style, int stringStyle) {
-	return IsNestedStringStyle(style) ? stringStyle : style;
+	return (style == SCE_ELIXIR_ESCAPESEQ ||
+			style == SCE_ELIXIR_FORMATSEQ) ? stringStyle : style;
 }
 
 static inline const char *GetTripleQuote(char closing_char) {
@@ -396,6 +384,7 @@ class LexerElixir : public DefaultLexer {
 	SubStyles subStyles;
 	std::map<Sci_Position, std::vector<SingleStringExpState>> stringStateAtEol;
 	std::map<Sci_Position, ModuleAliases> moduleAliasesAtEol;
+	std::map<Sci_Position, LineState> lineStateAtEol;
 public:
 	explicit LexerElixir() :
 		DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses)),
@@ -611,11 +600,17 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 #define CHECK_LINE_END															\
 	if (sc.atLineEnd) {															\
 		if (!stringStateStack.empty()) {										\
-			std::pair<Sci_Position, std::vector<SingleStringExpState>> val;		\
-			val.first = sc.currentLine;											\
-			val.second = stringStateStack;										\
-			stringStateAtEol.insert(val);										\
+			std::pair<Sci_Position, std::vector<SingleStringExpState>> ssVal;	\
+			ssVal.first = sc.currentLine;										\
+			ssVal.second = stringStateStack;									\
+			stringStateAtEol.insert(ssVal);										\
 		}																		\
+		std::pair<Sci_Position, LineState> lsVal;								\
+		lsVal.first = sc.currentLine;											\
+		lsVal.second = (LineState){string_state, closing_char,					\
+								   canbe_interpolate, assign_to_strfield,		\
+								   last_state, ident_state};					\
+		lineStateAtEol.insert(lsVal);											\
 		if (!sc.More()) break;													\
 		lineEndCurr = styler.LineEnd(sc.currentLine + 1);						\
 	}
@@ -752,19 +747,6 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 		CHECK_CLOSING_CHAR														\
 	}
 
-#define DEFINE_ASSIGN_TO_STRFIELD												\
-	while (--back > 1 && IsSpaceEquivStyle(styler.StyleAt(back)));				\
-	if (back > 1 && styler.StyleAt(back--) == SCE_ELIXIR_OPERATOR) {			\
-		if (styler[back] == '=' && styler[back + 1] == '>') {					\
-			while (--back && IsSpaceEquivStyle(styler.StyleAt(back)));			\
-			assign_to_strfield = (styler.StyleAt(back) == SCE_ELIXIR_STRING);	\
-																				\
-		} else if (styler[back] == '<' && styler[back + 1] == '>') {			\
-			while (--back && IsSpaceEquivStyle(styler.StyleAt(back)));			\
-			assign_to_strfield = IsStringValStyle(styler.StyleAt(back));		\
-		}																		\
-	}
-
 #define PREPARE_OPER_STATE														\
 	if (ident_state != PIPEOPER_STATE && ident_state != ALIAS_AS_STATE			\
 									  && ident_state != ALIAS_GRP_STATE)		\
@@ -775,15 +757,12 @@ const char *LexerElixir::GetModule(const char *alias, Sci_Position currentLine) 
 	(ident_state == PIPEOPER_STATE && sc.ch != '.')
 
 #define IS_TYPE_FUNC															\
-	(maybe_typefunc && sc.ch != ':')
+	(ident_state == TYPEDEF_NEXT_STATE && sc.ch != ':')
 
 
 void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 								 int initStyle, IDocument *pAccess) {
 	Accessor styler(pAccess, NULL);
-	
-	std::vector<SingleStringExpState> stringStateStack;
-	SingleStringExpState *currentStringExp = NULL;
 	
 	Sci_PositionU endPos = startPos + length;
 	
@@ -805,146 +784,15 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	int exponent_digits = 0;
 	number_state_t number_state;
 	
-	ident_state_t ident_state = NONE_STATE;
 	module_type_t module_type = NONE_MODULE;
 	
 	char ident[100];
-	bool is_at_symb = false;			// esh: "at" - is "@" symb (for node)
+	bool is_at_symb = false;		// "at" - is "@" symb (for node)
+	bool is_dot_oper = false;		// example: Struct.field, Module.func()
+	bool is_char_escape = false;	// escape sequences highlighting for SCE_ELIXIR_CHARACTER
 	
-	// esh: added string_state for escape/format sequences highlighting
-	int string_state = -1;
-	char closing_char = ' ';
-	bool canbe_interpolate = false;
-	bool assign_to_strfield = false;
-	
-	if (IsStringStyle(initStyle) || IsNestedStringStyle(initStyle)) {
-		Sci_Position back = startPos;
-		int backStyle;
-		while (--back >= 0) {
-			backStyle = styler.StyleAt(back);
-			if (back > 0 && (IsStringStyle(backStyle) ||
-							 IsNestedStringStyle(backStyle))) {
-				continue;
-				
-			} else if (backStyle == SCE_ELIXIR_STRING_SUBOPER &&
-						styler[back] == '}') {
-				int nestingCount = 1;
-				while (--back) {
-					if (styler.StyleAt(back) == SCE_ELIXIR_STRING_SUBOPER) {
-						if (styler[back] == '}') {
-							nestingCount++;
-						} else if (styler[back] == '{') {
-							nestingCount--;
-							back--; // skip back '{' in "#{"
-						}
-					}
-					if (nestingCount == 0) break;
-				}
-				continue;
-				
-			} else if (backStyle == SCE_ELIXIR_STRING_EEXOPER &&
-						styler.Match(back, "%>")) {
-				int nestingCount = 1;
-				while (--back) {
-					if (styler.StyleAt(back) == SCE_ELIXIR_STRING_EEXOPER) {
-						if (styler.Match(back, "%>")) {
-							nestingCount++;
-						} else if (styler.Match(back, "<%")) {
-							nestingCount--;
-						}
-					}
-					if (nestingCount == 0) break;
-				}
-				continue;
-				
-			} else {
-				// esh: define string_state, closing_char, canbe_interpolate
-				if (!IsStringStyle(backStyle)) back++;
-				string_state = styler.StyleAt(back);
-				
-				Sci_Position index = back;
-				if (styler[index] == '~') {
-					canbe_interpolate = strchr(L_LITERAL_PREFIX, styler[++index]);
-					index++;
-				} else {
-					canbe_interpolate = true;
-				}
-				closing_char = GetClosingChar(styler[index]);
-				
-				// esh: define assign_to_strfield
-				DEFINE_ASSIGN_TO_STRFIELD
-				break;
-			}
-		}
-	} else if (IsSpaceEquivStyle(initStyle)) {
-		// esh: define assign_to_strfield
-		Sci_Position back = startPos;
-		DEFINE_ASSIGN_TO_STRFIELD
-	}
-	
-	int last_state = SCE_ELIXIR_DEFAULT;
-	// esh: define last_state
-	if (startPos > 0) {
-		Sci_Position back = startPos;
-		while (--back && IsSpaceEquivStyle(styler.StyleAt(back)));
-		
-		last_state = styler.StyleAt(back);
-		if (last_state == SCE_ELIXIR_STD_WORD) {
-			while (back > 0 && styler.StyleAt(back - 1) == SCE_ELIXIR_STD_WORD)
-				back--;
-			if (styler.Match(back, "do") || styler.Match(back, "end")
-				|| styler.Match(back, "else"))
-				last_state = SCE_ELIXIR_DEFAULT;
-		}
-	}
-	
-	bool maybe_typefunc = false;
-	// esh: define maybe_typefunc
-	if (!IsStdWordOrAttrStyle(initStyle)) {
-		Sci_Position back = startPos;
-		int backStyle;
-		while (--back >= 0) {
-			backStyle = styler.StyleAt(back);
-			if (!IsStdWordOrAttrStyle(backStyle)) {
-				continue;
-				
-			} else if (backStyle == SCE_ELIXIR_STD_MODULE_ATTR) {
-				while (back > 0 && styler[back - 1] != '@')
-					back--;
-				
-				maybe_typefunc = (styler.Match(back, "spec") ||
-								  styler.Match(back, "type") ||
-								  styler.Match(back, "callback") ||
-								  styler.Match(back, "macrocallback"));
-			}
-			break;
-		}
-	}
-	
-	// esh: for escape sequences highlighting for SCE_ELIXIR_CHARACTER
-	bool is_char_escape = false;
-	// esh: define is_char_escape
-	if (initStyle == SCE_ELIXIR_ESCAPESEQ) {
-		Sci_Position back = startPos;
-		int backStyle;
-		while (--back) {
-			backStyle = styler.StyleAt(back);
-			if (backStyle != SCE_ELIXIR_ESCAPESEQ) {
-				if (backStyle == SCE_ELIXIR_CHARACTER) {
-					is_char_escape = true;
-				} else if (IsStringStyle(backStyle)) {
-					is_char_escape = false;
-				} else if (styler[++back] == '?') {
-					is_char_escape = true;
-				} else {
-					is_char_escape = false;
-				}
-				break;
-			}
-		}
-	}
-	
-	bool is_dot_oper = false; // example: Struct.field, Module.func()
+	std::vector<SingleStringExpState> stringStateStack;
+	SingleStringExpState *currentStringExp = NULL;
 	
 	// Set up state stack from last line and remove any subsequent string at eol states
 	std::map<Sci_Position, std::vector<SingleStringExpState>>::iterator ssIter;
@@ -956,6 +804,31 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	ssIter = stringStateAtEol.lower_bound(sc.currentLine);
 	if (ssIter != stringStateAtEol.end()) {
 		stringStateAtEol.erase(ssIter, stringStateAtEol.end());
+	}
+	
+	// esh: added string_state for escape/format sequences highlighting
+	int string_state = -1;
+	char closing_char = ' ';
+	bool canbe_interpolate = false;
+	bool assign_to_strfield = false;
+	
+	int last_state = SCE_ELIXIR_DEFAULT;
+	ident_state_t ident_state = NONE_STATE;
+	
+	// Restore line state from last line and remove any subsequent line at eol states
+	std::map<Sci_Position, LineState>::iterator lsIter;
+	lsIter = lineStateAtEol.find(sc.currentLine - 1);
+	if (lsIter != lineStateAtEol.end()) {
+		string_state = lsIter->second.stringState;
+		closing_char = lsIter->second.closingChar;
+		canbe_interpolate = lsIter->second.canbeInterpolate;
+		assign_to_strfield = lsIter->second.assignToStrField;
+		last_state = lsIter->second.lastState;
+		ident_state = lsIter->second.identState;
+	}
+	lsIter = lineStateAtEol.lower_bound(sc.currentLine);
+	if (lsIter != lineStateAtEol.end()) {
+		lineStateAtEol.erase(lsIter, lineStateAtEol.end());
 	}
 	
 	// Remove any subsequent module aliases at eol
@@ -1313,10 +1186,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						strcmp(ident, "@callback") == 0 ||
 						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
-						maybe_typefunc = true;
 					} else {
 						ident_state = NONE_STATE;
-						maybe_typefunc = false;
 					}
 				}
 				last_state = sc.state;
@@ -1334,6 +1205,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				if (sc.ch == ':') { // init field of map/struct or Erlang type oper (::)
 					if (sc.chNext != ':') {
 						if (ident_state == NONE_STATE ||
+							ident_state == TYPEDEF_NEXT_STATE ||
 							(ident_state == ALIAS_AS_STATE && strcmp(ident, "as") == 0)) {
 							sc.ChangeState(SCE_ELIXIR_FIELD);
 						} else {
@@ -1345,10 +1217,11 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 							sc.Forward();
 						}
 					}
-				} else if (ident_state == DEFNAME_STATE ||
-						   ident_state == TYPEDEF_STATE) {
+				} else if (ident_state == DEFNAME_STATE) {
 					sc.ChangeState(SCE_ELIXIR_DEFNAME);
-					ident_state = NONE_STATE;
+				} else if (ident_state == TYPEDEF_STATE) {
+					sc.ChangeState(SCE_ELIXIR_DEFNAME);
+					ident_state = TYPEDEF_NEXT_STATE;
 				} else {
 					SKIP_SPACES
 					if (is_dot_oper) { // using field/method of module
@@ -1400,11 +1273,9 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				else if (sc.state == SCE_ELIXIR_ADD_WORD
 						 && strcmp(ident, "alias") == 0)
 					ident_state = ALIAS_STATE;
-				else if (ident_state != ALIAS_AS_STATE)
+				else if (ident_state != ALIAS_AS_STATE &&
+						 ident_state != TYPEDEF_NEXT_STATE)
 					ident_state = NONE_STATE;
-				
-				if (IsKeywordStyle(sc.state))
-					maybe_typefunc = false;
 				
 				module_type = NONE_MODULE;
 				last_state = (sc.state == SCE_ELIXIR_STD_WORD &&
