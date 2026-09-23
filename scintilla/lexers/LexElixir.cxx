@@ -793,6 +793,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 		   //~ styler.GetLine(startPos) + 1, styler[startPos],
 		   //~ styler[endPos - 2], initStyle, startPos, length);
 	
+	// esh: verifying that the Lex() func is always called with
+	//		startPos pointing to the start of the current line
+	//		(TODO: delete later)
+	Sci_Position lineStart = styler.LineStart(styler.GetLine(startPos));
+	if (startPos != lineStart) exit(1);
+	
 	StyleContext sc(startPos, length, initStyle, styler);
 	
 	int radix_digits = 0;
