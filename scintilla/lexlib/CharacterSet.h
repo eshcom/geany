@@ -282,6 +282,22 @@ inline T ToLower(T ch) {
 		return ch - 'A' + 'a';
 }
 
+inline bool IsRadix(int radix, int ch) {
+	int digit;
+	
+	if (radix < 2 || radix > 36)
+		return false;
+	
+	if (IsDigit(ch)) {
+		digit = ch - '0';
+	} else if (IsAlnum(ch)) {
+		digit = ToUpper(ch) - 'A' + 10;
+	} else {
+		return false;
+	}
+	return (digit < radix);
+}
+
 int CompareCaseInsensitive(const char *a, const char *b);
 int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
 void RemoveAllSpaces(char *s);

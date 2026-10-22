@@ -119,22 +119,6 @@ struct AtomPunctSequence {
 };
 
 
-static bool isRadix(int radix, int ch) {
-	int digit;
-	
-	if (radix < 2 || radix > 36)
-		return false;
-	
-	if (IsDigit(ch)) {
-		digit = ch - '0';
-	} else if (IsAlnum(ch)) {
-		digit = ToUpper(ch) - 'A' + 10;
-	} else {
-		return false;
-	}
-	return (digit < radix);
-}
-
 static inline bool isWordEnd(const int ch) {
 	return (ch == '!' || ch == '?');
 }
@@ -899,10 +883,18 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						}
 					} break;
 					
-					/* Integer in other base than 10 (x#yyy) */
+					/* Integer in other base than 10 (0x/0o/0b) */
 					case NUMERAL_BASE_VALUE : {
-						if (isRadix(radix_digits, sc.ch)) {
+						if (IsRadix(radix_digits, sc.ch)) {
 							continue;
+						} else if (sc.ch == '_') {
+							if (IsRadix(radix_digits, sc.chPrev)
+								&& IsRadix(radix_digits, sc.chNext)) {
+								sc.Forward();
+								continue;
+							} else {
+								sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
+							}
 						} else if (IsAlnum(sc.ch)) {
 							sc.ChangeState(SCE_ELIXIR_UNKNOWN); // error
 						}
@@ -1434,9 +1426,23 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 					atomPunctSeq.initAtomPunctState(sc.ch);
 				
 			} else if (IsDigit(sc.ch)) {
-				number_state = NUMERAL_START;
-				radix_digits = sc.ch - '0';
-				sc.SetState(SCE_ELIXIR_NUMBER);
+				// Elixir alternative radix syntax: 0x, 0X, 0o, 0O, 0b, 0B
+				if (sc.ch == '0' && strchr("xXoObB", sc.chNext) != NULL) {
+					number_state = NUMERAL_BASE_VALUE;
+					if (sc.chNext == 'x' || sc.chNext == 'X') {
+						radix_digits = 16;
+					} else if (sc.chNext == 'o' || sc.chNext == 'O') {
+						radix_digits = 8;
+					} else { // sc.chNext == 'b' || sc.chNext == 'B'
+						radix_digits = 2;
+					}
+					sc.SetState(SCE_ELIXIR_NUMBER);
+					sc.Forward();
+				} else {
+					number_state = NUMERAL_START;
+					radix_digits = sc.ch - '0';
+					sc.SetState(SCE_ELIXIR_NUMBER);
+				}
 				
 			} else if (IsUpper(sc.ch)) {
 				sc.SetState(SCE_ELIXIR_MODULE);

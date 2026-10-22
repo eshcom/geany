@@ -873,3 +873,38 @@ defp context_opts(opts) do
   special_modules = opts |> Kernel.++([Finish])
   global_from_diagram = nil
 end
+
+# ------------------------------
+
+defp check1(char) when char == 0x20, do: true           # 32
+defp check1(char) when char == 0X20, do: true           # 32
+defp check1(char) when char == 0xFF, do: true           # 255
+defp check1(char) when char == 0XFF, do: true           # 255
+defp check1(char) when char == 0xABC, do: true          # 2748
+defp check1(char) when char == 0xDEAD_BEEF, do: true    # 3_735_928_559
+defp check1(char) when char == 0xAB_CD_EF, do: true     # 11_259_375
+defp check1(char) when char == 0x01_02_03_04, do: true  # полезно при работе с байтами, IP, hex-строками
+
+defp check1(char) when char == 0b00100000, do: true     # 32 — тот же символ пробела
+defp check1(char) when char == 0b11111111, do: true     # 255
+defp check1(char) when char == 0B1010, do: true         # 10
+
+defp check1(char) when char == 0o40, do: true           # 32 — восьмеричная 40 = десятичная 32
+defp check1(char) when char == 0O40, do: true           # тоже 32
+
+defp check1(char) when char == 0x01_, do: true          # error
+defp check1(char) when char == 0x_01, do: true          # error
+defp check1(char) when char == 0x0__1, do: true         # error
+
+defp check1(char) when char == ? , do: true             # 0x20
+defp check1(char) when char == ?a, do: true             # 97
+defp check1(char) when char == ?А, do: true             # 1040
+
+defp check1(_char) do
+  <<0x20>>                          # бин с одним байтом — пробел
+  <<0x41, 0x42, 0x43>>              # <<65, 66, 67>> → "ABC"
+  <<0x20::size(4), 0x3::size(4)>>   # два ниббла в одном байте
+  
+  false
+end
+

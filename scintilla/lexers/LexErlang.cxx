@@ -30,22 +30,6 @@
 
 using namespace Scintilla;
 
-static bool isRadix(int radix, int ch) {
-	int digit;
-	
-	if (radix < 2 || radix > 36)
-		return false;
-	
-	if (IsDigit(ch)) {
-		digit = ch - '0';
-	} else if (IsAlnum(ch)) {
-		digit = ToUpper(ch) - 'A' + 10;
-	} else {
-		return false;
-	}
-	return (digit < radix);
-}
-
 static bool isFuncDefinition(Sci_Position pos, Sci_PositionU endPos,
 							 Accessor &styler) {
 	/* find ") ->" or ") when" */
@@ -352,7 +336,7 @@ static void ColouriseErlangDoc(Sci_PositionU startPos, Sci_Position length,
 					
 					/* Integer in other base than 10 (x#yyy) */
 					case NUMERAL_BASE_VALUE : {
-						if (isRadix(radix_digits, sc.ch)) {
+						if (IsRadix(radix_digits, sc.ch)) {
 							continue;
 						} else if (IsAlnum(sc.ch)) {
 							sc.ChangeState(SCE_ERLANG_UNKNOWN); // error
