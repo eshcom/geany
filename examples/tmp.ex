@@ -908,3 +908,10 @@ defp check1(_char) do
   false
 end
 
+# ------------------------------
+
+@type t1() :: any()
+@process1 to_string(Process)
+
+@type t2() :: %__MODULE__{path: Path.t()}
+@process2 [to_string(Process)]

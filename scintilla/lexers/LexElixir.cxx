@@ -1169,6 +1169,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.GetCurrent(ident, sizeof(ident));
 				RemoveAllSpaces(ident);
 				
+				ident_state = NONE_STATE;
+				
 				if (stdModuleAttrs.InList(ident)) {
 					sc.ChangeState(SCE_ELIXIR_STD_MODULE_ATTR);
 					
@@ -1178,8 +1180,6 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						strcmp(ident, "@callback") == 0 ||
 						strcmp(ident, "@macrocallback") == 0) {
 						ident_state = TYPEDEF_STATE;
-					} else {
-						ident_state = NONE_STATE;
 					}
 				}
 				last_state = sc.state;
