@@ -2287,13 +2287,15 @@ static TMTag *find_elixir_module_tag(TMSourceFile *curr_file, guint curr_line,
 									 const gchar *module)
 {
 	TMTag *tag, *found_tag = NULL;
+	// search: module, protocol, implementation
+	TMTagType type = (tm_tag_namespace_t | tm_tag_interface_t | tm_tag_union_t);
 	
 	if (curr_file && curr_file->tags_array)
 	{
 		for (guint i = 0; i < curr_file->tags_array->len; ++i)
 		{
 			tag = TM_TAG(curr_file->tags_array->pdata[i]);
-			if (tag->line <= curr_line && tag->type == tm_tag_namespace_t
+			if (tag->line <= curr_line && (tag->type & type)
 				&& (!found_tag || found_tag->line < tag->line))
 				if ((module && utils_str_equal(tag->name, module)) ||
 					(!module && curr_line <= tag->endLine)) // __MODULE__
