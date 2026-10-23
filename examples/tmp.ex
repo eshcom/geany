@@ -915,3 +915,15 @@ end
 
 @type t2() :: %__MODULE__{path: Path.t()}
 @process2 [to_string(Process)]
+
+# ------------------------------
+
+defp consume_porcelain([entry | rest], acc) do
+  case entry do
+    <<x, y, _space::any, new_path::binary>> ->
+      consume_porcelain(rest, [{x, y, new_path} | acc])
+
+    _ ->
+      consume_porcelain(rest, acc)
+  end
+end

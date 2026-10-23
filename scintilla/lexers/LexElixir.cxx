@@ -774,6 +774,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 	bool is_at_symb = false;		// "at" - is "@" symb (for node)
 	bool is_dot_oper = false;		// example: Struct.field, Module.func()
 	bool is_char_escape = false;	// escape sequences highlighting for SCE_ELIXIR_CHARACTER
+	bool is_type_oper = false;		// example: <<prefix, new_path::binary>>
 	
 	std::vector<SingleStringExpState> stringStateStack;
 	SingleStringExpState *currentStringExp = NULL;
@@ -1237,7 +1238,8 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 						sc.ChangeState(SCE_ELIXIR_STD_MACRO);
 					} else if (usrWords.InList(ident)) {
 						sc.ChangeState(SCE_ELIXIR_USR_WORD);
-					} else if (IS_TYPE_FUNC) {
+					} else if (IS_TYPE_FUNC || is_type_oper) {
+						is_type_oper = false;
 						sc.ChangeState(typeFuncs.InList(ident) ? SCE_ELIXIR_TYPE_FUNC
 															   : SCE_ELIXIR_FUNCTION);
 					} else if (sc.ch == '(' || IS_PIPEOPER_FUNC) {
@@ -1468,6 +1470,7 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_ELIXIR_OPERATOR);
 				
 				assign_to_strfield = false;
+				is_type_oper = false;
 				
 				if (sc.ch == '.' && sc.chNext != '.') {
 					is_dot_oper = true;
@@ -1487,9 +1490,12 @@ void SCI_METHOD LexerElixir::Lex(Sci_PositionU startPos, Sci_Position length,
 				} else if (sc.Match('<', '>')) {
 					assign_to_strfield = IsStringValStyle(last_state);
 					sc.Forward();
-				} else if (sc.Match('=', '~') || sc.Match(':', ':')) {
+				} else if (sc.Match('=', '~')) {
 					sc.Forward();
 				} else if (sc.Match('.', '.')) { // range, example: 1..10
+					sc.Forward();
+				} else if (sc.Match(':', ':')) { // type oper, example: <<prefix, new_path::binary>>
+					is_type_oper = true;
 					sc.Forward();
 				} else if (sc.Match('|', '>')) {
 					ident_state = PIPEOPER_STATE;
