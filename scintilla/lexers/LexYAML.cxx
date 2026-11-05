@@ -26,212 +26,449 @@
 using namespace Scintilla;
 
 static const char * const yamlWordListDesc[] = {
-	"Keywords",
+	"Common keywords (eg. true/false/null)",
+	"Type keywords (eg. boolean/integer/string)",
+	"Task markers",
 	0
 };
 
-static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
-	return IsEOL(styler[i], styler.SafeGetCharAt(i + 1));
-}
-
-static unsigned int SpaceCount(char* lineBuffer) {
-	if (lineBuffer == NULL)
-		return 0;
-	
-	char* headBuffer = lineBuffer;
-	
-	while (*headBuffer == ' ')
-		headBuffer++;
-	
-	return static_cast<unsigned int>(headBuffer - lineBuffer);
-}
-
-static bool KeywordAtChar(char* lineBuffer, char* startComment,
-						  const WordList &keywords) {
-	if (lineBuffer == NULL || startComment <= lineBuffer)
-		return false;
-	char* endValue = startComment - 1;
-	while (endValue >= lineBuffer && *endValue == ' ')
-		endValue--;
-	Sci_PositionU len = static_cast<Sci_PositionU>(endValue - lineBuffer) + 1;
-	char s[100];
-	if (len > (sizeof(s) / sizeof(s[0]) - 1))
-		return false;
-	strncpy(s, lineBuffer, len);
-	s[len] = '\0';
-	return (keywords.InList(s));
-}
-
 #define YAML_STATE_BITSIZE		16
 #define YAML_STATE_MASK			(0xFFFF0000)
-#define YAML_STATE_DOCUMENT		(1 << YAML_STATE_BITSIZE)
-#define YAML_STATE_VALUE		(2 << YAML_STATE_BITSIZE)
-#define YAML_STATE_COMMENT		(3 << YAML_STATE_BITSIZE)
-#define YAML_STATE_TEXT_PARENT	(4 << YAML_STATE_BITSIZE)
-#define YAML_STATE_TEXT			(5 << YAML_STATE_BITSIZE)
+#define YAML_STATE_KEY_PENDING	(1 << YAML_STATE_BITSIZE)
+#define YAML_STATE_TEXT_PENDING	(2 << YAML_STATE_BITSIZE)
+#define YAML_STATE_TEXT			(3 << YAML_STATE_BITSIZE)
 
-static void ColouriseYAMLLine(
-	char *lineBuffer,
-	Sci_PositionU currentLine,
-	Sci_PositionU lengthLine,
-	Sci_PositionU startLine,
-	Sci_PositionU endPos,
-	WordList &keywords,
-	Accessor &styler) {
+#define IS_YAML_SEPARATOR(ch)		(IsSpace(ch) || (ch) == ':')
+#define IS_YAML_BLOCK_SCALAR(ch)	((ch) == '|' || (ch) == '>')
+#define IS_YAML_NUMBER_END(ch)		(IsSpace(ch) || (ch) == ',' || (ch) == ']' \
+									 || (ch) == '}' || (ch) == '#')
+
+static inline char GetClosingChar(int style) {
+	return (style == SCE_YAML_DOUBLESTRING) ? '\"' : '\'';
+}
+
+static void StartBlockScalar(StyleContext &sc, Accessor &styler,
+							 Sci_Position line, int parentIndent) {
+	int contentIndent = -1;
+	bool sawIndent = false;
 	
-	Sci_PositionU i = 0;
-	bool bInQuotes = false;
-	unsigned int indentAmount = SpaceCount(lineBuffer);
+	for (int n = 1; n <= 2; n++) {
+		const int ch = sc.GetRelative(n);
+		if (ch >= '1' && ch <= '9' && !sawIndent) {
+			contentIndent = parentIndent + (ch - '0');
+			sawIndent = true;
+		} else if (!IsSign(ch)) {
+			break;
+		}
+	}
 	
-	if (currentLine > 0) {
-		int parentLineState = styler.GetLineState(currentLine - 1);
+	if (contentIndent >= 0) {
+		styler.SetLineState(line, YAML_STATE_TEXT | contentIndent);
+	} else {
+		styler.SetLineState(line, YAML_STATE_TEXT_PENDING | parentIndent);
+	}
+}
+
+static bool IsTypeKey(const char *ident) {
+	while (IsSpaceOrTab(*ident))
+		ident++;
+	
+	size_t len = strlen(ident);
+	while (len > 0 && IsSpaceOrTab(ident[len - 1]))
+		len--;
+	
+	if (len >= 2 && IsQuote(ident[0]) && ident[len - 1] == ident[0]) {
+		ident++;
+		len -= 2;
+	}
+	
+	return (len == 4 && strncmp(ident, "type", 4) == 0) ||
+		   (len == 6 && strncmp(ident, "x-type", 6) == 0);
+}
+
+static bool IsQuotedKey(StyleContext &sc) {
+	const int quote = sc.ch;
+	if (!IsQuote(quote))
+		return false;
+	
+	int n = 1;
+	while (true) {
+		const int ch = sc.GetRelative(n);
+		if (ch == 0 || IsCRLF(ch))
+			return false;
 		
-		if ((parentLineState&YAML_STATE_MASK) == YAML_STATE_TEXT ||
-			(parentLineState&YAML_STATE_MASK) == YAML_STATE_TEXT_PARENT) {
-			unsigned int parentIndentAmount = parentLineState&(~YAML_STATE_MASK);
-			if (indentAmount > parentIndentAmount) {
-				styler.SetLineState(currentLine, YAML_STATE_TEXT | parentIndentAmount);
-				styler.ColourTo(endPos, SCE_YAML_TEXT);
-				return;
+		if (quote == '\'') {
+			if (ch == '\'') {
+				if (sc.GetRelative(n + 1) == '\'') {
+					n += 2;	// Escaped single quote
+					continue;
+				}
+				n++;
+				break;
+			}
+		} else {
+			if (ch == '\\') {
+				const int next = sc.GetRelative(n + 1);
+				if (next == 0 || IsCRLF(next))
+					return false;
+				n += 2;	// Skip escaped character
+				continue;
+			}
+			if (ch == '\"') {
+				n++;
+				break;
 			}
 		}
+		n++;
 	}
-	styler.SetLineState(currentLine, 0);
-	if (strncmp(lineBuffer, "---", 3) == 0 || strncmp(lineBuffer, "...", 3) == 0) {	// Document marker
-		styler.SetLineState(currentLine, YAML_STATE_DOCUMENT);
-		styler.ColourTo(endPos, SCE_YAML_DOCUMENT);
-		return;
+	
+	while (IsSpaceOrTab(sc.GetRelative(n)))
+		n++;
+	
+	return sc.GetRelative(n) == ':';
+}
+
+static bool IsNumberValue(StyleContext &sc) {
+	int n = 0;
+	if (IsSign(sc.GetRelative(n)))
+		n++;
+	
+	bool hasDigits = false;
+	while (IsDigit(sc.GetRelative(n))) {
+		hasDigits = true;
+		n++;
 	}
-	// Skip initial spaces
-	while ((i < lengthLine) && lineBuffer[i] == ' ') { // YAML always uses space, never TABS or anything else
-		i++;
-	}
-	if (lineBuffer[i] == '\t') { // if we skipped all spaces, and we are NOT inside a text block, this is wrong
-		styler.ColourTo(endPos, SCE_YAML_ERROR);
-		return;
-	}
-	if (lineBuffer[i] == '#') {	// Comment
-		styler.SetLineState(currentLine, YAML_STATE_COMMENT);
-		styler.ColourTo(endPos, SCE_YAML_COMMENT);
-		return;
-	}
-	while (i < lengthLine) {
-		if (IsQuote(lineBuffer[i])) {
-			bInQuotes = !bInQuotes;
-		} else if (lineBuffer[i] == '#' && IsSpace(lineBuffer[i - 1]) && !bInQuotes) {
-			styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
-			styler.ColourTo(endPos, SCE_YAML_COMMENT);
-			return;
-		} else if (lineBuffer[i] == ':' && !bInQuotes) {
-			styler.ColourTo(startLine + i - 1, SCE_YAML_IDENTIFIER);
-			styler.ColourTo(startLine + i, SCE_YAML_OPERATOR);
-			// Non-folding scalar
-			i++;
-			while ((i < lengthLine) && IsSpace(lineBuffer[i]))
-				i++;
-			Sci_PositionU endValue = lengthLine - 1;
-			while ((endValue >= i) && IsSpace(lineBuffer[endValue]))
-				endValue--;
-			lineBuffer[endValue + 1] = '\0';
-			if (lineBuffer[i] == '|' || lineBuffer[i] == '>') {
-				i++;
-				if (IsSign(lineBuffer[i]))
-					i++;
-				while ((i < lengthLine) && IsSpace(lineBuffer[i]))
-					i++;
-				if (lineBuffer[i] == '\0') {
-					styler.SetLineState(currentLine, YAML_STATE_TEXT_PARENT | indentAmount);
-					styler.ColourTo(endPos, SCE_YAML_DEFAULT);
-					return;
-				} else if (lineBuffer[i] == '#') {
-					styler.SetLineState(currentLine, YAML_STATE_TEXT_PARENT | indentAmount);
-					styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
-					styler.ColourTo(endPos, SCE_YAML_COMMENT);
-					return;
-				} else {
-					styler.ColourTo(endPos, SCE_YAML_ERROR);
-					return;
-				}
-			} else if (lineBuffer[i] == '#') {
-				styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
-				styler.ColourTo(endPos, SCE_YAML_COMMENT);
-				return;
-			}
-			Sci_PositionU startComment = i;
-			bInQuotes = false;
-			while (startComment < lengthLine) { // Comment must be space padded
-				if (IsQuote(lineBuffer[startComment]))
-					bInQuotes = !bInQuotes;
-				if (lineBuffer[startComment] == '#' &&
-						IsSpace(lineBuffer[startComment - 1]) && !bInQuotes)
-					break;
-				startComment++;
-			}
-			styler.SetLineState(currentLine, YAML_STATE_VALUE);
-			if (lineBuffer[i] == '&' || lineBuffer[i] == '*') {
-				styler.ColourTo(startLine + startComment - 1, SCE_YAML_REFERENCE);
-				if (startComment < lengthLine)
-					styler.ColourTo(endPos, SCE_YAML_COMMENT);
-				return;
-			}
-			if (KeywordAtChar(&lineBuffer[i], &lineBuffer[startComment], keywords)) { // Convertible value (true/false, etc.)
-				styler.ColourTo(startLine + startComment - 1, SCE_YAML_KEYWORD);
-				if (startComment < lengthLine)
-					styler.ColourTo(endPos, SCE_YAML_COMMENT);
-				return;
-			}
-			Sci_PositionU i2 = i;
-			while ((i < startComment) && lineBuffer[i]) {
-				if (!IsDigit(lineBuffer[i])
-					&& lineBuffer[i] != '-' && lineBuffer[i] != '.'
-					&& lineBuffer[i] != ',' && lineBuffer[i] != ' ') {
-					styler.ColourTo(startLine + startComment - 1, SCE_YAML_DEFAULT);
-					if (startComment < lengthLine)
-						styler.ColourTo(endPos, SCE_YAML_COMMENT);
-					return;
-				}
-				i++;
-			}
-			if (i > i2) {
-				styler.ColourTo(startLine + startComment - 1, SCE_YAML_NUMBER);
-				if (startComment < lengthLine)
-					styler.ColourTo(endPos, SCE_YAML_COMMENT);
-				return;
-			}
-			break; // shouldn't get here, but just in case, the rest of the line is coloured the default
+	if (sc.GetRelative(n) == '.') {
+		n++;
+		while (IsDigit(sc.GetRelative(n))) {
+			hasDigits = true;
+			n++;
 		}
-		i++;
 	}
-	styler.ColourTo(endPos, SCE_YAML_DEFAULT);
+	
+	if (!hasDigits)
+		return false;
+	
+	while (IsSpaceOrTab(sc.GetRelative(n)))
+		n++;
+	
+	const int ch = sc.GetRelative(n);
+	return ch != ':' && (ch == 0 || IS_YAML_NUMBER_END(ch));
 }
 
 static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
-							 int, WordList *keywordLists[], Accessor &styler) {
-	char lineBuffer[4096] = "";
-	styler.StartAt(startPos);
-	styler.StartSegment(startPos);
-	Sci_PositionU linePos = 0;
-	Sci_PositionU startLine = startPos;
-	Sci_PositionU endPos = startPos + length;
-	Sci_PositionU maxPos = styler.Length();
-	Sci_PositionU lineCurrent = styler.GetLine(startPos);
+							 int initStyle, WordList *keywordLists[],
+							 Accessor &styler) {
+	// esh: escapesequence highlighting
+	const bool escapeSequence =
+					styler.GetPropertyInt("lexer.yaml.escape.sequence", 0) != 0;
+	EscapeSequence escapeSeq = EscapeSequence();
 	
-	for (Sci_PositionU i = startPos; i < maxPos && i < endPos; i++) {
-		lineBuffer[linePos++] = styler[i];
-		if (AtEOL(styler, i) || (linePos >= sizeof(lineBuffer) - 1)) {
-			// End of line (or of line buffer) met, colourise it
-			lineBuffer[linePos] = '\0';
-			ColouriseYAMLLine(lineBuffer, lineCurrent, linePos, startLine,
-							  i, *keywordLists[0], styler);
-			linePos = 0;
-			startLine = i + 1;
+	WordList &com_words = *keywordLists[0];
+	WordList &type_words = *keywordLists[1];
+	
+	StyleContext sc(startPos, length, initStyle, styler);
+	Sci_Position lineCurrent = styler.GetLine(startPos);
+	
+	int indent = 0;
+	char ident[100];
+	bool inQuotes = false;
+	bool blockScalarLine = false;
+	bool blockScalarPending = false;
+	int blockParentIndent = 0;
+	int pendingStringStyle = 0;
+	bool typeValue = false;
+	int escapeReturnState = SCE_YAML_DOUBLESTRING;
+	bool singleQuoteEscape = false;
+	
+	for (; sc.More(); sc.Forward()) {
+		if (sc.atLineStart) {
+			int spaceIndent = 0;
+			indent = 0;
+			inQuotes = false;
+			blockScalarLine = false;
+			blockScalarPending = false;
+			pendingStringStyle = 0;
+			singleQuoteEscape = false;
+			typeValue = false;
+			sc.SetState(SCE_YAML_DEFAULT);
+			
+			while (sc.More() && sc.ch == ' ') {
+				spaceIndent++;
+				indent++;
+				sc.Forward();
+			}
+			
+			int prevState = 0;
+			if (lineCurrent > 0)
+				prevState = styler.GetLineState(lineCurrent - 1);
+			
+			const int prevType = prevState & YAML_STATE_MASK;
+			const int prevIndent = prevState & ~YAML_STATE_MASK;
+			bool isText = false;
+			
+			if (prevType == YAML_STATE_KEY_PENDING && sc.atLineEnd) {
+				// Keep waiting for a possible block scalar on a later line.
+				styler.SetLineState(lineCurrent, YAML_STATE_KEY_PENDING | prevIndent);
+			} else if (sc.ch == '\t') { // Tabs are not allowed for indentation
+				styler.SetLineState(lineCurrent, 0);
+				sc.ChangeState(SCE_YAML_ERROR);
+			} else {
+				if (prevType == YAML_STATE_TEXT) {
+					if (sc.atLineEnd || spaceIndent >= prevIndent) {
+						isText = true;
+						styler.SetLineState(lineCurrent, YAML_STATE_TEXT | prevIndent);
+					}
+				} else if (prevType == YAML_STATE_TEXT_PENDING) {
+					if (sc.atLineEnd) {
+						isText = true;
+						styler.SetLineState(lineCurrent, YAML_STATE_TEXT_PENDING | prevIndent);
+					} else if (spaceIndent > prevIndent) {
+						isText = true;
+						styler.SetLineState(lineCurrent, YAML_STATE_TEXT | spaceIndent);
+					}
+				}
+				
+				if (isText) {
+					sc.ChangeState(SCE_YAML_TEXT);
+				} else {
+					int lastDashIndent = -1;
+					
+					// Sequence indicators are counted as indentation and
+					// highlighted like the ':' operator.
+					while (sc.More()) {
+						if (sc.ch == '-' && IsSpace(sc.chNext)) {
+							lastDashIndent = indent;
+							indent++;
+							sc.SetState(SCE_YAML_OPERATOR);
+							sc.ForwardSetState(SCE_YAML_DEFAULT);
+						} else if (sc.ch == ' ') {
+							indent++;
+							sc.Forward();
+						} else {
+							break;
+						}
+					}
+					
+					if (IS_YAML_BLOCK_SCALAR(sc.ch)) {
+						blockParentIndent = spaceIndent;
+						if (lastDashIndent >= 0) {
+							blockParentIndent = lastDashIndent;
+						} else if (prevType == YAML_STATE_KEY_PENDING) {
+							blockParentIndent = prevIndent;
+						}
+						blockScalarPending = true;
+					} else if (lastDashIndent >= 0 && (sc.atLineEnd || IsCRLF(sc.ch))) {
+						// Sequence item with an empty value: a block scalar
+						// may follow on the next line.
+						styler.SetLineState(lineCurrent,
+											YAML_STATE_KEY_PENDING | lastDashIndent);
+					} else {
+						styler.SetLineState(lineCurrent, 0);
+						
+						if (sc.atLineStart && (sc.Match("---") || sc.Match("..."))) {
+							sc.SetState(SCE_YAML_DOCUMENT);
+						} else if (sc.ch == '#') {
+							sc.ChangeState(SCE_YAML_COMMENT);
+						} else if (IsQuote(sc.ch)) {
+							if (IsQuotedKey(sc)) {
+								sc.ChangeState(SCE_YAML_IDENTIFIER);
+							} else {
+								pendingStringStyle = (sc.ch == '\"') ?
+									SCE_YAML_DOUBLESTRING : SCE_YAML_SINGLESTRING;
+							}
+						} else if (IsNumberValue(sc)) {
+							sc.SetState(SCE_YAML_NUMBER);
+						} else if (!sc.atLineEnd) {
+							sc.ChangeState(SCE_YAML_IDENTIFIER);
+						}
+					}
+				}
+			}
+		}
+		
+		// Determine if the current state should terminate.
+		switch (sc.state) {
+			case SCE_YAML_IDENTIFIER:
+				if (sc.atLineEnd) {
+					sc.ChangeState(SCE_YAML_DEFAULT);
+				} else if (IsQuote(sc.ch)) {
+					inQuotes = !inQuotes;
+				} else if (sc.ch == '#' && !inQuotes && IsSpace(sc.chPrev)) {
+					sc.ChangeState(SCE_YAML_DEFAULT);
+					sc.SetState(SCE_YAML_COMMENT);
+				} else if (sc.ch == ':' && !inQuotes) {
+					sc.GetCurrent(ident, sizeof(ident));
+					typeValue = IsTypeKey(ident);
+					
+					sc.SetState(SCE_YAML_OPERATOR);
+					
+					int n = 1;
+					while (IsSpaceOrTab(sc.GetRelative(n))) n++;
+					
+					const int next = sc.GetRelative(n);
+					if (next == 0 || IsCRLF(next))
+						styler.SetLineState(lineCurrent, YAML_STATE_KEY_PENDING | indent);
+					inQuotes = false;
+				}
+				break;
+			
+			case SCE_YAML_OPERATOR:
+			case SCE_YAML_SPEC_OPER:
+				sc.SetState(SCE_YAML_DEFAULT);
+				break;
+			
+			case SCE_YAML_COM_WORD:
+				if (sc.atLineEnd || IsSpace(sc.ch)) {
+					sc.GetCurrent(ident, sizeof(ident));
+					
+					if (typeValue && type_words.InList(ident)) {
+						sc.ChangeState(SCE_YAML_TYPE_WORD);
+					} else if (!com_words.InList(ident)) {
+						sc.ChangeState(SCE_YAML_DEFAULT);
+					}
+					sc.SetState(SCE_YAML_DEFAULT);
+					typeValue = false;
+				}
+				break;
+			
+			case SCE_YAML_NUMBER:
+				if (IsDigit(sc.ch) || sc.ch == '.' || sc.ch == '-')
+					continue;
+				if (IsAlphaWordChar(sc.ch))
+					sc.ChangeState(SCE_YAML_DEFAULT);
+				else
+					sc.SetState(SCE_YAML_DEFAULT);
+				break;
+			
+			case SCE_YAML_REFERENCE:
+				if (IsSpace(sc.ch))
+					sc.SetState(SCE_YAML_DEFAULT);
+				break;
+			
+			case SCE_YAML_DOUBLESTRING:
+				if (sc.ch == '\\' && !IsCRLF(sc.chNext)) {
+					if (escapeSequence) {
+						escapeReturnState = SCE_YAML_DOUBLESTRING;
+						sc.SetState(SCE_YAML_ESCAPESEQ);
+						escapeSeq.initEscapeState(sc.chNext);
+					}
+					sc.Forward(); // Skip any character after the backslash
+					continue;
+				} else if (sc.ch == '\"') {
+					if (typeValue) {
+						sc.GetCurrent(ident, sizeof(ident));
+						const char *value = ident;
+						if (*value == '\"') value++;
+						
+						if (type_words.InList(value))
+							sc.ChangeState(SCE_YAML_TYPE_WORD_STR);
+					}
+					typeValue = false;
+					sc.ForwardSetState(SCE_YAML_DEFAULT);
+				}
+				break;
+			
+			case SCE_YAML_SINGLESTRING:
+				if (sc.ch == '\'') {
+					if (sc.chNext == '\'') {
+						if (escapeSequence) {
+							escapeReturnState = SCE_YAML_SINGLESTRING;
+							singleQuoteEscape = true;
+							sc.SetState(SCE_YAML_ESCAPESEQ);
+						}
+						sc.Forward(); // Skip escaped single quote
+						continue;
+					}
+					if (typeValue) {
+						sc.GetCurrent(ident, sizeof(ident));
+						const char *value = ident;
+						if (*value == '\'') value++;
+						
+						if (type_words.InList(value))
+							sc.ChangeState(SCE_YAML_TYPE_WORD_STR);
+					}
+					typeValue = false;
+					sc.ForwardSetState(SCE_YAML_DEFAULT);
+				}
+				break;
+			
+			case SCE_YAML_ESCAPESEQ:
+				if (singleQuoteEscape) {
+					singleQuoteEscape = false;
+					sc.SetState(SCE_YAML_SINGLESTRING);
+					
+					if (sc.ch == '\'') {
+						if (sc.chNext == '\'') {
+							escapeReturnState = SCE_YAML_SINGLESTRING;
+							singleQuoteEscape = true;
+							sc.SetState(SCE_YAML_ESCAPESEQ);
+							sc.Forward();
+							continue;
+						}
+						sc.ForwardSetState(SCE_YAML_DEFAULT);
+						typeValue = false;
+					}
+					break;
+				}
+				
+				escapeSeq.digitsLeft--;
+				if (!escapeSeq.atEscapeEnd(sc.ch))
+					continue;
+				if (sc.ch == '\\') {
+					escapeSeq.initEscapeState(sc.chNext);
+					sc.Forward();
+					continue;
+				}
+				sc.SetState(escapeReturnState);
+				if (sc.ch == GetClosingChar(escapeReturnState)) {
+					sc.ForwardSetState(SCE_YAML_DEFAULT);
+					typeValue = false;
+				}
+				break;
+		}
+		
+		// Determine if a new state should be entered.
+		if (sc.state == SCE_YAML_DEFAULT) {
+			if (pendingStringStyle) {
+				sc.SetState(pendingStringStyle);
+				pendingStringStyle = 0;
+			} else if (blockScalarPending) {
+				StartBlockScalar(sc, styler, lineCurrent, blockParentIndent);
+				sc.SetState(SCE_YAML_SPEC_OPER);
+				blockScalarLine = true;
+				blockScalarPending = false;
+			} else if (sc.ch == '#' && !inQuotes && IS_YAML_SEPARATOR(sc.chPrev)) {
+				sc.SetState(SCE_YAML_COMMENT);
+			} else if (blockScalarLine && (IsSign(sc.ch) || IsDigit(sc.ch))) {
+				sc.SetState(SCE_YAML_SPEC_OPER);
+			} else if (!blockScalarLine) {
+				if (IS_YAML_BLOCK_SCALAR(sc.ch) && IS_YAML_SEPARATOR(sc.chPrev)) {
+					StartBlockScalar(sc, styler, lineCurrent, indent);
+					sc.SetState(SCE_YAML_SPEC_OPER);
+					blockScalarLine = true;
+				} else if (sc.ch == '&' || sc.ch == '*') {
+					sc.SetState(SCE_YAML_REFERENCE);
+				} else if (IsDigit(sc.ch) ||
+						   ((IsSign(sc.ch) || sc.ch == '.') &&
+							(IsDigit(sc.chNext) || sc.chNext == '.'))) {
+					sc.SetState(SCE_YAML_NUMBER);
+				} else if (sc.ch == '\"') {
+					sc.SetState(SCE_YAML_DOUBLESTRING);
+				} else if (sc.ch == '\'') {
+					sc.SetState(SCE_YAML_SINGLESTRING);
+				} else if (IsAlphaWordChar(sc.ch)) {
+					sc.SetState(SCE_YAML_COM_WORD);
+				}
+			}
+		}
+		
+		if (sc.atLineEnd) {
+			sc.SetState(SCE_YAML_DEFAULT);
 			lineCurrent++;
 		}
 	}
-	if (linePos > 0) {	// Last line does not have ending characters
-		ColouriseYAMLLine(lineBuffer, lineCurrent, linePos, startLine,
-						  startPos + length - 1, *keywordLists[0], styler);
-	}
+	sc.Complete();
 }
 
 static bool IsCommentLine(Sci_Position line, Accessor &styler) {
@@ -310,7 +547,6 @@ static void FoldYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 		while ((lineNext < docLines) &&
 				((indentNext & SC_FOLDLEVELWHITEFLAG) ||
 				 (lineNext <= docLines && IsCommentLine(lineNext, styler)))) {
-			
 			lineNext++;
 			indentNext = styler.IndentAmount(lineNext, &spaceFlags, NULL);
 		}

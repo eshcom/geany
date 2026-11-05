@@ -1227,7 +1227,7 @@ void highlighting_set_styles(ScintillaObject *sci, GeanyFiletype *ft)
 			break;
 		
 		case SCLEX_YAML:
-			keyword_idx = 1;
+			keyword_idx = 2;
 			break;
 		
 		case SCLEX_SQL:

@@ -84,3 +84,75 @@ myObject: !myClass { name: Joe, age: 15 }
          read_only: true
          source: ./clickhouse/config.xml
          target: /etc/clickhouse-server/config.d/sentry.xml
+
+---
+anyOf:
+  - {}
+  - description: Выражение, которое будет запущено в Рантайме
+
+---
+anyOf:
+  - []
+  - description: "..."
+
+---
+anyOf: [{}, {description: "Выражение, которое будет запущено в Рантайме"}]
+
+---
+list: [1, 2, 3]          # список
+map: {a: 1, b: 2}        # объект
+empty_list: []
+empty_map: {}
+
+---
+data: {items: [1, 2], meta: {ok: true}}
+
+---
+anyOf: [{}, {description: "..."}]
+mocks: []
+items:
+  - {name: "one", value: [1, 2]}
+  - {name: "two", value: []}
+
+---
+{"key": [1, 2, 3], "empty": {}}
+
+---
+defaults: &defaults {timeout: 10, retries: 3}
+
+service:
+  <<: *defaults
+  ports: !ref [80, 443]
+
+---
+? [a, b]
+: value
+
+---
+{? [a, b]: value}
+
+---
+text: "[]{}"
+other: '[]'
+block: |
+  [] {}
+
+---
+type: object
+x-type: object
+
+---
+# [ ] { } здесь просто текст
+key: value
+
+---
+single_escaped: 'it''s'
+checks_via_script: 'assert components[''5def...''][''output_ports''] == {''diff_result'': -1}'
+
+---
+key: |-        # | и -  -> SPEC_OPER
+key: |+        # | и +  -> SPEC_OPER
+key: |2-       # | и -  -> SPEC_OPER, 2 -> DEFAULT
+key: |-2       # | и -  -> SPEC_OPER, 2 -> DEFAULT
+key: |2+       # | и +  -> SPEC_OPER, 2 -> DEFAULT
+key: |+2       # | и +  -> SPEC_OPER, 2 -> DEFAULT
