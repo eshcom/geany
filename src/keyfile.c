@@ -1615,7 +1615,11 @@ void history_save()
 	GKeyFile *config = g_key_file_new();
 	gchar *configfile = g_build_filename(app->configdir, "history.conf", NULL);
 	
-	g_key_file_load_from_file(config, configfile, G_KEY_FILE_KEEP_COMMENTS, NULL);
+	/* history.conf is generated from scratch on every save, so comments and blank lines
+	 * must not be kept. Otherwise the empty line separating two groups is preserved as a
+	 * comment of the previous group, and because the keys are removed and re-added below,
+	 * it moves above the first key. Every save then adds one more blank line per group. */
+	g_key_file_load_from_file(config, configfile, G_KEY_FILE_NONE, NULL);
 	
 	history_save_items(config, FIND_SEARCH_COMBO);
 	history_save_items(config, FIF_SEARCH_COMBO);
