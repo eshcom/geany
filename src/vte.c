@@ -797,13 +797,13 @@ static void vte_popup_menu_clicked(GtkMenuItem *menuitem, gpointer user_data)
 		case POPUP_CHANGEPATH:
 		{
 			GeanyDocument *doc = document_get_current();
-			if (doc) vte_cwd(doc->file_name, TRUE);
+			if (doc) vte_cwd_clear(doc->file_name);
 			break;
 		}
 		case POPUP_CHANGEPATH2PRJ:
 		{
 			gchar *path = project_get_base_path();
-			vte_cwd(path, TRUE);
+			vte_cwd_clear(path);
 			g_free(path);
 			break;
 		}
@@ -954,6 +954,26 @@ gboolean vte_send_cmd(const gchar *cmd)
 }
 
 
+/* Sends a command to the terminal, discarding any input already present on the
+ * terminal's current line first. This is used for commands explicitly requested by
+ * the user (e.g. from the terminal popup menu) which must not be silently ignored
+ * just because the prompt contains some (possibly even already deleted) text. */
+static void vte_send_cmd_clear(const gchar *cmd)
+{
+	if (!clean)
+	{
+		/* Ctrl+U deletes everything before the cursor and Ctrl+K everything after
+		 * it, which clears the whole input line with the default readline/emacs
+		 * key bindings used by the common shells. */
+		static const gchar clear_line[] = { 0x15, 0x0b };
+		
+		vf->vte_terminal_feed_child(VTE_TERMINAL(vc->vte), clear_line, sizeof(clear_line));
+	}
+	vf->vte_terminal_feed_child(VTE_TERMINAL(vc->vte), cmd, strlen(cmd));
+	set_clean(TRUE); /* vte_terminal_feed_child() also marks the vte as not clean */
+}
+
+
 /* Taken from Terminal by os-cillation: terminal_screen_get_working_directory, thanks.
  * Determines the working directory using various OS-specific mechanisms and stores the determined
  * directory in vte_info.dir. Note: vte_info.dir contains the real path. */
@@ -996,9 +1016,12 @@ const gchar *vte_get_working_directory(void)
 /* Changes the current working directory of the VTE to the path of the given filename.
  * filename is expected to be in UTF-8 encoding.
  * filename can also be a path, then it is used directly.
- * If force is set to TRUE, it will always change the cwd
+ * If force is set to TRUE, the cwd is changed even when the "follow path"
+ * preference is disabled.
+ * If clear_input is set to TRUE, any input pending on the terminal's prompt is
+ * discarded and the command is always sent.
  */
-void vte_cwd(const gchar *filename, gboolean force)
+static void vte_cwd_impl(const gchar *filename, gboolean force, gboolean clear_input)
 {
 	if (vte_info.have_vte && (vc->follow_path || force) &&
 		filename != NULL && g_path_is_absolute(filename))
@@ -1015,7 +1038,9 @@ void vte_cwd(const gchar *filename, gboolean force)
 									 quoted_path, "\n", NULL);
 			if (pid > 0)
 			{
-				if (!vte_send_cmd(cmd))
+				if (clear_input)
+					vte_send_cmd_clear(cmd);
+				else if (!vte_send_cmd(cmd))
 				{
 					const gchar *msg = _("Directory not changed because the terminal may contain "
 										 "some input (press Ctrl+C or Enter to clear it).");
@@ -1035,6 +1060,21 @@ void vte_cwd(const gchar *filename, gboolean force)
 		}
 		g_free(path);
 	}
+}
+
+
+void vte_cwd(const gchar *filename, gboolean force)
+{
+	vte_cwd_impl(filename, force, FALSE);
+}
+
+
+/* Like vte_cwd() but for explicit user actions (e.g. the terminal popup menu items):
+ * any input already present on the terminal's prompt is discarded so that the
+ * directory change is always performed. */
+void vte_cwd_clear(const gchar *filename)
+{
+	vte_cwd_impl(filename, TRUE, TRUE);
 }
 
 

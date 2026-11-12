@@ -76,6 +76,8 @@ const gchar *vte_get_working_directory(void);
 
 void vte_cwd(const gchar *filename, gboolean force);
 
+void vte_cwd_clear(const gchar *filename);
+
 void vte_append_preferences_tab(void);
 
 void vte_send_selection_to_vte(void);
