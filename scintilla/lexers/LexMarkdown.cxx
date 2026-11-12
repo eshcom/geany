@@ -114,6 +114,40 @@ static bool AtTermStart(StyleContext &sc) {
 	return sc.currentPos == 0 || sc.chPrev == 0 || IsSpace(sc.chPrev);
 }
 
+// True if the current line begins a delimited code block fence,
+// allowing up to three leading spaces.
+static bool AtFenceLine(StyleContext &sc) {
+	if (!sc.atLineStart) return false;
+
+	Sci_Position i = 0;
+	while (i < 3 && IsSpaceOrTab(sc.GetRelative(i)))
+		++i;
+
+	const int fenceChar = sc.GetRelative(i);
+	return (fenceChar == '`' || fenceChar == '~')
+			&& sc.GetRelative(i + 1) == fenceChar
+			&& sc.GetRelative(i + 2) == fenceChar;
+}
+
+// True if a list marker follows after the current leading whitespace.
+static bool AtListMarker(StyleContext &sc) {
+	Sci_Position i = 0;
+	while (IsSpaceOrTab(sc.GetRelative(i)))
+		++i;
+
+	const int ch = sc.GetRelative(i);
+	if ((ch == '-' || ch == '*' || ch == '+')
+		&& IsSpaceOrTab(sc.GetRelative(i + 1)))
+		return true;
+
+	Sci_Position digits = 0;
+	while (IsDigit(sc.GetRelative(i + digits)))
+		++digits;
+
+	return digits > 0 && sc.GetRelative(i + digits) == '.' &&
+			IsSpaceOrTab(sc.GetRelative(i + digits + 1));
+}
+
 static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 	int count = 1;
 	Sci_PositionU i = 0;
@@ -124,8 +158,7 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 		// hit a terminating character
 		} else if (!IsSpaceOrTab(c) || (sc.currentPos + i) == endPos) {
 			// Are we a valid HRULE
-			if ((IsCRLF(c) || (sc.currentPos + i) == endPos)
-				&& count >= 3 && !HasPrevLineContent(sc)) {
+			if ((IsCRLF(c) || (sc.currentPos + i) == endPos) && count >= 3) {
 				sc.SetState(SCE_MARKDOWN_HRULE);
 				sc.Forward(i);
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
@@ -140,13 +173,12 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
 
 static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 								int initStyle, WordList **, Accessor &styler) {
-	
 	Sci_PositionU endPos = startPos + length;
 	int precharCount = 0;
 	bool isLinkNameDetecting = false;
 	// Don't advance on a new loop iteration and retry at the same position.
-	// Useful in the corner case of having to start at the beginning file position
-	// in the default state.
+	// Useful in the corner case of having to start at the beginning
+	// file position in the default state.
 	bool freezeCursor = false;
 	
 	StyleContext sc(startPos, length, initStyle, styler);
@@ -221,7 +253,8 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 		}
 		else if (sc.state == SCE_MARKDOWN_CODEBK) {
-			if (sc.atLineStart && sc.Match("~~~")) {
+			// End of a delimited code block
+			if (AtFenceLine(sc)) {
 				Sci_Position i = 1;
 				while (!IsCRLF(sc.GetRelative(i)) && (sc.currentPos + i) < endPos)
 					i++;
@@ -257,24 +290,18 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 					SetStateAndZoom(SCE_MARKDOWN_HEADER1, 1, '#', sc);
 			}
 			// Code block
-			else if (sc.Match("~~~")) {
-				if (!HasPrevLineContent(sc))
-					sc.SetState(SCE_MARKDOWN_CODEBK);
-				else
-					sc.SetState(SCE_MARKDOWN_DEFAULT);
+			else if (sc.Match("~~~") || sc.Match("```")) {
+				// Fenced code blocks may interrupt a paragraph
+				sc.SetState(SCE_MARKDOWN_CODEBK);
 			}
 			else if (sc.ch == '=') {
-				if (HasPrevLineContent(sc) && FollowToLineEnd('=', SCE_MARKDOWN_HEADER1,
-															  endPos, sc))
-					;
-				else
+				if (!HasPrevLineContent(sc)
+					|| !FollowToLineEnd('=', SCE_MARKDOWN_HEADER1, endPos, sc))
 					sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (sc.ch == '-') {
-				if (HasPrevLineContent(sc) && FollowToLineEnd('-', SCE_MARKDOWN_HEADER2,
-															  endPos, sc))
-					;
-				else {
+				if (!HasPrevLineContent(sc)
+					|| !FollowToLineEnd('-', SCE_MARKDOWN_HEADER2, endPos, sc)) {
 					precharCount = 0;
 					sc.SetState(SCE_MARKDOWN_PRECHAR);
 				}
@@ -300,8 +327,11 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 		
 		// New state only within the initial whitespace
 		if (sc.state == SCE_MARKDOWN_PRECHAR) {
+			// Fenced code block, including its leading indentation
+			if (AtFenceLine(sc))
+				sc.SetState(SCE_MARKDOWN_CODEBK);
 			// Blockquote
-			if (sc.ch == '>' && precharCount < 5)
+			else if (sc.ch == '>' && precharCount < 5)
 				sc.SetState(SCE_MARKDOWN_BLOCKQUOTE);
 			/*
 			// Begin of code block
@@ -338,7 +368,11 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.Forward(2);
 				sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
-			else if (sc.ch != ' ' || precharCount > 2)
+			// Fenced code block (possibly indented, e.g. inside a list item)
+			else if (sc.Match("```") || sc.Match("~~~"))
+				sc.SetState(SCE_MARKDOWN_CODEBK);
+			// Keep scanning indentation for nested list items
+			else if (sc.ch != ' ' || (precharCount > 2 && !AtListMarker(sc)))
 				sc.SetState(SCE_MARKDOWN_DEFAULT);
 			else
 				precharCount++;
@@ -347,21 +381,21 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 		// Any link
 		if (sc.state == SCE_MARKDOWN_LINK) {
 			if (sc.Match("](") && sc.GetRelative(-1) != '\\') {
-			  sc.Forward(2);
-			  isLinkNameDetecting = true;
+				sc.Forward(2);
+				isLinkNameDetecting = true;
 			}
 			else if (sc.Match("]:") && sc.GetRelative(-1) != '\\') {
-			  sc.Forward(2);
-			  sc.SetState(SCE_MARKDOWN_DEFAULT);
+				sc.Forward(2);
+				sc.SetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (!isLinkNameDetecting && sc.ch == ']' &&
 					 sc.GetRelative(-1) != '\\') {
-			  sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
+				sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
 			}
 			else if (isLinkNameDetecting && sc.ch == ')' &&
 					 sc.GetRelative(-1) != '\\') {
-			  sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
-			  isLinkNameDetecting = false;
+				sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
+				isLinkNameDetecting = false;
 			}
 		}
 		
@@ -371,14 +405,19 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 				freezeCursor = true;
 			}
+			// Delimited code block at the start of a document/segment
+			if (AtFenceLine(sc)) {
+				sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+				freezeCursor = true;
+			}
 			// Links and Images
-			if (sc.Match("![")) {
-			  sc.SetState(SCE_MARKDOWN_LINK);
-			  sc.Forward(2);
+			else if (sc.Match("![")) {
+				sc.SetState(SCE_MARKDOWN_LINK);
+				sc.Forward(2);
 			}
 			else if (sc.ch == '[' && sc.GetRelative(-1) != '\\') {
-			  sc.SetState(SCE_MARKDOWN_LINK);
-			  sc.Forward();
+				sc.SetState(SCE_MARKDOWN_LINK);
+				sc.Forward();
 			}
 			// Code - also a special case for alternate inside spacing
 			else if (sc.Match("``") && sc.GetRelative(3) != ' ' &&
@@ -395,7 +434,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_STRONG1);
 				sc.Forward();
-		   }
+			}
 			else if (sc.Match("__") && sc.GetRelative(2) != ' ' &&
 					 AtTermStart(sc)) {
 				sc.SetState(SCE_MARKDOWN_STRONG2);
@@ -422,8 +461,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length,
 			}
 		}
 		// Advance if not holding back the cursor for this iteration.
-		if (!freezeCursor)
-			sc.Forward();
+		if (!freezeCursor) sc.Forward();
 		freezeCursor = false;
 	}
 	sc.Complete();
