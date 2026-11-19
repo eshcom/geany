@@ -128,32 +128,108 @@ static bool IsQuotedKey(StyleContext &sc) {
 	return sc.GetRelative(n) == ':';
 }
 
-static bool IsNumberValue(StyleContext &sc) {
+enum YAMLNumberType {
+	YAML_NUMBER_NONE,
+	YAML_NUMBER_DECIMAL,
+	YAML_NUMBER_HEX,
+	YAML_NUMBER_EXP
+};
+
+static YAMLNumberType ParseNumber(StyleContext &sc) {
 	int n = 0;
 	if (IsSign(sc.GetRelative(n)))
 		n++;
 	
-	bool hasDigits = false;
+	if (sc.GetRelative(n) == '0' &&
+		IsHex(sc.GetRelative(n + 1))) {
+		n += 2;
+		int digits = 0;
+		while (IsDigit(sc.GetRelative(n), 16)) {
+			digits++;
+			n++;
+		}
+		if (digits == 0)
+			return YAML_NUMBER_NONE;
+
+		int end = n;
+		while (IsSpaceOrTab(sc.GetRelative(end)))
+			end++;
+		const int ch = sc.GetRelative(end);
+		if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
+			return YAML_NUMBER_NONE;
+
+		return YAML_NUMBER_HEX;
+	}
+
+	int digits = 0;
 	while (IsDigit(sc.GetRelative(n))) {
-		hasDigits = true;
+		digits++;
 		n++;
 	}
 	if (sc.GetRelative(n) == '.') {
 		n++;
 		while (IsDigit(sc.GetRelative(n))) {
-			hasDigits = true;
+			digits++;
 			n++;
 		}
 	}
+	if (digits == 0)
+		return YAML_NUMBER_NONE;
 	
-	if (!hasDigits)
-		return false;
+	if (IsDecExponent(sc.GetRelative(n))) {
+		int e = n + 1;
+		if (IsSign(sc.GetRelative(e)))
+			e++;
+		int expDigits = 0;
+		while (IsDigit(sc.GetRelative(e))) {
+			expDigits++;
+			e++;
+		}
+		if (expDigits == 0)
+			return YAML_NUMBER_NONE;
+
+		int end = e;
+		while (IsSpaceOrTab(sc.GetRelative(end)))
+			end++;
+		const int ch = sc.GetRelative(end);
+		if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
+			return YAML_NUMBER_NONE;
+
+		return YAML_NUMBER_EXP;
+	}
 	
-	while (IsSpaceOrTab(sc.GetRelative(n)))
-		n++;
+	int end = n;
+	while (IsSpaceOrTab(sc.GetRelative(end)))
+		end++;
+	const int ch = sc.GetRelative(end);
+	if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
+		return YAML_NUMBER_NONE;
+
+	return YAML_NUMBER_DECIMAL;
+}
+
+static int StartNumber(StyleContext &sc) {
+	if (!(IsDigit(sc.ch) || IsSign(sc.ch) || sc.ch == '.'))
+		return 0;
 	
-	const int ch = sc.GetRelative(n);
-	return ch != ':' && (ch == 0 || IS_YAML_NUMBER_END(ch));
+	if (IsDigit(sc.chPrev) || IsAlphaWordChar(sc.chPrev))
+		return 0;
+	if (sc.chPrev == '-' &&
+		(IsDigit(sc.GetRelative(-2)) || IsAlphaWordChar(sc.GetRelative(-2))))
+		return 0;
+
+	const YAMLNumberType type = ParseNumber(sc);
+	if (type == YAML_NUMBER_NONE)
+		return 0;
+
+	switch (type) {
+		case YAML_NUMBER_HEX:
+			return SCE_YAML_HEXNUMBER;
+		case YAML_NUMBER_EXP:
+			return SCE_YAML_EXPNUMBER;
+		default:
+			return SCE_YAML_NUMBER;
+	}
 }
 
 static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
@@ -177,6 +253,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 	bool blockScalarPending = false;
 	int blockParentIndent = 0;
 	int pendingStringStyle = 0;
+	int numberStyle = 0;
 	bool typeValue = false;
 	int escapeReturnState = SCE_YAML_DOUBLESTRING;
 	bool singleQuoteEscape = false;
@@ -277,8 +354,8 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 								pendingStringStyle = (sc.ch == '\"') ?
 									SCE_YAML_DOUBLESTRING : SCE_YAML_SINGLESTRING;
 							}
-						} else if (IsNumberValue(sc)) {
-							sc.SetState(SCE_YAML_NUMBER);
+						} else if ((numberStyle = StartNumber(sc)) != 0) {
+							sc.SetState(numberStyle);
 						} else if (!sc.atLineEnd) {
 							sc.ChangeState(SCE_YAML_IDENTIFIER);
 						}
@@ -333,13 +410,27 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 			
 			case SCE_YAML_NUMBER:
-				if (IsDigit(sc.ch) || sc.ch == '.' || sc.ch == '-')
-					continue;
-				if (IsAlphaWordChar(sc.ch))
-					sc.ChangeState(SCE_YAML_DEFAULT);
-				else
-					sc.SetState(SCE_YAML_DEFAULT);
+			case SCE_YAML_HEXNUMBER:
+			case SCE_YAML_EXPNUMBER: {
+				bool cont;
+				if (sc.state == SCE_YAML_NUMBER) {
+					cont = IsDigit(sc.ch) || sc.ch == '.' ||
+						   (IsSign(sc.ch) &&
+							!IsDigit(sc.chPrev) && !IsAlphaWordChar(sc.chPrev));
+				} else if (sc.state == SCE_YAML_HEXNUMBER) {
+					cont = IsDigit(sc.ch, 16) || IsHex(sc.ch) ||
+						   (IsSign(sc.ch) &&
+							!IsDigit(sc.chPrev) && !IsAlphaWordChar(sc.chPrev));
+				} else {
+					cont = IsDigit(sc.ch) || sc.ch == '.' || IsDecExponent(sc.ch) ||
+						   (IsSign(sc.ch) &&
+							(IsDecExponent(sc.chPrev) ||
+							 (!IsDigit(sc.chPrev) && !IsAlphaWordChar(sc.chPrev))));
+				}
+				if (cont) continue;
+				sc.SetState(SCE_YAML_DEFAULT);
 				break;
+			}
 			
 			case SCE_YAML_REFERENCE:
 				if (IsSpace(sc.ch))
@@ -449,10 +540,8 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 					blockScalarLine = true;
 				} else if (sc.ch == '&' || sc.ch == '*') {
 					sc.SetState(SCE_YAML_REFERENCE);
-				} else if (IsDigit(sc.ch) ||
-						   ((IsSign(sc.ch) || sc.ch == '.') &&
-							(IsDigit(sc.chNext) || sc.chNext == '.'))) {
-					sc.SetState(SCE_YAML_NUMBER);
+				} else if ((numberStyle = StartNumber(sc)) != 0) {
+					sc.SetState(numberStyle);
 				} else if (sc.ch == '\"') {
 					sc.SetState(SCE_YAML_DOUBLESTRING);
 				} else if (sc.ch == '\'') {

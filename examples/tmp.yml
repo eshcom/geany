@@ -156,3 +156,21 @@ key: |2-       # | и -  -> SPEC_OPER, 2 -> DEFAULT
 key: |-2       # | и -  -> SPEC_OPER, 2 -> DEFAULT
 key: |2+       # | и +  -> SPEC_OPER, 2 -> DEFAULT
 key: |+2       # | и +  -> SPEC_OPER, 2 -> DEFAULT
+
+---
+# Numbers
+decimal: 123
+negative: -5
+float: 3.14
+hex: 0xFF
+hex_upper: 0X1A2B
+hex_negative: -0xFF
+exp: 1e6
+exp_upper: 1E6
+exp_plus: 1e+6
+exp_minus: 1.5e-3
+not_number: 123abc
+hex_bad: 0xFFg
+exp_bad: 1e
+uuid: 00bba661-75d1-4a39-a4f6-1a4faba9f343
+uuid_digits: 12345678-1234-1234-1234-123456789012

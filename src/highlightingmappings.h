@@ -1796,6 +1796,8 @@ static const HLStyle highlighting_styles_YAML[] =
 	{ SCE_YAML_OPERATOR,		"operator",			FALSE },
 	{ SCE_YAML_SPEC_OPER,		"spec_oper",		FALSE },
 	{ SCE_YAML_NUMBER,			"number",			FALSE },
+	{ SCE_YAML_HEXNUMBER,		"hexnumber",		FALSE },
+	{ SCE_YAML_EXPNUMBER,		"expnumber",		FALSE },
 	{ SCE_YAML_DOUBLESTRING,	"doublestring",		FALSE },
 	{ SCE_YAML_SINGLESTRING,	"singlestring",		FALSE },
 	{ SCE_YAML_ESCAPESEQ,		"escapeseq",		FALSE },
