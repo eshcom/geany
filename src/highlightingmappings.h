@@ -1805,7 +1805,9 @@ static const HLStyle highlighting_styles_YAML[] =
 	{ SCE_YAML_BACKSLASH_WRONG,		"backslash_wrong",	FALSE },
 	{ SCE_YAML_TEXT,				"text",				FALSE },
 	{ SCE_YAML_ERROR,				"error",			FALSE },
-	{ SCE_YAML_TASKMARKER,			"taskmarker",		FALSE }
+	{ SCE_YAML_TASKMARKER,			"taskmarker",		FALSE },
+	{ SCE_YAML_FLOW_OPER,			"flow_oper",		FALSE },
+	{ SCE_YAML_FLOW_IDENT,			"flow_ident",		FALSE }
 };
 static const HLKeyword highlighting_keywords_YAML[] =
 {

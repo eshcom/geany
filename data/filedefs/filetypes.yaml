@@ -22,6 +22,8 @@ backslash_wrong=string_eol
 text=string_1
 error=error
 taskmarker=comment
+flow_oper=operator
+flow_ident=identifier
 
 [keywords]
 # all items must be in one line

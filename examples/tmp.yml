@@ -208,3 +208,31 @@ escape_incomplete_unicode: "a\u12b"
 escape_bad_range: "a\U00110000b"
 escape_surrogate: "a\uD800b"
 escape_U_surrogate: "a\U0000D800b"
+
+---
+# Flow style
+flow_seq: [1, 2, 3]
+flow_map: {a: 1, b: 2}
+flow_nested: {a: [1, {b: 2}], c: 3}
+flow_multiline: [
+  1,
+  2
+]
+flow_map_multiline: {
+  a: 1,
+  b: 2
+}
+flow_quoted_keys: {"a": 1, 'b': 2}
+flow_numeric_keys: {1: a, -2: b}
+
+---
+# Flow edge cases
+plain_comma: hello, world
+plain_brackets: x[y]
+plain_braces: a{b}c
+
+---
+[3, 4]
+
+---
+mismatched_flow: [1, 2}
