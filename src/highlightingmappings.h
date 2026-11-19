@@ -1785,25 +1785,27 @@ static const HLKeyword highlighting_keywords_XML[] =
 #define highlighting_lexer_YAML			SCLEX_YAML
 static const HLStyle highlighting_styles_YAML[] =
 {
-	{ SCE_YAML_DEFAULT,			"default",			FALSE },
-	{ SCE_YAML_COMMENT,			"comment",			FALSE },
-	{ SCE_YAML_IDENTIFIER,		"identifier",		FALSE },
-	{ SCE_YAML_COM_WORD,		"com_word",			FALSE },
-	{ SCE_YAML_TYPE_WORD,		"type_word",		FALSE },
-	{ SCE_YAML_TYPE_WORD_STR,	"type_word_str",	FALSE },
-	{ SCE_YAML_REFERENCE,		"reference",		FALSE },
-	{ SCE_YAML_DOCUMENT,		"document",			FALSE },
-	{ SCE_YAML_OPERATOR,		"operator",			FALSE },
-	{ SCE_YAML_SPEC_OPER,		"spec_oper",		FALSE },
-	{ SCE_YAML_NUMBER,			"number",			FALSE },
-	{ SCE_YAML_HEXNUMBER,		"hexnumber",		FALSE },
-	{ SCE_YAML_EXPNUMBER,		"expnumber",		FALSE },
-	{ SCE_YAML_DOUBLESTRING,	"doublestring",		FALSE },
-	{ SCE_YAML_SINGLESTRING,	"singlestring",		FALSE },
-	{ SCE_YAML_ESCAPESEQ,		"escapeseq",		FALSE },
-	{ SCE_YAML_TEXT,			"text",				FALSE },
-	{ SCE_YAML_ERROR,			"error",			FALSE },
-	{ SCE_YAML_TASKMARKER,		"taskmarker",		FALSE }
+	{ SCE_YAML_DEFAULT,				"default",			FALSE },
+	{ SCE_YAML_COMMENT,				"comment",			FALSE },
+	{ SCE_YAML_IDENTIFIER,			"identifier",		FALSE },
+	{ SCE_YAML_COM_WORD,			"com_word",			FALSE },
+	{ SCE_YAML_TYPE_WORD,			"type_word",		FALSE },
+	{ SCE_YAML_TYPE_WORD_STR,		"type_word_str",	FALSE },
+	{ SCE_YAML_REFERENCE,			"reference",		FALSE },
+	{ SCE_YAML_DOCUMENT,			"document",			FALSE },
+	{ SCE_YAML_OPERATOR,			"operator",			FALSE },
+	{ SCE_YAML_SPEC_OPER,			"spec_oper",		FALSE },
+	{ SCE_YAML_NUMBER,				"number",			FALSE },
+	{ SCE_YAML_HEXNUMBER,			"hexnumber",		FALSE },
+	{ SCE_YAML_EXPNUMBER,			"expnumber",		FALSE },
+	{ SCE_YAML_DOUBLESTRING,		"doublestring",		FALSE },
+	{ SCE_YAML_SINGLESTRING,		"singlestring",		FALSE },
+	{ SCE_YAML_ESCAPESEQ,			"escapeseq",		FALSE },
+	{ SCE_YAML_STRING_CONTINUED,	"string_continued",	FALSE },
+	{ SCE_YAML_BACKSLASH_WRONG,		"backslash_wrong",	FALSE },
+	{ SCE_YAML_TEXT,				"text",				FALSE },
+	{ SCE_YAML_ERROR,				"error",			FALSE },
+	{ SCE_YAML_TASKMARKER,			"taskmarker",		FALSE }
 };
 static const HLKeyword highlighting_keywords_YAML[] =
 {

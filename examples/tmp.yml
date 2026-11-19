@@ -182,3 +182,29 @@ key: value # TODO: something
 # NOTE: note
 #FIXME no space after hash
 # just a comment
+
+---
+# Multi-line quoted strings
+double_multiline: "first line
+  second line"
+double_blank: "first line
+
+  second line"
+single_multiline: 'first line
+  second line'
+double_escaped_break: "first line \
+  second line"
+double_extra_indent: "first
+    second"
+
+---
+# Valid and invalid escapes
+escape_valid: "a\nb\tc\u00e9"
+escape_hex_valid: "a\x4b"
+escape_hex_extra: "a\x4b12"
+escape_unknown: "a\qb"
+escape_incomplete_hex: "a\x4"
+escape_incomplete_unicode: "a\u12b"
+escape_bad_range: "a\U00110000b"
+escape_surrogate: "a\uD800b"
+escape_U_surrogate: "a\U0000D800b"

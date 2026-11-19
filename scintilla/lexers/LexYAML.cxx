@@ -48,6 +48,77 @@ static inline char GetClosingChar(int style) {
 	return (style == SCE_YAML_DOUBLESTRING) ? '\"' : '\'';
 }
 
+static bool IsYAMLStringState(int state) {
+	return state == SCE_YAML_DOUBLESTRING ||
+		   state == SCE_YAML_SINGLESTRING ||
+		   state == SCE_YAML_STRING_CONTINUED ||
+		   state == SCE_YAML_BACKSLASH_WRONG;
+}
+
+static bool IsYAMLQuoteStart(const StyleContext &sc) {
+	const int prev = sc.chPrev;
+	return prev == 0 || IS_YAML_SEPARATOR(prev) ||
+		   prev == '-' || prev == '[' || prev == '{' ||
+		   prev == ',' || prev == '?';
+}
+
+static int YAMLHexDigitValue(int ch) {
+	return IsDigit(ch) ? ch - '0' : ToUpper(ch) - 'A' + 10;
+}
+
+static void InitYAMLEscape(EscapeSequence &escapeSeq, int nextChar) {
+	escapeSeq.initEscapeState(nextChar);
+	if (nextChar == 'x')
+		escapeSeq.digitsLeft = 3;
+	else if (nextChar == 'u')
+		escapeSeq.digitsLeft = 5;
+	else if (nextChar == 'U')
+		escapeSeq.digitsLeft = 9;
+}
+
+// Returns 0 for a valid double-quoted escape sequence; otherwise returns
+// the number of characters starting at the backslash to highlight as wrong.
+static int YAMLBadEscapeLength(StyleContext &sc) {
+	switch (sc.GetRelative(1)) {
+		case '0': case 'a': case 'b': case 't': case 'n': case 'v':
+		case 'f': case 'r': case 'e': case ' ': case '\"': case '/':
+		case '\\': case 'N': case '_': case 'L': case 'P':
+			return 0;
+		case 'x':
+			for (int i = 2; i < 4; i++) {
+				if (!IsDigit(sc.GetRelative(i), 16))
+					return i;
+			}
+			return 0;
+		case 'u': {
+			for (int i = 2; i < 6; i++) {
+				if (!IsDigit(sc.GetRelative(i), 16))
+					return i;
+			}
+			int value = 0;
+			for (int i = 2; i < 6; i++)
+				value = (value << 4) | YAMLHexDigitValue(sc.GetRelative(i));
+			if (value >= 0xD800 && value <= 0xDFFF)
+				return 6;
+			return 0;
+		}
+		case 'U': {
+			for (int i = 2; i < 10; i++) {
+				if (!IsDigit(sc.GetRelative(i), 16))
+					return i;
+			}
+			unsigned long value = 0;
+			for (int i = 2; i < 10; i++)
+				value = (value << 4) | YAMLHexDigitValue(sc.GetRelative(i));
+			if (value > 0x10FFFFUL || (value >= 0xD800 && value <= 0xDFFF))
+				return 10;
+			return 0;
+		}
+		default:
+			return 2;
+	}
+}
+
 static void StartBlockScalar(StyleContext &sc, Accessor &styler,
 							 Sci_Position line, int parentIndent) {
 	int contentIndent = -1;
@@ -151,17 +222,17 @@ static YAMLNumberType ParseNumber(StyleContext &sc) {
 		}
 		if (digits == 0)
 			return YAML_NUMBER_NONE;
-
+		
 		int end = n;
 		while (IsSpaceOrTab(sc.GetRelative(end)))
 			end++;
 		const int ch = sc.GetRelative(end);
 		if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
 			return YAML_NUMBER_NONE;
-
+		
 		return YAML_NUMBER_HEX;
 	}
-
+	
 	int digits = 0;
 	while (IsDigit(sc.GetRelative(n))) {
 		digits++;
@@ -188,14 +259,14 @@ static YAMLNumberType ParseNumber(StyleContext &sc) {
 		}
 		if (expDigits == 0)
 			return YAML_NUMBER_NONE;
-
+		
 		int end = e;
 		while (IsSpaceOrTab(sc.GetRelative(end)))
 			end++;
 		const int ch = sc.GetRelative(end);
 		if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
 			return YAML_NUMBER_NONE;
-
+		
 		return YAML_NUMBER_EXP;
 	}
 	
@@ -205,7 +276,7 @@ static YAMLNumberType ParseNumber(StyleContext &sc) {
 	const int ch = sc.GetRelative(end);
 	if (ch == ':' || !(ch == 0 || IS_YAML_NUMBER_END(ch)))
 		return YAML_NUMBER_NONE;
-
+	
 	return YAML_NUMBER_DECIMAL;
 }
 
@@ -218,11 +289,11 @@ static int StartNumber(StyleContext &sc) {
 	if (sc.chPrev == '-' &&
 		(IsDigit(sc.GetRelative(-2)) || IsAlphaWordChar(sc.GetRelative(-2))))
 		return 0;
-
+	
 	const YAMLNumberType type = ParseNumber(sc);
 	if (type == YAML_NUMBER_NONE)
 		return 0;
-
+	
 	switch (type) {
 		case YAML_NUMBER_HEX:
 			return SCE_YAML_HEXNUMBER;
@@ -259,9 +330,17 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 	bool typeValue = false;
 	int escapeReturnState = SCE_YAML_DOUBLESTRING;
 	bool singleQuoteEscape = false;
+	int wrongEscapeLeft = 0;
 	
 	for (; sc.More(); sc.Forward()) {
-		if (sc.atLineStart) {
+		if (sc.state == SCE_YAML_BACKSLASH_WRONG) {
+			if (wrongEscapeLeft > 0)
+				wrongEscapeLeft--;
+			if (wrongEscapeLeft == 0)
+				sc.SetState(SCE_YAML_DOUBLESTRING);
+		}
+		
+		if (sc.atLineStart && !IsYAMLStringState(sc.state)) {
 			int spaceIndent = 0;
 			indent = 0;
 			inQuotes = false;
@@ -364,6 +443,8 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 					}
 				}
 			}
+		} else if (sc.atLineStart) {
+			styler.SetLineState(lineCurrent, 0);
 		}
 		
 		// Determine if the current state should terminate.
@@ -403,7 +484,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 				if (sc.atLineEnd)
 					sc.SetState(SCE_YAML_DEFAULT);
 				break;
-
+			
 			case SCE_YAML_COM_WORD:
 				if (sc.atLineEnd || IsSpace(sc.ch)) {
 					sc.GetCurrent(ident, sizeof(ident));
@@ -447,11 +528,21 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 				break;
 			
 			case SCE_YAML_DOUBLESTRING:
-				if (sc.ch == '\\' && !IsCRLF(sc.chNext)) {
+				if (sc.ch == '\\') {
+					if (IsCRLF(sc.chNext)) {
+						sc.SetState(SCE_YAML_STRING_CONTINUED);
+						continue;
+					}
+					const int badEscape = YAMLBadEscapeLength(sc);
+					if (badEscape > 0) {
+						sc.SetState(SCE_YAML_BACKSLASH_WRONG);
+						wrongEscapeLeft = badEscape;
+						continue;
+					}
 					if (escapeSequence) {
 						escapeReturnState = SCE_YAML_DOUBLESTRING;
 						sc.SetState(SCE_YAML_ESCAPESEQ);
-						escapeSeq.initEscapeState(sc.chNext);
+						InitYAMLEscape(escapeSeq, sc.chNext);
 					}
 					sc.Forward(); // Skip any character after the backslash
 					continue;
@@ -516,7 +607,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 				if (!escapeSeq.atEscapeEnd(sc.ch))
 					continue;
 				if (sc.ch == '\\') {
-					escapeSeq.initEscapeState(sc.chNext);
+					InitYAMLEscape(escapeSeq, sc.chNext);
 					sc.Forward();
 					continue;
 				}
@@ -551,9 +642,9 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 					sc.SetState(SCE_YAML_REFERENCE);
 				} else if ((numberStyle = StartNumber(sc)) != 0) {
 					sc.SetState(numberStyle);
-				} else if (sc.ch == '\"') {
+				} else if (sc.ch == '\"' && IsYAMLQuoteStart(sc)) {
 					sc.SetState(SCE_YAML_DOUBLESTRING);
-				} else if (sc.ch == '\'') {
+				} else if (sc.ch == '\'' && IsYAMLQuoteStart(sc)) {
 					sc.SetState(SCE_YAML_SINGLESTRING);
 				} else if (IsAlphaWordChar(sc.ch)) {
 					sc.SetState(SCE_YAML_COM_WORD);
@@ -562,7 +653,13 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 		}
 		
 		if (sc.atLineEnd) {
-			sc.SetState(SCE_YAML_DEFAULT);
+			if (sc.state == SCE_YAML_STRING_CONTINUED
+				|| sc.state == SCE_YAML_BACKSLASH_WRONG) {
+				sc.SetState(SCE_YAML_DOUBLESTRING);
+				wrongEscapeLeft = 0;
+			} else if (!IsYAMLStringState(sc.state)) {
+				sc.SetState(SCE_YAML_DEFAULT);
+			}
 			lineCurrent++;
 		}
 	}
