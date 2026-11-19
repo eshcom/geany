@@ -1802,7 +1802,8 @@ static const HLStyle highlighting_styles_YAML[] =
 	{ SCE_YAML_SINGLESTRING,	"singlestring",		FALSE },
 	{ SCE_YAML_ESCAPESEQ,		"escapeseq",		FALSE },
 	{ SCE_YAML_TEXT,			"text",				FALSE },
-	{ SCE_YAML_ERROR,			"error",			FALSE }
+	{ SCE_YAML_ERROR,			"error",			FALSE },
+	{ SCE_YAML_TASKMARKER,		"taskmarker",		FALSE }
 };
 static const HLKeyword highlighting_keywords_YAML[] =
 {

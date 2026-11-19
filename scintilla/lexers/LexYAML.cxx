@@ -22,6 +22,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "LexerCommon.h"
 
 using namespace Scintilla;
 
@@ -242,6 +243,7 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 	
 	WordList &com_words = *keywordLists[0];
 	WordList &type_words = *keywordLists[1];
+	WordList &task_markers = *keywordLists[2];
 	
 	StyleContext sc(startPos, length, initStyle, styler);
 	Sci_Position lineCurrent = styler.GetLine(startPos);
@@ -395,6 +397,13 @@ static void ColouriseYAMLDoc(Sci_PositionU startPos, Sci_Position length,
 				sc.SetState(SCE_YAML_DEFAULT);
 				break;
 			
+			case SCE_YAML_COMMENT:
+				HighlightTaskMarker(sc, styler, task_markers, true,
+									SCE_YAML_TASKMARKER);
+				if (sc.atLineEnd)
+					sc.SetState(SCE_YAML_DEFAULT);
+				break;
+
 			case SCE_YAML_COM_WORD:
 				if (sc.atLineEnd || IsSpace(sc.ch)) {
 					sc.GetCurrent(ident, sizeof(ident));
